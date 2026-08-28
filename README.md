@@ -29,6 +29,9 @@ Acesse `http://localhost:3000`.
 - `npm run build` — build de produção
 - `npm start` — sobe o build de produção
 - `npm run lint` — lint
+- `npm run typecheck` — verificação de tipos
+- `npm test` — testes unitários
+- `npm run check` — lint, tipos, testes e build de produção
 
 ## Variáveis de ambiente
 
@@ -36,8 +39,8 @@ Crie um `.env.local` na raiz:
 
 ```
 RESEND_API_KEY=sua_chave_resend
-CONTACT_TO_EMAIL=destinatario@exemplo.com
-CONTACT_FROM_EMAIL=no-reply@seudominio.com
+CONTACT_TO=destinatario@exemplo.com
+CONTACT_FROM=Imagine Apps <no-reply@seudominio.com>
 ```
 
 O endpoint do formulário fica em `app/api/contact`.

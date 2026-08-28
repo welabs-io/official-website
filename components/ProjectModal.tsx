@@ -1,22 +1,9 @@
 'use client';
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useT } from './LangProvider';
+import { getProject, type ProjectId } from '@/lib/projects';
 
-const projectImages: Record<string, string> = {
-  kiosk: '/portfolio/kiosk-brands.png',
-  tabela: '/portfolio/tabela.png',
-  avsi: '/portfolio/avsi.png',
-  'avsi-acec': '/portfolio/avsi-acec.png',
-  'eco-enel': '/portfolio/eco-enel.png',
-  ima: '/portfolio/ima.png',
-  light: '/portfolio/light.png',
-  stant: '/portfolio/stant.png',
-  report: '/portfolio/report.png',
-  loquei: '/portfolio/loquei.png',
-  central: '/portfolio/central.png',
-};
-
-type Ctx = { open: (id: string) => void };
+type Ctx = { open: (id: ProjectId) => void };
 const ModalCtx = createContext<Ctx | null>(null);
 export function useProjectModal() {
   const c = useContext(ModalCtx);
@@ -26,30 +13,60 @@ export function useProjectModal() {
 
 export function ProjectModalProvider({ children }: { children: React.ReactNode }) {
   const { t } = useT();
-  const [projectId, setProjectId] = useState<string | null>(null);
-  const scrollRef = useRef(0);
+  const [projectId, setProjectId] = useState<ProjectId | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
 
-  const open = useCallback((id: string) => {
-    if (!projectImages[id]) return;
+  const open = useCallback((id: ProjectId) => {
+    triggerRef.current = document.activeElement as HTMLElement | null;
     setProjectId(id);
   }, []);
   const close = useCallback(() => setProjectId(null), []);
 
   useEffect(() => {
     if (projectId) {
-      scrollRef.current = window.pageYOffset;
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.paddingRight = sbw ? `${sbw}px` : '';
       document.documentElement.classList.add('modal-open');
       document.body.classList.add('modal-open');
+      requestAnimationFrame(() => dialogRef.current?.focus());
     } else {
       document.documentElement.classList.remove('modal-open');
       document.body.classList.remove('modal-open');
       document.body.style.paddingRight = '';
+      triggerRef.current?.focus();
     }
+    return () => {
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = '';
+    };
   }, [projectId]);
 
-  const img = projectId ? projectImages[projectId] : '';
+  useEffect(() => {
+    if (!projectId) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') close();
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>('button, a[href], input, textarea, [tabindex]:not([tabindex="-1"])'),
+      ).filter((element) => !element.hasAttribute('disabled'));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [close, projectId]);
+
+  const img = projectId ? getProject(projectId).image : '';
   const title = projectId ? t(`portfolio-${projectId}-title`) : '';
   const cat = projectId ? t(`portfolio-${projectId}-cat`) : '';
   const descKey = projectId ? `modal-${projectId}-desc` : '';
@@ -70,9 +87,17 @@ export function ProjectModalProvider({ children }: { children: React.ReactNode }
       {children}
       <div
         className={`modal${projectId ? ' active' : ''}`}
+        aria-hidden={!projectId}
         onClick={(e) => { if (e.target === e.currentTarget) close(); }}
       >
-        <div className="modal-content">
+        <div
+          ref={dialogRef}
+          className="modal-content"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-modal-title"
+          tabIndex={-1}
+        >
           <button className="modal-close" aria-label={t('aria-close-modal')} onClick={close}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
@@ -84,7 +109,7 @@ export function ProjectModalProvider({ children }: { children: React.ReactNode }
               <div className="modal-header-info">
                 <div className="modal-header-left">
                   <span className="section-tag">{cat}</span>
-                  <h2>{title}</h2>
+                  <h2 id="project-modal-title">{title}</h2>
                 </div>
                 <div className="modal-scroll-hint">
                   <div className="mouse-mini"><div className="wheel-mini"></div></div>

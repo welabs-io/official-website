@@ -2,20 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useT } from './LangProvider';
 import { useProjectModal } from './ProjectModal';
-
-const projects = [
-  { id: 'kiosk', img: '/portfolio/kiosk-brands.png', alt: 'Kiosk Brands' },
-  { id: 'tabela', img: '/portfolio/tabela.png', alt: 'Tabela Gestão' },
-  { id: 'stant', img: '/portfolio/stant.png', alt: 'Stant' },
-  { id: 'report', img: '/portfolio/report.png', alt: 'Report ESG' },
-  { id: 'avsi', img: '/portfolio/avsi.png', alt: 'AVSI Brasil' },
-  { id: 'eco-enel', img: '/portfolio/eco-enel.png', alt: 'EcoEnel' },
-  { id: 'light', img: '/portfolio/light.png', alt: 'Light' },
-  { id: 'ima', img: '/portfolio/ima.png', alt: 'IMA Alagoas' },
-  { id: 'central', img: '/portfolio/central.png', alt: 'Central ESG' },
-  { id: 'loquei', img: '/portfolio/loquei.png', alt: 'Loquei' },
-  { id: 'avsi-acec', img: '/portfolio/avsi-acec.png', alt: 'AVSI ACEC' },
-];
+import { projects } from '@/lib/projects';
 
 function getItemsVisible() {
   if (typeof window === 'undefined') return 3;
@@ -61,11 +48,12 @@ export function WorkCarousel() {
   useEffect(() => { indexRef.current = index; }, [index]);
 
   useEffect(() => {
-    apply(0);
     resetAutoplay();
     const onResize = () => apply(indexRef.current);
+    const frame = requestAnimationFrame(onResize);
     window.addEventListener('resize', onResize);
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener('resize', onResize);
       if (autoplayRef.current) clearInterval(autoplayRef.current);
     };
@@ -76,21 +64,23 @@ export function WorkCarousel() {
     <div className="carousel-container">
       <div className="work-track" ref={trackRef}>
         {projects.map((p) => (
-          <div
+          <button
+            type="button"
             key={p.id}
             className="work-card"
             data-project={p.id}
-            onClick={(e) => { e.preventDefault(); open(p.id); }}
+            onClick={() => open(p.id)}
+            aria-label={`${t(`portfolio-${p.id}-title`)}: ${t(`portfolio-${p.id}-desc`)}`}
           >
             <div className="work-img">
-              <img loading="lazy" decoding="async" src={p.img} alt={p.alt} />
+              <img loading="lazy" decoding="async" src={p.image} alt={p.alt} />
             </div>
             <div className="work-info">
               <span className="work-category">{t(`portfolio-${p.id}-cat`)}</span>
               <h3>{t(`portfolio-${p.id}-title`)}</h3>
               <p>{t(`portfolio-${p.id}-desc`)}</p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
       <div className="carousel-nav">
@@ -103,10 +93,13 @@ export function WorkCarousel() {
       </div>
       <div className="carousel-pagination">
         {Array.from({ length: Math.max(1, total - visible + 1) }).map((_, i) => (
-          <div
+          <button
+            type="button"
             key={i}
             className={`dot${i === index ? ' active' : ''}`}
             onClick={() => { apply(i); resetAutoplay(); }}
+            aria-label={`${t('aria-carousel-page')} ${i + 1}`}
+            aria-current={i === index ? 'true' : undefined}
           />
         ))}
       </div>

@@ -6,8 +6,9 @@
     --accent-muted: rgba(0, 152, 218, 0.1);
     --border: rgba(255, 255, 255, 0.1);
     --section-light: #f4f4f4;
-    --font: 'Inter', sans-serif;
+    --font: var(--font-inter), Inter, system-ui, sans-serif;
     --section-pad: 120px;
+    --focus-ring: 0 0 0 3px rgba(0, 152, 218, 0.3);
 }
 
 /* Custom Scrollbar */
@@ -53,6 +54,34 @@ body {
     line-height: 1.5;
     overflow-x: clip;
     -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea { font: inherit; }
+
+:where(a, button, input, textarea):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    box-shadow: var(--focus-ring);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.form-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
 }
 
 .container {
@@ -1017,6 +1046,8 @@ body.lang-switching .footer span {
     background: var(--border);
     cursor: pointer;
     transition: all 0.3s ease;
+    border: 0;
+    padding: 0;
 }
 
 .dot.active {
@@ -1064,6 +1095,16 @@ body.lang-switching .footer span {
     color: var(--fg-muted);
     margin-top: 10px;
     line-height: 1.4;
+}
+
+.work-card {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
 }
 
 .work-category {
@@ -1169,6 +1210,17 @@ body.lang-switching .footer span {
     color: #fff;
     font-family: inherit;
     transition: all 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .cursor, .cursor-follower, #preloader { display: none !important; }
 }
 
 .inline-form input:focus, 
@@ -1880,4 +1932,3 @@ body.lang-switching .footer span {
     .section-title { font-size: 40px; }
     .container { padding: 0 20px; }
 }
-

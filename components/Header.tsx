@@ -37,7 +37,7 @@ export function Header() {
         <NavLink href="/" className="logo">
           <img src="/imagine-logo.svg" alt="Imagine Apps" className="logo-img" />
         </NavLink>
-        <nav className={`nav${mobileOpen ? ' mobile-active' : ''}`}>
+        <nav id="primary-navigation" className={`nav${mobileOpen ? ' mobile-active' : ''}`}>
           <ul className="nav-list">
             <li>
               <NavLink href="/" className={`nav-link${isActive('', true) ? ' active' : ''}`} onClick={() => setMobileOpen(false)}>
@@ -74,6 +74,8 @@ export function Header() {
         <button
           className={`menu-toggle${mobileOpen ? ' active' : ''}`}
           aria-label={t('aria-open-menu')}
+          aria-expanded={mobileOpen}
+          aria-controls="primary-navigation"
           onClick={() => setMobileOpen((v) => !v)}
         >
           <span></span><span></span><span></span>

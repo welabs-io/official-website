@@ -36,6 +36,7 @@ export function ContactForm({ id }: { id: string }) {
     const started = Date.now();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
+    const timeout = window.setTimeout(() => ctrl.abort(), 12_000);
 
     try {
       const res = await fetch('/api/contact', {
@@ -45,6 +46,7 @@ export function ContactForm({ id }: { id: string }) {
           name: data.get('name'),
           email: data.get('email'),
           message: data.get('message'),
+          website: data.get('website'),
           lang,
         }),
         signal: ctrl.signal,
@@ -69,6 +71,9 @@ export function ContactForm({ id }: { id: string }) {
       await wait(3000);
       if (!mountedRef.current) return;
       safeSet('idle');
+    } finally {
+      window.clearTimeout(timeout);
+      abortRef.current = null;
     }
   };
 
@@ -82,20 +87,24 @@ export function ContactForm({ id }: { id: string }) {
     t('btn-submit');
 
   return (
-    <form ref={formRef} id={id} className="inline-form" onSubmit={onSubmit}>
+    <form ref={formRef} id={id} className="inline-form" onSubmit={onSubmit} aria-busy={state === 'sending'}>
+      <div className="form-honeypot" aria-hidden="true">
+        <label htmlFor={`${id}-website`}>Website</label>
+        <input id={`${id}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="form-row">
         <div className="form-group">
           <label htmlFor={`${id}-name`}>{t('label-name')}</label>
-          <input id={`${id}-name`} type="text" name="name" placeholder={t('placeholder-name')} required />
+          <input id={`${id}-name`} type="text" name="name" placeholder={t('placeholder-name')} maxLength={120} autoComplete="name" required />
         </div>
         <div className="form-group">
           <label htmlFor={`${id}-email`}>{t('label-email')}</label>
-          <input id={`${id}-email`} type="email" name="email" placeholder={t('placeholder-email')} required />
+          <input id={`${id}-email`} type="email" name="email" placeholder={t('placeholder-email')} maxLength={254} autoComplete="email" required />
         </div>
       </div>
       <div className="form-group">
         <label htmlFor={`${id}-message`}>{t('label-help')}</label>
-        <textarea id={`${id}-message`} name="message" rows={4} placeholder={t('placeholder-help')} required />
+        <textarea id={`${id}-message`} name="message" rows={4} placeholder={t('placeholder-help')} maxLength={5000} required />
       </div>
       <button type="submit" className={btnClass} disabled={state !== 'idle'}>
         <span className="btn-text">{btnLabel}</span>
@@ -103,6 +112,7 @@ export function ContactForm({ id }: { id: string }) {
         <svg className="icon-plane" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z" transform="rotate(90 12 12)" /></svg>
         <div className="wind-lines"><span></span><span></span><span></span></div>
       </button>
+      <p className="sr-only" role="status" aria-live="polite">{state === 'idle' ? '' : btnLabel}</p>
     </form>
   );
 }

@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { LangProvider } from '@/components/LangProvider';
 import { ClientChrome } from '@/components/ClientChrome';
 import './globals.css';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'Imagine Apps',
@@ -13,23 +16,16 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Imagine Apps',
     url: 'https://imagineapps.com.br/',
-    images: [{ url: '/assets/og-image.png', width: 1200, height: 630 }],
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR" className={inter.variable}>
       <head>
         <meta name="theme-color" content="#0098DA" />
         <meta name="author" content="Imagine Apps" />
         <meta name="robots" content="index, follow, max-image-preview:large" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

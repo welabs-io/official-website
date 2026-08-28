@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { translations, type Lang } from '@/lib/translations';
 
 type Ctx = {
@@ -26,14 +26,21 @@ function detectBrowserLang(): Lang {
 }
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('en');
+  const [lang, setLangState] = useState<Lang>('pt');
   const [switching, setSwitching] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('preferredLang') as Lang | null;
-    const initial = saved === 'pt' || saved === 'en' ? saved : detectBrowserLang();
-    setLangState(initial);
-    document.documentElement.lang = initial === 'pt' ? 'pt-BR' : 'en';
+    const query = new URLSearchParams(window.location.search).get('lang');
+    const saved = localStorage.getItem('preferredLang');
+    const initial = query === 'pt' || query === 'en'
+      ? query
+      : saved === 'pt' || saved === 'en'
+        ? saved
+        : detectBrowserLang();
+    queueMicrotask(() => {
+      setLangState(initial);
+      document.documentElement.lang = initial === 'pt' ? 'pt-BR' : 'en';
+    });
   }, []);
 
   const switchingRef = useRef(false);
@@ -55,9 +62,10 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const t = useCallback((key: string) => translations[lang][key] ?? key, [lang]);
+  const value = useMemo(() => ({ lang, setLang, t, switching }), [lang, setLang, t, switching]);
 
   return (
-    <LangContext.Provider value={{ lang, setLang, t, switching }}>{children}</LangContext.Provider>
+    <LangContext.Provider value={value}>{children}</LangContext.Provider>
   );
 }
 

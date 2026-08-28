@@ -22,16 +22,12 @@ export const metadata: Metadata = {
       'Desde 2014 transformando complexidade em simplicidade operacional com software sob medida, cloud e foco em ESG.',
     locale: 'pt_BR',
     alternateLocale: ['en_US'],
-    images: [
-      { url: '/assets/og-image-about.png', width: 1200, height: 630, alt: 'Imagine Apps — Sobre Nós' },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sobre Nós | Imagine Apps — Software Sob Medida',
     description:
       'Desde 2014 transformando complexidade em simplicidade operacional com software sob medida, cloud e foco em ESG.',
-    images: ['/assets/og-image-about.png'],
   },
 };
 
