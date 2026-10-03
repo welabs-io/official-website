@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Família WeGO</title>
+<script src="./assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-style:normal}
+:root{--bg:#0d1210;--card:#151c19;--line:#2c3834;--text:#f3f6f4;--muted:#b4c0ba;--green:#16a34a;--green-l:#4ade80}
+html,body{margin:0;background:var(--bg);font-family:Inter,system-ui,sans-serif;color:var(--text)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1200px 800px at 50% 52%,#14201a 0%,var(--bg) 70%)}
+.abs{position:absolute}
+h1{margin:0;font-size:68px;font-weight:800;letter-spacing:-1px;left:80px;top:44px;line-height:1}
+.sub{left:80px;top:130px;font-size:28px;color:var(--muted);white-space:nowrap}
+#steps{right:80px;top:56px;display:flex;gap:14px}
+.pill{font-size:24px;font-weight:600;padding:10px 22px;border-radius:999px;border:2px solid var(--line);color:var(--muted);background:#101614}
+svg#net{left:0;top:0;width:1920px;height:1080px}
+.spoke{stroke:var(--line);stroke-width:3;fill:none}
+.route{stroke:var(--green);stroke-width:5;fill:none;stroke-linecap:round}
+.routebase{stroke:#33423c;stroke-width:3;fill:none;stroke-dasharray:3 12;stroke-linecap:round}
+#hub{left:850px;top:460px;width:220px;height:220px;border-radius:50%;background:#0f2a1b;border:4px solid var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(22,163,74,.0)}
+#hub b{font-size:58px;font-weight:800;letter-spacing:-1px;line-height:1}
+#hub span{font-size:26px;color:var(--muted);margin-top:6px}
+.card{width:500px;height:210px;box-sizing:border-box;border-radius:24px;background:var(--card);border:3px solid var(--line);padding:22px 28px}
+.card .name{font-size:44px;font-weight:800;line-height:52px;letter-spacing:-.5px}
+.card .role{font-size:26px;color:var(--muted);line-height:34px;margin-top:2px;white-space:nowrap}
+.logo{position:absolute;right:24px;top:20px;height:56px;min-width:80px;box-sizing:border-box;padding:0 12px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.logo img{height:34px;display:block}
+.badge{position:absolute;right:24px;top:24px;font-size:24px;font-weight:700;padding:6px 16px;border-radius:999px;color:#fcd34d;border:2px solid #b8891b;background:#241d0a}
+.dock{position:absolute;left:24px;bottom:16px;height:50px;box-sizing:border-box;padding:0 18px;border-radius:12px;background:var(--green);color:#fff;font-size:24px;font-weight:700;display:flex;align-items:center;opacity:0;white-space:nowrap}
+#packet{opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="wego-catalog" data-start="0" data-width="1920" data-height="1080" data-duration="20">
+
+<h1 id="title" class="abs">Família WeGO</h1>
+<div id="sub" class="abs sub">Gestão ambiental e documental para organizações públicas</div>
+<div id="steps" class="abs">
+  <div class="pill" id="p1">Criado</div><div class="pill" id="p2">Documentado</div><div class="pill" id="p3">Assinado</div><div class="pill" id="p4">Acompanhado</div>
+</div>
+
+<svg id="net" class="abs" viewBox="0 0 1920 1080">
+  <path class="spoke" id="s-lic" d="M960 570 L400 320"/>
+  <path class="spoke" id="s-doc" d="M960 570 L1520 320"/>
+  <path class="spoke" id="s-sig" d="M960 570 L1520 780"/>
+  <path class="spoke" id="s-ima" d="M960 570 L400 780"/>
+  <path class="spoke" id="s-sis" d="M960 570 L960 955"/>
+  <path class="routebase" id="rb1" d="M650 320 L1270 320"/>
+  <path class="routebase" id="rb2" d="M1520 425 L1520 675"/>
+  <path class="routebase" id="rb3" d="M1270 780 L650 780"/>
+  <path class="route" id="r1" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M650 320 L1270 320"/>
+  <path class="route" id="r2" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M1520 425 L1520 675"/>
+  <path class="route" id="r3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M1270 780 L650 780"/>
+  <circle id="packet" r="14" cx="650" cy="320" fill="#4ade80" stroke="#fff" stroke-width="4"/>
+</svg>
+
+<div id="hub" class="abs"><b>WeGO</b><span>ecossistema</span></div>
+
+<div id="c-lic" class="abs card" style="left:150px;top:215px">
+  <div class="name">Licenciamento</div><div class="role">requerimento e acompanhamento</div>
+  <div class="dock" id="d-lic">Requerimento · criado</div>
+</div>
+<div id="c-doc" class="abs card" style="left:1270px;top:215px">
+  <div class="name">DocGo</div><div class="role">documentos e processos</div>
+  <div class="logo"><img src="./assets/logos/docgo-color.svg" alt="DocGo"></div>
+  <div class="dock" id="d-doc">Requerimento · documentado</div>
+</div>
+<div id="c-sig" class="abs card" style="left:1270px;top:675px">
+  <div class="name">SignGo</div><div class="role">assinatura</div>
+  <div class="logo"><img src="./assets/logos/signgo-color.svg" alt="SignGo"></div>
+  <div class="dock" id="d-sig">Requerimento · assinado</div>
+</div>
+<div id="c-ima" class="abs card" style="left:150px;top:675px">
+  <div class="name">IMA+</div><div class="role">acompanhamento pelo cidadão</div>
+  <div class="badge">histórico</div>
+  <div class="dock" id="d-ima">Requerimento · acompanhado</div>
+</div>
+<div class="abs" id="demo" style="right:80px;bottom:44px;font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:6px 18px">Requerimento fictício · dados DEMO</div>
+<div id="c-sis" class="abs card" style="left:710px;top:850px">
+  <div class="name">Sistema IMA</div><div class="role">serviços e cobranças</div>
+  <div class="logo"><img src="./assets/logos/ima-green.svg" alt="IMA"></div>
+</div>
+
+</div>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({paused:true});
+const cards = ["lic","doc","sig","ima","sis"];
+const spokes = {lic:"#s-lic",doc:"#s-doc",sig:"#s-sig",ima:"#s-ima",sis:"#s-sis"};
+const DIM = {opacity:.62, borderColor:"#2c3834", backgroundColor:"#151c19", boxShadow:"0 0 0 0 rgba(22,163,74,0)"};
+const LIT = {opacity:1, borderColor:"#16a34a", backgroundColor:"#10261a", boxShadow:"0 0 48px 6px rgba(22,163,74,.40)", scale:1.03};
+const DONE = {opacity:1, borderColor:"#1f7a42", backgroundColor:"#122219", boxShadow:"0 0 0 0 rgba(22,163,74,0)", scale:1};
+
+// ENTRADA: título, hub e módulos esmaecidos
+tl.from("#title",{opacity:0,y:-24,duration:.7,ease:"power3.out"},.2);
+tl.from("#sub",{opacity:0,y:-16,duration:.6,ease:"power3.out"},.5);
+tl.from("#steps .pill",{opacity:0,y:-16,duration:.5,stagger:.1,ease:"power3.out"},.8);
+tl.from("#hub",{opacity:0,scale:.6,duration:.7,ease:"back.out(1.6)",transformOrigin:"50% 50%"},.8);
+cards.forEach((c,i)=>{
+  tl.from("#c-"+c,{opacity:0,y:30,duration:.6,ease:"power3.out"},1.3+i*.25);
+  tl.fromTo(spokes[c],{opacity:0},{opacity:1,duration:.5},1.4+i*.25);
+});
+tl.fromTo(".routebase",{opacity:0},{opacity:1,duration:.6},2.6);
+tl.set(".card",{...DIM},0); // base state; later tweens override
+
+function light(c,t){ // acende o módulo
+  tl.to("#c-"+c,{...LIT,duration:.6,ease:"power2.out"},t);
+  tl.to(spokes[c],{stroke:"#16a34a",strokeWidth:5,duration:.6},t);
+  tl.to("#hub",{boxShadow:"0 0 60px 8px rgba(22,163,74,.45)",duration:.3,yoyo:true,repeat:1},t);
+}
+function settle(c,t){ tl.to("#c-"+c,{...DONE,duration:.6,ease:"power2.inOut"},t); tl.to(spokes[c],{stroke:"#1f7a42",strokeWidth:4,duration:.6},t); }
+function step(n,t){
+  tl.to("#p"+n,{backgroundColor:"#16a34a",borderColor:"#16a34a",color:"#fff",duration:.4},t);
+  if(n>1) tl.to("#p"+(n-1),{backgroundColor:"#10261a",borderColor:"#1f7a42",color:"#86efac",duration:.4},t);
+}
+function dock(c,t,out){ tl.fromTo("#d-"+c,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:"power2.out"},t); if(out) tl.to("#d-"+c,{opacity:0,duration:.3},out); }
+
+// BATIDA 1: requerimento criado no Licenciamento (3.2 s)
+light("lic",3.2); step(1,3.2); dock("lic",3.5,6.2);
+// BATIDA 2: vai ao DocGo e é documentado (6.2 s)
+tl.set("#packet",{attr:{cx:650,cy:320}},6.2);
+tl.to("#packet",{opacity:1,duration:.15},6.2);
+tl.to("#r1",{strokeDashoffset:0,duration:.9,ease:"power2.inOut"},6.2);
+tl.to("#packet",{attr:{cx:1270},duration:.9,ease:"power2.inOut"},6.2);
+tl.to("#packet",{opacity:0,duration:.2},7.1);
+settle("lic",6.6); light("doc",7.1); step(2,7.1); dock("doc",7.4,9.6);
+// BATIDA 3: segue para o SignGo e é assinado (9.6 s)
+tl.set("#packet",{attr:{cx:1520,cy:425}},9.6);
+tl.to("#packet",{opacity:1,duration:.15},9.6);
+tl.to("#r2",{strokeDashoffset:0,duration:.9,ease:"power2.inOut"},9.6);
+tl.to("#packet",{attr:{cy:675},duration:.9,ease:"power2.inOut"},9.6);
+tl.to("#packet",{opacity:0,duration:.2},10.5);
+settle("doc",10.0); light("sig",10.5); step(3,10.5); dock("sig",10.8,13);
+// BATIDA 4: chega ao IMA+ para acompanhamento (13 s)
+tl.set("#packet",{attr:{cx:1270,cy:780}},13);
+tl.to("#packet",{opacity:1,duration:.15},13);
+tl.to("#r3",{strokeDashoffset:0,duration:.9,ease:"power2.inOut"},13);
+tl.to("#packet",{attr:{cx:650},duration:.9,ease:"power2.inOut"},13);
+tl.to("#packet",{opacity:0,duration:.2},13.9);
+settle("sig",13.4); light("ima",13.9); step(4,13.9); dock("ima",14.2,18.2);
+// BATIDA 5: Sistema IMA acende e a família inteira fica visível (16.2 s)
+light("sis",16.2);
+settle("sis",17.4);
+settle("ima",16.6);
+tl.to("#p4",{backgroundColor:"#10261a",borderColor:"#1f7a42",color:"#86efac",duration:.5},17.0);
+tl.to("#hub",{borderColor:"#4ade80",duration:.6},16.6);
+tl.set("#root",{opacity:1},20); // fixa a duração da timeline em 20 s
+window.__timelines["wego-catalog"] = tl;
+</script>
+</body>
+</html>

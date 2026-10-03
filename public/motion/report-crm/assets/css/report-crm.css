@@ -1,0 +1,222 @@
+/* COMPOSIÇÃO CONCEITUAL */
+:root {
+  color-scheme: dark;
+  --ink: #f5f1e8;
+  --muted: #b5c1c2;
+  --accent: #e7834c;
+  --accent-soft: rgba(231, 131, 76, 0.18);
+  --line: rgba(199, 215, 215, 0.32);
+  --deep: #0c1821;
+}
+
+#product-stage {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 73% 57%, rgba(231, 131, 76, 0.12), transparent 34%),
+    linear-gradient(115deg, #111f28 0%, var(--deep) 66%, #13212a 100%);
+  color: var(--ink);
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.report-content {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.eyebrow,
+.demo-seal,
+.scope-label,
+.route-label {
+  position: absolute;
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  left: 150px;
+  top: 100px;
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.demo-seal {
+  right: 150px;
+  top: 98px;
+  color: var(--ink);
+  border: 2px solid rgba(231, 131, 76, 0.72);
+  border-radius: 999px;
+  padding: 13px 22px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+}
+
+.main-title {
+  position: absolute;
+  left: 150px;
+  top: 182px;
+  width: 1510px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 74px;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.scope-label {
+  left: 152px;
+  top: 306px;
+  color: var(--muted);
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.anchor-mark {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.relation-visual {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+#anchor-opening {
+  left: 960px;
+  top: 588px;
+}
+
+.entity-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  padding: 38px 42px;
+  border: 3px solid rgba(245, 241, 232, 0.76);
+  border-radius: 18px;
+  background: rgba(17, 34, 43, 0.94);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.18);
+}
+
+#company-entity {
+  left: 430px;
+  top: 478px;
+  width: 470px;
+  height: 220px;
+  transform-origin: 50% 50%;
+  border-color: var(--accent);
+  background: linear-gradient(150deg, rgba(231, 131, 76, 0.12), rgba(17, 34, 43, 0.96) 62%);
+}
+
+#contact-entity {
+  left: 1220px;
+  top: 508px;
+  width: 410px;
+  height: 160px;
+  gap: 10px;
+  border-color: rgba(181, 193, 194, 0.58);
+  background: rgba(14, 29, 38, 0.96);
+  transform-origin: 50% 50%;
+}
+
+.entity-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.entity-name {
+  margin: 0;
+  color: var(--ink);
+  font-size: 42px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+#contact-entity .entity-name {
+  font-size: 36px;
+}
+
+.relation-path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 9px rgba(231, 131, 76, 0.55));
+}
+
+.relation-halo {
+  fill: none;
+  stroke: rgba(231, 131, 76, 0.2);
+  stroke-width: 17;
+  stroke-linecap: round;
+}
+
+.route-proof {
+  position: absolute;
+  left: 430px;
+  top: 850px;
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
+  min-height: 44px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.route-proof code {
+  color: var(--ink);
+  font-family: system-ui, sans-serif;
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.route-method {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.ambient-glow {
+  position: absolute;
+  right: 132px;
+  bottom: 132px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(231, 131, 76, 0.24), rgba(231, 131, 76, 0) 68%);
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+
+.footer-rule {
+  position: absolute;
+  left: 150px;
+  right: 150px;
+  bottom: 105px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(181, 193, 194, 0.35), rgba(181, 193, 194, 0.04));
+  transform-origin: 0 50%;
+}

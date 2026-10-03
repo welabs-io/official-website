@@ -1,0 +1,365 @@
+export const portfolio = [
+  {
+    "slug": "stant",
+    "title": "Stant",
+    "sector": "Construção civil",
+    "category": "construction",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "A operação da obra, do planejamento à inspeção.",
+    "challenge": "Conectar a visão de quem gerencia a obra com o trabalho de quem executa e verifica em campo.",
+    "audience": "Gestores de obra, engenheiros e equipes de inspeção.",
+    "capabilities": [
+      "Gestão de obras",
+      "Inspeções em campo",
+      "Atas e deliberações"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "Aplicativo"
+    ],
+    "color": "#d93621",
+    "visual": "inspection",
+    "example": "Obra demonstração",
+    "module": "Inspeções",
+    "legacyId": "stant",
+    "cover": "/portfolio/stant.svg"
+  },
+  {
+    "slug": "tabela",
+    "title": "Tabe.la",
+    "sector": "Mercado imobiliário",
+    "category": "business",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "Preços, unidades e reservas na mesma jornada comercial.",
+    "challenge": "Organizar a disponibilidade das unidades e as condições comerciais entre incorporadoras, gestores e corretores.",
+    "audience": "Incorporadoras, gestores comerciais e corretores.",
+    "capabilities": [
+      "Tabelas de preços",
+      "Empreendimentos e unidades",
+      "Reservas e aprovações"
+    ],
+    "surfaces": [
+      "Plataforma web"
+    ],
+    "color": "#0D547F",
+    "visual": "matrix",
+    "example": "Empreendimento exemplo",
+    "module": "Unidades",
+    "legacyId": "tabela",
+    "cover": "/portfolio/tabela.svg"
+  },
+  {
+    "slug": "central-esg",
+    "title": "Central ESG",
+    "sector": "Sustentabilidade corporativa",
+    "category": "sustainability",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "Dados de sustentabilidade com contexto para decidir.",
+    "challenge": "Organizar a coleta, o acompanhamento e a comunicação dos indicadores ambientais, sociais e de governança.",
+    "audience": "Equipes de sustentabilidade e organizações.",
+    "capabilities": [
+      "Coleta de indicadores",
+      "Gestão de dados ESG",
+      "Portal de divulgação"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "Portal público"
+    ],
+    "color": "#3A6BAE",
+    "visual": "chart",
+    "example": "Relatório demonstração",
+    "module": "Indicadores",
+    "legacyId": "report",
+    "cover": "/portfolio/central-esg.svg"
+  },
+  {
+    "slug": "kiosk-brands",
+    "title": "Kiosk Brands",
+    "sector": "Comercial e relacionamento",
+    "category": "business",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "Uma visão de pré-vendas para diferentes marcas.",
+    "challenge": "Conectar formulários, campanhas e acompanhamento comercial nas rotinas de cada marca.",
+    "audience": "Equipes comerciais e operacionais de redes de marcas.",
+    "capabilities": [
+      "Pré-vendas",
+      "Formulários de anamnese",
+      "Campanhas"
+    ],
+    "surfaces": [
+      "Plataforma web"
+    ],
+    "color": "#5262f5",
+    "visual": "kanban",
+    "example": "Campanha exemplo",
+    "module": "Oportunidades",
+    "legacyId": "kiosk",
+    "cover": "/portfolio/kiosk-brands.svg"
+  },
+  {
+    "slug": "light-recicla",
+    "title": "Light Recicla",
+    "sector": "Energia e reciclagem",
+    "category": "sustainability",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "A reciclagem conectada à jornada de energia.",
+    "challenge": "Aproximar a operação dos pontos de coleta do acompanhamento de reciclagens e créditos pelos participantes.",
+    "audience": "Operadores do programa e participantes.",
+    "capabilities": [
+      "Operação de coleta",
+      "Registro de reciclagens",
+      "Acompanhamento de créditos"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "Aplicativo"
+    ],
+    "color": "#009A93",
+    "visual": "recycling",
+    "example": "Ponto de coleta exemplo",
+    "module": "Reciclagens",
+    "legacyId": "light",
+    "cover": "/portfolio/light-recicla.svg"
+  },
+  {
+    "slug": "ecoenel",
+    "title": "EcoEnel",
+    "sector": "Energia e reciclagem",
+    "category": "sustainability",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "Uma operação de reciclagem com registros conectados.",
+    "challenge": "Organizar eventos, participantes e registros de reciclagem nas operações dos programas atendidos.",
+    "audience": "Equipes de operação e participantes.",
+    "capabilities": [
+      "Gestão operacional",
+      "Eventos e participantes",
+      "Registros de reciclagem"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "Aplicativo"
+    ],
+    "color": "#1851c7",
+    "visual": "recycling",
+    "example": "Evento demonstração",
+    "module": "Operações",
+    "legacyId": "eco-enel",
+    "cover": "/portfolio/ecoenel.svg"
+  },
+  {
+    "slug": "neoenergia",
+    "title": "Programas AVSI e Neoenergia",
+    "sector": "Sustentabilidade e comunidades",
+    "category": "sustainability",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "Visão integrada para operações em comunidade.",
+    "challenge": "Centralizar projetos, eventos e registros dos programas de sustentabilidade e eficiência energética atendidos.",
+    "audience": "Equipes operacionais e gestores de programas.",
+    "capabilities": [
+      "Gestão de programas",
+      "Eventos",
+      "Acompanhamento operacional"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "Aplicativo"
+    ],
+    "color": "#83c997",
+    "visual": "program",
+    "example": "Programa demonstração",
+    "module": "Programas",
+    "legacyId": "avsi",
+    "cover": "/portfolio/neoenergia.svg"
+  },
+  {
+    "slug": "wego",
+    "title": "Ecossistema WeGO",
+    "sector": "Gestão ambiental e documental",
+    "category": "public",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "Processos, documentos e gestão ambiental conectados.",
+    "challenge": "Digitalizar jornadas ambientais e administrativas, articulando os módulos que atendem cada operação.",
+    "audience": "Equipes de gestão ambiental e documental.",
+    "capabilities": [
+      "Resíduos e licenciamento",
+      "Documentos e processos",
+      "Assinaturas e cobranças"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "Ecossistema"
+    ],
+    "color": "#64a9eb",
+    "visual": "workflow",
+    "example": "Processo exemplo",
+    "module": "Processos",
+    "legacyId": "wego",
+    "cover": "/portfolio/wego.svg"
+  },
+  {
+    "slug": "autoinfracao",
+    "title": "Auto Infração",
+    "sector": "Fiscalização ambiental",
+    "category": "public",
+    "brand": "Imagine",
+    "stage": "Case",
+    "summary": "O registro da fiscalização acompanha o trabalho em campo.",
+    "challenge": "Organizar a jornada de registro dos autos e o acompanhamento das atividades de fiscalização ambiental.",
+    "audience": "Fiscais e equipes de fiscalização.",
+    "capabilities": [
+      "Registro de autos",
+      "Jornada em campo",
+      "Acompanhamento de registros"
+    ],
+    "surfaces": [
+      "Aplicativo"
+    ],
+    "color": "#94a7ed",
+    "visual": "inspection",
+    "example": "Fiscalização demonstração",
+    "module": "Registros",
+    "legacyId": "ima",
+    "cover": "/portfolio/autoinfracao.svg"
+  },
+  {
+    "slug": "erp",
+    "title": "ERP",
+    "sector": "Gestão empresarial",
+    "category": "platform",
+    "brand": "Welabs",
+    "stage": "Em validação",
+    "summary": "Uma base de domínio para gestão e integrações.",
+    "challenge": "Compor aplicações empresariais e integrações sobre Frappe e ERPNext, com experiência própria de apresentação.",
+    "audience": "Organizações e equipes de gestão.",
+    "capabilities": [
+      "Aplicações de domínio",
+      "SPA própria",
+      "Conectores empresariais"
+    ],
+    "surfaces": [
+      "Plataforma web"
+    ],
+    "color": "#FF452B",
+    "visual": "matrix",
+    "example": "Operação demonstração",
+    "module": "Documentos",
+    "legacyId": null,
+    "cover": "/portfolio/erp.svg"
+  },
+  {
+    "slug": "flow",
+    "title": "Flow",
+    "sector": "Automação com agentes",
+    "category": "platform",
+    "brand": "Welabs",
+    "stage": "Em validação",
+    "summary": "Fluxos que aproximam sistemas, agentes e operações.",
+    "challenge": "Organizar definições, execução e acesso nas automações conectadas aos sistemas de domínio.",
+    "audience": "Equipes que desenham e operam automações.",
+    "capabilities": [
+      "Definições de fluxos",
+      "Execução de automações",
+      "Integração com domínio"
+    ],
+    "surfaces": [
+      "Plataforma web",
+      "API"
+    ],
+    "color": "#FF452B",
+    "visual": "workflow",
+    "example": "Fluxo demonstração",
+    "module": "Execuções",
+    "legacyId": null,
+    "cover": "/portfolio/flow.svg"
+  },
+  {
+    "slug": "wekb",
+    "title": "KB",
+    "sector": "Conhecimento corporativo",
+    "category": "platform",
+    "brand": "Welabs",
+    "stage": "Em validação",
+    "summary": "Contexto conectado para pessoas e agentes.",
+    "challenge": "Reunir fontes corporativas e permitir a recuperação de conhecimento com contexto e rastreabilidade.",
+    "audience": "Equipes e agentes que consultam conhecimento corporativo.",
+    "capabilities": [
+      "Ingestão de fontes",
+      "Busca híbrida",
+      "Consulta por agentes"
+    ],
+    "surfaces": [
+      "API",
+      "Conhecimento"
+    ],
+    "color": "#FF452B",
+    "visual": "knowledge",
+    "example": "Base demonstração",
+    "module": "Fontes",
+    "legacyId": null,
+    "cover": "/portfolio/wekb.svg"
+  },
+  {
+    "slug": "welabs-crm",
+    "title": "CRM",
+    "sector": "Relacionamento comercial",
+    "category": "platform",
+    "brand": "Welabs",
+    "stage": "Em validação",
+    "summary": "Contatos e oportunidades organizados por empresa.",
+    "challenge": "Reunir o contexto comercial e o acompanhamento de oportunidades nas etapas de cada organização.",
+    "audience": "Equipes comerciais.",
+    "capabilities": [
+      "Contatos",
+      "Oportunidades",
+      "Pipelines"
+    ],
+    "surfaces": [
+      "Plataforma web"
+    ],
+    "color": "#FF452B",
+    "visual": "kanban",
+    "example": "Pipeline demonstração",
+    "module": "Oportunidades",
+    "legacyId": null,
+    "cover": "/portfolio/welabs-crm.svg"
+  },
+  {
+    "slug": "malupe",
+    "title": "Ecossistema Monitoramento",
+    "sector": "Operação de segurança",
+    "category": "platform",
+    "brand": "Welabs",
+    "stage": "Alpha",
+    "summary": "Ocorrências em contexto para o acompanhamento operacional.",
+    "challenge": "Conectar ingestão de eventos e acompanhamento das ocorrências na Central Web, dentro do escopo do Alpha.",
+    "audience": "Equipes de operação de segurança.",
+    "capabilities": [
+      "Ingestão de eventos",
+      "Consulta de ocorrências",
+      "Fila operacional"
+    ],
+    "surfaces": [
+      "Central web",
+      "Eventos"
+    ],
+    "color": "#FF452B",
+    "visual": "program",
+    "example": "Central demonstração",
+    "module": "Ocorrências",
+    "legacyId": null,
+    "cover": "/portfolio/malupe.svg"
+  }
+] as const;
+
+export type PortfolioProduct = (typeof portfolio)[number];
+export type PortfolioCategory = PortfolioProduct["category"];
+export const getPortfolioProduct = (slug: string) => portfolio.find((product) => product.slug === slug);

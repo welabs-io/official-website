@@ -1,6 +1,7 @@
 'use client';
 import { forwardRef, type AnchorHTMLAttributes, type MouseEvent } from 'react';
 import { useNav } from './Chrome';
+import {localizedHref,useT} from './LangProvider';
 
 type Props = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 
@@ -9,6 +10,8 @@ export const NavLink = forwardRef<HTMLAnchorElement, Props>(function NavLink(
   ref,
 ) {
   const { navigate } = useNav();
+  const {lang}=useT();
+  const destination=localizedHref(href,lang);
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(e);
@@ -17,11 +20,11 @@ export const NavLink = forwardRef<HTMLAnchorElement, Props>(function NavLink(
     if (rest.target && rest.target !== '_self') return;
     if (/^(https?:)?\/\//.test(href) || href.startsWith('mailto:') || href.startsWith('tel:')) return;
     e.preventDefault();
-    navigate(href);
+    navigate(destination);
   };
 
   return (
-    <a ref={ref} href={href} onClick={handleClick} {...rest}>
+    <a ref={ref} href={destination} onClick={handleClick} {...rest}>
       {children}
     </a>
   );

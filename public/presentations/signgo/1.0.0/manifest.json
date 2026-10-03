@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "signgo",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "SignGo",
+  "kind": "module",
+  "maturity": "concept",
+  "parentId": "wego",
+  "brand": {
+    "name": "SignGo",
+    "status": "verified",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#007BFF"
+    },
+    "typography": {
+      "family": "system-ui"
+    },
+    "logoAssetId": "brand-logo"
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 62287,
+      "sha256": "de881895c9a17d9f13f6eaabc4df8db1e336e7d587d316ce4fcaa1f10dfc4949",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 9618,
+      "sha256": "90c2de27f7ca2fd736de34dc64f92bbf50f8636951e2172e5022f7867e236192",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 64314,
+      "sha256": "8f77b229ee9dfcadad23e3f9d5c14a02cfc7f1d3ecf265681bdee5215e78e437",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 9612,
+      "sha256": "f41a8950eac371ea0a52aee34b4473aa66e048e7bbedaf2a7ef32041ac0c75d1",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 72418,
+      "sha256": "2c704f53dfb92e9dcae453ea2c1878117cef35bdcd0a03a5235329cc22c52c2c",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 10705,
+      "sha256": "fbaa2bd9e45bc7b1899be1f637158be5274671149790264109f0ee690df47777",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 353812,
+      "sha256": "ace1390c2b434dbd481a3e509011bcc3d983270669503d9e89799fdd8fc58dc5"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 60073,
+      "sha256": "c175c93131b26fdc958bdc288231585ed93fe9c1d82ecde46a4a9a94cb279094",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 9677,
+      "sha256": "a4aa46befa9521e39917ed6951e9807217486e9cc7cdabe9b906cffb61589d81",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 56950,
+      "sha256": "92198a71fda24253debfb4862487f09dc21abc646626b1d5ed276648723bb94d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 9408,
+      "sha256": "dd01b0371529fe68e3d7c94c778a2405989e1b9a999da9c64fe1ad022a5fbc84",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 60430,
+      "sha256": "6efb4bade1f2100b03fe29c6875b6f35d3563a692220658f643905d6a30067df",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 10489,
+      "sha256": "2fca624db43ed7cd48d46d53911a6d36acf0c8cf300af04c6473e9b80faf000a",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 321891,
+      "sha256": "fd390013b0d65f420f7f48af41fff2412965c3e708ad4be054192c73dd4fc97a"
+    },
+    {
+      "id": "brand-logo",
+      "path": "assets/logo.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4860,
+      "sha256": "b28499937368544df0143bee7e695216b7519d3017b48bad8eacb4c7da3ee9a0"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "SignGo",
+      "summary": "Apresentação conceitual da organização e do encaminhamento de documentos para assinatura.",
+      "audience": "Equipes que organizam documentos para assinatura.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Documento DEMO. Um documento vazio criado para a apresentação ganha contexto em uma organização ilustrativa.\nPara assinatura. O documento de demonstração segue um encaminhamento ilustrativo para assinatura. A cena apresenta uma jornada conceitual.\nDocumento em acompanhamento. Um quadro de etapas genéricas mantém o contexto do documento de demonstração durante o acompanhamento.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Dois documentos vazios de demonstração representam a organização documental, sem assinaturas ou conteúdo real."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Documento DEMO",
+          "summary": "Um documento vazio criado para a apresentação ganha contexto em uma organização ilustrativa.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Dois documentos vazios de demonstração representam a organização documental, sem assinaturas ou conteúdo real."
+        },
+        {
+          "id": "scene-2",
+          "title": "Para assinatura",
+          "summary": "O documento de demonstração segue um encaminhamento ilustrativo para assinatura. A cena apresenta uma jornada conceitual.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Etapas genéricas representam o encaminhamento de um documento DEMO para assinatura, sem executar ou exibir uma assinatura."
+        },
+        {
+          "id": "scene-3",
+          "title": "Documento em acompanhamento",
+          "summary": "Um quadro de etapas genéricas mantém o contexto do documento de demonstração durante o acompanhamento.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Quadro ilustrativo com itens DEMO em etapas de entrada, encaminhamento e acompanhamento, sem documentos assinados."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "SignGo",
+      "summary": "A concept presentation of organizing and routing documents for signing.",
+      "audience": "Teams organizing documents for signing.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "DEMO document. An empty document created for this presentation gains context through illustrative organization.\nFor signing. The demonstration document follows an illustrative route for signing. The scene presents a concept journey.\nFollow-up. A board of generic stages keeps the demonstration document in context during follow-up.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "Two empty demonstration documents represent document organization, without signatures or actual content."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "DEMO document",
+          "summary": "An empty document created for this presentation gains context through illustrative organization.",
+          "assetId": "en-scene-1",
+          "alt": "Two empty demonstration documents represent document organization, without signatures or actual content."
+        },
+        {
+          "id": "scene-2",
+          "title": "For signing",
+          "summary": "The demonstration document follows an illustrative route for signing. The scene presents a concept journey.",
+          "assetId": "en-scene-2",
+          "alt": "Generic stages represent routing a DEMO document for signing, without performing or displaying a signature."
+        },
+        {
+          "id": "scene-3",
+          "title": "Follow-up",
+          "summary": "A board of generic stages keeps the demonstration document in context during follow-up.",
+          "assetId": "en-scene-3",
+          "alt": "An illustrative board with DEMO items in intake, routing and follow-up stages, without signed documents."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "c738f35c8773b7bb6fbf28808f9b38f4fcd84a490c270919d28b27cb3c5ca7ef"
+}

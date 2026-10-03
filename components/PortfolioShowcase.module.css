@@ -1,0 +1,107 @@
+.collection { width: 100%; }
+.collectionToolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 36px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button { border: 1px solid #d9dee5; background: #fff; border-radius: 999px; color: #293340; padding: 12px 17px; cursor: pointer; font: inherit; font-size: 13px; line-height: 1.2; }
+.filters button span { margin-left: 6px; opacity: .7; }
+.filters button[aria-pressed="true"] { background: #111820; border-color: #111820; color: #fff; }
+.filters button:hover { border-color: #111820; }
+.count { margin: 11px 0 0; font-size: 12px; color: #a9bbc7; white-space: nowrap; }
+.collectionLabel { margin: 9px 0 0; font-size: 14px; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 28px; }
+.card { min-width: 0; }
+.cardLink { display: block; height: 100%; text-decoration: none; color: #edf2f5; border-radius: 16px; }
+.cover { position: relative; height: 430px; overflow: hidden; isolation: isolate; border-radius: 16px; background: #e8eff6; color: #142331; }
+.cover::before { content: ''; position: absolute; z-index: -1; width: 320px; height: 320px; border: 1px solid color-mix(in srgb, var(--cover-accent), transparent 58%); border-radius: 50%; right: -76px; top: 135px; }
+.cover::after { content: ''; position: absolute; z-index: -1; width: 9px; height: 100%; background: var(--cover-accent); top: 0; left: 0; }
+.business { background: #eaeaf5; }
+.construction { background: #f0eae1; }
+.sustainability { background: #e6f0ec; }
+.public { background: #e8eff6; }
+.welabs { background: #171b22; color: #fff; }
+.welabs::before { border-color: #ff452b70; border-width: 35px; width: 270px; height: 270px; right: -74px; top: 154px; }
+.coverTop { display: flex; justify-content: space-between; align-items: center; gap: 16px; position: relative; z-index: 2; padding: 24px 28px 0; }
+.logoPlate { display: flex; align-items: center; justify-content: center; width: 148px; height: 60px; padding: 10px 14px; border-radius: 9px; flex-shrink: 0; }
+.logoPlate img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.lightPlate { background: #fff; }
+.darkPlate { background: #10141c; }
+.contextLabel { font-size: 11px; font-weight: 650; line-height: 1.5; text-transform: uppercase; letter-spacing: .06em; padding: 10px 0; }
+.publisher { font-size: 11px; font-weight: 500; padding: 5px 8px; border-radius: 999px; background: #ffffffed; color: #293340; }
+.welabs .publisher { background: #171b22; color: #fff; }
+.purpose { position: relative; z-index: 2; margin: 18px 28px 0; max-width: 350px; font-size: clamp(25px, 2.4vw, 32px); font-weight: 600; letter-spacing: -.045em; line-height: 1.13; }
+.sceneCrop { position: absolute; right: 33px; bottom: 43px; width: 238px; aspect-ratio: 678 / 588; overflow: hidden; border-radius: 12px; background: #fff; box-shadow: 0 14px 32px #14233120; transform: rotate(-4deg); }
+/* Crop only the existing synthetic diagram panel. The card supplies its own persistent notice. */
+.sceneCrop img { position: absolute; max-width: none; width: 177%; height: 146.26%; left: -71.09%; top: -26.02%; }
+.paper .sceneCrop { right: 54px; transform: rotate(5deg); width: 214px; }
+.network .sceneCrop { right: 42px; transform: rotate(0); border-radius: 20px; }
+.journey .sceneCrop { right: 28px; transform: rotate(-2deg); width: 254px; }
+.journey::before { border-radius: 0; transform: rotate(30deg); width: 400px; right: -155px; top: 108px; }
+.coverNotice { position: absolute; z-index: 3; bottom: 15px; left: 28px; right: 58px; font-size: 10px; font-weight: 500; line-height: 1.4; letter-spacing: .01em; }
+.openArrow { position: absolute; z-index: 3; right: 22px; bottom: 14px; font-size: 20px; line-height: 1; }
+.cardBody { padding: 21px 2px 0; }
+.metadata { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 12px; color: #a9bbc7; font-size: 11px; line-height: 1.5; }
+.stage { padding-left: 12px; border-left: 1px solid #536777; }
+.cardBody h2 { font-size: clamp(23px, 2.3vw, 29px); letter-spacing: -.035em; font-weight: 600; line-height: 1.15; margin: 12px 0; }
+.summary { font-size: 14px; line-height: 1.65; max-width: 58ch; margin: 0; color: #a9bbc7; }
+.explore { display: inline-flex; align-items: center; gap: 18px; font-size: 12px; font-weight: 600; line-height: 1.5; margin-top: 20px; }
+.explore span { font-size: 18px; }
+.featured { grid-column: span 2; }
+.featured .cover { height: 390px; }
+.featured .coverTop { padding: 30px 36px 0; }
+.featured .purpose { margin: 34px 36px 0; max-width: 42%; font-size: clamp(35px, 4.2vw, 55px); }
+.featured .sceneCrop { width: min(40%, 340px); right: 8%; bottom: 43px; }
+.featured .coverNotice { left: 36px; }
+.featured .cover::before { width: 520px; height: 520px; top: 32px; right: -68px; }
+.featured .cardBody { display: grid; grid-template-columns: .8fr 1fr; gap: 0 40px; padding-top: 25px; }
+.featured .metadata { grid-column: 1; }
+.featured .cardBody h2 { grid-column: 1; grid-row: 2 / span 2; margin-bottom: 0; font-size: clamp(28px, 3vw, 36px); }
+.featured .summary { grid-column: 2; grid-row: 1 / span 2; }
+.featured .explore { grid-column: 2; margin-top: 14px; }
+.collectionNote { margin: 48px 0 0; max-width: 72ch; font-size: 12px; line-height: 1.7; color: #a9bbc7; }
+.cardLink:hover .explore { text-decoration: underline; text-underline-offset: 4px; }
+.cardLink:focus-visible, .filters button:focus-visible { outline: 3px solid #196cba; outline-offset: 6px; }
+@media (prefers-reduced-motion: no-preference) {
+  .sceneCrop { transition: transform .3s ease; }
+  .cardLink:hover .sceneCrop { transform: rotate(0) translateY(-5px); }
+}
+@media (max-width: 1050px) {
+  .cover { height: 405px; }
+  .purpose { font-size: 27px; max-width: 300px; }
+  .sceneCrop { width: 215px; }
+  .journey .sceneCrop { width: 225px; }
+  .paper .sceneCrop { width: 198px; right: 34px; }
+  .featured .cover { height: 370px; }
+}
+@media (max-width: 700px) {
+  .collectionToolbar { display: block; margin-bottom: 26px; }
+  .filters { gap: 7px; }
+  .filters button { padding: 11px 13px; font-size: 12px; }
+  .count { margin-top: 18px; }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 38px; }
+  .featured { grid-column: auto; }
+  .cover, .featured .cover { height: 410px; }
+  .coverTop, .featured .coverTop { padding: 22px 24px 0; }
+  .logoPlate { width: 136px; height: 55px; }
+  .purpose, .featured .purpose { margin: 18px 24px 0; font-size: 28px; max-width: 300px; }
+  .sceneCrop, .featured .sceneCrop { width: 218px; right: 28px; bottom: 44px; }
+  .journey .sceneCrop { width: 230px; }
+  .paper .sceneCrop { width: 198px; right: 40px; }
+  .coverNotice, .featured .coverNotice { left: 24px; font-size: 10px; }
+  .featured .cardBody { display: block; padding-top: 21px; }
+  .featured .cardBody h2 { font-size: 29px; margin: 12px 0; }
+  .featured .explore { margin-top: 20px; }
+  .metadata { font-size: 10px; }
+  .collectionNote { margin-top: 35px; }
+}
+@media (max-width: 360px) {
+  .cover, .featured .cover { height: 390px; }
+  .purpose, .featured .purpose { font-size: 25px; }
+  .sceneCrop, .featured .sceneCrop, .journey .sceneCrop { width: 197px; }
+  .paper .sceneCrop { width: 180px; }
+  .publisher { font-size: 10px; }
+  .logoPlate { width: 122px; }
+}
+
+/* Film covers: a 16:9 frame of the accepted business film fills the plate instead of a crop */
+.sceneCrop.filmCrop { aspect-ratio: 16 / 9; width: min(52%, 360px); background: #0b0f14; }
+.sceneCrop.filmCrop img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; }
+.featured .sceneCrop.filmCrop { width: min(46%, 460px); }

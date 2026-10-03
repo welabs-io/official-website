@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Flow · tudo pode rodar nele</title>
+<style>
+  /* TOKENS E BASE */
+  @font-face { font-family: "Inter"; src: url("./assets/fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+  :root { --bg:#0B0B0D; --panel:#17171B; --line:#4A4A54; --coral:#FF452B; --text:#fff; --muted:#C9C9D1; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--bg); width:1920px; height:1080px; margin:0; overflow:hidden; }
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--bg); color:var(--text); font-family:"Inter",sans-serif; }
+  .abs { position:absolute; }
+  #glow { position:absolute; left:660px; top:260px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(255,69,43,0.35), rgba(255,69,43,0) 65%); opacity:0; }
+  #title { position:absolute; left:60px; top:36px; font-size:60px; font-weight:800; letter-spacing:-1px; opacity:0; }
+  #title span { color:var(--coral); }
+  #seal { position:absolute; right:60px; top:34px; height:64px; opacity:0; }
+  #cap { position:absolute; left:60px; top:956px; width:1800px; height:80px; }
+  .cap { position:absolute; left:0; top:0; width:1800px; font-size:34px; font-weight:700; line-height:1.25; opacity:0; }
+  .cap small { color:var(--coral); font-weight:800; margin-right:16px; }
+  .scene { position:absolute; left:0; top:0; width:1920px; height:1080px; opacity:0; }
+
+  /* CENA A: BLOCOS */
+  .blk { position:absolute; top:400px; width:250px; height:190px; padding:16px 18px; border:3px solid #fff; border-radius:18px; background:var(--panel); display:flex; flex-direction:column; justify-content:center; opacity:0; }
+  .blk.k { border-color:var(--coral); }
+  .blk b { font-size:32px; font-weight:800; line-height:1.15; }
+  .blk em { font-style:normal; font-size:24px; font-weight:500; color:var(--muted); margin-top:6px; line-height:1.2; }
+  .joint { position:absolute; top:491px; width:40px; height:8px; background:var(--coral); border-radius:4px; opacity:0; transform-origin:left center; }
+  #hdrA { position:absolute; left:110px; top:250px; font-size:40px; font-weight:800; opacity:0; }
+  #hdrA span { color:var(--coral); }
+  #rev { position:absolute; left:90px; top:378px; width:1740px; height:234px; border:4px dashed var(--coral); border-radius:26px; opacity:0; }
+  #draft, #r1 { position:absolute; left:110px; top:650px; font-size:38px; font-weight:800; opacity:0; }
+  #draft { color:var(--muted); }
+  #r1 b { color:var(--coral); }
+  #r2 { position:absolute; left:110px; top:730px; font-size:32px; font-weight:600; color:var(--muted); opacity:0; width:1700px; }
+
+  /* CENA B: ANEL */
+  svg#ring { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  #core { position:absolute; left:810px; top:425px; width:300px; height:270px; border:4px solid var(--coral); border-radius:50%; background:#1A0F0D; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; opacity:0; }
+  #core b { font-size:44px; font-weight:800; }
+  #core em { font-style:normal; font-size:26px; font-weight:600; color:var(--muted); margin-top:4px; }
+  .ad { position:absolute; width:340px; height:96px; padding:12px 18px; border:3px solid #fff; border-radius:18px; background:var(--panel); display:flex; flex-direction:column; justify-content:center; opacity:0; z-index:3; }
+  .ad b { font-size:28px; font-weight:800; line-height:1.15; white-space:nowrap; }
+  .ad em { font-style:normal; font-size:24px; font-weight:500; color:var(--muted); line-height:1.2; white-space:nowrap; }
+  .ad.pv { border-style:dashed; border-color:var(--coral); background:#15110F; }
+  .ad .tg { position:absolute; right:12px; top:-20px; padding:1px 14px; border-radius:999px; background:var(--coral); color:#fff; font-size:24px; font-weight:800; }
+  #legend { position:absolute; left:60px; top:130px; display:flex; gap:44px; font-size:28px; font-weight:600; color:var(--muted); opacity:0; }
+  #legend i { display:inline-block; width:56px; border-top:4px solid #fff; vertical-align:middle; margin-right:12px; }
+  #legend i.pl { border-top:4px dashed var(--coral); }
+
+  /* CENA C: RAIAS */
+  #hdrC { position:absolute; left:60px; top:130px; font-size:40px; font-weight:800; opacity:0; }
+  #hdrC span { color:var(--coral); }
+  .lane { position:absolute; left:60px; width:1800px; height:110px; opacity:0; }
+  .lane .nm { position:absolute; left:20px; top:34px; width:350px; font-size:30px; white-space:nowrap; font-weight:800; }
+  .lane .tr { position:absolute; left:400px; top:54px; width:1060px; border-top:4px dashed var(--line); }
+  .lane .mk { position:absolute; top:40px; width:30px; height:30px; border-radius:8px; border:3px solid var(--line); background:var(--bg); }
+  .lane .pl { position:absolute; top:-6px; transform:translateX(-50%); padding:0 14px; border-radius:999px; background:#26262C; border:2px solid var(--coral); font-size:24px; font-weight:700; white-space:nowrap; opacity:0; z-index:4; }
+  .lane .rc { position:absolute; left:1490px; top:22px; width:290px; height:66px; border:3px dashed var(--line); border-radius:14px; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center; color:var(--muted); }
+  .lane .tk { position:absolute; left:400px; top:34px; transform:translateX(-50%); padding:4px 18px; border-radius:999px; background:var(--coral); font-size:24px; font-weight:800; white-space:nowrap; z-index:5; }
+  #temporal { position:absolute; left:60px; top:880px; width:1800px; height:60px; border:3px solid var(--coral); border-radius:16px; background:#1A0F0D; font-size:30px; font-weight:800; display:flex; align-items:center; justify-content:center; opacity:0; }
+  #temporal span { color:var(--coral); margin-left:14px; }
+
+  /* CENA D: FECHAMENTO */
+  .big { position:absolute; left:0; width:1920px; text-align:center; font-size:104px; font-weight:800; letter-spacing:-2px; opacity:0; }
+  .big.c { color:var(--coral); }
+  #endnote { position:absolute; left:0; top:830px; width:1920px; text-align:center; font-size:30px; font-weight:600; color:var(--muted); opacity:0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="flow-connectors" data-width="1920" data-height="1080" data-duration="24" data-start="0">
+  <div id="glow"></div>
+  <div id="title">Flow <span>·</span> tudo pode rodar nele</div>
+  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+
+  <!-- CENA A -->
+  <div class="scene" id="sA">
+    <div id="hdrA">Um fluxo é <span>montado</span> com blocos</div>
+    <div id="rev"></div>
+    <div class="blk k" id="b0" style="left:110px"><b>Gatilho</b><em>inicia a execução</em></div>
+    <div class="blk" id="b1" style="left:400px"><b>Passo</b><em>com retentativa</em></div>
+    <div class="blk" id="b2" style="left:690px"><b>Decisão</b><em>escolhe o caminho</em></div>
+    <div class="blk" id="b3" style="left:980px"><b>Espera por sinal</b><em>pausa durável</em></div>
+    <div class="blk" id="b4" style="left:1270px"><b>Passo de IA</b><em>sandbox</em></div>
+    <div class="blk k" id="b5" style="left:1560px"><b>Efeito</b><em>chama o produto</em></div>
+    <div class="joint" id="j1" style="left:360px"></div><div class="joint" id="j2" style="left:650px"></div><div class="joint" id="j3" style="left:940px"></div><div class="joint" id="j4" style="left:1230px"></div><div class="joint" id="j5" style="left:1520px"></div>
+    <div id="draft">Rascunho · ainda editável</div>
+    <div id="r1"><b>Revisão r1</b> · imutável</div>
+    <div id="r2">Editar gera a revisão r2. A r1 segue intacta e cada execução usa uma revisão fixa.</div>
+  </div>
+
+  <!-- CENA B -->
+  <div class="scene" id="sB">
+    <svg id="ring" viewBox="0 0 1920 1080"></svg>
+    <div id="legend"><span><i></i>Existe hoje</span><span><i class="pl"></i>Previsto</span></div>
+    <div id="core"><b>Motor Flow</b><em>Temporal · sandbox</em></div>
+  </div>
+
+  <!-- CENA C -->
+  <div class="scene" id="sC">
+    <div id="hdrC">Cinco processos <span>ao mesmo tempo</span>, um só motor</div>
+    <div id="lanes"></div>
+    <div id="temporal">Motor Flow · execução durável no Temporal<span>sandbox</span></div>
+  </div>
+
+  <!-- CENA D -->
+  <div class="scene" id="sD">
+    <div class="big" style="top:250px" id="d0">Monte uma vez.</div>
+    <div class="big" style="top:410px" id="d1">Conecte qualquer coisa.</div>
+    <div class="big c" style="top:570px" id="d2">Rode com durabilidade.</div>
+    <div id="endnote">Flow · Welabs · dados DEMO · estágio sandbox · itens Previsto são visão</div>
+  </div>
+
+  <div id="cap"></div>
+</div>
+<script src="./assets/shared/gsap.min.js"></script>
+<script>
+  // LEGENDAS DAS BATIDAS
+  var caps = [
+    "Gatilho, passos, decisão, espera por sinal, passo de IA e efeito: blocos que se encaixam",
+    "Publicar congela a definição como revisão imutável",
+    "Adaptadores ligam o motor ao mundo. Sólido existe hoje; tracejado é Previsto",
+    "Qualquer processo cabe: todos rodam no mesmo motor durável, cada execução com recibo"
+  ];
+  var cb = document.getElementById("cap");
+  caps.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/4</small>" + t; cb.appendChild(d);
+  });
+
+  // ANEL DE ADAPTADORES (geometria fixa)
+  var ads = [
+    ["HTTP e APIs", "chamada · sandbox", 0],
+    ["ERP", "autoridade · sandbox", 0],
+    ["Tickets e código", "YouTrack · GitHub", 0],
+    ["Notificações", "Discord", 0],
+    ["IA multi-provedor", "fallback · sandbox", 0],
+    ["MCP", "ferramentas de agente", 0],
+    ["WhatsApp", "mensageria", 1],
+    ["E-mail", "mensageria", 1],
+    ["Banco de dados", "leitura e escrita", 1],
+    ["Filas e eventos", "streams", 1],
+    ["Conhecimento (KB)", "busca com fonte", 1]
+  ];
+  var NS = "http://www.w3.org/2000/svg", ring = document.getElementById("ring"), sB = document.getElementById("sB");
+  ads.forEach(function (a, i) {
+    var ang = -Math.PI / 2 + i * 2 * Math.PI / ads.length;
+    var cx = 960 + 745 * Math.cos(ang), cy = 565 + 295 * Math.sin(ang);
+    var ln = document.createElementNS(NS, "line");
+    ln.setAttribute("x1", 960); ln.setAttribute("y1", 560); ln.setAttribute("x2", cx); ln.setAttribute("y2", cy);
+    ln.setAttribute("stroke", a[2] ? "#FF452B" : "#fff"); ln.setAttribute("stroke-width", 4);
+    if (a[2]) ln.setAttribute("stroke-dasharray", "12 10");
+    ln.setAttribute("opacity", 0); ln.id = "ln" + i; ring.appendChild(ln);
+    var d = document.createElement("div"); d.className = "ad" + (a[2] ? " pv" : ""); d.id = "ad" + i;
+    d.style.left = Math.round(cx - 170) + "px"; d.style.top = Math.round(cy - 48) + "px";
+    d.innerHTML = "<b>" + a[0] + "</b><em>" + a[1] + "</em>" + (a[2] ? "<span class='tg'>Previsto</span>" : "");
+    sB.appendChild(d);
+  });
+
+  // RAIAS DE PROCESSOS
+  var lanes = [
+    ["Aprovação", "aguarda sinal", 2],
+    ["Onboarding", "decisão", 1],
+    ["Cobrança", "retentativa", 1],
+    ["Atendimento", "passo de IA", 3],
+    ["Integração de dados", "efeito", 3]
+  ];
+  var lh = document.getElementById("lanes");
+  lanes.forEach(function (l, i) {
+    var y = 230 + i * 128;
+    var h = "<div class='lane' id='ln_" + i + "' style='top:" + y + "px'><div class='nm'>" + l[0] + "</div><div class='tr'></div>";
+    for (var k = 0; k < 5; k++) h += "<div class='mk' id='mk" + i + "_" + k + "' style='left:" + (400 + 185 + k * 212 - 15 + 0) + "px'></div>";
+    h += "<div class='pl' id='pl" + i + "' style='left:" + (400 + 185 + l[2] * 212) + "px'>" + l[1] + "</div>";
+    h += "<div class='rc' id='rc" + i + "'>recibo</div><div class='tk' id='tk" + i + "'>DEMO-" + String.fromCharCode(65 + i) + "1</div></div>";
+    lh.insertAdjacentHTML("beforeend", h);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 24 s)
+  var tl = gsap.timeline({ paused: true });
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, a);
+    if (b) tl.to("#cap" + i, { opacity: 0, duration: 0.4 }, b - 0.4);
+  }
+  tl.fromTo("#title", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.7 }, 0);
+  tl.fromTo("#seal", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 0.2);
+  tl.fromTo("#glow", { opacity: 0 }, { opacity: 0.5, duration: 1 }, 0);
+
+  // A: blocos se encaixam
+  tl.to("#sA", { opacity: 1, duration: 0.4 }, 0.3);
+  tl.fromTo("#hdrA", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6 }, 0.5);
+  cap(0, 0.6, 7.2);
+  var off = [[-300, -220, -14], [-120, 260, 10], [60, -240, -8], [-200, 280, 12], [140, -230, -10], [260, 240, 8]];
+  for (var i = 0; i < 6; i++) {
+    var t = 0.9 + i * 0.7;
+    tl.fromTo("#b" + i, { opacity: 0, x: off[i][0], y: off[i][1], rotation: off[i][2] },
+      { opacity: 1, x: 0, y: 0, rotation: 0, duration: 0.7, ease: "back.out(1.6)" }, t);
+    if (i > 0) tl.fromTo("#j" + i, { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.2 }, t + 0.5);
+  }
+  tl.fromTo("#draft", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 5.2);
+  tl.fromTo("#rev", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 5.2);
+  cap(1, 7.2, 9.2);
+  tl.to("#draft", { opacity: 0, duration: 0.3 }, 7.2);
+  tl.to("#rev", { borderStyle: "solid", boxShadow: "0 0 40px rgba(255,69,43,0.4)", duration: 0.4 }, 7.3);
+  tl.fromTo("#r1", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }, 7.4);
+  tl.fromTo("#r2", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }, 8.0);
+
+  // B: anel de adaptadores
+  tl.to("#sA", { opacity: 0, duration: 0.5 }, 9.2);
+  tl.to("#hdrA", { opacity: 0, duration: 0.1 }, 9.2);
+  tl.to("#sB", { opacity: 1, duration: 0.4 }, 9.3);
+  cap(2, 9.5, 15.0);
+  tl.fromTo("#core", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.5)" }, 9.5);
+  tl.fromTo("#legend", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 10.0);
+  ads.forEach(function (a, i) {
+    var t = 10.2 + i * 0.38;
+    tl.to("#ln" + i, { opacity: 1, duration: 0.3 }, t);
+    tl.fromTo("#ad" + i, { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.4)" }, t + 0.1);
+  });
+
+  // C: tudo roda, ao mesmo tempo
+  tl.to("#sB", { opacity: 0, duration: 0.5 }, 15.0);
+  tl.to("#sC", { opacity: 1, duration: 0.4 }, 15.1);
+  cap(3, 15.2, 20.0);
+  tl.fromTo("#hdrC", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, 15.3);
+  tl.fromTo("#temporal", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 15.5);
+  var speeds = [3.6, 3.2, 3.8, 3.4, 3.0];
+  lanes.forEach(function (l, i) {
+    var t0 = 15.6 + i * 0.25;
+    tl.fromTo("#ln_" + i, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4 }, t0);
+    var dur = speeds[i], s = t0 + 0.5;
+    tl.fromTo("#tk" + i, { left: 400 }, { left: 1460, duration: dur, ease: "none" }, s);
+    // markers light as the token passes (token travels 400 -> 1460 over dur)
+    for (var k = 0; k < 5; k++) {
+      var frac = (185 + k * 212) / 1060;
+      tl.to("#mk" + i + "_" + k, { borderColor: "#FF452B", backgroundColor: "#FF452B", duration: 0.2 }, s + frac * dur);
+    }
+    var pf = (185 + l[2] * 212) / 1060;
+    tl.to("#pl" + i, { opacity: 1, duration: 0.3 }, s + pf * dur - 0.1);
+    tl.to("#pl" + i, { opacity: 0, duration: 0.3 }, s + pf * dur + 0.8);
+    tl.to("#rc" + i, { borderStyle: "solid", borderColor: "#FF452B", color: "#fff", backgroundColor: "#1A0F0D", duration: 0.3 }, s + dur);
+  });
+  tl.to("#temporal", { boxShadow: "0 0 40px rgba(255,69,43,0.5)", duration: 0.6 }, 19.0);
+
+  // D: fechamento
+  tl.to("#sC", { opacity: 0, duration: 0.5 }, 20.0);
+  tl.to("#glow", { opacity: 1, duration: 0.8 }, 20.0);
+  tl.to("#title", { opacity: 0, duration: 0.4 }, 20.0);
+  tl.to("#sD", { opacity: 1, duration: 0.2 }, 20.3);
+  ["#d0", "#d1", "#d2"].forEach(function (s, i) {
+    tl.fromTo(s, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 20.5 + i * 0.9);
+  });
+  tl.fromTo("#endnote", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 23.0);
+  tl.to("#endnote", { opacity: 1, duration: 0.4 }, 23.6);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["flow-connectors"] = tl;
+</script>
+</body>
+</html>

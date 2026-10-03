@@ -1,0 +1,95 @@
+/* BASE COMPARTILHADA DO PALCO E DOS COMPONENTES */
+:root {
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+}
+
+.product-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--brand-background);
+  color: var(--brand-ink);
+  font-family: var(--brand-font, Inter, sans-serif);
+}
+
+.product-stage *,
+.product-stage *::before,
+.product-stage *::after {
+  box-sizing: border-box;
+}
+
+.product-action-plane {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.product-screen {
+  position: absolute;
+  inset: 0;
+}
+
+.pm-surface {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--brand-window-panel);
+}
+
+.pm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pm-card {
+  display: grid;
+  align-items: center;
+}
+
+.product-cursor-origin,
+.product-click-origin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.product-focus-ring {
+  position: absolute;
+  left: -27px;
+  top: -27px;
+  width: 54px;
+  height: 54px;
+  border: 3px solid var(--brand-surface);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 0 0 0 4px var(--brand-accent);
+}
+
+
+.product-cursor-glyph {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 38px;
+  height: 48px;
+  filter: drop-shadow(0 3px 5px color-mix(in srgb, var(--brand-ink) 35%, transparent));
+}
+
+.product-entity-flight {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  transform-origin: 0 0;
+}

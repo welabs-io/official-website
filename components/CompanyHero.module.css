@@ -1,0 +1,106 @@
+.hero{background:#0a0a0a;color:#f7f7f8;font-family:var(--font);padding:142px 0 76px;position:relative;isolation:isolate;border-bottom:1px solid #242424}
+.hero::before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 77% 40%,#11334566,transparent 54%);pointer-events:none}
+.welabs::before{background:radial-gradient(ellipse at 76% 42%,#6a2a1b55,transparent 54%)}
+.layout{max-width:1400px;padding:0 40px;margin:auto;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(36px,5vw,80px);align-items:center}
+.copy{min-width:0;padding:18px 0}
+.companyLogo{display:block;width:152px;height:44px;object-fit:contain;object-position:left center;margin-bottom:30px}
+.welabsLogo{width:168px;height:47px}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#bebec5;margin-bottom:24px;line-height:1.65}
+.copy h1{font-size:clamp(40px,4.15vw,62px);line-height:1.08;font-weight:550;letter-spacing:-.055em;margin:0 0 28px;max-width:640px;text-wrap:balance}
+.copy h1 span{color:var(--hero-accent)}
+.description{font-size:16px;line-height:1.8;color:#b7b9c0;max-width:440px;margin:0 0 30px;text-wrap:pretty}
+.actions{display:flex;flex-wrap:wrap;gap:16px 25px;align-items:center;font-size:13px;font-weight:550}
+.primary,.secondary{display:inline-flex;gap:18px;align-items:center;text-decoration:none;min-height:48px}
+.primary{background:#f4f4f4;color:#111;padding:12px 18px;border:1px solid #f4f4f4;border-radius:5px}
+.primary:hover{background:var(--hero-accent);border-color:var(--hero-accent)}
+.secondary{color:#d5d6db}
+.secondary:hover{color:var(--hero-accent)}
+.arrow{font-size:18px;line-height:1;flex-shrink:0}
+.exhibit{min-width:0;margin:0;padding:0;position:relative}
+.exhibitHeading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 17px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b9b9c0}
+.exhibitHeading>span:first-child{display:flex;gap:10px;align-items:center}
+.exhibitHeading i{width:5px;height:5px;background:var(--hero-accent);border-radius:50%}
+.exhibitHeading>span:last-child{font-variant-numeric:tabular-nums;color:#b9b9c0;white-space:nowrap}
+.imagineProducts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.product{display:block;min-width:0;position:relative;background:#15161b;border:1px solid #34353e;border-radius:10px;color:#f7f7f8;text-decoration:none;box-shadow:0 12px 30px #0003;overflow:hidden}
+.product:hover{border-color:var(--hero-accent)}
+.productTop{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.productTop>.arrow{color:#c1c3cb;font-size:16px}
+.logoPlate{display:flex;align-items:center;justify-content:center;height:38px;width:116px;background:#10141c;border-radius:4px;padding:7px 10px}
+.logoPlate img{display:block;object-fit:contain;width:100%;height:100%}
+.lightPlate{background:#f5f5f2}
+.productTitle{margin:16px 0}
+.productTitle strong{display:block;font-size:21px;font-weight:550;line-height:1.25;letter-spacing:-.035em}
+.productTitle>span{display:block;font-size:11px;color:#bfc1ce;margin-top:5px;line-height:1.5}
+.productBottom{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:10px;color:#bfc1cc}
+.productBottom>span:last-child{font-size:9px;letter-spacing:.1em}
+.tableProduct{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,1fr);column-gap:28px;padding:22px;background:linear-gradient(120deg,#22234a,#17192c)}
+.tableProduct .productTop{grid-column:1;align-self:start}
+.tableProduct .productTitle{grid-column:1;align-self:center;margin:20px 0 8px}
+.tableProduct .productTitle strong{font-size:30px}
+.tableProduct .productBottom{grid-column:1}
+.unitMatrix{grid-column:2;grid-row:1/4;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.unit{padding:12px 9px 9px;min-width:0;background:#ffffff08;border:1px solid #74799966;border-radius:5px;display:flex;flex-direction:column;justify-content:space-between;min-height:75px}
+.unit>span{font-size:8px;color:#c3c4d7;line-height:1.5}
+.unit>b{font-size:22px;font-weight:500;color:#d2d3ff;margin:5px 0}
+.unit>i{display:block;height:2px;width:20px;background:#787aa1;border-radius:1px}
+.unit>.selectedUnit{width:100%;background:#acb1fa}
+.siteProduct,.recycleProduct{padding:20px}
+.siteProduct{background:linear-gradient(135deg,#252126,#17181c)}
+.recycleProduct{background:linear-gradient(135deg,#132c2b,#141b20)}
+.siteDiagram{padding:13px 11px;background:#0d101680;border:1px solid #3c3942;border-radius:5px}
+.siteDiagram>span{font-size:9px;color:#bfc1ca;display:block;margin-bottom:10px;line-height:1.4}
+.taskRows{display:grid;gap:7px}
+.taskRows>div{display:flex;gap:8px;align-items:center;background:#ffffff05;border-radius:3px;padding:7px}
+.taskRows i{width:6px;height:6px;border:1px solid #ff9d8c;border-radius:2px}
+.taskRows span{font-size:9px;color:#e4deda}
+.taskRows b{color:#bba09b;font-size:10px;margin-left:auto;font-weight:400}
+.materials{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:22px 0 26px}
+.materials>div{display:flex;flex-direction:column;align-items:center;gap:8px;background:#09171450;border:1px solid #51756d66;padding:12px 2px 10px;border-radius:5px;color:#a6d9c8}
+.materials svg{width:36px;height:36px;display:block}
+.materials span{font-size:9px;color:#d2dfdb}
+.disclaimer{font-size:10px;line-height:1.65;margin-top:17px;color:#b5b7bf;display:flex;gap:7px;align-items:center}
+.disclaimer>span{color:var(--hero-accent);font-size:14px}
+.welabsProducts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.flowProduct{grid-column:1/-1;background:linear-gradient(125deg,#39261f,#221b1b);padding:22px}
+.flowProduct .productTop{justify-content:flex-start}
+.flowProduct .productTop>.arrow{margin-left:auto}
+.flowMark{width:33px;height:33px;border-radius:7px;display:block;background:#ff695420;color:#ff9d84}
+.flowMark svg{width:100%;height:100%;display:block}
+.stage{font-size:10px;line-height:1.6;color:#d2b9b0}
+.flowProduct .productTitle{margin:14px 0 20px}
+.flowProduct .productTitle strong{font-size:31px}
+.flowBoard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.flowBoard>div{border-top:1px solid #75615577;padding-top:12px;min-width:0}
+.boardHeading{display:flex;align-items:center;gap:6px;font-size:9px;color:#e2c9bf;margin-bottom:10px}
+.boardHeading i{display:block;width:4px;height:4px;border-radius:50%;background:#e1a58b}
+.boardTask{position:relative;min-height:74px;background:#ffffff07;border:1px solid #856c5f66;border-radius:4px;padding:10px}
+.boardTask span{font-size:9px;color:#ede1dc;display:block;line-height:1.5;margin-bottom:10px}
+.boardTask b{height:3px;width:65%;background:#896e6377;display:block;border-radius:1px;margin-top:5px}
+.boardTask b:nth-of-type(2){width:40%}
+.boardTask em{position:absolute;bottom:5px;right:8px;font-style:normal;color:#edb29b}
+.ecosystemProduct{padding:16px 18px;background:#1d1a1b}
+.purpose{font-size:10px;color:#cbb8b2;line-height:1.5}
+.ecosystemProduct .productTitle{margin:9px 0 15px}
+.ecosystemProduct .productTitle strong{font-size:22px}
+.ecosystemProduct>.stage{display:block;margin-top:13px;color:#cbb8b2}
+.motif{height:32px;display:flex;gap:6px;align-items:stretch;color:#f9a58b}
+.motif i{background:#67433a44;border:1px solid #98756877;border-radius:3px;display:block}
+.managementMotif i{flex:1}
+.managementMotif i:nth-child(2){border-color:#e2937b99;background:#a4695433}
+.knowledgeMotif{align-items:center;gap:0}
+.knowledgeMotif i{width:32px;height:27px;margin-right:-7px;transform:rotate(-8deg)}
+.knowledgeMotif i:nth-child(2n){transform:rotate(8deg);background:#46302b}
+.relationshipMotif{align-items:center;gap:9px}
+.relationshipMotif i{width:24px;height:24px;border-radius:50%}
+.relationshipMotif i:nth-child(2){width:32px;height:32px}
+.eventMotif{align-items:center}
+.eventMotif i{height:5px;flex:1;border-radius:2px}
+.eventMotif i:nth-child(2){height:17px}
+.eventMotif i:nth-child(3){height:29px;background:#a4695433}
+.hero a:focus-visible{outline:2px solid var(--hero-accent);outline-offset:5px;box-shadow:none}
+@media(min-width:1440px){.hero{padding-top:154px;padding-bottom:90px}}
+@media(max-width:1100px){.layout{gap:32px;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}.copy h1{font-size:45px}.tableProduct{column-gap:16px;padding:18px}.siteProduct,.recycleProduct{padding:16px}.tableProduct .productTitle strong{font-size:27px}.description{font-size:15px}.unit{padding:9px 7px;min-height:70px}.materials span{font-size:8px}}
+@media(max-width:860px){.hero{padding:118px 0 48px}.layout{grid-template-columns:minmax(0,1fr);gap:36px;max-width:700px;padding:0 28px}.copy{padding:0}.companyLogo{margin-bottom:20px}.eyebrow{margin-bottom:15px}.copy h1{font-size:clamp(39px,7vw,58px);max-width:610px;margin-bottom:20px}.description{max-width:540px;font-size:15px;margin-bottom:22px}.exhibit{width:100%}.exhibitHeading{margin-bottom:14px}.tableProduct{padding:22px;column-gap:28px}.siteProduct,.recycleProduct{padding:20px}.materials span{font-size:9px}}
+@media(max-width:480px){.layout{padding:0 20px;gap:30px}.hero{padding-top:108px;padding-bottom:34px}.companyLogo{width:126px;height:37px;margin-bottom:16px}.welabsLogo{width:144px;height:40px}.eyebrow{font-size:9px}.copy h1{font-size:39px;letter-spacing:-.055em}.description{font-size:14px;line-height:1.75}.actions{font-size:12px;gap:9px 18px}.primary{gap:14px;padding:10px 14px}.secondary{gap:10px}.exhibitHeading{font-size:8px;letter-spacing:.08em}.imagineProducts{gap:10px}.tableProduct{padding:16px;column-gap:16px;grid-template-columns:minmax(0,.78fr) minmax(0,1fr)}.tableProduct .logoPlate{width:96px;height:32px}.tableProduct .productTop>.arrow{display:none}.tableProduct .productTitle strong{font-size:27px}.unitMatrix{gap:6px}.unit{min-height:64px;padding:7px 6px}.unit>span{font-size:6px}.unit>b{font-size:18px}.siteProduct,.recycleProduct{padding:13px}.logoPlate{width:88px;height:31px;padding:5px 7px}.productTop{gap:6px}.productTop>.arrow{font-size:13px}.productTitle strong{font-size:18px}.productTitle>span{font-size:10px}.productTitle{margin:13px 0}.siteDiagram{padding:9px 7px}.siteDiagram>span{font-size:8px}.taskRows>div{padding:6px 4px;gap:5px}.taskRows span{font-size:8px}.materials{gap:4px;margin:22px 0 26px}.materials>div{padding:8px 1px;gap:6px}.materials svg{width:29px;height:29px}.materials span{font-size:7px}.productBottom{font-size:9px;padding-top:11px}.productBottom>span:last-child{font-size:7px}.disclaimer{font-size:9px;margin-top:12px}.welabsProducts{gap:10px}.flowProduct{padding:16px}.flowProduct .productTitle strong{font-size:28px}.flowBoard{gap:7px}.boardTask{padding:8px;min-height:71px}.boardTask span{font-size:8px}.ecosystemProduct{padding:13px}.ecosystemProduct .productTitle strong{font-size:21px}.purpose,.stage{font-size:9px}.motif{height:28px}.knowledgeMotif i{width:26px;height:23px}.relationshipMotif i{width:21px;height:21px}.relationshipMotif i:nth-child(2){width:28px;height:28px}}
+@media(prefers-reduced-motion:reduce){.hero,.hero *{scroll-behavior:auto;animation:none;transition:none}}

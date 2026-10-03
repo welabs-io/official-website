@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>IUS | Exame compartilhado antes do cadastro</title>
+    <link rel="stylesheet" href="assets/shared/product-motion-kit.css">
+    <link rel="stylesheet" href="assets/css/consumer.css">
+    <style>
+      :root {
+        box-sizing: border-box;
+      }
+      *, *::before, *::after {
+        box-sizing: inherit;
+      }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      #root {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+      #product-stage {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-8lq1" id="root" data-composition-id="ius-exam-exchange" data-width="1920" data-height="1080" data-duration="12">
+      <main data-hf-id="hf-scna" id="product-stage" class="product-stage"></main>
+    </div>
+    <script src="assets/shared/gsap.min.js"></script>
+    <script type="module">
+      import { buildComposition } from "./assets/js/build.js";
+      window.__timelines = window.__timelines || {};
+      const completed = await buildComposition();
+      window.__timelines["ius-exam-exchange"] = completed.timeline;
+      window.__hfForceTimelineRebind?.();
+    </script>
+  <script type="module">const id="ius-exam-exchange",d=12;const pad=()=>{const t=window.__timelines||{};for(const tl of [t[id],...Object.values(t)]){if(tl&&tl.duration&&tl.duration()<d){tl.to({},{duration:d-tl.duration()},tl.duration());}}};pad();let n=0;const tick=()=>{pad();if(++n<40)setTimeout(tick,50);};tick();</script>
+</body>
+</html>

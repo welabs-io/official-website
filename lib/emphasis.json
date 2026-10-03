@@ -1,0 +1,14 @@
+{
+  "_note": "Emphasis ranking set on 2026-10-02: anchor/active products and AI proofs first, concepts in development last.",
+  "imagine": ["tabela", "stant", "sgors", "central-esg", "kiosk-brands", "wego", "autoinfracao", "sgici", "report-crm", "netsafety", "ius"],
+  "welabs": ["erp", "flow", "malupe", "welabs-crm", "wekb", "channels", "erp-builder", "forms"],
+  "services": ["svc-integration", "svc-applied-ai", "svc-custom-software", "svc-platform-cloud"],
+  "clientSegments": [
+    {"id": "energy", "label": ["Energia e sustentabilidade", "Energy and sustainability"], "clients": [["Light", "/brands/light.png"], ["Neoenergia", "/brands/neoenergia.png"], ["Enel", "/brands/ecoenel.png"]]},
+    {"id": "real-estate", "label": ["Construção e mercado imobiliário", "Construction and real estate"], "clients": [["Stant", "/brands/stant.svg"], ["Tabe.la", "/brands/tabela.svg"]]},
+    {"id": "esg", "label": ["ESG e relacionamento", "ESG and relationships"], "clients": [["Report", "/brands/report.svg"]]},
+    {"id": "retail", "label": ["Varejo e marcas", "Retail and brands"], "clients": [["Kiosk Brands", "/brands/kiosk-brands.svg"]]},
+    {"id": "public", "label": ["Setor público ambiental", "Public environmental sector"], "clients": [["IMA", "/brands/ima.svg"]]},
+    {"id": "social", "label": ["Programas sociais", "Social programmes"], "clients": [["AVSI", "/brands/avsi.png"]]}
+  ]
+}

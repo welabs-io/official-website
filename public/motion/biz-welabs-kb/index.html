@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>KB base de conhecimento</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* IDENTIDADE E PALETA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal}
+:root{--bg:#0d0d10;--panel:#17171c;--line:#3a3a44;--ink:#ffffff;--muted:#b4b4c0;--coral:#FF452B;--coral-soft:rgba(255,69,43,.14)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;background:var(--bg);overflow:hidden}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif}
+.abs{position:absolute}
+
+/* TEXTOS DE CADA BATIDA */
+.head{position:absolute;left:90px;top:64px;width:1380px}
+.head h1{font-size:56px;line-height:1.12;font-weight:800;letter-spacing:-0.01em}
+.head p{margin-top:14px;font-size:30px;line-height:1.3;color:var(--muted);font-weight:500}
+#logo{right:80px;top:64px;width:260px;height:auto}
+.pill{position:absolute;padding:8px 22px;border-radius:999px;font-size:28px;font-weight:700;line-height:1.2;white-space:nowrap}
+
+/* FONTES E PASSAGENS */
+.src{position:absolute;left:90px;top:330px;width:420px;height:96px;border-radius:20px;background:var(--panel);border:3px solid var(--line);font-size:34px;font-weight:700;display:flex;align-items:center;padding-left:30px}
+#s2{top:450px}#s3{top:570px}#s4{top:690px}
+.cn{position:absolute;left:510px;width:150px;height:6px;border-radius:3px;background:var(--coral);transform-origin:0 50%}
+#kb{left:660px;top:300px;width:500px;height:660px;border-radius:28px;border:4px solid var(--coral);background:var(--coral-soft)}
+#kbT{left:690px;top:318px;font-size:36px;font-weight:800;color:var(--coral)}
+#kbS{left:690px;top:366px;font-size:26px;font-weight:600;color:var(--muted)}
+.ps{position:absolute;left:690px;width:440px;height:96px;border-radius:16px;background:var(--panel);border:3px solid var(--line);font-size:28px;font-weight:600;padding:12px 20px;line-height:1.25}
+.ps b{display:block;color:var(--coral);font-size:26px}
+#p1{top:430px}#p2{top:546px}#p3{top:662px}#p4{top:778px}
+
+/* PERGUNTA, RESPOSTA E VERIFICAÇÕES */
+#q{left:1260px;top:300px;width:570px;height:138px;border-radius:20px;background:var(--panel);border:3px solid var(--line);padding:12px 24px}
+#q i,#a i{display:block;font-style:normal;font-size:26px;font-weight:700;color:var(--coral)}
+#q span{font-size:32px;font-weight:700;line-height:1.2}
+#a{left:1260px;top:462px;width:570px;height:358px;border-radius:20px;background:var(--panel);border:3px solid var(--coral);padding:14px 24px}
+#a .t{margin-top:6px;font-size:30px;font-weight:600;line-height:1.3;height:118px}
+#a .t em{font-style:normal;background:#2a2a32;border-radius:8px;padding:0 8px}
+#cite{position:absolute;left:24px;top:186px;padding:6px 18px;border-radius:12px;background:var(--coral);color:#fff;font-size:28px;font-weight:800}
+.chk{position:absolute;left:24px;font-size:30px;font-weight:700;white-space:nowrap}
+.chk::before{content:"✓ ";color:var(--coral)}
+#chk1{top:254px}#chk2{top:306px}
+#hl{left:690px;top:546px;width:440px;height:96px;border-radius:16px;border:5px solid var(--coral);box-shadow:0 0 28px rgba(255,69,43,.6)}
+#aLink{left:1160px;top:640px;width:100px;height:6px;border-radius:3px;background:var(--coral);transform-origin:0 50%}
+#qLink{left:1210px;top:300px;width:6px;height:0;background:var(--coral)}
+
+/* FLOW PREVISTO E VALOR */
+#flow{left:1260px;top:850px;width:570px;height:110px;border-radius:20px;border:4px dashed var(--muted);background:rgba(255,255,255,.04);padding:14px 24px}
+#flow b{font-size:38px;font-weight:800}
+#flow span{display:block;margin-top:2px;font-size:28px;font-weight:600;color:var(--muted)}
+#prev{left:1650px;top:834px;background:var(--ink);color:#0d0d10;font-size:26px;padding:6px 20px;font-weight:800}
+#fLink{left:1160px;top:905px;width:100px;height:0;border-top:5px dashed var(--muted);transform-origin:0 50%}
+#intern{left:90px;top:860px;font-size:32px;background:var(--coral);color:#fff}
+#demo{left:90px;top:1010px;font-size:24px;font-weight:600;color:var(--muted)}
+#bubble{left:1260px;top:420px;width:570px;padding:22px 28px;border-radius:24px;border:4px dashed var(--coral);font-size:38px;font-weight:800;line-height:1.2;color:var(--coral)}
+#who1{left:1260px;top:340px;font-size:40px;padding:14px 36px;background:var(--coral);color:#fff}
+#who2{left:1260px;top:440px;font-size:40px;padding:14px 36px;background:transparent;color:var(--ink);border:3px solid var(--coral)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-welabs-kb" data-width="1920" data-height="1080" data-start="0" data-duration="20">
+  <img id="logo" class="abs" src="./assets/welabs-logo.png" alt="Welabs">
+
+  <div class="head" id="h1"><h1>Conhecimento espalhado em tickets, reuniões, código e documentos</h1><p>E respostas que chegam sem dizer de onde vieram.</p></div>
+  <div class="head" id="h2"><h1>Quem usa: equipes e assistentes de IA</h1><p>Ambos precisam do contexto certo, com a fonte à vista.</p></div>
+  <div class="head" id="h3"><h1>O KB transforma fontes em passagens citáveis</h1><p>Uma pergunta chega e a resposta volta com a fonte citada.</p></div>
+  <div class="head" id="h4"><h1>Próximo passo: o Flow usa o KB no fluxo</h1><p>Uma pasta de conhecimento dentro do fluxo.</p></div>
+  <div class="head" id="h5"><h1>Resposta com fonte e controle de acesso</h1><p>Cada pessoa vê só o que pode, e dado pessoal fica de fora.</p></div>
+
+  <div class="src" id="s1">Ticket DEMO</div>
+  <div class="src" id="s2">Reunião DEMO</div>
+  <div class="src" id="s3">Código DEMO</div>
+  <div class="src" id="s4">Documento DEMO</div>
+
+  <div class="abs" id="bubble">Resposta sem fonte</div>
+  <div class="pill" id="who1">Equipes</div>
+  <div class="pill" id="who2">Assistentes de IA</div>
+
+  <div class="abs" id="kb"></div>
+  <div class="abs" id="kbT">KB</div>
+  <div class="abs" id="kbS">passagens citáveis</div>
+  <div class="cn" id="c1" style="top:375px"></div><div class="cn" id="c2" style="top:495px"></div>
+  <div class="cn" id="c3" style="top:615px"></div><div class="cn" id="c4" style="top:735px"></div>
+  <div class="ps" id="p1"><b>passagem 1</b>Ticket DEMO</div>
+  <div class="ps" id="p2"><b>passagem 2</b>Reunião DEMO</div>
+  <div class="ps" id="p3"><b>passagem 3</b>Código DEMO</div>
+  <div class="ps" id="p4"><b>passagem 4</b>Documento DEMO</div>
+  <div class="abs" id="hl"></div>
+
+  <div class="abs" id="q"><i>PERGUNTA</i><span>Qual o prazo de entrega do contrato DEMO?</span></div>
+  <div class="abs" id="aLink"></div>
+  <div class="abs" id="a"><i>RESPOSTA</i>
+    <div class="t">Entrega em 30 dias após a assinatura. Contato: <em id="raw">(11) 90000-0000</em><em id="red" style="display:none">[filtrado]</em></div>
+    <div id="cite">Fonte: Reunião DEMO · passagem 2</div>
+    <div class="chk" id="chk1">Acesso checado por pessoa</div>
+    <div class="chk" id="chk2">Dados pessoais filtrados</div>
+  </div>
+
+  <div class="abs" id="fLink"></div>
+  <div class="abs" id="flow"><b>Flow</b><span>pasta de conhecimento no fluxo</span></div>
+  <div class="pill" id="prev">Previsto</div>
+  <div class="pill" id="intern">Em uso interno</div>
+  <div class="abs" id="demo">DEMO · dados ilustrativos</div>
+</div>
+<script src="./assets/gsap.min.js"></script>
+<script>
+(function () {
+  var tl = gsap.timeline({ paused: true });
+  var heads = ["#h1", "#h2", "#h3", "#h4", "#h5"];
+  var hidden = ["#bubble", "#who1", "#who2", "#kb", "#kbT", "#kbS", ".cn", ".ps", "#hl", "#q", "#aLink", "#a", "#fLink", "#flow", "#prev", "#intern", "#cite", "#chk1", "#chk2"];
+  gsap.set(heads, { opacity: 0 });
+  gsap.set(hidden, { opacity: 0 });
+  gsap.set(".cn", { scaleX: 0 });
+  gsap.set("#aLink", { scaleX: 0 });
+  gsap.set("#fLink", { scaleX: 0 });
+  // Problem layout: sources scattered across the stage, unlinked
+  gsap.set("#s1", { x: 520, y: 120, rotation: -6, opacity: 0 });
+  gsap.set("#s2", { x: 1050, y: -40, rotation: 5, opacity: 0 });
+  gsap.set("#s3", { x: 300, y: 250, rotation: 4, opacity: 0 });
+  gsap.set("#s4", { x: 1100, y: 150, rotation: -4, opacity: 0 });
+
+  function show(h, a, b) { tl.to(h, { opacity: 1, duration: 0.5 }, a).to(h, { opacity: 0, duration: 0.4 }, b); }
+  // Beat 1 — problem (0.2-4.2): scattered sources, answer with no source
+  show("#h1", 0.2, 4.0);
+  ["#s1", "#s2", "#s3", "#s4"].forEach(function (s, i) { tl.to(s, { opacity: 1, duration: 0.5 }, 0.5 + i * 0.3); });
+  tl.to("#s1", { x: 460, y: 160, duration: 3, ease: "sine.inOut" }, 1.0).to("#s4", { x: 1040, y: 110, duration: 3, ease: "sine.inOut" }, 1.0);
+  tl.to("#bubble", { opacity: 1, duration: 0.5 }, 2.2);
+  // Beat 2 — who (4.4-8.0): sources settle in a column, users appear
+  show("#h2", 4.4, 8.0);
+  tl.to("#bubble", { opacity: 0, duration: 0.4 }, 4.4);
+  ["#s1", "#s2", "#s3", "#s4"].forEach(function (s, i) { tl.to(s, { x: 0, y: 0, rotation: 0, duration: 1.0, ease: "power2.inOut" }, 4.6 + i * 0.15); });
+  tl.to("#who1", { opacity: 1, duration: 0.5 }, 5.8).to("#who2", { opacity: 1, duration: 0.5 }, 6.3);
+  tl.to(["#who1", "#who2"], { opacity: 0, duration: 0.4 }, 7.6);
+  // Beat 3 — how (8.2-15.0): passages, question, answer with citation, access, PII
+  show("#h3", 8.2, 15.0);
+  tl.to(["#kb", "#kbT", "#kbS"], { opacity: 1, duration: 0.5 }, 8.4);
+  [1, 2, 3, 4].forEach(function (n, i) {
+    var t = 8.8 + i * 0.5;
+    tl.to("#c" + n, { opacity: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, t);
+    tl.to("#p" + n, { opacity: 1, duration: 0.4 }, t + 0.3);
+    tl.to("#s" + n, { borderColor: "#FF452B", duration: 0.3 }, t);
+  });
+  tl.to("#q", { opacity: 1, duration: 0.5 }, 11.0);
+  tl.to("#aLink", { opacity: 1, scaleX: 1, duration: 0.4 }, 12.0);
+  tl.to("#a", { opacity: 1, duration: 0.5 }, 12.2);
+  tl.to("#hl", { opacity: 1, duration: 0.3 }, 12.4);
+  tl.to("#cite", { opacity: 1, duration: 0.4 }, 12.9);
+  tl.to("#chk1", { opacity: 1, duration: 0.4 }, 13.5);
+  tl.set("#raw", { display: "none" }, 14.0).set("#red", { display: "inline" }, 14.0);
+  tl.to("#chk2", { opacity: 1, duration: 0.4 }, 14.0);
+  // Beat 4 — planned (15.4-17.8): Flow dashed, marked Previsto
+  show("#h4", 15.4, 17.7);
+  tl.to("#fLink", { opacity: 1, scaleX: 1, duration: 0.5 }, 16.0);
+  tl.to(["#flow", "#prev"], { opacity: 1, duration: 0.5 }, 15.8);
+  // Beat 5 — value (18.0-20)
+  tl.to("#h5", { opacity: 1, duration: 0.5 }, 18.0);
+  tl.to("#intern", { opacity: 1, duration: 0.4 }, 18.5);
+  // Pad timeline to exactly data-duration
+  tl.to({}, { duration: 20 }, 0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-welabs-kb"] = tl;
+})();
+</script>
+</body>
+</html>

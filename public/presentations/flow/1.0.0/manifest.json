@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "flow",
+  "version": "1.0.0",
+  "publisher": "Welabs",
+  "productName": "Flow",
+  "kind": "own-product",
+  "maturity": "development",
+  "brand": {
+    "name": "Welabs",
+    "status": "verified",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#FF452B"
+    },
+    "typography": {
+      "family": "system-ui"
+    },
+    "logoAssetId": "brand-logo"
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 68508,
+      "sha256": "a4f55aec753756cf6d7cb8d8d83af8a5ae41d32ccee2d1edaf0e06a4842b91de",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 32094,
+      "sha256": "1d7be44be4b12057d1efed3af3a1963da5f446ebd074bb197a20138b93f9ac06",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 63430,
+      "sha256": "c21c63ab4be37c7bce1e8cb965d09089c827de12deb4b0b5e728b2e9b6e48c05",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 31010,
+      "sha256": "7cd8f0220d85ab9ca0c3ea98939cce74bf5a599e736474199e944ef2cc2e4f1e",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 70338,
+      "sha256": "790175caa571e25f68f70b5797ec2529b8aa4ff31a06c17dba78235f76963a27",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 30828,
+      "sha256": "e8bb924981ad9df99573f0c8a010b130589742f162819b8ef27a2d7a95af7a16",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 366326,
+      "sha256": "01cc15c2a2ee592c7c71b0fd92350ece43ce40d03517d6f220b8b3a382b8b875"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 62646,
+      "sha256": "1947218eeaff2ff637ae2afe62eaf14ecf0297dc369240f53f346a72724b7b6f",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 31976,
+      "sha256": "4b9d80f594364af589c3da411f2da3276e2a339e6d1a45709ac1a0061b04d09d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 57866,
+      "sha256": "15efc98cbbb6913a8653bc1176ba37d8b5a51f96e76d16892648c41e006282af",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 30893,
+      "sha256": "16e297a87ee23dd06fde9448687790ddd07dcb036b2d9decec745a7322ffdefc",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 66413,
+      "sha256": "d919b3497d65fed0f51084814e9d521fbd6e8361d3dde9fdb621a8147c6334d5",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 30724,
+      "sha256": "833d93aacd4af47a0bbd93a141c691616c20e707ceeff99d988672e1bd9e8c15",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 337872,
+      "sha256": "0ae38e3ff0532ea9d343bb663dafbe09e36adb43a920e66d177a23daee8dccd6"
+    },
+    {
+      "id": "brand-logo",
+      "path": "assets/logo.png",
+      "mime": "image/png",
+      "bytes": 20913,
+      "sha256": "1c695347eb867845bfb6cde2cfca5af27f26aea99c2e8db703666bdb0596d89f"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "Flow",
+      "summary": "Flow em desenvolvimento: uma visão conceitual de automação para organizar tarefas, acompanhar etapas e consultar contexto.",
+      "audience": "Equipes que organizam e acompanham automações.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Organize tarefas. Uma tarefa DEMO entra em uma visão organizada para que a equipe enxergue o próximo passo do trabalho.\nSiga a execução. Na jornada conceitual de automação, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.\nVeja o contexto. Registros e contexto ilustrativos ajudam a equipe a retomar o trabalho e compreender o que acompanha uma tarefa.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Quadro ilustrativo de tarefas DEMO nas etapas genéricas de entrada, execução e revisão."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Organize tarefas",
+          "summary": "Uma tarefa DEMO entra em uma visão organizada para que a equipe enxergue o próximo passo do trabalho.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Quadro ilustrativo de tarefas DEMO nas etapas genéricas de entrada, execução e revisão."
+        },
+        {
+          "id": "scene-2",
+          "title": "Siga a execução",
+          "summary": "Na jornada conceitual de automação, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Jornada ilustrativa de tarefa com etapas de iniciar, executar e acompanhar."
+        },
+        {
+          "id": "scene-3",
+          "title": "Veja o contexto",
+          "summary": "Registros e contexto ilustrativos ajudam a equipe a retomar o trabalho e compreender o que acompanha uma tarefa.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Esquema ilustrativo relaciona tarefa, contexto, registro e consulta DEMO."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "Flow",
+      "summary": "Flow in development: a concept view of automation to organize tasks, follow stages and consult context.",
+      "audience": "Teams that organize and follow automations.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "Organize tasks. A DEMO task enters an organized view so the team can see the next step of the work.\nFollow execution. In the concept automation journey, starting, executing and following up make a task's stages visible.\nView the context. Illustrative records and context help the team resume the work and understand what accompanies a task.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "An illustrative board of DEMO tasks in generic intake, execution and review stages."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Organize tasks",
+          "summary": "A DEMO task enters an organized view so the team can see the next step of the work.",
+          "assetId": "en-scene-1",
+          "alt": "An illustrative board of DEMO tasks in generic intake, execution and review stages."
+        },
+        {
+          "id": "scene-2",
+          "title": "Follow execution",
+          "summary": "In the concept automation journey, starting, executing and following up make a task's stages visible.",
+          "assetId": "en-scene-2",
+          "alt": "An illustrative task journey with steps to start, execute and follow up."
+        },
+        {
+          "id": "scene-3",
+          "title": "View the context",
+          "summary": "Illustrative records and context help the team resume the work and understand what accompanies a task.",
+          "assetId": "en-scene-3",
+          "alt": "An illustrative diagram relates a DEMO task, context, record and consultation."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "820be429ddb8aa1dfacfa98e6a698a55e802872434c4a4bff339bf8dbfd868e7"
+}

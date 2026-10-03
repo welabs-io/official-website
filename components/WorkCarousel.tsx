@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useT } from './LangProvider';
 import { useProjectModal } from './ProjectModal';
 import { projects } from '@/lib/projects';
+import { getPortfolioCopy } from '@/lib/portfolio-copy';
 
 function getItemsVisible() {
   if (typeof window === 'undefined') return 3;
@@ -12,7 +13,7 @@ function getItemsVisible() {
 }
 
 export function WorkCarousel() {
-  const { t } = useT();
+  const { t, lang } = useT();
   const { open } = useProjectModal();
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -63,25 +64,25 @@ export function WorkCarousel() {
   return (
     <div className="carousel-container">
       <div className="work-track" ref={trackRef}>
-        {projects.map((p) => (
+        {projects.map((p) => { const copy = getPortfolioCopy(p.product, lang === "en"); return (
           <button
             type="button"
             key={p.id}
             className="work-card"
             data-project={p.id}
             onClick={() => open(p.id)}
-            aria-label={`${t(`portfolio-${p.id}-title`)}: ${t(`portfolio-${p.id}-desc`)}`}
+            aria-label={`${p.product.title}: ${copy.summary}`}
           >
             <div className="work-img">
               <img loading="lazy" decoding="async" src={p.image} alt={p.alt} />
             </div>
             <div className="work-info">
-              <span className="work-category">{t(`portfolio-${p.id}-cat`)}</span>
-              <h3>{t(`portfolio-${p.id}-title`)}</h3>
-              <p>{t(`portfolio-${p.id}-desc`)}</p>
+              <span className="work-category">{copy.sector}</span>
+              <h3>{p.product.title}</h3>
+              <p>{copy.summary}</p>
             </div>
           </button>
-        ))}
+        ); })}
       </div>
       <div className="carousel-nav">
         <button className="carousel-btn prev" aria-label={t('aria-prev')} onClick={() => { prev(); resetAutoplay(); }}>

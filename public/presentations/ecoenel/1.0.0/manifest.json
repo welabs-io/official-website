@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ecoenel",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "EcoEnel",
+  "kind": "client-case",
+  "maturity": "concept",
+  "brand": {
+    "name": "EcoEnel",
+    "status": "verified",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#1851C7"
+    },
+    "typography": {
+      "family": "system-ui"
+    },
+    "logoAssetId": "brand-logo"
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 65310,
+      "sha256": "35464e6537d52d698e1ff55a778a16d5fbb8581322031b0d902c60ca94f1b4bc",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 33584,
+      "sha256": "2d035f0b39d5570433e569ec056b2d2c202f471af6cb7d7f2243dd06d445bf0d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 71731,
+      "sha256": "e2531aafd387c1b465b7623393497cfeb301266618abfbff034f69ff7a5780ec",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 33727,
+      "sha256": "ea591419a30b2d04e02e77c04e6bb20b5e26f611846be8f4330c34ed959dced1",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 72961,
+      "sha256": "5887d58ea5887f55d08d36cf9c6efea8dccb8e70e6db5629b3e4de3f34c29c32",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 34772,
+      "sha256": "7a5d248abd665cf388cd9d32b97bc2145a59565dacf7a6ec7bb00e49e8f57bb9",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 372330,
+      "sha256": "95108340714e55ac66411323fc684dc024749e5409898055b60bdc8abc807036"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 57679,
+      "sha256": "e501a2684ff86d983516855576ef408d5ac9180bd958c2a77398a4ebd3c410d7",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 33380,
+      "sha256": "df359effef0e8d57cabf388092e83176faa3bcc03e54518c7fd0024080643519",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 65992,
+      "sha256": "77c744a7e3d4c11dc4f6a62b6cc78d2dab333c2ca49f209e053fd19bfcb9a4a1",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 33531,
+      "sha256": "0fd47f60b928a32cdba0fa5fde7f4798ba750c3cac2220fcdf398ea68d2f2d44",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 67974,
+      "sha256": "df443044fe3b15d5dd8eb8bf4a89bc2961702013892d378c8951866f9a2ada1c",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 34665,
+      "sha256": "0c86a12435abba3b0fcd1fbbbc3772b6a1db8c4e6a5cff5fa720122d8250390e",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 337484,
+      "sha256": "3d0fd171bf24d3460385ab4a463f939951843f10bd2dcb08c1aaad57bb154574"
+    },
+    {
+      "id": "brand-logo",
+      "path": "assets/logo.png",
+      "mime": "image/png",
+      "bytes": 22920,
+      "sha256": "4904c679bba62717c36712152de83c2e449f6d87544d9f595b85f9c55972d4ed"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "EcoEnel",
+      "summary": "Eventos e registros de reciclagem com uma visão organizada da operação.",
+      "audience": "Equipes de operação de programas de reciclagem.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Eventos de reciclagem. Um evento exemplo conecta o registro dos materiais à visão da operação de reciclagem.\nRegistro da operação. O registro de um evento reúne materiais genéricos para apoiar a consulta pela equipe de operação.\nRegistros em contexto. Uma visão por etapa ajuda a acompanhar os registros de eventos sem perder o contexto de cada atividade.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Jornada ilustrativa de um evento de reciclagem fictício, seu registro e a visão da equipe."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Eventos de reciclagem",
+          "summary": "Um evento exemplo conecta o registro dos materiais à visão da operação de reciclagem.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Jornada ilustrativa de um evento de reciclagem fictício, seu registro e a visão da equipe."
+        },
+        {
+          "id": "scene-2",
+          "title": "Registro da operação",
+          "summary": "O registro de um evento reúne materiais genéricos para apoiar a consulta pela equipe de operação.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Aplicativo ilustrativo com evento exemplo e materiais genéricos, sem informações de participantes."
+        },
+        {
+          "id": "scene-3",
+          "title": "Registros em contexto",
+          "summary": "Uma visão por etapa ajuda a acompanhar os registros de eventos sem perder o contexto de cada atividade.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Quadro ilustrativo de registros fictícios de reciclagem organizados em etapas genéricas."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "EcoEnel",
+      "summary": "Recycling events and records with an organized view of operations.",
+      "audience": "Teams operating recycling programs.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "Recycling events. An example event connects material records to a view of recycling operations.\nOperation record. An event record brings generic materials together for the operations team to consult.\nRecords in context. A view by stage helps teams follow event records while keeping the context of each activity.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "Illustrative journey of a fictional recycling event, its record and the team's view."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Recycling events",
+          "summary": "An example event connects material records to a view of recycling operations.",
+          "assetId": "en-scene-1",
+          "alt": "Illustrative journey of a fictional recycling event, its record and the team's view."
+        },
+        {
+          "id": "scene-2",
+          "title": "Operation record",
+          "summary": "An event record brings generic materials together for the operations team to consult.",
+          "assetId": "en-scene-2",
+          "alt": "Illustrative app with an example event and generic materials, without participant information."
+        },
+        {
+          "id": "scene-3",
+          "title": "Records in context",
+          "summary": "A view by stage helps teams follow event records while keeping the context of each activity.",
+          "assetId": "en-scene-3",
+          "alt": "Illustrative board of fictional recycling records grouped into generic stages."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "9276e718ad1fb554f577918c95c3e69820778b0e51fdbe8273d22ef5eb501a4d"
+}
