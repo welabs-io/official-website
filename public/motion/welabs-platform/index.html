@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Plataforma Welabs</title>
+<style>
+  /* TIPOGRAFIA E TOKENS */
+  @font-face { font-family: "Inter"; src: url("./assets/fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+  :root { --bg: #0B0B0D; --panel: #17171B; --line: #3A3A42; --coral: #FF452B; --text: #FFFFFF; --muted: #C9C9D1; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); width: 1920px; height: 1080px; margin: 0; overflow: hidden; }
+  #root { position: relative; width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; }
+
+  /* CABECALHO E SELO */
+  #title { position: absolute; left: 60px; top: 36px; font-size: 60px; font-weight: 800; letter-spacing: -1px; }
+  #title span { color: var(--coral); }
+  #seal { position: absolute; right: 60px; top: 34px; height: 64px; width: auto; }
+  #legend { position: absolute; left: 700px; top: 52px; display: flex; gap: 36px; font-size: 26px; color: var(--muted); font-weight: 600; }
+  #legend i { display: inline-block; width: 56px; height: 0; vertical-align: middle; margin-right: 12px; }
+  #legend .ex { border-top: 4px solid #fff; }
+  #legend .pl { border-top: 4px dashed var(--coral); }
+
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+  #title, #legend, #seal, #captions { z-index: 5; }
+
+  /* NOS DO GRAFO */
+  .node { position: absolute; display: flex; flex-direction: column; justify-content: center; padding: 14px 20px; border: 3px solid var(--line); border-radius: 18px; background: var(--panel); opacity: 0; }
+  .node b { font-size: 30px; font-weight: 800; line-height: 1.15; }
+  .node em { font-style: normal; font-size: 24px; font-weight: 500; line-height: 1.2; color: var(--muted); margin-top: 6px; }
+  .node.hero b { font-size: 40px; }
+  .node.proof { background: #1D1713; }
+  .node.planned { border-style: dashed; }
+  .tag { position: absolute; right: 14px; top: -20px; padding: 2px 14px; border-radius: 999px; background: var(--coral); color: #fff; font-size: 24px; font-weight: 800; opacity: 0; }
+
+  /* ARESTAS E ROTULOS */
+  svg#edges { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .edge { fill: none; stroke: #fff; stroke-width: 4; opacity: 0; }
+  .edge.pl { stroke: var(--coral); stroke-dasharray: 14 10; }
+  .pill { position: absolute; padding: 2px 14px; border-radius: 999px; background: var(--bg); border: 3px solid var(--coral); color: var(--coral); font-size: 24px; font-weight: 800; white-space: nowrap; opacity: 0; }
+  .lbl { position: absolute; font-size: 24px; font-weight: 700; color: var(--muted); white-space: nowrap; opacity: 0; }
+
+  /* LEGENDA DA BATIDA */
+  #captions { position: absolute; left: 60px; right: 60px; top: 955px; height: 90px; }
+  .cap { position: absolute; left: 0; right: 0; top: 0; height: 90px; display: flex; align-items: center; gap: 22px; padding: 0 28px; border-radius: 16px; background: #1A1A1F; border-left: 8px solid var(--coral); font-size: 34px; font-weight: 700; line-height: 1.15; opacity: 0; }
+  .cap small { font-size: 24px; font-weight: 800; color: var(--coral); }
+  #pad { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-platform" data-width="1920" data-height="1080" data-start="0" data-duration="24">
+  <div id="title">Plataforma <span>Welabs</span></div>
+  <div id="legend"><div><i class="ex"></i>Existente</div><div><i class="pl"></i>Previsto</div></div>
+  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  <div id="stage">
+  <svg id="edges" viewBox="0 0 1920 1080">
+    <defs>
+      <marker id="arW" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#fff"/></marker>
+      <marker id="arC" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FF452B"/></marker>
+    </defs>
+  </svg>
+  </div>
+  <div id="captions"></div>
+  <div id="pad"></div>
+</div>
+<script src="./assets/shared/gsap.min.js"></script>
+<script>
+  // CONSTRUCAO DO GRAFO (posicoes fixas, sem aleatoriedade)
+  var W = 340, H = 140;
+  var N = {
+    erp:   { x: 680,  y: 560, w: 380, h: 160, t: "ERP", s: "dono dos dados e das definições · sandbox", cls: "hero" },
+    flow:  { x: 1190, y: 560, w: W, h: H, t: "Flow", s: "motor de execução · sandbox" },
+    kb:    { x: 1190, y: 250, w: W, h: H, t: "KB", s: "conhecimento com fonte" },
+    crm:   { x: 680,  y: 250, w: W, h: H, t: "CRM", s: "atendimento com agente" },
+    chan:  { x: 230,  y: 250, w: W, h: H, t: "Channels", s: "conversa" },
+    tabela:{ x: 1670, y: 440, w: W, h: H, t: "Tabe.la", s: "processos sem código · sandbox", cls: "proof" },
+    second: { x: 1670, y: 690, w: W, h: H, t: "Outro produto", s: "só configuração · sandbox", cls: "proof" },
+    forms: { x: 230,  y: 560, w: W, h: H, t: "Gerador de formulários", s: "" },
+    sec:   { x: 230,  y: 830, w: W, h: H, t: "Operação de segurança", s: "Alpha · visão na borda" },
+    studio:{ x: 680,  y: 830, w: W, h: H, t: "Flow Studio", s: "editor global no ERP", cls: "planned" }
+  };
+  var root = document.getElementById("stage"), svg = document.getElementById("edges");
+  Object.keys(N).forEach(function (k) {
+    var n = N[k], d = document.createElement("div");
+    d.className = "node " + (n.cls || ""); d.id = "n-" + k;
+    d.style.left = (n.x - n.w / 2) + "px"; d.style.top = (n.y - n.h / 2) + "px"; d.style.width = n.w + "px"; d.style.height = n.h + "px";
+    d.innerHTML = "<b>" + n.t + "</b>" + (n.s ? "<em>" + n.s + "</em>" : "") + (k === "studio" ? '<div class="tag" id="tag-studio">Previsto</div>' : "");
+    root.appendChild(d);
+  });
+  // Point where the ray from rect center toward target leaves the rect, plus a gap
+  function edgePt(a, b, gap) {
+    var dx = b.x - a.x, dy = b.y - a.y, sx = (a.w / 2 + gap) / Math.abs(dx || 1e-9), sy = (a.h / 2 + gap) / Math.abs(dy || 1e-9), s = Math.min(sx, sy);
+    return { x: a.x + dx * s, y: a.y + dy * s };
+  }
+  var NS = "http://www.w3.org/2000/svg";
+  function edge(id, from, to, planned, both) {
+    var p1 = edgePt(N[from], N[to], 8), p2 = edgePt(N[to], N[from], 8);
+    var l = document.createElementNS(NS, "line");
+    l.setAttribute("x1", p1.x); l.setAttribute("y1", p1.y); l.setAttribute("x2", p2.x); l.setAttribute("y2", p2.y);
+    l.setAttribute("class", "edge" + (planned ? " pl" : "")); l.setAttribute("id", id);
+    var m = planned ? "url(#arC)" : "url(#arW)";
+    l.setAttribute("marker-end", m); if (both) l.setAttribute("marker-start", m);
+    if (!planned) { l.setAttribute("pathLength", "1"); l.style.strokeDasharray = "1"; l.style.strokeDashoffset = "1"; }
+    svg.appendChild(l);
+    return { mx: (p1.x + p2.x) / 2, my: (p1.y + p2.y) / 2 };
+  }
+  edge("e-erp-flow", "erp", "flow");
+  edge("e-kb-crm", "kb", "crm");
+  edge("e-chan-crm", "chan", "crm");
+  edge("e-flow-tab", "flow", "tabela");
+  edge("e-flow-sec", "flow", "second");
+  var mCrm = edge("e-crm-flow", "crm", "flow", true);
+  var mKb = edge("e-flow-kb", "flow", "kb", true, true);
+  var mSt = edge("e-st-erp", "studio", "erp", true);
+  function pill(id, text, x, y, cls) {
+    var d = document.createElement("div"); d.className = cls || "pill"; d.id = id; d.textContent = text; root.appendChild(d);
+    d.style.left = x + "px"; d.style.top = y + "px"; d.style.transform = "translate(-50%,-50%)"; return d;
+  }
+  var eEF = { x: (N.erp.x + N.erp.w / 2 + N.flow.x - N.flow.w / 2) / 2, y: N.erp.y };
+  pill("l-pub", "publica", eEF.x, eEF.y - 30, "lbl");
+  pill("p-crm", "Previsto", mCrm.mx, mCrm.my);
+  pill("p-kb", "Previsto", mKb.mx, mKb.my);
+  pill("p-st", "Previsto", mSt.mx, mSt.my);
+
+  // LEGENDAS DAS BATIDAS
+  var caps = [
+    "O ERP é o centro: dono dos dados e das definições",
+    "O Flow executa o que o ERP publica",
+    "KB e Channels alimentam os assistentes do CRM",
+    "Provas: Tabe.la configura sem código; um segundo produto roda no mesmo Flow",
+    "Também na plataforma: gerador de formulários e operação de segurança (Alpha)",
+    "Tracejado é o que está Previsto; o resto é sandbox ou Alpha, não produção"
+  ];
+  var capBox = document.getElementById("captions");
+  caps.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/6</small><span>" + t + "</span>"; capBox.appendChild(d);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 24 s)
+  var tl = gsap.timeline({ paused: true });
+  var LIT = { borderColor: "#FF452B", boxShadow: "0 0 0 6px rgba(255,69,43,0.22)", duration: 0.5 };
+  var DIM = { borderColor: "#5A5A66", boxShadow: "0 0 0 0px rgba(255,69,43,0)", duration: 0.5 };
+  function appear(id, t) { tl.fromTo("#n-" + id, { opacity: 0, y: 24, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, t); tl.to("#n-" + id, LIT, t); }
+  function dim(id, t) { tl.to("#n-" + id, DIM, t); }
+  function draw(id, t, d) { tl.to("#" + id, { opacity: 1, strokeDashoffset: 0, duration: d || 0.9, ease: "power2.inOut" }, t); }
+  function fade(id, t) { tl.fromTo("#" + id, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, t); }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, a);
+    if (b) tl.to("#cap" + i, { opacity: 0, duration: 0.4 }, b - 0.4);
+  }
+  // Camera on #stage: focus point (fx, fy) in stage space is mapped to the visible-area center
+  function cam(sc, fx, fy, t, d) { tl.to("#stage", { scale: sc, x: 960 - sc * fx, y: 535 - sc * fy, duration: d, ease: "power2.inOut" }, t); }
+  tl.set("#stage", { scale: 1.8, x: 960 - 1.8 * 680, y: 535 - 1.8 * 560 }, 0);
+  cam(1.5, 935, 560, 4.4, 1.1);
+  cam(1.25, 710, 405, 8.4, 1.1);
+  cam(1, 960, 535, 12.9, 1.2);
+  tl.fromTo("#title", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.7 }, 0);
+  tl.fromTo("#seal", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 0.1);
+  tl.fromTo("#legend", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 0.3);
+
+  // Beat 1: ERP as authority
+  cap(0, 0.6, 4.5); appear("erp", 0.8);
+  tl.fromTo("#n-erp", { scale: 1 }, { scale: 1.04, duration: 0.7, yoyo: true, repeat: 1, ease: "sine.inOut" }, 2.0);
+
+  // Beat 2: Flow executes what ERP publishes
+  cap(1, 4.5, 8.5); dim("erp", 4.6); appear("flow", 5.0); draw("e-erp-flow", 5.4); fade("l-pub", 6.2);
+
+  // Beat 3: KB and Channels feed the assistants
+  cap(2, 8.5, 13); dim("flow", 8.6); appear("kb", 9.0); appear("chan", 9.4); appear("crm", 10.0);
+  draw("e-kb-crm", 10.4); draw("e-chan-crm", 10.8);
+
+  // Beat 4: proof products
+  cap(3, 13, 17.5); dim("kb", 13.1); dim("chan", 13.1); dim("crm", 13.1);
+  tl.to("#n-flow", LIT, 13.1);
+  appear("tabela", 13.6); draw("e-flow-tab", 14.0); appear("second", 15.4); draw("e-flow-sec", 15.8);
+
+  // Beat 5: remaining products
+  cap(4, 17.5, 20); dim("tabela", 17.6); dim("second", 17.6); dim("flow", 17.6);
+  appear("forms", 18.0); appear("sec", 18.6);
+
+  // Beat 6: planned edges, full view
+  cap(5, 20); dim("forms", 20.1); dim("sec", 20.1);
+  tl.fromTo("#n-studio", { opacity: 0, y: 24, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" }, 20.4);
+  tl.to("#n-studio", { borderColor: "#FF452B", duration: 0.5 }, 20.4);
+  tl.fromTo("#tag-studio", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 21.0);
+  tl.to("#e-st-erp", { opacity: 1, duration: 0.6 }, 20.8); fade("p-st", 21.2);
+  tl.to("#e-crm-flow", { opacity: 1, duration: 0.6 }, 21.6); fade("p-crm", 22.0);
+  tl.to("#e-flow-kb", { opacity: 1, duration: 0.6 }, 22.2); fade("p-kb", 22.6);
+  // Final hold: everything visible, then pad to exactly 24 s
+  tl.fromTo("#pad", { opacity: 0 }, { opacity: 0.001, duration: 1 }, 23);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-platform"] = tl;
+</script>
+</body>
+</html>

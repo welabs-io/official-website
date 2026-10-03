@@ -1,0 +1,98 @@
+{
+  "stant": {
+    "source": "imagine/imagine-website-v2/public/brands/stant.svg",
+    "accent": "#d93621",
+    "sourceTokens": "stant/core/app/src/css/quasar.variables.scss",
+    "plate": "light",
+    "asset": "/product-brands/stant.svg"
+  },
+  "tabela": {
+    "source": "tabela/tabela-v3/apps/web-next/public/tabela-logo-light.svg",
+    "accent": "#0D547F",
+    "sourceTokens": "tabela/tabela-v3/apps/web-next/public/tabela-logo.svg",
+    "plate": "dark",
+    "asset": "/product-brands/tabela.svg"
+  },
+  "central-esg": {
+    "source": "imagine/imagine-website-v2/public/brands/report.svg",
+    "accent": "#3A6BAE",
+    "sourceTokens": "report/centralesg/front/tailwind.config.js",
+    "plate": "light",
+    "identity": "Grupo Report, identidade institucional associada ao produto",
+    "asset": "/product-brands/central-esg.svg"
+  },
+  "kiosk-brands": {
+    "source": "kiosk-brands/front/public/logo.svg",
+    "accent": "#5262f5",
+    "sourceTokens": "kiosk-brands/front/src/index.css",
+    "plate": "light",
+    "asset": "/product-brands/kiosk-brands.svg"
+  },
+  "light-recicla": {
+    "source": "avsi/multi/clientes/front/src/assets/images/lightrecicla/logos/logo-light-transparent.png",
+    "accent": "#009A93",
+    "sourceTokens": "avsi/multi/clientes/front/src/config/brand.config.js",
+    "plate": "light",
+    "asset": "/product-brands/light-recicla.png"
+  },
+  "ecoenel": {
+    "source": "avsi/multi/clientes/front/src/assets/images/ecoenel/logos/logo_ecoenel_color.png",
+    "accent": "#1851c7",
+    "sourceTokens": "avsi/multi/clientes/front/src/config/brand.config.js",
+    "plate": "light",
+    "asset": "/product-brands/ecoenel.png"
+  },
+  "neoenergia": {
+    "source": "imagine/imagine-website-v2/public/brands/neoenergia.png",
+    "accent": "#83c997",
+    "plate": "light",
+    "identity": "Marca de organização relacionada ao case; tom de ilustração a validar",
+    "asset": "/product-brands/neoenergia.png"
+  },
+  "autoinfracao": {
+    "source": "imagine/imagine-website-v2/public/brands/ima.svg",
+    "accent": "#94a7ed",
+    "plate": "light",
+    "identity": "IMA, organização do case; tom de ilustração a validar",
+    "asset": "/product-brands/autoinfracao.svg"
+  },
+  "erp": {
+    "source": "welabs/corp/docs/welabs/brand/logo.png",
+    "asset": "/company-brands/welabs-logo.png",
+    "accent": "#FF452B",
+    "plate": "dark",
+    "identity": "Welabs, empresa e marca dos produtos; nomes fornecidos pela regra do usuário"
+  },
+  "flow": {
+    "source": "welabs/corp/docs/welabs/brand/logo.png",
+    "asset": "/company-brands/welabs-logo.png",
+    "accent": "#FF452B",
+    "plate": "dark",
+    "identity": "Welabs, empresa e marca dos produtos; nomes fornecidos pela regra do usuário"
+  },
+  "wekb": {
+    "source": "welabs/corp/docs/welabs/brand/logo.png",
+    "asset": "/company-brands/welabs-logo.png",
+    "accent": "#FF452B",
+    "plate": "dark",
+    "identity": "Welabs, empresa e marca dos produtos; nomes fornecidos pela regra do usuário"
+  },
+  "welabs-crm": {
+    "source": "welabs/corp/docs/welabs/brand/logo.png",
+    "asset": "/company-brands/welabs-logo.png",
+    "accent": "#FF452B",
+    "plate": "dark",
+    "identity": "Welabs, empresa e marca dos produtos; nomes fornecidos pela regra do usuário"
+  },
+  "malupe": {
+    "source": "welabs/corp/docs/welabs/brand/logo.png",
+    "asset": "/company-brands/welabs-logo.png",
+    "accent": "#FF452B",
+    "plate": "dark",
+    "identity": "Welabs, empresa e marca dos produtos; nomes fornecidos pela regra do usuário"
+  },
+  "wego": {
+    "accent": "#64a9eb",
+    "identity": "Logotipo de ecossistema WeGO ainda não identificado; não usar logo de um módulo como se fosse do ecossistema"
+  }
+}

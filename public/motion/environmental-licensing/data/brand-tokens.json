@@ -1,0 +1,18 @@
+{
+  "name": "editorial-environmental-demo",
+  "fontFamily": "system-ui",
+  "colors": {
+    "background": "#f1efe6",
+    "ink": "#19352e",
+    "accent": "#286d59",
+    "secondary": "#b87842",
+    "surface": "#fffdf7",
+    "muted": "#596d65",
+    "line": "#bcc9bf",
+    "supportSoft": "#e3ebe3",
+    "windowPage": "#f1efe6",
+    "windowPanel": "#faf9f3"
+  },
+  "provenance": "Editorial palette only; not represented as an IMA or WeGO brand specification."
+}
+

@@ -1,0 +1,226 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "apetitivo",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "Apetitivo",
+  "kind": "historical",
+  "maturity": "historical-pending",
+  "brand": {
+    "name": "Apetitivo",
+    "status": "context-only",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#E2A56E"
+    },
+    "typography": {
+      "family": "system-ui"
+    }
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 67394,
+      "sha256": "cb8d8b36d1978379d5ce753d96c515a146cd1c2ae06d665087bfab5e9ee6fbe3",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4130,
+      "sha256": "49a2025081da63c3164853791a384a275c0cc8dac8b216e1504aa370402d00e0",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 63045,
+      "sha256": "b7c8cc57ab8d3ae369a0448adcb110593b45740b7a88e769987a4b973f7d6202",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3216,
+      "sha256": "6bb6dc2e5240a28c3a7f22550086d6dabb3040a4724148aee1d73f80af3ecc11",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 61180,
+      "sha256": "b393b3e953c0cf402a3821d8b5762c0091ca98190729bae6af35ebfca72166a4",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3026,
+      "sha256": "02efe25c9dbbcf3ea10001e127963a6039784f6311c86de91435801f194fadf7",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 350648,
+      "sha256": "017de185405e485358a2c4c5de195b6023754d3c844bcd8a436a76a50c150087"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 63429,
+      "sha256": "4e37e7c010780ba9b6b59071a28e5e70eb90fe390b9d201cfcb5cfb1870b4916",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 4114,
+      "sha256": "3554f0a7412c941836c41e9e84a79e2807d69ae1c50ca0ba01d5aeacdbe0a2b5",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 58387,
+      "sha256": "082355ca370e2934c4a2fdc2106fb6a9c3d81f8ab4ae32a1835f36912abafafe",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3188,
+      "sha256": "a29262f4ee098c0fa7f283a546acaf1118cc65131893a8cddf9b26017a47aac8",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 58462,
+      "sha256": "baca9da189e026f4650a18e3a2c25383c45416154fe7add75cdbe1e169eb7720",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3008,
+      "sha256": "81dea4b1a202997a7aa80b994090cfb4bf1b6514e78f96bdfedb149fa26b1827",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 330187,
+      "sha256": "61ee5ca74208315d1606025a04c523dc76dae834e44a0ff6038fc378937bd728"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "Apetitivo",
+      "summary": "Acervo histórico do Apetitivo: restaurante exemplo, cardápio genérico e jornada conceitual de pedido e acompanhamento.",
+      "audience": "Restaurantes e consumidores.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Veja o cardápio. No acervo histórico, um restaurante exemplo reúne itens genéricos para ilustrar a escolha no cardápio.\nMonte o pedido. Um pedido DEMO organiza os itens escolhidos em uma representação conceitual da experiência do restaurante.\nSiga o pedido. Escolher, pedir e acompanhar ajudam a visualizar a jornada do acervo, preservando o contexto histórico.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Quadro ilustrativo de cardápio com pratos, bebidas e itens DEMO em contexto histórico."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Veja o cardápio",
+          "summary": "No acervo histórico, um restaurante exemplo reúne itens genéricos para ilustrar a escolha no cardápio.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Quadro ilustrativo de cardápio com pratos, bebidas e itens DEMO em contexto histórico."
+        },
+        {
+          "id": "scene-2",
+          "title": "Monte o pedido",
+          "summary": "Um pedido DEMO organiza os itens escolhidos em uma representação conceitual da experiência do restaurante.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Dois documentos ilustrativos representam pedido DEMO e itens DEMO de um restaurante exemplo."
+        },
+        {
+          "id": "scene-3",
+          "title": "Siga o pedido",
+          "summary": "Escolher, pedir e acompanhar ajudam a visualizar a jornada do acervo, preservando o contexto histórico.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Jornada ilustrativa do acervo histórico com etapas de escolher, pedir e acompanhar."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "Apetitivo",
+      "summary": "Apetitivo's historical archive: an example restaurant, a generic menu and a concept journey of ordering and follow-up.",
+      "audience": "Restaurants and consumers.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "View the menu. In the historical archive, an example restaurant brings generic items together to illustrate menu choices.\nBuild the order. A DEMO order organizes selected items in a concept representation of the restaurant experience.\nFollow the order. Choosing, ordering and following up help show the archive's journey while preserving its historical context.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "An illustrative menu board with DEMO dishes, drinks and items in a historical context."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "View the menu",
+          "summary": "In the historical archive, an example restaurant brings generic items together to illustrate menu choices.",
+          "assetId": "en-scene-1",
+          "alt": "An illustrative menu board with DEMO dishes, drinks and items in a historical context."
+        },
+        {
+          "id": "scene-2",
+          "title": "Build the order",
+          "summary": "A DEMO order organizes selected items in a concept representation of the restaurant experience.",
+          "assetId": "en-scene-2",
+          "alt": "Two illustrative documents represent a DEMO order and items from an example restaurant."
+        },
+        {
+          "id": "scene-3",
+          "title": "Follow the order",
+          "summary": "Choosing, ordering and following up help show the archive's journey while preserving its historical context.",
+          "assetId": "en-scene-3",
+          "alt": "An illustrative journey from the historical archive with steps to choose, order and follow up."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "27ba98b592db155ec4f0c660e26abed2998fa43735ee9d6f62958920ae8749d2"
+}

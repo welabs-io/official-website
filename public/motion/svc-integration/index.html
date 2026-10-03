@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Integração e automação</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS E BASE DA PEÇA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal}
+:root{--bg:#070D18;--panel:#0F1A2E;--line:#2A3B58;--accent:#1E9BE6;--text:#FFFFFF;--mute:#A9B8CF;--amber:#FFD27A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;background:var(--bg);overflow:hidden}
+#root{position:relative;width:1920px;height:1080px;background:radial-gradient(1200px 700px at 70% 30%,#0E2038 0%,#070D18 70%);font-family:"Inter",sans-serif;color:var(--text);overflow:hidden}
+.abs{position:absolute;white-space:nowrap}
+
+/* CABEÇALHO: SELO, MANCHETES E LEGENDAS POR BATIDA */
+#eyebrow{left:120px;top:34px;font-size:24px;font-weight:700;letter-spacing:4px;color:var(--accent)}
+.hl{left:120px;top:68px;font-size:72px;font-weight:800;letter-spacing:-1.5px;line-height:1.1;opacity:0}
+.hl b{color:var(--accent);font-weight:800}
+.sub{left:120px;top:154px;font-size:32px;font-weight:500;color:var(--mute);opacity:0}
+
+/* NÓS DA TOPOLOGIA */
+.node{position:absolute;border:3px solid var(--line);border-radius:20px;background:var(--panel);padding:18px 20px;opacity:0;white-space:nowrap;overflow:hidden}
+.node h3{font-size:30px;font-weight:800;line-height:1.15}
+.node p{font-size:24px;font-weight:500;color:var(--mute);margin-top:4px;line-height:1.2}
+.main{width:340px;height:300px}
+.low{width:300px;height:120px;padding:16px 18px}
+.low h3{font-size:28px}
+.its{margin-top:12px}
+.it{font-size:26px;font-weight:600;color:var(--mute);background:rgba(255,255,255,.05);border-radius:8px;padding:2px 12px;margin-top:6px;opacity:.5;line-height:1.3}
+.node.plan{width:500px;height:200px;border-style:dashed;border-color:#6C82A6;background:rgba(15,26,46,.55);padding:18px 22px}
+.node.plan h3{font-size:32px}
+.badge{display:inline-block;margin-top:14px;font-size:24px;font-weight:700;color:var(--amber);border:2px solid var(--amber);border-radius:999px;padding:0 16px;line-height:1.35}
+
+/* CHIPS DO PANORAMA DESCONECTADO */
+.land{position:absolute;font-size:36px;font-weight:700;padding:16px 32px;border:3px dashed #3A4E70;border-radius:16px;background:rgba(15,26,46,.8);opacity:0;white-space:nowrap}
+
+/* TRILHA DO PROCESSO DEMO */
+#tkLabel{left:120px;top:894px;font-size:24px;font-weight:700;letter-spacing:3px;color:var(--accent);opacity:0}
+#ticker{position:absolute;left:120px;top:932px;height:68px;display:flex;align-items:center;gap:14px;opacity:0;white-space:nowrap}
+.ck{font-size:26px;font-weight:700;color:var(--mute);border:3px solid var(--line);border-radius:14px;padding:0 22px;height:68px;line-height:62px;background:var(--panel)}
+.ar{font-size:30px;color:#5C7194;font-weight:700}
+
+/* ARESTAS E TEXTOS SVG */
+svg{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+.edge{fill:none;stroke:var(--accent);stroke-width:5;opacity:0}
+.edge.soft{stroke:#6FA4CF;stroke-width:4}
+.edge.plan{stroke:#8DA2C4;stroke-width:4;stroke-dasharray:12 10}
+.edge.gap{stroke:#4A5F83;stroke-width:4;stroke-dasharray:10 12}
+.lbl{font-size:26px;font-weight:600;fill:#fff;opacity:0}
+.pill{position:absolute;font-size:30px;font-weight:800;color:#fff;background:#0F2A44;border:3px solid var(--accent);border-radius:999px;padding:6px 26px;opacity:0;white-space:nowrap}
+#note{left:120px;top:850px;font-size:34px;font-weight:600;color:var(--mute);opacity:0}
+#note em{font-style:normal;color:#fff}
+
+/* FECHO */
+.close{left:120px;font-size:84px;font-weight:800;letter-spacing:-2px;line-height:1.1;opacity:0}
+.close b{color:var(--accent);font-weight:800}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="svc-integration" data-width="1920" data-height="1080" data-duration="24" data-start="0">
+
+<div id="eyebrow" class="abs">INTEGRAÇÃO E AUTOMAÇÃO</div>
+<div id="h1" class="abs hl">Tudo isso existe. <b>Nada conversa.</b></div>
+<div id="s1" class="abs sub">Legado, ERP, canais, identidade e dados vivem em ilhas separadas.</div>
+<div id="h2" class="abs hl">Hoje: ligados por <b>contrato</b></div>
+<div id="s2" class="abs sub">Fronteiras explícitas: um processo DEMO percorre produto, domínio, motor e canal.</div>
+<div id="h3" class="abs hl">Reuso: novo produto, <b>mesmo motor</b></div>
+<div id="s3" class="abs sub">O segundo e o terceiro produto se conectam ao que já roda, só com configuração.</div>
+<div id="h4" class="abs hl">Para onde vamos <b>(previsto)</b></div>
+<div id="s4" class="abs sub">Visão de futuro, tracejada: ainda não é entrega.</div>
+
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1E9BE6"/></marker>
+    <marker id="ahs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6FA4CF"/></marker>
+    <marker id="ahp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8DA2C4"/></marker>
+  </defs>
+  <!-- Panorama desconectado: pares de segmentos que não se encontram -->
+  <path id="g1" class="edge gap" d="M470 395H560 M640 395H700"/>
+  <path id="g2" class="edge gap" d="M1160 345H1250 M1290 380V430"/>
+  <path id="g3" class="edge gap" d="M370 600V540 M400 500V460"/>
+  <path id="g4" class="edge gap" d="M520 700H640 M800 700H880"/>
+  <path id="g5" class="edge gap" d="M1210 720H1300 M1340 640V570"/>
+  <!-- Arquitetura de hoje -->
+  <path id="e1" class="edge" pathLength="1" d="M460 540H790" marker-end="url(#ah)"/>
+  <path id="e2" class="edge" pathLength="1" d="M1130 540H1460" marker-end="url(#ah)"/>
+  <path id="e3" class="edge" pathLength="1" d="M1630 390V330Q1630 310 1610 310H310Q290 310 290 330V388" marker-end="url(#ah)"/>
+  <path id="e5" class="edge soft" pathLength="1" d="M290 690V748" marker-end="url(#ahs)" marker-start="url(#ahs)"/>
+  <path id="e6" class="edge soft" pathLength="1" d="M625 750V548" marker-end="url(#ahs)" marker-start="url(#ahs)"/>
+  <path id="e7" class="edge soft" pathLength="1" d="M960 690V748" marker-end="url(#ahs)" marker-start="url(#ahs)"/>
+  <path id="e8" class="edge" pathLength="1" d="M1110 810H1488" marker-end="url(#ah)"/>
+  <text id="l1" class="lbl" x="625" y="518" text-anchor="middle">contrato</text>
+  <text id="l2" class="lbl" x="1295" y="518" text-anchor="middle">revisão congelada</text>
+  <text id="l3" class="lbl" x="960" y="284" text-anchor="middle">efeito + recibo</text>
+  <text id="l8" class="lbl" x="1299" y="788" text-anchor="middle">evento</text>
+  <!-- Reuso: barramento dos produtos -->
+  <path id="b1" class="edge" pathLength="1" d="M460 370H625"/>
+  <path id="b2" class="edge" pathLength="1" d="M460 560H625"/>
+  <path id="b3" class="edge" pathLength="1" d="M460 750H625"/>
+  <path id="b4" class="edge" pathLength="1" d="M625 370V750"/>
+  <path id="b5" class="edge" pathLength="1" d="M625 540H786" marker-end="url(#ah)"/>
+  <!-- Previsto -->
+  <path id="p1" class="edge plan" d="M788 470L604 350" marker-end="url(#ahp)"/>
+  <path id="p2" class="edge plan" d="M788 550L604 660" marker-end="url(#ahp)"/>
+  <path id="p3" class="edge plan" d="M1132 470L1316 350" marker-end="url(#ahp)"/>
+  <path id="p4" class="edge plan" d="M1132 550L1316 660" marker-end="url(#ahp)"/>
+  <!-- Fecho -->
+  <path id="c0" class="edge" pathLength="1" d="M360 800H1560"/>
+  <g id="cd" opacity="0">
+    <circle cx="360" cy="800" r="16" fill="#1E9BE6"/><circle cx="660" cy="800" r="16" fill="#1E9BE6"/><circle cx="960" cy="800" r="16" fill="#1E9BE6"/><circle cx="1260" cy="800" r="16" fill="#1E9BE6"/><circle cx="1560" cy="800" r="16" fill="#1E9BE6"/>
+  </g>
+  <g id="tok" opacity="0"><circle r="30" fill="#1E9BE6" opacity=".35"/><circle r="14" fill="#fff"/></g>
+</svg>
+
+<!-- Panorama desconectado -->
+<div id="la" class="land" style="left:170px;top:360px">Sistemas legados</div>
+<div id="lb" class="land" style="left:760px;top:310px">ERP</div>
+<div id="lc" class="land" style="left:1330px;top:420px">WhatsApp e chat</div>
+<div id="ld" class="land" style="left:260px;top:620px">Identidade</div>
+<div id="le" class="land" style="left:960px;top:660px">Dados</div>
+
+<!-- Hoje -->
+<div id="nProd" class="node main" style="left:120px;top:390px"><h3>Seu produto</h3><p>backend próprio</p><div class="its"><div class="it" id="pi1">pedido aprovado</div><div class="it" id="pi2">efeito aplicado</div></div></div>
+<div id="nErp" class="node main" style="left:790px;top:390px"><h3>ERP · domínio</h3><p>autoridade do domínio</p><div class="its"><div class="it" id="ei1">rascunho</div><div class="it" id="ei2">publicar</div><div class="it" id="ei3">ativar</div><div class="it" id="ei4">reverter</div></div></div>
+<div id="nMot" class="node main" style="left:1460px;top:390px"><h3>Motor de fluxo</h3><p>execução durável</p><div class="its"><div class="it" id="mi1">executa</div><div class="it" id="mi2">aguarda sinal</div><div class="it" id="mi3">retenta</div><div class="it" id="mi4">recibo</div></div></div>
+<div id="nCh" class="node low" style="left:140px;top:750px"><h3>Chat · WhatsApp</h3><p>conversacional</p></div>
+<div id="nSso" class="node low" style="left:475px;top:750px"><h3>Login único</h3><p>SSO entre produtos</p></div>
+<div id="nEv" class="node low" style="left:810px;top:750px"><h3>Eventos · outbox</h3><p>entre sistemas</p></div>
+<div id="nLeg" class="node low" style="left:1490px;top:750px"><h3>Legado e dados</h3><p>sistemas existentes</p></div>
+<div id="tkLabel" class="abs">PROCESSO DEMO</div>
+<div id="ticker"><div class="ck" id="k1">Pedido aprovado</div><span class="ar">→</span><div class="ck" id="k2">Revisão ativa</div><span class="ar">→</span><div class="ck" id="k3">Motor executa</div><span class="ar">→</span><div class="ck" id="k4">Efeito + recibo</div><span class="ar">→</span><div class="ck" id="k5">Notifica responsável</div></div>
+
+<!-- Reuso -->
+<div id="nB" class="node main" style="left:120px;top:480px;height:160px;border-color:var(--accent)"><h3>Produto B</h3><p>outro backend</p></div>
+<div id="nC" class="node main" style="left:120px;top:670px;height:160px;border-color:var(--accent)"><h3>Produto C</h3><p>outro backend</p></div>
+<div id="pCfg" class="pill" style="left:1030px;top:740px">Mesmo motor · só configuração</div>
+
+<!-- Previsto -->
+<div id="nHub" class="node main" style="left:790px;top:430px;height:160px;border-color:var(--accent)"><h3>Motor de fluxo</h3><p>execução durável</p></div>
+<div id="nAi" class="node plan" style="left:100px;top:250px"><h3>Agentes de IA</h3><p>acionam fluxos governados (MCP)</p><span class="badge">Previsto</span></div>
+<div id="nTr" class="node plan" style="left:100px;top:560px"><h3>Gatilhos</h3><p>qualquer evento ou mensagem</p><span class="badge">Previsto</span></div>
+<div id="nKb" class="node plan" style="left:1320px;top:250px"><h3>Passos com conhecimento</h3><p>ancorados na base de conhecimento</p><span class="badge">Previsto</span></div>
+<div id="nSt" class="node plan" style="left:1320px;top:560px"><h3>Estúdio de processos</h3><p>mude processos sem código</p><span class="badge">Previsto</span></div>
+<div id="note" class="abs">A mesma regra de hoje: <em>contrato, revisão e recibo</em> em cada passo.</div>
+
+<!-- Fecho -->
+<div id="x1" class="abs close" style="top:370px">Sistemas conectados por <b>contrato.</b></div>
+<div id="x2" class="abs close" style="top:490px">Processos que mudam <b>sem código.</b></div>
+
+<script src="./assets/gsap.min.js"></script>
+<script>
+(function () {
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+  var ACC = "#1E9BE6";
+  function show(s, t, d) { tl.fromTo(s, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: d || 0.5, ease: "power2.out" }, t); }
+  function fade(s, t, d) { tl.to(s, { opacity: 1, duration: d || 0.4 }, t); }
+  function hide(s, t, d) { tl.to(s, { opacity: 0, duration: d || 0.4 }, t); }
+  function draw(s, t, d) { tl.set(s, { strokeDasharray: 1, strokeDashoffset: 1, opacity: 1 }, t); tl.to(s, { strokeDashoffset: 0, duration: d || 0.6, ease: "power1.inOut" }, t); }
+  function glow(s, t, d) {
+    tl.to(s, { borderColor: ACC, boxShadow: "0 0 46px rgba(30,155,230,.55)", duration: 0.3 }, t);
+    tl.to(s, { boxShadow: "0 0 0px rgba(30,155,230,0)", duration: d || 1.0 }, t + 0.3);
+  }
+  function lit(s, t) { tl.to(s, { opacity: 1, color: "#fff", backgroundColor: "rgba(30,155,230,.35)", duration: 0.25 }, t); }
+  function tok(x, y, t, d) { tl.to("#tok", { x: x, y: y, duration: d, ease: "none" }, t); }
+  function swap(a, b, t) { hide(a, t, 0.3); tl.fromTo(b, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, t + 0.25); }
+  function ck(s, t) { tl.to(s, { color: "#fff", borderColor: ACC, backgroundColor: "#0F2A44", duration: 0.25 }, t); }
+
+  tl.set("#tok", { x: 290, y: 540 }, 0);
+
+  // BATIDA 1 — PANORAMA DESCONECTADO
+  tl.fromTo("#h1", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+  fade("#s1", 0.8, 0.5);
+  var ids = ["#la", "#lb", "#lc", "#ld", "#le"];
+  ids.forEach(function (s, i) { show(s, 0.7 + i * 0.25, 0.5); });
+  ["#g1", "#g2", "#g3", "#g4", "#g5"].forEach(function (s, i) { tl.to(s, { opacity: 1, duration: 0.5 }, 1.6 + i * 0.2); });
+  ids.forEach(function (s, i) { tl.to(s, { y: (i % 2 ? 10 : -10), duration: 2.2, ease: "sine.inOut" }, 1.2); });
+  ["#g1", "#g2", "#g3", "#g4", "#g5"].forEach(function (s) { tl.to(s, { opacity: 0.25, duration: 0.25 }, 3.0); tl.to(s, { opacity: 1, duration: 0.25 }, 3.3); });
+
+  // BATIDA 2 — HOJE: CONTRATOS EXPLÍCITOS
+  swap("#h1", "#h2", 4.1); swap("#s1", "#s2", 4.1);
+  ids.forEach(function (s) { hide(s, 4.2, 0.5); });
+  ["#g1", "#g2", "#g3", "#g4", "#g5"].forEach(function (s) { hide(s, 4.2, 0.4); });
+  show("#nProd", 4.6); show("#nErp", 4.9); show("#nMot", 5.2);
+  draw("#e1", 5.4, 0.5); fade("#l1", 5.8, 0.3);
+  draw("#e2", 5.9, 0.5); fade("#l2", 6.3, 0.3);
+  lit("#ei1", 6.2); lit("#ei2", 6.6); lit("#ei3", 7.0); glow("#nErp", 7.0, 0.8);
+  tl.to("#ei4", { opacity: 0.9, color: "#FFD27A", duration: 0.25 }, 7.4);
+  show("#nCh", 6.4, 0.4); draw("#e5", 6.8, 0.4);
+  show("#nSso", 6.7, 0.4); draw("#e6", 7.1, 0.4);
+  show("#nEv", 7.0, 0.4); draw("#e7", 7.4, 0.4);
+  show("#nLeg", 7.3, 0.4); draw("#e8", 7.7, 0.4); fade("#l8", 8.0, 0.3);
+  fade("#tkLabel", 8.0, 0.3); fade("#ticker", 8.0, 0.4);
+  // Token do processo DEMO percorrendo ponta a ponta
+  tl.set("#tok", { opacity: 1 }, 8.4);
+  ck("#k1", 8.4); lit("#pi1", 8.4); glow("#nProd", 8.4, 0.8);
+  tok(960, 540, 8.7, 0.8); ck("#k2", 9.5); glow("#nErp", 9.4, 0.8);
+  tok(1630, 540, 9.9, 0.8); ck("#k3", 10.7); glow("#nMot", 10.6, 2.4);
+  lit("#mi1", 10.7); lit("#mi2", 11.0); lit("#mi3", 11.3); lit("#mi4", 11.6);
+  draw("#e3", 11.8, 0.9); fade("#l3", 12.1, 0.3);
+  tok(1630, 310, 11.9, 0.25); tok(290, 310, 12.15, 0.55); tok(290, 390, 12.7, 0.2);
+  ck("#k4", 12.8); lit("#pi2", 12.8); glow("#nProd", 12.8, 0.8);
+  tok(290, 810, 13.0, 0.5); ck("#k5", 13.5); glow("#nCh", 13.5, 1.0);
+  hide("#tok", 13.9, 0.3);
+
+  // BATIDA 3 — REUSO: PRODUTOS B E C
+  swap("#h2", "#h3", 14.2); swap("#s2", "#s3", 14.2);
+  ["#e3", "#l3", "#e5", "#e6", "#e7", "#e8", "#l8", "#l1", "#e1", "#nCh", "#nSso", "#nEv", "#nLeg", "#tkLabel", "#ticker"].forEach(function (s) { hide(s, 14.2, 0.4); });
+  hide("#pi1,#pi2", 14.2, 0.3);
+  tl.to("#nProd", { top: 290, height: 160, duration: 0.6, ease: "power2.inOut" }, 14.4);
+  tl.set("#nProd .its", { opacity: 0 }, 14.4);
+  show("#nB", 14.9, 0.5); show("#nC", 15.2, 0.5);
+  draw("#b1", 15.5, 0.3); draw("#b2", 15.7, 0.3); draw("#b3", 15.9, 0.3); draw("#b4", 15.9, 0.4); draw("#b5", 16.3, 0.4);
+  show("#pCfg", 16.6, 0.4); glow("#nMot", 16.7, 1.0); glow("#nErp", 16.5, 1.0);
+
+  // BATIDA 4 — PARA ONDE VAMOS (PREVISTO)
+  swap("#h3", "#h4", 17.9); swap("#s3", "#s4", 17.9);
+  ["#nProd", "#nB", "#nC", "#nErp", "#nMot", "#e2", "#l2", "#b1", "#b2", "#b3", "#b4", "#b5", "#pCfg"].forEach(function (s) { hide(s, 17.9, 0.4); });
+  show("#nHub", 18.3, 0.5);
+  show("#nAi", 18.6, 0.5); tl.to("#p1", { opacity: 1, duration: 0.4 }, 18.9);
+  show("#nTr", 19.1, 0.5); tl.to("#p2", { opacity: 1, duration: 0.4 }, 19.4);
+  show("#nKb", 19.6, 0.5); tl.to("#p3", { opacity: 1, duration: 0.4 }, 19.9);
+  show("#nSt", 20.1, 0.5); tl.to("#p4", { opacity: 1, duration: 0.4 }, 20.4);
+  fade("#note", 20.7, 0.4);
+
+  // FECHO — SÍNTESE
+  ["#h4", "#s4", "#nHub", "#nAi", "#nTr", "#nKb", "#nSt", "#p1", "#p2", "#p3", "#p4", "#note"].forEach(function (s) { hide(s, 21.4, 0.4); });
+  show("#x1", 21.8, 0.5); show("#x2", 22.2, 0.5);
+  tl.to("#root", { opacity: 1, duration: 0.01 }, 23.99);
+
+  window.__timelines["svc-integration"] = tl;
+})();
+</script>
+</body>
+</html>

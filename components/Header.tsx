@@ -1,86 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { NavLink } from './NavLink';
-import { usePathname } from 'next/navigation';
-import { useT } from './LangProvider';
-
-export function Header() {
-  const { t, lang, setLang, switching } = useT();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const pathname = usePathname();
-  const isHome = pathname === '/';
-
-  useEffect(() => {
-    if (!isHome) return;
-    const sections = document.querySelectorAll('section[id]');
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActiveSection(e.target.getAttribute('id'));
-        });
-      },
-      { threshold: 0.5 },
-    );
-    sections.forEach((s) => obs.observe(s));
-    return () => obs.disconnect();
-  }, [isHome]);
-
-  const isActive = (hash: string, home?: boolean) => {
-    if (home) return isHome && (activeSection === 'hero' || !activeSection);
-    return isHome && activeSection === hash.replace('#', '');
-  };
-
-  return (
-    <header className="header">
-      <div className="container">
-        <NavLink href="/" className="logo">
-          <img src="/imagine-logo.svg" alt="Imagine Apps" className="logo-img" />
-        </NavLink>
-        <nav id="primary-navigation" className={`nav${mobileOpen ? ' mobile-active' : ''}`}>
-          <ul className="nav-list">
-            <li>
-              <NavLink href="/" className={`nav-link${isActive('', true) ? ' active' : ''}`} onClick={() => setMobileOpen(false)}>
-                {t('nav-home')}
-              </NavLink>
-            </li>
-            <li>
-              <NavLink href="/sobre" className={`nav-link${pathname === '/sobre' ? ' active' : ''}`} onClick={() => setMobileOpen(false)}>
-                {t('nav-about')}
-              </NavLink>
-            </li>
-            <li>
-              <NavLink href="/#servicos" className={`nav-link${isActive('#servicos') ? ' active' : ''}`} onClick={() => setMobileOpen(false)}>
-                {t('nav-services')}
-              </NavLink>
-            </li>
-            <li>
-              <NavLink href="/#cases" className={`nav-link${isActive('#cases') ? ' active' : ''}`} onClick={() => setMobileOpen(false)}>
-                {t('nav-cases')}
-              </NavLink>
-            </li>
-            <li>
-              <NavLink href="/#contato" className={`nav-link btn-contact${isActive('#contato') ? ' active' : ''}`} onClick={() => setMobileOpen(false)}>
-                {t('nav-contact')}
-              </NavLink>
-            </li>
-            <li className="lang-switcher">
-              <button className={`lang-btn${lang === 'en' ? ' active' : ''}`} onClick={() => setLang('en')} disabled={switching || lang === 'en'}>EN</button>
-              <span>|</span>
-              <button className={`lang-btn${lang === 'pt' ? ' active' : ''}`} onClick={() => setLang('pt')} disabled={switching || lang === 'pt'}>PT</button>
-            </li>
-          </ul>
-        </nav>
-        <button
-          className={`menu-toggle${mobileOpen ? ' active' : ''}`}
-          aria-label={t('aria-open-menu')}
-          aria-expanded={mobileOpen}
-          aria-controls="primary-navigation"
-          onClick={() => setMobileOpen((v) => !v)}
-        >
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </header>
-  );
+import {useState} from 'react';
+import {NavLink} from './NavLink';
+import {usePathname} from 'next/navigation';
+import {useT} from './LangProvider';
+import {useSiteBrand} from './useSiteBrand';
+export function Header(){
+ const {lang,setLang,switching}=useT();const en=lang==='en',brand=useSiteBrand(),we=brand.company==='Welabs';const pathname=usePathname();const [mobileOpen,setMobileOpen]=useState(false);
+ const entries=we?[[brand.home,en?'Home':'Início'],['/welabs/produtos',en?'Products':'Produtos'],['/welabs/solucoes',en?'Solutions':'Soluções'],['/welabs/sobre',en?'About Welabs':'A Welabs']]:[['/',en?'Home':'Início'],['/portfolio',en?'Portfolio':'Portfólio'],['/servicos',en?'Our approach':'Atuação'],['/sobre',en?'About us':'Sobre']];
+ return <header className="header" onKeyDown={event=>{if(event.key==='Escape')setMobileOpen(false);}}><div className="container"><NavLink href={brand.home} className="logo"><img src={brand.logo} alt={brand.name} className="logo-img"/></NavLink><nav id="primary-navigation" aria-label={en?'Main navigation':'Navegação principal'} className={`nav${mobileOpen?' mobile-active':''}`}><ul className="nav-list">{entries.map(([url,label])=><li key={url}><NavLink href={url} aria-current={pathname===url?'page':undefined} className={`nav-link${pathname===url?' active':''}`} onClick={()=>setMobileOpen(false)}>{label}</NavLink></li>)}<li><NavLink href={we?'/welabs/produtos':'/#contato'} className="nav-link btn-contact" onClick={()=>setMobileOpen(false)}>{we?(en?'Explore products':'Explorar produtos'):(en?'Let’s talk':'Conversar')}</NavLink></li><li className="lang-switcher"><button className={`lang-btn${en?' active':''}`} onClick={()=>setLang('en')} disabled={switching||en} aria-label="English">EN</button><span aria-hidden="true">|</span><button className={`lang-btn${!en?' active':''}`} onClick={()=>setLang('pt')} disabled={switching||!en} aria-label="Português">PT</button></li></ul></nav><button className={`menu-toggle${mobileOpen?' active':''}`} aria-label={mobileOpen?(en?'Close menu':'Fechar menu'):(en?'Open menu':'Abrir menu')} aria-expanded={mobileOpen} aria-controls="primary-navigation" onClick={()=>setMobileOpen(v=>!v)}><span/><span/><span/></button></div></header>;
 }

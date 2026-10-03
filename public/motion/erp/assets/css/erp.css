@@ -1,0 +1,334 @@
+/* PALETA EDITORIAL E TELAS DO ERP */
+:root {
+  --brand-background: #f4f5f7;
+  --brand-ink: #141415;
+  --brand-accent: #4d57b7;
+  --brand-secondary: #eceef8;
+  --brand-surface: #ffffff;
+  --brand-muted: #5e6471;
+  --brand-line: #d8dbe3;
+  --brand-support-soft: #eef0fa;
+  --brand-window-page: #f4f5f7;
+  --brand-window-panel: #ffffff;
+  --brand-font: system-ui, sans-serif;
+}
+
+/* JANELA DE PRODUTO RECONSTRUÍDA */
+.erp-browser {
+  position: absolute;
+  top: 48px;
+  left: 85px;
+  width: 1750px;
+  height: 984px;
+  aspect-ratio: auto;
+  --fvp-accent: var(--brand-accent);
+  --fvp-ink: var(--brand-ink);
+  --fvp-panel: var(--brand-surface);
+  --fvp-page: var(--brand-window-page);
+  --fvp-line: var(--brand-line);
+  --fvp-muted: var(--brand-muted);
+  --fvp-sidebar-width: 20%;
+  --fvp-sidebar-label-opacity: 1;
+  --fvp-content-opacity: 1;
+  --fvp-content-y: 0px;
+  --fvp-chrome-height: 12%;
+  box-shadow: 0 24px 54px rgb(20 20 21 / 14%);
+}
+
+.erp-browser__tab-label {
+  font-size: 18px;
+}
+
+.erp-browser__address {
+  font-size: 17px;
+}
+
+.erp-browser__avatar {
+  width: 42px;
+  font-size: 15px;
+  background: var(--brand-accent);
+}
+
+.erp-browser__side-head {
+  font-size: 24px;
+}
+
+.erp-browser__side-items {
+  gap: 24px;
+  padding: 12%;
+}
+
+.erp-browser__side-item {
+  gap: 16px;
+  font-size: 20px;
+}
+
+.erp-browser__side-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.erp-browser__content {
+  padding: 30px 52px;
+  background: var(--brand-window-page);
+}
+
+.erp-product-content {
+  position: absolute;
+  inset: 30px 52px;
+  overflow: hidden;
+  color: var(--brand-ink);
+  font-family: var(--brand-font);
+}
+
+.erp-page {
+  position: absolute;
+  inset: 0;
+  padding: 8px 4px;
+  background: var(--brand-window-page);
+  opacity: 1;
+  visibility: visible;
+}
+
+.erp-page--hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.erp-page__crumbs {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--brand-muted);
+  font-size: 20px;
+}
+
+.erp-page__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  margin: 24px 0 28px;
+}
+
+.erp-page h1 {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+}
+
+.erp-demo-tag {
+  padding: 9px 14px;
+  border: 1px solid var(--brand-line);
+  border-radius: 999px;
+  background: var(--brand-surface);
+  color: var(--brand-muted);
+  font-size: 18px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.erp-table {
+  overflow: hidden;
+  border: 1px solid var(--brand-line);
+  border-radius: 14px;
+  background: var(--brand-surface);
+}
+
+.erp-table__header,
+.erp-project-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px 160px 360px 64px;
+  align-items: center;
+  gap: 18px;
+}
+
+.erp-table__header {
+  min-height: 60px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--brand-line);
+  background: var(--brand-secondary);
+  color: var(--brand-muted);
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.erp-project-row {
+  min-height: 100px;
+  padding: 14px 28px;
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+
+.erp-project-row__name {
+  display: block;
+  font-size: 30px;
+  font-weight: 680;
+  line-height: 1.18;
+}
+
+.erp-project-row__lead {
+  display: block;
+  margin-top: 8px;
+  color: var(--brand-muted);
+  font-size: 24px;
+}
+
+.erp-project-row__value {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.erp-project-row__status {
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #e6f2e9;
+  color: #1f6134;
+}
+
+.erp-project-row__open {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--brand-line);
+  border-radius: 12px;
+  color: var(--brand-accent);
+  font-size: 36px;
+}
+
+.erp-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 30px;
+  align-items: start;
+}
+
+.erp-detail-main {
+  min-width: 0;
+}
+
+.erp-project-description {
+  margin: 0 0 28px;
+  font-size: 24px;
+  line-height: 1.45;
+}
+
+.erp-detail-section-title {
+  margin: 0 0 16px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.erp-issue-tree {
+  overflow: hidden;
+  border: 1px solid var(--brand-line);
+  border-radius: 12px;
+  background: var(--brand-surface);
+}
+
+.erp-issue-header,
+.erp-issue-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px 120px;
+  align-items: center;
+  gap: 16px;
+}
+
+.erp-issue-header {
+  min-height: 52px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--brand-line);
+  background: var(--brand-secondary);
+  color: var(--brand-muted);
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.erp-issue-row {
+  min-height: 72px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--brand-line);
+  font-size: 22px;
+}
+
+.erp-issue-row:last-child {
+  border-bottom: 0;
+}
+
+.erp-issue-row--child .erp-issue-row__subject {
+  padding-left: 44px;
+  color: var(--brand-muted);
+}
+
+.erp-issue-row__subject {
+  font-size: 24px;
+  font-weight: 580;
+}
+
+.erp-issue-row__status,
+.erp-issue-row__effort {
+  font-size: 24px;
+  white-space: nowrap;
+}
+
+.erp-issue-row__status {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eceef8;
+  color: #3e478d;
+  font-weight: 650;
+}
+
+.erp-detail-aside {
+  margin-top: 118px;
+  padding: 20px;
+  border: 1px solid var(--brand-line);
+  border-radius: 12px;
+  background: var(--brand-surface);
+}
+
+.erp-detail-aside__label {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--brand-muted);
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.erp-detail-aside__value {
+  font-size: 24px;
+  font-weight: 650;
+}
+
+.erp-side-item--active {
+  color: #ffffff;
+}
+
+.erp-side-item--active .fvp-browser__side-icon {
+  border-color: var(--brand-accent);
+  background: var(--brand-accent);
+}
+
+.erp-issue-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  margin-right: 10px;
+  color: var(--brand-muted);
+  font-size: 25px;
+}
+
+.erp-entity-flight {
+  border-radius: 6px;
+  background: var(--brand-surface);
+  color: var(--brand-ink);
+  font-size: 30px;
+  font-weight: 680;
+  line-height: 1.18;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgb(20 20 21 / 12%);
+}

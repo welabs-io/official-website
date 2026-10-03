@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sistema-ima",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "Sistema IMA e cobranças",
+  "kind": "module",
+  "maturity": "concept",
+  "parentId": "wego",
+  "brand": {
+    "name": "IMA Alagoas",
+    "status": "verified",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#00A85D"
+    },
+    "typography": {
+      "family": "system-ui"
+    },
+    "logoAssetId": "brand-logo"
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 65108,
+      "sha256": "592070019c05c84aafeba10fc139e038e3ca3cf8ee173c62ff50d14acdcee08e",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23660,
+      "sha256": "d3a67836e58aca75c6087f78112c749a7b8f81f4f133218dc434b179a29195af",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 70305,
+      "sha256": "5167f98efe4a18f056ff72368e7ebe54bd710c1ec98deb3307ad02811750969e",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 24569,
+      "sha256": "7b3122e0e11c97c5392a2e1997723bad50453deb47f25988c5f9844c619f0125",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 63997,
+      "sha256": "a349471a69f57f689b976e2d615f448e45f3d8fc0dee4683ebb2ace44fe06350",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23468,
+      "sha256": "00dd36feabf26f6dc55d5e6895c5e3ad4c24fb83e5142fa094ea88d58f7d7ed2",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 358068,
+      "sha256": "7c85b55df463c2fe3c9eeb4b303bd07ae47186bd1d2b124e74644dbd2ae47010"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 61657,
+      "sha256": "0d15f839b4ef47c7f4300e4801a3af8b9aeeb4f1d5bf36a9fdbcc35ed34b6b4b",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23633,
+      "sha256": "a1b79c1468b9746b329c7873f57333970dafe806bfed070e264d7a070426249b",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 66400,
+      "sha256": "90ed07ed733e8505294ae3125a237a0bb1f4e07f17f04eefc8f14375fec0cf46",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 24539,
+      "sha256": "c0b01196c229a35e758480a0323ce4db0d656a9019843b0dbdb9aee29ed6c123",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 58886,
+      "sha256": "0b0f6b8519cb1836ad7a75c4eee08c53cfc5697394b2f45e05fbfdc74fab21ae",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23359,
+      "sha256": "2255760ec1a7e5b2c30c732a2de0de122ef9a8f5ac40e728ce81a56a7aead654",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 336703,
+      "sha256": "972086961657ed6e1ad05887ec3397f5175dc0cb24b3bf0bc94deedfd99c110d"
+    },
+    {
+      "id": "brand-logo",
+      "path": "assets/logo.svg",
+      "mime": "image/svg+xml",
+      "bytes": 15310,
+      "sha256": "6760715bbbfd9873772f7698c2e18c68efcc3f81d022da3f77c44ba95727dcce"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "Sistema IMA e cobranças",
+      "summary": "Módulo do ecossistema WeGO: solicitações DEMO, organização administrativa e acompanhamento de demandas em uma visão conceitual.",
+      "audience": "Equipes administrativas e usuários dos serviços do IMA.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Veja a demanda. Uma solicitação DEMO reúne documentos ilustrativos para a equipe entender o contexto do atendimento.\nAgrupe demandas. Uma visão por etapa ajuda a equipe a organizar as demandas administrativas e identificar o que acompanhar.\nSiga a demanda. Registrar, consultar e acompanhar formam uma sequência conceitual para manter o contexto do atendimento.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Documentos ilustrativos de solicitação DEMO e documento DEMO representam o contexto do atendimento."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Veja a demanda",
+          "summary": "Uma solicitação DEMO reúne documentos ilustrativos para a equipe entender o contexto do atendimento.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Documentos ilustrativos de solicitação DEMO e documento DEMO representam o contexto do atendimento."
+        },
+        {
+          "id": "scene-2",
+          "title": "Agrupe demandas",
+          "summary": "Uma visão por etapa ajuda a equipe a organizar as demandas administrativas e identificar o que acompanhar.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Quadro ilustrativo de demandas DEMO nas etapas genéricas de entrada, organização e acompanhamento."
+        },
+        {
+          "id": "scene-3",
+          "title": "Siga a demanda",
+          "summary": "Registrar, consultar e acompanhar formam uma sequência conceitual para manter o contexto do atendimento.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Jornada administrativa ilustrativa com registrar, consultar e acompanhar uma demanda."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "Sistema IMA e cobranças",
+      "summary": "A module of the WeGO ecosystem: DEMO requests, administrative organization and request follow-up in a concept view.",
+      "audience": "Administrative teams and users of IMA services.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "View the request. A DEMO request brings illustrative documents together so the team can understand the service context.\nGroup requests. A view by stage helps the team organize administrative requests and identify what to follow up.\nTrack the request. Recording, consulting and following up form a conceptual sequence for keeping the service context.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "Illustrative DEMO request and document records represent the service context."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "View the request",
+          "summary": "A DEMO request brings illustrative documents together so the team can understand the service context.",
+          "assetId": "en-scene-1",
+          "alt": "Illustrative DEMO request and document records represent the service context."
+        },
+        {
+          "id": "scene-2",
+          "title": "Group requests",
+          "summary": "A view by stage helps the team organize administrative requests and identify what to follow up.",
+          "assetId": "en-scene-2",
+          "alt": "An illustrative board of DEMO requests in generic intake, organization and follow-up stages."
+        },
+        {
+          "id": "scene-3",
+          "title": "Track the request",
+          "summary": "Recording, consulting and following up form a conceptual sequence for keeping the service context.",
+          "assetId": "en-scene-3",
+          "alt": "An illustrative administrative journey to record, consult and follow a request."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "e5885422eb130a54d018f09ca591f39baffa4f56bad08706357cc9bacac2bcb5"
+}

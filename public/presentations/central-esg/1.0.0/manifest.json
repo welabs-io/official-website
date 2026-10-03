@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "central-esg",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "Central ESG",
+  "kind": "client-case",
+  "maturity": "concept",
+  "brand": {
+    "name": "Grupo Report",
+    "status": "verified",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#3A6BAE"
+    },
+    "typography": {
+      "family": "system-ui"
+    },
+    "logoAssetId": "brand-logo"
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 63517,
+      "sha256": "25fdd40fef67ebfcda66231ef248ad8d7583ed608768d02598d3d87a3e1eaf6d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 6485,
+      "sha256": "d5bff984fd6ec34ef7d1f0cc535d0b13acdde6596c212862d7e4f8a22edded6d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 72924,
+      "sha256": "f5070757d40845a1efbf9c103ddbc1ccb5a4f57eb502dda894264b7aef10bcee",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 7431,
+      "sha256": "0a9bddb628ff23a9c16347a9ead59cce0031a51844c019628c85179798e631f5",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 63722,
+      "sha256": "7dce6495cb723948e9cb0df66473cfe381fcf5ff08991fdfce466f7ea607fd68",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 6029,
+      "sha256": "80914bc7263afacf55339a440b638b058b62869681d1c22d8ec594324d9b5a30",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 357008,
+      "sha256": "30f1aec929b10aa7ca00719285f5a525a17c2e14db41d5b4b726bd97f52fb7ee"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 63460,
+      "sha256": "0bf583176b8cfe2c0a0993af161f2cea50949281fd5afec72842753b2834405c",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 6485,
+      "sha256": "6925744fcf238769bf9a7cf9429eca738eb9c639e97cdf1b2225353c456feb88",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 66694,
+      "sha256": "4949671b5a75b1c6f1f358c5a2d63176d0730dcf7608f95e556f7f69bf16f801",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 7388,
+      "sha256": "1fd18d86367e1c34b600c91b868c77c3fc457ff1b670e5b9e53d2a967666c1b4",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 62620,
+      "sha256": "8c559fb4b3fe96fe59ce8d39b6630795b1a8d2ece2740dd0b282a151e9c93cdf",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 6009,
+      "sha256": "5b628fbcaa9a94b4c0ce3a069090cd4ccd59207a4053c7093b863bfd7ca2bb69",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 346995,
+      "sha256": "b1763b5fdf23db1d2a022d02e3b0e56720730cf8f3d73a423a15fbd6240f02b4"
+    },
+    {
+      "id": "brand-logo",
+      "path": "assets/logo.svg",
+      "mime": "image/svg+xml",
+      "bytes": 2383,
+      "sha256": "601b045b487dfdff430dd41a4518915633cfdddb3a63339662880adc288491b3"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "Central ESG",
+      "summary": "Apresentação conceitual da coleta e comunicação de indicadores de sustentabilidade.",
+      "audience": "Empresas e equipes de sustentabilidade.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Indicador para coleta. Um indicador criado para a demonstração reúne registros de exemplo e ajuda a organizar a coleta.\nIndicadores em acompanhamento. O quadro ilustra as etapas do trabalho com o indicador, da organização dos registros à preparação da comunicação.\nComunicação do indicador. Um painel demonstra a comunicação do indicador. O gráfico usa índices fictícios criados apenas para esta apresentação.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Dois documentos vazios de demonstração representam a organização da coleta de um indicador fictício."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Indicador para coleta",
+          "summary": "Um indicador criado para a demonstração reúne registros de exemplo e ajuda a organizar a coleta.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Dois documentos vazios de demonstração representam a organização da coleta de um indicador fictício."
+        },
+        {
+          "id": "scene-2",
+          "title": "Indicadores em acompanhamento",
+          "summary": "O quadro ilustra as etapas do trabalho com o indicador, da organização dos registros à preparação da comunicação.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Quadro com três etapas e itens DEMO mostra um acompanhamento conceitual, sem dados operacionais."
+        },
+        {
+          "id": "scene-3",
+          "title": "Comunicação do indicador",
+          "summary": "Um painel demonstra a comunicação do indicador. O gráfico usa índices fictícios criados apenas para esta apresentação.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Painel ilustrativo com barras de índices fictícios, sem resultados de sustentabilidade reais."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "Central ESG",
+      "summary": "A concept presentation of collecting and communicating sustainability indicators.",
+      "audience": "Companies and sustainability teams.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "Collection with context. An indicator created for this demonstration brings example records together and helps organize collection.\nIndicators in follow-up. The board illustrates work on an indicator, from organizing records to preparing its communication.\nCommunication in focus. A panel demonstrates how to communicate the indicator. The chart uses fictional indices created only for this presentation.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "Two empty demonstration documents represent the organization of collection for a fictional indicator."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Collection with context",
+          "summary": "An indicator created for this demonstration brings example records together and helps organize collection.",
+          "assetId": "en-scene-1",
+          "alt": "Two empty demonstration documents represent the organization of collection for a fictional indicator."
+        },
+        {
+          "id": "scene-2",
+          "title": "Indicators in follow-up",
+          "summary": "The board illustrates work on an indicator, from organizing records to preparing its communication.",
+          "assetId": "en-scene-2",
+          "alt": "A board with three stages and DEMO items shows a concept of follow-up, without operational data."
+        },
+        {
+          "id": "scene-3",
+          "title": "Communication in focus",
+          "summary": "A panel demonstrates how to communicate the indicator. The chart uses fictional indices created only for this presentation.",
+          "assetId": "en-scene-3",
+          "alt": "An illustrative panel with bars of fictional indices and no actual sustainability results."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "538a2e1d7346d58ac8a78f49a06cc56a95db43650a88abdee3eeb40b98a4738c"
+}

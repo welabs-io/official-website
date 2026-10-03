@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useT } from './LangProvider';
+import { useSiteBrand } from './useSiteBrand';
 
 type NavCtx = { navigate: (href: string) => void };
 const NavContext = createContext<NavCtx | null>(null);
@@ -52,11 +53,12 @@ export function PreloaderProvider({ children }: { children: React.ReactNode }) {
 }
 
 function PreloaderView({ loaded }: { loaded: boolean }) {
+  const brand = useSiteBrand();
   return (
     <div id="preloader" className={loaded ? 'loaded' : ''}>
       <div className="loader-content">
         <div className="loader-logo">
-          <img src="/favicon.png" alt="Imagine Logo" />
+          <img src={brand.favicon} alt={`${brand.name} Logo`} />
         </div>
         <div className="loader-ring"></div>
       </div>

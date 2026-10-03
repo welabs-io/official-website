@@ -2,6 +2,8 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useT } from './LangProvider';
 import { getProject, type ProjectId } from '@/lib/projects';
+import { getPortfolioCopy } from '@/lib/portfolio-copy';
+import Link from 'next/link';
 
 type Ctx = { open: (id: ProjectId) => void };
 const ModalCtx = createContext<Ctx | null>(null);
@@ -12,7 +14,7 @@ export function useProjectModal() {
 }
 
 export function ProjectModalProvider({ children }: { children: React.ReactNode }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   const [projectId, setProjectId] = useState<ProjectId | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
@@ -66,21 +68,13 @@ export function ProjectModalProvider({ children }: { children: React.ReactNode }
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [close, projectId]);
 
-  const img = projectId ? getProject(projectId).image : '';
-  const title = projectId ? t(`portfolio-${projectId}-title`) : '';
-  const cat = projectId ? t(`portfolio-${projectId}-cat`) : '';
-  const descKey = projectId ? `modal-${projectId}-desc` : '';
-  const desc = projectId ? (t(descKey) !== descKey ? t(descKey) : t('modal-generic-desc')) : '';
-
-  const features: string[] = [];
-  if (projectId) {
-    const base = t(`modal-${projectId}-f1`) !== `modal-${projectId}-f1` ? projectId : 'generic';
-    for (let i = 1; i <= 4; i++) {
-      const k = `modal-${base}-f${i}`;
-      const v = t(k);
-      if (v && v !== k) features.push(v);
-    }
-  }
+  const project = projectId ? getProject(projectId) : null;
+  const copy = project ? getPortfolioCopy(project.product, lang === 'en') : null;
+  const img = project?.image ?? '';
+  const title = project?.product.title ?? '';
+  const cat = copy?.sector ?? '';
+  const desc = copy?.challenge ?? '';
+  const features = copy?.capabilities ?? [];
 
   return (
     <ModalCtx.Provider value={{ open }}>
@@ -103,7 +97,8 @@ export function ProjectModalProvider({ children }: { children: React.ReactNode }
           </button>
           <div className="modal-body">
             <div className="modal-left">
-              {img && <img src={img} alt={title || 'Projeto'} />}
+              {img && <img src={img} alt={`${title} — recriação ilustrativa com dados fictícios`} />}
+              <p style={{ fontSize: 11, color: '#899ba5', paddingTop: 12 }}>{lang === 'en' ? 'Illustrative recreation · fictional data' : 'Recriação ilustrativa · dados fictícios'}</p>
             </div>
             <div className="modal-right">
               <div className="modal-header-info">
@@ -123,6 +118,7 @@ export function ProjectModalProvider({ children }: { children: React.ReactNode }
                   {features.map((f, i) => <li key={i}>{f}</li>)}
                 </ul>
               </div>
+              {project && <Link href={`/portfolio-preview/${project.product.slug}`} onClick={close} style={{ display: 'inline-block', marginTop: 24, color: '#0098da' }}>{lang === 'en' ? 'Explore the product →' : 'Conhecer o produto →'}</Link>}
             </div>
           </div>
         </div>

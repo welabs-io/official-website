@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "contractId": "product-motion-kit",
+  "contractVersion": 2,
+  "revision": "pilot-2",
+  "slots": [
+    "stageShell",
+    "brandTokens",
+    "contentData",
+    "entityAnchors",
+    "measuredActions",
+    "timeline",
+    "qaProfile"
+  ],
+  "stage": {
+    "width": 1920,
+    "height": 1080,
+    "safeInset": 48,
+    "minimumPrimaryTextPx": 24
+  },
+  "coordinateRoot": "product-stage",
+  "timelineOwner": "HyperFrames"
+}

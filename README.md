@@ -1,83 +1,43 @@
-# Imagine Apps
+# Imagine Apps e Welabs — prévia institucional
 
-Site institucional da Imagine Apps — landing page com portfólio de projetos, página "Sobre" e formulário de contato.
+Website-v2 com distribuição institucional das duas empresas. Imagine organiza serviços (know-how em movimento), produtos com cliente e clientes por segmento. Welabs apresenta sua plataforma e produtos próprios pelo tipo, sem marca de produto: ERP, Flow, KB, CRM e Ecossistema Monitoramento. As peças animadas (HyperFrames) entram por `scripts/sync-motion.mjs`; o ranking de ênfase fica em `lib/emphasis.json`.
 
-## Stack
+## Rodar localmente
 
-- Next.js 15 (App Router) + React 19
-- TypeScript
-- CSS global (`app/globals.css`)
-- Resend para envio de e-mails do formulário de contato
+Next.js 16.3.3 instalado, React 19, TypeScript e CSS. Node >=20.9.0 e npm.
 
-## Requisitos
-
-- Node.js 18.18+ (recomendado 20+)
-- npm
-
-## Como rodar
-
-```bash
-npm install
-npm run dev
+```sh
+npm ci
+npm run dev -- --hostname 127.0.0.1
 ```
 
-Acesse `http://localhost:3000`.
+Apreciação: http://127.0.0.1:3000/ e http://127.0.0.1:3000/welabs. `?lang=pt` e `?lang=en` selecionam idioma, inclusive no HTML do servidor. A seleção de idioma e os links conservam a query; nomes reais das marcas permanecem.
 
-### Scripts
+## Páginas e componentes
 
-- `npm run dev` — ambiente de desenvolvimento
-- `npm run build` — build de produção
-- `npm start` — sobe o build de produção
-- `npm run lint` — lint
-- `npm run typecheck` — verificação de tipos
-- `npm test` — testes unitários
-- `npm run check` — lint, tipos, testes e build de produção
+- Imagine: `/`, `/sobre`, `/servicos`, `/portfolio`, `/portfolio/[slug]`.
+- Welabs: `/welabs`, `/welabs/sobre`, `/welabs/solucoes`, `/welabs/produtos`, `/welabs/produtos/[slug]`.
+- Apresentações independentes: `/apresentacoes/[slug]` e `/presentation-downloads/[slug]-1.0.0.zip`. Pacotes aposentados (que citam órgão de cliente ou codinome interno) respondem 404 em `proxy.ts` e não são versionados.
+- Filmes: `/portfolio/filmes`; serviços em `/servicos`; produtos só com filme (IUS, Netsafety, Report CRM) em `/portfolio/[slug]`. URLs públicas que substituem ids internos ficam em `lib/public-slugs.ts`.
+- Os caminhos anteriores `/portfolio-preview` e `/portfolio-preview/welabs` redirecionam para os novos destinos locais.
 
-## Variáveis de ambiente
+`InstitutionalSite` reúne consumidores institucionais; `CompanyHero` apresenta produtos nas duas homes e `PortfolioShowcase` organiza covers/coleção. `Presentation` oferece galeria nativa com cenas, leitura, teclado e ampliação; o player independente abre como alternativa em iframe isolado. `lib/presentation-catalog.json` e `lib/presentation-visuals.json` são projeções públicas mínimas, e `lib/framepacks.server.ts` lê os manifests públicos permitidos. `lib/product-context.json` apresenta problema/participação de modo proporcional às evidências. `proxy.ts` envia ao layout o idioma validado da query. Header/footer/JSON-LD/metadados respeitam a empresa corrente.
 
-Crie um `.env.local` na raiz:
+Os 22 pacotes públicos estão em `public/presentations/<id>/1.0.0`, com poster PNG/SVG, player HTML PT/EN e manifest. Não incluem fontes, prints reais, documentos internos, APIs ou dados do produto. Downloads ZIP contêm apenas o pacote. A marca sem logo verificado é apresentada com identidade contextual, sem inventar um símbolo. Veja [documentação de reuso](docs/PORTFOLIO.md).
 
-```
-RESEND_API_KEY=sua_chave_resend
-CONTACT_TO=destinatario@exemplo.com
-CONTACT_FROM=Imagine Apps <no-reply@seudominio.com>
-```
+## Verificar
 
-O endpoint do formulário fica em `app/api/contact`.
-
-## Estrutura
-
-```
-app/
-  api/contact/       # endpoint do formulário
-  sobre/             # página Sobre
-  HomeClient.tsx     # home (hero, métricas, portfólio, contato)
-  layout.tsx
-  page.tsx
-  globals.css
-components/
-  WorkCarousel.tsx   # carrossel de projetos da home
-  ProjectModal.tsx   # modal de detalhes do projeto
-  LangProvider.tsx   # i18n (pt/en)
-  ContactForm.tsx
-  Header.tsx / Footer.tsx / Chrome.tsx
-public/
-  portfolio/         # imagens dos projetos
+```sh
+npm run check
+node scripts/check-portfolio.mjs
 ```
 
-## Internacionalização
+O segundo comando exige o preview local rodando; `PORTFOLIO_PREVIEW_URL` pode selecionar outro servidor local. Verifica 22 pacotes, hashes de 326 assets, rotas nos dois idiomas, título/HTML localizado, players, ZIPs, seleção, ownership e aliases. Os testes do contato não enviam email.
 
-Os textos passam por `useT()` do `LangProvider`. Para adicionar idiomas ou chaves, edite `components/LangProvider.tsx`.
+## Formulário Imagine
 
-## Portfólio
+O endpoint original `app/api/contact` conserva validação e proteção de envio. Variáveis server-side: `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM`; consulte `.env.example`. Não configurar secrets em assets ou código client. Nenhum formulário Imagine é utilizado pela Welabs; o CTA Welabs atual explora produtos.
 
-A lista de projetos do carrossel está em `components/WorkCarousel.tsx`. Para adicionar um novo projeto:
+## Limites da prévia
 
-1. Coloque a imagem em `public/portfolio/`.
-2. Adicione uma entrada no array `projects`.
-3. Cadastre as chaves `portfolio-<id>-cat`, `portfolio-<id>-title`, `portfolio-<id>-desc` no `LangProvider`.
-4. Se tiver página de detalhes no modal, registre em `ProjectModal.tsx`.
-
-## Deploy
-
-Qualquer plataforma que suporte Next.js 15 (Vercel, Netlify, Node self-hosted). Lembre de configurar as variáveis de ambiente do Resend.
+A versão é local, `noindex`, robots bloqueado e sitemap vazio. Não houve deploy externo. As apresentações são conceituais/ilustrativas: não comprovam operação atual, resultado quantitativo ou autoria integral nos produtos de clientes. Produtos próprios conservam estágios de desenvolvimento/Alpha; históricos ficam identificados e fora da coleção principal. Publicação futura exige configuração de destinos e revisão de escopo/atribuição, sem inferir domínio Welabs.

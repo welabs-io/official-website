@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "licenciamento",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "Licenciamento ambiental",
+  "kind": "module",
+  "maturity": "concept",
+  "parentId": "wego",
+  "brand": {
+    "name": "IMA Alagoas",
+    "status": "verified",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#388E3C"
+    },
+    "typography": {
+      "family": "system-ui"
+    },
+    "logoAssetId": "brand-logo"
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 65473,
+      "sha256": "a505f6be1dc4bff288c772ec33cd29a3ec37f121af7698f60f9d4ff89c1ff1ac",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23741,
+      "sha256": "a1244096ab0f5ea674f48d0b7ddd2d890ea13ee0cc4d280a0cab184990dca8ce",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 71279,
+      "sha256": "b23e27b48c20355179e19ae390b49a3d639f95a8a25677893cbd658488df9bf3",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 24668,
+      "sha256": "3f635f958fa94d49b9a403b8ee9dd320c270c92eddf1562a24bff6d68f7b0e0b",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 64801,
+      "sha256": "6498640bf154e01de66074e244352ac8d8ff5973d62349a2f5d4ab475b9a6bc4",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23473,
+      "sha256": "67d66360976c231f6799221971a9328cf8e7ef66377f6abd024402ec3026421e",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 361445,
+      "sha256": "b37c55baae4edb29126c6ee4df0fd61afb6e7a2c361616207fd2d6fa5810fba7"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 59638,
+      "sha256": "ef677a6c828edba4f2b154deb6ecf39da9eeb1c324ae554d73ebc91481033f17",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23542,
+      "sha256": "8b2c284f5be2da706b3331e98eca9ac39c9a363c983591ef33fce1233840707d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 62543,
+      "sha256": "758eddef72caf048e9e169f7a2b0ec9314f2b7b170606c861d8ba1fe49494d3e",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 24466,
+      "sha256": "97ce59977e0049f05e351ec641e80a69b77bfac6593d9ae33c6dca26c8eedc66",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 57867,
+      "sha256": "d09a029e51baa6ed8c4c589a04c6e5ec16e0896164cd85dd9842a2db9108e90c",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 23266,
+      "sha256": "858a99a923d6a74f7017814e16b2d1eefa7b3d0d3d67be0cee417cfec1f5bd8d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 324718,
+      "sha256": "3de8b1e74c7cad3ab6ff6e25d0096ebafb64a50866b2fceca62218a2f7e364d8"
+    },
+    {
+      "id": "brand-logo",
+      "path": "assets/logo.svg",
+      "mime": "image/svg+xml",
+      "bytes": 15310,
+      "sha256": "6760715bbbfd9873772f7698c2e18c68efcc3f81d022da3f77c44ba95727dcce"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "Licenciamento ambiental",
+      "summary": "Módulo do WeGO em contexto institucional IMA, com requerimentos e acompanhamento ilustrativos.",
+      "audience": "Requerentes e equipes de acompanhamento administrativo.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Requerimento exemplo. Um requerimento fictício reúne o contexto da solicitação em uma apresentação documental ilustrativa.\nOrganização de documentos. Documentos de demonstração ficam organizados em grupos genéricos para facilitar a consulta do contexto.\nEtapas do pedido. O pedido exemplo ganha uma visão de suas etapas ilustrativas para apoiar o acompanhamento da solicitação.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Documentos vazios de demonstração representam um requerimento fictício em contexto institucional IMA."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Requerimento exemplo",
+          "summary": "Um requerimento fictício reúne o contexto da solicitação em uma apresentação documental ilustrativa.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Documentos vazios de demonstração representam um requerimento fictício em contexto institucional IMA."
+        },
+        {
+          "id": "scene-2",
+          "title": "Organização de documentos",
+          "summary": "Documentos de demonstração ficam organizados em grupos genéricos para facilitar a consulta do contexto.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Quadro ilustrativo de documentos fictícios agrupados para consulta, sem conteúdo de processo real."
+        },
+        {
+          "id": "scene-3",
+          "title": "Etapas do pedido",
+          "summary": "O pedido exemplo ganha uma visão de suas etapas ilustrativas para apoiar o acompanhamento da solicitação.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Jornada conceitual de pedido fictício, organização de documentos e consulta de contexto."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "Environmental licensing",
+      "summary": "A WeGO module in the IMA institutional context, with illustrative requests and follow-up.",
+      "audience": "Applicants and administrative follow-up teams.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "Example request. A fictional request brings application context together in an illustrative document view.\nGroups of files. Demonstration documents sit in generic groups to help teams consult their context.\nRequest stages. An example request gains a view of illustrative stages to support follow-up.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "Empty demonstration documents represent a fictional request in the IMA institutional context."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Example request",
+          "summary": "A fictional request brings application context together in an illustrative document view.",
+          "assetId": "en-scene-1",
+          "alt": "Empty demonstration documents represent a fictional request in the IMA institutional context."
+        },
+        {
+          "id": "scene-2",
+          "title": "Groups of files",
+          "summary": "Demonstration documents sit in generic groups to help teams consult their context.",
+          "assetId": "en-scene-2",
+          "alt": "Illustrative board of fictional documents grouped for consultation, without real process content."
+        },
+        {
+          "id": "scene-3",
+          "title": "Request stages",
+          "summary": "An example request gains a view of illustrative stages to support follow-up.",
+          "assetId": "en-scene-3",
+          "alt": "Concept journey of a fictional request, document organization and context consultation."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "213389656f38dcf2df3b9fee76c90f73d19c0b3cc1c414957a97d7ac3bb4a038"
+}

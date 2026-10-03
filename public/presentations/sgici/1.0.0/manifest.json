@@ -1,0 +1,226 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sgici",
+  "version": "1.0.0",
+  "publisher": "Imagine",
+  "productName": "SGICI",
+  "kind": "client-case",
+  "maturity": "concept",
+  "brand": {
+    "name": "SGICI",
+    "status": "context-only",
+    "palette": {
+      "surface": "#10141C",
+      "ink": "#FFFFFF",
+      "accent": "#8EA4D2"
+    },
+    "typography": {
+      "family": "system-ui"
+    }
+  },
+  "assets": [
+    {
+      "id": "pt-br-scene-1",
+      "path": "posters/pt-BR-scene-1.png",
+      "mime": "image/png",
+      "bytes": 59628,
+      "sha256": "3ede8e91e087a12c60ffb6885afee58ccde39d59574c18f6c002f9ba5e07251d",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-1",
+      "path": "assets/pt-BR-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3089,
+      "sha256": "d4577df9a0fba8420f623854c81cecd47e8aee61f21bff71d6794a004d68cc14",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-2",
+      "path": "posters/pt-BR-scene-2.png",
+      "mime": "image/png",
+      "bytes": 62560,
+      "sha256": "e186dc769af9f63f8490b5b9dc55b7c4316d9ace466cb319085c6355207eafa2",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-2",
+      "path": "assets/pt-BR-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3988,
+      "sha256": "2fe1c6c2ee30c90c959daf035ec60252049ecfa887abeb22ca916a5d4c9f3891",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-scene-3",
+      "path": "posters/pt-BR-scene-3.png",
+      "mime": "image/png",
+      "bytes": 58342,
+      "sha256": "5a5af7f70af03f97875ab2f28719daaf88efedafbb2aacfb1b17263ca26c6e17",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-vector-3",
+      "path": "assets/pt-BR-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 2533,
+      "sha256": "3ed08056e76dd0b88876e4b6240c1d836bb08dc4691017d641f5411d67711c7c",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "pt-br-player",
+      "path": "player/pt-BR.html",
+      "mime": "text/html",
+      "bytes": 325533,
+      "sha256": "d80eb6c010cef9fee806685523ebdb7edf7e6228f86d4c40375c77afe60fb545"
+    },
+    {
+      "id": "en-scene-1",
+      "path": "posters/en-scene-1.png",
+      "mime": "image/png",
+      "bytes": 54385,
+      "sha256": "d80ef5d4bad16524511254f00fdaa5724750ba024aec9288c5542d5c6767785a",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-1",
+      "path": "assets/en-scene-1.svg",
+      "mime": "image/svg+xml",
+      "bytes": 2970,
+      "sha256": "f419de84ad9331e2397cff9f73d51641b0fb1e7545e03fd259b5281009379097",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-2",
+      "path": "posters/en-scene-2.png",
+      "mime": "image/png",
+      "bytes": 59811,
+      "sha256": "0532be241287f61b027e891c795a88d0dd4939bcb1e1cc22e7f04821cfcc6cab",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-2",
+      "path": "assets/en-scene-2.svg",
+      "mime": "image/svg+xml",
+      "bytes": 3888,
+      "sha256": "1617620c5ca73cf57fd1bd768e917c4cf0d369c11cf8d040892854b5b4c6f570",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-scene-3",
+      "path": "posters/en-scene-3.png",
+      "mime": "image/png",
+      "bytes": 54896,
+      "sha256": "2ffdcdb4febc64807d5eff96b0af1defbdb35d3bae450e00cf82d1212d89b656",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-vector-3",
+      "path": "assets/en-scene-3.svg",
+      "mime": "image/svg+xml",
+      "bytes": 2503,
+      "sha256": "3f23761b63df8d13524ac61fd0637b847638fe65f46fc1326746d6f688029922",
+      "width": 1200,
+      "height": 860
+    },
+    {
+      "id": "en-player",
+      "path": "player/en.html",
+      "mime": "text/html",
+      "bytes": 303104,
+      "sha256": "9921bf166bf57d520c738dfc6c6f369594818cb760998a3a0fddbfa55b3fea4f"
+    }
+  ],
+  "locales": {
+    "pt-BR": {
+      "title": "SGICI",
+      "summary": "Apresentação conceitual reservada: organizar importações e comparar cenários por um índice abstrato.",
+      "audience": "Equipes de importação e gestão operacional.",
+      "disclaimer": "Recriação ilustrativa · dados fictícios",
+      "transcript": "Veja a importação. Uma importação DEMO reúne documentos para visualizar seu contexto. Apresentação conceitual reservada.\nOrganize etapas. Etapas genéricas ajudam a visualizar o andamento de uma importação e a manter o contexto do trabalho.\nCompare cenários. Um índice abstrato permite observar diferenças visuais entre cenários DEMO. As formas são ilustrativas.",
+      "poster": {
+        "assetId": "pt-br-scene-1",
+        "alt": "Documentos ilustrativos de uma importação DEMO e de um registro DEMO, com aviso de conceito reservado."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "Veja a importação",
+          "summary": "Uma importação DEMO reúne documentos para visualizar seu contexto. Apresentação conceitual reservada.",
+          "assetId": "pt-br-scene-1",
+          "alt": "Documentos ilustrativos de uma importação DEMO e de um registro DEMO, com aviso de conceito reservado."
+        },
+        {
+          "id": "scene-2",
+          "title": "Organize etapas",
+          "summary": "Etapas genéricas ajudam a visualizar o andamento de uma importação e a manter o contexto do trabalho.",
+          "assetId": "pt-br-scene-2",
+          "alt": "Quadro ilustrativo com etapas de entrada, organização e consulta, contendo itens DEMO."
+        },
+        {
+          "id": "scene-3",
+          "title": "Compare cenários",
+          "summary": "Um índice abstrato permite observar diferenças visuais entre cenários DEMO. As formas são ilustrativas.",
+          "assetId": "pt-br-scene-3",
+          "alt": "Gráfico ilustrativo de barras sem valores ou escala, representando um índice abstrato DEMO."
+        }
+      ],
+      "player": {
+        "assetId": "pt-br-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    },
+    "en": {
+      "title": "SGICI",
+      "summary": "Reserved concept presentation: organize imports and compare scenarios using an abstract index.",
+      "audience": "Import and operational management teams.",
+      "disclaimer": "Illustrative recreation · fictional data",
+      "transcript": "View the import. A DEMO import brings documents together to view its context. Reserved concept presentation.\nOrganize stages. Generic stages help teams view the progress of an import and keep the context of the work.\nCompare views. An abstract index shows visual differences between DEMO scenarios. The shapes are illustrative.",
+      "poster": {
+        "assetId": "en-scene-1",
+        "alt": "Illustrative documents for a DEMO import and a DEMO record, marked as a reserved concept."
+      },
+      "scenes": [
+        {
+          "id": "scene-1",
+          "title": "View the import",
+          "summary": "A DEMO import brings documents together to view its context. Reserved concept presentation.",
+          "assetId": "en-scene-1",
+          "alt": "Illustrative documents for a DEMO import and a DEMO record, marked as a reserved concept."
+        },
+        {
+          "id": "scene-2",
+          "title": "Organize stages",
+          "summary": "Generic stages help teams view the progress of an import and keep the context of the work.",
+          "assetId": "en-scene-2",
+          "alt": "An illustrative board with intake, organization and consultation stages containing DEMO items."
+        },
+        {
+          "id": "scene-3",
+          "title": "Compare views",
+          "summary": "An abstract index shows visual differences between DEMO scenarios. The shapes are illustrative.",
+          "assetId": "en-scene-3",
+          "alt": "An illustrative bar chart with no values or scale, representing an abstract DEMO index."
+        }
+      ],
+      "player": {
+        "assetId": "en-player",
+        "mode": "gallery",
+        "durationMs": 15000
+      }
+    }
+  },
+  "payloadSha256": "a92c620f208c13cbd2a721220256cd501fd7521c96bcbc264e4a14bed6f752fd"
+}

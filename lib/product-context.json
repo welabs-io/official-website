@@ -1,0 +1,172 @@
+{
+  "stant": {
+    "pt-BR": {
+      "problem": "Conectar a gestão da obra ao trabalho de quem executa inspeções e acompanha as ações em campo.",
+      "participation": "Apresentação conceitual da Imagine sobre gestão de obras, inspeções e acompanhamento de ações. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Connect site management to the work of teams carrying out inspections and following actions in the field.",
+      "participation": "Imagine’s concept presentation of site management, inspections and action follow-up. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "tabela": {
+    "pt-BR": {
+      "problem": "Organizar a consulta de unidades e o contexto de uma proposta entre corretores e gestores comerciais.",
+      "participation": "Apresentação conceitual da Imagine sobre consulta de unidades, revisão e encaminhamento de propostas. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize unit browsing and proposal context between brokers and sales managers.",
+      "participation": "Imagine’s concept presentation of unit browsing, review and proposal submission. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "central-esg": {
+    "pt-BR": {
+      "problem": "Organizar a coleta e a comunicação de indicadores de sustentabilidade para facilitar sua leitura com contexto.",
+      "participation": "Apresentação conceitual da Imagine sobre coleta, leitura e comunicação de indicadores. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize the collection and communication of sustainability indicators so they can be read with context.",
+      "participation": "Imagine’s concept presentation of indicator collection, reading and communication. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "light-recicla": {
+    "pt-BR": {
+      "problem": "Aproximar o registro de materiais da consulta e do acompanhamento pelo participante de um programa de reciclagem.",
+      "participation": "Apresentação conceitual da Imagine sobre registro de materiais e acompanhamento da jornada de reciclagem. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Bring material records closer to consultation and participant follow-up in a recycling program.",
+      "participation": "Imagine’s concept presentation of material records and recycling journey follow-up. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "ecoenel": {
+    "pt-BR": {
+      "problem": "Organizar eventos e registros de reciclagem para dar contexto ao acompanhamento da operação.",
+      "participation": "Apresentação conceitual da Imagine sobre eventos, registros e visão operacional de reciclagem. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize recycling events and records to give context to operational follow-up.",
+      "participation": "Imagine’s concept presentation of recycling events, records and operational context. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "neoenergia": {
+    "pt-BR": {
+      "problem": "Reunir a visão de programas, eventos e acompanhamento nas rotinas das equipes de operação.",
+      "participation": "Apresentação conceitual da Imagine sobre organização de programas, eventos e acompanhamento. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Bring programs, events and follow-up together in the routines of operational teams.",
+      "participation": "Imagine’s concept presentation of program organization, events and follow-up. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "kiosk-brands": {
+    "pt-BR": {
+      "problem": "Organizar oportunidades de pré-vendas e seu acompanhamento preservando o contexto de cada marca.",
+      "participation": "Apresentação conceitual da Imagine sobre pré-vendas, contexto de marca e acompanhamento de oportunidades. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize pre-sales opportunities and follow-up while preserving each brand’s context.",
+      "participation": "Imagine’s concept presentation of pre-sales, brand context and opportunity follow-up. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "wego": {
+    "pt-BR": {
+      "problem": "Tornar jornadas documentais, ambientais e administrativas mais compreensíveis em uma visão de conjunto.",
+      "participation": "Apresentação conceitual da Imagine sobre organização documental e jornadas ambientais e administrativas. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Make document, environmental and administrative journeys understandable within a shared context.",
+      "participation": "Imagine’s concept presentation of document organization and environmental and administrative journeys. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "autoinfracao": {
+    "pt-BR": {
+      "problem": "Dar continuidade à consulta e ao acompanhamento de registros de atividades de fiscalização em campo.",
+      "participation": "Apresentação conceitual da Imagine sobre registro em campo, consulta e acompanhamento de ocorrências. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Support continuity when consulting and following records of field inspection activities.",
+      "participation": "Imagine’s concept presentation of field records, consultation and occurrence follow-up. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "sgici": {
+    "pt-BR": {
+      "problem": "Organizar entradas e etapas de consulta para uma leitura conceitual de contexto comercial.",
+      "participation": "Apresentação conceitual da Imagine sobre organização de entradas e comparação ilustrativa de contexto. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize inputs and consultation stages for a concept view of commercial context.",
+      "participation": "Imagine’s concept presentation of input organization and illustrative context comparison. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "docgo": {
+    "pt-BR": {
+      "problem": "Organizar documentos e pastas para consultar informações com continuidade de contexto.",
+      "participation": "Apresentação conceitual da Imagine sobre organização de pastas, documentos e consulta. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize documents and folders to consult information with continuous context.",
+      "participation": "Imagine’s concept presentation of folder and document organization and consultation. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "signgo": {
+    "pt-BR": {
+      "problem": "Organizar o contexto de um documento até seu encaminhamento para assinatura.",
+      "participation": "Apresentação conceitual da Imagine sobre documentos, revisão e encaminhamento para assinatura. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize a document’s context through submission for signature.",
+      "participation": "Imagine’s concept presentation of documents, review and submission for signature. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "sgors": {
+    "pt-BR": {
+      "problem": "Organizar uma visão conceitual dos registros de resíduos, transporte e recebimento.",
+      "participation": "Apresentação conceitual da Imagine sobre consulta e acompanhamento conceitual de registros de resíduos. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize a concept view of waste, transport and receipt records.",
+      "participation": "Imagine’s concept presentation of concept consultation and follow-up of waste records. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "licenciamento": {
+    "pt-BR": {
+      "problem": "Reunir o contexto de requerimentos, documentos e acompanhamento de processos ambientais.",
+      "participation": "Apresentação conceitual da Imagine sobre requerimentos, documentos e acompanhamento de processos. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Bring applications, documents and environmental process follow-up into context.",
+      "participation": "Imagine’s concept presentation of applications, documents and process follow-up. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "sistema-ima": {
+    "pt-BR": {
+      "problem": "Organizar solicitações e registros administrativos para consulta e acompanhamento.",
+      "participation": "Apresentação conceitual da Imagine sobre solicitações e organização de registros administrativos. O escopo de participação na entrega do produto está em validação."
+    },
+    "en": {
+      "problem": "Organize requests and administrative records for consultation and follow-up.",
+      "participation": "Imagine’s concept presentation of requests and administrative record organization. The scope of participation in the product’s delivery is being validated."
+    }
+  },
+  "ima-mais": {
+    "pt-BR": {
+      "problem": "Apresentar a consulta de processos ambientais no contexto de uma experiência preservada no acervo.",
+      "participation": "Leitura editorial do acervo pela Imagine sobre consulta de processos ambientais no acervo. O escopo de participação e a operação atual permanecem em validação."
+    },
+    "en": {
+      "problem": "Present environmental process consultation in the context of an experience preserved in the archive.",
+      "participation": "Imagine’s editorial view of the archive on environmental process consultation in the archive. Participation scope and current operation remain under validation."
+    }
+  },
+  "apetitivo": {
+    "pt-BR": {
+      "problem": "Apresentar a jornada conceitual de consulta de itens e organização de um pedido no contexto do acervo.",
+      "participation": "Leitura editorial do acervo pela Imagine sobre consulta de itens e jornada de pedidos no acervo. O escopo de participação e a operação atual permanecem em validação."
+    },
+    "en": {
+      "problem": "Present the concept journey of browsing items and organizing an order in the archive’s context.",
+      "participation": "Imagine’s editorial view of the archive on item browsing and order journeys in the archive. Participation scope and current operation remain under validation."
+    }
+  }
+}

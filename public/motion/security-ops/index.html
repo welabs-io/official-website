@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Ecossistema Monitoramento</title>
+<style>
+  /* TOKENS E TIPOGRAFIA */
+  @font-face { font-family: "Inter"; src: url("./assets/fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+  :root { --bg:#0B0B0D; --panel:#17171B; --line:#3A3A42; --coral:#FF452B; --text:#fff; --muted:#C9C9D1; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--bg); width:1920px; height:1080px; margin:0; overflow:hidden; }
+  #root { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--bg); color:var(--text); font-family:"Inter",sans-serif; }
+  #glow { position:absolute; left:0; top:0; width:1920px; height:1080px; background:radial-gradient(900px 500px at 50% 60%, rgba(255,69,43,0.10), rgba(255,69,43,0) 70%); opacity:0; }
+  #title { position:absolute; left:60px; top:36px; font-size:60px; font-weight:800; letter-spacing:-1px; }
+  #title span { color:var(--coral); }
+  #seal { position:absolute; right:60px; top:34px; height:64px; }
+  #legend { position:absolute; left:900px; top:52px; display:flex; gap:32px; font-size:26px; color:var(--muted); font-weight:600; }
+  #legend i { display:inline-block; width:50px; border-top:4px solid #fff; vertical-align:middle; margin-right:10px; }
+  #legend i.pl { border-top:4px dashed var(--coral); }
+
+  /* CONTAINERS E NOS */
+  .box { position:absolute; border:3px solid var(--line); border-radius:24px; background:#101013; opacity:0; }
+  .box h3 { position:absolute; left:24px; top:14px; font-size:30px; font-weight:800; white-space:nowrap; }
+  .box h3 small { font-size:24px; color:var(--coral); margin-left:12px; font-weight:800; }
+  .node { position:absolute; display:flex; flex-direction:column; justify-content:center; padding:8px 18px; border:3px solid var(--line); border-radius:18px; background:var(--panel); opacity:0; }
+  .node b { font-size:30px; font-weight:800; line-height:1.15; }
+  .node em { font-style:normal; font-size:24px; font-weight:500; line-height:1.2; color:var(--muted); margin-top:3px; }
+  .node.dash { border-style:dashed; border-color:var(--coral); background:#1D1713; }
+  .node.sm b { font-size:28px; }
+  .tag { position:absolute; right:12px; top:-20px; padding:2px 14px; border-radius:999px; background:var(--coral); color:#fff; font-size:24px; font-weight:800; }
+  .demo { position:absolute; right:14px; bottom:8px; font-size:24px; font-weight:800; color:var(--coral); }
+  .dot { position:absolute; width:14px; height:14px; border-radius:50%; background:#7A7A86; opacity:0; }
+  .dot.c { background:var(--coral); }
+  #band { position:absolute; left:60px; top:690px; width:1800px; height:240px; border:3px dashed var(--coral); border-radius:24px; background:#150F0D; opacity:0; }
+  #band h3 { position:absolute; left:24px; top:12px; font-size:30px; font-weight:800; }
+  #band h3 small { font-size:24px; color:var(--coral); margin-left:14px; font-weight:800; }
+  #crown { position:absolute; right:24px; top:-20px; padding:2px 16px; border-radius:999px; background:var(--coral); font-size:24px; font-weight:800; }
+  svg#edges { position:absolute; left:0; top:0; width:1920px; height:1080px; }
+  .edge { fill:none; stroke:#fff; stroke-width:4; opacity:0; }
+  .edge.pl { stroke:var(--coral); stroke-dasharray:14 10; }
+  #cap { position:absolute; left:60px; top:955px; width:1800px; height:100px; }
+  .cap { position:absolute; left:0; top:0; width:1800px; font-size:38px; font-weight:700; line-height:1.25; opacity:0; }
+  .cap small { color:var(--coral); font-weight:800; margin-right:16px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="security-ops" data-width="1920" data-height="1080" data-start="0" data-duration="23">
+  <div id="glow"></div>
+  <div id="title">Ecossistema Monitoramento</div>
+  <div id="legend"><span><i></i>Alpha · DEMO</span><span><i class="pl"></i>previsto</span></div>
+  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  <svg id="edges" viewBox="0 0 1920 1080">
+    <defs>
+      <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#fff"/></marker>
+      <marker id="arc" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#FF452B"/></marker>
+    </defs>
+    <line id="e1" class="edge" x1="400" y1="400" x2="500" y2="400" marker-end="url(#ar)"/>
+    <line id="e2" class="edge" x1="880" y1="400" x2="980" y2="400" marker-end="url(#ar)"/>
+    <line id="e3" class="edge" x1="1360" y1="400" x2="1460" y2="400" marker-end="url(#ar)"/>
+    <line id="f1" class="edge pl" x1="1170" y1="640" x2="1170" y2="760" marker-end="url(#arc)"/>
+    <line id="f2" class="edge pl" x1="1660" y1="640" x2="1660" y2="760" marker-end="url(#arc)"/>
+  </svg>
+
+  <!-- ruído bruto -->
+  <div id="dots"></div>
+
+  <!-- 1 · fontes na borda -->
+  <div class="box" id="b-src" style="left:60px;top:160px;width:340px;height:480px"><h3>Na borda</h3></div>
+  <div class="node" id="n-cam" style="left:80px;top:230px;width:300px;height:110px"><b>Câmeras</b><em>fluxos de vídeo</em></div>
+  <div class="node" id="n-sen" style="left:80px;top:360px;width:300px;height:110px"><b>Sensores</b><em>leituras contínuas</em></div>
+  <div class="node" id="n-alm" style="left:80px;top:490px;width:300px;height:110px"><b>Alarmes</b><em>disparos e ruído</em></div>
+
+  <!-- 2 · percepção -->
+  <div class="node" id="n-per" style="left:500px;top:170px;width:380px;height:170px"><span class="tag">Alpha</span><b>Percepção na borda</b><em>transforma fluxo bruto em evento</em></div>
+  <div class="node" id="n-evt" style="left:500px;top:360px;width:380px;height:150px"><b>Pessoa detectada</b><em>Área: entrada · 22:14</em><span class="demo">DEMO</span></div>
+  <div class="node dash sm" id="n-face" style="left:500px;top:530px;width:380px;height:110px"><span class="tag">Previsto</span><b>Triagem facial</b><em>com base legal e LGPD</em></div>
+
+  <!-- 3 · fila -->
+  <div class="box" id="b-q" style="left:980px;top:160px;width:380px;height:480px"><h3>Fila operacional</h3></div>
+  <div class="node sm" id="q1" style="left:1000px;top:230px;width:340px;height:110px"><b>Pessoa · entrada</b><em>câmera + horário + área</em></div>
+  <div class="node sm" id="q2" style="left:1000px;top:360px;width:340px;height:110px"><b>Alarme · perímetro</b><em>correlacionado ao vídeo</em></div>
+  <div class="node sm" id="q3" style="left:1000px;top:490px;width:340px;height:110px"><b>Sensor · portão</b><em>contexto do local</em></div>
+
+  <!-- 4 · ocorrência -->
+  <div class="box" id="b-oc" style="left:1460px;top:160px;width:400px;height:480px"><h3>Ocorrência</h3></div>
+  <div class="node sm" id="o1" style="left:1480px;top:220px;width:360px;height:90px"><b>Aberta</b><em>a partir da fila</em></div>
+  <div class="node sm" id="o2" style="left:1480px;top:325px;width:360px;height:90px"><b>Em atendimento</b><em>operador acompanha</em></div>
+  <div class="node sm" id="o3" style="left:1480px;top:430px;width:360px;height:90px"><b>Encerrada</b><em>com registro final</em></div>
+  <div class="node sm" id="o4" style="left:1480px;top:535px;width:360px;height:90px;flex-direction:row;align-items:center;gap:14px">
+    <svg width="46" height="52" viewBox="0 0 46 52"><circle cx="23" cy="14" r="10" fill="#FF452B"/><path d="M4 50 C4 30 42 30 42 50 Z" fill="#FF452B"/></svg>
+    <div><b>Evidência</b><br><em>clipe + imagem</em></div><span class="demo" style="bottom:auto;top:-14px;background:#17171B;padding:0 8px">DEMO</span>
+  </div>
+
+  <!-- 5 · para onde vamos -->
+  <div id="band"><h3>Para onde vamos<small>previsto</small></h3><span id="crown">topo da cadeia</span></div>
+  <div class="node dash" id="p-erp" style="left:80px;top:760px;width:410px;height:140px"><b>ERP</b><em>centro do domínio</em></div>
+  <div class="node dash" id="p-flow" style="left:530px;top:760px;width:410px;height:140px"><b>Flow</b><em>respostas automáticas em workflows governados</em></div>
+  <div class="node dash" id="p-kb" style="left:980px;top:760px;width:410px;height:140px"><b>KB</b><em>conhecimento dos procedimentos</em></div>
+  <div class="node dash" id="p-ai" style="left:1430px;top:760px;width:410px;height:140px"><b>Assistentes</b><em>resumem e sugerem ao operador</em></div>
+  <div id="cap"></div>
+</div>
+<script src="./assets/shared/gsap.min.js"></script>
+<script>
+  // LEGENDAS DAS BATIDAS
+  var caps = [
+    "Câmeras, sensores e alarmes produzem um fluxo constante de ruído na borda",
+    "A percepção na borda transforma o fluxo bruto em eventos: pessoa detectada, área e horário",
+    "Os eventos são correlacionados e entram em uma única fila operacional, com contexto",
+    "O operador acompanha a ocorrência até o encerramento, com evidência",
+    "Para onde vamos: respostas automáticas em workflows governados, conhecimento dos procedimentos e assistentes",
+    "Integrado ao ERP como centro do domínio: o topo da cadeia"
+  ];
+  var cb = document.getElementById("cap");
+  caps.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/6</small>" + t; cb.appendChild(d);
+  });
+  // noise dots: fixed positions (deterministic)
+  var dd = document.getElementById("dots");
+  var pos = [[420,190],[455,225],[430,270],[470,310],[425,350],[460,440],[430,480],[470,520],[425,560],[455,600],[440,615],[470,200]];
+  pos.forEach(function (p, i) {
+    var d = document.createElement("div"); d.className = "dot" + (i % 3 === 0 ? " c" : ""); d.id = "dot" + i;
+    d.style.left = p[0] + "px"; d.style.top = p[1] + "px"; dd.appendChild(d);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 23 s)
+  var tl = gsap.timeline({ paused: true });
+  var LIT = { borderColor: "#FF452B", boxShadow: "0 0 0 6px rgba(255,69,43,0.22)", duration: 0.4 };
+  var DIM = { borderColor: "#5A5A66", boxShadow: "0 0 0 0px rgba(255,69,43,0)", duration: 0.4 };
+  function show(sel, t) { tl.fromTo(sel, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, t); }
+  function lit(sel, t) { tl.to(sel, LIT, t); }
+  function dim(sel, t) { tl.to(sel, DIM, t); }
+  function edge(id, t) { tl.to("#" + id, { opacity: 1, duration: 0.5 }, t); }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, a);
+    if (b) tl.to("#cap" + i, { opacity: 0, duration: 0.4 }, b - 0.4);
+  }
+  tl.fromTo("#title", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.7 }, 0);
+  tl.fromTo("#seal,#legend", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 0.2);
+  tl.to("#glow", { opacity: 1, duration: 3 }, 0);
+
+  // 1 · ruído na borda
+  cap(0, 0.5, 4.5);
+  show("#b-src", 0.6);
+  show("#n-cam", 1.0); show("#n-sen", 1.3); show("#n-alm", 1.6);
+  lit("#n-cam", 1.2); lit("#n-sen", 1.5); lit("#n-alm", 1.8);
+  for (var i = 0; i < pos.length; i++) {
+    var t0 = 2.0 + i * 0.12;
+    tl.fromTo("#dot" + i, { opacity: 0, x: -20 }, { opacity: 0.9, x: 0, duration: 0.3 }, t0);
+    tl.to("#dot" + i, { opacity: 0.2, duration: 0.25 }, t0 + 0.6);
+    tl.to("#dot" + i, { opacity: 0.9, duration: 0.25 }, t0 + 0.9);
+    tl.to("#dot" + i, { opacity: 0.2, duration: 0.25 }, t0 + 1.2);
+  }
+
+  // 2 · percepção vira evento
+  cap(1, 4.5, 9.5);
+  for (var j = 0; j < pos.length; j++) tl.to("#dot" + j, { opacity: 0, duration: 0.4 }, 4.6);
+  dim("#n-cam", 4.8); dim("#n-sen", 4.8); dim("#n-alm", 4.8);
+  edge("e1", 5.0); show("#n-per", 5.2); lit("#n-per", 5.2);
+  show("#n-evt", 6.6); lit("#n-evt", 6.6);
+  show("#n-face", 8.0); lit("#n-face", 8.2);
+
+  // 3 · correlação e fila
+  cap(2, 9.5, 14.0);
+  dim("#n-per", 9.6); dim("#n-face", 9.6);
+  edge("e2", 9.8); show("#b-q", 10.0);
+  show("#q1", 10.6); show("#q2", 11.2); show("#q3", 11.8);
+  lit("#n-evt", 10.0); lit("#q1", 10.8); dim("#q1", 12.4); lit("#q2", 11.4); dim("#q2", 13.0); lit("#q3", 12.0); dim("#q3", 13.4);
+
+  // 4 · ocorrência até o encerramento
+  cap(3, 14.0, 18.0);
+  dim("#n-evt", 14.0); lit("#q1", 14.0);
+  edge("e3", 14.2); show("#b-oc", 14.4);
+  show("#o1", 14.9); lit("#o1", 14.9);
+  show("#o2", 15.6); dim("#o1", 16.0); lit("#o2", 16.0);
+  show("#o3", 16.5); dim("#o2", 16.8); lit("#o3", 16.8);
+  show("#o4", 17.2); lit("#o4", 17.2);
+
+  // 5 · para onde vamos
+  cap(4, 18.0, 21.0);
+  dim("#o3", 18.0); dim("#o4", 18.4); dim("#q1", 18.0);
+  show("#band", 18.2); edge("f1", 18.8); edge("f2", 19.0);
+  show("#p-flow", 18.8); show("#p-kb", 19.3); show("#p-ai", 19.8); show("#p-erp", 20.3);
+  lit("#p-flow", 18.9); lit("#p-kb", 19.4); lit("#p-ai", 19.9);
+  cap(5, 21.0);
+  lit("#p-erp", 21.0);
+  tl.to("#crown", { boxShadow: "0 0 0 8px rgba(255,69,43,0.3)", duration: 0.6 }, 21.2);
+  tl.fromTo("#cap5", { scale: 1 }, { scale: 1, duration: 0.8 }, 22.2); // pad to 23 s
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["security-ops"] = tl;
+</script>
+</body>
+</html>
