@@ -10,5 +10,6 @@ export default defineConfig([
       '@next/next/no-img-element': 'off',
     },
   },
-  globalIgnores(['.next/**', 'node_modules/**', 'next-env.d.ts']),
+  // public/motion holds generated third-party bundles (HyperFrames player and compositions).
+  globalIgnores(['.next/**', '.next-*/**', 'node_modules/**', 'next-env.d.ts', 'public/motion/**']),
 ]);

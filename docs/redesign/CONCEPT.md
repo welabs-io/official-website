@@ -51,4 +51,4 @@ O título sobe linha a linha, os cartões de produto assentam, e um fio sai do f
 
 ## Evidência
 
-Antes: `docs/redesign/before/`. Depois: `docs/redesign/after/` (1440 e 390; `*-fold.png` = primeira dobra após a abertura, demais = página inteira após rolar).
+As capturas ficam fora do repositório, em `~/code/control/portfolio/site-redesign/`: antes em `before/`, depois em `after/` (1440 e 390; `*-fold.png` = primeira dobra após a abertura, demais = página inteira após rolar).
