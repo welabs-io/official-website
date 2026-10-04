@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>IUS · aceite e leitura do exame</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA IUS */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#F3F2F8;--ink:#333535;--muted:#5C5F60;--primary:#644CFF;--primary2:#3D2BBE;--pt:#ECE9FF;--accent:#F79B66;--acct:#A8521F;--accbg:#FDEBDD;--ok:#1F7A4C;--okbg:#E2F4EA;--okc:#2FA36B;--bad:#B4352A;--badbg:#FBE5E2;--line:#DCDAE6;--card:#FFFFFF;--neutral:#8A8C8D}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+p{margin:0}
+#bgl{position:absolute;inset:0;background:radial-gradient(900px 600px at 0% 100%,rgba(100,76,255,.10),transparent 70%),radial-gradient(700px 500px at 100% 0%,rgba(247,155,102,.12),transparent 70%)}
+
+/* CABEÇALHO */
+#top{position:absolute;left:150px;right:120px;top:30px;height:76px;display:flex;align-items:center;gap:26px;opacity:0}
+#top img{height:50px;display:block}
+#top .sep{width:2px;height:44px;background:var(--line)}
+#top .tt{font-size:34px;font-weight:800;letter-spacing:-.4px;white-space:nowrap}
+#top .tt em{font-style:normal;color:var(--primary)}
+#top .gr{flex:1}
+.chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:#fff}
+
+/* CELULAR */
+#phone{position:absolute;left:150px;top:128px;width:480px;height:910px;border-radius:60px;background:#1B1A24;box-shadow:0 30px 60px rgba(40,30,110,.22);opacity:0}
+#scr{position:absolute;left:14px;top:14px;width:452px;height:882px;border-radius:46px;overflow:hidden;background:var(--bg)}
+.sb{position:absolute;left:0;right:0;top:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;font-size:24px;font-weight:700;z-index:5}
+.sb i{display:block;width:60px;height:14px;border-radius:7px;background:currentColor;opacity:.8}
+.screen{position:absolute;inset:0;opacity:0}
+.h1{position:absolute;left:24px;font-size:36px;font-weight:800;white-space:nowrap}
+.mut{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;height:38px;padding:0 14px;border-radius:999px;font-size:24px;font-weight:700;white-space:nowrap}
+.pill.pend{background:var(--accbg);color:var(--acct)}
+.pill.okp{background:var(--okbg);color:var(--ok)}
+.btn{display:flex;align-items:center;justify-content:center;height:58px;border-radius:48px;font-size:24px;font-weight:700;white-space:nowrap}
+.btn.pri{background:var(--primary);color:#fff}
+.btn.out{border:2px solid var(--primary);color:var(--primary);background:#fff}
+.av{border-radius:50%;background:#D9D5F5;display:grid;place-items:center;flex:none;overflow:hidden}
+.av svg{width:70%;height:70%;fill:#8E84D8;margin-top:18%}
+
+/* PAINEL DO MÉDICO (fundo do aviso) */
+#dimP,#dim{position:absolute;inset:0;background:linear-gradient(165deg,#6A55F2,#2F2290);opacity:0}
+.dcard{position:absolute;left:16px;width:420px;border-radius:22px;background:#fff;padding:18px 20px;border:2px solid var(--line)}
+.dcard b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+.dcard span{display:block;font-size:24px;white-space:nowrap}
+.bars{display:flex;align-items:flex-end;gap:12px;height:110px;margin-top:12px}
+.bars u{display:block;width:28px;border-radius:6px 6px 0 0;text-decoration:none}
+#push{position:absolute;left:14px;top:54px;width:424px;border-radius:26px;background:rgba(255,255,255,.97);box-shadow:0 18px 40px rgba(20,10,80,.3);padding:18px 18px 20px;display:flex;gap:14px;opacity:0;z-index:6}
+.appic{width:56px;height:56px;border-radius:14px;background:#fff;border:2px solid var(--line);display:grid;place-items:center;flex:none}
+.appic svg{width:26px;height:38px}
+#push .tx{flex:1;min-width:0}
+#push .l0{display:flex;justify-content:space-between;font-size:24px;font-weight:700}
+#push .l0 span{color:var(--muted);font-weight:500}
+#push .t{font-size:26px;font-weight:800;line-height:32px;margin-top:4px}
+#push .d{font-size:24px;line-height:30px;color:var(--muted);margin-top:4px}
+
+/* CAIXA DE ENTRADA */
+.tabsx{position:absolute;left:24px;right:24px;display:flex;gap:10px}
+.tabsx span{height:46px;padding:0 16px;border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:700;white-space:nowrap;border:2px solid var(--line);color:var(--muted);background:#fff}
+.tabsx span.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.ecard{position:absolute;left:16px;width:420px;height:142px;border-radius:22px;background:#fff;border:2px solid var(--line);opacity:0}
+.ecard .av{position:absolute;left:18px;top:20px;width:58px;height:58px}
+.ecard b{position:absolute;left:92px;top:16px;font-size:26px;font-weight:800;white-space:nowrap}
+.ecard .ex{position:absolute;left:92px;top:52px;font-size:24px;color:var(--muted);white-space:nowrap}
+.ecard .pill{position:absolute;left:92px;top:90px}
+.ecard .star{position:absolute;right:18px;top:18px;width:30px;height:30px;fill:none;stroke:#B9B5CC;stroke-width:2}
+.ecard .sel{position:absolute;inset:-2px;border-radius:22px;border:3px solid var(--primary);opacity:0}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:88px;background:#fff;border-top:2px solid var(--line);display:flex;justify-content:space-around;align-items:center}
+.tabbar svg{width:34px;height:34px;fill:none;stroke:#A6A2BC;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.tabbar svg.on{stroke:var(--primary)}
+
+/* DETALHE DO EXAME */
+.phead{position:absolute;left:0;right:0;top:0;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
+.phead .bk{position:absolute;left:22px;top:58px;width:30px;height:30px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.phead .av{position:absolute;left:24px;width:62px;height:62px;background:rgba(255,255,255,.22)}
+.phead .av svg{fill:rgba(255,255,255,.85)}
+.phead b{position:absolute;left:102px;font-size:30px;font-weight:800;white-space:nowrap}
+.phead span{position:absolute;left:102px;font-size:24px;white-space:nowrap;color:#F1EEFF}
+.rule{position:absolute;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--accent),var(--primary))}
+.mcard{position:absolute;left:16px;width:420px;border-radius:22px;background:#fff;border:2px solid var(--line);padding:16px 20px}
+.mcard b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+.mcard span.m{display:block;font-size:24px;color:var(--muted);white-space:nowrap;margin:4px 0 10px}
+.sect{position:absolute;left:24px;display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;white-space:nowrap}
+.gl{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff;font-size:20px;font-weight:900}
+.gl.w{background:#C95F22}.gl.g{background:#1F8752}.gl.n{background:#727475}
+.ovr{position:absolute;left:16px;width:420px;height:52px;border-radius:14px;background:#fff;border:2px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 16px;font-size:24px;font-weight:600;opacity:0}
+.ovr .gr{flex:1}
+.ovr em{font-style:normal;font-weight:800}
+#lock{position:absolute;left:16px;top:646px;width:420px;border-radius:22px;background:var(--pt);border:2px dashed #B3A8FF;padding:16px 20px;display:flex;gap:14px;opacity:0}
+#lock svg{width:34px;height:34px;flex:none;fill:none;stroke:var(--primary);stroke-width:2.4;stroke-linecap:round;margin-top:2px}
+#lock b{display:block;font-size:26px;font-weight:800}
+#lock span{display:block;font-size:24px;line-height:31px;color:#45417A;margin-top:4px}
+.tray{position:absolute;left:0;right:0;bottom:0;height:96px;background:#fff;border-top:2px solid var(--line);display:flex;gap:14px;align-items:center;padding:0 16px}
+.tray .btn{flex:1}
+
+/* CONFIRMAÇÃO E SUCESSO */
+#sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:30px 30px 0 0;padding:14px 22px 24px;display:flex;flex-direction:column;gap:12px;opacity:0}
+#sheet .hd{width:64px;height:6px;border-radius:3px;background:#D2CFE0;align-self:center;margin-bottom:4px}
+#sheet h3{margin:0;font-size:30px;font-weight:800}
+.cq{display:flex;gap:12px;align-items:flex-start;font-size:24px;line-height:30px;font-weight:600;opacity:0}
+.cq svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--primary);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
+.cq.wn{color:var(--acct)}
+.cq.wn svg{stroke:var(--acct)}
+.fld{font-size:24px;color:var(--muted);font-weight:600;margin-top:4px}
+.fld div{margin-top:6px;height:56px;border:2px solid var(--line);border-radius:8px;display:flex;align-items:center;padding:0 14px;font-weight:500;color:#8A8C8D;white-space:nowrap}
+#succ{position:absolute;left:26px;right:26px;top:208px;height:450px;border-radius:30px;background:#fff;padding:30px 26px 26px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;opacity:0}
+#succ .okc{width:92px;height:92px;border-radius:50%;background:var(--okbg);display:grid;place-items:center}
+#succ .okc svg{width:52px;height:52px;fill:none;stroke:var(--okc);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+#succ h3{margin:0;font-size:32px;font-weight:800}
+#succ p{font-size:24px;line-height:31px;color:var(--muted)}
+.seal{display:flex;align-items:center;gap:10px;height:46px;padding:0 18px;border-radius:999px;border:2px solid var(--primary);color:var(--primary);font-size:24px;font-weight:800;white-space:nowrap}
+.seal svg{width:24px;height:24px;fill:none;stroke:var(--primary);stroke-width:2.6;stroke-linecap:round}
+#succ .btn{align-self:stretch;margin-top:auto}
+
+/* RESULTADOS ESTRUTURADOS */
+.rc{position:absolute;width:202px;height:178px;border-radius:20px;background:#fff;border:2px solid var(--line);overflow:hidden;opacity:0}
+.rc .tp{height:94px;display:flex;align-items:baseline;gap:8px;padding:26px 16px 0}
+.rc .tp b{font-size:36px;font-weight:800}
+.rc .tp span{font-size:24px;font-weight:600}
+.rc.w .tp{background:var(--accbg);color:var(--acct)}
+.rc.g .tp{background:var(--okbg);color:var(--ok)}
+.rc .nm{padding:10px 16px 0;font-size:24px;font-weight:800;white-space:nowrap}
+.rc .lb{padding:2px 16px 0;font-size:24px;font-weight:600;white-space:nowrap}
+.rc.w .lb{color:var(--acct)}.rc.g .lb{color:var(--ok)}
+.rc .sel{position:absolute;inset:0;border-radius:20px;border:3px solid var(--primary);opacity:0}
+.acts{position:absolute;left:16px;right:16px;display:flex;gap:12px}
+.acts span{flex:1;height:54px;border-radius:48px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;font-size:24px;font-weight:700;color:var(--primary);background:#fff;white-space:nowrap}
+
+/* GRÁFICO DO ANALITO */
+#chart{position:absolute;left:16px;top:196px;width:420px;height:340px;border-radius:22px;background:#fff;border:2px solid var(--line);overflow:hidden}
+#chart svg{position:absolute;left:0;top:0;width:420px;height:340px}
+.cl{font-family:Inter,sans-serif;font-size:24px;font-weight:600;fill:var(--muted)}
+.pv{font-family:Inter,sans-serif;font-size:22px;font-weight:800;fill:#fff}
+.rbox{position:absolute;left:16px;width:420px;border-radius:20px;background:#fff;border:2px solid var(--line);padding:14px 20px;opacity:0}
+.rbox b{display:block;font-size:24px;font-weight:800}
+.rbox span{display:block;font-size:24px;color:var(--muted);line-height:31px}
+
+/* TOQUE */
+#touch{position:absolute;left:-36px;top:-36px;width:72px;height:72px;border-radius:50%;background:rgba(100,76,255,.22);border:3px solid rgba(100,76,255,.75);opacity:0;z-index:9}
+
+/* CICLO DO EXAME (DIREITA) */
+#strip{position:absolute;left:690px;top:132px;width:1110px;opacity:0}
+.sh{display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap}
+.sh b{font-size:28px;font-weight:800;color:var(--primary)}
+.sh span{font-size:24px;color:var(--muted)}
+.states{display:flex;align-items:center;gap:4px;margin-top:14px}
+.stc{position:relative;height:58px;padding:0 11px;border-radius:16px;border:2px solid var(--line);background:#fff;display:flex;align-items:center;gap:8px;font-size:24px;font-weight:700;white-space:nowrap;color:var(--muted)}
+.stc svg{width:22px;height:22px;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.stc.dn{background:var(--pt);border-color:#C9C0FF;color:var(--primary2)}
+.stc.dn svg{stroke:var(--primary)}
+.arr{width:18px;height:18px;flex:none;fill:none;stroke:#A6A2BC;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+#stW{background:var(--accbg);border-color:var(--accent);color:var(--acct)}
+#stWck{stroke:var(--primary);opacity:0;width:0}
+#stA{background:#fff;border-color:var(--line);color:var(--muted)}
+#stAlk{stroke:var(--ok);opacity:0}
+.branch{display:flex;justify-content:space-between;align-items:center;margin-top:14px;white-space:nowrap}
+.branch span{font-size:24px;color:var(--muted)}
+.branch .rj{height:46px;padding:0 16px;border-radius:14px;border:2px dashed var(--bad);color:var(--bad);font-size:24px;font-weight:700;display:flex;align-items:center;background:#fff}
+
+/* LEGENDA DA BATIDA */
+#capbox{position:absolute;left:690px;top:338px;width:1110px;height:316px;border-radius:26px;background:#fff;border:2px solid var(--line);overflow:hidden;opacity:0}
+#capbox:before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(180deg,var(--accent),var(--primary))}
+.cap{position:absolute;left:52px;right:40px;top:30px;opacity:0}
+.cap .n{font-size:26px;font-weight:800;color:var(--acct)}
+.cap h2{margin:6px 0 16px;font-size:40px;line-height:48px;font-weight:800;letter-spacing:-.4px}
+.cap li{list-style:none;position:relative;padding-left:28px;font-size:26px;line-height:36px;color:#45474A;margin-top:6px}
+.cap li:before{content:"";position:absolute;left:0;top:13px;width:12px;height:12px;border-radius:50%;background:var(--primary)}
+.cap ul{margin:0;padding:0}
+.chs{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.chs span{height:44px;padding:0 14px;border-radius:999px;border:2px solid #C9C0FF;background:var(--pt);color:var(--primary2);font-size:24px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.chs span em{font-style:normal;font-size:24px;font-weight:800;color:var(--acct);border:2px solid var(--accent);background:#fff;border-radius:999px;padding:0 10px;line-height:30px}
+
+/* QUEM PARTICIPA */
+.actor{position:absolute;top:688px;width:350px;height:270px;border-radius:24px;background:#fff;border:2px solid var(--line);padding:20px 22px;opacity:0}
+.actor .hr{display:flex;align-items:center;gap:14px}
+.actor .av{width:56px;height:56px}
+.actor .hr{gap:12px}
+/* TROCA DE SHELL: APP DO PACIENTE */
+#chipw{position:relative;width:440px;height:44px}
+#chipw .chip{position:absolute;right:0;top:0}
+#chipP{opacity:0}
+.wcard{position:absolute;left:16px;width:420px;border-radius:22px;background:#fff;border:2px solid var(--line);padding:16px 20px;opacity:0}
+.wcard b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+.wcard span.m{display:block;font-size:24px;color:var(--muted);line-height:31px}
+#wn{background:var(--pt);border-color:#C9C0FF;display:flex;gap:14px}
+#wn svg{width:32px;height:32px;flex:none;fill:none;stroke:var(--primary);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;margin-top:2px}
+.actor .lab{width:62px;height:62px;border-radius:50%;background:var(--accbg);display:grid;place-items:center;flex:none}
+.actor .lab svg{width:34px;height:34px;fill:none;stroke:var(--acct);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.actor b{display:block;font-size:28px;font-weight:800;white-space:nowrap}
+.actor .ro{display:block;font-size:24px;color:var(--muted);white-space:nowrap}
+.ast{position:absolute;left:22px;right:22px;top:112px}
+.ast p{display:flex;gap:12px;font-size:24px;line-height:31px;font-weight:600;margin-bottom:8px}
+.ast p i{width:14px;height:14px;border-radius:50%;flex:none;margin-top:9px;display:block}
+.ring2{position:absolute;inset:-2px;border-radius:24px;border:3px solid var(--okc);opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="ius-aceite-e-leitura" data-width="1920" data-height="1080" data-start="0" data-duration="32">
+  <div id="bgl"></div>
+
+  <div id="top">
+    <img src="./assets/brand/ius.svg" alt="IUS">
+    <div class="sep"></div>
+    <div class="tt">Aceite e <em>leitura do exame</em></div>
+    <div class="gr"></div>
+    <div id="chipw"><div class="chip" id="chipM">App do médico · dados DEMO</div><div class="chip" id="chipP">App do paciente · dados DEMO</div></div>
+  </div>
+
+  <!-- CELULAR: APP DO MÉDICO -->
+  <div id="phone"><div id="scr">
+    <div class="sb" id="sbD"><span>9:41</span><i></i></div>
+
+    <!-- Painel do médico + aviso -->
+    <div class="screen" id="sDash" style="opacity:1">
+      <div id="dimP"><div style="position:absolute;left:0;right:0;top:470px;text-align:center;color:#fff;font-size:112px;font-weight:300;letter-spacing:-2px">9:41</div><div style="position:absolute;left:0;right:0;top:612px;text-align:center;color:#EDEAFF;font-size:26px;font-weight:600">Tela de bloqueio</div></div>
+      <div id="dashBase" style="position:absolute;inset:0">
+      <div class="h1" style="top:62px">Olá, Médico Demo</div>
+      <div class="h1 mut" style="top:110px;font-size:24px;font-weight:500">Seu painel</div>
+      <div class="dcard" style="top:160px"><b>Fila de aceite</b><span class="mut">aguardando sua decisão · 3</span></div>
+      <div class="dcard" style="top:270px"><b>Recebidos hoje</b><span class="mut">da carteira · 2</span></div>
+      <div class="dcard" style="top:380px"><b>Séries do mês</b><span class="mut">recebidos · aceitos · alterados</span>
+        <div class="bars"><u style="height:60%;background:#C9C0FF"></u><u style="height:45%;background:var(--primary)"></u><u style="height:20%;background:var(--accent)"></u><u style="height:75%;background:#C9C0FF"></u><u style="height:60%;background:var(--primary)"></u><u style="height:30%;background:var(--accent)"></u><u style="height:85%;background:#C9C0FF"></u><u style="height:70%;background:var(--primary)"></u><u style="height:25%;background:var(--accent)"></u></div>
+      </div>
+      <div class="tabbar"><svg class="on" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z"/></svg><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div>
+      </div>
+    </div>
+    <div id="push">
+      <div class="appic"><svg viewBox="0 0 77.1 113.5"><path d="M38.5 0H77.0996V37.8H38.5V0Z" fill="#F79B66"/><path d="M0 37.8H38.5V75.7H0V37.8Z" fill="#F79B66"/><path d="M38.5 75.7H77.0996V113.5H38.5V75.7Z" fill="#F79B66"/></svg></div>
+      <div class="tx"><div class="l0">IUS <span>agora</span></div><p class="t">Novo exame aguardando seu aceite</p><p class="d">Abra o app para revisar e decidir.</p></div>
+    </div>
+
+    <!-- Caixa de entrada -->
+    <div class="screen" id="sInbox">
+      <div class="h1" style="top:60px">Exames</div>
+      <div class="tabsx" style="top:116px"><span class="on">Aguardando aceite</span><span>Aceitos</span></div>
+      <div class="tabsx" style="top:174px"><span>Etapa</span><span>Resultado</span><span>Período</span></div>
+      <div class="h1 mut" style="top:236px;font-size:24px;font-weight:600">Toda a fila, não só a de hoje</div>
+      <div class="ecard" id="e0" style="top:282px"><div class="sel" id="e0s"></div><div class="av"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><b>Paciente Demo A</b><span class="ex">Painel metabólico · hoje</span><span class="pill pend">Aguardando aceite</span><svg class="star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></div>
+      <div class="ecard" id="e1" style="top:436px"><div class="av"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><b>Paciente Demo B</b><span class="ex">Hemograma · ontem</span><span class="pill pend">Aguardando aceite</span><svg class="star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></div>
+      <div class="ecard" id="e2" style="top:590px"><div class="av"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><b>Paciente Demo C</b><span class="ex">Perfil lipídico · 3 dias</span><span class="pill pend">Aguardando aceite</span><svg class="star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></div>
+      <div class="tabbar"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z"/></svg><svg class="on" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div>
+    </div>
+
+    <!-- Detalhe antes do aceite -->
+    <div class="screen" id="sPre">
+      <div id="dim"></div>
+      <div id="preBase" style="position:absolute;inset:0">
+      <div class="phead" style="height:226px"><svg class="bk" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><div class="av" style="top:110px"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><b style="top:108px">Paciente Demo A</b><span style="top:148px">42 anos · dados DEMO</span></div>
+      <div class="rule" style="top:226px"></div>
+      <div class="mcard" style="top:250px"><b>Painel metabólico</b><span class="m">Lab Demo · recebido hoje</span><span class="pill pend">Aguardando aceite</span></div>
+      <div class="sect" style="top:418px">Visão geral</div>
+      <div class="ovr" id="o0" style="top:462px"><span class="gl w">!</span><span class="gr">Alterações</span><em>2</em></div>
+      <div class="ovr" id="o1" style="top:520px"><span class="gl g">✓</span><span class="gr">Normais</span><em>4</em></div>
+      <div class="ovr" id="o2" style="top:578px"><span class="gl n">–</span><span class="gr">Sem classificação</span><em>0</em></div>
+      <div id="lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><div><b>Resultados protegidos</b><span>Gráficos e detalhes abrem depois do aceite.</span></div></div>
+      <div class="tray"><div class="btn out">Recusar</div><div class="btn pri">Aceitar</div></div>
+      </div>
+      <div id="sheet">
+        <div class="hd"></div>
+        <h3>Aceitar este exame?</h3>
+        <div class="cq"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>A responsabilidade formal passa a ser sua</div>
+        <div class="cq"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Entra na carteira do paciente</div>
+        <div class="cq"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Gráficos liberados · paciente avisado</div>
+        <div class="cq wn"><svg viewBox="0 0 24 24"><path d="M12 4v10M12 19v.5"/></svg>O aceite não pode ser desfeito</div>
+        <div class="fld">Comentário inicial (opcional)<div>Não poderá ser editado depois</div></div>
+        <div class="btn pri" style="margin-top:6px">Aceitar exame</div>
+      </div>
+      <div id="succ">
+        <div class="okc"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div>
+        <h3>Exame aceito!</h3>
+        <p>A responsabilidade formal é sua. O paciente foi avisado.</p>
+        <div class="seal"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Aceite irreversível</div>
+        <div class="btn pri">Ver o exame</div>
+      </div>
+    </div>
+
+    <!-- Detalhe aceito: leitura estruturada -->
+    <div class="screen" id="sAcc">
+      <div class="phead" style="height:196px"><svg class="bk" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><div class="av" style="top:104px"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><b style="top:100px">Paciente Demo A</b><span style="top:140px">Painel metabólico</span><span class="pill okp" style="left:auto;right:20px;top:54px;color:var(--ok)">Aceito</span></div>
+      <div class="rule" style="top:196px"></div>
+      <div class="sect" style="top:222px"><span class="gl w">!</span>Alterações</div>
+      <div class="rc w" id="rc0" style="left:16px;top:266px"><div class="sel" id="rc0s"></div><div class="tp"><b>112</b><span>mg/dL</span></div><p class="nm">Glicose</p><p class="lb">Alterado</p></div>
+      <div class="rc w" id="rc1" style="left:234px;top:266px"><div class="tp"><b>48</b><span>mg/dL</span></div><p class="nm">Ureia</p><p class="lb">Limítrofe</p></div>
+      <div class="sect" style="top:466px"><span class="gl g">✓</span>Normais</div>
+      <div class="rc g" id="rc2" style="left:16px;top:510px"><div class="tp"><b>13,8</b><span>g/dL</span></div><p class="nm">Hemoglobina</p><p class="lb">Normal</p></div>
+      <div class="rc g" id="rc3" style="left:234px;top:510px"><div class="tp"><b>0,9</b><span>mg/dL</span></div><p class="nm">Creatinina</p><p class="lb">Ótimo</p></div>
+      <div class="acts" style="top:722px"><span>Laudo original</span><span>Compartilhar</span></div>
+      <div class="h1 mut" style="top:800px;font-size:24px;font-weight:600">+ 2 normais abaixo</div>
+    </div>
+
+    <!-- Resultado: evolução do analito -->
+    <div class="screen" id="sRes">
+      <svg class="bk" viewBox="0 0 24 24" style="position:absolute;left:22px;top:60px;width:30px;height:30px;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M15 5l-7 7 7 7"/></svg>
+      <div class="h1" style="top:52px;left:64px;font-size:34px">Glicose</div>
+      <div class="h1 mut" style="top:100px;font-size:24px;font-weight:500">Paciente Demo A · Lab Demo</div>
+      <div style="position:absolute;left:24px;top:142px;display:flex;gap:10px"><span class="pill pend">Alterado</span><span class="pill" style="background:#fff;border:2px solid var(--line);color:var(--muted)">4 coletas</span></div>
+      <div id="chart"><svg viewBox="0 0 420 340" id="csv">
+        <defs>
+          <radialGradient id="hw"><stop offset="0" stop-color="#F79B66" stop-opacity=".55"/><stop offset="1" stop-color="#F79B66" stop-opacity="0"/></radialGradient>
+          <radialGradient id="hg"><stop offset="0" stop-color="#2FA36B" stop-opacity=".45"/><stop offset="1" stop-color="#2FA36B" stop-opacity="0"/></radialGradient>
+          <filter id="ds" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#2A2060" flood-opacity=".3"/></filter>
+        </defs>
+        <g id="grid" stroke="#5C50A8" stroke-opacity=".35" stroke-width="2" stroke-dasharray="2 5">
+          <line x1="110" y1="44" x2="110" y2="290"/><line x1="150" y1="44" x2="150" y2="290"/><line x1="190" y1="44" x2="190" y2="290"/><line x1="230" y1="44" x2="230" y2="290"/><line x1="270" y1="44" x2="270" y2="290"/><line x1="310" y1="44" x2="310" y2="290"/><line x1="350" y1="44" x2="350" y2="290"/>
+        </g>
+        <g id="refg" opacity="0"><line x1="18" y1="175" x2="404" y2="175" stroke="#8A8C8D" stroke-width="2.5" stroke-dasharray="8 6"/><path d="M8 167l10 8-10 8z" fill="#686868"/><rect x="286" y="183" width="122" height="32" rx="4" fill="#686868"/><text x="347" y="207" text-anchor="middle" class="pv">ref. DEMO</text></g>
+        <path id="curve" d="M110 209.5 C150 209.5 150 186.5 190 186.5 C230 186.5 230 146.25 270 146.25 C310 146.25 310 106 350 106" fill="none" stroke="#644CFF" stroke-width="4" stroke-linecap="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1"/>
+        <g class="pt" id="p0" opacity="0"><circle cx="110" cy="209.5" r="30" fill="url(#hg)"/><circle cx="110" cy="209.5" r="11" fill="#fff" filter="url(#ds)"/><circle cx="110" cy="209.5" r="6" fill="#2FA36B"/><rect x="82" y="227" width="56" height="32" rx="4" fill="#1F7A4C"/><text x="110" y="251" text-anchor="middle" class="pv">94</text></g>
+        <g class="pt" id="p1" opacity="0"><circle cx="190" cy="186.5" r="30" fill="url(#hg)"/><circle cx="190" cy="186.5" r="11" fill="#fff" filter="url(#ds)"/><circle cx="190" cy="186.5" r="6" fill="#2FA36B"/><rect x="162" y="204" width="56" height="32" rx="4" fill="#1F7A4C"/><text x="190" y="228" text-anchor="middle" class="pv">98</text></g>
+        <g class="pt" id="p2" opacity="0"><circle cx="270" cy="146.25" r="30" fill="url(#hw)"/><circle cx="270" cy="146.25" r="11" fill="#fff" filter="url(#ds)"/><circle cx="270" cy="146.25" r="6" fill="#E07B3F"/><rect x="238" y="96" width="64" height="32" rx="4" fill="#A8521F"/><text x="270" y="120" text-anchor="middle" class="pv">105</text></g>
+        <g class="pt" id="p3" opacity="0"><circle cx="350" cy="106" r="30" fill="url(#hw)"/><circle cx="350" cy="106" r="11" fill="#fff" filter="url(#ds)"/><circle cx="350" cy="106" r="6" fill="#E07B3F"/><rect x="318" y="56" width="64" height="32" rx="4" fill="#A8521F"/><text x="350" y="80" text-anchor="middle" class="pv">112</text></g>
+        <text x="110" y="324" text-anchor="middle" class="cl">jan</text><text x="190" y="324" text-anchor="middle" class="cl">abr</text><text x="270" y="324" text-anchor="middle" class="cl">jul</text><text x="350" y="324" text-anchor="middle" class="cl">out</text>
+      </svg></div>
+      <div class="rbox" id="rb0" style="top:552px"><b>Classificação: Alterado</b><span>atribuída pela máquina</span></div>
+      <div class="btn out" id="rb1" style="position:absolute;left:16px;width:420px;top:654px;opacity:0">Reclassificar</div>
+      <div class="rbox" id="rb2" style="top:728px;border-style:dashed"><span>Justificativa obrigatória; o histórico só acrescenta</span></div>
+    </div>
+
+    <!-- App do paciente: carteira digital -->
+    <div class="screen" id="sWal">
+      <div class="h1" style="top:60px">Minha carteira</div>
+      <div class="h1 mut" style="top:108px;font-size:24px;font-weight:500">Paciente Demo A</div>
+      <div class="wcard" id="wn" style="top:154px"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><div><b>Seu exame foi revisado</b><span class="m">Seu médico revisou um exame seu.</span></div></div>
+      <div class="wcard" id="wx" style="top:296px"><b>Painel metabólico</b><span class="m">Lab Demo · liberado hoje</span><span class="pill okp" style="margin-top:8px">Liberado</span></div>
+      <div class="wcard" id="wr" style="top:462px;height:300px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><b>Glicose</b><span class="pill pend">Alterado</span></div>
+        <svg viewBox="0 0 380 200" style="position:absolute;left:18px;top:76px;width:380px;height:200px">
+          <line x1="8" y1="104" x2="372" y2="104" stroke="#8A8C8D" stroke-width="2.5" stroke-dasharray="8 6"/>
+          <path d="M40 150 C80 150 80 128 120 128 C175 128 175 86 230 86 C285 86 285 44 330 44" fill="none" stroke="#644CFF" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="40" cy="150" r="9" fill="#2FA36B" stroke="#fff" stroke-width="4"/><circle cx="120" cy="128" r="9" fill="#2FA36B" stroke="#fff" stroke-width="4"/><circle cx="230" cy="86" r="9" fill="#E07B3F" stroke="#fff" stroke-width="4"/><circle cx="330" cy="44" r="9" fill="#E07B3F" stroke="#fff" stroke-width="4"/>
+          <rect x="250" y="114" width="124" height="30" rx="4" fill="#686868"/><text x="312" y="136" text-anchor="middle" class="pv">ref. DEMO</text>
+          <rect x="216" y="2" width="64" height="30" rx="4" fill="#A8521F"/><text x="248" y="25" text-anchor="middle" class="pv">112</text>
+        </svg>
+      </div>
+      <div class="tabbar"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H3z"/></svg><svg class="on" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></div>
+    </div>
+
+    <div id="touch"></div>
+  </div></div>
+
+  <!-- CICLO DO EXAME -->
+  <div id="strip">
+    <div class="sh"><b>Ciclo do exame</b><span>cada transição registra o autor</span></div>
+    <div class="states">
+      <div class="stc dn"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Recebido</div>
+      <svg class="arr" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      <div class="stc dn"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Processando</div>
+      <svg class="arr" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      <div class="stc dn"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>Processado</div>
+      <svg class="arr" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      <div class="stc" id="stW"><svg viewBox="0 0 24 24" id="stWck"><path d="M5 12l5 5 9-10"/></svg>Aguardando aceite</div>
+      <svg class="arr" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      <div class="stc" id="stA"><svg viewBox="0 0 24 24" id="stAlk"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Aceito</div>
+    </div>
+    <div class="branch"><span>falha na leitura volta a processar</span><div class="rj">ou Recusado · laboratório avisado</div></div>
+  </div>
+
+  <!-- LEGENDAS -->
+  <div id="capbox">
+    <div class="cap" id="cap0"><div class="n">1/6 · aviso</div><h2>Novo exame aguardando seu aceite</h2>
+      <ul><li>A leitura estruturada terminou; o médico recebe o aviso por evento.</li></ul>
+      <div class="chs"><span>No app, sempre</span><span>Push ou telefone, nunca os dois</span><span>WhatsApp <em>parcial</em></span><span>SMS de queda</span></div></div>
+    <div class="cap" id="cap1"><div class="n">2/6 · caixa de entrada</div><h2>A fila inteira de aceite, não só a de hoje</h2>
+      <ul><li>Filtros por etapa, resultado e período; favoritos e refino na mesma lista.</li><li>A mesma fila no app do médico e no portal web.</li></ul></div>
+    <div class="cap" id="cap2"><div class="n">3/6 · antes do aceite</div><h2>Visão geral visível, resultados protegidos</h2>
+      <ul><li>O médico vê quantas alterações e normais o exame tem.</li><li>A IA leu o laudo; quem decide aceitar ou recusar é o médico.</li></ul></div>
+    <div class="cap" id="cap3"><div class="n">4/6 · aceite</div><h2>Aceitar é ato formal e irreversível</h2>
+      <ul><li>A confirmação diz as consequências; o comentário inicial é opcional e não se edita.</li><li>Recusar pede motivo e avisa o laboratório para reenviar.</li></ul></div>
+    <div class="cap" id="cap4"><div class="n">5/6 · leitura</div><h2>Leitura estruturada no lugar do PDF</h2>
+      <ul><li>Alterações acima das normais; a cor vem da faixa de referência.</li><li>Evolução do analito com a faixa; reclassificar exige justificativa.</li></ul></div>
+    <div class="cap" id="cap5"><div class="n">6/6 · resultado</div><h2>Um aceite: responsabilidade, carteira e aviso</h2>
+      <ul><li>O paciente vê o mesmo resultado e o mesmo gráfico na carteira digital.</li><li>Laboratório, médico e paciente no mesmo dado · tudo DEMO.</li></ul></div>
+  </div>
+
+  <!-- QUEM PARTICIPA -->
+  <div class="actor" id="a0" style="left:690px">
+    <div class="hr"><div class="lab"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 15h9"/></svg></div><div><b>Lab Demo</b><span class="ro">Laboratório</span></div></div>
+    <div class="ast"><p><i style="background:var(--okc)"></i>Enviou o exame pela integração</p><p class="mut" style="font-weight:500"><i style="background:var(--bad)"></i>Se recusado, é avisado</p></div>
+  </div>
+  <div class="actor" id="a1" style="left:1070px">
+    <div class="ring2" id="a1r"></div>
+    <div class="hr"><div class="av"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><div><b>Médico Demo</b><span class="ro">Médico solicitante</span></div></div>
+    <div class="ast" id="a1a"><p><i style="background:var(--accent)"></i>Aviso: exame aguardando seu aceite</p></div>
+    <div class="ast" id="a1b" style="opacity:0"><p style="color:var(--primary2)"><i style="background:var(--primary)"></i>Aceitou · responsável formal pelo exame</p></div>
+  </div>
+  <div class="actor" id="a2" style="left:1450px">
+    <div class="ring2" id="a2r"></div>
+    <div class="hr"><div class="av"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="5"/><path d="M2 24c0-6 4-9 10-9s10 3 10 9z"/></svg></div><div><b>Paciente Demo A</b><span class="ro">Paciente</span></div></div>
+    <div class="ast" id="a2a"><p class="mut"><i style="background:var(--neutral)"></i>Exame ainda não liberado</p></div>
+    <div class="ast" id="a2b" style="opacity:0"><p style="color:var(--ok)"><i style="background:var(--okc)"></i>Avisado: “Seu exame foi revisado”</p><p class="mut" style="font-weight:500"><i style="background:var(--primary)"></i>Exame na carteira digital</p></div>
+  </div>
+</div>
+
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+  // LINHA DO TEMPO (pausada, termina em 32 s)
+  var tl = gsap.timeline({ paused: true });
+  function fin_(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.4, ease: "power2.out" }, t); }
+  function fout(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power2.in" }, t); }
+  function rise(sel, t, d) { tl.fromTo(sel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: d || 0.45, ease: "power3.out" }, t); }
+  // Screen swap: old leaves fully before the new one enters (no text overlap)
+  function swap(a, b, t) {
+    tl.to(a, { opacity: 0, duration: 0.25, ease: "power2.in" }, t);
+    tl.fromTo(b, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, t + 0.27);
+  }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, a);
+    if (b) tl.to("#cap" + i, { opacity: 0, duration: 0.3 }, b - 0.3);
+  }
+  // Tap marker at screen coordinates
+  function tap(x, y, t) {
+    tl.set("#touch", { x: x, y: y }, t);
+    tl.fromTo("#touch", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.18, ease: "power2.out" }, t);
+    tl.to("#touch", { opacity: 0, scale: 1.25, duration: 0.25, ease: "power2.in" }, t + 0.22);
+  }
+
+  // Batida 1 (0-4.6): aviso de exame aguardando aceite
+  tl.fromTo("#top", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
+  tl.fromTo("#phone", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.15);
+  rise("#strip", 0.3, 0.5);
+  fin_("#capbox", 0.4, 0.4);
+  ["#a0", "#a1", "#a2"].forEach(function (s, i) { rise(s, 0.5 + i * 0.12, 0.5); });
+  cap(0, 0.6, 4.9);
+  // Dashboard steps back (faded, not dimmed under text) before the push lands
+  fout("#dashBase", 1.9, 0.3);
+  fin_("#dimP", 1.9, 0.4);
+  tl.to("#sbD", { color: "#FFFFFF", duration: 0.3 }, 1.9);
+  tl.fromTo("#push", { opacity: 0, y: -120 }, { opacity: 1, y: 0, duration: 0.55, ease: "back.out(1.2)" }, 2.15);
+  tap(226, 150, 4.2);
+  tl.to(["#sDash", "#push"], { opacity: 0, duration: 0.25, ease: "power2.in" }, 4.5);
+  tl.to("#sbD", { color: "#333535", duration: 0.2 }, 4.55);
+  tl.fromTo("#sInbox", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 4.77);
+
+  // Batida 2 (4.9-9.5): caixa de entrada com a fila inteira
+  cap(1, 5.0, 9.5);
+  ["#e0", "#e1", "#e2"].forEach(function (s, i) { rise(s, 4.85 + i * 0.15, 0.45); });
+  tap(226, 352, 7.2);
+  fin_("#e0s", 7.25, 0.25);
+  swap("#sInbox", "#sPre", 9.0);
+  tl.to("#sbD", { color: "#FFFFFF", duration: 0.2 }, 9.25);
+
+  // Batida 3 (9.5-13.0): visão geral antes do aceite, resultados protegidos
+  cap(2, 9.6, 13.0);
+  ["#o0", "#o1", "#o2"].forEach(function (s, i) { rise(s, 9.6 + i * 0.12, 0.4); });
+  rise("#lock", 10.05, 0.45);
+  tap(336, 834, 12.2);
+
+  // Batida 4 (13.0-19.5): confirmação com consequências, aceite irreversível
+  fout("#preBase", 12.5, 0.25);
+  fin_("#dim", 12.5, 0.3);
+  tl.fromTo("#sheet", { opacity: 0, y: 420 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 12.6);
+  cap(3, 13.1, 19.5);
+  tl.fromTo(".cq", { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.12 }, 13.15);
+  tap(226, 828, 15.6);
+  tl.to("#sheet", { opacity: 0, y: 60, duration: 0.3, ease: "power2.in" }, 15.95);
+  tl.fromTo("#succ", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.4)" }, 16.3);
+  // State cycle: awaiting -> accepted (author: doctor)
+  tl.to("#stW", { backgroundColor: "#ECE9FF", borderColor: "#C9C0FF", color: "#3D2BBE", duration: 0.35 }, 16.35);
+  tl.to("#stWck", { opacity: 1, width: 22, duration: 0.3 }, 16.35);
+  tl.to("#stA", { backgroundColor: "#E2F4EA", borderColor: "#2FA36B", color: "#1F7A4C", duration: 0.35 }, 16.5);
+  tl.to("#stAlk", { opacity: 1, duration: 0.3 }, 16.5);
+  fout("#a1a", 16.45, 0.2); fin_("#a1b", 16.7, 0.3); fin_("#a1r", 16.7, 0.3);
+  fout("#a2a", 16.75, 0.2); fin_("#a2b", 17.0, 0.3); fin_("#a2r", 17.0, 0.3);
+  tap(226, 594, 18.8);
+  tl.to(["#succ", "#dim"], { opacity: 0, duration: 0.25, ease: "power2.in" }, 19.1);
+  swap("#sPre", "#sAcc", 19.1);
+  fout("#a1r", 19.1, 0.3); fout("#a2r", 19.1, 0.3);
+
+  // Batida 5 (19.5-26.6): leitura estruturada e evolução do analito
+  cap(4, 19.6, 26.6);
+  ["#rc0", "#rc1", "#rc2", "#rc3"].forEach(function (s, i) { rise(s, 19.6 + i * 0.12, 0.4); });
+  tap(117, 355, 22.0);
+  fin_("#rc0s", 22.05, 0.2);
+  swap("#sAcc", "#sRes", 22.35);
+  tl.to("#sbD", { color: "#333535", duration: 0.2 }, 22.6);
+  fin_("#refg", 22.9, 0.35);
+  tl.to("#curve", { strokeDashoffset: 0, duration: 1.0, ease: "power1.inOut" }, 23.0);
+  ["#p0", "#p1", "#p2", "#p3"].forEach(function (s, i) { fin_(s, 23.05 + i * 0.3, 0.3); });
+  rise("#rb0", 24.1, 0.35); rise("#rb1", 24.2, 0.35); rise("#rb2", 24.3, 0.35);
+
+  // Batida 6 (26.6-32): um aceite, três efeitos
+  cap(5, 26.7, 0);
+  // Shell switch: same result, now in the patient's digital wallet
+  swap("#sRes", "#sWal", 26.6);
+  fout("#chipM", 26.6, 0.25); fin_("#chipP", 26.87, 0.3);
+  ["#wn", "#wx", "#wr"].forEach(function (s, i) { rise(s, 26.95 + i * 0.18, 0.45); });
+  tl.to("#a1r", { opacity: 1, duration: 0.35 }, 27.0); tl.to("#a2r", { opacity: 1, duration: 0.35 }, 27.2);
+  tl.set("#bgl", { opacity: 1 }, 32);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["ius-aceite-e-leitura"] = tl;
+</script>
+</body>
+</html>

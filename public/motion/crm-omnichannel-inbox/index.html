@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>CRM · caixa de entrada omnichannel</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA WELABS */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0E0F12;--ink:#FFFFFF;--accent:#FF452B;--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:#2A1612;--ok:#3DD68C;--okt:#12301F;--warn:#F5B544;--warnt:#33270F;--info:#7DB4FF;--infot:#14243A}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+.abs{position:absolute}
+p{margin:0}
+
+/* CABEÇALHO FIXO */
+#top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
+#top img{height:42px;display:block;margin-bottom:10px}
+#top .tt{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
+#top .tt em{font-style:normal;color:var(--accent)}
+#top .gr{flex:1}
+.chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
+#top .chip{margin-bottom:10px}
+
+/* JANELA DA CAIXA DE ENTRADA */
+#win{position:absolute;left:120px;top:124px;width:1680px;height:812px;border:2px solid var(--line);border-radius:22px;background:var(--surface);overflow:hidden;opacity:0}
+#wbar{position:absolute;left:0;right:0;top:0;height:60px;background:#101115;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 24px;font-size:26px;font-weight:700}
+#wbar .gr{flex:1}
+.pres{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:700;color:var(--ok);white-space:nowrap}
+.pres i{width:14px;height:14px;border-radius:50%;background:var(--ok);display:block}
+.rt{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:2px 14px;white-space:nowrap}
+#colq{position:absolute;left:0;top:60px;width:520px;bottom:0;border-right:2px solid var(--line)}
+#colc{position:absolute;left:520px;top:60px;width:660px;bottom:0;border-right:2px solid var(--line);opacity:0}
+#colp{position:absolute;left:1180px;top:60px;width:496px;bottom:0;opacity:0}
+
+/* FILA */
+.qh{position:absolute;left:24px;top:14px;font-size:30px;font-weight:800}
+.tabs{position:absolute;left:24px;right:24px;top:64px;height:46px;display:flex;gap:10px}
+.tabs div{position:relative;height:46px;padding:0 14px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.tabs div.on{border-color:var(--accent);color:#fff;background:var(--soft)}
+.cnt{display:inline-block;position:relative;width:20px;height:30px;margin-left:8px}
+.cnt span{position:absolute;left:0;top:0;line-height:30px;color:#fff}
+.search{position:absolute;left:24px;right:24px;top:122px;height:52px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:24px;color:var(--muted);background:#121317}
+.row{position:absolute;left:12px;width:494px;height:88px;border-radius:14px;border:2px solid transparent;display:flex;align-items:center;gap:14px;padding:0 14px;opacity:0}
+.row.sel{border-color:var(--accent);background:var(--soft)}
+.av{width:50px;height:50px;border-radius:50%;background:#2C2F37;display:grid;place-items:center;font-size:24px;font-weight:800;flex:none}
+.rb{flex:1;min-width:0}
+.l1,.l2{display:flex;align-items:center;justify-content:space-between;gap:10px;white-space:nowrap}
+.l1 b{font-size:26px;font-weight:700}
+.l2{margin-top:4px;font-size:24px;color:var(--muted)}
+.ch{display:flex;align-items:center;gap:8px;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+.ch i{width:14px;height:14px;border-radius:50%;display:block;background:var(--c)}
+.prio{font-size:24px;font-weight:800;color:var(--accent)}
+.ring{position:absolute;inset:-2px;border-radius:14px;border:3px solid var(--warn);opacity:0}
+
+/* CANAIS (BATIDA 1) */
+#chs{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#edges{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+.edge{fill:none;stroke:#5A5E68;stroke-width:4}
+.dot{fill:var(--accent)}
+.chc{position:absolute;left:1150px;width:600px;height:96px;border:2px solid var(--line);border-radius:18px;background:var(--surface2);display:flex;align-items:center;gap:18px;padding:0 20px;opacity:0}
+.chc .ic{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 22%,transparent);flex:none}
+.chc .ic svg{width:32px;height:32px;stroke:var(--c);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.chc .tx{flex:1;min-width:0}
+.chc b{display:block;font-size:28px;font-weight:800;white-space:nowrap}
+.chc span{display:block;font-size:24px;color:var(--muted);white-space:nowrap}
+.hdl{position:absolute;left:-13px;top:35px;width:22px;height:22px;border-radius:50%;border:4px solid var(--c);background:var(--bg)}
+.badge{font-size:24px;font-weight:800;padding:2px 12px;border-radius:999px;white-space:nowrap}
+.badge.plan{color:var(--warn);border:2px solid var(--warn);background:var(--warnt)}
+.badge.prev{color:var(--accent);border:2px dashed var(--accent);background:var(--bg)}
+#prevch{position:absolute;left:1150px;top:880px;width:600px;height:52px;border:2px dashed var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:24px;font-weight:700;color:var(--muted);opacity:0}
+
+/* CONVERSA */
+.ch1{position:absolute;left:24px;right:24px;top:14px;height:44px;display:flex;align-items:center;gap:14px}
+.ch1 b{font-size:32px;font-weight:800;white-space:nowrap}
+.ch1 .gr{flex:1}
+.st{position:relative;width:172px;height:44px}
+.st span{position:absolute;right:0;top:0;height:44px;display:flex;align-items:center;padding:0 16px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap}
+#stA{color:var(--info);border:2px solid var(--info);background:var(--infot)}
+#stR{color:var(--ok);border:2px solid var(--ok);background:var(--okt);opacity:0}
+.ch2{position:absolute;left:24px;right:24px;top:66px;height:36px;display:flex;align-items:center;gap:14px;font-size:24px;color:var(--muted);white-space:nowrap}
+.pc{color:var(--accent);border:2px solid var(--accent);border-radius:999px;padding:0 12px;font-weight:800;background:var(--soft)}
+.seg{position:absolute;left:24px;top:112px;height:48px;display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.seg span{position:relative;height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+.seg u{position:absolute;inset:0;background:#4A1C14;border:2px solid var(--accent);border-radius:10px;opacity:0;text-decoration:none}
+.seg em{position:relative;font-style:normal}
+.sla{position:absolute;left:24px;right:24px;top:172px;height:58px;opacity:0}
+.sla .lb{display:flex;justify-content:space-between;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+.sla .lb b{position:relative;width:300px;height:30px;display:block}
+.sla .lb b span{position:absolute;right:0;top:0;white-space:nowrap}
+#slaRun{color:var(--warn)}#slaOk{color:var(--ok);opacity:0}
+.bar{position:relative;margin-top:10px;height:12px;border-radius:6px;background:#2C2F37;overflow:hidden}
+#slaFill{position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--warn);transform-origin:0 50%}
+#marea{position:absolute;left:24px;top:240px;width:612px;height:354px;overflow:hidden}
+#msgs{position:absolute;left:0;top:0;width:612px;height:354px}
+.bub{position:absolute;max-width:470px;padding:14px 20px;border-radius:18px;font-size:26px;line-height:34px;font-weight:500;opacity:0}
+.bub.in{left:0;background:#2A2D35;border-bottom-left-radius:6px}
+.bub.out{right:0;background:var(--soft);border:2px solid var(--accent);border-bottom-right-radius:6px}
+.bub.ai{right:0;background:var(--infot);border:2px solid var(--info);border-bottom-right-radius:6px}
+.bub .who{display:block;font-size:24px;line-height:30px;font-weight:800;margin-bottom:4px}
+.bub.ai .who{color:var(--info)}.bub.out .who{color:var(--accent)}
+.bub p{white-space:nowrap}
+.cta{display:flex;gap:10px;margin-top:12px}
+.cta span{height:48px;padding:0 16px;border-radius:12px;border:2px solid var(--accent);display:flex;align-items:center;font-size:24px;font-weight:700;color:#fff;white-space:nowrap}
+.ev{position:absolute;left:0;right:0;height:34px;display:flex;justify-content:center;align-items:center;gap:10px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap;opacity:0}
+.ev i{width:10px;height:10px;border-radius:50%;background:var(--muted);display:block}
+#comp{position:absolute;left:24px;top:604px;width:612px;height:136px;border:2px solid var(--line);border-radius:16px;background:#121317}
+.ctext{position:absolute;left:18px;right:18px;top:12px;height:40px}
+.ctext p{position:absolute;left:0;top:0;font-size:26px;line-height:40px;white-space:nowrap;opacity:0}
+#ct0{color:var(--muted);opacity:1}
+.var{background:var(--soft);color:var(--accent);border-radius:8px;padding:0 6px;font-weight:700}
+.ctools{position:absolute;left:14px;right:14px;bottom:12px;height:50px;display:flex;align-items:center;gap:10px}
+.ctools span{height:46px;padding:0 14px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.ctools .gr{flex:1;border:0;padding:0}
+.ctools .send{background:var(--accent);border-color:var(--accent);color:#fff}
+#canned{position:absolute;left:24px;top:296px;width:612px;height:300px;border:2px solid var(--line);border-radius:16px;background:#121317;box-shadow:0 12px 30px rgba(0,0,0,.5);padding:12px;opacity:0}
+#canned .h{font-size:24px;font-weight:700;color:var(--muted);height:36px;padding-left:8px}
+.ci{position:relative;height:76px;border-radius:12px;padding:6px 12px;margin-top:6px}
+.ci b{display:block;font-size:26px;font-weight:800;line-height:32px}
+.ci span{display:block;font-size:24px;color:var(--muted);line-height:30px;white-space:nowrap}
+.ci u{position:absolute;inset:0;border-radius:12px;border:2px solid var(--accent);background:rgba(255,69,43,.12);opacity:0;text-decoration:none}
+
+/* PAINEL DA PESSOA */
+.pp{position:absolute;left:24px;right:24px}
+.pav{position:absolute;left:24px;top:16px;width:72px;height:72px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-size:30px;font-weight:800}
+.pn{position:absolute;left:112px;top:18px;font-size:30px;font-weight:800;white-space:nowrap}
+.ps{position:absolute;left:112px;top:58px;font-size:24px;color:var(--muted);white-space:nowrap}
+.sec{font-size:24px;font-weight:800;color:var(--accent);letter-spacing:.02em;white-space:nowrap}
+.kv{display:flex;justify-content:space-between;font-size:24px;line-height:34px;white-space:nowrap}
+.kv span:first-child{color:var(--muted)}
+.kv span:last-child{font-weight:600}
+.tg{display:inline-flex;align-items:center;height:40px;padding:0 14px;border-radius:999px;font-size:24px;font-weight:700;margin-right:8px;white-space:nowrap}
+.tg.a{background:#24324A;color:#BFD6FF}.tg.b{background:var(--soft);color:#FFB3A8;border:2px solid var(--accent)}
+.rel{display:flex;justify-content:space-between;align-items:center;height:44px;padding:0 12px;border:2px solid var(--line);border-radius:12px;font-size:24px;margin-top:8px;white-space:nowrap}
+.rel span:last-child{color:var(--muted)}
+.fx{font-size:24px;color:var(--muted);white-space:nowrap}
+.pi{opacity:0}
+
+/* CENTRAL DE LIGAÇÕES */
+#call{position:absolute;left:1180px;top:60px;width:496px;bottom:0;opacity:0}
+.cc{position:absolute;left:24px;right:24px;top:110px;height:250px;border:2px solid var(--warn);border-radius:18px;background:var(--warnt);padding:18px 20px}
+.cc .k{position:relative;height:30px}
+.cc .k span{position:absolute;left:0;top:0;font-size:24px;font-weight:800;white-space:nowrap}
+#ckA{color:var(--warn)}#ckB{color:var(--ok);opacity:0}
+.cc b{display:block;margin-top:8px;font-size:30px;font-weight:800}
+.cc .n{font-size:24px;color:var(--muted);margin-top:4px;white-space:nowrap}
+.cbtn{position:absolute;left:20px;right:20px;bottom:18px;height:56px;display:flex;gap:12px}
+.cbtn span{flex:1;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;white-space:nowrap}
+.cbtn .g{background:#1E8A55;color:#fff}.cbtn .r{background:#3A1C1A;color:#FF9A8C;border:2px solid #7A2A22}
+.cbtn .o{background:var(--bg);color:#fff;border:2px solid var(--line)}
+#cb2{opacity:0}
+.tl{position:absolute;left:24px;right:24px;top:380px;opacity:0}
+.tr{position:relative;height:56px;margin-top:8px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:24px;font-weight:600;white-space:nowrap}
+.tr span:last-child{color:var(--muted)}
+.tr u{position:absolute;inset:-2px;border-radius:12px;border:3px solid var(--accent);background:rgba(255,69,43,.12);opacity:0;text-decoration:none}
+#tdone{position:absolute;left:24px;right:24px;top:640px;height:56px;border-radius:14px;background:var(--okt);border:2px solid var(--ok);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;opacity:0;white-space:nowrap}
+#trec{position:absolute;left:24px;right:24px;top:712px;font-size:24px;color:var(--muted);text-align:center;opacity:0;white-space:nowrap}
+
+/* LEGENDA DA BATIDA */
+#caps{position:absolute;left:120px;right:120px;top:956px;height:86px}
+.cap{position:absolute;left:0;right:0;top:0;height:86px;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#1A1A1F;border-left:8px solid var(--accent);font-size:32px;font-weight:700;opacity:0;white-space:nowrap}
+.cap small{font-size:24px;font-weight:800;color:var(--accent)}
+
+/* FECHO */
+#fin{position:absolute;left:120px;top:150px;width:1680px;height:812px;opacity:0}
+#fin h2{position:absolute;left:0;right:0;top:40px;margin:0;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px}
+#fin h2 em{font-style:normal;color:var(--accent)}
+.fp{position:absolute;top:220px;width:252px;height:64px;border:2px solid var(--line);border-radius:999px;background:var(--surface2);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:700;white-space:nowrap;opacity:0}
+.fp i{width:14px;height:14px;border-radius:50%;background:var(--c);display:block}
+#fsv{position:absolute;left:0;top:0;width:1680px;height:812px;overflow:visible}
+.fe{fill:none;stroke:#5A5E68;stroke-width:4}
+#fq{position:absolute;left:440px;top:400px;width:800px;height:84px;border:3px solid var(--accent);border-radius:999px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;white-space:nowrap;opacity:0}
+.caps2{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:14px}
+.caps2 span{height:52px;padding:0 18px;border:2px solid var(--line);border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:600;color:#E6E8EC;white-space:nowrap;opacity:0}
+#flg{position:absolute;left:0;right:0;top:720px;display:flex;justify-content:center;gap:24px;opacity:0}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="crm-omnichannel-inbox" data-width="1920" data-height="1080" data-start="0" data-duration="34">
+
+<div id="top"><img src="./assets/welabs-logo.png" alt="Welabs"><div class="tt">CRM · <em>caixa de entrada omnichannel</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+
+<div id="win">
+  <div id="wbar"><span>Projeto DEMO · Caixa de entrada</span><span class="gr"></span><span class="rt">tempo real</span><span class="pres"><i></i>Online</span></div>
+
+  <!-- queue column -->
+  <div id="colq">
+    <div class="qh">Conversas</div>
+    <div class="tabs"><div class="on">Abertas</div><div>Adiadas</div><div>Resolvidas<span class="cnt"><span id="cn3">3</span><span id="cn4" style="opacity:0">4</span></span></div></div>
+    <div class="search"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B4B9C3" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Buscar no conteúdo</div>
+  </div>
+
+  <!-- conversation column -->
+  <div id="colc">
+    <div class="ch1"><b>Ana Ribeiro</b><span class="ch" style="--c:#25D366"><i></i>WhatsApp</span><span class="gr"></span><div class="st"><span id="stA">Aberta</span><span id="stR">Resolvida</span></div></div>
+    <div class="ch2"><span>Protocolo 202610-0042</span><span class="pc">Prioridade alta</span></div>
+    <div class="seg"><span style="width:236px"><u id="sg0"></u><em>Agente + humano</em></span><span style="width:160px"><u id="sg1"></u><em>Só agente</em></span><span style="width:172px"><u id="sg2"></u><em>Só humano</em></span></div>
+    <div class="sla" id="sla"><div class="lb"><span>SLA 1ª resposta humana</span><b><span id="slaRun">correndo · prazo DEMO</span><span id="slaOk">respondida no prazo</span></b></div><div class="bar"><div id="slaFill"></div></div></div>
+    <div id="marea"><div id="msgs">
+      <div class="bub in" id="m1" style="top:10px;width:420px">Oi! Quero um orçamento do plano DEMO.</div>
+      <div class="bub ai" id="m2" style="top:118px"><span class="who">Agente de IA</span><p>Vou chamar alguém da equipe.</p></div>
+      <div class="ev" id="e1" style="top:226px"><i></i>Agente escalou para humano · nota interna</div>
+      <div class="ev" id="e2" style="top:266px"><i></i>Atribuída à Equipe Comercial · round robin</div>
+      <div class="bub out" id="m3" style="top:318px"><span class="who">Você · atendente</span><p>Olá Ana, recebi seu pedido.</p></div>
+      <div class="bub out" id="m4" style="top:428px;max-width:540px"><span class="who">Template aprovado · WhatsApp</span><p>Sua proposta DEMO está pronta.</p><div class="cta"><span>Ver proposta</span><span>Falar com a equipe</span></div></div>
+    </div></div>
+    <div id="canned"><div class="h">Respostas prontas</div>
+      <div class="ci"><b>Saudação</b><span>Olá {{nome}}, tudo bem?</span></div>
+      <div class="ci"><u id="ciSel"></u><b>Orçamento</b><span>Olá {{nome}}, recebi seu pedido.</span></div>
+      <div class="ci"><b>Encerramento</b><span>Obrigado pelo contato!</span></div>
+    </div>
+    <div id="comp">
+      <div class="ctext"><p id="ct0">Escreva uma mensagem…</p><p id="ct1">/orç</p><p id="ct2">Olá <span class="var">{{nome}}</span>, recebi seu pedido.</p><p id="ct3">Olá <span class="var">Ana</span>, recebi seu pedido.</p></div>
+      <div class="ctools"><span>/ Resposta pronta</span><span>Template</span><span class="gr"></span><span class="send" id="send">Enviar</span></div>
+    </div>
+  </div>
+
+  <!-- person panel -->
+  <div id="colp">
+    <div class="pi" id="p0"><div class="pav">AR</div><div class="pn">Ana Ribeiro</div><div class="ps">Pessoa · contato unificado</div></div>
+    <div class="pp pi" id="p1" style="top:112px"><div class="sec">CONTATOS</div><div class="kv"><span>WhatsApp</span><span>(11) 9xxxx-0000</span></div><div class="kv"><span>E-mail</span><span>ana@demo.exemplo</span></div></div>
+    <div class="pp pi" id="p2" style="top:232px"><div class="sec">ETIQUETAS</div><div style="margin-top:8px;display:flex;align-items:center"><span class="tg a">recorrente</span><span class="tg b" id="tgNew" style="opacity:0">orçamento</span><span class="fx" id="tgBy" style="opacity:0">pelo fluxo</span></div></div>
+    <div class="pp pi" id="p3" style="top:336px"><div class="sec">CAMPOS PERSONALIZADOS</div><div class="kv"><span>Cidade</span><span>DEMO</span></div><div class="kv"><span>Plano de interesse</span><span>DEMO</span></div></div>
+    <div class="pp pi" id="p4" style="top:458px"><div class="sec">CONVERSAS RELACIONADAS</div><div class="rel" id="rl1"><span>Chat do site</span><span>resolvida</span></div><div class="rel" id="rl2"><span>Ligação · Telefone</span><span>gravada</span></div></div>
+    <div class="pp pi" id="p5" style="top:620px"><div class="sec">PARTICIPANTES</div><div class="kv"><span>Você</span><span>responsável</span></div><div class="kv"><span>@Marcos</span><span>mencionado</span></div></div>
+  </div>
+
+  <!-- call center panel -->
+  <div id="call">
+    <div class="ch1" style="left:24px;right:24px"><b style="font-size:30px">Central de ligações</b></div>
+    <div class="ch2" style="top:62px"><span>Fila de chamadas · 1</span><span class="pres" style="margin-left:auto"><i></i>disponível</span></div>
+    <div class="cc"><div class="k"><span id="ckA">Ligação recebida</span><span id="ckB">Em ligação</span></div><b>Bruno Lima</b><div class="n">Telefone · (11) 9xxxx-0000</div>
+      <div class="cbtn" id="cb1"><span class="g" id="bAt">Atender</span><span class="r">Recusar</span></div>
+      <div class="cbtn" id="cb2"><span class="o" id="bTr">Transferir</span><span class="r">Encerrar</span></div>
+    </div>
+    <div class="tl" id="tlist"><div class="sec">TRANSFERIR PARA</div>
+      <div class="tr"><u id="trSel"></u><span>Equipe Suporte</span><span>2 online</span></div>
+      <div class="tr"><span>Equipe Comercial</span><span>1 online</span></div>
+      <div class="tr"><span>Marcos</span><span>online</span></div>
+    </div>
+    <div id="tdone">Transferida para Equipe Suporte</div>
+    <div id="trec">Gravação disponível depois de encerrar</div>
+  </div>
+</div>
+
+<!-- channels layer (beat 1) -->
+<div id="chs">
+  <svg id="edges" viewBox="0 0 1920 1080"></svg>
+  <div id="prevch"><span>E-mail e Telegram</span><span class="badge prev">Previsto</span></div>
+</div>
+
+<!-- closing -->
+<div id="fin">
+  <h2>Todos os canais, <em>uma fila.</em></h2>
+  <svg id="fsv" viewBox="0 0 1680 812"></svg>
+  <div id="fq">Uma fila · protocolo, prioridade, SLA e equipe</div>
+  <div class="caps2" style="top:536px"><span>Busca no conteúdo</span><span>Adiar com retorno automático</span><span>Menções a colegas</span><span>Equipes e round robin</span></div>
+  <div class="caps2" style="top:604px"><span>Agente escala, a pessoa decide</span><span>Tempo real</span><span>Aviso de falha na entrega</span><span>Caixa embutida em outro app</span></div>
+  <div id="flg"><span class="badge plan">Discord · recurso de plano</span><span class="badge prev">E-mail e Telegram · Previsto</span></div>
+</div>
+
+<div id="caps"></div>
+<div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+  // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
+  var NS = "http://www.w3.org/2000/svg";
+  var WX = 120, WY = 124, COLTOP = WY + 60;
+  var ROW_TOP = 376 - COLTOP, ROW_STEP = 92;
+  var CH = [
+    { k: "wa",  t: "WhatsApp",            s: "pareado por QR ou código",   c: "#25D366", ic: '<path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/>' },
+    { k: "api", t: "WhatsApp API oficial", s: "templates aprovados · voz",  c: "#3DD68C", ic: '<path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/><path d="M9 12l2 2 4-4"/>' },
+    { k: "tel", t: "Telefone",            s: "número próprio · central",    c: "#F5B544", ic: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>' },
+    { k: "web", t: "Chat do site",        s: "visitante anônimo · anexos",  c: "#7DB4FF", ic: '<rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l4-4"/>' },
+    { k: "dc",  t: "Discord",             s: "cargos e equipes",   c: "#A7A2FF", ic: '<rect x="3" y="6" width="18" height="12" rx="5"/><circle cx="9" cy="12" r="1.2"/><circle cx="15" cy="12" r="1.2"/>', badge: "recurso de plano" },
+    { k: "wh",  t: "Webhook",             s: "qualquer sistema · segredo",  c: "#FF8A73", ic: '<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><circle cx="12" cy="6" r="3"/><path d="M9 17h6M10.5 8.5L7.5 14.5M13.5 8.5l3 6"/>' }
+  ];
+  var ROWS = [
+    { av: "AR", n: "Ana Ribeiro",  sn: "Quero um orçamento",      r: '<span class="prio">Alta</span>' },
+    { av: "LC", n: "Loja Centro",  sn: "Pedido DEMO-12 chegou?",  r: "" },
+    { av: "BL", n: "Bruno Lima",   sn: "Retorno de ligação",       r: "" },
+    { av: "VS", n: "Visitante",    sn: "Vocês atendem sábado?",    r: "" },
+    { av: "CS", n: "Carla Souza",  sn: "Dúvida no acesso",         r: "" },
+    { av: "SD", n: "Sistema DEMO", sn: "Evento de pedido",         r: "" }
+  ];
+  var chLabel = ["WhatsApp", "API oficial", "Telefone", "Chat do site", "Discord", "Webhook"];
+  var colq = document.getElementById("colq");
+  ROWS.forEach(function (r, i) {
+    var d = document.createElement("div");
+    d.className = "row"; d.id = "r" + i; d.style.top = (ROW_TOP + i * ROW_STEP) + "px";
+    d.innerHTML = '<div class="ring" id="rg' + i + '"></div><div class="av">' + r.av + '</div><div class="rb"><div class="l1"><b>' + r.n + '</b><span class="ch" style="--c:' + CH[i].c + '"><i></i>' + chLabel[i] + '</span></div><div class="l2"><span>' + r.sn + '</span>' + r.r + '</div></div>';
+    colq.appendChild(d);
+  });
+  var chs = document.getElementById("chs"), svg = document.getElementById("edges");
+  var CARD_TOP = 204, CARD_STEP = 112, CARD_H = 96, CARD_X = 1150;
+  var paths = [];
+  CH.forEach(function (c, i) {
+    var d = document.createElement("div");
+    d.className = "chc"; d.id = "c" + i; d.style.top = (CARD_TOP + i * CARD_STEP) + "px"; d.style.setProperty("--c", c.c);
+    d.innerHTML = '<div class="hdl"></div><div class="ic"><svg viewBox="0 0 24 24">' + c.ic + '</svg></div><div class="tx"><b>' + c.t + '</b><span>' + c.s + '</span></div>' + (c.badge ? '<span class="badge plan">' + c.badge + '</span>' : "");
+    chs.appendChild(d);
+    // Bezier from the card handle to the matching queue row
+    var y0 = CARD_TOP + i * CARD_STEP + CARD_H / 2, y1 = COLTOP + ROW_TOP + i * ROW_STEP + 44;
+    var p = { x0: CARD_X - 14, y0: y0, x1: WX + 506, y1: y1 };
+    p.c1x = p.x0 - 220; p.c2x = p.x1 + 220;
+    var e = document.createElementNS(NS, "path");
+    e.setAttribute("d", "M" + p.x0 + " " + p.y0 + " C" + p.c1x + " " + p.y0 + " " + p.c2x + " " + p.y1 + " " + p.x1 + " " + p.y1);
+    e.setAttribute("class", "edge"); e.setAttribute("id", "ed" + i); e.setAttribute("pathLength", "1");
+    e.style.strokeDasharray = "1"; e.style.strokeDashoffset = "1";
+    svg.appendChild(e);
+    var dot = document.createElementNS(NS, "circle");
+    dot.setAttribute("r", "10"); dot.setAttribute("class", "dot"); dot.setAttribute("id", "dt" + i);
+    dot.setAttribute("cx", p.x0); dot.setAttribute("cy", p.y0); dot.style.opacity = 0;
+    svg.appendChild(dot);
+    paths.push(p);
+  });
+  function bez(p, t) {
+    var u = 1 - t;
+    return {
+      x: u * u * u * p.x0 + 3 * u * u * t * p.c1x + 3 * u * t * t * p.c2x + t * t * t * p.x1,
+      y: u * u * u * p.y0 + 3 * u * u * t * p.y0 + 3 * u * t * t * p.y1 + t * t * t * p.y1
+    };
+  }
+  // Closing: six channel pills converge into one queue pill
+  var fin = document.getElementById("fin"), fsv = document.getElementById("fsv");
+  var FPW = 252, FGAP = 33.6;
+  ["WhatsApp", "API oficial", "Telefone", "Chat do site", "Discord", "Webhook"].forEach(function (t, i) {
+    var x = i * (FPW + FGAP);
+    var d = document.createElement("div");
+    d.className = "fp"; d.id = "fp" + i; d.style.left = x + "px"; d.style.setProperty("--c", CH[i].c);
+    d.innerHTML = "<i></i>" + t; fin.appendChild(d);
+    var e = document.createElementNS(NS, "path");
+    var sx = x + FPW / 2, sy = 286, tx = 640 + i * 80, ty = 398;
+    e.setAttribute("d", "M" + sx + " " + sy + " C" + sx + " " + (sy + 60) + " " + tx + " " + (ty - 60) + " " + tx + " " + ty);
+    e.setAttribute("class", "fe"); e.setAttribute("id", "fe" + i); e.setAttribute("pathLength", "1");
+    e.style.strokeDasharray = "1"; e.style.strokeDashoffset = "1";
+    fsv.appendChild(e);
+  });
+  var CAPS = [
+    "Seis canais chegam pelo Channels numa fila só",
+    "A conversa abre com protocolo, prioridade e SLA humano correndo",
+    "O painel da pessoa junta contatos, etiquetas, campos e histórico",
+    "Resposta pronta com variável preenchida e template aprovado",
+    "A ligação entra na mesma caixa: atender e transferir à equipe",
+    "Resolvida: a conversa sai da fila e o contador de resolvidas sobe"
+  ];
+  var capBox = document.getElementById("caps");
+  CAPS.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/6</small><span>" + t + "</span>"; capBox.appendChild(d);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 34 s)
+  var tl = gsap.timeline({ paused: true });
+  function fin_(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.5, ease: "power2.out" }, t); }
+  function fout(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.4, ease: "power2.in" }, t); }
+  function rise(sel, t, d) { tl.fromTo(sel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: d || 0.5, ease: "power3.out" }, t); }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, a);
+    tl.to("#cap" + i, { opacity: 0, duration: 0.35 }, b - 0.35);
+  }
+
+  // Beat 1 (0-5.6): channels converge into one queue
+  tl.fromTo("#top", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
+  fin_("#win", 0.15, 0.6);
+  cap(0, 0.4, 5.5);
+  CH.forEach(function (c, i) {
+    tl.fromTo("#c" + i, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.7 + i * 0.14);
+  });
+  fin_("#prevch", 1.6);
+  paths.forEach(function (p, i) {
+    var t0 = 1.3 + i * 0.28;
+    tl.to("#ed" + i, { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, t0);
+    var pr = { t: 0 };
+    tl.fromTo(pr, { t: 0 }, { t: 1, duration: 0.6, ease: "power1.inOut", onUpdate: function () {
+      var q = bez(p, pr.t), el = document.getElementById("dt" + i);
+      el.setAttribute("cx", q.x); el.setAttribute("cy", q.y);
+    } }, t0 + 0.3);
+    tl.fromTo("#dt" + i, { opacity: 0 }, { opacity: 1, duration: 0.15 }, t0 + 0.3);
+    tl.to("#dt" + i, { opacity: 0, duration: 0.15 }, t0 + 0.85);
+    tl.fromTo("#r" + i, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, t0 + 0.8);
+  });
+
+  // Beat 2 (5.5-10.8): conversation opens with protocol, priority, SLA
+  fout("#chs", 5.5, 0.5);
+  fin_("#colc", 6.0, 0.4); fin_("#colp", 6.0, 0.4);
+  tl.to("#r0", { borderColor: "#FF452B", backgroundColor: "#2A1612", duration: 0.4 }, 5.8);
+  cap(1, 5.8, 10.8);
+  fin_("#sg0", 6.2, 0.3);
+  rise("#p0", 6.4, 0.45); rise("#p1", 6.6, 0.45);
+  rise("#m1", 6.6); rise("#m2", 7.2);
+  fin_("#e1", 7.9, 0.4); fin_("#e2", 8.3, 0.4);
+  fout("#sg0", 8.7, 0.3); fin_("#sg2", 8.7, 0.3);
+  fin_("#sla", 8.7, 0.4);
+  tl.fromTo("#slaFill", { scaleX: 0 }, { scaleX: 0.42, duration: 10.1, ease: "none" }, 8.7);
+
+  // Beat 3 (10.8-15.2): person panel with contacts, tags, fields, history
+  cap(2, 10.8, 15.2);
+  ["#p2", "#p3", "#p4", "#p5"].forEach(function (s, i) { rise(s, 10.9 + i * 0.18, 0.45); });
+  tl.fromTo("#tgNew", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 12.4);
+  fin_("#tgBy", 12.6, 0.4);
+  tl.to("#rl1", { borderColor: "#FF452B", duration: 0.4 }, 13.2);
+  tl.to("#rl2", { borderColor: "#FF452B", duration: 0.4 }, 13.3);
+
+  // Beat 4 (15.2-22.0): canned reply with variable, approved template
+  cap(3, 15.2, 22.0);
+  tl.to("#rl1", { borderColor: "#3A3D45", duration: 0.3 }, 15.2);
+  tl.to("#rl2", { borderColor: "#3A3D45", duration: 0.3 }, 15.2);
+  tl.fromTo("#msgs", { y: 0 }, { y: -260, duration: 0.6, ease: "power2.inOut" }, 15.2);
+  fout("#m1", 15.2, 0.3); fout("#m2", 15.2, 0.4); fout("#e1", 15.3, 0.4);
+  fout("#ct0", 15.7, 0.15); fin_("#ct1", 15.85, 0.2);
+  rise("#canned", 16.0, 0.4);
+  fin_("#ciSel", 17.0, 0.3);
+  fout("#canned", 17.6, 0.3); fout("#ct1", 17.6, 0.15); fin_("#ct2", 17.75, 0.3);
+  fout("#ct2", 18.5, 0.15); fin_("#ct3", 18.65, 0.3);
+  tl.fromTo("#send", { scale: 1 }, { scale: 0.92, duration: 0.12, yoyo: true, repeat: 1 }, 19.3);
+  fout("#ct3", 19.5, 0.15); tl.to("#ct0", { opacity: 1, duration: 0.3 }, 19.65);
+  rise("#m3", 19.5);
+  tl.to("#slaFill", { backgroundColor: "#3DD68C", duration: 0.3 }, 19.5);
+  fout("#slaRun", 19.5, 0.15); fin_("#slaOk", 19.65, 0.3);
+  rise("#m4", 20.0);
+
+  // Beat 5 (22.0-27.9): call enters the same inbox, accepted and transferred
+  cap(4, 22.0, 27.9);
+  fout("#colp", 22.0, 0.3); fin_("#call", 22.3, 0.4);
+  tl.fromTo("#rg2", { opacity: 0 }, { opacity: 1, duration: 0.25, yoyo: true, repeat: 3 }, 22.1);
+  tl.to("#rg2", { opacity: 1, duration: 0.2 }, 23.1);
+  tl.fromTo("#bAt", { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1 }, 23.3);
+  fout("#ckA", 23.55, 0.15); fin_("#ckB", 23.7, 0.3);
+  fout("#cb1", 23.55, 0.15); fin_("#cb2", 23.7, 0.3);
+  tl.to(".cc", { borderColor: "#3DD68C", backgroundColor: "#12301F", duration: 0.4 }, 23.6);
+  tl.fromTo("#bTr", { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1 }, 24.7);
+  rise("#tlist", 24.9, 0.4);
+  fin_("#trSel", 25.5, 0.3);
+  rise("#tdone", 25.9, 0.4); fin_("#trec", 26.0, 0.4);
+
+  // Beat 6 (27.9-31.1): resolved, leaves the queue, resolved counter goes up
+  cap(5, 27.9, 31.1);
+  fout("#call", 27.9, 0.3); tl.to("#colp", { opacity: 1, duration: 0.4 }, 28.2);
+  fout("#rg2", 27.9, 0.3);
+  fout("#stA", 28.5, 0.15); fin_("#stR", 28.65, 0.3);
+  tl.to("#r0", { opacity: 0, x: -40, duration: 0.4, ease: "power2.in" }, 28.8);
+  [1, 2, 3, 4, 5].forEach(function (i) { tl.to("#r" + i, { y: -ROW_STEP, duration: 0.5, ease: "power2.inOut" }, 29.1); });
+  fout("#cn3", 29.2, 0.15); fin_("#cn4", 29.35, 0.3);
+
+  // Closing (31.1-34.0): all channels, one queue
+  fout("#win", 31.1, 0.25);
+  fin_("#fin", 31.35, 0.2);
+  tl.fromTo("#fin h2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 31.35);
+  [0, 1, 2, 3, 4, 5].forEach(function (i) {
+    tl.fromTo("#fp" + i, { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.3 }, 31.4 + i * 0.04);
+    tl.to("#fe" + i, { strokeDashoffset: 0, duration: 0.35, ease: "power2.inOut" }, 31.55 + i * 0.03);
+  });
+  tl.fromTo("#fq", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 31.8);
+  tl.fromTo(".caps2 span", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.025 }, 31.85);
+  fin_("#flg", 31.95, 0.3);
+  tl.set("#pad", { opacity: 0 }, 34);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["crm-omnichannel-inbox"] = tl;
+</script>
+</body>
+</html>

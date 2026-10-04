@@ -1,6 +1,6 @@
 # Imagine Apps e Welabs — prévia institucional
 
-Website-v2 com distribuição institucional das duas empresas. Imagine organiza serviços (know-how em movimento), produtos com cliente e clientes por segmento. Welabs apresenta sua plataforma e produtos próprios pelo tipo, sem marca de produto: ERP, Flow, KB, CRM e Ecossistema Monitoramento. As peças animadas (HyperFrames) entram por `scripts/sync-motion.mjs`; o ranking de ênfase fica em `lib/emphasis.json`.
+Website-v2 com distribuição institucional das duas empresas. Imagine organiza serviços (know-how em movimento), produtos com cliente e clientes por segmento. Welabs apresenta sua plataforma e produtos próprios pelo tipo, sem marca de produto: Flow, CRM, Hub de domínio, KB, Channels e Ecossistema Monitoramento, seguidos da cadeia de integração. Cada produto com roteiro aprovado mostra os filmes na ordem do operador (`reel` em `lib/motion-catalog.json`). As peças animadas (HyperFrames) entram por `scripts/sync-motion.mjs`; o ranking de ênfase fica em `lib/emphasis.json`.
 
 ## Rodar localmente
 

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Cadeia de integração · o mapa</title>
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--solid:#E6E6EC}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+p{white-space:nowrap}
+
+/* CABEÇALHO, LEGENDA E SELO */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
+#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+#title span,#closing span{color:var(--coral)}
+#caps{position:absolute;left:640px;top:24px;width:760px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
+#closing{position:absolute;left:0;top:22px;font-size:46px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+
+/* ARESTAS */
+svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.e{fill:none;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}
+.e.ex{stroke:var(--solid)}
+.e.pa{stroke:var(--wait);stroke-width:5;stroke-dasharray:2 12}
+.e.pl{stroke:var(--coral);stroke-dasharray:16 11;stroke-linecap:butt}
+.ah.ex{fill:var(--solid)}.ah.pa{fill:var(--wait)}.ah.pl{fill:var(--coral)}
+.mk{fill:none;stroke:#fff;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
+
+/* NÓS DOS PRODUTOS */
+.card{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel);opacity:0}
+.ch{display:flex;align-items:center;gap:14px;padding:0 18px;height:100%}
+.ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
+.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
+.nm{font-size:30px;font-weight:700;line-height:36px;white-space:nowrap}
+.gr{flex:1}
+.tag{display:inline-flex;align-items:center;height:40px;font-size:24px;font-weight:700;border-radius:999px;padding:0 14px;white-space:nowrap}
+.tag.dash{background:#1A1210;border:2px dashed var(--coral);color:var(--coral)}
+#tMon{position:absolute;left:1462px;top:900px;opacity:0}
+#nSaaS{left:740px;top:125px;width:440px;height:100px;--acc:var(--ok)}
+#nFlow{left:100px;top:270px;width:400px;height:110px;--acc:var(--blue)}
+#nCh{left:1420px;top:270px;width:400px;height:110px;--acc:var(--teal)}
+#nCRM{left:1420px;top:780px;width:400px;height:110px;--acc:var(--pink)}
+#nKB{left:700px;top:830px;width:360px;height:110px;--acc:var(--violet)}
+#nMon{left:1420px;top:950px;width:400px;height:96px;--acc:var(--coral);border-style:dashed;border-color:var(--coral);background:#1A1210}
+#nHub{left:640px;top:465px;width:640px;height:195px;--acc:var(--coral);border-width:3px;border-color:var(--coral);background:#1C1416}
+#nHub .ch{height:96px}
+#nHub .nm{font-size:34px;line-height:40px}
+#chips{position:absolute;left:18px;right:18px;top:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#chips span{height:40px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
+
+/* RÓTULOS DO QUE TRAFEGA */
+.lb{position:absolute;height:76px;padding:6px 14px;border-radius:14px;background:#141418;border:2px solid var(--line);opacity:0}
+.lb.ex{border-color:#5A5A66}.lb.pa{border-color:var(--wait)}
+.lb p{height:30px;line-height:30px;font-size:24px;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.lb .l1{font-weight:800;color:var(--text)}
+.lb .l2{font-weight:600;color:var(--muted)}
+.pb{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;background:rgba(245,181,63,.18);color:var(--wait);font-size:24px;font-weight:800}
+
+/* LEGENDA */
+#legend{position:absolute;left:100px;top:986px;height:44px;display:flex;align-items:center;gap:30px;opacity:0}
+#legend div{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-chain-overview" data-width="1920" data-height="1080" data-start="0" data-duration="34">
+  <div id="hd">
+    <div id="title">Cadeia de integração<span>.</span></div>
+    <div id="caps"></div>
+    <div id="closing">Um barramento de domínio, muitos produtos<span>.</span></div>
+    <div id="sbx">sandbox · dados DEMO</div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  </div>
+
+  <svg id="edges" viewBox="0 0 1920 1080"><defs id="defs"></defs><g id="eg"></g></svg>
+
+  <div class="card" id="nSaaS"><div class="ch"><span class="ic" id="iSaaS"></span><div><p class="kd">Encaixe</p><p class="nm">SaaS · app · portal</p></div></div></div>
+  <div class="card" id="nFlow"><div class="ch"><span class="ic" id="iFlow"></span><div><p class="kd">Motor</p><p class="nm">Flow</p></div></div></div>
+  <div class="card" id="nCh"><div class="ch"><span class="ic" id="iCh"></span><div><p class="kd">Canais</p><p class="nm">Channels</p></div></div></div>
+  <div class="card" id="nCRM"><div class="ch"><span class="ic" id="iCRM"></span><div><p class="kd">Relacionamento</p><p class="nm">CRM</p></div></div></div>
+  <div class="card" id="nKB"><div class="ch"><span class="ic" id="iKB"></span><div><p class="kd">Conhecimento</p><p class="nm">KB</p></div></div></div>
+  <div class="card" id="nMon"><div class="ch"><span class="ic" id="iMon"></span><div><p class="kd">Ecossistema</p><p class="nm">Monitoramento</p></div></div></div>
+  <span class="tag dash" id="tMon">Previsto</span>
+  <div class="card" id="nHub">
+    <div class="ch"><span class="ic" id="iHub"></span><div><p class="kd">Barramento de domínio</p><p class="nm">Hub de domínio</p></div></div>
+    <div id="chips"><span>Cadastros</span><span>Regras</span><span>Contratos</span><span>Fiscal</span><span>Financeiro</span><span>Integrações</span></div>
+  </div>
+
+  <div id="labels"></div>
+
+  <div id="legend">
+    <div><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#E6E6EC" stroke-width="4" stroke-linecap="round"/></svg>Existente (sandbox)</div>
+    <div><svg width="56" height="10"><line x1="3" y1="5" x2="54" y2="5" stroke="#F5B53F" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round"/></svg>Parcial</div>
+    <div><svg width="56" height="10"><line x1="0" y1="5" x2="56" y2="5" stroke="#FF452B" stroke-width="4" stroke-dasharray="16 11"/></svg>Previsto</div>
+  </div>
+  <div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+(function(){
+  // ÍCONES E UTILITÁRIOS
+  const IC={
+    app:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/>',
+    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
+    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+    cam:'<path d="M23 7l-7 5 7 5z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+    hub:'<circle cx="12" cy="12" r="3"/><path d="M12 2v7M12 15v7M2 12h7M15 12h7"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+  [["iSaaS","app"],["iFlow","flow"],["iCh","chat"],["iCRM","users"],["iKB","book"],["iMon","cam"],["iHub","hub"]].forEach(([id,n])=>{document.getElementById(id).innerHTML=ico(n,30);});
+
+  // GEOMETRIA DAS ARESTAS (constantes pré-calculadas)
+  // kind: ex = built (map §3a solid), pa = partial (amber), pl = planned (dashed, "Previsto")
+  // both = bidirectional; label box: [left, top, width]
+  const E=[
+    {id:"e1",k:"ex",pts:[[700,465],[700,350],[504,350]],both:false,lb:[530,372,380],l1:"concessão + definições",l2:"assinadas, revisão imutável"},
+    {id:"e2",k:"ex",pts:[[300,270],[300,175],[736,175]],both:false,lb:[355,137,330],l1:"execução + recibo",l2:"efeitos chegam ao SaaS"},
+    {id:"e3",k:"ex",pts:[[1620,384],[1620,776]],both:true,lb:[1460,542,320],l1:"eventos assinados",l2:"conversas e mensagens"},
+    {id:"e4",k:"ex",pts:[[1420,865],[1064,865]],both:false,lb:[1075,885,330],l1:"busca por MCP",l2:"recorte da organização"},
+    {id:"e5",k:"ex",pts:[[1420,345],[1350,345],[1350,760],[980,760],[980,826]],both:false,lb:[1010,676,320],l1:"tools do KB por MCP",l2:"recorte por namespace"},
+    {id:"e6",k:"pa",pts:[[504,300],[1416,300]],both:true,lb:[720,262,480],l1:"interação humana",l2:"pergunta no canal, resposta retoma",pb:true},
+    {id:"e7",k:"pa",pts:[[780,660],[780,826]],both:false,lb:[535,707,460],l1:"namespace na concessão",l2:"documentos como fonte",pb:true},
+    {id:"e8",k:"pa",pts:[[300,380],[300,885],[696,885]],both:false,lb:[100,582,400],l1:"conhecimento no run",l2:"namespace selado na admissão",pb:true},
+    {id:"p8",k:"pl",pts:[[1620,894],[1620,946]],both:true,lb:null}
+  ];
+  const NS="http://www.w3.org/2000/svg";
+  const defs=document.getElementById("defs"),eg=document.getElementById("eg"),lbBox=document.getElementById("labels");
+  const mk=(tag,attrs,parent)=>{const n=document.createElementNS(NS,tag);for(const a in attrs)n.setAttribute(a,attrs[a]);parent.appendChild(n);return n;};
+  const dStr=p=>p.map((q,i)=>(i?"L":"M")+q[0]+" "+q[1]).join(" ");
+  const segLen=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
+  const plen=p=>p.slice(1).reduce((s,q,i)=>s+segLen(p[i],q),0);
+  // Arrowhead pointing from a toward b, tip at b
+  const arrow=(a,b,cls,g)=>{const dx=Math.sign(b[0]-a[0]),dy=Math.sign(b[1]-a[1]);const L=16,W=10;
+    const bx=b[0]-dx*L,by=b[1]-dy*L;const px=-dy*W,py=dx*W;
+    return mk("polygon",{points:`${b[0]},${b[1]} ${bx+px},${by+py} ${bx-px},${by-py}`,class:"ah "+cls,opacity:0},g);};
+  E.forEach(e=>{
+    const L=plen(e.pts);e.len=L;
+    const m=mk("mask",{id:"m-"+e.id,maskUnits:"userSpaceOnUse",x:0,y:0,width:1920,height:1080},defs);
+    e.mp=mk("path",{d:dStr(e.pts),class:"mk","stroke-dasharray":L+" "+L,"stroke-dashoffset":L},m);
+    e.g=mk("g",{id:e.id},eg);
+    mk("path",{d:dStr(e.pts),class:"e "+e.k,mask:"url(#m-"+e.id+")"},e.g);
+    const n=e.pts.length;
+    e.a1=arrow(e.pts[n-2],e.pts[n-1],e.k,e.g);
+    if(e.both)e.a0=arrow(e.pts[1],e.pts[0],e.k,e.g);
+    e.dot=mk("circle",{cx:e.pts[0][0],cy:e.pts[0][1],r:10,fill:e.k==="pa"?"#F5B53F":e.k==="pl"?"#FF452B":"#FF452B",opacity:0},eg);
+    if(e.both){const r=e.pts.slice().reverse();e.dot2=mk("circle",{cx:r[0][0],cy:r[0][1],r:10,fill:e.k==="pa"?"#F5B53F":"#FF452B",opacity:0},eg);}
+    if(e.lb){const d=document.createElement("div");d.className="lb "+e.k;d.id="l-"+e.id;
+      d.style.left=e.lb[0]+"px";d.style.top=e.lb[1]+"px";d.style.width=e.lb[2]+"px";
+      d.innerHTML=`<p class="l1">${e.l1}${e.pb?'<span class="pb">parcial</span>':""}</p><p class="l2">${e.l2}</p>`;
+      lbBox.appendChild(d);e.lbEl=d;}
+  });
+  const byId=Object.fromEntries(E.map(e=>[e.id,e]));
+
+  const tl=gsap.timeline({paused:true});
+  const EO="power3.out",EZ="power2.inOut";
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Hub de domínio no centro, produtos ao redor",
+    "Hub entrega ao Flow concessão e definições",
+    "Flow executa e devolve recibo ao SaaS",
+    "Channels e CRM trocam eventos assinados",
+    "CRM e Channels leem o KB, com recorte",
+    "Parcial: interação humana e KB no fluxo",
+    "Previsto: Monitoramento com CRM e Hub"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
+  // Beat starts; each state change settles at least 1.5 s before the next beat
+  const CT=[0.6,4.0,8.0,11.6,15.4,20.0,25.0,28.2];
+  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+
+  // Light one edge: draw, arrowheads, travelling dot(s), label
+  const light=(id,t)=>{
+    const e=byId[id];
+    tl.to(e.mp,{attr:{"stroke-dashoffset":0},duration:.9,ease:EZ},t);
+    tl.to([e.a1,e.a0].filter(Boolean),{attr:{opacity:1},duration:.25},t+.85);
+    const run=(dot,pts,t0)=>{
+      tl.set(dot,{attr:{cx:pts[0][0],cy:pts[0][1]}},t0);
+      tl.to(dot,{attr:{opacity:1},duration:.15},t0);
+      let tt=t0+.15;const total=plen(pts);
+      for(let i=1;i<pts.length;i++){const d=1.0*segLen(pts[i-1],pts[i])/total;tl.to(dot,{attr:{cx:pts[i][0],cy:pts[i][1]},duration:d,ease:"none"},tt);tt+=d;}
+      tl.to(dot,{attr:{opacity:0},duration:.2},tt);
+    };
+    run(e.dot,e.pts,t+.2);
+    if(e.dot2)run(e.dot2,e.pts.slice().reverse(),t+.2);
+    if(e.lbEl)tl.fromTo(e.lbEl,{opacity:0,y:8},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},t+1.0);
+  };
+  const dim=(ids,t)=>{ids.forEach(id=>{const e=byId[id];tl.to(e.g,{attr:{opacity:.35},duration:.4},t);if(e.lbEl)tl.to(Array.from(e.lbEl.children),{opacity:.45,duration:.4},t);});};
+  // Labels dim their text only: the box stays opaque so lines never show through the text
+  // Node accent colors (same tokens as the node CSS)
+  const ACC={nSaaS:"#3DD68C",nFlow:"#4C8DFF",nCh:"#2EC4B6",nCRM:"#E879F9",nKB:"#A78BFA"};
+  const focus=(sels,t)=>{sels.split(",").forEach(s=>tl.to(s,{borderColor:ACC[s.slice(1)],duration:.3},t));};
+  const unfocus=(sels,t)=>{tl.to(sels,{borderColor:"#3A3A42",duration:.3},t);};
+  const cardIn=(sel,t)=>tl.fromTo(sel,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},t);
+
+  // ABERTURA: o Hub no centro e os produtos ao redor
+  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
+  cardIn("#nHub",.3);
+  tl.fromTo("#chips span",{opacity:0,y:8},{opacity:1,y:0,duration:.3,stagger:.08,ease:EO,immediateRender:false},.8);
+  cardIn("#nSaaS",1.0);cardIn("#nFlow",1.15);cardIn("#nCh",1.3);cardIn("#nCRM",1.45);cardIn("#nKB",1.6);
+  tl.fromTo("#legend",{opacity:0},{opacity:1,duration:.4,immediateRender:false},2.0);
+
+  // B1 Hub para Flow: concessão e definições assinadas (R1-R3)
+  focus("#nFlow",4.0);light("e1",4.0);
+
+  // B2 Flow para SaaS: execução e recibo (R5)
+  dim(["e1"],8.0);unfocus("#nFlow",8.0);focus("#nFlow,#nSaaS",8.0);light("e2",8.0);
+
+  // B3 Channels e CRM: eventos assinados (R8)
+  dim(["e2"],11.6);unfocus("#nFlow,#nSaaS",11.6);focus("#nCh,#nCRM",11.6);light("e3",11.6);
+
+  // B4 CRM e Channels para KB por MCP com recorte (R10, R11)
+  dim(["e3"],15.4);unfocus("#nCh",15.4);focus("#nKB",15.4);light("e4",15.4);
+  focus("#nCh",16.2);light("e5",16.2);
+
+  // B5 arestas parciais: interação humana, namespace na concessão, conhecimento no run
+  dim(["e4","e5"],20.0);unfocus("#nCRM,#nKB,#nCh",20.0);
+  focus("#nFlow,#nCh",20.0);light("e6",20.0);
+  focus("#nKB",20.7);light("e7",20.7);
+  light("e8",21.4);
+
+  // B6 previsto: Ecossistema Monitoramento, só tracejado
+  dim(["e6","e7","e8"],25.0);unfocus("#nFlow,#nCh,#nKB",25.0);
+  cardIn("#nMon",25.0);focus("#nCRM",25.2);light("p8",25.4);
+  tl.fromTo("#tMon",{opacity:0,x:-8},{opacity:1,x:0,duration:.35,ease:EO,immediateRender:false},26.1);
+
+  // FECHO: mapa inteiro legível e a frase do barramento
+  unfocus("#nCRM",28.2);
+  tl.to(E.map(e=>e.g),{attr:{opacity:1},duration:.5},28.2);
+  tl.to(E.filter(e=>e.lbEl).map(e=>e.lbEl.children).flatMap(c=>Array.from(c)),{opacity:1,duration:.5},28.2);
+  tl.to("#title",{opacity:0,duration:.3},28.0);
+  tl.fromTo("#closing",{opacity:0,y:10},{opacity:1,y:0,duration:.6,ease:EO,immediateRender:false},28.4);
+  tl.to("#pad",{opacity:.001,duration:1},33);
+
+  // The site Player may load the page before the runtime creates the registry
+  window.__timelines=window.__timelines||{};
+  window.__timelines["welabs-chain-overview"]=tl;
+})();
+</script>
+</body>
+</html>

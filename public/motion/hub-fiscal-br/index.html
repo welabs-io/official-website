@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Hub de domínio · fiscal brasileiro</title>
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--info:#4C8DFF}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+p,span,b,div{white-space:nowrap}
+
+/* CABEÇALHO E LEGENDAS */
+#hd{position:absolute;left:40px;right:40px;top:0;height:104px}
+#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;opacity:0}
+#title span{color:var(--coral)}
+#caps{position:absolute;left:440px;top:26px;width:1220px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding-left:20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;opacity:0}
+#seal{position:absolute;right:0;top:28px;height:50px;width:auto;opacity:0}
+
+/* JANELA DO HUB (RECONSTRUÇÃO DEMO) */
+#win{position:absolute;left:40px;top:112px;width:1840px;height:816px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#111115;opacity:0}
+#tb{position:absolute;left:0;top:0;width:1836px;height:64px;border-bottom:2px solid var(--line);background:#141418;display:flex;align-items:center;gap:16px;padding:0 20px}
+#tb .dots{display:flex;gap:10px}#tb .dots i{width:14px;height:14px;border-radius:50%;background:#3A3A42}
+#tb .org{font-size:26px;font-weight:700;margin-left:10px}
+#tb .gr{flex:1}
+#tb .kbd{height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;border:2px solid var(--line);border-radius:12px;font-size:24px;font-weight:600;color:var(--muted)}
+#tb .kbd b{border:2px solid #4A4A55;border-radius:8px;padding:0 8px;font-size:24px;color:var(--text)}
+#env{height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800}
+#side{position:absolute;left:0;top:64px;width:300px;height:750px;border-right:2px solid var(--line);background:#121216;padding:18px 14px}
+.mi{position:relative;height:60px;display:flex;align-items:center;gap:14px;padding:0 14px;border-radius:12px;font-size:26px;font-weight:600;color:var(--muted)}
+.mi .hl{position:absolute;inset:0;border-radius:12px;background:#24242B;border-left:5px solid var(--coral);opacity:0}
+.mi svg,.mi span{position:relative}
+.mi .lab{position:relative}
+
+/* TELAS */
+.scr{position:absolute;left:300px;top:64px;width:1536px;height:750px;padding:24px 34px;opacity:0}
+.in{position:relative;width:1468px;height:702px}
+.bc{position:absolute;left:0;top:0;font-size:24px;font-weight:600;color:var(--muted)}
+.tr{position:absolute;left:0;top:38px;width:1468px;height:60px;display:flex;align-items:center;gap:16px}
+.tr h2{font-size:40px;font-weight:800;letter-spacing:-.5px}
+.tr .gr{flex:1}
+.stk{position:relative;height:44px;flex:none}
+.chip{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-radius:999px;font-size:24px;font-weight:800}
+.stk .chip{position:absolute;left:0;top:0}
+.c-ok{background:rgba(61,214,140,.16);color:var(--ok)}.c-n{background:#2A2A32;color:var(--muted)}
+.c-w{background:rgba(245,181,63,.16);color:var(--wait)}.c-i{background:rgba(76,141,255,.18);color:#8DB5FF}
+.c-r{background:rgba(255,107,107,.16);color:var(--bad)}
+.c-fl{border:2px dashed var(--wait);background:#2A2110;color:var(--wait)}
+.btn{position:relative;height:52px;display:flex;align-items:center;gap:8px;padding:0 20px;border-radius:12px;border:2px solid var(--muted);font-size:26px;font-weight:700}
+.btn.pri{background:var(--coral);border-color:var(--coral)}
+.btn.off{border-color:#4A4A55;color:#8E8E99}
+.btn .on2{position:absolute;inset:-2px;border-radius:12px;background:var(--coral);border:2px solid var(--coral);display:flex;align-items:center;gap:8px;padding:0 20px;color:#fff;opacity:0}
+.card{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel)}
+.card h3{font-size:28px;font-weight:800;display:flex;align-items:center;gap:12px}
+.lbl{font-size:24px;font-weight:600;color:var(--muted)}
+.fld{position:absolute}
+.fld .lbl{height:32px}
+.box{position:relative;height:56px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;gap:10px;padding:0 16px;font-size:26px;font-weight:600}
+.box .gr{flex:1}
+.li{display:flex;align-items:flex-start;gap:14px;font-size:24px;font-weight:600;line-height:32px;white-space:normal}
+.li i{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(61,214,140,.16);color:var(--ok)}
+.li.sh i{background:rgba(255,69,43,.16);color:var(--coral)}
+.li.am i{background:rgba(245,181,63,.16);color:var(--wait)}
+.li span{white-space:normal}
+.tbl{position:absolute;border:2px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
+.th,.trw{display:flex;align-items:center;padding:0 18px}
+.th{height:46px;background:#1C1C22;font-size:24px;font-weight:700;color:var(--muted)}
+.trw{height:58px;border-top:2px solid #26262D;font-size:26px;font-weight:600;position:relative}
+.trw .hl2{position:absolute;inset:0;background:rgba(255,69,43,.10);border-left:5px solid var(--coral);opacity:0}
+.trw>span,.th>span{position:relative;display:flex;align-items:center;gap:10px}
+.mut{color:var(--muted)}
+.strip{position:absolute;left:0;top:112px;height:52px;display:flex;gap:12px}
+.cn{height:52px;display:flex;align-items:center;gap:10px;padding:0 16px;border:2px solid var(--line);border-radius:14px;background:#16161A;font-size:24px;font-weight:700;color:var(--muted)}
+.cnt{position:relative;width:34px;height:34px}
+.cnt span{position:absolute;inset:0;border-radius:10px;display:grid;place-items:center;font-size:24px;font-weight:800;background:#2A2A32;color:var(--muted)}
+.cnt span.n1{background:var(--coral);color:#fff;opacity:0}
+.note{position:absolute;border-left:6px solid var(--coral);background:#22161A;border-radius:12px;padding:10px 16px;font-size:24px;font-weight:600;line-height:32px;white-space:normal}
+
+/* DIÁLOGO DE REAUTENTICAÇÃO */
+.bd{position:absolute;left:0;top:0;width:1468px;height:702px}
+.dlg-sh{position:absolute;left:300px;top:64px;width:1536px;height:750px;background:rgba(5,5,7,.72);opacity:0;z-index:30}
+.dlg{position:absolute;z-index:31;left:648px;top:272px;width:840px;border:2px solid var(--line);border-radius:22px;background:#19191E;box-shadow:0 24px 60px rgba(0,0,0,.6);padding:26px 30px;opacity:0}
+.dlg h4{font-size:32px;font-weight:800;display:flex;align-items:center;gap:14px}
+.dlg .tx{margin-top:14px;font-size:26px;font-weight:600;color:var(--muted);line-height:36px;white-space:normal}
+.dlg .pw{margin-top:18px}
+.dlg .pw .box{letter-spacing:6px;font-size:30px}
+.dlg .row{margin-top:22px;display:flex;justify-content:flex-end;gap:14px}
+.dots{display:inline-block}
+
+/* TRILHA DA JORNADA */
+#rail{position:absolute;left:40px;top:948px;width:1840px;height:92px;display:flex;align-items:center;gap:12px;opacity:0}
+.st{position:relative;flex:1;height:68px;border:2px solid var(--line);border-radius:16px;background:#141418;display:flex;align-items:center;gap:12px;padding:0 14px;font-size:24px;font-weight:700;color:var(--muted)}
+.st .nb{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#2A2A32;font-size:24px;font-weight:800}
+.st .arw{position:absolute;right:-12px;top:22px;width:12px;height:20px;color:#4A4A55}
+
+/* FECHO */
+#closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#cl1,#cl2{position:absolute;left:0;width:1920px;text-align:center;font-size:72px;font-weight:800;letter-spacing:-2px}
+#cl1{top:370px}#cl2{top:464px;color:var(--coral)}
+#cl3{position:absolute;left:0;width:1920px;top:600px;text-align:center;font-size:30px;font-weight:600;color:var(--muted)}
+#cl4{position:absolute;left:0;width:1920px;top:680px;display:flex;justify-content:center;gap:16px}
+#cl4 span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px}
+#cnpj,#d1p,#d2p{clip-path:inset(0 100% 0 0)}
+#s1rules .li,#pAl .li,#ret .box,.xr,#s7l .li,.nr,#rgnew,#pCl .li{opacity:0}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="hub-fiscal-br" data-width="1920" data-height="1080" data-start="0" data-duration="44">
+  <div id="hd">
+    <div id="title">Hub de domínio<span>.</span></div>
+    <div id="caps"></div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  </div>
+
+  <div id="win">
+    <div id="tb">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="org">Demo Serviços Ltda</span>
+      <span class="gr"></span>
+      <span class="kbd" id="kbd"></span>
+      <span id="env">sandbox · dados DEMO</span>
+    </div>
+    <div id="side"></div>
+
+    <!-- S1 EMPRESA -->
+    <div class="scr" id="s1"><div class="in">
+      <p class="bc">Administração › Empresas</p>
+      <div class="tr"><h2>Demo Serviços Ltda</h2><span class="chip c-ok">Operando</span><span class="gr"></span><span class="btn off">Salvar</span></div>
+      <div class="fld" style="left:0;top:124px;width:440px"><p class="lbl">Razão social</p><div class="box">Demo Serviços Ltda</div></div>
+      <div class="fld" style="left:460px;top:124px;width:440px"><p class="lbl">CNPJ</p><div class="box"><span id="cnpj">DE.MO1.234/0001-00</span><span class="gr"></span><span id="cnpjok" style="opacity:0;color:var(--ok)" class="ic-ck"></span></div></div>
+      <div class="fld" style="left:0;top:232px;width:440px"><p class="lbl">Inscrição municipal</p><div class="box">DEMO</div></div>
+      <div class="fld" style="left:460px;top:232px;width:440px"><p class="lbl">Validação do CNPJ</p><div class="box"><span class="mut" id="cv0">aguardando</span><span id="cv1" style="position:absolute;left:16px;opacity:0;color:var(--ok)">alfanumérico · válido</span></div></div>
+      <div class="fld" style="left:0;top:340px;width:900px"><p class="lbl">Situação cadastral</p>
+        <div class="box" style="padding:4px;gap:4px"><span class="chip c-n" style="flex:1;justify-content:center;border-radius:10px">Em formação</span><span class="chip" style="flex:1;justify-content:center;border-radius:10px;background:var(--coral)">Operando</span><span class="chip c-n" style="flex:1;justify-content:center;border-radius:10px">Holding agregadora</span></div></div>
+      <p style="position:absolute;left:0;top:466px;font-size:26px;font-weight:800">Regime tributário com vigência</p>
+      <div class="tbl" style="left:0;top:510px;width:900px">
+        <div class="th"><span style="width:300px">Regime</span><span style="width:150px">Anexo</span><span style="width:230px">Vigência</span><span>Estado</span></div>
+        <div class="trw"><span style="width:300px">Lucro Presumido</span><span style="width:150px" class="mut">—</span><span style="width:230px" class="mut">até 12/2025</span><span><span class="stk" style="width:170px"><span class="chip c-i" id="rg0">Vigente</span><span class="chip c-n" id="rg1" style="opacity:0">Encerrado</span></span></span></div>
+        <div class="trw" id="rgnew"><div class="hl2" id="rghl"></div><span style="width:300px">Simples Nacional</span><span style="width:150px">DEMO</span><span style="width:230px">desde 01/2026</span><span><span class="chip c-ok">Vigente</span></span></div>
+      </div>
+      <div class="card" style="left:940px;top:124px;width:528px;height:546px;padding:22px 24px">
+        <h3><span class="ic-sh" style="color:var(--coral)"></span>Regras na origem</h3>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:18px" id="s1rules">
+          <div class="li"><i class="ic-ck"></i><span>CPF/CNPJ validado pelo tipo e único por parte</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Serviço só entra no catálogo com código LC 116 válido</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Produto é centro de custo da própria empresa</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Empresa em formação ou holding não fatura</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Implantação por dados: simulação, diário e desfazer</span></div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S2 AUTORIZAÇÃO FISCAL -->
+    <div class="scr" id="s2"><div class="in">
+      <p class="bc">Administração › Autorização fiscal</p>
+      <div class="tr"><h2>Autorização fiscal</h2><span class="stk" style="width:200px"><span class="chip c-n" id="au0">Rascunho</span><span class="chip c-ok" id="au1" style="opacity:0"><span class="ic-ck"></span>Ativa</span></span><span class="gr"></span>
+        <span class="btn off" id="brev">Revogar</span><span class="btn pri" id="bopen"><span class="ic-key"></span>Abrir autorização</span></div>
+      <div class="bd" id="b2">
+      <div class="card" style="left:0;top:124px;width:720px;height:300px;padding:22px 24px">
+        <h3><span class="ic-key" style="color:var(--wait)"></span>Certificado A1 · DEMO</h3>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
+          <div class="li"><i class="ic-lock"></i><span>Guardado no cofre de segredos, nunca no banco</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Válida até o vencimento do certificado</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Uma autorização ativa por empresa</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Empresa: Demo Serviços Ltda</span></div>
+        </div>
+      </div>
+      <div class="card" style="left:0;top:446px;width:720px;height:224px;padding:22px 24px">
+        <h3>Trilha de uso do certificado</h3>
+        <p class="lbl" style="margin-top:10px">concedido · concluído · falhou</p>
+        <div class="box" id="trail" style="margin-top:16px;opacity:0"><span class="chip c-ok">concedido</span><span>Autorização aberta · Admin DEMO</span></div>
+      </div>
+      <div class="card" style="left:760px;top:124px;width:708px;height:546px;padding:22px 24px">
+        <h3><span class="ic-sh" style="color:var(--coral)"></span>Proteções</h3>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px" id="s2prot">
+          <div class="li sh"><i class="ic-lock"></i><span>Abrir exige reautenticação no provedor de identidade</span></div>
+          <div class="li sh"><i class="ic-lock"></i><span>Toda escrita fiscal pede a senha de novo</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Revogação imediata, a qualquer momento</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Revoga sozinha se quem abriu perder acesso ou papel</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Expira com o certificado (conferência diária)</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Trilha fiscal protegida contra limpeza de transações</span></div>
+        </div>
+      </div>
+      </div>
+    </div></div>
+
+    <!-- S3–S5 FATURA -->
+    <div class="scr" id="s3"><div class="in">
+      <p class="bc">Financeiro › Faturas de venda</p>
+      <div class="tr"><h2>FAT-DEMO-0001</h2>
+        <span class="stk" style="width:190px"><span class="chip c-n" id="fs0">Rascunho</span><span class="chip c-i" id="fs1" style="opacity:0">Submetida</span></span>
+        <span class="stk" style="width:290px"><span class="chip c-ok" id="fs2" style="opacity:0"><span class="ic-ck"></span>NFS-e autorizada</span></span>
+        <span class="gr"></span>
+        <span class="btn" id="bsub">Submeter</span>
+        <span class="btn off" id="bnf">Emitir NFS-e</span>
+        <span class="btn off">Cancelar</span></div>
+      <div class="strip">
+        <span class="cn"><span class="ic-bank"></span>Cobrança<span class="cnt" id="k1"><span>0</span><span class="n1">1</span></span></span>
+        <span class="cn"><span class="ic-book"></span>Contabilidade<span class="cnt" id="k2"><span>0</span><span class="n1">1</span></span></span>
+        <span class="cn"><span class="ic-doc"></span>Documentos fiscais<span class="cnt" id="k3"><span>0</span><span class="n1">1</span></span></span>
+        <span class="cn"><span class="ic-ck"></span>Pagamentos<span class="cnt"><span>0</span></span></span>
+      </div>
+      <div class="bd" id="b3">
+      <div class="fld" style="left:0;top:190px;width:440px"><p class="lbl">Tomador</p><div class="box">Tomador DEMO S.A.</div></div>
+      <div class="fld" style="left:460px;top:190px;width:440px"><p class="lbl">Produto (centro de custo)</p><div class="box">Produto DEMO</div></div>
+      <div class="tbl" style="left:0;top:306px;width:900px">
+        <div class="th"><span style="width:330px">Serviço</span><span style="width:390px">Código LC 116</span><span>Valor</span></div>
+        <div class="trw"><div class="hl2" id="lchl"></div><span style="width:330px">Serviço DEMO</span><span style="width:390px">código DEMO<span class="stk" style="width:190px;margin-left:6px"><span class="chip c-n" id="lc0">conferindo</span><span class="chip c-ok" id="lc1" style="opacity:0"><span class="ic-ck"></span>válido</span></span></span><span>R$ —</span></div>
+      </div>
+      <p style="position:absolute;left:0;top:428px;font-size:26px;font-weight:800">Retenções na fonte</p>
+      <div id="ret" style="position:absolute;left:0;top:470px;width:900px;display:grid;grid-template-columns:1fr 1fr;gap:10px 16px">
+        <div class="box"><span>PIS retido</span><span class="gr"></span><span class="mut">R$ —</span></div>
+        <div class="box"><span>COFINS retida</span><span class="gr"></span><span class="mut">R$ —</span></div>
+        <div class="box"><span>CSLL retida</span><span class="gr"></span><span class="mut">R$ —</span></div>
+        <div class="box"><span>IRRF</span><span class="gr"></span><span class="mut">R$ —</span></div>
+        <div class="box"><span>ISS retido</span><span class="gr"></span><span class="mut">R$ —</span></div>
+        <div class="box" style="border-color:#5A5A66"><span style="font-weight:800">Total líquido</span><span class="gr"></span><span style="font-weight:800">R$ —</span></div>
+      </div>
+      <div class="note" id="fn0" style="left:0;top:664px;width:900px;padding:4px 16px">A tabela de impostos da fatura é a fonte; o fiscal só espelha</div>
+      <div class="note" id="fn1" style="left:0;top:664px;width:900px;padding:4px 16px;opacity:0">Cancelar a fatura é recusado enquanto a nota pode estar viva</div>
+
+      <!-- painel direito: pronta para submeter -->
+      <div class="card" id="pA" style="left:940px;top:190px;width:528px;height:512px;padding:22px 24px">
+        <h3>Pronta para submeter</h3>
+        <div style="margin-top:22px;display:flex;flex-direction:column;gap:20px" id="pAl">
+          <div class="li"><i class="ic-ck"></i><span>Serviço com código LC 116 válido</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Produto ligado ao centro de custo</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Empresa operando, não holding</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Autorização fiscal ativa</span></div>
+          <div class="li am"><i class="ic-info"></i><span>Nota fiscal só por ação explícita: sem emissão automática</span></div>
+        </div>
+      </div>
+      <!-- painel direito: banco e contabilidade -->
+      <div id="pB" style="position:absolute;left:940px;top:190px;width:528px;height:512px;opacity:0">
+        <div class="card" id="pB1" style="left:0;top:0;width:528px;height:176px;padding:18px 22px">
+          <h3><span class="ic-bank" style="color:var(--info)"></span>Banco · cobrança<span class="gr" style="flex:1"></span><span class="stk" style="width:150px"><span class="chip c-w" id="bk0">emitindo</span><span class="chip c-ok" id="bk1" style="opacity:0">Emitido</span></span></h3>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="li"><i class="ic-ck"></i><span>Boleto/PIX nasce ao submeter</span></div>
+            <div class="li"><i class="ic-lock"></i><span>PDF anexado em privado</span></div>
+          </div>
+        </div>
+        <div class="card" id="pB2" style="left:0;top:192px;width:528px;height:176px;padding:18px 22px;opacity:0">
+          <h3><span class="ic-book" style="color:var(--info)"></span>Contabilidade externa<span class="gr" style="flex:1"></span><span class="stk" style="width:176px"><span class="chip c-w" id="ct0">enviando</span><span class="chip c-ok" id="ct1" style="opacity:0">Enviado</span></span></h3>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="li"><i class="ic-ck"></i><span>Conta a receber criada</span></div>
+            <div class="li"><i class="ic-ck"></i><span>Chave fixa: reenviar não duplica</span></div>
+          </div>
+        </div>
+        <div class="note" id="pB3" style="left:0;top:384px;width:528px;opacity:0">Cancelar a fatura cancela o boleto não pago e exclui o título</div>
+      </div>
+      <!-- painel direito: NFS-e -->
+      <div class="card" id="pC" style="left:940px;top:190px;width:528px;height:512px;padding:18px 22px;opacity:0">
+        <h3><span class="ic-doc" style="color:var(--coral)"></span>NFS-e · Padrão Nacional</h3>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:12px" id="pCl">
+          <div class="li"><i class="ic-ck"></i><span>DPS montada da fatura</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Validada no esquema oficial</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Assinada com o certificado A1</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Enviada à NFS-e Nacional</span></div>
+        </div>
+        <div class="box" id="pCs" style="margin-top:16px;opacity:0;border-color:#2A5A44;background:#122019;color:var(--ok);font-weight:800"><span class="ic-ck"></span>Autorizada<span class="gr"></span><span class="mut" style="font-weight:600">série · nº DEMO</span></div>
+        <p class="lbl" id="pCn" style="margin-top:10px;opacity:0">Numeração sem buracos</p>
+        <div id="pCb" style="margin-top:14px;display:flex;gap:10px;align-items:center;opacity:0"><span class="btn">Substituir</span><span class="btn">Cancelar nota</span></div>
+        <div style="margin-top:14px" id="pCh"><span class="chip c-fl">homologação por padrão</span></div>
+      </div>
+      </div>
+    </div></div>
+
+    <!-- S6 EXTRATO -->
+    <div class="scr" id="s6"><div class="in">
+      <p class="bc">Financeiro › Extrato bancário</p>
+      <div class="tr"><h2>Extrato · Conta DEMO</h2><span class="chip c-i">importado de hora em hora</span><span class="chip c-n">sem duplicar</span></div>
+      <div class="tbl" style="left:0;top:124px;width:1468px">
+        <div class="th"><span style="width:250px">Lançamento</span><span style="width:180px">Direção</span><span style="width:160px">Valor</span><span style="width:520px">Parte reconhecida</span><span>Estado</span></div>
+        <div class="trw xr"><div class="hl2" id="x1hl"></div><span style="width:250px">PIX recebido</span><span style="width:180px;color:var(--ok)"><span class="ic-in"></span>Entrada</span><span style="width:160px;color:var(--ok)">+ R$ —</span>
+          <span style="width:520px"><span style="position:relative;display:block;width:500px;height:44px"><span class="mut" id="x1p0" style="position:absolute;left:0;top:6px">procurando…</span><span id="x1p1" style="position:absolute;left:0;top:0;height:44px;opacity:0;display:flex;gap:10px;align-items:center">Tomador DEMO S.A.<span class="chip c-i">pelo CNPJ</span></span></span></span>
+          <span><span class="stk" style="width:240px"><span class="chip c-n" id="x1s0">A conciliar</span><span class="chip c-ok" id="x1s1" style="opacity:0"><span class="ic-ck"></span>Conciliado</span></span></span></div>
+        <div class="trw xr"><span style="width:250px">Tarifa DEMO</span><span style="width:180px;color:var(--bad)"><span class="ic-out"></span>Saída</span><span style="width:160px;color:var(--bad)">− R$ —</span><span style="width:520px" class="mut">sem contraparte</span><span><span class="chip c-n">A revisar</span></span></div>
+        <div class="trw xr"><div class="hl2" id="x3hl"></div><span style="width:250px">TED enviada</span><span style="width:180px;color:var(--bad)"><span class="ic-out"></span>Saída</span><span style="width:160px;color:var(--bad)">− R$ —</span>
+          <span style="width:520px"><span style="position:relative;display:block;width:500px;height:44px"><span class="mut" id="x3p0" style="position:absolute;left:0;top:6px">procurando…</span><span id="x3p1" style="position:absolute;left:0;top:0;height:44px;opacity:0;display:flex;gap:10px;align-items:center">Fornecedor DEMO Ltda<span class="chip c-i">pelo CNPJ</span></span></span></span>
+          <span><span class="chip c-n">A conciliar</span></span></div>
+        <div class="trw xr"><span style="width:250px">PIX recebido</span><span style="width:180px;color:var(--ok)"><span class="ic-in"></span>Entrada</span><span style="width:160px;color:var(--ok)">+ R$ —</span><span style="width:520px;color:var(--wait)">sem correspondência única</span><span><span class="chip c-w">A revisar</span></span></div>
+      </div>
+      <div class="card" id="x5" style="left:0;top:470px;width:720px;height:200px;padding:20px 24px;opacity:0">
+        <h3><span class="ic-ck" style="color:var(--ok)"></span>Pagamento ligado à FAT-DEMO-0001</h3>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+          <div class="li"><i class="ic-ck"></i><span>Fatura passa a ter 1 pagamento</span></div>
+          <div class="li"><i class="ic-book"></i><span>Baixa do título enviada à contabilidade externa</span></div>
+        </div>
+      </div>
+      <div class="card" id="x6" style="left:748px;top:470px;width:720px;height:200px;padding:20px 24px;opacity:0">
+        <h3><span class="ic-search" style="color:var(--info)"></span>Como a parte é reconhecida</h3>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+          <div class="li"><i class="ic-ck"></i><span>Pelo CPF/CNPJ da contraparte do lançamento</span></div>
+          <div class="li am"><i class="ic-info"></i><span>Só com correspondência única; senão, revisão</span></div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- S7 EMPRESA · GRUPO FISCAL -->
+    <div class="scr" id="s7"><div class="in">
+      <p class="bc">Administração › Empresas › Demo Serviços Ltda</p>
+      <div class="tr"><h2>Demo Serviços Ltda</h2><span class="chip c-ok">Operando</span></div>
+      <div class="strip">
+        <span class="cn" style="border-color:var(--coral);color:#fff"><span class="ic-sh"></span>Fiscal</span>
+        <span class="cn"><span class="ic-key"></span>Autorizações fiscais<span class="cnt"><span>1</span></span></span>
+        <span class="cn"><span class="ic-doc"></span>Documentos fiscais<span class="cnt" id="kf"><span>1</span><span class="n1" id="kf2">2</span><span class="n1" id="kf3">3</span><span class="n1" id="kf4">4</span></span></span>
+        <span class="cn"><span class="ic-doc"></span>Faturas<span class="cnt"><span>1</span></span></span>
+      </div>
+      <div class="card" style="left:0;top:190px;width:700px;height:512px;padding:22px 24px">
+        <h3><span class="ic-down" style="color:var(--info)"></span>Captura de documentos de terceiros</h3>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px" id="s7l">
+          <div class="li"><i class="ic-ck"></i><span>De hora em hora, sem ação manual</span></div>
+          <div class="li"><i class="ic-ck"></i><span>NFS-e emitidas, tomadas e intermediadas pelo Ambiente de Dados Nacional</span></div>
+          <div class="li"><i class="ic-ck"></i><span>NF-e recebidas pela distribuição da SEFAZ</span></div>
+          <div class="li"><i class="ic-ck"></i><span>Retoma de onde parou, sem repetir documento</span></div>
+          <div class="li am"><i class="ic-info"></i><span>Só para empresa com autorização fiscal ativa</span></div>
+        </div>
+      </div>
+      <div class="card" style="left:740px;top:190px;width:728px;height:512px;padding:20px 22px">
+        <h3>Conexões · grupo Fiscal</h3>
+        <p class="lbl" style="margin-top:14px">Autorizações fiscais</p>
+        <div class="box" style="margin-top:8px"><span class="ic-key" style="color:var(--wait)"></span>Autorização A1<span class="gr"></span><span class="chip c-ok">Ativa</span></div>
+        <p class="lbl" style="margin-top:16px">Documentos fiscais</p>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:10px">
+          <div class="box">NFS-e emitida · FAT-DEMO-0001<span class="gr"></span><span class="chip c-ok">Autorizada</span></div>
+          <div class="box nr">NFS-e tomada · Fornecedor DEMO<span class="gr"></span><span class="chip c-i">nova</span></div>
+          <div class="box nr">NF-e recebida · Fornecedor DEMO<span class="gr"></span><span class="chip c-i">nova</span></div>
+          <div class="box nr">NF-e recebida · Fornecedor DEMO B<span class="gr"></span><span class="chip c-i">nova</span></div>
+        </div>
+      </div>
+    </div></div>
+
+    <div class="dlg-sh" id="sh"></div>
+    <div class="dlg" id="d1">
+      <h4><span class="ic-lock" style="color:var(--coral)"></span>Reautenticação obrigatória</h4>
+      <p class="tx">Entre de novo no provedor de identidade para abrir a autorização fiscal da empresa.</p>
+      <div class="pw"><p class="lbl">Senha</p><div class="box"><span class="dots" id="d1p">••••••••••</span></div></div>
+      <div class="row"><span class="btn">Cancelar</span><span class="btn pri" id="d1b">Confirmar</span></div>
+    </div>
+    <div class="dlg" id="d2">
+      <h4><span class="ic-lock" style="color:var(--coral)"></span>Confirme a senha para emitir a NFS-e</h4>
+      <p class="tx">Gera uma prova de uso único, ligada a pessoa, empresa, operação e documento.</p>
+      <div class="pw"><p class="lbl">Senha</p><div class="box"><span class="dots" id="d2p">••••••••••</span></div></div>
+      <div class="row"><span class="btn">Cancelar</span><span class="btn pri" id="d2b">Confirmar e emitir</span></div>
+    </div>
+  </div>
+
+  <div id="rail"></div>
+
+  <div id="closing">
+    <div id="cl1">Do cadastro à nota, do boleto ao extrato,</div>
+    <div id="cl2">num hub só.</div>
+    <div id="cl3">Empresa · autorização · fatura · cobrança · NFS-e · extrato · documentos recebidos</div>
+    <div id="cl4"><span>sandbox · dados DEMO</span><span>nota só por ação explícita</span><span>homologação por padrão</span></div>
+  </div>
+  <div id="pad"></div>
+</div>
+
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+(function(){
+  // ÍCONES E UTILITÁRIOS
+  const IC={
+    check:'<path d="M20 6 9 17l-5-5"/>',
+    lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="m11 12 9-9"/><path d="m16 7 3 3"/>',
+    shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    bank:'<path d="M3 21h18"/><path d="M5 21V10M10 21V10M14 21V10M19 21V10"/><path d="m12 3 9 5H3z"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+    doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/>',
+    info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+    search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+    inA:'<path d="M12 19V5"/><path d="m5 12 7 7 7-7"/>',
+    outA:'<path d="M12 5v14"/><path d="m5 12 7-7 7 7"/>',
+    down:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+    money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+    file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+    work:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>',
+    help:'<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/>',
+    users:'<circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M16 3.1a4 4 0 0 1 0 7.8M22 21v-2a4 4 0 0 0-3-3.9"/>',
+    gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+    grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    chev:'<path d="m9 18 6-6-6-6"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+  const fill=(cls,n,s)=>document.querySelectorAll("."+cls).forEach(el=>{el.innerHTML=ico(n,s)+el.innerHTML;});
+  fill("ic-ck","check",20);fill("ic-lock","lock",20);fill("ic-key","key",24);fill("ic-sh","shield",24);
+  fill("ic-bank","bank",24);fill("ic-book","book",22);fill("ic-doc","doc",24);fill("ic-info","info",20);
+  fill("ic-search","search",24);fill("ic-in","inA",24);fill("ic-out","outA",24);fill("ic-down","down",26);
+  document.getElementById("kbd").innerHTML=ico("search",22)+"Buscar<b>Ctrl K</b>";
+
+  // MENU DE MÓDULOS SERVIDO PELO HUB
+  const MODS=[["Financeiro","money"],["Contratos","file"],["Trabalho","work"],["Atendimento","help"],["Pessoas","users"],["Aprovações","check"],["Administração","gear"],["Plataforma","grid"]];
+  document.getElementById("side").innerHTML=MODS.map((m,i)=>`<div class="mi" id="m${i}"><div class="hl" id="mh${i}"></div>${ico(m[1],26)}<span class="lab">${m[0]}</span></div>`).join("");
+
+  // TRILHA DA JORNADA (7 PASSOS)
+  const STEPS=["Empresa","Autorização","Fatura","Cobrança","NFS-e","Extrato","NF-e recebidas"];
+  document.getElementById("rail").innerHTML=STEPS.map((s,i)=>`<div class="st" id="st${i}"><span class="nb" id="sn${i}">${i+1}</span>${s}</div>`).join("");
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Empresa com CNPJ alfanumérico validado e regime com vigência",
+    "Autorização fiscal: certificado A1 no cofre, aberta com reautenticação",
+    "Fatura com serviço LC 116, produto e retenções na fonte",
+    "Ao submeter: boleto/PIX no banco e título na contabilidade externa",
+    "Emitir NFS-e pede a senha de novo: DPS assinada, nota autorizada",
+    "O extrato entra com direção e valor, e reconhece a parte pelo CNPJ",
+    "Notas de terceiros chegam sozinhas ao grupo Fiscal da empresa"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
+
+  const tl=gsap.timeline({paused:true});
+  const EO="power3.out",EI="power2.in";
+  // Beat boundaries; each state change is followed by >= 1.5 s of stillness
+  const BT=[0.6,6.2,12.0,17.6,23.4,30.0,35.4,40.4];
+  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},BT[i]+.05);tl.to("#cap"+i,{opacity:0,duration:.3},BT[i+1]-.35);});
+  // Journey rail: active on beat start, done on next beat start
+  STEPS.forEach((s,i)=>{
+    tl.to("#st"+i,{borderColor:"#FF452B",backgroundColor:"#22161A",color:"#FFFFFF",duration:.3},BT[i]);tl.to("#sn"+i,{backgroundColor:"#FF452B",color:"#FFFFFF",duration:.3},BT[i]);
+    tl.to("#st"+i,{borderColor:"#2A5A44",backgroundColor:"#122019",color:"#3DD68C",duration:.3},BT[i+1]);tl.to("#sn"+i,{backgroundColor:"#1E4A35",color:"#3DD68C",duration:.3},BT[i+1]);});
+  // Helpers
+  const swap=(a,b,t)=>{tl.to(a,{opacity:0,duration:.15},t);tl.to(b,{opacity:1,duration:.2},t+.15);};
+  const pop=(sel,t)=>tl.fromTo(sel,{opacity:0,y:12},{opacity:1,y:0,duration:.35,ease:EO,immediateRender:false},t);
+  const press=(sel,t)=>{tl.to(sel,{scale:.94,duration:.1},t);tl.to(sel,{scale:1,duration:.15},t+.1);};
+  const scrIn=(sel,t)=>tl.fromTo(sel,{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},t);
+  const scrOut=(sel,t)=>tl.to(sel,{opacity:0,duration:.25,ease:EI},t);
+  const mod=(i,t,on)=>tl.to("#mh"+i,{opacity:on?1:0,duration:.25},t);
+  const hl=(sel,t,d)=>{tl.to(sel,{opacity:1,duration:.25},t);tl.to(sel,{opacity:0,duration:.4},t+d);};
+  const typeIn=(sel,t,d)=>tl.fromTo(sel,{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:d,ease:"none",immediateRender:false},t);
+
+  // ABERTURA
+  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal",{opacity:1,duration:.5},.15);
+  tl.to("#win",{opacity:1,duration:.5},.2);tl.to("#rail",{opacity:1,duration:.5},.3);
+  mod(6,.4,true);scrIn("#s1",.45);
+
+  // B1 EMPRESA: CNPJ alfanumérico digitado e validado; regime com vigência; regras na origem
+  typeIn("#cnpj",1.1,1.1);
+  tl.to("#cnpjok",{opacity:1,duration:.25},2.3);swap("#cv0","#cv1",2.3);
+  swap("#rg0","#rg1",3.0);pop("#rgnew",3.1);hl("#rghl",3.1,1.6);
+  tl.fromTo("#s1rules .li",{opacity:0,x:-14},{opacity:1,x:0,duration:.3,stagger:.15,ease:EO,immediateRender:false},3.4);
+
+  // B2 AUTORIZAÇÃO FISCAL: abrir pede reautenticação; selo Ativa; trilha de uso
+  scrOut("#s1",5.95);scrIn("#s2",6.25);
+  press("#bopen",7.3);
+  tl.to("#b2",{opacity:0,duration:.25},7.3);tl.fromTo("#d1",{opacity:0,scale:.95},{opacity:1,scale:1,duration:.35,ease:EO,immediateRender:false},7.6);
+  typeIn("#d1p",8.2,.7);press("#d1b",9.4);
+  tl.to("#d1",{opacity:0,scale:.97,duration:.25,ease:EI},9.6);tl.to("#b2",{opacity:1,duration:.3},9.9);
+  swap("#au0","#au1",9.9);
+  tl.to("#bopen",{backgroundColor:"rgba(0,0,0,0)",borderColor:"#4A4A55",color:"#8E8E99",duration:.25},9.9);tl.to("#brev",{borderColor:"#C9C9D1",color:"#FFFFFF",duration:.25},9.9);
+  pop("#trail",10.1);
+
+  // B3 FATURA: serviço LC 116 conferido, retenções, pronta para submeter
+  scrOut("#s2",11.75);mod(6,11.75,false);mod(0,11.9,true);scrIn("#s3",12.05);
+  hl("#lchl",12.9,1.4);swap("#lc0","#lc1",13.1);
+  tl.fromTo("#ret .box",{opacity:0,y:10},{opacity:1,y:0,duration:.3,stagger:.12,ease:EO,immediateRender:false},13.6);
+  tl.fromTo("#pAl .li",{opacity:0,x:-14},{opacity:1,x:0,duration:.3,stagger:.15,ease:EO,immediateRender:false},14.6);
+
+  // B4 SUBMETER: cobrança no banco e título na contabilidade externa
+  press("#bsub",17.6);tl.to("#bsub",{backgroundColor:"#FF452B",borderColor:"#FF452B",duration:.15},17.6);tl.to("#bsub",{backgroundColor:"rgba(0,0,0,0)",borderColor:"#4A4A55",color:"#8E8E99",duration:.3},18.0);
+    swap("#fs0","#fs1",17.85);
+  tl.to("#pA",{opacity:0,duration:.25},17.9);tl.to("#pB",{opacity:1,duration:.25},18.15);
+  swap("#bk0","#bk1",18.9);swap("#k1 span:first-child","#k1 .n1",18.9);
+  pop("#pB2",19.3);swap("#ct0","#ct1",20.0);swap("#k2 span:first-child","#k2 .n1",20.0);
+  pop("#pB3",20.4);
+  tl.to("#bnf",{borderColor:"#C9C9D1",color:"#FFFFFF",duration:.25},20.4);
+
+  // B5 EMITIR NFS-E: senha de novo, DPS assinada, autorizada
+  press("#bnf",23.4);tl.to("#bnf",{backgroundColor:"#FF452B",borderColor:"#FF452B",duration:.15},23.4);
+  tl.to("#b3",{opacity:0,duration:.25},23.55);tl.fromTo("#d2",{opacity:0,scale:.95},{opacity:1,scale:1,duration:.35,ease:EO,immediateRender:false},23.85);
+  typeIn("#d2p",24.4,.7);press("#d2b",25.5);
+  tl.to("#d2",{opacity:0,scale:.97,duration:.25,ease:EI},25.7);tl.to("#b3",{opacity:1,duration:.3},25.95);
+  tl.to("#bnf",{backgroundColor:"rgba(0,0,0,0)",borderColor:"#4A4A55",color:"#8E8E99",duration:.25},25.7);
+  tl.to("#pB",{opacity:0,duration:.2},25.7);tl.to("#pC",{opacity:1,duration:.3},26.0);
+  tl.fromTo("#pCl .li",{opacity:0,x:-14},{opacity:1,x:0,duration:.3,stagger:.35,ease:EO,immediateRender:false},26.2);
+  pop("#pCs",27.7);tl.to("#pCn,#pCb",{opacity:1,duration:.3},27.8);
+  tl.to("#fs2",{opacity:1,duration:.3},27.7);swap("#k3 span:first-child","#k3 .n1",27.7);
+  swap("#fn0","#fn1",27.8);
+
+  // B6 EXTRATO: lançamentos com direção, parte pelo CNPJ, conciliação
+  scrOut("#s3",29.75);scrIn("#s6",30.05);
+  tl.fromTo(".xr",{opacity:0,x:-20},{opacity:1,x:0,duration:.3,stagger:.15,ease:EO,immediateRender:false},30.6);
+  hl("#x1hl",31.8,2.6);hl("#x3hl",31.8,1.2);
+  swap("#x1p0","#x1p1",31.9);swap("#x3p0","#x3p1",32.1);
+  swap("#x1s0","#x1s1",32.6);pop("#x5",32.75);pop("#x6",32.95);
+
+  // B7 GRUPO FISCAL: documentos de terceiros chegam por captura
+  scrOut("#s6",35.15);mod(0,35.2,false);mod(6,35.3,true);scrIn("#s7",35.45);
+  tl.fromTo("#s7l .li",{opacity:0,x:-14},{opacity:1,x:0,duration:.3,stagger:.12,ease:EO,immediateRender:false},36.0);
+  const nrs=gsap.utils.toArray(".nr");
+  nrs.forEach((el,i)=>{const t=36.5+i*.5;pop(el,t);tl.to(i===0?"#kf span:first-child":"#kf"+(i+1),{opacity:0,duration:.15},t);tl.to("#kf"+(i+2),{opacity:1,duration:.2},t+.15);});
+
+  // FECHO
+  tl.to("#win,#rail",{opacity:0,duration:.35,ease:EI},40.2);
+  tl.fromTo("#closing",{opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:EO,immediateRender:false},40.6);
+  tl.to("#pad",{opacity:.01,duration:.5},43.5);
+
+  // The site Player does not pre-create the registry
+  window.__timelines=window.__timelines||{};
+  window.__timelines["hub-fiscal-br"]=tl;
+})();
+</script>
+</body>
+</html>

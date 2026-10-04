@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tabe.la · comercialização imobiliária (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA TABE.LA */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#F3F6F8;--ink:#102838;--accent:#0D547F;--sec:#C63850;--surface:#FFFFFF;--muted:#526678;--line:#BCCBD4;--soft:#E2EDF4;--ok:#1B6B45;--okbg:#E1F3E8;--warn:#8A5A00;--warnbg:#FFF1D0}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+.top{position:absolute;left:120px;right:120px;top:30px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--line)}
+.top .lg{background:var(--ink);border-radius:14px;padding:8px 18px;margin-bottom:8px;display:flex}.top img{height:36px;display:block}
+.chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 20px;background:var(--surface);margin-bottom:8px}
+.scene{position:absolute;left:0;top:0;width:1920px;height:1000px;opacity:0}
+h1{position:absolute;left:120px;top:116px;margin:0;font-size:50px;line-height:1.1;font-weight:800;letter-spacing:-1px;width:1680px;white-space:nowrap}
+h1 em{font-style:normal;color:var(--accent)}
+.abs{position:absolute}
+.win{position:absolute;background:var(--surface);border:2px solid var(--line);border-radius:20px;overflow:hidden}
+.tb{height:56px;background:var(--soft);border-bottom:2px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 20px;font-size:24px;font-weight:700;color:var(--accent);white-space:nowrap}
+.tb i{width:14px;height:14px;border-radius:50%;background:var(--line);display:block}
+.tag{display:inline-flex;align-items:center;font-size:24px;font-weight:700;border-radius:999px;padding:2px 16px;white-space:nowrap;border:2px solid var(--line);background:var(--surface);color:var(--muted)}
+.tag.av{background:var(--okbg);color:var(--ok);border-color:var(--ok)}
+.tag.rs{background:var(--warnbg);color:var(--warn);border-color:var(--warn)}
+.tag.vd{background:#fbeef0;color:var(--sec);border-color:var(--sec)}
+.tag.ac{background:var(--soft);color:var(--accent);border-color:var(--accent)}
+.tag.dash{border-style:dashed}
+.btn{display:inline-flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;border-radius:12px;padding:0 20px;height:48px;white-space:nowrap;border:2px solid var(--accent);color:var(--accent);background:var(--surface)}
+.btn.f{background:var(--accent);color:#fff}
+.btn.d{border-color:var(--sec);color:var(--sec)}
+.t{font-size:26px;font-weight:600;white-space:nowrap}
+.m{font-size:24px;font-weight:500;color:var(--muted)}
+.card{position:absolute;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:22px 26px}
+.card h3{margin:0 0 12px 0;font-size:32px;font-weight:800}
+/* S1 */
+.tabs{display:flex;gap:8px;padding:12px 20px 0 20px;border-bottom:2px solid var(--line);height:60px}
+.tabs div{font-size:24px;font-weight:600;color:var(--muted);padding:8px 16px;border-radius:10px 10px 0 0;white-space:nowrap}
+.tabs div.on{background:var(--soft);color:var(--accent);font-weight:800;border:2px solid var(--line);border-bottom:none}
+.g{display:grid;grid-template-columns:140px 170px 130px 200px 180px 240px;align-items:center;padding:0 20px}
+.gh{height:84px;border-bottom:2px solid var(--line);margin-top:6px}
+.gh b{display:block;font-size:26px}.gh span{font-size:24px;color:var(--muted);font-weight:500}
+.gr{height:58px;font-size:26px;font-weight:600;border-bottom:2px solid var(--soft)}
+.gr.hit{background:var(--soft);outline:3px solid var(--accent);outline-offset:-3px}
+.foot{position:absolute;left:20px;bottom:14px;display:flex;gap:12px}
+.cond{border:2px solid var(--line);border-radius:14px;padding:10px 16px;margin-bottom:12px;font-size:26px;font-weight:700}
+.cond.on{border-color:var(--accent);background:var(--soft)}
+.cond .m{font-weight:600}
+/* S2 */
+.pc{position:absolute;top:210px;width:520px;height:560px;background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:32px}
+.dot{width:84px;height:84px;border-radius:50%;background:var(--accent);color:#fff;font-size:40px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.pc h2{margin:0 0 14px 0;font-size:42px;font-weight:800}
+.pc p{margin:0 0 12px 0;font-size:26px;line-height:1.3;font-weight:500;color:var(--muted)}
+.pc p b{color:var(--ink)}
+.sub{border:2px solid var(--line);border-radius:14px;padding:10px 16px;margin-bottom:12px;background:var(--bg)}
+.sub b{display:block;font-size:26px}.sub span{font-size:24px;color:var(--muted);font-weight:500}
+/* S3 */
+.stp{position:absolute;left:0;top:56px;width:340px;bottom:0;border-right:2px solid var(--line);padding:18px 16px;background:var(--bg)}
+.sti{display:flex;align-items:center;gap:10px;height:80px;margin-bottom:10px;font-size:24px;font-weight:700;color:var(--muted);border-radius:12px;padding:0 10px;border:2px solid transparent}
+.sti .n{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--surface);flex:none}
+.bd{position:absolute;left:360px;top:76px;right:20px}
+.sr{height:76px;border:2px solid var(--line);border-radius:14px;margin-bottom:10px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:700;background:var(--surface)}
+.sr .m{font-weight:600}
+.blk{display:inline-flex;flex-direction:column;border:2px solid var(--accent);border-radius:12px;background:var(--soft);padding:4px 16px;font-size:24px;font-weight:700;color:var(--accent);margin-right:8px}
+.phone{position:absolute;background:var(--surface);border:6px solid var(--ink);border-radius:44px;overflow:hidden}
+.phone .nt{position:absolute;left:50%;top:0;width:130px;height:24px;margin-left:-65px;background:var(--ink);border-radius:0 0 16px 16px}
+.hub{border:2px solid var(--line);border-radius:16px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:20px;font-size:26px;font-weight:700;background:var(--surface);position:relative}
+.hub .ck{position:absolute;right:10px;top:8px;width:34px;height:34px;border-radius:50%;background:var(--ok);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;opacity:0}
+/* S4 */
+.nd{position:absolute;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:22px 26px}
+.nd h3{margin:0 0 6px 0;font-size:34px;font-weight:800}
+.nd .m{line-height:1.3}
+.ln{position:absolute;height:6px;background:var(--line);border-radius:3px}
+.lnf{position:absolute;height:6px;background:var(--accent);border-radius:3px;width:0}
+.tok{position:absolute;height:60px;border-radius:30px;background:var(--accent);color:#fff;font-size:24px;font-weight:700;display:flex;align-items:center;padding:0 22px;white-space:nowrap;box-shadow:0 6px 18px rgba(13,84,127,.35)}
+/* S5 */
+.f5{display:grid;grid-template-columns:70px 230px 150px 360px 420px 1fr;align-items:center;padding:0 24px}
+.fh{height:56px;font-size:24px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--line)}
+.fr{height:88px;font-size:26px;font-weight:600;border-bottom:2px solid var(--soft);position:relative}
+.cb{width:32px;height:32px;border:3px solid var(--line);border-radius:8px;background:var(--surface)}
+.pz{display:flex;align-items:center;gap:12px}
+.pzb{width:200px;height:14px;border-radius:7px;background:var(--soft);overflow:hidden}
+.pzf{height:14px;width:100%;border-radius:7px;background:var(--sec)}
+.act{position:absolute;right:24px;top:50%;margin-top:-24px;display:flex;gap:10px}
+.dec{position:absolute;right:24px;top:50%;margin-top:-19px;opacity:0}
+/* S6 */
+.push{position:absolute;left:14px;right:14px;top:60px;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px 16px;box-shadow:0 10px 30px rgba(16,40,56,.18)}
+.wb{background:#fff;border-radius:16px;padding:12px 16px;font-size:26px;font-weight:500;margin-bottom:14px;border:2px solid #d5e3d9}
+.pdf{position:absolute;background:#fff;border:2px solid var(--line);border-radius:12px;box-shadow:0 12px 30px rgba(16,40,56,.16);padding:26px}
+.ln2{height:14px;border-radius:7px;background:var(--soft);margin-bottom:12px}
+.hi{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px;font-size:26px;font-weight:700}
+.hi .dt{width:30px;height:30px;border-radius:50%;background:var(--line);margin-top:2px;flex:none}
+/* S7 */
+.big{position:absolute;left:120px;width:1680px;top:170px;text-align:center;font-size:84px;line-height:1.15;font-weight:800;letter-spacing:-1.5px}
+.big em{font-style:normal;color:var(--accent)}
+.rc{position:absolute;width:420px;height:150px;background:var(--surface);border:3px solid var(--accent);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:36px;font-weight:800}
+.rc span{font-size:24px;font-weight:600;color:var(--muted);margin-top:6px}
+/* TRACKER */
+.trk{position:absolute;left:120px;top:960px;width:1680px;height:92px;background:var(--surface);border:2px solid var(--line);border-radius:22px;display:flex;align-items:center;gap:10px;padding:0 20px}
+.obj{background:var(--ink);color:#fff;border-radius:14px;height:60px;display:flex;align-items:center;padding:0 20px;font-size:24px;font-weight:700;white-space:nowrap}
+.sp{height:52px;border-radius:26px;border:2px solid var(--line);color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;padding:0 18px;white-space:nowrap;background:var(--surface)}
+.ar{font-size:24px;color:var(--line);font-weight:800}
+/* ABERTURA TABE.LA (copiada de pieces/tabela-intro, ids com prefixo intro-) */
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000;background:#6E70BF;font-family:Inter,sans-serif;color:#fff}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#intro-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;opacity:0;text-shadow:0 2px 18px rgba(30,32,90,.28)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-tabela-comercializacao-intro" data-width="1920" data-height="1080" data-start="0" data-duration="43">
+<!-- ABERTURA: marca Tabe.la por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-stage" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Comercialização imobiliária, da tabela à decisão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme, transparente durante a abertura -->
+
+
+<div class="top"><div class="lg"><img src="./assets/tabela.svg" alt="Tabe.la"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+
+<!-- S1: INCORPORADORA -->
+<div class="scene" id="s1">
+  <h1><em>Incorporadora:</em> tabela matricial e condições de venda</h1>
+  <div class="win" id="w1" style="left:120px;top:210px;width:1100px;height:730px">
+    <div class="tb"><i></i><i></i><i></i>&nbsp;Empreendimento Residencial DEMO · tabela ativa</div>
+    <div class="tabs"><div>Detalhes</div><div>Materiais</div><div class="on">Tabelas</div><div>Condições</div><div>Reservas</div></div>
+    <div class="g gh"><div><b>Unidade</b><span>texto</span></div><div><b>Tipologia</b><span>lista</span></div><div><b>Área</b><span>número</span></div><div><b>Valor</b><span>moeda</span></div><div><b>Entrada</b><span>derivada</span></div><div><b>Status</b><span>status</span></div></div>
+    <div class="g gr r1"><div>301</div><div>Studio</div><div>34 m²</div><div>R$ DEMO</div><div>R$ DEMO</div><div><span class="tag vd">vendida</span></div></div>
+    <div class="g gr r1"><div>302</div><div>2 quartos</div><div>58 m²</div><div>R$ DEMO</div><div>R$ DEMO</div><div><span class="tag rs">reservada</span></div></div>
+    <div class="g gr r1"><div>303</div><div>2 quartos</div><div>58 m²</div><div>R$ DEMO</div><div>R$ DEMO</div><div><span class="tag vd">vendida</span></div></div>
+    <div class="g gr r1 hit" id="u304"><div>304</div><div>3 quartos</div><div>76 m²</div><div>R$ DEMO</div><div>R$ DEMO</div><div><span class="tag av">disponível</span></div></div>
+    <div class="g gr r1"><div>305</div><div>3 quartos</div><div>76 m²</div><div>R$ DEMO</div><div>R$ DEMO</div><div><span class="tag av">disponível</span></div></div>
+    <div class="g gr r1"><div>306</div><div>Cobertura</div><div>112 m²</div><div>R$ DEMO</div><div>R$ DEMO</div><div><span class="tag rs">reservada</span></div></div>
+    <div class="foot" id="foot1"><span class="btn">Importar linhas</span><span class="btn">Exportar</span><span class="btn">Histórico de valores</span><span class="btn">Prévia</span></div>
+  </div>
+  <div class="card" id="c1a" style="left:1250px;top:210px;width:550px;height:430px">
+    <h3>Condições de venda</h3>
+    <div class="cond on" id="cond1">Condição A · DEMO<div class="m">Composição de preço: entrada —, parcelas —, reforço —</div></div>
+    <div class="cond">Condição B · DEMO<div class="m">Composição de preço: —</div></div>
+    <div class="m">Corretor consulta no web e no app</div>
+  </div>
+  <div class="card" id="c1b" style="left:1250px;top:660px;width:550px;height:280px">
+    <h3>Quem opera</h3>
+    <div class="t" style="white-space:normal;line-height:1.3"><span class="tag ac">Gestor</span> empreendimentos, tabelas, condições, operadores</div>
+    <div class="t" style="white-space:normal;line-height:1.3;margin-top:10px"><span class="tag ac">Operador</span> status das unidades</div>
+  </div>
+</div>
+
+<!-- S2: PERSONAS -->
+<div class="scene" id="s2">
+  <h1>Três perfis, cada um com o seu papel</h1>
+  <div class="pc" id="p1" style="left:120px"><div class="dot">I</div><h2>Incorporadora</h2>
+    <div class="sub"><b>Gestor</b><span>cadastra, monta tabelas, aprova</span></div>
+    <div class="sub"><b>Operador</b><span>mantém unidades e decide propostas</span></div>
+    <p>Fila de aprovações com prazo</p></div>
+  <div class="pc" id="p2" style="left:700px"><div class="dot">M</div><h2>Imobiliária</h2>
+    <p><b>Convida corretores</b> e gerencia os vínculos</p>
+    <p><b>Revisa as propostas</b> dos corretores vinculados antes da incorporadora</p>
+    <p>Aprova ou rejeita</p></div>
+  <div class="pc" id="p3" style="left:1280px"><div class="dot">C</div><h2>Corretor</h2>
+    <div class="sub"><b>Autônomo</b><span>entra por telefone e código</span></div>
+    <div class="sub"><b>Vinculado</b><span>aceita o convite no app</span></div>
+    <p>Consulta tabelas e monta propostas</p></div>
+  <div class="card" id="inv" style="left:120px;top:800px;width:1680px;height:140px;border-style:dashed;display:flex;align-items:center;gap:22px;padding:0 32px">
+    <span class="tag ac">Imobiliária</span><span class="t">convida</span><span class="ar">→</span><span class="tag ac">Corretor</span><span class="t">aceita o convite no app</span><span class="ar">→</span><span class="tag ac">vinculado</span><span class="t">proposta passa pela imobiliária</span>
+  </div>
+</div>
+
+<!-- S3: ASSISTENTE -->
+<div class="scene" id="s3">
+  <h1><em>Corretor:</em> monta a proposta por etapas</h1>
+  <div class="win" style="left:120px;top:210px;width:1100px;height:730px" id="w3">
+    <div class="tb"><i></i><i></i><i></i>&nbsp;Nova proposta · web</div>
+    <div class="stp">
+      <div class="sti" id="st1"><span class="n">1</span>Empreendimento</div>
+      <div class="sti" id="st2"><span class="n">2</span>Unidade</div>
+      <div class="sti" id="st3"><span class="n">3</span>Condição</div>
+      <div class="sti" id="st4"><span class="n">4</span>Comprador</div>
+      <div class="sti" id="st5"><span class="n">5</span>Pagamento</div>
+      <div class="sti" id="st6"><span class="n">6</span>Revisão</div>
+    </div>
+    <div class="bd">
+      <div class="sr" id="sr1"><span>Empreendimento</span><span class="m">Residencial DEMO</span></div>
+      <div class="sr" id="sr2"><span>Unidade</span><span class="m">304 · 3 quartos</span></div>
+      <div class="sr" id="sr3"><span>Condição</span><span class="m">Condição A · DEMO</span></div>
+      <div class="sr" id="sr4"><span>Comprador</span><span class="m">Comprador DEMO</span></div>
+      <div class="sr" id="sr5" style="height:150px;flex-direction:column;align-items:flex-start;justify-content:center"><span>Pagamento em blocos</span><div style="margin-top:6px"><span class="blk">Entrada<small style="font-size:24px">R$ —</small></span><span class="blk">Parcelas<small style="font-size:24px">R$ —</small></span><span class="blk">Reforço<small style="font-size:24px">R$ —</small></span><span class="tag dash">Redistribuir</span></div></div>
+      <div style="display:flex;gap:14px;margin-top:6px;align-items:center" id="rev"><span class="btn" id="bdraft">Salvar rascunho</span><span class="btn f" id="bsend">Enviar proposta</span><span class="tag av" id="draftok" style="opacity:0">rascunho salvo</span></div>
+    </div>
+  </div>
+  <div class="abs t" style="left:1340px;top:205px;color:var(--accent);font-size:30px;font-weight:800">Mesmo assistente no app</div>
+  <div class="phone" id="ph3" style="left:1340px;top:256px;width:400px;height:684px">
+    <div class="nt"></div>
+    <div style="padding:46px 18px 0 18px">
+      <div class="t" style="text-align:center;color:var(--accent);margin-bottom:14px;font-weight:800">Nova proposta</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="hub" id="hb1">Produto<div class="ck">✓</div></div>
+        <div class="hub" id="hb2">Condições<div class="ck">✓</div></div>
+        <div class="hub" id="hb3">Comprador<div class="ck">✓</div></div>
+        <div class="hub" id="hb4">Pagamento<div class="ck">✓</div></div>
+      </div>
+      <div class="sr" style="margin-top:18px;height:70px"><span class="m">Unidade 304</span><span class="tag av">livre</span></div>
+      <div class="tag ac" id="phdraft" style="margin-top:6px;opacity:0">rascunho no aparelho</div>
+      <div class="btn f" id="phsend" style="margin-top:20px;width:100%">Enviar</div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: ENVIO -->
+<div class="scene" id="s4">
+  <h1>Envio: vinculado passa pela imobiliária, autônomo vai direto</h1>
+  <div class="nd" id="n1" style="left:120px;top:210px;width:420px;height:220px"><h3>Corretor vinculado</h3><div class="m">Envia a proposta</div><div class="tag rs" style="margin-top:14px">Rascunho → enviada</div></div>
+  <div class="nd" id="n2" style="left:750px;top:210px;width:460px;height:220px"><h3>Imobiliária</h3><div class="m">Recebe aviso e revisa</div><div class="tag rs" id="aw" style="margin-top:14px;white-space:normal;line-height:1.2;border-radius:18px">aguardando validação da imobiliária</div></div>
+  <div class="nd" id="n3" style="left:1420px;top:210px;width:380px;height:690px"><h3>Incorporadora</h3><div class="m">Fila de aprovações</div>
+    <div class="sub" style="margin-top:18px"><b>Gestor</b><span>decide</span></div><div class="sub"><b>Operador</b><span>decide</span></div>
+    <div class="tag ac" id="inq" style="margin-top:14px;opacity:0">proposta na fila</div>
+    <div class="m" style="margin-top:18px;line-height:1.3">Recebe direto do autônomo ou encaminhada pela imobiliária</div></div>
+  <div class="ln" style="left:540px;top:318px;width:210px"></div><div class="lnf" id="f1" style="left:540px;top:318px"></div>
+  <div class="ln" style="left:1210px;top:318px;width:210px"></div><div class="lnf" id="f2" style="left:1210px;top:318px"></div>
+  <div class="nd" id="rv" style="left:690px;top:470px;width:580px;height:290px"><h3 style="font-size:32px">Revisão da imobiliária</h3>
+    <div class="t" style="margin-bottom:14px">Proposta DEMO-0042 · unidade 304</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap"><span class="btn">Ver PDF</span><span class="btn f" id="bapr">Aprovar · encaminha</span><span class="btn d" id="brej">Rejeitar</span></div>
+    <div class="m" style="margin-top:14px">Histórico visível ao corretor</div></div>
+  <div class="nd" id="n4" style="left:120px;top:700px;width:420px;height:200px"><h3>Corretor autônomo</h3><div class="m">Sem etapa da imobiliária</div></div>
+  <div class="ln" style="left:540px;top:800px;width:880px;background:repeating-linear-gradient(90deg,var(--line) 0 24px,transparent 24px 40px)"></div>
+  <div class="tag dash" id="dir" style="position:absolute;left:760px;top:830px;background:var(--bg)">envio direto à incorporadora</div>
+  <div class="tok" id="tok4" style="left:545px;top:288px;width:200px;padding:0;justify-content:center">DEMO-0042</div>
+</div>
+
+<!-- S5: FILA -->
+<div class="scene" id="s5">
+  <h1><em>Incorporadora:</em> fila de aprovações com prazo</h1>
+  <div class="win" id="w5" style="left:120px;top:210px;width:1680px;height:730px">
+    <div class="tb"><i></i><i></i><i></i>&nbsp;Aprovações · Residencial DEMO<span style="flex:1"></span><span class="tag ac">por urgência</span><span class="tag">busca</span><span class="tag">exportar</span><span class="tag ac">gestor · operador</span></div>
+    <div class="f5 fh"><div></div><div>Proposta</div><div>Unidade</div><div>Origem</div><div>Prazo</div><div></div></div>
+    <div class="f5 fr" id="q1"><div><div class="cb"></div></div><div>DEMO-0042</div><div>304</div><div><span class="tag ac">via imobiliária ✓</span></div><div class="pz"><div class="pzb"><div class="pzf" id="pz1"></div></div><span class="m">prazo · DEMO</span></div><div><div class="act" id="act1"><span class="btn f" id="bacc">Aceitar</span><span class="btn d">Recusar</span></div><span class="tag av dec" id="dec1">Aceita</span></div></div>
+    <div class="f5 fr" id="q2"><div><div class="cb" id="cb2"></div></div><div>DEMO-0041</div><div>112</div><div><span class="tag">autônomo</span></div><div class="pz"><div class="pzb"><div class="pzf" id="pz2"></div></div><span class="m">prazo · DEMO</span></div><div><div class="act" id="act2"><span class="btn">Aceitar</span><span class="btn d">Recusar</span></div><span class="tag av dec" id="dec2">Aceita</span></div></div>
+    <div class="f5 fr" id="q3"><div><div class="cb" id="cb3"></div></div><div>DEMO-0040</div><div>507</div><div><span class="tag ac">via imobiliária ✓</span></div><div class="pz"><div class="pzb"><div class="pzf" id="pz3"></div></div><span class="m">prazo · DEMO</span></div><div><div class="act" id="act3"><span class="btn">Aceitar</span><span class="btn d">Recusar</span></div><span class="tag av dec" id="dec3">Aceita</span></div></div>
+    <div class="f5 fr" id="q4"><div><div class="cb"></div></div><div>DEMO-0039</div><div>215</div><div><span class="tag">autônomo</span></div><div class="pz"><div class="pzb"><div class="pzf" id="pz4" style="background:var(--accent)"></div></div><span class="m">prazo · DEMO</span></div><div><div class="act"><span class="btn">Aceitar</span><span class="btn d">Recusar</span></div></div></div>
+    <div class="f5 fr" id="q5"><div><div class="cb"></div></div><div>DEMO-0038</div><div>402</div><div><span class="tag ac">via imobiliária ✓</span></div><div class="pz"><div class="pzb"><div class="pzf" id="pz5" style="background:var(--accent)"></div></div><span class="m">prazo pausado</span></div><div><div class="act"><span class="btn">Retomar prazo</span></div></div></div>
+    <div id="batch" style="position:absolute;left:0;right:0;bottom:0;height:84px;background:var(--ink);display:flex;align-items:center;gap:18px;padding:0 24px;color:#fff;font-size:26px;font-weight:700;opacity:0"><span>2 selecionadas</span><span class="btn f" style="border-color:#fff" id="bbatch">Aceitar em lote</span><span class="btn" style="background:transparent;color:#fff;border-color:#fff">Recusar em lote</span></div>
+  </div>
+</div>
+
+<!-- S6: AVISO E PDF -->
+<div class="scene" id="s6">
+  <h1><em>Corretor:</em> recebe o aviso, o PDF e acompanha o status</h1>
+  <div class="phone" id="ph6a" style="left:120px;top:210px;width:380px;height:730px"><div class="nt"></div>
+    <div class="push" id="push"><div class="m" style="font-weight:700">Tabe.la · agora</div><div class="t" style="white-space:normal;line-height:1.25;margin-top:4px">Proposta DEMO-0042 aprovada</div></div>
+    <div style="position:absolute;left:18px;right:18px;top:250px"><div class="t" style="color:var(--accent);font-weight:800;margin-bottom:12px">Notificações</div>
+      <div class="sr" style="height:80px"><span class="m">Aprovada</span><span class="tag av">nova</span></div>
+      <div class="sr" style="height:80px"><span class="m">Validada pela imobiliária</span></div>
+      <div class="m" style="margin-top:8px">Toque abre a proposta</div></div>
+    <div class="abs t" style="left:18px;bottom:22px;color:var(--muted)">Push no app</div></div>
+  <div class="phone" id="ph6b" style="left:533px;top:210px;width:380px;height:730px;background:#EAF3EE"><div class="nt"></div>
+    <div style="padding:60px 16px 0 16px"><div class="t" style="font-weight:800;color:#1B6B45;margin-bottom:16px">WhatsApp</div>
+      <div class="wb" id="wb1">Sua proposta DEMO-0042 foi aprovada.</div>
+      <div class="wb" id="wb2" style="display:flex;align-items:center;gap:12px"><span class="tag vd">PDF</span>Proposta DEMO-0042</div></div></div>
+  <div class="pdf" id="pdf" style="left:946px;top:210px;width:360px;height:730px">
+    <img src="./assets/tabela.svg" alt="" style="height:30px;background:var(--ink);border-radius:8px;padding:6px 12px;margin-bottom:18px">
+    <div class="t" style="font-weight:800;margin-bottom:6px">Proposta DEMO-0042</div>
+    <div class="m" style="margin-bottom:16px">Unidade 304 · Condição A · DEMO</div>
+    <div class="ln2"></div><div class="ln2" style="width:80%"></div><div class="ln2"></div>
+    <div class="m" style="margin:14px 0 8px">Comprador DEMO</div><div class="ln2" style="width:70%"></div>
+    <div class="m" style="margin:14px 0 8px">Pagamento em blocos</div><div class="ln2"></div><div class="ln2" style="width:60%"></div>
+    <div class="tag av" style="margin-top:14px">aprovada</div></div>
+  <div class="card" id="hist" style="left:1360px;top:210px;width:440px;height:730px"><h3>Status e histórico</h3>
+    <div class="hi" id="hi1"><div class="dt" style="background:var(--ok)"></div>Rascunho</div>
+    <div class="hi" id="hi2"><div class="dt" style="background:var(--ok)"></div>Enviada</div>
+    <div class="hi" id="hi3"><div class="dt" style="background:var(--ok)"></div>Validada pela imobiliária</div>
+    <div class="hi" id="hi4"><div class="dt" id="dt4" style="background:var(--line)"></div>Decisão da incorporadora</div>
+    <span class="tag av" id="hst" style="margin-top:6px;opacity:0">aprovada</span>
+    <div class="m" style="margin-top:22px;line-height:1.3">Web e app mostram o mesmo histórico</div></div>
+</div>
+
+<!-- S7: FECHO -->
+<div class="scene" id="s7">
+  <div class="big" id="bigt">Da tabela à decisão,<br>os três perfis na <em>mesma fonte.</em></div>
+  <div class="rc" id="rc1" style="left:120px;top:540px">Incorporadora<span>tabela, condições, decisão</span></div>
+  <div class="rc" id="rc2" style="left:750px;top:540px">Imobiliária<span>vínculos e revisão</span></div>
+  <div class="rc" id="rc3" style="left:1380px;top:540px">Corretor<span>consulta, proposta, status</span></div>
+  <div class="abs" id="srcbar" style="left:120px;top:760px;width:1680px;height:96px;background:var(--ink);border-radius:24px;display:flex;align-items:center;justify-content:center;gap:24px"><img src="./assets/tabela.svg" alt="Tabe.la" style="height:44px"><span style="color:#fff;font-size:32px;font-weight:700">uma só base de unidades e propostas</span></div>
+</div>
+
+<!-- RASTREADOR DO OBJETO -->
+<div class="trk" id="trk">
+  <div class="obj">Unidade 304 · DEMO-0042</div>
+  <div class="sp" id="sp1">Tabela</div><span class="ar">→</span>
+  <div class="sp" id="sp2">Rascunho</div><span class="ar">→</span>
+  <div class="sp" id="sp3">Na imobiliária</div><span class="ar">→</span>
+  <div class="sp" id="sp4">Na fila da incorporadora</div><span class="ar">→</span>
+  <div class="sp" id="sp5">Aprovada</div>
+</div>
+
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines aqui; a mestra no fim deste script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 dirigido pela timeline, sem relógio próprio)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  // Scene runs at 1/SLOW of the login speed (calm pace); LEAD is a bare-grid beat before the crane enters
+  var SLOW = 1.7, LEAD = 0.3;
+  // Visual scale versus the login panel (logo 340 css px there, 760 px here); also scales stroke widths
+  var LOGO_W = 760, SCALE = LOGO_W / 340;
+  var HERO = [110 / 255, 112 / 255, 191 / 255]; // --brand-hero = oklch(0.58 ...) of series-indigo-200, resolved to sRGB
+  var VB = { w: 218, h: 61 };
+  var LOGO_H = LOGO_W * VB.h / VB.w;
+  var logoRect = [(W - LOGO_W) / 2, (H - LOGO_H) / 2 + 40, LOGO_W, LOGO_H];
+  var layout = { width: W, height: H, dpr: SCALE, logo: logoRect, dot: LOGO_DOT, bounds: LOGO_BOUNDS };
+  var TEX_W = 1140, lod0 = Math.log2(TEX_W / LOGO_W);
+
+  var canvas = document.getElementById('intro-stage');
+  var gl = canvas.getContext('webgl2', { premultipliedAlpha: true, antialias: true, alpha: false, preserveDrawingBuffer: true });
+  var programs = {}, textures = {}, loaded = 0, quadVao = null, curT = 0;
+
+  function compile(fs) {
+    var program = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(program, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+    var uniforms = {}, n = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (var i = 0; i < n; i++) { var info = gl.getActiveUniform(program, i); if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name); }
+    return { program: program, uniforms: uniforms };
+  }
+  function setU(p, extra, base) {
+    gl.useProgram(p.program);
+    var all = Object.assign({}, base, extra);
+    Object.keys(all).forEach(function (name) {
+      var loc = p.uniforms[name]; if (!loc) return; var v = all[name];
+      if (v.length === 1) gl.uniform1f(loc, v[0]); else if (v.length === 2) gl.uniform2f(loc, v[0], v[1]);
+      else if (v.length === 3) gl.uniform3f(loc, v[0], v[1], v[2]); else gl.uniform4f(loc, v[0], v[1], v[2], v[3]);
+    });
+    if (p.uniforms.uPart) gl.uniform1i(p.uniforms.uPart, 3);
+  }
+  function draw(p, extra, base) { setU(p, extra, base); gl.bindVertexArray(quadVao); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+
+  // Deterministic stand-in for Math.random (drill vibration): a pure hash of the time and call index
+  function makeJitter(t) { var n = 0; return function () { var x = Math.sin(t * 1000.7 + (n++) * 12.9898) * 43758.5453; return x - Math.floor(x); }; }
+
+  function render(t) {
+    curT = t;
+    if (!gl || loaded < PART_IDS.length) return;
+    var st = Math.max(0, (t - LEAD) / SLOW);              // scene time, login seconds
+    st = Math.min(st, introTimeline().dur);
+    // Scripted stand-in for the pointer that lights the grid in the login (no real pointer in a film)
+    var mouse = [W * (0.5 + 0.34 * Math.sin(t * 0.42)), H * (0.5 + 0.3 * Math.sin(t * 0.29 + 1.0))];
+    var base = { uRes: [W, H], uRect: logoRect, uLod0: [lod0], uMouse: mouse, uHero: HERO, uDpr: [SCALE] };
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+    gl.disable(gl.BLEND);
+    draw(programs.bg, { uBgT: [t] }, base);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    var pose = sceneAt(st, layout, makeJitter(st));
+    pose.pieces.forEach(function (pc) {
+      gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, textures[pc.id]); gl.activeTexture(gl.TEXTURE0);
+      draw(programs.piece, { uXf: [pc.dx, pc.dy, pc.angle, pc.alpha], uPivot: pc.pivot }, base);
+    });
+    draw(programs.crane, { uCrane: pose.crane }, base);
+    draw(programs.drill, { uDot: pose.dot, uDrill: pose.drill, uScrew: pose.screw, uFx: pose.fx }, base);
+  }
+
+  function init() {
+    programs = { bg: compile(FS_BG), crane: compile(FS_CRANE), piece: compile(FS_PIECE), drill: compile(FS_DRILL) };
+    quadVao = gl.createVertexArray(); gl.bindVertexArray(quadVao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    PART_IDS.forEach(function (id) {
+      var img = new Image();
+      img.onload = function () {
+        var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        textures[id] = tex; loaded++;
+        if (loaded === PART_IDS.length) render(curT);
+      };
+      img.src = './assets/parts/' + id + '.png';
+    });
+  }
+  init();
+
+  // TIMELINE (a única fonte de tempo): um tween linear sobre um proxy dirige o render; a frase entra por cima como os slogans do login
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  var seatAt = LEAD + introTimeline().seat * SLOW;      // dot seated -> line enters (as slogans start at seat in the login)
+  tl.fromTo('#intro-line', { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, seatAt + 0.1);
+  // Registered as a part; only the master timeline at the end of this script is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de conteúdo ou ritmo de pieces/biz-tabela-comercializacao-v2)
+(function(){
+  const tl = gsap.timeline({paused:true});
+  // RETIME V2 — escala uniforme de posições, durações e stagger (mais tempo de leitura por batida)
+  const RETIME = 34 / 24;
+  ["to", "from", "fromTo", "set"].forEach((m) => {
+    const orig = tl[m].bind(tl);
+    tl[m] = (...a) => {
+      const pi = m === "fromTo" ? 3 : 2;
+      const vi = m === "fromTo" ? 2 : 1;
+      const vars = Object.assign({}, a[vi]);
+      if (vars.duration != null) vars.duration *= RETIME;
+      if (typeof vars.stagger === "number") vars.stagger *= RETIME;
+      a[vi] = vars;
+      if (typeof a[pi] === "number") a[pi] *= RETIME;
+      return orig(...a);
+    };
+  });
+  const E="power2.out";
+  gsap.set(["#s2","#s3","#s4","#s5","#s6","#s7"],{opacity:0});
+  const swap=(a,b,t)=>{tl.to(a,{opacity:0,duration:.35,ease:"power1.in"},t);tl.fromTo(b,{opacity:0},{opacity:1,duration:.35,ease:E},t+.3);};
+  const on=(id,t)=>tl.to(id,{backgroundColor:"#0D547F",color:"#ffffff",borderColor:"#0D547F",duration:.3},t);
+  const done=(id,t)=>tl.to(id,{backgroundColor:"#E1F3E8",color:"#1B6B45",borderColor:"#1B6B45",duration:.3},t);
+
+  // S1 incorporadora
+  tl.fromTo("#s1",{opacity:0},{opacity:1,duration:.3},0);
+  on("#sp1",0.4);
+  tl.from("#s1 h1",{y:20,opacity:0,duration:.5,ease:E},0.1);
+  tl.from("#w1",{y:30,opacity:0,duration:.6,ease:E},0.3);
+  tl.from(".r1",{x:-20,opacity:0,duration:.3,stagger:.08,ease:E},0.7);
+  tl.from("#foot1 .btn",{opacity:0,y:10,duration:.3,stagger:.1},1.3);
+  tl.from("#c1a",{x:40,opacity:0,duration:.5,ease:E},1.2);
+  tl.fromTo("#cond1",{boxShadow:"0 0 0 0 rgba(13,84,127,0)"},{boxShadow:"0 0 0 6px rgba(13,84,127,.3)",duration:.4},2.0);
+  tl.from("#c1b",{x:40,opacity:0,duration:.5,ease:E},2.2);
+
+  swap("#s1","#s2",3.3);
+  // S2 personas
+  tl.from("#s2 h1",{y:20,opacity:0,duration:.5,ease:E},3.65);
+  tl.from("#p1",{y:40,opacity:0,duration:.5,ease:E},3.8);
+  tl.from("#p2",{y:40,opacity:0,duration:.5,ease:E},4.2);
+  tl.from("#p3",{y:40,opacity:0,duration:.5,ease:E},4.6);
+  tl.from("#inv",{y:20,opacity:0,duration:.5,ease:E},5.2);
+  tl.fromTo("#p2",{boxShadow:"0 0 0 0 rgba(13,84,127,0)"},{boxShadow:"0 0 0 6px rgba(13,84,127,.3)",duration:.4},5.6);
+
+  swap("#s2","#s3",6.3);
+  // S3 assistente
+  done("#sp1",6.6);on("#sp2",6.7);
+  tl.from("#s3 h1",{y:20,opacity:0,duration:.5,ease:E},6.65);
+  tl.from("#w3",{y:30,opacity:0,duration:.5,ease:E},6.8);
+  tl.from("#ph3",{x:40,opacity:0,duration:.5,ease:E},7.0);
+  tl.from(".sr, #rev",{opacity:0,x:20,duration:.3,stagger:.08,ease:E},7.2);
+  const sti=(i,t)=>{tl.to("#st"+i,{backgroundColor:"#E2EDF4",color:"#0D547F",borderColor:"#0D547F",duration:.25},t);};
+  const stdone=(i,t)=>{tl.to("#st"+i+" .n",{backgroundColor:"#1B6B45",color:"#ffffff",borderColor:"#1B6B45",duration:.25},t);};
+  sti(1,7.3);stdone(1,7.7);sti(2,7.7);stdone(2,8.0);sti(3,8.0);stdone(3,8.3);sti(4,8.3);stdone(4,8.7);sti(5,8.7);stdone(5,9.1);sti(6,9.1);
+  tl.to("#hb1 .ck",{opacity:1,duration:.2},7.9);tl.to("#hb2 .ck",{opacity:1,duration:.2},8.3);tl.to("#hb3 .ck",{opacity:1,duration:.2},8.7);tl.to("#hb4 .ck",{opacity:1,duration:.2},9.1);
+  tl.to("#draftok",{opacity:1,duration:.3},9.3);tl.to("#phdraft",{opacity:1,duration:.3},9.3);
+  tl.fromTo("#bsend",{boxShadow:"0 0 0 0 rgba(13,84,127,0)"},{boxShadow:"0 0 0 8px rgba(13,84,127,.35)",duration:.4},9.8);
+
+  swap("#s3","#s4",10.2);
+  // S4 envio
+  done("#sp2",10.5);on("#sp3",10.6);
+  tl.from("#s4 h1",{y:20,opacity:0,duration:.5,ease:E},10.55);
+  tl.from("#n1,#n2,#n3,#n4",{y:30,opacity:0,duration:.5,stagger:.1,ease:E},10.7);
+  tl.from("#tok4",{opacity:0,duration:.3},11.1);
+  tl.to("#tok4",{x:0,duration:.01,ease:"power2.inOut"},11.4);
+  tl.to("#f1",{width:210,duration:.8,ease:"power2.inOut"},11.4);
+  tl.from("#rv",{y:30,opacity:0,duration:.5,ease:E},11.9);
+  tl.fromTo("#bapr",{boxShadow:"0 0 0 0 rgba(13,84,127,0)"},{boxShadow:"0 0 0 8px rgba(13,84,127,.35)",duration:.4},12.5);
+  tl.to("#tok4",{x:670,duration:.8,ease:"power2.inOut"},13.0);
+  tl.to("#f2",{width:210,duration:.8,ease:"power2.inOut"},13.0);
+  tl.to("#inq",{opacity:1,duration:.3},13.6);
+  tl.from("#dir",{opacity:0,duration:.4},12.9);
+  done("#sp3",13.7);on("#sp4",13.8);
+
+  swap("#s4","#s5",14.2);
+  // S5 fila
+  tl.from("#s5 h1",{y:20,opacity:0,duration:.5,ease:E},14.55);
+  tl.from("#w5",{y:30,opacity:0,duration:.5,ease:E},14.7);
+  tl.from(".fr",{x:-20,opacity:0,duration:.3,stagger:.08,ease:E},15.0);
+  tl.to("#pz1",{width:"22%",duration:2.2,ease:"none"},15.0);
+  tl.to("#pz2",{width:"44%",duration:2.2,ease:"none"},15.0);
+  tl.to("#pz3",{width:"66%",duration:2.2,ease:"none"},15.0);
+  tl.to("#pz4",{width:"85%",duration:2.2,ease:"none"},15.0);
+  tl.to("#pz5",{width:"50%",duration:.01},15.0);
+  tl.to("#cb2",{backgroundColor:"#0D547F",borderColor:"#0D547F",duration:.2},15.7);
+  tl.to("#cb3",{backgroundColor:"#0D547F",borderColor:"#0D547F",duration:.2},15.95);
+  tl.fromTo("#batch",{opacity:0,y:20},{opacity:1,y:0,duration:.3},16.1);
+  tl.fromTo("#bbatch",{boxShadow:"0 0 0 0 rgba(255,255,255,0)"},{boxShadow:"0 0 0 6px rgba(255,255,255,.5)",duration:.3},16.5);
+  tl.to("#act2,#act3",{opacity:0,duration:.2},16.8);
+  tl.to("#dec2,#dec3",{opacity:1,duration:.3},16.8);
+  tl.to("#batch",{opacity:0,duration:.3},17.1);
+  tl.fromTo("#bacc",{boxShadow:"0 0 0 0 rgba(13,84,127,0)"},{boxShadow:"0 0 0 6px rgba(13,84,127,.35)",duration:.3},17.2);
+  tl.to("#act1",{opacity:0,duration:.2},17.5);
+  tl.to("#dec1",{opacity:1,duration:.3},17.5);
+  done("#sp4",17.6);on("#sp5",17.7);
+
+  swap("#s5","#s6",17.9);
+  // S6 aviso e PDF
+  tl.from("#s6 h1",{y:20,opacity:0,duration:.5,ease:E},18.25);
+  tl.from("#ph6a",{y:30,opacity:0,duration:.5,ease:E},18.4);
+  tl.from("#push",{y:-40,opacity:0,duration:.5,ease:E},18.8);
+  tl.from("#ph6b",{y:30,opacity:0,duration:.5,ease:E},19.2);
+  tl.from("#wb1",{opacity:0,y:10,duration:.3},19.7);
+  tl.from("#wb2",{opacity:0,y:10,duration:.3},20.0);
+  tl.from("#pdf",{x:40,opacity:0,duration:.5,ease:E},20.1);
+  tl.from("#hist",{x:40,opacity:0,duration:.5,ease:E},20.4);
+  tl.from("#hi1,#hi2,#hi3",{opacity:0,x:10,duration:.25,stagger:.12},20.6);
+  tl.to("#dt4",{backgroundColor:"#1B6B45",duration:.3},21.0);
+  tl.to("#hst",{opacity:1,duration:.3},21.0);
+
+  swap("#s6","#s7",21.5);
+  // S7 fecho
+  tl.from("#bigt",{y:30,opacity:0,duration:.6,ease:E},21.85);
+  tl.from("#rc1,#rc2,#rc3",{y:40,opacity:0,duration:.5,stagger:.2,ease:E},22.4);
+  tl.from("#srcbar",{y:30,opacity:0,duration:.5,ease:E},23.1);
+  done("#sp5",22.0);
+  tl.to({},{duration:.001},23.999);
+  window.__timelines=window.__timelines||{};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (34 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 34.0;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  window.__timelines["biz-tabela-comercializacao-intro"] = master;
+})();
+</script>
+</div><!-- /film -->
+</div>
+</body>
+</html>

@@ -4,7 +4,7 @@ import motionCatalog from '@/lib/motion-catalog.json';
 import styles from './MotionFilm.module.css';
 
 export type MotionItem = (typeof motionCatalog)[number];
-type Kind = 'business' | 'topology' | 'journey';
+type Kind = 'business' | 'topology' | 'journey' | 'intro';
 
 // CARREGAMENTO DO PLAYER HYPERFRAMES
 // The pinned player registers the <hyperframes-player> custom element once per page.
@@ -22,8 +22,8 @@ function loadPlayer(): Promise<void> {
   return playerLoad;
 }
 
-// CONSULTA DO CATÁLOGO DE FILMES
-// Each product may have a business overview and a journey film; pages own topology films.
+// CONSULTA DO CATÁLOGO DE FILMES E DOS ROTEIROS POR PRODUTO
+// A product has either an approved reel (ordered films) or a business overview plus a journey; pages own topology films.
 export function filmFor(product: string, kind: Kind): MotionItem | undefined {
   return motionCatalog.find((item) => item.product === product && item.kind === kind);
 }
@@ -32,6 +32,16 @@ export function filmFor(product: string, kind: Kind): MotionItem | undefined {
 export function overviewFilms(product: string): MotionItem[] {
   const films = motionCatalog.filter((item) => item.product === product && item.kind !== 'journey');
   return [...films.filter((f) => f.kind === 'business'), ...films.filter((f) => f.kind === 'topology')];
+}
+
+// Approved reel of a product, in the operator's order; `also` lets a module page reuse its family's films.
+export function reelFilms(product: string): MotionItem[] {
+  return motionCatalog.filter((item) => item.reel && (item.product === product || (item.also as string[]).includes(product)));
+}
+
+// Card cover and share image: the first overview film shown on the product page.
+export function coverFilm(product: string): MotionItem | undefined {
+  return motionCatalog.find((item) => (item.product === product || (item.also as string[]).includes(product)) && (item.kind === 'business' || item.kind === 'topology'));
 }
 
 export function filmsForPage(page: string): MotionItem[] {

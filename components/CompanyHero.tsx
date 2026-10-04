@@ -77,10 +77,10 @@ function ImagineProducts({locale}: {locale: Locale}) {
       </div></div>
       <div className={styles.productBottom}><span>{t.concept}</span><span aria-hidden="true">DEMO</span></div>
     </Link>
-    {/* Recycling is presented inside SGORS; Light stays a client (decision of 2026-10-02) */}
-    <Link href="/portfolio/sgors" className={`${styles.product} ${styles.recycleProduct}`}>
+    {/* Recycling is presented inside the waste management system; Light stays a client (decision of 2026-10-02) */}
+    <Link href={`/portfolio/${publicSlug('sgors')}`} className={`${styles.product} ${styles.recycleProduct}`}>
       <div className={styles.productTop}><Logo id="sgors"/><Arrow/></div>
-      <div className={styles.productTitle}><strong>SGORS</strong><span>{t.recycling}</span></div>
+      <div className={styles.productTitle}><strong>{catalog.find(item => item.id === 'sgors')!.productName}</strong><span>{t.recycling}</span></div>
       <div className={styles.materials} aria-hidden="true">{t.materials.map((material, i) => <div key={material}>
         <svg viewBox="0 0 40 40" fill="none"><path d={i === 0 ? 'M12 8h12l6 6v19H12V8Zm12 0v7h6M17 21h8M17 26h8' : i === 1 ? 'M17 7h6v7l5 6v13H12V20l5-6V7Zm-5 16h16M17 11h6' : 'M12 11h16v22H12V11Zm0 5h16M16 7h8M17 20v9M23 20v9'} stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>
         <span>{material}</span>

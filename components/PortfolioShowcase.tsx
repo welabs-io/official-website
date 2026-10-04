@@ -6,7 +6,7 @@ import {useT} from './LangProvider';
 import catalog from '@/lib/presentation-catalog.json';
 import visuals from '@/lib/presentation-visuals.json';
 import emphasis from '@/lib/emphasis.json';
-import motionCatalog from '@/lib/motion-catalog.json';
+import {coverFilm} from './MotionFilm';
 import {publicSlug} from '@/lib/public-slugs';
 import styles from './PortfolioShowcase.module.css';
 
@@ -67,7 +67,7 @@ export function ProductCard({item, locale, featured = false}: {item: Item; local
   const visual = (visuals as Record<string, (typeof visuals)[keyof typeof visuals]>)[item.id];
   const direction = art[item.id] ?? {purpose: [visual.scenes['pt-BR'][0].title, visual.scenes.en[0].title], scene: 0, composition: 'paper'};
   // Cards use the accepted business film frame as cover; legacy scenes stay as fallback.
-  const film = motionCatalog.find(f => f.product === item.id && (f.kind === 'business' || f.kind === 'topology'));
+  const film = coverFilm(item.id);
   const scene = film ? {src: `/motion/${film.id}/poster.png`} : visual.scenes[locale][direction.scene];
   const sector = categories[item.id];
   const support = item.publisher === 'Welabs' ? 'welabs' : sector ?? 'public';

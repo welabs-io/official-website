@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Cadeia de integração · jornada de um pedido</title>
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--plan:#9A9AA6}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+p{white-space:nowrap}
+
+/* CABEÇALHO, LEGENDA E SELO */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px;z-index:5}
+#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap}
+#title span{color:var(--coral)}
+#caps{position:absolute;left:330px;top:24px;width:960px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
+#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap}
+#seal{position:absolute;right:0;top:27px;height:50px;width:auto}
+
+/* FAIXA DE PRODUTOS: QUEM AGE AGORA */
+#strip{position:absolute;left:40px;top:108px;height:52px;display:flex;align-items:center;gap:12px;z-index:5}
+#strip .lb{font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;margin-right:4px}
+.pc{height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;border:2px solid var(--line);border-radius:999px;background:#141418;color:var(--muted);font-size:24px;font-weight:800;white-space:nowrap}
+.pc svg{flex:none}
+.pc.pv{border-style:dashed;border-color:var(--plan)}
+
+/* NÓS DA CADEIA (ECO DAS PEÇAS ISOLADAS) */
+.nd{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel);z-index:2;opacity:0}
+.ch{display:flex;align-items:center;gap:14px;padding:12px 16px 0}
+.ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
+.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
+.nm{font-size:26px;font-weight:700;line-height:32px;white-space:nowrap}
+.gr{flex:1}
+.tag{display:inline-flex;align-items:center;gap:8px;height:40px;font-size:24px;font-weight:700;border-radius:999px;padding:0 14px;white-space:nowrap}
+.tag.g{background:rgba(61,214,140,.16);color:var(--ok)}.tag.r{background:rgba(255,107,107,.16);color:var(--bad)}
+.tag.a{background:rgba(245,181,63,.16);color:var(--wait)}.tag.n{background:#2A2A32;color:var(--muted)}
+.tag.c{background:rgba(255,69,43,.16);color:var(--coral)}.tag.b{background:rgba(76,141,255,.16);color:#8DB6FF}
+.tag.pv{background:#141418;border:2px dashed var(--plan);color:var(--muted)}
+.stk{position:absolute}
+.stk>span{position:absolute;right:0;top:0}
+.ph0{position:absolute;left:18px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+
+/* SAAS */
+#nS{left:40px;top:184px;width:300px;height:520px;--acc:var(--pink)}
+#rec{position:absolute;left:16px;top:88px;width:264px;height:220px;border:2px solid var(--line);border-radius:14px;background:var(--panel2);padding:12px 14px;opacity:0}
+#rec .l{font-size:24px;font-weight:600;color:var(--muted);line-height:30px}
+#rec .v{font-size:30px;font-weight:800;line-height:38px;margin-bottom:6px}
+.rw{display:flex;justify-content:space-between;font-size:24px;line-height:34px;white-space:nowrap}
+.rw span:first-child{color:var(--muted);font-weight:600}.rw span:last-child{font-weight:700}
+#sst{left:14px;top:168px;width:234px;height:40px}
+#sst>span{left:0;right:auto}
+#bSend{position:absolute;left:16px;top:322px;width:264px;height:48px;border-radius:12px;border:2px solid #4A4A55;display:flex;align-items:center;justify-content:center;gap:8px;font-size:24px;font-weight:800;color:var(--muted);opacity:0}
+#rcpt{position:absolute;left:16px;top:384px;width:264px;height:116px;border:2px solid var(--ok);border-radius:14px;background:rgba(61,214,140,.08);padding:12px 14px;opacity:0}
+#rcpt p{font-size:24px;line-height:30px}
+#rcpt .t{font-weight:800;color:var(--ok);display:flex;align-items:center;gap:8px}
+
+/* MONITORAMENTO (PREVISTO) */
+#nM{left:40px;top:744px;width:300px;height:216px;border-style:dashed;border-color:var(--plan);background:#121216;--acc:var(--plan)}
+#nM .tag{position:absolute;left:16px;top:16px}
+#nM .nm{position:absolute;left:18px;color:var(--muted)}
+#nM .ds{position:absolute;left:18px;top:150px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+
+/* FLOW: QUADRO NO ESTILO DO ESTÚDIO */
+#nF{left:460px;top:184px;width:820px;height:336px;--acc:var(--blue);overflow:hidden;
+  background-color:#131317;background-image:radial-gradient(#2C2C34 1.6px,transparent 1.6px);background-size:22px 22px}
+#nF .ch{background:var(--panel);height:72px;padding-top:0;border-bottom:2px solid var(--line)}
+#fst{right:18px;top:16px;width:300px;height:40px}
+#fsvg{position:absolute;left:0;top:0;width:820px;height:336px;z-index:1}
+.fn{position:absolute;width:370px;height:92px;border:2px solid var(--line);border-radius:14px;background:var(--panel);display:flex;align-items:center;gap:12px;padding:0 14px;z-index:2}
+.fn .ic{width:40px;height:40px;border-radius:12px}
+.fn .kd{font-size:24px;line-height:28px}
+.fn .nm{font-size:24px;line-height:30px}
+#n1{left:20px;top:92px;--acc:var(--coral)}
+#n2{left:430px;top:92px;--acc:var(--violet)}
+#n3{left:20px;top:220px;--acc:var(--wait)}
+#n4{left:430px;top:220px;--acc:var(--teal)}
+.bd{position:absolute;height:34px;font-size:24px;z-index:3;padding:0 12px;opacity:0}
+#bA{left:560px;top:167px;background:#2A2140;color:#C9B8FF;border:2px solid var(--violet)}
+#bP{left:262px;top:295px;background:#2B2312;color:var(--wait);border:2px solid var(--wait);opacity:1}
+#bR{left:676px;top:295px;background:#11281C;color:var(--ok);border:2px solid var(--ok)}
+
+/* HUB DE DOMÍNIO: BARRAMENTO */
+#nH{left:460px;top:600px;width:820px;height:360px;--acc:var(--coral)}
+#hreg{position:absolute;right:18px;top:16px}
+.dm{position:absolute;width:178px;height:44px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+#gr{position:absolute;left:410px;top:88px;width:392px;height:256px;border:2px solid var(--line);border-radius:14px;background:var(--panel2);padding:10px 14px}
+#gr h5{font-size:24px;font-weight:800;line-height:34px;white-space:nowrap;margin-bottom:4px}
+.gi{height:44px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;white-space:nowrap;border-top:2px solid #2A2A32}
+.gi b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;background:#2A2A32;color:#2A2A32}
+#hr{position:absolute;left:20px;top:256px;width:372px;height:88px;border:2px solid var(--ok);border-radius:14px;background:rgba(61,214,140,.08);padding:10px 14px;opacity:0}
+#hr p{font-size:24px;line-height:32px}
+#hr .t{font-weight:800;color:var(--ok);display:flex;align-items:center;gap:8px}
+#hph{position:absolute;left:20px;top:256px;width:372px;height:88px;border:2px dashed var(--line);border-radius:14px;display:flex;align-items:center;padding:0 14px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+
+/* CHANNELS, CRM E KB */
+#nC{left:1420px;top:184px;width:460px;height:260px;--acc:var(--ok)}
+#nR{left:1420px;top:504px;width:460px;height:250px;--acc:#7DB4FF}
+#nK{left:1420px;top:810px;width:460px;height:150px;--acc:var(--violet)}
+.bub{position:absolute;left:18px;height:50px;border-radius:14px;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:24px;font-weight:600;white-space:nowrap;opacity:0}
+.bub.in{background:#23232A}
+.bub.out{background:#14243A;border:2px solid #4C8DFF}
+.wb{position:absolute;top:146px;width:130px;height:46px;border-radius:12px;border:2px solid var(--ok);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;opacity:0}
+#cst{left:18px;top:204px;width:420px;height:40px}
+#cst>span{left:0;right:auto}
+.ci{flex:none;display:inline-grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#5B2F9E;color:#fff;font-size:24px;font-weight:800}
+#al{position:absolute;left:18px;top:136px;font-size:24px;font-weight:800;color:#8DB6FF;white-space:nowrap;opacity:0}
+#kp{position:absolute;left:18px;top:78px;width:424px;height:56px;border:2px solid var(--line);border-radius:14px;background:var(--panel2);display:flex;align-items:center;gap:12px;padding:0 12px;font-size:24px;font-weight:700;white-space:nowrap}
+
+/* ARESTAS E RÓTULOS */
+#edges{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:1}
+.el{position:absolute;height:34px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;z-index:3;opacity:0}
+.eb{position:absolute;height:34px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;border-radius:999px;white-space:nowrap;z-index:3;opacity:0}
+#bE4{left:1296px;top:500px;width:108px;background:#2B2312;color:var(--wait);border:2px solid var(--wait)}
+
+/* TRILHO DE ESTADO DO PEDIDO */
+#rail{position:absolute;left:40px;top:984px;width:1840px;height:68px;border-radius:14px;border-left:6px solid var(--coral);background:#18141A;z-index:4;opacity:0}
+#rt{position:absolute;left:22px;top:0;height:68px;display:flex;align-items:center;font-size:28px;font-weight:800;white-space:nowrap}
+#rst{left:270px;top:12px;width:600px;height:44px}
+#rst>span{left:0;right:auto;height:44px}
+#dots{position:absolute;right:24px;top:25px;width:250px;height:18px}
+.dt{position:absolute;top:0;width:18px;height:18px;border-radius:50%;background:#3A3A42}
+#leg{position:absolute;left:270px;top:0;height:68px;display:flex;align-items:center;gap:40px;opacity:0}
+#leg span{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700;white-space:nowrap}
+#leg svg{flex:none}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-chain-journey" data-width="1920" data-height="1080" data-start="0" data-duration="46">
+  <div id="hd">
+    <div id="title">Integração<span>.</span></div>
+    <div id="caps"></div>
+    <div id="sbx">sandbox · dados DEMO</div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  </div>
+
+  <div id="strip"><span class="lb">Quem age agora</span>
+    <span class="pc" id="sS"></span><span class="pc" id="sH"></span><span class="pc" id="sF"></span>
+    <span class="pc" id="sC"></span><span class="pc" id="sR"></span><span class="pc" id="sK"></span>
+    <span class="pc pv" id="sM"></span></div>
+
+  <svg id="edges" viewBox="0 0 1920 1080"></svg>
+
+  <!-- SaaS where the order is born -->
+  <div class="nd" id="nS">
+    <div class="ch"><span class="ic" id="icS"></span><div><p class="kd">SaaS</p><p class="nm">Portal DEMO</p></div></div>
+    <p class="ph0" id="phS" style="top:110px">Nenhum pedido aberto</p>
+    <div id="rec">
+      <p class="l">Pedido de compra</p>
+      <p class="v">PC-0142</p>
+      <div class="rw"><span>Solicitante</span><span>Bruno</span></div>
+      <div class="rw"><span>Valor</span><span>R$ —</span></div>
+      <span class="stk" id="sst">
+        <span class="tag n" id="ss0" data-layout-allow-overlap>Rascunho</span>
+        <span class="tag b" id="ss1" data-layout-allow-overlap style="opacity:0">Enviado</span>
+        <span class="tag a" id="ss2" data-layout-allow-overlap style="opacity:0">Em análise</span>
+        <span class="tag g" id="ss3" data-layout-allow-overlap style="opacity:0">Aprovado</span></span>
+    </div>
+    <div id="bSend"></div>
+    <div id="rcpt"><p class="t" id="rcT"></p><p>vindo do Flow</p><p style="color:var(--muted)">digest · DEMO</p></div>
+  </div>
+
+  <!-- Planned product: dashed only -->
+  <div class="nd" id="nM">
+    <span class="tag pv">Previsto</span>
+    <p class="nm" style="top:64px">Ecossistema</p>
+    <p class="nm" style="top:98px">Monitoramento</p>
+    <p class="ds">liga ao Hub e ao CRM</p>
+  </div>
+
+  <!-- Flow: studio-like board with the active revision -->
+  <div class="nd" id="nF">
+    <svg id="fsvg" viewBox="0 0 820 336"></svg>
+    <div class="ch" style="position:relative;z-index:2"><span class="ic" id="icF"></span><div><p class="kd">Flow</p><p class="nm">Aprovação de pedido · v3 ativa</p></div>
+      <span class="stk" id="fst">
+        <span class="tag n" id="fs0" data-layout-allow-overlap>aguardando evento</span>
+        <span class="tag b" id="fs1" data-layout-allow-overlap style="opacity:0">em execução</span>
+        <span class="tag a" id="fs2" data-layout-allow-overlap style="opacity:0">pausado · aguardando</span>
+        <span class="tag b" id="fs3" data-layout-allow-overlap style="opacity:0">retomado</span>
+        <span class="tag g" id="fs4" data-layout-allow-overlap style="opacity:0">concluído</span></span></div>
+    <div class="fn" id="n1"><span class="ic" id="ic1"></span><div><p class="kd">Quando · evento</p><p class="nm">Pedido enviado</p></div></div>
+    <div class="fn" id="n2"><span class="ic" id="ic2"></span><div><p class="kd">Etapa de IA</p><p class="nm">Classificar risco</p></div></div>
+    <div class="fn" id="n3"><span class="ic" id="ic3"></span><div><p class="kd">Esperar · WhatsApp</p><p class="nm">Perguntar e esperar</p></div></div>
+    <div class="fn" id="n4"><span class="ic" id="ic4"></span><div><p class="kd">Fazer · efeito</p><p class="nm">Aprovar pedido</p></div></div>
+    <span class="tag bd" id="bA">IA sugere: alto</span>
+    <span class="tag bd" id="bP">parcial</span>
+    <span class="tag bd" id="bR">recibo</span>
+  </div>
+
+  <!-- Domain hub as the bus underneath -->
+  <div class="nd" id="nH">
+    <div class="ch"><span class="ic" id="icH"></span><div><p class="kd">Hub de domínio</p><p class="nm">domínio e integração</p></div></div>
+    <span class="tag n" id="hreg" style="position:absolute"></span>
+    <div class="dm" style="left:20px;top:88px">Cadastros</div><div class="dm" style="left:212px;top:88px">Regras</div>
+    <div class="dm" style="left:20px;top:142px">Contratos</div><div class="dm" style="left:212px;top:142px">Fiscal</div>
+    <div class="dm" style="left:20px;top:196px">Financeiro</div><div class="dm" style="left:212px;top:196px">Integrações</div>
+    <div id="hph" data-layout-allow-overlap>Sem efeito pendente</div>
+    <div id="hr" data-layout-allow-overlap><p class="t" id="hrT"></p><p>mesma chave, mesmo recibo</p></div>
+    <div id="gr"><h5>Concessão · Portal DEMO</h5>
+      <div class="gi" id="g1"><b></b>Gatilho: pedido enviado</div>
+      <div class="gi" id="g2"><b></b>IA do catálogo</div>
+      <div class="gi" id="g3"><b></b>Perguntar com botões</div>
+      <div class="gi" id="g4"><b></b>Aprovar pedido · efeito</div></div>
+  </div>
+
+  <!-- Channels: the person is asked on WhatsApp -->
+  <div class="nd" id="nC">
+    <div class="ch"><span class="ic" id="icC"></span><div><p class="kd">Channels</p><p class="nm">WhatsApp · Ana · DEMO</p></div></div>
+    <p class="ph0" id="phC" style="top:100px">Nenhuma pergunta aberta</p>
+    <div class="bub in" id="cq" style="top:82px">PC-0142 · risco alto. Aprovar?</div>
+    <div class="wb" id="wA" style="left:18px">Aprovar</div>
+    <div class="wb" id="wR" style="left:160px;border-color:var(--line);color:var(--muted)">Recusar</div>
+    <span class="stk" id="cst">
+      <span class="tag a" id="cs0" data-layout-allow-overlap style="opacity:0">aguardando · prazo DEMO</span>
+      <span class="tag g" id="cs1" data-layout-allow-overlap style="opacity:0">Ana tocou “Aprovar”</span></span>
+  </div>
+
+  <!-- CRM: the conversation and the agent -->
+  <div class="nd" id="nR">
+    <div class="ch"><span class="ic" id="icR"></span><div><p class="kd">CRM</p><p class="nm">Conversa · protocolo DEMO</p></div></div>
+    <p class="ph0" id="phR" style="top:96px">Caixa de entrada em dia</p>
+    <div class="bub in" id="rq" style="top:80px">Ana: e depois da aprovação?</div>
+    <p id="al">Agente de IA · responde, não decide</p>
+    <div class="bub out" id="ra" style="top:172px">Segue para cotação · DEMO<span class="ci">1</span></div>
+  </div>
+
+  <!-- KB: the cited passage -->
+  <div class="nd" id="nK">
+    <div class="ch"><span class="ic" id="icK"></span><div><p class="kd">KB</p><p class="nm">Base autorizada · compras</p></div></div>
+    <div id="kp"><span class="ci">1</span>Política de compras · DEMO</div>
+  </div>
+
+  <!-- Edge labels -->
+  <p class="el" id="lE1" style="left:350px;top:282px;width:100px;justify-content:center">evento</p>
+  <p class="el" id="lE7" style="left:350px;top:430px;width:100px;justify-content:center">recibo</p>
+  <p class="el" id="lE2" style="left:616px;top:543px">concessão</p>
+  <p class="el" id="lE3" style="left:860px;top:543px;width:264px;justify-content:flex-end">capacidade · recibo</p>
+  <p class="el" id="lE5" style="left:1576px;top:457px">conversa</p>
+  <p class="el" id="lE6" style="left:1576px;top:765px">busca autorizada</p>
+  <span class="eb" id="bE4">parcial</span>
+
+  <!-- Order state rail -->
+  <div id="rail">
+    <p id="rt">Pedido PC-0142</p>
+    <span class="stk" id="rst">
+      <span class="tag n" id="r0" data-layout-allow-overlap>Rascunho</span>
+      <span class="tag b" id="r1" data-layout-allow-overlap style="opacity:0">Enviado</span>
+      <span class="tag b" id="r2" data-layout-allow-overlap style="opacity:0">Admitido na revisão v3</span>
+      <span class="tag a" id="r3" data-layout-allow-overlap style="opacity:0">Risco alto · a IA sugere, não decide</span>
+      <span class="tag a" id="r4" data-layout-allow-overlap style="opacity:0">Aguardando uma pessoa</span>
+      <span class="tag g" id="r5" data-layout-allow-overlap style="opacity:0">Aprovado por Ana · efeito com recibo</span>
+      <span class="tag b" id="r6" data-layout-allow-overlap style="opacity:0">Dúvida respondida com fonte</span>
+      <span class="tag g" id="r7" data-layout-allow-overlap style="opacity:0">Concluído · recibo final no SaaS</span></span>
+    <div id="dots"></div>
+    <div id="leg">
+      <span><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#FF452B" stroke-width="5" stroke-linecap="round"/></svg>construído · sandbox</span>
+      <span><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#F5B53F" stroke-width="5" stroke-linecap="round"/></svg>parcial</span>
+      <span><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#9A9AA6" stroke-width="4" stroke-dasharray="9 8"/></svg>Previsto</span>
+    </div>
+  </div>
+  <div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+(function(){
+  // ÍCONES E UTILITÁRIOS
+  const IC={
+    box:'<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>',
+    layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
+    msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+    eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+    spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    check:'<path d="M20 6 9 17l-5-5"/>', send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+    receipt:'<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+  const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
+  put("icS",ico("box",28));put("icF",ico("flow",28));put("icH",ico("layers",28));put("icC",ico("msg",28));
+  put("icR",ico("inbox",28));put("icK",ico("book",28));
+  put("ic1",ico("bolt",24));put("ic2",ico("spark",24));put("ic3",ico("clock",24));put("ic4",ico("check",24));
+  put("sS",ico("box",22)+"SaaS");put("sH",ico("layers",22)+"Hub de domínio");put("sF",ico("flow",22)+"Flow");
+  put("sC",ico("msg",22)+"Channels");put("sR",ico("inbox",22)+"CRM");put("sK",ico("book",22)+"KB");
+  put("sM",ico("eye",22)+"Ecossistema Monitoramento · Previsto");
+  put("bSend",ico("send",22)+"Enviar");put("rcT",ico("receipt",22)+"Recibo final");
+  put("hrT",ico("receipt",22)+"Recibo · aprovar pedido");put("hreg",ico("check",22)+"Portal DEMO registrado");
+  document.querySelectorAll(".gi b").forEach(b=>{b.innerHTML=ico("check",18);});
+  const dots=document.getElementById("dots");
+  for(let i=0;i<8;i++){const d=document.createElement("i");d.className="dt";d.id="d"+i;d.style.left=(i*32)+"px";dots.appendChild(d);}
+
+  // ARESTAS ENTRE PRODUTOS (GEOMETRIA FIXA, MEDIDA UMA VEZ)
+  const NS="http://www.w3.org/2000/svg";
+  const svg=document.getElementById("edges"), fsvg=document.getElementById("fsvg");
+  const mk=(host,tag,attrs)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);host.appendChild(e);return e;};
+  const arrow=(x,y,a)=>{const r=a*Math.PI/180,c=Math.cos(r),s=Math.sin(r),L=16,W=9;
+    const bx=x-c*L,by=y-s*L;return `M${x} ${y}L${bx-s*W} ${by+c*W}L${bx+s*W} ${by-c*W}Z`;};
+  // Each edge: base (always visible, dim), forward overlay and optional reverse overlay drawn on when traversed
+  const E={
+    E1:{d:"M340 322L458 322",c:"#FF452B",base:"#4A4A55",ar:[[458,322,0]]},
+    E7:{d:"M460 470L342 470",c:"#FF452B",base:"#4A4A55",ar:[[342,470,180]]},
+    E2:{d:"M600 600L600 522",c:"#FF452B",base:"#4A4A55",ar:[[600,522,-90]]},
+    E3:{d:"M1140 520L1140 598",c:"#FF452B",base:"#4A4A55",ar:[[1140,598,90],[1140,522,-90]],rev:"M1140 600L1140 522"},
+    E4:{d:"M1280 720C1350 720 1350 314 1418 314",c:"#F5B53F",base:"#6E5520",ar:[[1418,314,0],[1282,720,180]],rev:"M1420 314C1350 314 1350 720 1282 720"},
+    E5:{d:"M1560 444L1560 502",c:"#FF452B",base:"#4A4A55",ar:[[1560,502,90],[1560,446,-90]],rev:"M1560 504L1560 446"},
+    E6:{d:"M1560 754L1560 808",c:"#FF452B",base:"#4A4A55",ar:[[1560,808,90],[1560,756,-90]],rev:"M1560 810L1560 756"},
+    P8:{d:"M340 852L460 852",c:"#C9C9D1",base:"#6A6A75",ar:[],dash:"9 8"}
+  };
+  const OV={};
+  Object.keys(E).forEach(k=>{const e=E[k];
+    const b=mk(svg,"path",{d:e.d,fill:"none",stroke:e.base,"stroke-width":4,"stroke-linecap":"round",id:"b"+k});
+    if(e.dash)b.setAttribute("stroke-dasharray",e.dash);
+    e.ar.forEach((a,i)=>mk(svg,"path",{d:arrow(a[0],a[1],a[2]),fill:e.base,id:`a${k}${i}`}));
+    if(e.dash)return;
+    const o=mk(svg,"path",{d:e.d,fill:"none",stroke:e.c,"stroke-width":5,"stroke-linecap":"round",id:"o"+k});
+    const L=o.getTotalLength();o.setAttribute("stroke-dasharray",L+" "+L);o.setAttribute("stroke-dashoffset",L);OV[k]=L;
+    if(e.rev){const r=mk(svg,"path",{d:e.rev,fill:"none",stroke:e.c,"stroke-width":5,"stroke-linecap":"round",id:"r"+k});
+      const R=r.getTotalLength();r.setAttribute("stroke-dasharray",R+" "+R);r.setAttribute("stroke-dashoffset",R);OV["r"+k]=R;}
+  });
+  // Edges inside the Flow board (card coordinates)
+  const FE={f1:"M390 138L430 138",f2:"M470 184C470 206 160 198 160 220",f3:"M390 266L430 266"};
+  Object.keys(FE).forEach(k=>{mk(fsvg,"path",{d:FE[k],fill:"none",stroke:"#4A4A55","stroke-width":3});
+    const o=mk(fsvg,"path",{d:FE[k],fill:"none",stroke:"#3DD68C","stroke-width":4,id:"o"+k,"stroke-linecap":"round"});
+    const L=o.getTotalLength();o.setAttribute("stroke-dasharray",L+" "+L);o.setAttribute("stroke-dashoffset",L);OV[k]=L;});
+
+  const tl=gsap.timeline({paused:true});
+  const EO="power3.out",EZ="power2.inOut";
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Um pedido atravessa a cadeia e muda de estado",
+    "O pedido nasce num SaaS e é enviado",
+    "O Hub de domínio concede o que pode rodar",
+    "A IA classifica o risco; quem decide é uma pessoa",
+    "O Flow pausa e pergunta a uma pessoa no WhatsApp",
+    "A pessoa decide; o Hub aplica o efeito com recibo",
+    "A conversa chega ao CRM",
+    "O agente do CRM responde citando a fonte no KB",
+    "O SaaS recebe o recibo final do Flow",
+    "Um pedido atravessa cinco produtos e volta com recibo"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
+  // Beat starts; every state change is followed by at least 1.5 s of stillness
+  const CT=[0.6,3.0,7.0,12.0,16.5,22.5,28.0,31.0,35.0,39.5,46.5];
+  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);
+    if(i<caps.length-1)tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+
+  // Helpers: draw an edge, light a card, light the acting product in the strip, swap stacked chips
+  const draw=(k,t,d)=>tl.to("#o"+k,{attr:{"stroke-dashoffset":0},duration:d||.7,ease:EZ},t);
+  const drawR=(k,t,d)=>tl.to("#r"+k,{attr:{"stroke-dashoffset":0},duration:d||.7,ease:EZ},t);
+  const arrows=(k,t,col)=>E[k].ar.forEach((a,i)=>tl.to(`#a${k}${i}`,{attr:{fill:col||E[k].c},duration:.3},t));
+  const lbl=(id,t)=>tl.to("#"+id,{color:"#FFFFFF",duration:.3},t);
+  const lit=(sel,t,col)=>tl.to(sel,{borderColor:col||"#FF452B",duration:.3},t);
+  const unlit=(sel,t)=>tl.to(sel,{borderColor:"#3A3A42",duration:.3},t);
+  const STRIP=["sS","sH","sF","sC","sR","sK"];
+  const act=(on,t)=>STRIP.forEach(s=>{const y=on.includes(s);
+    tl.to("#"+s,{borderColor:y?"#FF452B":"#3A3A42",backgroundColor:y?"#2A1612":"#141418",color:y?"#FFFFFF":"#C9C9D1",duration:.3},t);});
+  const swap=(from,to,t)=>{tl.to(from,{opacity:0,duration:.25},t);tl.to(to,{opacity:1,duration:.3},t+.05);};
+  const pop=(sel,t)=>tl.fromTo(sel,{opacity:0,scale:.85},{opacity:1,scale:1,duration:.35,ease:"back.out(2)",immediateRender:false},t);
+  const fade=(sel,t)=>tl.fromTo(sel,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},t);
+  const dot=(i,t,col)=>tl.to("#d"+i,{backgroundColor:col||"#FF452B",duration:.3},t);
+  const gi=(i,t)=>tl.to(`#g${i} b`,{backgroundColor:"rgba(61,214,140,.2)",color:"#3DD68C",duration:.3},t);
+
+  // ABERTURA: o mapa inteiro aparece antes do primeiro movimento
+  // Header and product strip are on screen from the first frame
+  tl.fromTo(".nd",{opacity:0,y:16},{opacity:1,y:0,duration:.5,stagger:.08,ease:EO,immediateRender:false},.1);
+  tl.fromTo(".el,#bE4",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.3);
+  tl.fromTo("#rail",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.4);
+  dot(0,1.6,"#C9C9D1");
+
+  // B1 o pedido nasce no SaaS e é enviado
+  act(["sS"],3.0);lit("#nS",3.0,"#E879F9");
+  tl.to("#phS",{opacity:0,duration:.25},3.0);
+  fade("#rec",3.2);fade("#bSend",3.5);
+  tl.to("#bSend",{borderColor:"#FF452B",color:"#FFFFFF",backgroundColor:"#3A1E1A",duration:.15},4.4);
+  tl.to("#bSend",{borderColor:"#4A4A55",color:"#C9C9D1",backgroundColor:"rgba(0,0,0,0)",duration:.3},4.9);
+  swap("#ss0","#ss1",4.6);swap("#r0","#r1",4.6);dot(1,4.6);
+
+  // B2 o evento chega ao Flow; o Hub confere a concessão; o run é admitido
+  unlit("#nS",7.0);
+  draw("E1",7.0,.8);arrows("E1",7.6);lbl("lE1",7.0);
+  lit("#n1",7.8,"#FF452B");
+  act(["sH"],7.8);lit("#nH",7.8);
+  gi(1,8.2);gi(2,8.5);gi(3,8.8);gi(4,9.1);
+  draw("E2",9.4,.6);arrows("E2",9.9);lbl("lE2",9.4);
+  act(["sF"],10.0);unlit("#nH",10.0);lit("#nF",10.0,"#4C8DFF");
+  swap("#fs0","#fs1",10.0);tl.to("#n1",{borderColor:"#3DD68C",duration:.3},10.0);
+  swap("#ss1","#ss2",10.0);swap("#r1","#r2",10.0);dot(2,10.0);
+
+  // B3 a etapa de IA classifica; a saída só escolhe o caminho que exige uma pessoa
+  draw("f1",12.2,.4);lit("#n2",12.6,"#A78BFA");
+  pop("#bA",13.4);swap("#r2","#r3",13.4);dot(3,13.4,"#F5B53F");
+
+  // B4 o Flow pausa e pergunta pelo WhatsApp (Hub → Channels é parcial)
+  tl.to("#n2",{borderColor:"#3DD68C",duration:.3},16.5);
+  draw("f2",16.7,.5);lit("#n3",17.2,"#F5B53F");swap("#fs1","#fs2",17.2);
+  draw("E3",17.4,.5);arrows("E3",17.8);lbl("lE3",17.4);
+  act(["sH"],17.6);lit("#nH",17.6);
+  draw("E4",18.0,.8);arrows("E4",18.7);
+  unlit("#nH",18.8);unlit("#nF",18.8);act(["sC"],18.8);lit("#nC",18.8,"#3DD68C");
+  tl.to("#phC",{opacity:0,duration:.25},18.8);
+  fade("#cq",18.9);fade("#wA,#wR",19.2);fade("#cs0",19.4);
+  swap("#r3","#r4",19.4);dot(4,19.4,"#F5B53F");
+
+  // B5 a pessoa decide; o run retoma; o Hub aplica o efeito e devolve recibo
+  tl.to("#wA",{backgroundColor:"#3DD68C",color:"#0B0B0D",duration:.2},22.7);
+  swap("#cs0","#cs1",23.0);
+  drawR("E4",23.2,.7);
+  unlit("#nC",23.9);act(["sF"],23.9);lit("#nF",23.9,"#4C8DFF");
+  tl.to("#n3",{borderColor:"#3DD68C",duration:.3},23.9);swap("#fs2","#fs3",23.9);
+  draw("f3",24.0,.4);lit("#n4",24.4,"#2EC4B6");
+  drawR("E3",24.6,.5);act(["sH"],24.8);lit("#nH",24.8);unlit("#nF",24.8);
+  tl.to("#hph",{opacity:0,duration:.25},25.1);fade("#hr",25.2);pop("#bR",25.2);
+  tl.to("#n4",{borderColor:"#3DD68C",duration:.3},25.2);
+  swap("#r4","#r5",25.2);dot(5,25.2,"#3DD68C");
+
+  // B6 a conversa chega ao CRM; o agente consulta o KB e cita a fonte
+  unlit("#nH",28.0);
+  draw("E5",28.2,.5);arrows("E5",28.6);lbl("lE5",28.2);
+  act(["sR"],28.7);lit("#nR",28.7,"#7DB4FF");
+  tl.to("#phR",{opacity:0,duration:.25},28.7);fade("#rq",29.0);
+  draw("E6",31.2,.5);arrows("E6",31.6);lbl("lE6",31.2);
+  act(["sK"],31.7);unlit("#nR",31.7);lit("#nK",31.7,"#A78BFA");lit("#kp",31.8,"#A78BFA");
+  drawR("E6",32.2,.4);
+  act(["sR"],32.6);unlit("#nK",32.6);lit("#nR",32.6,"#7DB4FF");
+  fade("#al",32.6);fade("#ra",32.8);
+  swap("#r5","#r6",32.8);dot(6,32.8);
+
+  // B7 recibo final de volta ao SaaS
+  unlit("#nR",35.0);unlit("#kp",35.0);
+  act(["sF"],35.0);lit("#nF",35.0,"#4C8DFF");swap("#fs3","#fs4",35.2);
+  draw("E7",35.4,.8);arrows("E7",36.0);lbl("lE7",35.4);
+  act(["sS"],36.2);unlit("#nF",36.2);lit("#nS",36.2,"#E879F9");
+  // The SaaS learns the outcome only when the final receipt arrives
+  swap("#ss2","#ss3",36.2);fade("#rcpt",36.4);swap("#r6","#r7",36.4);dot(7,36.4,"#3DD68C");
+
+  // FECHO: a cadeia inteira legível, com o previsto tracejado
+  unlit("#nS",39.5);
+  act(["sS","sH","sF","sC","sR","sK"],39.5);
+  tl.to("#bP8",{attr:{stroke:"#C9C9D1"},duration:.4},40.0);
+  tl.to("#nM",{borderColor:"#C9C9D1",duration:.4},40.0);
+  tl.to("#sM",{borderColor:"#C9C9D1",color:"#FFFFFF",duration:.4},40.0);
+  tl.to("#rst,#dots",{opacity:0,duration:.3},40.2);
+  tl.fromTo("#leg",{opacity:0,x:-10},{opacity:1,x:0,duration:.4,ease:EO,immediateRender:false},40.5);
+  tl.to("#pad",{opacity:.001,duration:1},45);
+
+  // The site Player may load the page before the runtime creates the registry
+  window.__timelines=window.__timelines||{};
+  window.__timelines["welabs-chain-journey"]=tl;
+})();
+</script>
+</body>
+</html>

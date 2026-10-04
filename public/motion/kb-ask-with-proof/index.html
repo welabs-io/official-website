@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>KB · pergunta com prova</title>
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--vec:#4C8DFF;--ft:#2EC4B6;--tech:#A78BFA}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+p{white-space:nowrap}
+code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A1714;border-radius:8px;padding:0 8px}
+
+/* CABEÇALHO, LEGENDA E SELO */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
+#title{position:absolute;left:0;top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+#title span{color:var(--coral)}
+#caps{position:absolute;left:150px;top:24px;width:1150px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;white-space:nowrap;opacity:0}
+#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+
+/* TRILHA DO AGENTE (ETAPAS EM ESTILO DE NÓS) */
+.pn{position:absolute;background:var(--panel);border:2px solid var(--line);border-radius:22px;overflow:hidden;opacity:0}
+#trail{left:40px;top:110px;width:1840px;height:144px;background:#111115}
+.st{position:absolute;top:12px;width:206px;height:64px;border:3px solid var(--line);border-radius:18px;background:#17171B;color:var(--muted);display:flex;align-items:center;gap:10px;padding:0 10px;font-size:24px;font-weight:700;white-space:nowrap}
+.st .sn{position:relative;width:34px;height:34px;flex:none}
+.st .sn b,.st .sn i{position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:24px;font-weight:800}
+.st .sn b{background:#2A2A32;color:var(--muted)}
+.st .sn i{background:rgba(61,214,140,.2);color:var(--ok);opacity:0}
+.ar{position:absolute;top:42px;height:4px;width:10px;background:#4A4A55}
+.ar:after{content:"";position:absolute;right:-6px;top:-5px;border-left:9px solid #4A4A55;border-top:7px solid transparent;border-bottom:7px solid transparent}
+#loop{position:absolute;left:0;top:0;overflow:visible}
+#looplab{position:absolute;left:0;top:92px;width:1840px;display:flex;justify-content:center;opacity:0}
+#looplab span{height:40px;display:flex;align-items:center;padding:0 16px;border-radius:999px;background:#2A2110;border:2px solid var(--wait);color:var(--wait);font-size:24px;font-weight:800;white-space:nowrap}
+
+/* PAINEL DE CONVERSA (RECONSTRUÇÃO ILUSTRATIVA) */
+#chat{left:40px;top:266px;width:880px;height:782px}
+#chd{position:absolute;left:0;top:0;width:876px;height:120px;border-bottom:2px solid var(--line);padding:12px 22px}
+#chd .r1{display:flex;align-items:center;justify-content:space-between;height:48px}
+#chd .tt{font-size:30px;font-weight:800;white-space:nowrap}
+.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;height:44px}
+.seg span{padding:0 14px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.seg span.on{background:var(--coral);color:#fff}
+#chd .r2{display:flex;align-items:center;gap:10px;height:48px;margin-top:4px}
+.chip{height:40px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:#1F1F25;font-size:24px;font-weight:700;white-space:nowrap;color:var(--muted)}
+.chip b{color:var(--text)}
+#cbody{position:absolute;left:0;top:122px;width:876px;height:656px;overflow:hidden}
+#cscroll{position:absolute;left:0;top:0;width:876px;height:960px}
+.bub{position:absolute;right:22px;height:72px;display:flex;align-items:center;padding:0 22px;border-radius:22px 22px 6px 22px;background:#2A1714;border:2px solid #5A2A22;font-size:28px;font-weight:700;white-space:nowrap}
+#lab{position:absolute;left:22px;top:100px;height:36px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;color:var(--coral);white-space:nowrap;opacity:0}
+#wk{position:absolute;left:22px;top:100px;height:36px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;opacity:0}
+.cl{position:absolute;left:22px;width:832px;height:112px;border-left:5px solid var(--line);padding:4px 0 0 16px;opacity:0}
+.cl .cn{position:absolute;left:16px;top:4px;width:38px;height:38px;border-radius:50%;background:#2A2A32;display:grid;place-items:center;font-size:24px;font-weight:800}
+.cl .ct{position:absolute;left:66px;top:6px;width:750px;font-size:26px;font-weight:600;line-height:32px;white-space:nowrap}
+.cl .cc{position:absolute;left:66px;top:62px;width:750px;height:42px;display:flex;align-items:center;gap:10px}
+.cite{height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:10px;border:2px solid #3A4A6A;background:#16203A;color:#BFD3FF;font-size:24px;font-weight:700;white-space:nowrap}
+.cite em{font-style:normal;color:#fff;background:#2C4A8A;border-radius:6px;padding:0 6px}
+.stt{position:absolute;right:0;top:1px;height:40px;display:flex;align-items:center;padding:0 12px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap}
+.stt.a{background:rgba(245,181,63,.16);color:var(--wait)}
+.stt.g{background:rgba(61,214,140,.16);color:var(--ok)}
+.stt.r{background:rgba(255,107,107,.16);color:var(--bad)}
+#strike{position:absolute;left:66px;top:21px;height:3px;width:330px;background:var(--bad);transform-origin:0 50%}
+#conf{position:absolute;left:22px;top:514px;width:832px;height:138px;opacity:0}
+#cf1{position:absolute;left:0;top:0;width:832px;height:44px;display:flex;align-items:center;gap:16px;font-size:26px;font-weight:800;white-space:nowrap}
+#bar{position:relative;width:340px;height:16px;border-radius:8px;background:#2A2A32;overflow:hidden}
+#barf{position:absolute;left:0;top:0;width:340px;height:16px;border-radius:8px;background:var(--ok);transform-origin:0 50%}
+#cf1 .dm{color:var(--ok)}
+#cf2{position:absolute;left:0;top:52px;width:832px;height:48px;display:flex;align-items:center;gap:12px;padding:0 14px;border-radius:12px;border:2px dashed var(--wait);background:#2A2110;color:var(--wait);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#cf2 span{color:var(--text);font-weight:700}
+#cf3{position:absolute;left:0;top:104px;width:832px;height:34px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap;opacity:0}
+#cond{position:absolute;left:22px;top:776px;width:832px;height:130px;border-radius:16px;border:2px solid var(--line);background:#1F1F25;padding:10px 16px;opacity:0}
+#cond .k{font-size:24px;font-weight:800;color:var(--coral);white-space:nowrap;height:32px;display:flex;align-items:center;gap:8px}
+#cond .v{font-size:26px;font-weight:700;white-space:nowrap;height:40px;display:flex;align-items:center;gap:8px}
+#cond .w{display:flex;gap:10px;margin-top:4px}
+
+/* ÁREA DE TRABALHO DO AGENTE: PLANO, BUSCA E EVIDÊNCIAS */
+#work{left:940px;top:266px;width:940px;height:782px;background:#111115}
+.md{position:absolute;left:0;top:0;width:936px;height:778px;opacity:0}
+.mh{position:absolute;left:0;top:0;width:936px;height:64px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 22px;font-size:28px;font-weight:800;white-space:nowrap}
+.mh .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#2A1714;color:var(--coral)}
+.ns{position:absolute;height:68px;display:flex;align-items:center;gap:14px;padding:0 18px;border:2px solid var(--line);border-radius:16px;background:var(--panel);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
+.ns.on{border-color:var(--coral);background:#22161A}
+.tg.n2{background:#2A2A32;color:var(--muted)}
+.note2{position:absolute;left:22px;width:892px;height:64px;border-radius:12px;border-left:6px solid var(--coral);background:#1F1F25;display:flex;align-items:center;padding:0 16px;font-size:24px;font-weight:600;white-space:nowrap;opacity:0}
+.sq{position:absolute;left:22px;width:892px;height:92px;border:2px solid var(--line);border-radius:16px;background:var(--panel);display:flex;align-items:center;gap:16px;padding:0 18px;opacity:0}
+.sq .n{width:40px;height:40px;border-radius:50%;background:#2A2A32;display:grid;place-items:center;font-size:24px;font-weight:800;flex:none}
+.sq .t{font-size:28px;font-weight:700;white-space:nowrap;display:flex;align-items:center}
+.sq .tg{margin-left:auto}
+.tg{height:38px;display:flex;align-items:center;padding:0 12px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap}
+.tg.biz{background:rgba(76,141,255,.16);color:#8DB5FF}
+.tg.tec{background:rgba(167,139,250,.18);color:#C4B2FF}
+.tg.vec{background:rgba(76,141,255,.16);color:#8DB5FF}
+.tg.ft{background:rgba(46,196,182,.16);color:#5FE0D3}
+.tg.both{background:rgba(61,214,140,.16);color:var(--ok)}
+.tg.amb{background:rgba(245,181,63,.16);color:var(--wait)}
+#swap{position:relative;display:inline-block;width:150px;height:40px;margin-left:10px}
+#swap span{position:absolute;left:0;top:0;height:40px;display:flex;align-items:center;white-space:nowrap}
+#sw1{color:var(--text)}
+#sw2{opacity:0}
+#sw2 code{font-size:28px}
+#gl{position:absolute;left:22px;top:440px;width:892px;height:220px;border:2px solid var(--coral);border-radius:18px;background:#1A1315;padding:16px 22px;opacity:0}
+#gl .k{font-size:24px;font-weight:800;color:var(--coral);white-space:nowrap}
+#gl .big{display:flex;align-items:center;gap:26px;margin-top:22px;font-size:44px;font-weight:800;white-space:nowrap}
+#gl .big code{font-size:44px;padding:2px 14px}
+#gl .s{margin-top:22px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+#ccode{position:absolute;left:22px;top:686px;height:48px;opacity:0}
+.flt{position:absolute;left:22px;top:80px;display:flex;gap:10px}
+.colh{position:absolute;top:140px;width:440px;height:38px;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;white-space:nowrap;opacity:0}
+.colh i{width:16px;height:16px;border-radius:50%}
+.it{position:absolute;width:440px;height:46px;border-radius:12px;border:2px solid var(--line);background:var(--panel);display:flex;align-items:center;padding:0 14px;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
+.it.v{border-color:#2C4A8A}.it.f{border-color:#1E6E66}
+.gd{position:absolute;width:56px;height:12px;border-radius:6px;opacity:0;z-index:3}
+#fh{position:absolute;left:22px;top:420px;width:892px;height:40px;display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:800;white-space:nowrap;opacity:0}
+.fu{position:absolute;left:22px;width:892px;height:48px;border-radius:12px;border:2px solid var(--line);background:var(--panel2);display:flex;align-items:center;gap:14px;padding:0 10px 0 14px;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
+.fu .rk{width:34px;height:34px;border-radius:50%;background:#2A2A32;display:grid;place-items:center;font-weight:800;flex:none}
+.fu .tg{margin-left:auto;height:34px}
+#ent{position:absolute;left:22px;top:76px;width:892px;height:48px;border-radius:12px;border:2px solid var(--tech);background:#1C1730;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
+#ent b{color:#C4B2FF}
+.ev{position:absolute;left:22px;width:892px;height:146px;border:2px solid var(--line);border-radius:16px;background:var(--panel);padding:10px 16px 0 76px;opacity:0}
+.ev .en{position:absolute;left:16px;top:14px;width:44px;height:44px;border-radius:12px;background:#2C4A8A;display:grid;place-items:center;font-size:24px;font-weight:800}
+.ev .eh{height:40px;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;white-space:nowrap}
+.ev .eh .ic{color:var(--muted);display:grid;place-items:center}
+.ev .eh .tg{margin-left:auto;height:34px}
+.ev .es{height:40px;display:flex;align-items:center;gap:8px;font-size:24px;font-weight:600;white-space:nowrap}
+.ev .ef{height:40px;display:flex;align-items:center;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+.ev.rf{border-style:dashed;border-color:var(--wait)}
+
+/* FECHO */
+#closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#cl1{position:absolute;left:0;width:1920px;top:330px;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
+#cl1 span{color:var(--coral)}
+#cl2{position:absolute;left:0;width:1920px;top:470px;text-align:center;font-size:30px;font-weight:600;color:var(--muted);white-space:nowrap}
+#cl2b{position:absolute;left:0;width:1920px;top:530px;text-align:center;font-size:30px;font-weight:700;color:var(--text);white-space:nowrap}
+#cl3{position:absolute;left:0;width:1920px;top:610px;display:flex;justify-content:center;gap:16px}
+#cl3 span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px;white-space:nowrap}
+#cl3 span.p{border-style:dashed;border-color:var(--wait);color:var(--wait)}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="kb-ask-with-proof" data-width="1920" data-height="1080" data-start="0" data-duration="44">
+  <div id="hd">
+    <div id="title">KB<span>.</span></div>
+    <div id="caps"></div>
+    <div id="sbx">em desenvolvimento · dados DEMO</div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  </div>
+
+  <div class="pn" id="trail"><div id="steps"></div><svg id="loop" width="1840" height="144" viewBox="0 0 1840 144"></svg><div id="looplab"><span>1 volta de refino · no máximo</span></div></div>
+
+  <div class="pn" id="chat">
+    <div id="chd">
+      <div class="r1"><span class="tt">Pergunte ao KB</span><div class="seg"><span class="on">Detalhado</span><span>Conciso</span></div></div>
+      <div class="r2"><span class="chip">Escopo <b>Atlas Vendas › Atlas Norte</b></span><span class="chip">também por API e MCP</span></div>
+    </div>
+    <div id="cbody"><div id="cscroll" data-layout-allow-overflow>
+      <div class="bub" id="q1" style="top:12px">Por que a proposta expira quando o prazo vence?</div>
+      <div id="wk"><span id="wki"></span>O agente trabalha em etapas: acompanhe a trilha acima</div>
+      <div id="lab"><span id="labi"></span>Resposta em afirmações, cada uma com prova</div>
+      <div class="cl" id="c1" style="top:148px"><span class="cn">1</span><p class="ct">Sem resposta no prazo · DEMO, a proposta expira.</p>
+        <div class="cc"><span class="cite" id="c1a"><em>1</em>ATL-142</span><span class="cite" id="c1b"><em>2</em>Reunião 12/09</span></div></div>
+      <div class="cl" id="c2" style="top:268px"><span class="cn">2</span><p class="ct">Quem aplica o vencimento é a função <code>expireBooking()</code>.</p>
+        <div class="cc"><span class="cite" id="c2a"><em>3</em>expiration.service.ts</span></div></div>
+      <div class="cl" id="c3" style="top:388px"><span class="cn">3</span><p class="ct">Proposta expirada não é reaberta: abre-se uma nova.</p>
+        <div class="cc"><span class="cite" id="c3a"><em>2</em>Reunião 12/09</span><span class="cite" id="c3b" style="opacity:0"><em>4</em>ATL-188</span>
+          <span class="stt a" id="c3w" style="opacity:0">evidência fraca</span><span class="stt g" id="c3k" style="opacity:0">sustentada</span></div></div>
+      <div class="cl" id="c4" style="top:508px"><span class="cn">4</span><p class="ct">Feriados estendem o prazo.</p><i id="strike"></i>
+        <div class="cc"><span class="stt r" id="c4x" style="opacity:0;left:0;right:auto">sem evidência · descartada</span></div></div>
+      <div id="conf">
+        <div id="cf1">Confiança<div id="bar"><div id="barf"></div></div><span class="dm">0,82 · DEMO</span></div>
+        <div id="cf2"><span id="cf2i"></span>Lacuna declarada · <span>Não encontrado: regra para feriados</span></div>
+        <div id="cf3"><span id="cf3i"></span>Trilha de decisão e tokens por etapa ficam registrados</div>
+      </div>
+      <div class="bub" id="q2" style="top:690px;opacity:0">E onde isso é chamado no código?</div>
+      <div id="cond">
+        <div class="k"><span id="condi"></span>Condensada com o histórico da conversa</div>
+        <div class="v">Onde <code>expireBooking()</code> é chamada no código?</div>
+        <div class="w"><span class="chip">mesma conversa · escopo fixo</span><span class="chip">recorte de fonte por turno</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="pn" id="work">
+    <!-- Scope and condense -->
+    <div class="md" id="m0">
+      <div class="mh"><span class="ic" id="m0i"></span>Escopo da pergunta</div>
+      <div class="ns" id="ns1" style="top:96px;left:22px"><span class="tg n2">org</span>Atlas</div>
+      <div class="ns" id="ns2" style="top:184px;left:82px"><span class="tg n2">produto</span>Atlas Vendas</div>
+      <div class="ns on" id="ns3" style="top:272px;left:142px"><span class="tg n2">implantação</span>Atlas Norte</div>
+      <div class="note2" id="nt1" style="top:384px">Só lê o que os grupos de quem pergunta liberam; nunca a base inteira</div>
+      <div class="note2" id="nt2" style="top:466px">Condensar · 1º turno da conversa: a pergunta segue como foi escrita</div>
+    </div>
+    <!-- Plan -->
+    <div class="md" id="mA">
+      <div class="mh"><span class="ic" id="mAi"></span>Plano · 3 subconsultas</div>
+      <div class="sq" id="sq1" style="top:88px"><span class="n">1</span><span class="t">Regra de expiração da proposta</span><span class="tg biz">negócio</span></div>
+      <div class="sq" id="sq2" style="top:196px"><span class="n">2</span><span class="t">Decisões sobre o prazo da proposta</span><span class="tg biz">negócio</span></div>
+      <div class="sq" id="sq3" style="top:304px"><span class="n">3</span><span class="t">Código que expira a<span id="swap"><span id="sw1">proposta</span><span id="sw2"><code>booking</code></span></span></span><span class="tg tec">técnica</span></div>
+      <div id="gl"><div class="k">Glossário do namespace · Atlas Vendas</div>
+        <div class="big"><span>proposta</span><span id="glar"></span><code>booking</code></div>
+        <div class="s">Termo do negócio → identificador no código, para achar o arquivo certo</div></div>
+      <div id="ccode"><span class="chip" style="height:48px;border-color:var(--tech);color:#C4B2FF">Canal de código ligado: símbolos entram junto dos documentos, por cota</span></div>
+    </div>
+    <!-- Hybrid search -->
+    <div class="md" id="mB">
+      <div class="mh"><span class="ic" id="mBi"></span>Busca híbrida</div>
+      <div class="flt" id="flt"><span class="chip">só nos namespaces permitidos</span><span class="chip">tipo: ticket · reunião · código</span></div>
+      <div class="colh" style="left:22px"><i style="background:var(--vec)"></i>Canal vetorial</div>
+      <div class="colh" style="left:474px"><i style="background:var(--ft)"></i>Canal full-text</div>
+      <div id="items"></div>
+      <div id="fh"><span>Ranking fundido (RRF)</span><span class="tg amb">score de ranking não vira confiança</span></div>
+      <div id="fused"></div>
+    </div>
+    <!-- Evidence -->
+    <div class="md" id="mC">
+      <div class="mh"><span class="ic" id="mCi"></span>Evidências · passagens citáveis</div>
+      <div id="ent"><span id="enti"></span>Entidade canônica: <b>Proposta</b> · alias <code>booking</code> anexado à evidência</div>
+      <div class="ev" id="ev1" style="top:136px"><span class="en">1</span>
+        <div class="eh"><span class="ic" id="e1i"></span>Ticket · ATL-142<span class="tg biz">negócio</span></div>
+        <div class="es">“Sem resposta até o prazo · DEMO, a proposta vira expirada.”</div>
+        <div class="ef">comentários, anexos e commits ligados ao ticket</div></div>
+      <div class="ev" id="ev2" style="top:292px"><span class="en">2</span>
+        <div class="eh"><span class="ic" id="e2i"></span>Reunião · Revisão de propostas — 12/09<span class="tg biz">negócio</span></div>
+        <div class="es"><code>[participante]</code>“venceu o prazo, a proposta expira e sai da fila.”</div>
+        <div class="ef">uma passagem por fala · nome vira [participante]</div></div>
+      <div class="ev" id="ev3" style="top:448px"><span class="en">3</span>
+        <div class="eh"><span class="ic" id="e3i"></span>Código · booking/expiration.service.ts<span class="tg tec">técnica</span></div>
+        <div class="es"><code>expireBooking()</code>função · muda o status para expirada</div>
+        <div class="ef">snapshot num commit fixado · arquivo fatiado em símbolos</div></div>
+      <div class="ev rf" id="ev4" style="top:604px"><span class="en">4</span>
+        <div class="eh"><span class="ic" id="e4i"></span>Ticket · ATL-188<span class="tg amb">volta de refino</span></div>
+        <div class="es">“Decisão: proposta expirada não reabre; cria-se outra.”</div>
+        <div class="ef">achado pela nova busca da volta de refino</div></div>
+    </div>
+  </div>
+
+  <div id="closing">
+    <div id="cl1">Resposta com prova. <span>E o que falta, dito.</span></div>
+    <div id="cl2">Plano · glossário · busca híbrida · passagens citáveis · afirmações com prova · refino · lacunas · conversa</div>
+    <div id="cl2b">O KB cita a fonte; a decisão continua com quem pergunta.</div>
+    <div id="cl3"><span>em desenvolvimento</span><span>dados DEMO</span><span class="p">tela de conversa ilustrativa · KB por API e MCP</span></div>
+  </div>
+  <div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+(function(){
+  // ÍCONES E UTILITÁRIOS
+  const IC={
+    search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+    list:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
+    quote:'<path d="M3 21c3 0 7-1 7-8V5H3v8h4"/><path d="M14 21c3 0 7-1 7-8V5h-7v8h4"/>',
+    ticket:'<path d="M2 9a3 3 0 0 0 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 0 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><path d="M13 5v2M13 17v2M13 11v2"/>',
+    mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/>',
+    code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+    check:'<path d="M20 6 9 17l-5-5"/>',
+    arrow:'<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+    tag:'<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    alert:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+    trail:'<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>',
+    tree:'<rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="10" width="7" height="5" rx="1"/><rect x="14" y="17" width="7" height="5" rx="1"/><path d="M6.5 9v10.5H14M6.5 12.5H14"/>',
+    loop:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+  const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
+  put("labi",ico("quote",26));put("wki",ico("trail",26));put("mAi",ico("list",26));put("m0i",ico("tree",26));put("mBi",ico("search",26));put("mCi",ico("quote",26));
+  put("glar",ico("arrow",48));put("enti",ico("tag",26));put("cf2i",ico("alert",26));put("cf3i",ico("trail",26));put("condi",ico("loop",24));
+  put("e1i",ico("ticket",28));put("e2i",ico("mic",28));put("e3i",ico("code",28));put("e4i",ico("ticket",28));
+
+  // TRILHA DE ETAPAS DO AGENTE DE RESPOSTA
+  const STEPS=["Condensar","Planejar","Buscar","Enriquecer","Canonizar","Sintetizar","Avaliar","Finalizar"];
+  const SX=i=>16+i*228;
+  let sh="";
+  STEPS.forEach((s,i)=>{
+    sh+=`<div class="st" id="st${i}" style="left:${SX(i)}px"><span class="sn"><b>${i+1}</b><i>${ico("check",20)}</i></span>${s}</div>`;
+    if(i<STEPS.length-1)sh+=`<div class="ar" style="left:${SX(i)+208}px"></div>`;
+  });
+  put("steps",sh);
+  // Refinement loop: from "Avaliar" (6) back to "Buscar" (2), drawn under the nodes
+  const ax=SX(6)+103,bx=SX(2)+103;
+  put("loop",`<defs><marker id="lm" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="18" orient="auto"><path d="M0 0L10 5L0 10z" fill="#F5B53F"/></marker></defs>
+    <path id="lp" d="M${ax},79 C${ax},116 ${ax-40},112 ${(ax+bx)/2},112 C${bx+40},112 ${bx},116 ${bx},82" fill="none" stroke="#F5B53F" stroke-width="4" stroke-dasharray="1" stroke-dashoffset="1" pathLength="1" marker-end="url(#lm)"/>`);
+
+  // ITENS DA BUSCA HÍBRIDA E RANKING FUNDIDO
+  const VEC=["ATL-142 · ticket","Reunião 12/09 · trecho","expireBooking() · código","Artigo · ciclo da proposta"];
+  const FT=["ATL-142 · ticket","expireBooking() · código","ATL-142 · comentário","Reunião 12/09 · resumo"];
+  const IY=k=>186+k*54, VX=22, FX=474, RY=k=>476+k*58;
+  let it="";
+  VEC.forEach((t,k)=>{it+=`<div class="it v" id="iv${k}" data-layout-allow-overlap style="left:${VX}px;top:${IY(k)}px">${t}</div>`;});
+  FT.forEach((t,k)=>{it+=`<div class="it f" id="if${k}" data-layout-allow-overlap style="left:${FX}px;top:${IY(k)}px">${t}</div>`;});
+  // fused rows: label, channel tag class, tag text, ghost sources
+  const FU=[["ATL-142 · ticket","both","vetorial + full-text",["v0","f0"]],["expireBooking() · código","both","vetorial + full-text",["v2","f1"]],
+    ["Reunião 12/09 · trecho","vec","vetorial",["v1"]],["ATL-142 · comentário","ft","full-text",["f2"]],["Artigo · ciclo da proposta","vec","vetorial",["v3"]]];
+  let fu="",gh=[];
+  FU.forEach((r,k)=>{fu+=`<div class="fu" id="fu${k}" style="top:${RY(k)}px"><span class="rk">${k+1}</span>${r[0]}<span class="tg ${r[1]}">${r[2]}</span></div>`;
+    // Each source item emits a text-free channel token that lands on the fused row
+    r[3].forEach((s,q)=>{const v=s[0]==="v",j=+s[1];const id=`g${k}${s}`;
+      const x0=(v?VX:FX)+360,y0=IY(j)+17,x1=480+q*70-(r[3].length===1?0:35),y1=RY(k)+18;
+      gh.push([id,x0,y0,x1,y1]);
+      it+=`<div class="gd" id="${id}" style="left:${x0}px;top:${y0}px;background:${v?"#4C8DFF":"#2EC4B6"}"></div>`;});});
+  put("items",it);put("fused",fu);
+
+  const tl=gsap.timeline({paused:true});
+  const EO="power3.out",EZ="power2.inOut";
+
+  // ESTADOS DOS NÓS DA TRILHA
+  const ST={idle:{borderColor:"#3A3A42",backgroundColor:"#17171B",color:"#C9C9D1",boxShadow:"0 0 0 0px rgba(255,69,43,0)"},
+    act:{borderColor:"#FF452B",backgroundColor:"#2A1714",color:"#FFFFFF",boxShadow:"0 0 0 6px rgba(255,69,43,.22)"},
+    done:{borderColor:"#3DD68C",backgroundColor:"#13261C",color:"#FFFFFF",boxShadow:"0 0 0 0px rgba(255,69,43,0)"}};
+  function node(i,s,t){tl.to("#st"+i,Object.assign({duration:.3},ST[s]),t);
+    tl.to(`#st${i} .sn i`,{opacity:s==="done"?1:0,duration:.25},t);tl.to(`#st${i} .sn b`,{opacity:s==="done"?0:1,duration:.25},t);}
+  const flash=(sel,t)=>{tl.to(sel,{borderColor:"#FF452B",boxShadow:"0 0 0 5px rgba(255,69,43,.25)",duration:.2},t);
+    tl.to(sel,{borderColor:"#3A3A42",boxShadow:"0 0 0 0px rgba(255,69,43,0)",duration:.4},t+.7);};
+  const inUp=(sel,t,st)=>tl.fromTo(sel,{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:EO,stagger:st||0,immediateRender:false},t);
+  tl.set("#barf",{scaleX:0},0);tl.set("#strike",{scaleX:0},0);tl.set("#lp",{opacity:0},0);
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Pergunte em linguagem natural, dentro do que você pode ler",
+    "O agente planeja subconsultas; o glossário traduz o negócio",
+    "Busca híbrida: vetorial e full-text fundidos num só ranking",
+    "Cada evidência é uma passagem citável: ticket, reunião, código",
+    "Cada afirmação cita a sua prova; sem evidência, é descartada",
+    "A avaliação acha um ponto fraco: uma volta de refino, no máximo",
+    "A resposta sai com confiança e com a lacuna declarada",
+    "A conversa continua: o follow-up é condensado com o histórico"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
+  // Beat starts; every state change is followed by at least 1.5 s of stillness
+  const CT=[0.6,5.5,11.0,16.5,22.0,27.0,32.5,37.0,41.0];
+  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+
+  // ABERTURA E PERGUNTA
+  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
+  tl.to("#trail,#chat,#work",{opacity:1,duration:.6,stagger:.1},.2);
+  tl.fromTo("#q1",{opacity:0,clipPath:"inset(0 100% 0 0 round 22px)"},{opacity:1,clipPath:"inset(0 0% 0 0 round 22px)",duration:1.2,ease:"power1.inOut",immediateRender:false},1.0);
+  node(0,"act",2.5);
+  tl.to("#m0",{opacity:1,duration:.3},2.4);
+  tl.to("#wk",{opacity:1,duration:.3},2.6);
+  inUp("#ns1,#ns2,#ns3",2.5,.15);
+  inUp("#nt1,#nt2",3.2,.25);
+
+  // B2 PLANEJAR: SUBCONSULTAS E GLOSSÁRIO
+  node(0,"done",5.5);node(1,"act",5.5);
+  tl.to("#m0",{opacity:0,duration:.3},5.5);
+  tl.to("#mA",{opacity:1,duration:.4},5.8);
+  inUp("#sq1,#sq2,#sq3",5.9,.25);
+  inUp("#gl",7.2);
+  tl.to("#sw1",{opacity:0,y:-10,duration:.3},8.1);
+  tl.fromTo("#sw2",{opacity:0,y:10},{opacity:1,y:0,duration:.35,immediateRender:false},8.25);
+  tl.to("#sq3",{borderColor:"#A78BFA",duration:.3},8.25);
+  inUp("#ccode",8.8);
+
+  // B3 BUSCAR: DOIS CANAIS E FUSÃO RRF
+  node(1,"done",11.0);node(2,"act",11.0);
+  tl.to("#mA",{opacity:0,duration:.3},11.0);
+  tl.to("#mB",{opacity:1,duration:.35},11.3);
+  inUp("#flt",11.4);
+  inUp("#mB .colh",11.6,.1);
+  tl.fromTo("#iv0,#iv1,#iv2,#iv3",{opacity:0,x:-14},{opacity:1,x:0,duration:.3,stagger:.12,ease:EO,immediateRender:false},11.9);
+  tl.fromTo("#if0,#if1,#if2,#if3",{opacity:0,x:14},{opacity:1,x:0,duration:.3,stagger:.12,ease:EO,immediateRender:false},11.95);
+  // Ghost copies leave each column and converge on the fused row
+  gh.forEach(([id,x0,y0,x1,y1])=>{tl.to("#"+id,{opacity:1,duration:.15},13.0);tl.to("#"+id,{x:x1-x0,y:y1-y0,duration:.9,ease:EZ},13.05);tl.to("#"+id,{opacity:0,duration:.25},14.0);});
+  tl.to("#iv0,#iv1,#iv2,#iv3,#if0,#if1,#if2,#if3",{opacity:.4,duration:.3},13.0);
+  tl.to("#fu0,#fu1,#fu2,#fu3,#fu4",{opacity:1,duration:.3},13.95);
+  inUp("#fh",14.2);
+
+  // B4 ENRIQUECER E CANONIZAR: EVIDÊNCIAS
+  node(2,"done",16.5);node(3,"act",16.5);
+  tl.to("#mB",{opacity:0,duration:.3},16.5);
+  tl.to("#mC",{opacity:1,duration:.35},16.8);
+  inUp("#ev1,#ev2,#ev3",17.0,.3);
+  node(3,"done",18.6);node(4,"act",18.6);
+  inUp("#ent",18.7);
+
+  // B5 SINTETIZAR: AFIRMAÇÕES COM CITAÇÃO
+  node(4,"done",22.0);node(5,"act",22.0);
+  tl.to("#wk",{opacity:0,duration:.2},22.0);
+  tl.to("#lab",{opacity:1,duration:.3},22.2);
+  inUp("#c1",22.3);flash("#ev1",22.5);flash("#ev2",22.5);
+  inUp("#c2",22.8);flash("#ev3",23.0);
+  inUp("#c3",23.3);flash("#ev2",23.5);
+  inUp("#c4",23.9);
+  tl.to("#strike",{scaleX:1,duration:.4,ease:"power1.inOut"},24.5);
+  tl.to("#c4x",{opacity:1,duration:.25},24.6);
+  tl.to("#c4",{opacity:0,duration:.4},25.1);
+
+  // B6 AVALIAR: LACUNA E UMA VOLTA DE REFINO
+  node(5,"done",27.0);node(6,"act",27.0);
+  tl.to("#c3",{borderLeftColor:"#F5B53F",duration:.3},27.1);tl.to("#c3w",{opacity:1,duration:.3},27.1);
+  tl.set("#lp",{opacity:1},27.5);
+  tl.to("#lp",{strokeDashoffset:0,duration:.6,ease:"power1.inOut"},27.5);
+  tl.to("#looplab",{opacity:1,duration:.3},27.9);
+  node(2,"act",28.1);
+  inUp("#ev4",28.5);
+  tl.fromTo("#c3b",{opacity:0,scale:.8},{opacity:1,scale:1,duration:.3,ease:"back.out(2)",immediateRender:false},29.0);
+  tl.to("#c3w",{opacity:0,duration:.25},29.3);tl.to("#c3k",{opacity:1,duration:.25},29.4);
+  tl.to("#c3",{borderLeftColor:"#3DD68C",duration:.3},29.4);
+  node(2,"done",29.4);node(6,"done",29.4);
+
+  // B7 FINALIZAR: CONFIANÇA, LACUNA DECLARADA E TRILHA
+  node(7,"act",32.5);
+  tl.to("#conf",{opacity:1,duration:.3},32.6);
+  tl.to("#barf",{scaleX:.82,duration:.7,ease:EO},32.8);
+  inUp("#cf2",33.4);
+  inUp("#cf3",33.9);
+  node(7,"done",34.4);
+
+  // B8 FOLLOW-UP NA MESMA CONVERSA
+  tl.to("#cscroll",{y:-264,duration:.7,ease:EZ},37.0);
+  tl.fromTo("#q2",{opacity:0,y:16},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},37.6);
+  [1,2,3,4,5,6,7].forEach(i=>node(i,"idle",37.9));
+  tl.to("#lp,#looplab",{opacity:0,duration:.3},37.9);
+  node(0,"act",37.9);
+  inUp("#cond",38.4);
+
+  // FECHO
+  tl.to("#trail,#chat,#work",{opacity:0,duration:.6},41.0);
+  tl.to("#closing",{opacity:1,duration:.7},41.3);
+  tl.fromTo("#cl1",{y:20},{y:0,duration:.7,ease:EO,immediateRender:false},41.3);
+  tl.to("#pad",{opacity:.001,duration:1},43);
+
+  // The site Player may load the page before the runtime creates the registry
+  window.__timelines=window.__timelines||{};
+  window.__timelines["kb-ask-with-proof"]=tl;
+})();
+</script>
+</body>
+</html>

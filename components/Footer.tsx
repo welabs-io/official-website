@@ -11,7 +11,7 @@ export function Footer() {
   if (brand.company === 'Welabs') return <footer className="footer"><div className="container">
     <div className="footer-grid-main">
       <div className="footer-brand"><img src={brand.logo} alt="Welabs" className="logo-img" /><p className="footer-desc">{lang === 'en' ? 'We develop products connecting management, knowledge and automation.' : 'Desenvolvemos produtos que conectam gestão, conhecimento e automação.'}</p></div>
-      <div className="footer-nav-col"><h4>{lang === 'en' ? 'Our products' : 'Nossos produtos'}</h4><ul>{[['erp','ERP'],['wekb','KB'],['welabs-crm','CRM'],['malupe',lang === 'en' ? 'Monitoring Ecosystem' : 'Ecossistema Monitoramento'],['flow','Flow']].map(([slug,name]) => <li key={slug}><Link href={`/welabs/produtos/${publicSlug(slug)}`}>{name}</Link></li>)}</ul></div>
+      <div className="footer-nav-col"><h4>{lang === 'en' ? 'Our products' : 'Nossos produtos'}</h4><ul>{[['flow','Flow'],['welabs-crm','CRM'],['erp',lang === 'en' ? 'Domain hub' : 'Hub de domínio'],['wekb','KB'],['channels','Channels'],['malupe',lang === 'en' ? 'Monitoring Ecosystem' : 'Ecossistema Monitoramento']].map(([slug,name]) => <li key={slug}><Link href={`/welabs/produtos/${publicSlug(slug)}`}>{name}</Link></li>)}</ul></div>
       <div className="footer-nav-col"><h4>Welabs</h4><ul><li><Link href={"/welabs/sobre"}>{lang === 'en' ? 'About Welabs' : 'A Welabs'}</Link></li><li><Link href={brand.collection}>{lang === 'en' ? 'Our ecosystem' : 'Nosso ecossistema'}</Link></li></ul></div>
     </div>
     <div className="footer-bottom"><p>© 2026 Welabs. <span>{t('footer-rights')}</span></p></div>

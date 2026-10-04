@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Família WeGO · Jornada de uma licença</title>
+<script src="./assets/js/gsap.min.js"></script>
+<style>
+/* IDENTIDADE E BASE DA JORNADA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0d1210;--card:#151c19;--line:#2c3834;--text:#f3f6f4;--muted:#b4c0ba;--pend:#9aaca3;--green:#16a34a;--green-l:#4ade80;--ink:#10201a;--imut:#4a5d55;--iline:#d3ded8;--paper:#f6f9f7;--okc:#15703d;--okb:#dcf3e5;--wrc:#8a5300;--wrb:#ffebc7;--blc:#2f548f;--blb:#e3ebf8}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:var(--text);font-size:24px;line-height:1.25;background:radial-gradient(1300px 820px at 50% 55%,#14201a 0%,var(--bg) 72%)}
+#root *{box-sizing:border-box}
+.a{position:absolute}
+#title{left:80px;top:34px;margin:0;font-size:52px;font-weight:800;letter-spacing:-1px;line-height:1.1;white-space:nowrap}
+#sub{left:80px;top:98px;font-size:26px;color:var(--muted);white-space:nowrap}
+#demo{right:80px;top:44px;height:48px;padding:0 20px;border-radius:999px;border:2px solid var(--line);display:flex;align-items:center;font-size:24px;font-weight:650;color:var(--muted);white-space:nowrap}
+/* FAIXA DE MÓDULOS */
+.nd{position:absolute;top:150px;height:110px;border-radius:20px;background:var(--card);border:2px solid var(--line);padding:14px 22px}
+.nd .lt{position:absolute;inset:-3px;border-radius:21px;border:3px solid var(--green-l);background:rgba(22,163,74,.16);box-shadow:0 0 40px 4px rgba(22,163,74,.35);opacity:0}
+.nd .nm{position:relative;font-size:28px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;line-height:40px}
+.nd .rl{position:relative;font-size:24px;color:var(--muted);white-space:nowrap;margin-top:6px}
+.nd .lg{position:relative;display:inline-flex;align-items:center;height:42px;padding:0 12px;border-radius:10px;background:#fff}
+.nd .lg img{height:28px;display:block}
+#n0{left:80px;width:350px}#n1{left:500px;width:500px}#n2{left:1070px;width:350px}#n3{left:1490px;width:350px}
+#n1 .nm{font-size:27px}
+#rail{left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+#tok{left:0;top:272px;width:200px;height:42px;border-radius:21px;background:var(--green);color:#fff;font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px #0d1210,0 0 26px 4px rgba(74,222,128,.45);opacity:0}
+/* JANELA DO MÓDULO */
+#win{left:80px;top:336px;width:1150px;height:704px;border-radius:26px;background:var(--paper);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.45);color:var(--ink)}
+.scn{position:absolute;inset:0;opacity:0}
+.whd{position:absolute;left:0;top:0;width:1150px;height:76px;background:#fff;border-bottom:2px solid var(--iline);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.mod{display:flex;align-items:center;gap:14px;font-size:28px;font-weight:750;letter-spacing:-.3px;white-space:nowrap}
+.mod i{width:16px;height:16px;border-radius:50%;display:block}
+.mod img{height:30px;display:block}
+.who{position:relative;height:44px;width:360px}
+.who span{position:absolute;right:0;top:0;height:44px;padding:0 18px;border-radius:999px;background:#e6f0ea;color:#1d5435;font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
+.c{position:absolute;background:#fff;border:2px solid var(--iline);border-radius:20px;padding:20px 26px}
+.c h3{margin:0;font-size:28px;font-weight:750;letter-spacing:-.3px}
+.kv{display:flex;align-items:baseline;gap:16px;margin-top:16px;white-space:nowrap}
+.kv b{width:190px;font-size:24px;font-weight:600;color:var(--imut);flex:none}
+.kv span{font-size:26px;font-weight:650}
+.btn{position:absolute;height:64px;border-radius:16px;background:#14532d;color:#fff;font-size:26px;font-weight:750;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.pl{display:inline-flex;align-items:center;height:42px;padding:0 16px;border-radius:999px;font-size:24px;font-weight:700;white-space:nowrap}
+.ok{background:var(--okb);color:var(--okc)}.wr{background:var(--wrb);color:var(--wrc)}.bl{background:var(--blb);color:var(--blc)}
+.note{position:absolute;font-size:24px;font-weight:650;color:var(--okc)}
+.stk{position:relative}
+.stk>*{position:absolute;right:0;top:0}
+/* PAINEL DO REQUERIMENTO */
+#pan{left:1270px;top:336px;width:570px;height:704px;border-radius:26px;background:var(--card);border:2px solid var(--line)}
+#pan .lb{position:absolute;left:32px;top:24px;font-size:24px;font-weight:800;letter-spacing:.12em;color:var(--muted)}
+#pan .no{position:absolute;left:32px;top:58px;font-size:36px;font-weight:800;letter-spacing:-.5px}
+#st{position:absolute;left:30px;top:114px;width:506px;height:56px;border-radius:16px;background:#10261a;border:2px solid var(--green)}
+#st span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#86efac;opacity:0;white-space:nowrap}
+#rowHL{left:14px;top:196px;width:538px;height:50px;border-radius:14px;background:rgba(22,163,74,.16);border:2px solid var(--green-l);opacity:0}
+.rw{position:absolute;left:24px;width:520px;height:50px;display:flex;align-items:center;gap:16px}
+.rw .d{position:relative;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);flex:none}
+.rw .d em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px;font-weight:700;color:var(--pend)}
+.rw .d b{position:absolute;inset:-2px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;opacity:0}
+.rw .t{position:relative;font-size:24px;font-weight:650;white-space:nowrap}
+.rw .t s{text-decoration:none;color:var(--pend)}
+.rw .t u{position:absolute;left:0;top:0;text-decoration:none;color:var(--text);opacity:0}
+/* CURSOR */
+#cur{left:0;top:0;width:40px;height:50px;opacity:0;z-index:50;pointer-events:none}
+#curA{width:38px;height:48px;display:block}
+#curA path{fill:#0b1510;stroke:#fff;stroke-width:2.5}
+#ring{left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;border:4px solid #16a34a;opacity:0}
+/* CENA 1 · PORTAL · ASSISTENTE */
+.wz{position:absolute;left:40px;width:300px;height:58px;display:flex;align-items:center;gap:14px;font-size:26px;font-weight:650;color:var(--imut)}
+.wz i{position:relative;width:36px;height:36px;border-radius:50%;border:2px solid var(--iline);font-style:normal;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;background:#fff;flex:none}
+.wz i b{position:absolute;inset:-2px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;opacity:0}
+.wz u{position:absolute;left:50px;text-decoration:none;color:var(--ink);opacity:0}
+/* CÓDIGO DE BARRAS E QR */
+.bar{position:absolute;height:80px;background:repeating-linear-gradient(90deg,#10201a 0 3px,transparent 3px 6px,#10201a 6px 11px,transparent 11px 14px,#10201a 14px 16px,transparent 16px 21px,#10201a 21px 25px,transparent 25px 27px)}
+.qr{position:absolute;background:#fff}
+.qr svg{display:block;width:100%;height:100%}
+/* DOCUMENTO E ESTAMPAS */
+.paper{position:absolute;background:#fff;border:2px solid var(--iline);border-radius:14px;box-shadow:0 10px 26px rgba(16,32,26,.12)}
+.ln{position:absolute;height:12px;border-radius:6px;background:#e3eae6}
+.stamp{position:absolute;font-size:34px;font-weight:900;letter-spacing:.14em;padding:6px 18px;border:5px solid;border-radius:12px;transform:rotate(-12deg);opacity:0}
+.otp{position:absolute;top:226px;width:64px;height:74px;border-radius:14px;border:2px solid var(--iline);background:#fff;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:var(--ink)}
+.otp span{opacity:0}
+.ev{position:absolute;left:500px;font-size:24px;font-weight:650;color:var(--ink);opacity:0;white-space:nowrap}
+.ev::before{content:"✓";display:inline-block;width:32px;color:var(--okc);font-weight:900}
+/* TELEFONE DE VALIDAÇÃO */
+#phone{left:770px;top:92px;width:330px;height:560px;border-radius:44px;background:#0b1510;padding:14px;opacity:0}
+#phone .sc{position:absolute;left:14px;top:14px;width:302px;height:532px;border-radius:32px;background:#f6f9f7;overflow:hidden}
+#phone .ph{position:absolute;left:0;top:30px;width:302px;text-align:center;font-size:24px;font-weight:800;color:var(--ink)}
+#vf{position:absolute;left:41px;top:84px;width:220px;height:220px;border-radius:16px;background:#1b2621;overflow:hidden}
+#scan{position:absolute;left:0;top:0;width:220px;height:4px;background:var(--green-l);box-shadow:0 0 14px 3px rgba(74,222,128,.7)}
+#vres{position:absolute;left:16px;top:330px;width:270px;height:170px;border-radius:18px;background:var(--okb);border:2px solid #86d3a4;padding:16px 18px;opacity:0}
+#vres strong{display:block;font-size:26px;font-weight:800;color:var(--okc)}
+#vres span{display:block;font-size:24px;font-weight:600;color:var(--ink);margin-top:8px}
+/* LINHA DO TEMPO FINAL */
+.te{position:absolute;left:70px;width:450px;opacity:0}
+.te b{display:block;font-size:26px;font-weight:750;white-space:nowrap}
+.te span{display:block;font-size:24px;color:var(--imut);font-weight:600;margin-top:2px}
+.te::before{content:"";position:absolute;left:-40px;top:6px;width:20px;height:20px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px var(--okb)}
+.sr{position:absolute;left:26px;width:410px;height:56px;display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:650;border-bottom:2px solid #edf2ef;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="wego-journey" data-start="0" data-width="1920" data-height="1080" data-duration="46">
+
+<h1 id="title" class="a">Uma licença atravessa a família WeGO</h1>
+<div id="sub" class="a">Um requerimento DEMO passa de módulo em módulo, do pedido à validação pública</div>
+<div id="demo" class="a">DEMO · reconstrução ilustrativa</div>
+
+<!-- Module strip: which module acts in each step -->
+<svg id="rail" class="a" viewBox="0 0 1920 1080">
+  <path d="M255 293 L1665 293" stroke="#33423c" stroke-width="3" stroke-dasharray="4 12" stroke-linecap="round" fill="none"/>
+  <circle cx="255" cy="293" r="7" fill="#2c3834"/><circle cx="750" cy="293" r="7" fill="#2c3834"/><circle cx="1245" cy="293" r="7" fill="#2c3834"/><circle cx="1665" cy="293" r="7" fill="#2c3834"/>
+</svg>
+<div id="n0" class="nd"><div class="lt" id="lt0"></div><div class="nm">Licenciamento</div><div class="rl">Portal do requerente</div></div>
+<div id="n1" class="nd"><div class="lt" id="lt1"></div><div class="nm">Sistema de serviços e cobrança</div><div class="rl">boletos, conciliação e emissão</div></div>
+<div id="n2" class="nd"><div class="lt" id="lt2"></div><div class="lg"><img src="./assets/logos/docgo-color.svg" alt="DocGo"></div><div class="rl">processos e documentos</div></div>
+<div id="n3" class="nd"><div class="lt" id="lt3"></div><div class="lg"><img src="./assets/logos/signgo-color.svg" alt="SignGo"></div><div class="rl">assinatura eletrônica</div></div>
+<div id="tok" class="a">Requerimento</div>
+
+<div id="win" class="a">
+
+  <!-- Scene 1: applicant opens the request in the Portal wizard -->
+  <div class="scn" id="s1">
+    <div class="whd"><div class="mod"><i style="background:#16a34a"></i>Licenciamento · Portal</div><div class="who"><span>Requerente</span></div></div>
+    <div class="a" style="left:40px;top:100px;font-size:24px;font-weight:800;letter-spacing:.1em;color:var(--imut)">NOVO REQUERIMENTO</div>
+    <div class="wz" style="top:146px"><i>1<b id="wz1">✓</b></i>Entidade</div>
+    <div class="wz" style="top:214px"><i>2<b id="wz2">✓</b></i>Endereço</div>
+    <div class="wz" style="top:282px"><i>3<b id="wz3">✓</b></i>Enquadramento</div>
+    <div class="wz" style="top:350px"><i>4<b id="wz4">✓</b></i>Tipo de licença</div>
+    <div class="wz" style="top:418px"><i>5<b id="wz5">✓</b></i>Resumo</div>
+    <div class="c" style="left:370px;top:100px;width:740px;height:420px">
+      <h3>Resumo do requerimento</h3>
+      <div class="kv" id="k1"><b>Requerente</b><span>Empresa DEMO Ltda.</span></div>
+      <div class="kv" id="k2"><b>Local</b><span>Município DEMO · coordenadas DEMO</span></div>
+      <div class="kv" id="k3"><b>Atividade</b><span>Tipologia DEMO · porte DEMO</span></div>
+      <div class="kv" id="k4"><b>Licença</b><span>Tipo DEMO</span></div>
+      <div class="kv" id="k5"><b>Estudo exigido</b><span>conforme parâmetros DEMO</span></div>
+    </div>
+    <div class="btn" id="b1" style="left:370px;top:548px;width:340px">Enviar requerimento</div>
+    <div class="btn" id="b1ok" style="left:370px;top:548px;width:340px;background:var(--green);opacity:0">Requerimento aberto ✓</div>
+    <div class="note" id="n1t" style="left:740px;top:552px;width:380px;line-height:30px;opacity:0">Protocolo gerado e checklist de documentos criado</div>
+  </div>
+
+  <!-- Scene 2: boleto issued and payment reconciled -->
+  <div class="scn" id="s2">
+    <div class="whd"><div class="mod"><i style="background:#d97706"></i>Sistema de serviços e cobrança</div><div class="who"><span>Pedido do Portal</span></div></div>
+    <div class="c" style="left:40px;top:100px;width:640px;height:500px">
+      <h3>Boleto de licença</h3>
+      <div class="stk" style="position:absolute;right:26px;top:20px"><span class="pl wr" id="bo1">Em aberto</span><span class="pl ok" id="bo2" style="opacity:0">Pago</span></div>
+      <div class="kv"><b>Requerimento</b><span>Nº DEMO-0001</span></div>
+      <div class="kv"><b>Contribuinte</b><span>Empresa DEMO Ltda.</span></div>
+      <div class="kv"><b>Valor</b><span>DEMO</span></div>
+      <div class="kv"><b>Vencimento</b><span>DEMO</span></div>
+      <div class="bar" style="left:26px;top:350px;width:584px"></div>
+      <div class="a" style="left:26px;top:440px;font-size:24px;font-weight:600;color:var(--imut)">Linha digitável · DEMO</div>
+    </div>
+    <div class="c" style="left:720px;top:100px;width:390px;height:230px">
+      <h3>Conciliação</h3>
+      <div style="font-size:24px;color:var(--imut);font-weight:600;margin-top:10px">Arrecadação consultada pelo sistema</div>
+      <div class="note" id="c1a" style="left:26px;top:150px;color:var(--wrc)">Aguardando pagamento</div>
+      <div class="note" id="c1b" style="left:26px;top:150px;opacity:0">Pagamento identificado ✓</div>
+    </div>
+    <div class="c" style="left:720px;top:370px;width:390px;height:230px">
+      <h3>Portal consulta</h3>
+      <div style="font-size:24px;color:var(--imut);font-weight:600;margin-top:10px">Situação do boleto do requerimento</div>
+      <div class="note" id="c2a" style="left:26px;top:150px;color:var(--wrc)">Em aberto</div>
+      <div class="note" id="c2b" style="left:26px;top:136px;width:340px;line-height:30px;opacity:0">Pago · requerimento segue para análise</div>
+    </div>
+  </div>
+
+  <!-- Scene 3: analyst locks the request, issues an intimation, applicant answers -->
+  <div class="scn" id="s3">
+    <div class="whd"><div class="mod"><i style="background:#16a34a"></i>Licenciamento · Análise</div><div class="who"><span id="w3a">Analista</span><span id="w3b" style="opacity:0">Requerente</span><span id="w3c" style="opacity:0">Analista</span></div></div>
+    <div class="a" style="left:40px;top:108px;font-size:28px;font-weight:750;white-space:nowrap">Requerimento Nº DEMO-0001 <span class="pl ok" style="margin-left:10px">Pago</span></div>
+    <div class="btn" id="b3" style="left:850px;top:100px;width:260px">Iniciar análise</div>
+    <div class="a" id="lock" style="left:640px;top:100px;width:470px;height:64px;border-radius:16px;background:var(--blb);color:var(--blc);display:flex;align-items:center;gap:12px;padding:0 20px;font-size:24px;font-weight:750;white-space:nowrap;opacity:0">
+      <svg width="26" height="30" viewBox="0 0 26 30"><rect x="2" y="12" width="22" height="16" rx="4" fill="#2f548f"/><path d="M7 12V9a6 6 0 0 1 12 0v3" stroke="#2f548f" stroke-width="3.5" fill="none"/></svg>
+      Travado para Analista DEMO
+    </div>
+    <div class="c" style="left:40px;top:190px;width:640px;height:76px;padding:0 24px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:26px;font-weight:650">Requerimento (PDF)</span><span class="stk" style="width:160px;height:42px"><span class="pl ok" id="d1">Aprovado</span></span></div>
+    <div class="c" style="left:40px;top:278px;width:640px;height:76px;padding:0 24px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:26px;font-weight:650">Documento básico DEMO</span><span class="stk" style="width:160px;height:42px"><span class="pl ok" id="d2">Aprovado</span></span></div>
+    <div class="c" style="left:40px;top:366px;width:640px;height:76px;padding:0 24px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:26px;font-weight:650">Estudo complementar DEMO</span><span class="stk" style="width:160px;height:42px"><span class="pl wr" id="d3a">Pendente</span><span class="pl ok" id="d3b" style="opacity:0">Aprovado</span></span></div>
+    <div class="btn" id="b3f" style="left:40px;top:486px;width:330px;opacity:0">Finalizar revisão</div>
+    <div class="c" id="intim" style="left:720px;top:190px;width:390px;height:420px;opacity:0">
+      <h3>Intimação</h3>
+      <div style="font-size:24px;color:var(--imut);font-weight:600;margin-top:12px">Documento exigido</div>
+      <div style="font-size:26px;font-weight:650">Estudo complementar DEMO</div>
+      <div style="font-size:24px;color:var(--imut);font-weight:600;margin-top:12px">Prazo · DEMO</div>
+      <div style="margin-top:14px"><span class="pl bl">Enviada ao requerente</span></div>
+      <div id="resp" style="position:absolute;left:26px;top:282px;width:338px;border-top:2px solid var(--iline);padding-top:16px;opacity:0">
+        <div style="font-size:26px;font-weight:750">Resposta do requerente</div>
+        <div style="font-size:24px;font-weight:650;color:var(--okc);margin-top:6px">Documento anexado ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4: review completed creates the process folder in DocGo -->
+  <div class="scn" id="s4">
+    <div class="whd"><div class="mod"><img src="./assets/logos/docgo-color.svg" alt="DocGo">Processo administrativo</div><div class="who"><span>Criado pelo Portal</span></div></div>
+    <div class="c" style="left:40px;top:100px;width:640px;height:540px">
+      <svg class="a" style="left:26px;top:22px" width="62" height="48" viewBox="0 0 62 48"><path d="M2 8a4 4 0 0 1 4-4h16l6 6h28a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z" fill="#436ab3"/><rect x="2" y="16" width="58" height="30" rx="4" fill="#5b82c9"/></svg>
+      <div class="a" style="left:104px;top:26px;font-size:30px;font-weight:800;white-space:nowrap">Processo Nº DEMO-0001</div>
+      <div style="height:62px"></div>
+      <div class="kv"><b>Assunto</b><span>Licença DEMO</span></div>
+      <div class="kv"><b>Interessado</b><span>Empresa DEMO Ltda.</span></div>
+      <div class="kv"><b>Caixa</b><span>Entrada · Setor DEMO</span></div>
+      <div class="a" style="left:26px;top:300px;font-size:24px;font-weight:800;letter-spacing:.1em;color:var(--imut)">DOCUMENTOS</div>
+      <div class="a dc" id="dc1" style="left:26px;top:340px;font-size:26px;font-weight:650;opacity:0;white-space:nowrap">▤ Requerimento e checklist (PDF)</div>
+      <div class="a dc" id="dc2" style="left:26px;top:394px;font-size:26px;font-weight:650;opacity:0;white-space:nowrap">▤ Documentos aprovados na análise</div>
+      <div class="a dc" id="dc3" style="left:26px;top:448px;font-size:26px;font-weight:650;opacity:0;white-space:nowrap">▤ Parecer técnico · documento de modelo</div>
+    </div>
+    <div class="c" style="left:720px;top:100px;width:390px;height:390px">
+      <h3>Linha do tempo</h3>
+      <div class="a" id="tl1" style="left:26px;top:78px;width:340px;font-size:24px;font-weight:650;opacity:0">● Pasta criada pela integração</div>
+      <div class="a" id="tl2" style="left:26px;top:150px;width:340px;font-size:24px;font-weight:650;opacity:0">● Documentos recebidos</div>
+      <div class="a" id="tl3" style="left:26px;top:222px;width:340px;font-size:24px;font-weight:650;opacity:0">● Assinatura solicitada ao Signatário DEMO</div>
+    </div>
+    <div class="btn" id="b4" style="left:720px;top:520px;width:390px">Solicitar assinatura</div>
+    <div class="btn" id="b4ok" style="left:720px;top:520px;width:390px;background:var(--green);opacity:0">Enviado ao SignGo ✓</div>
+  </div>
+
+  <!-- Scene 5: signer confirms the code and signs in SignGo -->
+  <div class="scn" id="s5">
+    <div class="whd"><div class="mod"><img src="./assets/logos/signgo-color.svg" alt="SignGo">Assinatura</div><div class="who"><span>Signatário</span></div></div>
+    <div class="paper" style="left:40px;top:100px;width:420px;height:540px">
+      <div class="a" style="left:28px;top:26px;font-size:26px;font-weight:800">Parecer técnico DEMO</div>
+      <div class="ln" style="left:28px;top:84px;width:360px"></div><div class="ln" style="left:28px;top:112px;width:330px"></div><div class="ln" style="left:28px;top:140px;width:350px"></div><div class="ln" style="left:28px;top:168px;width:250px"></div>
+      <div class="ln" style="left:28px;top:214px;width:360px"></div><div class="ln" style="left:28px;top:242px;width:300px"></div><div class="ln" style="left:28px;top:270px;width:340px"></div>
+      <div class="a" id="sheet" style="left:20px;top:330px;width:376px;height:186px;border-radius:12px;background:var(--okb);border:2px solid #86d3a4;opacity:0">
+        <div class="a" style="left:18px;top:16px;font-size:24px;font-weight:800;color:var(--okc);width:200px;line-height:30px">Folha de assinaturas</div>
+        <div class="a" style="left:18px;top:90px;font-size:24px;font-weight:600;width:200px;line-height:30px">Signatário DEMO assinou</div>
+        <div class="qr" id="qrS" style="left:236px;top:24px;width:124px;height:124px"></div>
+      </div>
+    </div>
+    <div class="a" style="left:500px;top:102px;font-size:24px;font-weight:600;color:var(--imut)">Solicitado pelo DocGo · Processo Nº DEMO-0001</div>
+    <div class="a" style="left:500px;top:138px;font-size:28px;font-weight:800">Signatário DEMO</div>
+    <div class="a" style="left:500px;top:190px;font-size:24px;font-weight:750">Código enviado por e-mail</div>
+    <div class="otp" style="left:500px"><span id="o1">•</span></div><div class="otp" style="left:578px"><span id="o2">•</span></div><div class="otp" style="left:656px"><span id="o3">•</span></div><div class="otp" style="left:734px"><span id="o4">•</span></div><div class="otp" style="left:812px"><span id="o5">•</span></div><div class="otp" style="left:890px"><span id="o6">•</span></div>
+    <div class="note" id="otpok" style="left:976px;top:246px;opacity:0">✓ confirmado</div>
+    <div class="a" style="left:500px;top:330px;width:300px;height:60px;border-radius:14px;border:2px solid var(--iline);background:#fff;padding:0 18px;display:flex;align-items:center;font-size:24px;font-weight:600;color:var(--imut)"><span id="pw0">Senha</span><span id="pw1" class="a" style="left:18px;top:12px;font-size:30px;color:var(--ink);letter-spacing:4px;opacity:0">••••••••</span></div>
+    <div class="btn" id="b5" style="left:820px;top:328px;width:240px">Assinar</div>
+    <div class="a" id="sgok" style="left:500px;top:424px;opacity:0"><span class="pl ok" style="height:46px;font-size:26px">Assinado ✓</span></div>
+    <div class="ev" id="e1" style="top:492px">Hash do documento original registrado</div>
+    <div class="ev" id="e2" style="top:530px">Evidências encadeadas a cada evento</div>
+    <div class="ev" id="e3" style="top:568px">Folha de assinaturas com QR de verificação</div>
+  </div>
+
+  <!-- Scene 6: services and billing system issues the license and returns it -->
+  <div class="scn" id="s6">
+    <div class="whd"><div class="mod"><i style="background:#d97706"></i>Sistema de serviços e cobrança · Emissão</div><div class="who"><span>Gestor</span></div></div>
+    <div class="paper" style="left:40px;top:100px;width:520px;height:540px">
+      <div class="a" style="left:30px;top:28px;font-size:30px;font-weight:900;letter-spacing:.06em">LICENÇA DEMO</div>
+      <div class="a" style="left:30px;top:96px;width:460px">
+        <div class="kv" style="margin-top:0"><b style="width:150px">Número</b><span>DEMO</span></div>
+        <div class="kv"><b style="width:150px">Interessado</b><span>Empresa DEMO Ltda.</span></div>
+        <div class="kv"><b style="width:150px">Processo</b><span>Nº DEMO-0001</span></div>
+        <div class="kv"><b style="width:150px">Condições</b><span>DEMO</span></div>
+      </div>
+      <div class="qr" id="qrL" style="left:350px;top:360px;width:140px;height:140px"></div>
+      <div class="stamp" id="stp0" style="left:60px;top:360px;color:#9aaca3;border-color:#c9d4cf;opacity:1">PRÉVIA</div>
+      <div class="stamp" id="stp1" style="left:50px;top:360px;color:var(--okc);border-color:var(--okc)">EMITIDA</div>
+    </div>
+    <div class="btn" id="b6a" style="left:600px;top:140px;width:420px">Emitir licença</div>
+    <div class="btn" id="b6aok" style="left:600px;top:140px;width:420px;background:var(--green);opacity:0">Licença emitida ✓</div>
+    <div class="note" id="n6a" style="left:600px;top:222px;width:480px;line-height:30px;opacity:0">Número e QR de validação gerados</div>
+    <div class="btn" id="b6b" style="left:600px;top:360px;width:420px;opacity:0">Enviar ao Portal</div>
+    <div class="btn" id="b6bok" style="left:600px;top:360px;width:420px;background:var(--green);opacity:0">Enviada ao Portal ✓</div>
+    <div class="note" id="n6b" style="left:600px;top:442px;width:480px;line-height:30px;opacity:0">Arquivo vinculado ao número do processo</div>
+  </div>
+
+  <!-- Scene 7: applicant downloads the license, anyone validates it by QR -->
+  <div class="scn" id="s7">
+    <div class="whd"><div class="stk" style="width:700px;height:40px"><div class="mod" id="m7a" style="left:0;right:auto"><i style="background:#16a34a"></i>Licenciamento · Portal</div><div class="mod" id="m7b" style="left:0;right:auto;opacity:0"><i style="background:#d97706"></i>Validação pública por QR</div></div><div class="who"><span id="w7a">Requerente</span><span id="w7b" style="opacity:0">Qualquer pessoa</span></div></div>
+    <div class="c" style="left:40px;top:100px;width:680px;height:254px">
+      <div style="font-size:24px;font-weight:800;letter-spacing:.1em;color:var(--imut)">MEUS REQUERIMENTOS</div>
+      <div style="font-size:28px;font-weight:750;margin-top:12px;white-space:nowrap">Nº DEMO-0001 <span class="pl ok" style="margin-left:12px">Licença emitida</span></div>
+    </div>
+    <div class="btn" id="b7" style="left:66px;top:262px;width:300px">Baixar licença</div>
+    <div class="a" id="dl" style="left:390px;top:262px;height:64px;padding:0 20px;border-radius:16px;background:var(--okb);color:var(--okc);font-size:24px;font-weight:750;display:flex;align-items:center;white-space:nowrap;opacity:0">licenca-DEMO.pdf ✓</div>
+    <div class="paper" style="left:40px;top:384px;width:680px;height:256px">
+      <div class="a" style="left:30px;top:28px;font-size:28px;font-weight:900;letter-spacing:.06em">LICENÇA DEMO</div>
+      <div class="ln" style="left:30px;top:90px;width:380px"></div><div class="ln" style="left:30px;top:118px;width:340px"></div><div class="ln" style="left:30px;top:146px;width:360px"></div>
+      <div class="a" style="left:30px;top:192px;font-size:24px;font-weight:650;color:var(--imut)">QR de validação →</div>
+      <div class="qr" id="qrT" style="left:490px;top:40px;width:170px;height:170px"></div>
+    </div>
+    <div class="a" id="phone">
+      <div class="sc">
+        <div class="ph">Validação pública</div>
+        <div id="vf"><div class="qr" id="qrV" style="left:30px;top:30px;width:160px;height:160px"></div><div id="scan"></div></div>
+        <div id="vres"><strong>Documento válido ✓</strong><span>Licença Nº DEMO</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 8: process timeline visible to the applicant -->
+  <div class="scn" id="s8">
+    <div class="whd"><div class="mod"><i style="background:#16a34a"></i>Licenciamento · Portal</div><div class="who"><span>Requerente</span></div></div>
+    <div class="c" style="left:40px;top:100px;width:470px;height:540px">
+      <h3>Situação do requerimento</h3>
+      <div class="sr" id="r1" style="top:84px"><span>Pagamento</span><span class="pl ok">conciliado</span></div>
+      <div class="sr" id="r2" style="top:150px"><span>Análise</span><span class="pl ok">concluída</span></div>
+      <div class="sr" id="r3" style="top:216px"><span>Licença</span><span class="pl ok">emitida</span></div>
+      <div class="sr" id="r4" style="top:282px"><span>Download</span><span class="pl ok">disponível</span></div>
+      <div class="sr" id="r5" style="top:348px"><span>Validação</span><span class="pl ok">por QR</span></div>
+    </div>
+    <div class="c" style="left:550px;top:100px;width:560px;height:540px">
+      <h3>Linha do tempo do processo</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;font-size:24px;font-weight:600;color:var(--imut)">registrada no <img src="./assets/logos/docgo-color.svg" alt="DocGo" style="height:26px"></div>
+      <div class="a" style="left:45px;top:150px;width:3px;height:330px;background:var(--iline)"></div>
+      <div class="te" id="t1" style="top:140px"><b>Processo criado pelo Portal</b><span>data · DEMO</span></div>
+      <div class="te" id="t2" style="top:226px"><b>Documentos anexados</b><span>data · DEMO</span></div>
+      <div class="te" id="t3" style="top:312px"><b>Parecer enviado para assinatura</b><span>data · DEMO</span></div>
+      <div class="te" id="t4" style="top:398px"><b>Parecer assinado no SignGo</b><span>data · DEMO</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Request object: number, current state and states crossed -->
+<div id="pan" class="a">
+  <div class="lb">REQUERIMENTO DEMO</div>
+  <div class="no">Nº DEMO-0001</div>
+  <div id="st">
+    <span id="sA">Rascunho</span><span id="sB">Aberto</span><span id="sC">Boleto emitido</span><span id="sD">Pago · conciliado</span><span id="sE">Em análise · travado</span><span id="sF">Intimado</span><span id="sG">Intimação respondida</span><span id="sH">Pasta criada no DocGo</span><span id="sI">Assinatura solicitada</span><span id="sJ">Parecer assinado</span><span id="sK">Licença emitida</span><span id="sL">Licença no Portal</span><span id="sM">Licença baixada</span><span id="sN">Validada por QR</span><span id="sO">Concluído</span>
+  </div>
+  <div id="rowHL" class="a"></div>
+  <div id="rows"></div>
+</div>
+
+<div id="cur" class="a"><div id="ring" class="a"></div><svg id="curA" viewBox="0 0 38 48"><path d="M2 2v33l9-9 7 17 7-3-7-17h14L2 2z"/></svg></div>
+
+</div>
+<script>
+// MONTAGEM ESTÁTICA (linhas do painel e QRs)
+const ROWS = ["Aberto no Portal","Boleto emitido","Pagamento conciliado","Em análise com trava","Intimação respondida","Pasta e documentos no DocGo","Parecer assinado no SignGo","Licença emitida e devolvida","Baixada e validada por QR"];
+const ROW_TOP = 196, ROW_H = 54;
+const rowsEl = document.getElementById("rows");
+ROWS.forEach((label, i) => {
+  const r = document.createElement("div");
+  r.className = "rw"; r.style.top = (ROW_TOP + i * ROW_H) + "px";
+  r.innerHTML = `<div class="d"><em id="rn${i}">${i + 1}</em><b id="rk${i}">✓</b></div><div class="t"><s id="rs${i}">${label}</s><u id="ru${i}">${label}</u></div>`;
+  rowsEl.appendChild(r);
+});
+// Deterministic QR-like pattern (illustrative, not a real code)
+function qrSvg() {
+  const n = 21; let s = `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><rect width="${n}" height="${n}" fill="#fff"/>`;
+  const finder = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#10201a"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#10201a"/>`;
+  s += finder(0, 0) + finder(14, 0) + finder(0, 14);
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const inF = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+    if (!inF && ((x * 7 + y * 13 + x * y) % 5 < 2)) s += `<rect x="${x}" y="${y}" width="1" height="1" fill="#10201a"/>`;
+  }
+  return s + "</svg>";
+}
+["qrS", "qrL", "qrT", "qrV"].forEach((id) => { document.getElementById(id).innerHTML = qrSvg(); });
+
+// TIMELINE DA JORNADA
+const tl = gsap.timeline({ paused: true });
+const IR = { immediateRender: false };
+const fin = (sel, t, d = 0.45, from = {}, to = {}) => tl.fromTo(sel, { opacity: 0, ...from }, { opacity: 1, duration: d, ease: "power2.out", ...to, ...IR }, t);
+const fout = (sel, t, d = 0.3) => tl.fromTo(sel, { opacity: 1 }, { opacity: 0, duration: d, ease: "power1.in", ...IR }, t);
+
+// Module strip: light the acting module(s)
+const NODE_X = [255, 750, 1245, 1665];
+const lit = [false, false, false, false];
+function strip(on, t) {
+  for (let i = 0; i < 4; i++) {
+    const want = on.includes(i);
+    if (want !== lit[i]) { tl.fromTo("#lt" + i, { opacity: want ? 0 : 1 }, { opacity: want ? 1 : 0, duration: 0.5, ease: "power2.inOut", ...IR }, t); lit[i] = want; }
+  }
+}
+// Request token travelling between modules on real integrations
+let tokX = NODE_X[0] - 100;
+function travel(node, t, d = 0.8) {
+  const x = NODE_X[node] - 100;
+  tl.fromTo("#tok", { x: tokX }, { x, duration: d, ease: "power2.inOut", ...IR }, t);
+  tokX = x;
+}
+function jump(node, t) { // no direct integration: token leaves and reappears
+  const x = NODE_X[node] - 100;
+  fout("#tok", t, 0.3);
+  tl.fromTo("#tok", { x: tokX }, { x, duration: 0.01, ...IR }, t + 0.32);
+  fin("#tok", t + 0.4, 0.35);
+  tokX = x;
+}
+// Request state pill and panel rows
+let curState = "#sA";
+function state(id, t) { fout(curState, t, 0.2); fin(id, t + 0.22, 0.35, { y: 10 }, { y: 0 }); curState = id; }
+let hlRow = 0;
+function rowDone(i, t) {
+  fin("#rk" + i, t, 0.35, { scale: 0.4 }, { scale: 1, ease: "back.out(2)" });
+  fout("#rn" + i, t, 0.2); fout("#rs" + i, t, 0.2);
+  fin("#ru" + i, t + 0.1, 0.35);
+  tl.fromTo("#rowHL", { y: hlRow * ROW_H }, { y: i * ROW_H, duration: 0.45, ease: "power2.inOut", ...IR }, t);
+  hlRow = i;
+}
+// Scene swap inside the module window
+function scene(prev, next, t) { if (prev) fout(prev, t, 0.3); fin(next, t + 0.3, 0.45, { y: 18 }, { y: 0 }); }
+// Cursor
+let cx = 900, cy = 1000, curOn = false;
+function cur(x, y, t, d = 0.6) {
+  if (!curOn) { tl.fromTo("#cur", { x, y: y + 40, opacity: 0 }, { x, y, opacity: 1, duration: 0.35, ...IR }, t); curOn = true; }
+  else tl.fromTo("#cur", { x: cx, y: cy }, { x, y, duration: d, ease: "power2.inOut", ...IR }, t);
+  cx = x; cy = y;
+}
+function click(t) {
+  tl.fromTo("#curA", { scale: 1 }, { scale: 0.82, duration: 0.09, yoyo: true, repeat: 1, transformOrigin: "10% 10%", ...IR }, t);
+  tl.fromTo("#ring", { scale: 0.4, opacity: 0.95 }, { scale: 1.6, opacity: 0, duration: 0.45, ease: "power1.out", ...IR }, t);
+}
+function curOff(t) { if (curOn) { fout("#cur", t, 0.3); curOn = false; } }
+
+// ABERTURA
+tl.fromTo("#title", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.1);
+tl.fromTo("#sub", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.3);
+tl.fromTo("#demo", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.4);
+tl.fromTo(".nd", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: "power3.out" }, 0.4);
+tl.fromTo("#rail", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.8);
+tl.fromTo("#win", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.6);
+tl.fromTo("#pan", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.75);
+fin("#sA", 0.9, 0.3);
+fin("#s1", 0.8, 0.4);
+strip([0], 1.0);
+tl.set("#tok", { x: tokX }, 0);
+tl.set("#cur", { x: 900, y: 1000, opacity: 0 }, 0);
+tl.set("#curA", { scale: 1 }, 0);
+tl.set("#ring", { scale: 0.4, opacity: 0 }, 0);
+tl.set("#rowHL", { y: 0, opacity: 0 }, 0);
+fin("#tok", 1.1, 0.4);
+
+// BATIDA 1 · Requerente abre o requerimento no Portal (1,4–6,4)
+[1, 2, 3, 4, 5].forEach((k, i) => { fin("#wz" + k, 1.5 + i * 0.4, 0.3, { scale: 0.4 }, { scale: 1 }); });
+cur(620, 918, 3.3);
+click(4.1);
+fout("#b1", 4.2, 0.2); fin("#b1ok", 4.2, 0.3); fin("#n1t", 4.3, 0.4);
+state("#sB", 4.2); fin("#rowHL", 4.2, 0.3); rowDone(0, 4.2);
+curOff(5.2);
+
+// BATIDA 2 · Boleto emitido e pagamento conciliado (6,4–11,4)
+travel(1, 6.4);
+strip([1], 6.6);
+scene("#s1", "#s2", 6.5);
+state("#sC", 7.1); rowDone(1, 7.1);
+fout("#c1a", 8.9, 0.2); fin("#c1b", 9.12, 0.35);
+fout("#bo1", 8.9, 0.2); fin("#bo2", 9.12, 0.35, { scale: 0.7 }, { scale: 1, ease: "back.out(2)" });
+fout("#c2a", 8.9, 0.2); fin("#c2b", 9.12, 0.35);
+state("#sD", 8.9); rowDone(2, 8.9);
+
+// BATIDA 3 · Análise com trava, intimação e resposta (11,4–18,9)
+travel(0, 11.4, 0.9);
+strip([0], 11.6);
+scene("#s2", "#s3", 11.5);
+cur(1060, 468, 12.0);
+click(12.6);
+fout("#b3", 12.7, 0.2); fin("#lock", 12.7, 0.35, { x: 20 }, { x: 0 });
+state("#sE", 12.7); rowDone(3, 12.7);
+curOff(13.4);
+fin("#intim", 14.6, 0.45, { x: 30 }, { x: 0 });
+state("#sF", 14.6);
+fout("#w3a", 16.4, 0.2); fin("#w3b", 16.62, 0.3);
+fin("#resp", 16.4, 0.4, { y: 12 }, { y: 0 });
+fout("#d3a", 16.4, 0.2); fin("#d3b", 16.62, 0.3);
+state("#sG", 16.4); rowDone(4, 16.4);
+fout("#w3b", 18.0, 0.2); fin("#w3c", 18.22, 0.3);
+fin("#b3f", 17.95, 0.35);
+cur(285, 854, 18.05, 0.4);
+click(18.5);
+
+// BATIDA 4 · Revisão concluída cria a pasta no DocGo (18,6–24,5)
+curOff(18.8);
+travel(2, 18.8, 1.0);
+strip([2], 19.1);
+scene("#s3", "#s4", 19.0);
+fin("#tl1", 19.8, 0.35);
+[1, 2, 3].forEach((k, i) => fin("#dc" + k, 19.9 + i * 0.22, 0.35, { x: -16 }, { x: 0 }));
+fin("#tl2", 20.3, 0.35);
+state("#sH", 19.9); rowDone(5, 19.9);
+cur(995, 888, 22.0);
+click(22.7);
+fout("#b4", 22.8, 0.2); fin("#b4ok", 22.8, 0.3); fin("#tl3", 22.9, 0.35);
+state("#sI", 23.1);
+curOff(23.6);
+
+// BATIDA 5 · Signatário confirma o código e assina no SignGo (24,5–30,6)
+travel(3, 24.5, 0.8);
+strip([3], 24.7);
+scene("#s4", "#s5", 24.6);
+[1, 2, 3, 4, 5, 6].forEach((k, i) => fin("#o" + k, 25.6 + i * 0.1, 0.2, { scale: 0.3 }, { scale: 1 }));
+fin("#otpok", 26.3, 0.35);
+fout("#pw0", 27.8, 0.15); fin("#pw1", 27.97, 0.25);
+cur(1020, 694, 27.6, 0.6);
+click(28.4);
+fin("#sgok", 28.5, 0.35, { scale: 0.7 }, { scale: 1, ease: "back.out(2)" });
+fin("#e1", 28.7, 0.3); fin("#e2", 28.85, 0.3); fin("#e3", 29.0, 0.3);
+fin("#sheet", 28.6, 0.4, { y: 16 }, { y: 0 });
+state("#sJ", 28.5); rowDone(6, 28.5);
+curOff(29.2);
+
+// BATIDA 6 · Sistema de serviços e cobrança emite a licença e a devolve ao Portal (30,6–36,4)
+jump(1, 30.6);
+strip([1], 30.8);
+scene("#s5", "#s6", 30.7);
+cur(880, 510, 31.3);
+click(31.9);
+fout("#b6a", 32.0, 0.2); fin("#b6aok", 32.0, 0.3); fin("#n6a", 32.1, 0.35);
+fout("#stp0", 32.0, 0.2); fin("#stp1", 32.22, 0.35);
+state("#sK", 32.3);
+fin("#b6b", 33.0, 0.35);
+cur(880, 730, 33.2, 0.5);
+click(33.8);
+fout("#b6b", 33.9, 0.2); fin("#b6bok", 33.9, 0.3); fin("#n6b", 34.0, 0.35);
+travel(0, 34.0, 1.0);
+strip([0], 34.6);
+state("#sL", 35.0); rowDone(7, 35.0);
+curOff(35.0);
+
+// BATIDA 7 · Requerente baixa a licença; qualquer pessoa valida pelo QR (36,6–42,0)
+scene("#s6", "#s7", 36.6);
+cur(296, 638, 37.0, 0.5);
+click(37.6);
+fin("#dl", 37.7, 0.35, { x: -16 }, { x: 0 });
+state("#sM", 37.7);
+curOff(38.4);
+fout("#w7a", 39.3, 0.2); fin("#w7b", 39.52, 0.3);
+fout("#m7a", 39.3, 0.2); fin("#m7b", 39.52, 0.3);
+fin("#phone", 39.3, 0.45, { y: 40 }, { y: 0 });
+strip([1], 39.4);
+tl.fromTo("#scan", { y: 0 }, { y: 214, duration: 0.45, yoyo: true, repeat: 1, ease: "sine.inOut", ...IR }, 39.8);
+fin("#vres", 40.75, 0.4, { y: 12 }, { y: 0 });
+state("#sN", 40.75); rowDone(8, 40.75);
+
+// BATIDA 8 · Linha do tempo do processo visível ao requerente (42,4–46)
+scene("#s7", "#s8", 42.4);
+strip([0, 2], 42.6);
+[1, 2, 3, 4, 5].forEach((k, i) => fin("#r" + k, 42.9 + i * 0.12, 0.3));
+[1, 2, 3, 4].forEach((k, i) => fin("#t" + k, 43.0 + i * 0.18, 0.35, { x: -14 }, { x: 0 }));
+state("#sO", 43.3);
+fout("#rowHL", 43.3, 0.4);
+
+// End of timeline exactly at data-duration
+tl.fromTo("#root", { "--end": 0 }, { "--end": 1, duration: 0.001, ...IR }, 45.999);
+window.__timelines = window.__timelines || {};
+window.__timelines["wego-journey"] = tl;
+</script>
+</body>
+</html>

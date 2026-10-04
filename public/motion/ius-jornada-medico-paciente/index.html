@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>IUS · jornada médico e paciente</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA IUS */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#F4F3FA;--ink:#25262B;--muted:#5F6070;--primary:#644CFF;--deep:#3D2BBE;--accent:#F79B66;--card:#FFFFFF;--edge:#E2E0EE;--soft:#ECE8FF;--okc:#17734A;--okb:#E3F5EC;--atc:#8A5A00;--atb:#FFF1D1;--alc:#B3261E;--alb:#FDE4E1;--pac:#A04A12;--pab:#FDEBDD}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+.abs{position:absolute}
+p{margin:0}
+
+/* CABEÇALHO */
+#top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid #DCDAE8;opacity:0}
+#top img{height:46px;display:block;margin-bottom:10px}
+#top .tt{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
+#top .tt em{font-style:normal;color:var(--primary)}
+#top .gr{flex:1}
+.chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid #CFCDE0;border-radius:999px;padding:4px 18px;white-space:nowrap;background:#fff;margin-bottom:10px}
+
+/* CELULARES */
+.phone{position:absolute;top:184px;width:420px;height:752px;border-radius:56px;background:#1D1B2E;box-shadow:0 24px 50px rgba(61,43,190,.18);opacity:0}
+.scr{position:absolute;left:12px;top:12px;width:396px;height:728px;border-radius:44px;overflow:hidden;background:#F2F2F2}
+.notch{position:absolute;left:143px;top:10px;width:110px;height:26px;border-radius:14px;background:#1D1B2E}
+.s{position:absolute;left:0;top:0;width:396px;height:728px;opacity:0}
+.lbl{position:absolute;top:128px;width:420px;height:44px}
+.lbl span{position:absolute;left:0;right:0;top:0;height:44px;display:flex;align-items:center;justify-content:center;opacity:0}
+.lbl b{height:44px;padding:0 20px;border-radius:999px;background:var(--deep);color:#fff;font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.lbl b i{width:12px;height:12px;border-radius:50%;background:var(--accent);display:block}
+
+/* COMPONENTES DE TELA */
+.grad{position:absolute;left:0;top:0;width:396px;background:linear-gradient(180deg,#3D2BBE 0%,#4A35D6 100%)}
+.wh{position:absolute;color:#fff;font-weight:800;white-space:nowrap}
+.wl{position:absolute;color:#E4DEFF;font-size:24px;white-space:nowrap}
+.card{position:absolute;background:#fff;border:2px solid #E6E6EE;border-radius:20px}
+.t24{position:absolute;font-size:24px;white-space:nowrap}
+.g{color:var(--muted)}
+.bd{font-weight:700}
+.big{position:absolute;font-weight:800;line-height:1;white-space:nowrap}
+.ab{position:absolute;left:20px;top:50px;font-size:28px;font-weight:800;white-space:nowrap}
+.pill{position:absolute;height:40px;padding:0 14px;border-radius:999px;font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
+.cN{color:var(--okc);background:var(--okb)}.cA{color:var(--atc);background:var(--atb)}.cR{color:var(--alc);background:var(--alb)}.cP{color:var(--deep);background:var(--soft)}.cG{color:#555565;background:#E9E9EF}
+.row{position:absolute;left:16px;width:364px;height:58px;background:#fff;border:2px solid #E6E6EE;border-radius:14px}
+.row .t24{left:16px;top:13px;font-weight:600}
+.row .pill{right:10px;top:7px}
+.ring{position:absolute;inset:-6px;border:4px solid var(--primary);border-radius:24px;opacity:0}
+.btn{position:absolute;left:16px;width:364px;height:64px;border-radius:999px;background:var(--primary);color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.btn.o{background:#fff;color:var(--deep);border:2px solid var(--primary)}
+.av{position:absolute;border-radius:50%;background:var(--soft);color:var(--deep);display:grid;place-items:center;font-weight:800}
+.bars i{position:absolute;display:block;border-radius:6px}
+.tabs3{position:absolute;left:16px;top:48px;height:40px;display:flex;gap:8px}
+.tabs3 span{position:relative;height:40px;padding:0 16px;border-radius:999px;border:2px solid #E6E6EE;font-size:24px;font-weight:700;color:var(--muted);display:flex;align-items:center;white-space:nowrap}
+.tabs3 span u{position:absolute;inset:-2px;border-radius:999px;background:var(--primary);opacity:0;text-decoration:none}
+.tabs3 span em{position:relative;font-style:normal}
+.time{position:absolute;left:0;right:0;top:92px;text-align:center;color:#fff;font-size:72px;font-weight:300;letter-spacing:-1px}
+.ntf{position:absolute;left:14px;width:368px;height:132px;background:#fff;border-radius:22px;box-shadow:0 10px 24px rgba(0,0,0,.18);opacity:0}
+.mk{position:absolute;left:16px;top:14px;width:22px;height:32px}
+.dim{position:absolute;inset:0;background:rgba(29,27,46,.5);opacity:0}
+.sheet{position:absolute;left:0;top:330px;width:396px;height:398px;background:#fff;border-radius:28px 28px 0 0;opacity:0}
+.opt{position:absolute;left:16px;width:364px;height:58px;border:2px solid #E6E6EE;border-radius:14px}
+.opt .rd{position:absolute;left:16px;top:16px;width:22px;height:22px;border-radius:50%;border:3px solid #9A98B0}
+.opt .t24{left:52px;top:13px;font-weight:600}
+.opt u{position:absolute;inset:-2px;border:3px solid var(--primary);border-radius:14px;background:rgba(100,76,255,.08);opacity:0;text-decoration:none}
+.opt u i{position:absolute;left:19px;top:19px;width:16px;height:16px;border-radius:50%;background:var(--primary);display:block}
+.bub{position:absolute;padding:12px 18px;border-radius:20px;font-size:24px;line-height:32px;opacity:0}
+.bub span{display:block;white-space:nowrap}
+.bub.me{right:16px;background:var(--primary);color:#fff;border-bottom-right-radius:6px}
+.bub.them{left:16px;background:#fff;border:2px solid #E6E6EE;border-bottom-left-radius:6px}
+.img{position:absolute;width:200px;height:120px;border-radius:18px;background:var(--soft);border:2px solid #D8D2FF;opacity:0}
+.img .t24{left:0;right:0;top:78px;text-align:center;color:var(--deep);font-weight:700}
+.comp{position:absolute;left:16px;top:652px;width:364px;height:60px;background:#fff;border:2px solid #E6E6EE;border-radius:999px}
+.comp .t24{left:22px;top:13px}
+.comp i{position:absolute;right:8px;top:8px;width:40px;height:40px;border-radius:50%;background:var(--primary);display:block}
+.tabbar{position:absolute;left:0;top:660px;width:396px;height:68px;background:#fff;border-top:2px solid #E6E6EE}
+.tabbar svg{position:absolute;top:18px;width:32px;height:32px;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+
+/* PAINEL DE NOTAS */
+.np{position:absolute;top:128px;opacity:0}
+.np.w{left:680px;width:1120px}
+.np.n{left:1190px;width:610px}
+.np h3{position:absolute;left:0;top:0;margin:0;font-size:38px;font-weight:800;letter-spacing:-.5px;white-space:nowrap}
+.np .sb{position:absolute;left:0;top:50px;font-size:24px;color:var(--muted);white-space:nowrap}
+.ni{position:absolute;left:0;right:0;border:2px solid #E2E0EE;border-radius:18px;background:#fff;display:flex;align-items:center;gap:18px;padding:0 20px;opacity:0}
+.np.w .ni{height:84px}
+.np.n .ni{height:92px}
+.ni .k{width:44px;height:44px;border-radius:12px;background:var(--soft);color:var(--deep);display:grid;place-items:center;font-size:24px;font-weight:800;flex:none}
+.ni .x{flex:1;min-width:0}
+.ni .x b{display:block;font-size:26px;font-weight:700;white-space:nowrap}
+.ni .x .sub{display:block;font-size:24px;color:var(--muted);white-space:nowrap;margin-top:2px}
+.badge{font-size:24px;font-weight:700;padding:2px 14px;border-radius:999px;white-space:nowrap;flex:none}
+.np.n .ni .badge{display:inline-block;margin-top:4px}
+.b-prev{color:#4E4E60;border:2px dashed #8B8BA0;background:#fff}
+.b-cfg{color:var(--atc);border:2px solid #E2B65A;background:var(--atb)}
+.b-par{color:var(--pac);border:2px solid #EDAA7E;background:var(--pab)}
+.b-dev{color:var(--deep);border:2px solid #B9AEFF;background:var(--soft)}
+
+/* LIGAÇÃO ENTRE CELULARES */
+#lnk{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;pointer-events:none}
+.lk{fill:none;stroke:var(--primary);stroke-width:4;stroke-dasharray:1;stroke-dashoffset:1}
+
+/* LEGENDA */
+#caps{position:absolute;left:120px;right:120px;top:956px;height:86px}
+.cap{position:absolute;left:0;right:0;top:0;height:86px;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#fff;border:2px solid #E2E0EE;border-left:8px solid var(--primary);font-size:32px;font-weight:700;opacity:0;white-space:nowrap}
+.cap small{font-size:24px;font-weight:800;color:var(--deep)}
+
+/* FECHO */
+#fin{position:absolute;left:120px;top:124px;width:1680px;height:812px;opacity:0}
+#fin h2{position:absolute;left:0;right:0;top:16px;margin:0;text-align:center;font-size:72px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
+#fin h2 em{font-style:normal;color:var(--primary)}
+#fsv{position:absolute;left:0;top:0;width:1680px;height:812px;overflow:visible}
+.fe{fill:none;stroke:#B9AEFF;stroke-width:4;stroke-dasharray:1;stroke-dashoffset:1}
+.node{position:absolute;width:500px;height:120px;background:#fff;border:2px solid #E2E0EE;border-radius:22px;opacity:0}
+.node .av{left:22px;top:24px;width:72px;height:72px;font-size:28px}
+.node b{position:absolute;left:116px;top:24px;font-size:28px;font-weight:800;white-space:nowrap}
+.node span{position:absolute;left:116px;top:64px;font-size:24px;color:var(--muted);white-space:nowrap}
+#fc{position:absolute;left:610px;top:226px;width:460px;height:188px;background:#fff;border:4px solid var(--primary);border-radius:26px;opacity:0}
+#fc b{position:absolute;left:0;right:0;top:24px;text-align:center;font-size:32px;font-weight:800;white-space:nowrap}
+#fc span.t24{left:0;right:0;top:70px;text-align:center}
+#fc .dots{position:absolute;left:0;right:0;top:118px;display:flex;justify-content:center;gap:10px}
+#fc .dots .pill{position:relative}
+.frow{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:14px}
+.frow > span{opacity:0;white-space:nowrap}
+.frow > span.fch{height:56px;padding:0 20px;border:2px solid #E2E0EE;border-radius:999px;background:#fff;display:flex;align-items:center;font-size:26px;font-weight:600}
+.frow > span.badge{height:48px;font-size:24px;padding:0 18px;display:flex;align-items:center}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="ius-jornada-medico-paciente" data-width="1920" data-height="1080" data-start="0" data-duration="44">
+
+<div id="top"><img src="./assets/brand/ius-color.svg" alt="IUS"><div class="tt">Jornada · <em>médico, colega e paciente</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+
+<!-- shell labels above each phone -->
+<div class="lbl" id="lblA" style="left:170px"><span id="lA1"><b><i></i>App do médico</b></span><span id="lA2"><b><i></i>App do paciente</b></span></div>
+<div class="lbl" id="lblB" style="left:690px"><span id="lB1"><b><i></i>App do colega · convite</b></span><span id="lB2"><b><i></i>App do médico</b></span></div>
+
+<!-- PHONE A -->
+<div class="phone" id="phA" style="left:170px"><div class="scr">
+
+  <!-- D1 doctor dashboard -->
+  <div class="s" id="sD1" style="opacity:1">
+    <div class="grad" style="height:300px"></div>
+    <div class="wh" style="left:24px;top:56px;font-size:30px">Olá, Médico Demo</div>
+    <div class="wl" style="left:24px;top:98px">Painel do médico</div>
+    <div class="card" id="k1" style="left:16px;top:146px;width:364px;height:116px"><div class="ring" id="rk1"></div>
+      <div class="t24 g" style="left:20px;top:14px">Aguardando aceite</div>
+      <div class="big" style="left:20px;top:54px;font-size:44px;color:var(--primary)">3</div>
+      <div class="pill cP" style="right:16px;top:58px">Abrir fila</div>
+    </div>
+    <div class="card" id="k2" style="left:16px;top:276px;width:176px;height:112px"><div class="ring" id="rk2"></div>
+      <div class="t24 g" style="left:18px;top:14px">Recebidos</div>
+      <div class="big" style="left:18px;top:56px;font-size:40px">2</div><div class="t24 g" style="left:50px;top:62px">hoje</div>
+    </div>
+    <div class="card" id="k3" style="left:204px;top:276px;width:176px;height:112px"><div class="ring" id="rk3"></div>
+      <div class="t24 g" style="left:18px;top:14px">Alterados</div>
+      <div class="big" style="left:18px;top:56px;font-size:40px;color:var(--alc)">1</div><div class="t24 g" style="left:50px;top:62px">no mês</div>
+    </div>
+    <div class="card" id="k4" style="left:16px;top:402px;width:364px;height:170px"><div class="ring" id="rk4"></div>
+      <div class="t24 bd" style="left:18px;top:10px">Carteira</div>
+      <div class="tabs3"><span><u id="tu0"></u><em id="tw0">Sexo</em></span><span><u id="tu1"></u><em id="tw1">Idade</em></span><span><u id="tu2"></u><em id="tw2">Lab</em></span></div>
+      <div class="bars"><i id="sb0" style="left:18px;top:104px;width:324px;height:14px;background:#644CFF;transform-origin:0 50%"></i><i id="sb1" style="left:18px;top:126px;width:324px;height:14px;background:#F79B66;transform-origin:0 50%"></i><i id="sb2" style="left:18px;top:148px;width:324px;height:14px;background:#B9AEFF;transform-origin:0 50%"></i></div>
+    </div>
+    <div class="card" id="k5" style="left:16px;top:586px;width:364px;height:128px"><div class="ring" id="rk5"></div>
+      <div class="t24 bd" style="left:18px;top:10px">Séries mensais</div>
+      <div class="bars" id="ser"></div>
+    </div>
+  </div>
+
+  <!-- D2 exam detail (doctor) -->
+  <div class="s" id="sD2">
+    <div class="ab">‹ Exame</div>
+    <div class="pill cN" style="right:16px;top:48px">Aceito</div>
+    <div class="card" style="left:16px;top:104px;width:364px;height:104px">
+      <div class="t24 bd" style="left:16px;top:12px;font-size:28px">Painel DEMO</div>
+      <div class="t24 g" style="left:16px;top:56px">Paciente Demo · Lab Demo</div>
+    </div>
+    <div class="row" style="top:222px"><div class="t24">Analito A</div><div class="pill cN">Normal</div></div>
+    <div class="row" style="top:288px"><div class="t24">Analito B</div><div class="pill cA">Atenção</div></div>
+    <div class="row" id="d2r3" style="top:354px"><div class="t24">Analito C</div><div class="pill cR">Alterado</div></div>
+    <div class="t24 bd" id="d2ct" style="left:20px;top:428px">Comentários clínicos</div>
+    <div class="t24 g" id="cm0" style="left:20px;top:470px">Nenhum comentário ainda</div>
+    <div class="t24" id="cm1" style="left:20px;top:470px;color:var(--deep);font-weight:700;opacity:0">Convite enviado ao colega</div>
+    <div class="card" id="cm2" style="left:16px;top:466px;width:364px;height:124px;opacity:0">
+      <div class="av" style="left:14px;top:16px;width:52px;height:52px;font-size:22px">CD</div>
+      <div class="t24 bd" style="left:80px;top:12px">Colega Demo</div>
+      <div class="t24" style="left:80px;top:46px">Comentário DEMO</div>
+      <div class="t24 g" style="left:80px;top:80px">não editável</div>
+    </div>
+    <div class="btn" id="bDel" style="top:640px">Delegar para comentar</div>
+    <div class="dim" id="dim"></div>
+    <div class="sheet" id="sheet">
+      <div class="abs" style="left:168px;top:10px;width:60px;height:6px;border-radius:3px;background:#D5D3E3"></div>
+      <div class="t24 bd" style="left:24px;top:26px;font-size:28px">Convidar colega</div>
+      <div class="opt" style="top:80px"><u id="op0"><i></i></u><div class="rd"></div><div class="t24">Colega com conta</div></div>
+      <div class="opt" style="top:148px"><u id="op1"><i></i></u><div class="rd"></div><div class="t24">Convite por link</div></div>
+      <div class="t24 g" style="left:24px;top:222px">Validade · prazo DEMO</div>
+      <div class="btn" id="bInv" style="top:280px">Enviar convite</div>
+    </div>
+  </div>
+
+  <!-- D3 patient chart (doctor) -->
+  <div class="s" id="sD3">
+    <div class="ab">‹ Paciente</div>
+    <div class="av" style="left:16px;top:104px;width:64px;height:64px;font-size:26px">PD</div>
+    <div class="t24 bd" style="left:96px;top:100px;font-size:28px">Paciente Demo</div>
+    <div class="t24 g" style="left:96px;top:138px">Ficha · 3 exames</div>
+    <div class="t24 bd" style="left:20px;top:198px">Métricas</div>
+    <div class="pill cP" id="bMet" style="right:16px;top:192px">+ Métrica</div>
+    <div class="row" style="top:236px;height:48px"><div class="t24 g" style="top:8px">Peso</div><div class="t24 bd" style="left:auto;right:16px;top:8px">DEMO</div></div>
+    <div class="row" style="top:290px;height:48px"><div class="t24 g" style="top:8px">Tipo sanguíneo</div><div class="t24 bd" style="left:auto;right:16px;top:8px">DEMO</div></div>
+    <div class="row" id="mNew" style="top:344px;height:48px;opacity:0;border-color:var(--primary)"><div class="t24 g" style="top:8px">Condição</div><div class="t24 bd" style="left:auto;right:16px;top:8px">DEMO</div></div>
+    <div class="t24 bd" style="left:20px;top:408px">Etiquetas</div>
+    <div class="pill cP" style="left:16px;top:446px">Rotina</div>
+    <div class="pill cR" id="tgRisk" style="left:128px;top:446px;opacity:0">Alto risco</div>
+    <div class="t24 bd" style="left:20px;top:514px">Nota privada</div>
+    <div class="card" id="lst" style="left:16px;top:652px;width:364px;height:56px"><div class="ring" id="rLst"></div>
+      <div class="t24" style="left:16px;top:12px">Lista · <b>Exames de rotina</b></div>
+    </div>
+    <div class="card" id="nota" style="left:16px;top:552px;width:364px;height:84px"><div class="ring" id="rNota"></div>
+      <svg class="abs" style="left:16px;top:24px" width="30" height="34" viewBox="0 0 24 26" fill="none" stroke="#3D2BBE" stroke-width="2.4" stroke-linecap="round"><rect x="3" y="11" width="18" height="13" rx="3"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <div class="t24" style="left:60px;top:24px">Nota DEMO · privada</div>
+    </div>
+  </div>
+
+  <!-- P0 patient lock screen -->
+  <div class="s" id="sP0">
+    <div class="grad" style="height:728px"></div>
+    <div class="time">09:41</div>
+    <div class="wl" style="left:0;right:0;top:186px;text-align:center">Paciente Demo</div>
+    <div class="ntf" id="nP" style="top:250px"><svg class="mk" viewBox="0 0 77.1 113.5"><path d="M38.5 0H77.1V37.8H38.5Z" fill="#F79B66"/><path d="M0 37.8H38.5V75.7H0Z" fill="#F79B66"/><path d="M38.5 75.7H77.1V113.5H38.5Z" fill="#F79B66"/></svg>
+      <div class="t24 g" style="left:50px;top:12px">IUS · agora</div>
+      <div class="t24 bd" style="left:16px;top:52px;font-size:26px">Exame disponível</div>
+      <div class="t24 g" style="left:16px;top:88px">Painel DEMO · Lab Demo</div>
+    </div>
+  </div>
+
+  <!-- P1 patient wallet -->
+  <div class="s" id="sP1">
+    <div class="grad" style="height:204px"></div>
+    <div class="wh" style="left:24px;top:52px;font-size:30px">Minha carteira</div>
+    <div class="wl" style="left:24px;top:94px">Paciente Demo</div>
+    <div class="pill" style="left:16px;top:142px;background:#fff;color:var(--deep)">Todos</div>
+    <div class="pill" style="left:118px;top:142px;color:#fff;border:2px solid #B9AEFF">Alterados</div>
+    <div class="pill" style="left:262px;top:142px;color:#fff;border:2px solid #B9AEFF">Período</div>
+    <div class="card" id="w1" style="left:16px;top:222px;width:364px;height:100px"><div class="ring" id="rw1"></div>
+      <div class="t24 bd" style="left:18px;top:14px;font-size:26px">Painel DEMO</div><div class="t24 g" style="left:18px;top:54px">Lab Demo · liberado</div>
+      <div class="pill" style="right:14px;top:14px;color:var(--pac);background:var(--pab)">Novo</div>
+    </div>
+    <div class="card" style="left:16px;top:334px;width:364px;height:100px">
+      <div class="t24 bd" style="left:18px;top:14px;font-size:26px">Glicemia DEMO</div><div class="t24 g" style="left:18px;top:54px">Lab Demo · liberado</div>
+    </div>
+    <div class="card" style="left:16px;top:446px;width:364px;height:100px">
+      <div class="t24 bd" style="left:18px;top:14px;font-size:26px">Perfil DEMO</div><div class="t24 g" style="left:18px;top:54px">Lab Demo · liberado</div>
+    </div>
+    <div class="tabbar">
+      <svg style="left:34px" viewBox="0 0 24 24" stroke="#8B8BA0"><path d="M4 11l8-7 8 7v9H4z"/></svg>
+      <svg style="left:132px" viewBox="0 0 24 24" stroke="#644CFF"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+      <svg style="left:230px" viewBox="0 0 24 24" stroke="#8B8BA0"><path d="M4 5h16v11H9l-5 4z"/></svg>
+      <svg style="left:328px" viewBox="0 0 24 24" stroke="#8B8BA0"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
+    </div>
+  </div>
+
+  <!-- P2 patient result list -->
+  <div class="s" id="sP2">
+    <div class="ab">‹ Painel DEMO</div>
+    <div class="t24 g" style="left:20px;top:94px">Lab Demo · liberado</div>
+    <div class="row" style="top:140px"><div class="t24">Analito A</div><div class="pill cN">Normal</div></div>
+    <div class="row" id="pB" style="top:206px"><div class="ring" id="rpB" style="border-radius:18px"></div><div class="t24">Analito B</div><div class="pill cA">Atenção</div></div>
+    <div class="row" style="top:272px"><div class="t24">Analito C</div><div class="pill cR">Alterado</div></div>
+    <div class="row" style="top:338px"><div class="t24">Analito D</div><div class="pill cN">Normal</div></div>
+    <div class="card" style="left:16px;top:420px;width:364px;height:96px">
+      <div class="t24 bd" style="left:16px;top:12px">Observações do laudo</div><div class="t24 g" style="left:16px;top:50px">Texto DEMO</div>
+    </div>
+  </div>
+
+  <!-- P3 evolution chart -->
+  <div class="s" id="sP3">
+    <div class="ab">‹ Analito B</div>
+    <div class="pill cA" style="right:16px;top:48px">Atenção</div>
+    <div class="card" style="left:16px;top:104px;width:364px;height:304px">
+      <svg class="abs" style="left:14px;top:14px" width="332" height="200" viewBox="0 0 332 200">
+        <rect id="band" x="0" y="64" width="332" height="72" rx="8" fill="#E3F5EC" opacity="0"/>
+        <path d="M0 196H332" stroke="#E6E6EE" stroke-width="2"/>
+        <path id="evo" d="M30 118 L120 104 L210 92 L300 40" fill="none" stroke="#644CFF" stroke-width="4" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1"/>
+        <circle class="pt" cx="30" cy="118" r="9" fill="#644CFF" opacity="0"/>
+        <circle class="pt" cx="120" cy="104" r="9" fill="#644CFF" opacity="0"/>
+        <circle class="pt" cx="210" cy="92" r="9" fill="#644CFF" opacity="0"/>
+        <circle class="pt" cx="300" cy="40" r="12" fill="#E8A21A" stroke="#8A5A00" stroke-width="3" opacity="0"/>
+      </svg>
+      <div class="abs" id="bandK" style="left:18px;top:232px;width:28px;height:20px;border-radius:5px;background:#BFE6D1;opacity:0"></div>
+      <div class="t24" id="bandL" style="left:56px;top:226px;opacity:0">Faixa de referência</div>
+      <div class="t24 g" style="left:18px;top:262px">4 exames · valores DEMO</div>
+    </div>
+    <div class="card" id="clsC" style="left:16px;top:424px;width:364px;height:120px;opacity:0">
+      <div class="t24 g" style="left:16px;top:16px">Classificação</div><div class="pill cA" style="right:12px;top:12px">Atenção</div>
+      <div class="t24 g" style="left:16px;top:72px">Rótulo do lab</div><div class="t24 bd" style="right:16px;top:72px">Limítrofe</div>
+    </div>
+    <div class="btn o" style="top:640px">Conversar com o médico</div>
+  </div>
+
+  <!-- P4 patient conversation -->
+  <div class="s" id="sP4">
+    <div class="av" style="left:16px;top:44px;width:48px;height:48px;font-size:20px">MD</div>
+    <div class="t24 bd" style="left:76px;top:52px;font-size:26px">Médico Demo</div>
+    <div class="abs" style="left:0;top:110px;width:396px;height:2px;background:#E6E6EE"></div>
+    <div class="bub me" id="pa1" style="top:134px"><span>Vi meu resultado.</span><span>Podemos conversar?</span></div>
+    <div class="img" id="pa2" style="right:16px;top:242px"><svg class="abs" style="left:76px;top:20px" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3D2BBE" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-8 7"/></svg><div class="t24">Foto DEMO</div></div>
+    <div class="bub them" id="pa3" style="top:392px"><span>Sim. Traga o exame</span><span>na consulta DEMO.</span></div>
+    <div class="pill cG" id="pa4" style="left:30px;top:508px;opacity:0">Encerrada · pode reabrir</div>
+    <div class="comp"><div class="t24 g">Mensagem</div><i></i></div>
+  </div>
+</div><div class="notch"></div></div>
+
+<!-- PHONE B -->
+<div class="phone" id="phB" style="left:690px"><div class="scr">
+
+  <!-- C0 colleague lock screen -->
+  <div class="s" id="sC0" style="opacity:1">
+    <div class="grad" style="height:728px"></div>
+    <div class="time">09:41</div>
+    <div class="wl" style="left:0;right:0;top:186px;text-align:center">Colega Demo</div>
+    <div class="ntf" id="nC" style="top:250px"><svg class="mk" viewBox="0 0 77.1 113.5"><path d="M38.5 0H77.1V37.8H38.5Z" fill="#F79B66"/><path d="M0 37.8H38.5V75.7H0Z" fill="#F79B66"/><path d="M38.5 75.7H77.1V113.5H38.5Z" fill="#F79B66"/></svg>
+      <div class="t24 g" style="left:50px;top:12px">IUS · link de convite</div>
+      <div class="t24 bd" style="left:16px;top:52px;font-size:26px">Convite para comentar</div>
+      <div class="t24 g" style="left:16px;top:88px">Toque para ver o exame</div>
+    </div>
+  </div>
+
+  <!-- C1 preview before account -->
+  <div class="s" id="sC1">
+    <div class="ab">Prévia do exame</div>
+    <div class="card" style="left:16px;top:104px;width:364px;height:262px">
+      <div class="t24 bd" style="left:16px;top:12px;font-size:28px">Painel DEMO</div>
+      <div class="t24 g" style="left:16px;top:54px">Convite de Médico Demo</div>
+      <div class="abs" style="left:16px;top:106px;width:300px;height:18px;border-radius:9px;background:#E6E6EE"></div>
+      <div class="abs" style="left:16px;top:140px;width:240px;height:18px;border-radius:9px;background:#E6E6EE"></div>
+      <div class="abs" style="left:16px;top:174px;width:270px;height:18px;border-radius:9px;background:#E6E6EE"></div>
+      <div class="t24 g" style="left:16px;top:212px">Resultados após entrar</div>
+    </div>
+    <div class="t24 g" style="left:20px;top:390px">Sem conta? Cadastre-se e</div>
+    <div class="t24 g" style="left:20px;top:424px">o exame fica com você.</div>
+    <div id="cBtns"><div class="btn o" id="bEnt" style="top:560px">Entrar e reivindicar</div><div class="btn" style="top:636px">Cadastrar</div></div>
+    <div class="btn" id="bRei" style="top:598px;background:var(--okb);color:var(--okc);opacity:0">Exame reivindicado</div>
+  </div>
+
+  <!-- C2 colleague comments -->
+  <div class="s" id="sC2">
+    <div class="ab">Painel DEMO</div>
+    <div class="pill cP" style="right:16px;top:48px">Delegado</div>
+    <div class="row" style="top:104px"><div class="t24">Analito A</div><div class="pill cN">Normal</div></div>
+    <div class="row" style="top:170px"><div class="t24">Analito B</div><div class="pill cA">Atenção</div></div>
+    <div class="row" style="top:236px"><div class="t24">Analito C</div><div class="pill cR">Alterado</div></div>
+    <div class="card" style="left:16px;top:314px;width:364px;height:124px">
+      <div class="t24 g" id="cc0" style="left:16px;top:14px">Escreva um comentário</div>
+      <div class="t24" id="cc1" style="left:16px;top:14px;opacity:0">Comentário DEMO</div>
+      <div class="pill" id="bSend" style="right:12px;bottom:12px;background:var(--primary);color:#fff">Enviar</div>
+    </div>
+    <svg class="abs" style="left:20px;top:470px" width="26" height="30" viewBox="0 0 24 26" fill="none" stroke="#5F6070" stroke-width="2.4" stroke-linecap="round"><rect x="3" y="11" width="18" height="13" rx="3"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <div class="t24 bd" style="left:56px;top:470px;color:#4E4E60">Bloqueado para o colega</div>
+    <div class="abs" style="left:16px;top:516px;display:flex;gap:8px"><span class="pill cG" style="position:relative;padding:0 9px;text-decoration:line-through">Aceitar</span><span class="pill cG" style="position:relative;padding:0 9px;text-decoration:line-through">Recusar</span><span class="pill cG" style="position:relative;padding:0 9px;text-decoration:line-through">Repassar</span></div>
+    <div class="t24 g" style="left:20px;top:574px">Decisão é do solicitante</div>
+    <div class="pill cN" id="cSent" style="left:16px;top:646px;opacity:0">Comentário enviado</div>
+  </div>
+
+  <!-- B lock for doctor (beat 6) -->
+  <div class="s" id="sBL">
+    <div class="grad" style="height:728px"></div>
+    <div class="time">09:42</div>
+    <div class="wl" style="left:0;right:0;top:186px;text-align:center">Médico Demo</div>
+    <div class="ntf" id="nD" style="top:250px"><svg class="mk" viewBox="0 0 77.1 113.5"><path d="M38.5 0H77.1V37.8H38.5Z" fill="#F79B66"/><path d="M0 37.8H38.5V75.7H0Z" fill="#F79B66"/><path d="M38.5 75.7H77.1V113.5H38.5Z" fill="#F79B66"/></svg>
+      <div class="t24 g" style="left:50px;top:12px">IUS · agora</div>
+      <div class="t24 bd" style="left:16px;top:52px;font-size:26px">Você tem uma mensagem</div>
+      <div class="t24 g" style="left:16px;top:88px">Toque para abrir</div>
+    </div>
+  </div>
+
+  <!-- D4 doctor conversation -->
+  <div class="s" id="sD4">
+    <div class="av" style="left:16px;top:44px;width:48px;height:48px;font-size:20px">PD</div>
+    <div class="t24 bd" style="left:76px;top:52px;font-size:26px">Paciente Demo</div>
+    <div class="abs" style="left:16px;top:104px;width:172px;height:40px">
+      <div class="pill cN" id="stO" style="left:0;top:0">Aberta</div>
+      <div class="pill cG" id="stC" style="left:0;top:0;opacity:0">Encerrada</div>
+    </div>
+    <div class="pill" id="bEnc" style="right:16px;top:104px;border:2px solid var(--primary);color:var(--deep);background:#fff">Encerrar</div>
+    <div class="pill" id="bReo" style="right:16px;top:104px;border:2px solid var(--primary);color:var(--deep);background:#fff;opacity:0">Reabrir</div>
+    <div class="abs" style="left:0;top:160px;width:396px;height:2px;background:#E6E6EE"></div>
+    <div class="bub them" id="da1" style="top:180px;opacity:1"><span>Vi meu resultado.</span><span>Podemos conversar?</span></div>
+    <div class="img" id="da2" style="left:16px;top:288px;opacity:1"><svg class="abs" style="left:76px;top:20px" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3D2BBE" stroke-width="2.2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-8 7"/></svg><div class="t24">Foto DEMO</div></div>
+    <div class="bub me" id="da3" style="top:430px"><span>Sim. Traga o exame</span><span>na consulta DEMO.</span></div>
+    <div class="t24 g" id="da4" style="right:20px;top:540px;opacity:0">lida</div>
+    <div class="comp"><div class="t24 g">Mensagem</div><i></i></div>
+  </div>
+</div><div class="notch"></div></div>
+
+<svg id="lnk" viewBox="0 0 1920 1080"><path id="lk1" class="lk" pathLength="1" d="M590 682 C650 682 640 512 716 512"/><circle id="lkd" r="11" fill="#F79B66" cx="590" cy="682" opacity="0"/></svg>
+
+<div id="notes"></div>
+
+<!-- closing -->
+<div id="fin">
+  <h2>Um exame, três pessoas, <em>um só dado.</em></h2>
+  <svg id="fsv" viewBox="0 0 1680 812"><path class="fe" id="fe0" pathLength="1" d="M500 230 C560 230 550 290 610 290"/><path class="fe" id="fe1" pathLength="1" d="M500 410 C560 410 550 350 610 350"/><path class="fe" id="fe2" pathLength="1" d="M1070 320 C1120 320 1130 320 1180 320"/></svg>
+  <div class="node" id="nd0" style="left:0;top:170px"><div class="av">MD</div><b>Médico solicitante</b><span>aceita, lê, delega, conversa</span></div>
+  <div class="node" id="nd1" style="left:0;top:350px"><div class="av">CD</div><b>Médico colega</b><span>convidado: só comenta</span></div>
+  <div class="node" id="nd2" style="left:1180px;top:260px"><div class="av">PD</div><b>Paciente</b><span>carteira digital e conversa</span></div>
+  <div id="fc"><b>Exame estruturado</b><span class="t24 g">Painel DEMO · Lab Demo</span><div class="dots"><span class="pill cN">Normal</span><span class="pill cA">Atenção</span><span class="pill cR">Alterado</span></div></div>
+  <div class="frow" style="top:500px"><span class="fch">Aceite do médico, irreversível</span><span class="fch">Delegação só para comentar</span><span class="fch">Carteira digital do paciente</span></div>
+  <div class="frow" style="top:572px"><span class="fch">Aviso sem conteúdo clínico</span><span class="fch">A IA estrutura o laudo; quem decide é o médico</span></div>
+  <div class="frow" style="top:666px"><span class="badge b-prev">Previsto · prescrição, lembretes, score de saúde</span><span class="badge b-dev">Em desenvolvimento · Busque na IUS</span></div>
+</div>
+
+<div id="caps"></div>
+<div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+  // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
+  var ser = document.getElementById("ser");
+  var SER_H = [[40, 34, 8], [46, 40, 12], [36, 30, 6], [52, 46, 14], [44, 40, 10], [56, 50, 16]];
+  var SER_C = ["#644CFF", "#27A97B", "#E0675B"];
+  SER_H.forEach(function (g, gi) {
+    g.forEach(function (h, k) {
+      var b = document.createElement("i");
+      b.className = "sr";
+      b.style.cssText = "left:" + (22 + gi * 56 + k * 14) + "px;top:" + (112 - h) + "px;width:11px;height:" + h + "px;background:" + SER_C[k] + ";border-radius:3px;transform-origin:50% 100%";
+      ser.appendChild(b);
+    });
+  });
+
+  // Feature notes per beat: wide panels beside one phone, narrow beside two
+  var NOTES = [
+    { k: "w", h: "Painel do médico", s: "no app e no portal web", it: [
+      ["Fila de aceite inteira, não só a de hoje"],
+      ["Recebidos hoje e alterados do mês"],
+      ["Carteira por sexo, faixa etária e laboratório"],
+      ["Séries mensais: recebidos, aceitos e alterados"],
+      ["O mesmo painel no portal web do médico"],
+      ["Busque na IUS: a pergunta abre a tela filtrada", "dev"]
+    ] },
+    { k: "n", h: "Delegar para comentar", s: "o colega entra pelo convite", it: [
+      ["Convite por link curto", null, "validade · prazo DEMO"],
+      ["Prévia do exame antes da conta"],
+      ["Entra ou se cadastra e reivindica"],
+      ["Comenta; não aceita nem recusa", null, "e não repassa · travado"],
+      ["Comentário em livro-razão", null, "não editável"],
+      ["O médico revoga quando quiser"]
+    ] },
+    { k: "w", h: "Ficha do paciente", s: "carteira de pacientes do médico", it: [
+      ["Métricas com o vocabulário do próprio médico"],
+      ["Etiqueta de risco e dados demográficos editáveis"],
+      ["Nota privada do médico na ficha"],
+      ["Listas de exames: rotina, pré-operatório"],
+      ["Ficha compartilhada entre médicos", "cfg"],
+      ["Exame recente ou atrasado na carteira", "cfg"],
+      ["Linha do tempo clínica no portal", "prev"]
+    ] },
+    { k: "w", h: "Carteira digital do paciente", s: "mesmo app, outro perfil", it: [
+      ["Exame aceito: o paciente é avisado"],
+      ["O push abre direto a tela certa"],
+      ["Push ou telefone, nunca os dois"],
+      ["Aviso por WhatsApp, SMS de reserva", "par"],
+      ["Conta do paciente é opcional"],
+      ["Filtros e refino na carteira"],
+      ["Lembretes e score de saúde", "prev"]
+    ] },
+    { k: "w", h: "Resultado e evolução", s: "substitui o PDF do laudo", it: [
+      ["Cor por classificação, rótulo do laboratório"],
+      ["Gráfico de evolução com faixa de referência"],
+      ["O mesmo gráfico no app do médico"],
+      ["Reclassificação pelo médico, com justificativa"],
+      ["A IA lê o laudo sem ver o paciente"],
+      ["Tendência a partir de vários exames", "cfg"],
+      ["Comparativo lado a lado no portal", "prev"]
+    ] },
+    { k: "n", h: "Conversa médico ↔ paciente", s: "por paciente, no app e no portal", it: [
+      ["Aviso sem conteúdo clínico", null, "“Você tem uma mensagem”"],
+      ["Mensagens, imagens e leitura"],
+      ["Encerrar e reabrir a conversa"],
+      ["Encerra por inatividade", "cfg"],
+      ["Horário silencioso de avisos", "cfg"],
+      ["Também no portal web do médico"]
+    ] }
+  ];
+  var BADGE = { dev: ["b-dev", "Em desenvolvimento"], cfg: ["b-cfg", "Por configuração"], prev: ["b-prev", "Previsto"], par: ["b-par", "Parcial"] };
+  var notes = document.getElementById("notes");
+  NOTES.forEach(function (n, b) {
+    var p = document.createElement("div");
+    p.className = "np " + n.k; p.id = "nb" + b;
+    var step = n.k === "w" ? 96 : 104;
+    var html = "<h3>" + n.h + "</h3><div class=\"sb\">" + n.s + "</div>";
+    n.it.forEach(function (it, i) {
+      var bd = it[1] ? '<span class="badge ' + BADGE[it[1]][0] + '">' + BADGE[it[1]][1] + "</span>" : "";
+      var sub = it[2] ? '<span class="sub">' + it[2] + "</span>" : "";
+      var inner = n.k === "w"
+        ? '<div class="k">' + (i + 1) + '</div><div class="x"><b>' + it[0] + "</b>" + sub + "</div>" + bd
+        : '<div class="k">' + (i + 1) + '</div><div class="x"><b>' + it[0] + "</b>" + sub + bd + "</div>";
+      html += '<div class="ni" id="n' + b + "_" + i + '" style="top:' + (100 + i * step) + 'px">' + inner + "</div>";
+    });
+    p.innerHTML = html; notes.appendChild(p);
+  });
+
+  var CAPS = [
+    "O painel do médico: fila de aceite, carteira e séries do mês",
+    "O médico convida um colega por link; o colega só comenta",
+    "Na ficha, métrica e etiqueta de risco ficam com o paciente",
+    "Troca de perfil: o paciente recebe o aviso e abre a carteira",
+    "O resultado em cor e a evolução com faixa de referência",
+    "Médico e paciente conversam no mesmo app",
+    "Um exame estruturado, três pessoas, cada uma no seu papel"
+  ];
+  var capBox = document.getElementById("caps");
+  CAPS.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/7</small><span>" + t + "</span>"; capBox.appendChild(d);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 44 s)
+  var tl = gsap.timeline({ paused: true });
+  var ON = "#644CFF", OFF = "#E2E0EE";
+  function fin_(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.5, ease: "power2.out" }, t); }
+  function fout(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power2.in" }, t); }
+  function rise(sel, t, d) { tl.fromTo(sel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: d || 0.5, ease: "power3.out" }, t); }
+  function press(sel, t) { tl.to(sel, { scale: 0.94, duration: 0.12, yoyo: true, repeat: 1 }, t); }
+  // Screen swap inside a phone: old leaves first, new slides in after (no overlap)
+  function swap(a, b, t) {
+    tl.to(a, { opacity: 0, x: -30, duration: 0.3, ease: "power2.in" }, t);
+    tl.fromTo(b, { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, t + 0.3);
+  }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, a);
+    tl.to("#cap" + i, { opacity: 0, duration: 0.3 }, b - 0.3);
+  }
+  function panel(b, t) {
+    fin_("#nb" + b, t, 0.4);
+    var n = NOTES[b].it.length;
+    for (var i = 0; i < n; i++) tl.fromTo("#n" + b + "_" + i, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, t + 0.15 + i * 0.08);
+  }
+  // Light one note card (and switch it off later)
+  function lit(b, i, t, off) {
+    tl.to("#n" + b + "_" + i, { borderColor: ON, backgroundColor: "#F3F0FF", duration: 0.3 }, t);
+    if (off) tl.to("#n" + b + "_" + i, { borderColor: OFF, backgroundColor: "#FFFFFF", duration: 0.3 }, off);
+  }
+  function ring(sel, a, b) {
+    tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.3 }, a);
+    if (b) tl.to(sel, { opacity: 0, duration: 0.3 }, b);
+  }
+
+  // Beat 1 (0-6.6): doctor dashboard
+  tl.fromTo("#top", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
+  tl.fromTo("#phA", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.15);
+  fin_("#lA1", 0.3, 0.4);
+  cap(0, 0.4, 6.6);
+  panel(0, 0.6);
+  tl.fromTo(["#sb0", "#sb1", "#sb2"], { scaleX: 0 }, { scaleX: function (i) { return [0.82, 0.64, 0.3][i]; }, duration: 0.6, ease: "power2.out" }, 0.8);
+  tl.fromTo(".sr", { scaleY: 0 }, { scaleY: 1, duration: 0.5, stagger: 0.015, ease: "power2.out" }, 0.9);
+  fin_("#tu0", 0.8, 0.2); tl.fromTo("#tw0", { color: "#5F6070" }, { color: "#FFFFFF", duration: 0.2 }, 0.8);
+  ring("#rk1", 1.2, 2.2); lit(0, 0, 1.2, 2.2);
+  ring("#rk2", 2.3, 3.2); ring("#rk3", 2.3, 3.2); lit(0, 1, 2.3, 3.2);
+  ring("#rk4", 3.3, 4.5); lit(0, 2, 3.3, 4.5);
+  fout("#tu0", 3.6, 0.2); tl.to("#tw0", { color: "#5F6070", duration: 0.2 }, 3.6);
+  fin_("#tu1", 3.8, 0.2); tl.fromTo("#tw1", { color: "#5F6070" }, { color: "#FFFFFF", duration: 0.2 }, 3.8);
+  tl.to("#sb0", { scaleX: 0.46, duration: 0.5 }, 3.8); tl.to("#sb1", { scaleX: 0.9, duration: 0.5 }, 3.8); tl.to("#sb2", { scaleX: 0.58, duration: 0.5 }, 3.8);
+  ring("#rk5", 4.6); lit(0, 3, 4.6);
+  tl.fromTo(".sr", { scaleY: 0.2 }, { scaleY: 1, duration: 0.5, ease: "power2.out", immediateRender: false }, 4.6);
+  lit(0, 4, 4.7); lit(0, 5, 4.8);
+  // NOTE: last state change ends at 5.1; the beat holds until 6.6
+
+  // Beat 2 (6.6-15.6): delegate to a colleague by link; colleague comments
+  cap(1, 6.6, 17.2);
+  fout("#nb0", 6.6, 0.3); fout("#rk5", 6.6, 0.3);
+  swap("#sD1", "#sD2", 6.6);
+  tl.fromTo("#phB", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, 7.0);
+  fin_("#lB1", 7.2, 0.4);
+  panel(1, 7.1);
+  press("#bDel", 7.9);
+  fin_("#dim", 8.2, 0.3);
+  // Content under the opaque sheet leaves while it is up (no stacked text)
+  fout(["#d2r3", "#d2ct", "#cm0", "#bDel"], 8.04, 0.14);
+  tl.to(["#d2r3", "#d2ct", "#bDel"], { opacity: 1, duration: 0.3 }, 10.75);
+  tl.fromTo("#sheet", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 8.2);
+  fin_("#op0", 8.7, 0.2); fout("#op0", 9.2, 0.2); fin_("#op1", 9.4, 0.25);
+  press("#bInv", 10.0);
+  tl.to("#sheet", { opacity: 0, y: 120, duration: 0.4, ease: "power2.in" }, 10.3);
+  fout("#dim", 10.3, 0.3);
+  fin_("#cm1", 10.75, 0.3);
+  lit(1, 0, 10.0, 11.4);
+  tl.to("#lk1", { strokeDashoffset: 0, duration: 0.6, ease: "power2.inOut" }, 10.5);
+  tl.fromTo("#lkd", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.6);
+  var lkp = { x0: 590, y0: 682, c1x: 650, c1y: 682, c2x: 640, c2y: 512, x1: 716, y1: 512 };
+  var lkt = { t: 0 };
+  tl.fromTo(lkt, { t: 0 }, { t: 1, duration: 0.6, ease: "power1.inOut", onUpdate: function () {
+    var t = lkt.t, u = 1 - t, el = document.getElementById("lkd");
+    el.setAttribute("cx", u * u * u * lkp.x0 + 3 * u * u * t * lkp.c1x + 3 * u * t * t * lkp.c2x + t * t * t * lkp.x1);
+    el.setAttribute("cy", u * u * u * lkp.y0 + 3 * u * u * t * lkp.c1y + 3 * u * t * t * lkp.c2y + t * t * t * lkp.y1);
+  } }, 10.6);
+  fout("#lkd", 11.2, 0.15);
+  tl.fromTo("#nC", { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 11.2);
+  fout("#lk1", 11.9, 0.3);
+  swap("#sC0", "#sC1", 11.9); lit(1, 1, 12.0, 13.2);
+  press("#bEnt", 12.8);
+  fout("#cBtns", 13.0, 0.25); fin_("#bRei", 13.3, 0.3); lit(1, 2, 13.2, 14.0);
+  swap("#sC1", "#sC2", 13.9); lit(1, 3, 14.0);
+  fout("#cc0", 14.4, 0.15); fin_("#cc1", 14.55, 0.3);
+  press("#bSend", 14.9);
+  fin_("#cSent", 15.1, 0.25);
+  fout("#cm1", 15.1, 0.2); rise("#cm2", 15.3, 0.4); lit(1, 4, 15.3); lit(1, 5, 15.4);
+  // NOTE: last state change at 15.7; the beat holds until 17.2
+
+  // Beat 3 (17.2-23.2): patient chart with metric, risk tag, private note
+  cap(2, 17.2, 23.2);
+  fout("#phB", 17.2, 0.3); fout("#lB1", 17.2, 0.3); fout("#nb1", 17.2, 0.3);
+  swap("#sD2", "#sD3", 17.2);
+  panel(2, 17.6);
+  press("#bMet", 18.3);
+  rise("#mNew", 18.6, 0.4); lit(2, 0, 18.6, 19.6);
+  tl.fromTo("#tgRisk", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 19.6); lit(2, 1, 19.6, 20.6);
+  ring("#rNota", 20.6, 21.6); lit(2, 2, 20.6, 21.6);
+  tl.to("#mNew", { borderColor: "#E6E6EE", duration: 0.3 }, 20.6);
+  ring("#rLst", 21.4); lit(2, 3, 21.4);
+  // Hold from 21.7 to 23.2
+
+  // Beat 4 (23.2-28.8): shell switch to the patient, notification, wallet
+  cap(3, 23.2, 28.8);
+  fout("#nb2", 23.2, 0.3);
+  fout("#lA1", 23.2, 0.25); fin_("#lA2", 23.5, 0.3);
+  tl.to("#phA", { scale: 0.97, duration: 0.3, ease: "power2.in" }, 23.2);
+  tl.to("#phA", { scale: 1, duration: 0.4, ease: "power2.out" }, 23.6);
+  fout("#sD3", 23.2, 0.3); fin_("#sP0", 23.55, 0.35);
+  panel(3, 23.6);
+  tl.fromTo("#nP", { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 24.2); lit(3, 0, 24.2, 25.4);
+  press("#nP", 25.2);
+  swap("#sP0", "#sP1", 25.4); lit(3, 1, 25.4, 26.4);
+  ring("#rw1", 26.4); lit(3, 2, 26.4);
+  // Hold from 26.7 to 28.8
+
+  // Beat 5 (28.8-34.4): result colours and evolution chart
+  cap(4, 28.8, 34.4);
+  fout("#nb3", 28.8, 0.3);
+  press("#w1", 28.8);
+  swap("#sP1", "#sP2", 29.0);
+  panel(4, 29.2); lit(4, 0, 29.6, 30.6);
+  ring("#rpB", 30.1);
+  swap("#sP2", "#sP3", 30.6);
+  fin_("#band", 31.0, 0.4); fin_("#bandK", 31.0, 0.4); fin_("#bandL", 31.0, 0.4); lit(4, 1, 31.0, 32.2);
+  tl.to("#evo", { strokeDashoffset: 0, duration: 0.9, ease: "power1.inOut" }, 31.2);
+  tl.fromTo(".pt", { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.3, stagger: 0.22 }, 31.2);
+  rise("#clsC", 32.2, 0.4); lit(4, 3, 32.2);
+  lit(4, 2, 32.6);
+  // Hold from 32.9 to 34.4
+
+  // Beat 6 (34.4-40.0): doctor and patient converse
+  cap(5, 34.4, 40.0);
+  fout("#nb4", 34.4, 0.3);
+  swap("#sP3", "#sP4", 34.4);
+  tl.set(["#sC2", "#sC0", "#sC1"], { opacity: 0 }, 34.4);
+  tl.set("#sBL", { opacity: 1, x: 0 }, 34.4);
+  tl.fromTo("#phB", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out", immediateRender: false }, 34.7);
+  fin_("#lB2", 34.9, 0.4);
+  panel(5, 34.8);
+  rise("#pa1", 35.0, 0.4); rise("#pa2", 35.3, 0.4);
+  tl.fromTo("#nD", { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 35.6); lit(5, 0, 35.6, 36.7);
+  swap("#sBL", "#sD4", 36.2);
+  rise("#da3", 36.9, 0.4); fin_("#da4", 37.2, 0.3); rise("#pa3", 37.2, 0.4); lit(5, 1, 36.9, 37.7);
+  press("#bEnc", 37.6);
+  fout("#bEnc", 37.85, 0.15); fin_("#bReo", 38.0, 0.3);
+  fout("#stO", 37.85, 0.15); fin_("#stC", 38.0, 0.3); fin_("#pa4", 38.05, 0.3); lit(5, 2, 37.85);
+  // Hold from 38.35 to 40.0
+
+  // Closing (40.0-44.0): one exam, three people, one record
+  ["#phA", "#phB", "#lblA", "#lblB", "#nb5"].forEach(function (s) { fout(s, 40.0, 0.35); });
+  fin_("#fin", 40.35, 0.2);
+  tl.fromTo("#cap6", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 40.4);
+  tl.fromTo("#fin h2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 40.4);
+  tl.fromTo("#fc", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 40.55);
+  [0, 1, 2].forEach(function (i) {
+    tl.fromTo("#nd" + i, { opacity: 0, x: i === 2 ? 30 : -30 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 40.6 + i * 0.1);
+    tl.to("#fe" + i, { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" }, 40.8 + i * 0.08);
+  });
+  tl.fromTo(".frow > span", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.05 }, 41.0);
+  tl.set("#pad", { opacity: 0 }, 44);
+
+  // The site Player has no runtime registry, so create it when missing
+  window.__timelines = window.__timelines || {};
+  window.__timelines["ius-jornada-medico-paciente"] = tl;
+</script>
+</body>
+</html>

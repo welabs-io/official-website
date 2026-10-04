@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tabe.la · operação, app e automação (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA TABE.LA */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#F3F6F8;--ink:#102838;--accent:#0D547F;--sec:#C63850;--surface:#FFFFFF;--muted:#526678;--line:#BCCBD4;--soft:#E2EDF4;--ok:#1F7A52}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+.abs{position:absolute}
+/* CABEÇALHO FIXO */
+.top{position:absolute;left:120px;right:120px;top:36px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--line)}
+.top .lg{background:var(--ink);border-radius:14px;padding:8px 18px;margin-bottom:8px;display:flex}.top img{height:40px;display:block}
+.chip{font-size:26px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;background:var(--surface);white-space:nowrap}
+.chip.sb{color:var(--sec);border-color:var(--sec);font-weight:700;background:#fff}
+.chip.ok{color:var(--ok);border-color:var(--ok);font-weight:700}
+.chip.ac{color:var(--accent);border-color:var(--accent);font-weight:700;background:var(--soft)}
+.prev{border-style:dashed;border-color:var(--sec);color:var(--sec);font-weight:700;background:#fff;border-width:2px;border-radius:999px;padding:4px 18px;font-size:26px;white-space:nowrap}
+.scene{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+h1{position:absolute;left:120px;top:122px;margin:0;font-size:56px;line-height:1.1;font-weight:800;letter-spacing:-1px;white-space:nowrap}
+.box{position:absolute;background:var(--surface);border:2px solid var(--line);border-radius:24px}
+.dash{border-style:dashed;border-color:var(--sec)}
+.lbl{font-size:30px;font-weight:700}
+.t{font-size:26px;font-weight:600}
+.m{font-size:26px;font-weight:500;color:var(--muted)}
+.cap{position:absolute;font-size:28px;font-weight:700;line-height:1.2}
+.cap span{display:block;font-size:26px;font-weight:500;color:var(--muted)}
+/* APP DO CORRETOR */
+.ph{position:absolute;top:232px;width:380px;height:610px;background:var(--surface);border:6px solid var(--ink);border-radius:44px;overflow:hidden}
+.ph .nt{position:absolute;left:130px;top:0;width:120px;height:24px;background:var(--ink);border-radius:0 0 16px 16px}
+.ph .in{position:absolute;left:20px;right:20px;top:44px}
+.ph .h{font-size:30px;font-weight:800;margin-bottom:14px}
+.fld{height:60px;border:2px solid var(--line);border-radius:14px;display:flex;align-items:center;padding:0 16px;font-size:26px;font-weight:600;margin-bottom:12px;background:var(--bg)}
+.btn{height:60px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;margin-bottom:12px}
+.btn.o{background:#fff;color:var(--accent);border:2px solid var(--accent)}
+.codes{display:flex;gap:8px;margin:6px 0 16px}.codes i{width:48px;height:62px;border:2px solid var(--accent);border-radius:12px;background:var(--soft);display:block;position:relative}
+.codes i:after{content:"";position:absolute;left:18px;top:24px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.row{display:flex;align-items:center;justify-content:space-between;min-height:64px;padding:0 14px;border-radius:12px;border:2px solid var(--line);margin-bottom:10px;font-size:26px;font-weight:600;background:var(--surface)}
+.row.hit{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.tag{font-size:24px;font-weight:700;padding:2px 12px;border-radius:999px;background:var(--soft);color:var(--accent);white-space:nowrap}
+.tag.r{background:#fbeef0;color:var(--sec)}.tag.g{background:#e3f3ea;color:var(--ok)}
+.star{color:var(--sec);font-size:30px;font-weight:800}
+.push{position:absolute;left:14px;right:14px;top:96px;background:var(--ink);color:#fff;border-radius:18px;padding:12px 16px;font-size:24px;font-weight:600;line-height:1.25;z-index:3}
+.share{position:absolute;left:0;right:0;bottom:0;height:200px;background:var(--soft);border-top:2px solid var(--accent);padding:8px 30px 0}
+.share .ic{display:block;margin-right:0;text-align:center;font-size:24px;font-weight:700;color:var(--accent)}
+.share .ic b{display:block;width:48px;height:48px;margin:0 auto 4px;border-radius:50%;background:var(--accent)}
+/* JANELA */
+.win{position:absolute;background:var(--surface);border:2px solid var(--line);border-radius:22px;overflow:hidden}
+.win .bar{height:66px;background:var(--ink);color:#fff;display:flex;align-items:center;padding:0 24px;font-size:26px;font-weight:600}
+.cell{position:absolute;width:100px;height:70px;border-radius:12px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;background:#fff}
+.cell.res{background:#fdf2dc;border-color:#d9a43b;color:#8a5b00}.cell.sold{background:#eceff2;color:#526678}
+.cell.sel{border:4px solid var(--accent);background:var(--soft);color:var(--accent)}
+.slide{position:relative;height:14px;border-radius:7px;background:var(--line);margin:10px 0 18px}.slide b{position:absolute;left:0;top:0;height:14px;border-radius:7px;background:var(--accent)}.slide u{position:absolute;top:-8px;width:30px;height:30px;border-radius:50%;background:var(--accent);border:4px solid #fff;box-shadow:0 0 0 2px var(--accent)}
+.stp{position:absolute;left:1260px;width:540px;height:140px;padding:20px 26px}
+.stp .n{position:absolute;right:20px;top:14px;font-size:30px;font-weight:800;color:var(--accent)}
+/* PAINEIS */
+.tabs{position:absolute;left:120px;top:228px;display:flex;gap:14px}
+.tabs div{padding:10px 24px;border:2px solid var(--line);border-radius:14px;font-size:28px;font-weight:700;color:var(--muted);background:#fff}
+.kpi{position:absolute;top:316px;width:300px;height:190px;padding:22px 26px}
+.big{font-size:56px;font-weight:800;color:var(--accent);line-height:1}
+.mini{height:12px;border-radius:6px;background:var(--line);margin-top:14px;position:relative}.mini b{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--accent)}
+.bars{position:absolute;left:50px;right:50px;top:150px;height:330px;display:flex;align-items:flex-end;gap:26px;border-bottom:3px solid var(--ink)}
+.bars div{flex:1;background:var(--accent);border-radius:10px 10px 0 0;transform-origin:bottom}
+.bars div.s{background:var(--sec)}
+/* FLOW */
+.stepper{position:absolute;left:120px;top:222px;display:flex;align-items:center;gap:0}
+.pill{width:300px;height:76px;border-radius:38px;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--muted);gap:10px}
+.arr{width:45px;height:4px;background:var(--line)}
+.node{position:absolute;left:30px;width:640px;height:88px;border-radius:18px;border:2px solid var(--accent);background:var(--soft);color:var(--accent);display:flex;align-items:center;padding:0 22px;font-size:28px;font-weight:700}
+.node.w{border-color:var(--ok);background:#e3f3ea;color:var(--ok)}
+.vln{position:absolute;left:340px;width:4px;height:26px;background:var(--accent)}
+.bub{position:absolute;border-radius:18px;padding:12px 16px;font-size:26px;font-weight:600;line-height:1.25}
+/* RAIL */
+.rail{position:absolute;left:120px;top:972px;width:1680px;height:76px;display:flex;align-items:center}
+.rn{width:296px;height:70px;border-radius:35px;border:2px solid var(--line);background:#fff;color:var(--muted);font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.re{width:50px;height:4px;background:var(--line)}
+/* FECHO */
+.close{position:absolute;left:120px;width:1680px;top:330px;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px;line-height:1.1}
+/* FLOW STUDIO · QUADRO REACT FLOW RECONSTRUÍDO (DEMO) */
+#s4{--warn:#8A5B00;--warnt:#FDF2DC;--info:#2B6CB0;--infot:#E3EEF9;--bad:#A3262B;--badt:#FBEAEA}
+#cv{position:absolute;left:120px;top:200px;width:1680px;height:750px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#E9EEF1}
+#vp{position:absolute;left:0;top:0;width:1676px;height:746px;overflow:hidden}
+#dots{position:absolute;inset:0;background-image:radial-gradient(circle,#9DB0BC 3px,transparent 3.5px);background-size:36px 36px;background-position:520px 165px}
+#world{position:absolute;left:0;top:0;width:2900px;height:620px;transform-origin:0 0}
+#edges{position:absolute;left:0;top:0;overflow:visible}
+.nd{position:absolute;width:460px;border:3px solid #BCCBD4;border-radius:22px;background:#fff;box-shadow:0 3px 10px rgba(16,40,56,.10);opacity:0;color:var(--ink)}
+.nd[data-role=trigger]{border-radius:44px 22px 22px 44px}
+.nh{height:112px;display:flex;align-items:center;gap:16px;padding:0 20px}
+.ni{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;flex:none;background:var(--tint);color:var(--acc)}
+.nd{--acc:#0D547F;--tint:rgba(13,84,127,.10)}
+.nd[data-role=trigger]{--acc:#C63850;--tint:rgba(198,56,80,.12)}
+.nd[data-role=notification]{--acc:#0A3F5F;--tint:#DCEBF4}
+.nd[data-role=interaction]{--acc:#8A5B00;--tint:rgba(217,164,59,.25)}
+.nd p{margin:0;white-space:nowrap}
+.nk{font-size:26px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;color:var(--acc);line-height:30px}
+.nm{font-size:31px;font-weight:700;line-height:38px}
+.nc{margin:0 20px 16px;height:70px;border-radius:14px;background:#EDF2F5;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:26px;gap:10px}
+.nc dt{color:var(--muted);margin:0;white-space:nowrap}.nc dd{margin:0;font-weight:600;white-space:nowrap}
+.no{--tone:#526678;position:relative;height:58px;border-top:2px solid #BCCBD4;display:flex;align-items:center;padding:0 24px 0 20px;font-size:27px;font-weight:500}
+.no+.no{border-top-style:dashed}
+.no[data-tone=success]{--tone:#1F7A52}.no[data-tone=blocked]{--tone:#A3262B}.no[data-tone=waiting]{--tone:#B7791F}
+.no i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--tone);margin-right:12px;vertical-align:middle}
+.hd{position:absolute;right:-14px;top:50%;margin-top:-12px;width:24px;height:24px;border-radius:50%;border:4px solid var(--tone);background:#fff}
+.hin{position:absolute;left:-14px;top:44px;width:24px;height:24px;border-radius:50%;border:4px solid #526678;background:#fff}
+.nd[data-role=end]{width:330px;height:88px;border-radius:44px;display:flex;align-items:center;gap:14px;padding:0 24px 0 18px}
+.nd[data-role=end] .hin{top:32px}
+.nd[data-role=end] .ni{width:48px;height:48px;border-radius:50%}
+.nd[data-role=end][data-t=happy]{--acc:#1F7A52;--tint:rgba(31,122,82,.14)}
+.nd[data-role=end][data-t=halt]{--acc:#526678;--tint:#E2EDF4;border-style:dashed}
+.nd[data-role=end] .nk{font-size:26px;line-height:28px}.nd[data-role=end] .nm{font-size:30px;line-height:34px}
+.nrb{position:absolute;left:18px;top:-24px;font-size:24px;font-weight:700;line-height:30px;padding:2px 14px;border-radius:20px;border:2px solid;white-space:nowrap;opacity:0;z-index:3}
+.nd[data-role=end] .nrb{top:-40px}
+.nrb.s{background:#E3F3EA;color:#1F7A52;border-color:#1F7A52}.nrb.a{background:var(--infot);color:var(--info);border-color:var(--info)}
+.eb{fill:none;stroke-width:4}
+.fl{fill:none;stroke-width:8;stroke-linecap:round;stroke-dasharray:1 24;opacity:0}
+.et{fill:none;stroke-width:8;stroke-linecap:butt}
+.ah{opacity:0}
+.plus{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff;border:3px solid #BCCBD4;color:var(--accent);display:grid;place-items:center;opacity:0}
+#tok{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#0D547F;border:6px solid #fff;box-shadow:0 0 0 6px rgba(13,84,127,.28),0 6px 18px rgba(16,40,56,.35);opacity:0;z-index:6}
+.ov{position:absolute;z-index:20;background:rgba(255,255,255,.95);border:2px solid #BCCBD4;box-shadow:0 8px 24px rgba(16,40,56,.14)}
+#cbar{left:20px;right:20px;top:12px;height:68px;border-radius:20px;display:flex;align-items:center;gap:12px;padding:0 14px;font-size:26px;font-weight:700}
+#cbar .tt{font-size:28px;font-weight:800;white-space:nowrap}
+#cbar .sv{font-size:24px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap}
+#cbar .gr{flex:1}
+.bt{height:48px;border-radius:12px;border:2px solid var(--accent);color:var(--accent);background:#fff;display:flex;align-items:center;gap:8px;padding:0 16px;font-size:26px;font-weight:700;white-space:nowrap}
+.bt.p{background:var(--accent);color:#fff}
+.seg{display:flex;border:2px solid #BCCBD4;border-radius:12px;overflow:hidden;height:48px}
+.seg span{padding:0 16px;display:flex;align-items:center;font-size:26px;font-weight:700;color:var(--muted)}
+#sgq{background:var(--accent);color:#fff}
+#chip{position:relative;height:48px;min-width:252px}
+#chip span{position:absolute;left:0;top:0;white-space:nowrap;height:48px;display:flex;align-items:center;padding:0 16px;border-radius:999px;border:2px solid;font-size:26px;font-weight:700}
+#c0{color:var(--muted);border-color:#BCCBD4;background:#fff}
+#c1{color:var(--ok);border-color:var(--ok);background:#E3F3EA;opacity:0}
+#c2{color:var(--ok);border-color:var(--ok);background:#E3F3EA;opacity:0}
+#c3{color:#fff;border-color:var(--ok);background:var(--ok);opacity:0}
+#badges{position:absolute;z-index:21;left:0;right:0;top:92px;display:flex;justify-content:center;gap:14px}
+.bg{height:56px;border-radius:28px;border:3px solid var(--ok);background:#fff;color:var(--ok);font-size:27px;font-weight:800;display:flex;align-items:center;gap:8px;padding:0 20px;opacity:0;white-space:nowrap;box-shadow:0 6px 18px rgba(16,40,56,.14)}
+#runbar{position:absolute;z-index:21;left:50%;margin-left:-250px;width:500px;top:92px;height:56px;border-radius:28px;border:3px solid var(--accent);background:#fff;color:var(--accent);font-size:27px;font-weight:800;display:flex;align-items:center;justify-content:center;opacity:0;box-shadow:0 6px 18px rgba(16,40,56,.14)}
+#ctl{left:20px;bottom:92px;width:56px;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+#ctl b{height:54px;display:grid;place-items:center;color:var(--ink);border-bottom:2px solid #BCCBD4}
+#ctl b:last-child{border-bottom:0}
+#mm{left:92px;bottom:92px;width:300px;height:170px;border-radius:14px;overflow:hidden}
+#tools{left:20px;bottom:16px;height:62px;border-radius:31px;display:flex;align-items:center;gap:6px;padding:0 20px;font-size:26px;font-weight:700;color:var(--accent);white-space:nowrap}
+#tools span.sp{width:2px;height:28px;background:#BCCBD4;margin:0 8px}
+.drw{position:absolute;z-index:22;top:100px;bottom:12px;width:520px;border-radius:22px;background:#fff;border:2px solid #BCCBD4;box-shadow:0 18px 48px rgba(16,40,56,.20);overflow:hidden}
+.dh{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 22px;border-bottom:2px solid #D5E0E6;font-size:30px;font-weight:800}
+.dh .xb{width:44px;height:44px;display:grid;place-items:center;color:var(--muted)}
+#pal{left:20px;width:440px}
+.pg{padding:14px 20px 0}
+.pg h4{margin:0 0 8px;font-size:24px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.pi{height:54px;border:2px solid #D5E0E6;border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:26px;font-weight:600;margin-bottom:8px;background:#fff;white-space:nowrap}
+.pi em{font-style:normal;font-size:24px;font-weight:700;color:var(--accent);background:var(--soft);border-radius:999px;padding:0 12px}
+#insp{right:12px}
+.tbs{display:flex;border-bottom:2px solid #D5E0E6;padding:0 14px}
+.tbs span{padding:12px 10px 10px;font-size:24px;white-space:nowrap;font-weight:700;color:var(--muted);border-bottom:4px solid transparent;margin-bottom:-2px}
+.tbs span.on{color:var(--accent);border-color:var(--accent)}
+.fd{padding:14px 22px 0}
+.fd label{display:block;font-size:24px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.fv{min-height:54px;border:2px solid #BCCBD4;border-radius:12px;background:#F3F6F8;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:26px;font-weight:600;flex-wrap:wrap}
+#run{right:12px}
+.rs{display:flex;align-items:center;justify-content:space-between;padding:12px 22px 0;position:relative;height:66px}
+.rs .chip{position:absolute;left:22px;top:12px}
+.rl{list-style:none;margin:0;padding:8px 22px 0}
+.rl li{height:50px;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:600;white-space:nowrap}
+.rl .rd{width:22px;height:22px;border-radius:50%;border:3px solid #BCCBD4;background:#fff;flex:none}
+.rl .tg{margin-left:auto;position:relative;width:160px;height:34px}
+.rl .tg span{position:absolute;right:0;top:0;font-size:24px;font-weight:700;line-height:30px;padding:0 12px;border-radius:999px;white-space:nowrap}
+.tg .ok{background:#E3F3EA;color:#1F7A52}.tg .aw{background:var(--infot);color:var(--info)}
+#pend{position:relative;margin:8px 22px 0;height:176px}
+#wa{position:absolute;inset:0;border-radius:16px;background:#E8EEF1;padding:12px 16px}
+.bub{position:absolute;border-radius:18px;padding:12px 16px;font-size:26px;font-weight:600;line-height:1.25}
+#ans{white-space:nowrap;position:absolute;left:0;right:0;top:0;height:54px;border-radius:14px;background:#E3F3EA;color:#1F7A52;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:26px;font-weight:700;opacity:0}
+#rcp{position:absolute;left:0;right:0;top:64px;height:90px;border-radius:14px;border:3px solid #1F7A52;background:#fff;padding:8px 16px;opacity:0}
+#rcp b{display:block;font-size:26px;color:#1F7A52}#rcp span{font-size:24px;color:var(--muted);font-weight:600}
+.sim{padding:10px 22px 0}
+.sim .m{font-size:24px;font-weight:600;color:var(--muted)}
+.sim div.r{display:flex;gap:8px;margin-top:6px}
+.sim .tg2{font-size:24px;font-weight:700;color:var(--accent);background:var(--soft);border-radius:999px;padding:4px 14px;white-space:nowrap}
+/* ABERTURA TABE.LA (copiada de pieces/tabela-intro, ids com prefixo intro-) */
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000;background:#6E70BF;font-family:Inter,sans-serif;color:#fff}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#intro-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;opacity:0;text-shadow:0 2px 18px rgba(30,32,90,.28)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-tabela-operacao-intro" data-width="1920" data-height="1080" data-start="0" data-duration="43">
+<!-- ABERTURA: marca Tabe.la por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-stage" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Comercialização imobiliária, da tabela à decisão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme, transparente durante a abertura -->
+
+<div class="top"><div class="lg"><img src="./assets/tabela.svg" alt="Tabe.la"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+
+<!-- CENA 1: APP DO CORRETOR -->
+<div class="scene" id="s1">
+  <h1>App do corretor · Android e iOS</h1>
+  <div class="prev abs" style="right:120px;top:130px">Previsto: agenda · matches · feed · vendas</div>
+  <div class="ph p1" style="left:120px"><div class="nt"></div><div class="in">
+    <div class="h">Entrar com telefone</div>
+    <div class="fld">(11) 9••••-••••</div>
+    <div style="display:flex;gap:10px;margin-bottom:14px"><span class="tag g">WhatsApp</span><span class="tag">SMS</span></div>
+    <div class="btn o">Receber código</div>
+    <div class="m" style="margin:8px 0 0">Código de acesso</div>
+    <div class="codes"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="btn">Entrar</div>
+  </div></div>
+  <div class="ph p2" style="left:550px"><div class="nt"></div><div class="in">
+    <div class="h">Incorporadoras</div>
+    <div class="row hit"><span>Aurora</span><span class="star">★</span></div>
+    <div class="row"><span>Horizonte</span><span class="star">★</span></div>
+    <div class="row"><span>Vértice</span><span style="color:var(--muted);font-size:30px">☆</span></div>
+    <div class="h" style="margin-top:14px">Empreendimentos</div>
+    <div class="row"><span>Residencial Alfa</span><span class="tag">Tabela</span></div>
+    <div class="row"><span>Edifício Beta</span><span class="tag">Tabela</span></div>
+  </div></div>
+  <div class="ph p3" style="left:980px"><div class="nt"></div><div class="in">
+    <div class="h">Meus clientes</div>
+    <div class="fld" style="height:52px">Buscar · etiqueta</div>
+    <div class="row hit" style="display:block;padding:8px 14px"><div>Cliente A</div><div style="margin:4px 0"><span class="tag r">Investidor</span> <span class="tag g">Quente</span></div><div class="m" style="font-size:24px">Interesse: 2 dorm · DEMO</div></div>
+    <div class="row" style="display:block;padding:8px 14px"><div>Cliente B</div><div style="margin:4px 0"><span class="tag">1º imóvel</span></div><div class="m" style="font-size:24px">Interesse: studio · DEMO</div></div>
+    <div class="btn o" style="margin-top:6px">Novo interesse · preset</div>
+  </div></div>
+  <div class="ph p4" style="left:1410px"><div class="nt"></div>
+    <div class="push">Push · Proposta aprovada. Toque para abrir.</div>
+    <div class="in" style="top:44px"><div class="h">Notificações</div>
+    <div class="row hit" style="margin-top:118px"><span>Proposta aprovada</span><span class="tag g">novo</span></div>
+    <div class="row"><span>Proposta em revisão</span></div>
+    </div>
+    <div class="share"><div class="lbl" style="font-size:26px;margin-bottom:6px">PDF da proposta · compartilhar</div><div style="display:flex;justify-content:space-between"><span class="ic"><b></b>WhatsApp</span><span class="ic"><b></b>E-mail</span><span class="ic"><b></b>Salvar</span></div></div>
+  </div>
+  <div class="cap c1" style="left:120px;top:856px;width:380px">Acesso por código<span>WhatsApp ou SMS</span></div>
+  <div class="cap c2" style="left:550px;top:856px;width:380px">Tabelas e empreendimentos<span>incorporadoras favoritas</span></div>
+  <div class="cap c3" style="left:980px;top:856px;width:380px">Carteira de clientes<span>interesses e etiquetas</span></div>
+  <div class="cap c4" style="left:1410px;top:856px;width:380px">Central de notificações<span>push e PDF compartilhável</span></div>
+</div>
+
+<!-- CENA 2: VITRINE PÚBLICA -->
+<div class="scene" id="s2">
+  <h1>Vitrine pública · do visitante à proposta</h1>
+  <div class="win" style="left:120px;top:222px;width:1100px;height:720px">
+    <div class="bar">tabe.la / aurora / residencial-alfa · DEMO</div>
+    <div class="abs m" style="left:30px;top:80px">Aurora › Residencial Alfa</div>
+    <div class="abs lbl" style="left:30px;top:118px;font-size:34px">Residencial Alfa</div>
+    <div class="abs" id="grid" style="left:30px;top:180px;width:440px;height:250px">
+      <div class="cell" style="left:0;top:0">101</div><div class="cell res" style="left:112px;top:0">102</div><div class="cell" style="left:224px;top:0">103</div><div class="cell sold" style="left:336px;top:0">104</div>
+      <div class="cell" id="u201" style="left:0;top:90px">201</div><div class="cell" id="u202" style="left:112px;top:90px">202</div><div class="cell res" style="left:224px;top:90px">203</div><div class="cell" style="left:336px;top:90px">204</div>
+      <div class="cell sold" style="left:0;top:180px">301</div><div class="cell" style="left:112px;top:180px">302</div><div class="cell" style="left:224px;top:180px">303</div><div class="cell sold" style="left:336px;top:180px">304</div>
+    </div>
+    <div class="abs" style="left:30px;top:450px;display:flex;gap:10px"><span class="tag g">Disponível</span><span class="tag" style="background:#fdf2dc;color:#8a5b00">Reservada</span><span class="tag" style="background:#eceff2;color:#526678">Vendida</span></div>
+    <div class="abs m" style="left:30px;top:508px;width:440px">Unidades marcadas: <b id="selcount" style="color:var(--accent)">2</b></div>
+    <div class="abs chip ac" style="left:30px;top:566px">Arquivos do empreendimento · baixar</div>
+    <div class="abs chip" style="left:30px;top:630px">Página da incorporadora</div>
+    <div class="abs box" style="left:560px;top:130px;width:500px;height:560px;padding:24px 26px;border-radius:20px">
+      <div class="lbl">Simulador de preço</div><div class="m">valores DEMO</div>
+      <div class="t" style="margin-top:20px">Entrada</div><div class="slide"><b style="width:35%"></b><u style="left:33%"></u></div>
+      <div class="t">Parcelas</div><div class="slide"><b style="width:55%"></b><u style="left:53%"></u></div>
+      <div class="t">Reforço anual</div><div class="slide"><b style="width:25%"></b><u style="left:23%"></u></div>
+      <div style="border-top:2px solid var(--line);margin-top:14px;padding-top:14px"><div class="m">Total das unidades marcadas</div><div class="big" style="font-size:52px">R$ —</div></div>
+      <div class="btn" style="margin-top:20px" id="reqbtn">Solicitar proposta</div>
+    </div>
+  </div>
+  <div class="box stp" style="top:222px;height:130px"><span class="n">1</span><div class="lbl">Visitante marca unidades</div><div class="m">e simula o preço</div></div>
+  <div class="box stp" style="top:372px;height:130px"><span class="n">2</span><div class="lbl">Identifica-se por telefone</div><div class="m">sem criar conta</div></div>
+  <div class="box stp" style="top:522px;height:130px"><span class="n">3</span><div class="lbl">Corretor logado envia</div><div class="m">a proposta ao fluxo de revisão</div></div>
+  <div class="box stp" id="sent" style="top:672px;height:270px;border-color:var(--ok)"><div class="lbl" style="color:var(--ok)">Proposta enviada</div><div class="m" style="margin-top:6px">segue para a imobiliária e a incorporadora</div><div class="chip ok" style="position:absolute;left:26px;bottom:24px;font-size:24px">Em revisão</div></div>
+</div>
+
+<!-- CENA 3: PAINÉIS -->
+<div class="scene" id="s3">
+  <h1>Visão geral por papel · análise de VGV</h1>
+  <div class="tabs"><div id="tb0">Plataforma</div><div id="tb1">Gestor</div><div id="tb2">Operador</div><div id="tb3">Imobiliária</div></div>
+  <div class="box kpi" style="left:120px"><div class="m">Propostas</div><div class="big">—</div><div class="mini"><b style="width:60%"></b></div></div>
+  <div class="box kpi" style="left:450px"><div class="m">Unidades</div><div class="big">—</div><div class="mini"><b style="width:45%"></b></div></div>
+  <div class="box kpi" style="left:780px"><div class="m">Em revisão</div><div class="big">—</div><div class="mini"><b style="width:30%"></b></div></div>
+  <div class="box" style="left:120px;top:540px;width:960px;height:400px;padding:24px 28px">
+    <div class="lbl">Pendências</div>
+    <div class="row" style="margin-top:14px"><span>Proposta DEMO-01 · aguardando decisão</span><span class="tag r">Urgente</span></div>
+    <div class="row"><span>Proposta DEMO-02 · aguardando revisão</span><span class="tag">Prazo · DEMO</span></div>
+    <div class="row"><span>Tabela DEMO · conferir condições</span><span class="tag">Tabela</span></div>
+    <div class="row"><span>Convite de corretor · pendente</span><span class="tag g">Rede</span></div>
+  </div>
+  <div class="box" style="left:1120px;top:228px;width:680px;height:712px" id="vgv">
+    <div class="abs lbl" style="left:40px;top:28px;font-size:34px">Análise de VGV</div>
+    <div class="abs chip sb" style="left:40px;top:84px">DEMO · sem escala</div>
+    <div class="bars">
+      <div style="height:38%"></div><div style="height:52%"></div><div style="height:46%"></div><div class="s" style="height:70%"></div><div style="height:62%"></div><div style="height:84%"></div>
+    </div>
+    <div class="abs" style="left:40px;top:510px;display:flex;flex-wrap:wrap;gap:10px;width:600px"><span class="tag">Por incorporadora</span><span class="tag">Por empreendimento</span><span class="tag">Por período</span><span class="tag r">Gestor e plataforma</span></div>
+    <div class="abs m" style="left:40px;top:640px;width:600px">Sem eixos nem valores: só o formato.</div>
+  </div>
+</div>
+
+<!-- CENA 4: FLOW STUDIO · QUADRO, AUTORIA, PUBLICAÇÃO E EXECUÇÃO -->
+<div class="scene" id="s4">
+  <h1>Flow Studio · do modelo à execução</h1>
+  <div class="prev abs" style="right:270px;top:132px">Previsto: Fazer por mim · Copilot</div>
+  <div class="chip sb abs" style="right:120px;top:132px">sandbox</div>
+  <div id="cv">
+    <div id="vp"><div id="dots"></div>
+    <div id="world" data-layout-allow-overflow></div></div>
+
+    <div class="ov" id="mm"><svg id="mmsvg" width="300" height="170" viewBox="0 0 300 170"></svg></div>
+    <div class="ov" id="ctl"><b id="zin"></b><b id="zout"></b><b id="zfit"></b></div>
+    <div class="ov" id="tools"><span id="tstep"></span><span class="sp"></span><span id="tund"></span><span id="tred"></span><span class="sp"></span><span>Organizar</span></div>
+
+    <div class="ov" id="cbar">
+      <span id="cback" style="display:grid;place-items:center;width:40px;height:40px"></span>
+      <span class="tt">Aprovação de proposta</span>
+      <span class="sv" id="svd"></span>
+      <span class="gr"></span>
+      <div class="seg"><span id="sgq">Quadro</span><span id="sge">Execuções</span></div>
+      <span class="bt" id="bval"></span>
+      <span class="bt p" id="bpub">Publicar</span>
+      <span class="bt" id="bact">Ativar</span>
+      <div id="chip"><span id="c0">Rascunho</span><span id="c1">Validado</span><span id="c2">Publicado</span><span id="c3">Ativo — versão 1</span></div>
+    </div>
+
+    <div id="badges"><span class="bg" id="bg1"></span><span class="bg" id="bg2"></span><span class="bg" id="bg3"></span></div>
+    <div id="runbar">Execução #DEMO-03 · sandbox</div>
+
+    <div class="drw" id="pal" data-layout-allow-overflow>
+      <div class="dh"><span>Etapas</span><span class="xb" id="palx"></span></div>
+      <div class="pg"><h4>Modelos prontos</h4><div class="pi" id="pmod" style="border-color:var(--accent);background:var(--soft);color:var(--accent)"><span>Aprovação de proposta</span><em>1 de 6</em></div></div>
+      <div class="pg"><h4>Avisar</h4><div class="pi" id="pavi">Avisar por WhatsApp</div></div>
+      <div class="pg"><h4>Decidir e esperar</h4><div class="pi" id="pdec">Perguntar e esperar</div></div>
+      <div class="pg"><h4>Fazer no Tabela</h4><div class="pi" id="pdo1">Aprovar ou recusar proposta</div><div class="pi" id="pdo2">Anexar etiqueta à proposta</div></div>
+    </div>
+
+    <div class="drw" id="insp" data-layout-allow-overflow>
+      <div class="dh"><span style="display:flex;align-items:center;gap:12px"><span class="ni" style="width:44px;height:44px;border-radius:12px;background:rgba(217,164,59,.25);color:#8A5B00;display:grid;place-items:center" id="iic"></span>Perguntar e esperar</span><span class="xb" id="inx"></span></div>
+      <div class="tbs"><span class="on">Configuração</span><span>Saídas</span><span>Última execução</span></div>
+      <div class="fd"><label>Pergunta</label><div class="fv">Aprovar a proposta DEMO-03?</div></div>
+      <div class="fd"><label>Opções de resposta</label><div class="fv"><span class="tag g">Aprovar</span><span class="tag r">Rejeitar</span></div></div>
+      <div class="fd"><label>Canal e prazo</label><div class="fv"><span class="tag g">WhatsApp</span><span class="tag">Prazo · DEMO</span></div></div>
+      <div class="fd"><label>Quem responde</label><div class="fv">Gestor da incorporadora · DEMO</div></div>
+    </div>
+
+    <div class="drw" id="run" data-layout-allow-overflow>
+      <div class="dh"><span>Execução #DEMO-03</span><span class="xb" id="rnx"></span></div>
+      <div class="rs"><span class="chip ac" id="rs1">Em andamento</span><span class="chip" id="rs2" style="color:#2B6CB0;border-color:#2B6CB0;background:#E3EEF9;font-weight:700;opacity:0">Aguardando resposta</span><span class="chip ok" id="rs3" style="opacity:0">Concluída</span><span class="chip ac" id="rpl" style="position:absolute;left:auto;right:22px;opacity:0"></span></div>
+      <ol class="rl">
+        <li><span class="rd" id="rd1"></span>Gatilho recebido<span class="tg"><span class="ok" id="tg1" style="opacity:0">Recebido</span></span></li>
+        <li><span class="rd" id="rd2"></span>Avisar por WhatsApp<span class="tg"><span class="ok" id="tg2" style="opacity:0">Enviada</span></span></li>
+        <li><span class="rd" id="rd3"></span>Perguntar e esperar<span class="tg"><span class="aw" id="tg3a" style="opacity:0">Aguardando</span><span class="ok" id="tg3b" style="opacity:0">Aprovar</span></span></li>
+        <li><span class="rd" id="rd4"></span>Aplicar decisão<span class="tg"><span class="ok" id="tg4" style="opacity:0">Aplicada</span></span></li>
+      </ol>
+      <div id="pend">
+        <div id="wa"><div class="m" style="font-size:24px;margin-bottom:8px">Pergunta enviada por WhatsApp</div>
+          <div class="bub" style="position:relative;background:#fff;width:100%">Aprovar a proposta DEMO-03?</div>
+          <div style="display:flex;gap:12px;margin-top:10px"><span class="bub" id="wab1" style="position:relative;background:#E3F3EA;color:#1F7A52;font-weight:800;padding:6px 22px">Aprovar</span><span class="bub" style="position:relative;background:#FBEEF0;color:#C63850;font-weight:800;padding:6px 22px">Rejeitar</span></div></div>
+        <div id="ans"><span>Resposta: Aprovar</span><span class="tag g">fluxo retomado</span></div>
+        <div id="rcp"><b>Efeitos selados · recibo DEMO</b><span>Conferência do efeito: ok</span></div>
+      </div>
+      <div class="sim"><div class="m">Simuladores · sem efeito real</div><div class="r"><span class="tg2">Notificação</span><span class="tg2">Etapa</span><span class="tg2">Ensaio</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CENA 5: IA E AGENTES -->
+<div class="scene" id="s5">
+  <h1>IA e agentes · operação conversável</h1>
+  <div class="chip sb abs" style="right:120px;top:132px">sandbox</div>
+  <div class="box" style="left:120px;top:222px;width:760px;height:718px">
+    <div class="abs lbl" style="left:30px;top:22px">Assistente · via Channels</div>
+    <div class="bub" id="uq" style="right:26px;top:84px;width:520px;background:var(--accent);color:#fff">Quais propostas aguardam decisão?</div>
+    <div class="bub" id="ar" style="left:26px;top:204px;width:640px;background:var(--bg);border:2px solid var(--line)">
+      <div class="m" style="margin-bottom:8px">Encontrei 2 propostas (DEMO)</div>
+      <div class="row" style="min-height:54px"><span>Proposta DEMO-01</span><span class="tag r">Urgente</span></div>
+      <div class="row" style="min-height:54px"><span>Proposta DEMO-02</span><span class="tag">Em revisão</span></div>
+    </div>
+    <div class="abs chip ac" id="opn" style="left:26px;top:470px">Abrindo: fila de aprovações</div>
+    <div class="abs chip ok" id="pii" style="left:26px;top:540px">Dados pessoais redigidos</div>
+    <div class="abs m" style="left:30px;top:630px;width:690px">O assistente consulta e abre telas por ferramentas publicadas.</div>
+  </div>
+  <div class="box" style="left:910px;top:222px;width:890px;height:210px;padding:20px 26px">
+    <div class="lbl">Ferramentas MCP do Tabe.la</div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px" id="tools"><span class="tag">busca</span><span class="tag">resumo</span><span class="tag">ranking</span><span class="tag">detalhe da proposta</span><span class="tag">abrir tela</span><span class="tag">relatório</span></div>
+  </div>
+  <div class="box" style="left:910px;top:462px;width:890px;height:310px;padding:20px 26px">
+    <div class="lbl">Backoffice operável por agentes</div>
+    <div class="m" style="margin-top:10px">Telas viram ferramentas</div><div style="display:flex;gap:12px;margin-top:10px"><span class="tag">abrir</span><span class="tag">ler</span><span class="tag">preencher</span><span class="tag">submeter</span></div>
+    <div class="m" style="margin-top:22px">Decisão de proposta por agente</div><div style="display:flex;gap:12px;margin-top:10px"><span class="tag">aplicar</span><span class="tag">reler</span></div>
+  </div>
+  <div class="box dash" style="left:910px;top:802px;width:890px;height:138px;padding:20px 26px"><div class="lbl">Painel generativo · perguntas viram painéis</div><div style="margin-top:10px"><span class="prev">Previsto</span> <span class="m" style="margin-left:10px">web desligado</span></div></div>
+</div>
+
+<!-- CENA 6: FECHO -->
+<div class="scene" id="s6">
+  <div class="close">Do app à automação,<br>a operação inteira conectada.</div>
+  <div class="abs" style="left:810px;top:700px;width:300px;height:100px;background:var(--ink);border-radius:20px;display:flex;align-items:center;justify-content:center"><img src="./assets/tabela.svg" style="width:220px" alt="Tabe.la"></div>
+</div>
+
+<!-- TRILHO DE SUPERFÍCIES -->
+<div class="rail" id="rail">
+  <div class="rn" id="n0">App do corretor</div><div class="re"></div>
+  <div class="rn" id="n1">Vitrine pública</div><div class="re"></div>
+  <div class="rn" id="n2">Painéis e VGV</div><div class="re"></div>
+  <div class="rn" id="n3">Flow Studio</div><div class="re"></div>
+  <div class="rn" id="n4">IA e agentes</div>
+</div>
+
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines aqui; a mestra no fim deste script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 dirigido pela timeline, sem relógio próprio)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  // Scene runs at 1/SLOW of the login speed (calm pace); LEAD is a bare-grid beat before the crane enters
+  var SLOW = 1.7, LEAD = 0.3;
+  // Visual scale versus the login panel (logo 340 css px there, 760 px here); also scales stroke widths
+  var LOGO_W = 760, SCALE = LOGO_W / 340;
+  var HERO = [110 / 255, 112 / 255, 191 / 255]; // --brand-hero = oklch(0.58 ...) of series-indigo-200, resolved to sRGB
+  var VB = { w: 218, h: 61 };
+  var LOGO_H = LOGO_W * VB.h / VB.w;
+  var logoRect = [(W - LOGO_W) / 2, (H - LOGO_H) / 2 + 40, LOGO_W, LOGO_H];
+  var layout = { width: W, height: H, dpr: SCALE, logo: logoRect, dot: LOGO_DOT, bounds: LOGO_BOUNDS };
+  var TEX_W = 1140, lod0 = Math.log2(TEX_W / LOGO_W);
+
+  var canvas = document.getElementById('intro-stage');
+  var gl = canvas.getContext('webgl2', { premultipliedAlpha: true, antialias: true, alpha: false, preserveDrawingBuffer: true });
+  var programs = {}, textures = {}, loaded = 0, quadVao = null, curT = 0;
+
+  function compile(fs) {
+    var program = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(program, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+    var uniforms = {}, n = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (var i = 0; i < n; i++) { var info = gl.getActiveUniform(program, i); if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name); }
+    return { program: program, uniforms: uniforms };
+  }
+  function setU(p, extra, base) {
+    gl.useProgram(p.program);
+    var all = Object.assign({}, base, extra);
+    Object.keys(all).forEach(function (name) {
+      var loc = p.uniforms[name]; if (!loc) return; var v = all[name];
+      if (v.length === 1) gl.uniform1f(loc, v[0]); else if (v.length === 2) gl.uniform2f(loc, v[0], v[1]);
+      else if (v.length === 3) gl.uniform3f(loc, v[0], v[1], v[2]); else gl.uniform4f(loc, v[0], v[1], v[2], v[3]);
+    });
+    if (p.uniforms.uPart) gl.uniform1i(p.uniforms.uPart, 3);
+  }
+  function draw(p, extra, base) { setU(p, extra, base); gl.bindVertexArray(quadVao); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+
+  // Deterministic stand-in for Math.random (drill vibration): a pure hash of the time and call index
+  function makeJitter(t) { var n = 0; return function () { var x = Math.sin(t * 1000.7 + (n++) * 12.9898) * 43758.5453; return x - Math.floor(x); }; }
+
+  function render(t) {
+    curT = t;
+    if (!gl || loaded < PART_IDS.length) return;
+    var st = Math.max(0, (t - LEAD) / SLOW);              // scene time, login seconds
+    st = Math.min(st, introTimeline().dur);
+    // Scripted stand-in for the pointer that lights the grid in the login (no real pointer in a film)
+    var mouse = [W * (0.5 + 0.34 * Math.sin(t * 0.42)), H * (0.5 + 0.3 * Math.sin(t * 0.29 + 1.0))];
+    var base = { uRes: [W, H], uRect: logoRect, uLod0: [lod0], uMouse: mouse, uHero: HERO, uDpr: [SCALE] };
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+    gl.disable(gl.BLEND);
+    draw(programs.bg, { uBgT: [t] }, base);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    var pose = sceneAt(st, layout, makeJitter(st));
+    pose.pieces.forEach(function (pc) {
+      gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, textures[pc.id]); gl.activeTexture(gl.TEXTURE0);
+      draw(programs.piece, { uXf: [pc.dx, pc.dy, pc.angle, pc.alpha], uPivot: pc.pivot }, base);
+    });
+    draw(programs.crane, { uCrane: pose.crane }, base);
+    draw(programs.drill, { uDot: pose.dot, uDrill: pose.drill, uScrew: pose.screw, uFx: pose.fx }, base);
+  }
+
+  function init() {
+    programs = { bg: compile(FS_BG), crane: compile(FS_CRANE), piece: compile(FS_PIECE), drill: compile(FS_DRILL) };
+    quadVao = gl.createVertexArray(); gl.bindVertexArray(quadVao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    PART_IDS.forEach(function (id) {
+      var img = new Image();
+      img.onload = function () {
+        var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        textures[id] = tex; loaded++;
+        if (loaded === PART_IDS.length) render(curT);
+      };
+      img.src = './assets/parts/' + id + '.png';
+    });
+  }
+  init();
+
+  // TIMELINE (a única fonte de tempo): um tween linear sobre um proxy dirige o render; a frase entra por cima como os slogans do login
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  var seatAt = LEAD + introTimeline().seat * SLOW;      // dot seated -> line enters (as slogans start at seat in the login)
+  tl.fromTo('#intro-line', { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, seatAt + 0.1);
+  // Registered as a part; only the master timeline at the end of this script is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de conteúdo ou ritmo de pieces/biz-tabela-operacao-v2)
+(function(){
+  const tl = gsap.timeline({paused:true});
+  const E="power2.out", AC="#0D547F", SOFT="#FFFFFF", OK="#1F7A52";
+  // RETIMING 1.36x: cenas fora do Flow Studio mantêm o desenho original, com tempo e duração escalados
+  const K=1.36;
+  const T1=t=>t*K, T2=t=>27.608+(t-19.3)*K;
+  const mk=f=>{
+    const sv=v=>{const o=Object.assign({},v);if(o.duration!=null)o.duration*=K;if(typeof o.stagger==="number")o.stagger*=K;return o;};
+    return {to:(a,v,p)=>tl.to(a,sv(v),f(p)),from:(a,v,p)=>tl.from(a,sv(v),f(p)),fromTo:(a,x,v,p)=>tl.fromTo(a,x,sv(v),f(p)),set:(a,v,p)=>tl.set(a,v,f(p))};
+  };
+  const m1=mk(T1), m2=mk(T2);
+  const swap=(m,a,b,t)=>{m.to(a,{opacity:0,duration:.4,ease:"power1.in"},t);m.fromTo(b,{opacity:0},{opacity:1,duration:.4,ease:E},t+.35);};
+  const lit=(m,i,t,t2)=>{m.to("#n"+i,{backgroundColor:AC,color:"#fff",borderColor:AC,duration:.3},t);if(t2!==undefined)m.to("#n"+i,{backgroundColor:SOFT,color:"#526678",borderColor:"#BCCBD4",duration:.3},t2);};
+  const hit=(m,sel,t)=>m.to(sel,{borderColor:AC,backgroundColor:"#E2EDF4",color:AC,duration:.3},t);
+
+  // S1 app
+  m1.fromTo("#s1",{opacity:0},{opacity:1,duration:.4},0);
+  lit(m1,0,.2,4.3);
+  m1.from("#s1 h1",{y:24,opacity:0,duration:.5,ease:E},.1);
+  m1.from("#s1 .prev",{opacity:0,duration:.4},.5);
+  m1.from(".ph.p1,.ph.p2,.ph.p3,.ph.p4",{y:60,opacity:0,duration:.5,stagger:.45,ease:E},.3);
+  m1.from("#s1 .cap",{opacity:0,y:14,duration:.4,stagger:.45,ease:E},.6);
+  m1.from(".p1 .codes i",{scale:0,duration:.25,stagger:.1,ease:"back.out(2)"},1.0);
+  m1.from(".p2 .star",{scale:0,rotation:-90,duration:.4,stagger:.15,ease:"back.out(2)"},1.5);
+  m1.from(".p3 .tag",{scale:.7,opacity:0,duration:.3,stagger:.1,ease:E},2.2);
+  m1.fromTo(".push",{y:-40,opacity:0},{y:0,opacity:1,duration:.5,ease:E},2.8);
+  m1.from(".share",{y:200,duration:.5,ease:E},3.5);
+  swap(m1,"#s1","#s2",4.2);
+
+  // S2 vitrine
+  lit(m1,1,4.5,8.7);
+  m1.from("#s2 h1",{y:24,opacity:0,duration:.5,ease:E},4.6);
+  m1.from("#s2 .win",{y:40,opacity:0,duration:.5,ease:E},4.7);
+  m1.from("#s2 .stp",{x:50,opacity:0,duration:.4,stagger:.3,ease:E},5.2);
+  m1.to("#u201,#u202",{borderColor:AC,backgroundColor:"#E2EDF4",color:AC,borderWidth:4,duration:.3,stagger:.3},5.6);
+  m1.to(".slide b",{width:"60%",duration:.8,ease:"power1.inOut"},6.2);
+  m1.to(".slide u",{x:24,duration:.8,ease:"power1.inOut"},6.2);
+  m1.to("#reqbtn",{backgroundColor:"#C63850",duration:.3},7.2);
+  m1.fromTo("#sent",{boxShadow:"0 0 0 0 rgba(31,122,82,0)"},{boxShadow:"0 0 0 8px rgba(31,122,82,.3)",duration:.4},7.4);
+  swap(m1,"#s2","#s3",8.6);
+
+  // S3 painéis
+  lit(m1,2,8.9,11.7);
+  m1.from("#s3 h1",{y:24,opacity:0,duration:.5,ease:E},9.0);
+  m1.from(".tabs div",{y:20,opacity:0,duration:.3,stagger:.1,ease:E},9.1);
+  m1.from("#s3 .kpi",{y:40,opacity:0,duration:.4,stagger:.15,ease:E},9.3);
+  m1.from("#s3 .box:not(.kpi):not(#vgv)",{y:40,opacity:0,duration:.4,ease:E},9.6);
+  m1.from("#vgv",{x:50,opacity:0,duration:.5,ease:E},9.7);
+  m1.from(".bars div",{scaleY:0,duration:.6,stagger:.1,ease:E},10.0);
+  [0,1,2,3].forEach((k,j)=>{hit(m1,"#tb"+k,9.6+j*.55);if(j<3)m1.to("#tb"+k,{borderColor:"#BCCBD4",backgroundColor:"#FFFFFF",color:"#526678",duration:.2},10.1+j*.55);});
+  swap(m1,"#s3","#s4",11.6);
+
+  // FLOW STUDIO · QUADRO REACT FLOW (tempo absoluto, em segundos)
+  const IC={
+    zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+    act:'<path d="M21 10.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.5"/><path d="m9 11 3 3L22 4"/>',
+    clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+    plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+    minus:'<path d="M5 12h14"/>',
+    check:'<path d="M20 6 9 17l-5-5"/>',
+    x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    fit:'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+    undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+    redo:'<path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/>',
+    back:'<path d="m15 18-6-6 6-6"/>',
+    play:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+  const put=(id,html)=>{document.getElementById(id).innerHTML=html;};
+  put("zin",ico("plus",30));put("zout",ico("minus",30));put("zfit",ico("fit",28));
+  put("tstep",ico("plus",26)+" Etapa");put("tund",ico("undo",28));put("tred",ico("redo",28));
+  put("cback",ico("back",32));put("svd",ico("check",24)+" Salvo");
+  put("bval",ico("check",26)+" Validar");put("palx",ico("x",28));put("inx",ico("x",28));put("rnx",ico("x",28));put("iic",ico("clock",26));
+  put("bg1",ico("check",28)+" Validado");put("bg2",ico("check",28)+" Publicado · versão 1");put("bg3",ico("check",28)+" Ativo");
+  put("rpl",ico("play",24)+" Replay");
+
+  const W=460,HDR=112,ROW=58,CTX=86;
+  const ND=[
+    {id:"fn0",role:"trigger",ic:"zap",x:0,y:0,kind:"Quando",name:"Evento do domínio",ctx:["Evento","Proposta enviada"],outs:[["Despacho ao Flow","success"]],bd:["Recebido"]},
+    {id:"fn1",role:"notification",ic:"bell",x:640,y:0,kind:"Avisar",name:"Avisar por WhatsApp",outs:[["Enviada","success"]],bd:["Enviada"]},
+    {id:"fn2",role:"interaction",ic:"clock",x:1280,y:0,kind:"Decidir e esperar",name:"Perguntar e esperar",outs:[["Aprovar","success"],["Rejeitar","blocked"],["Sem resposta","waiting"]],bd:["Aprovar","Aguardando resposta"]},
+    {id:"fn3",role:"action",ic:"act",x:1920,y:0,kind:"Fazer no Tabela",name:"Aplicar decisão",outs:[["Decisão aplicada","success"]],bd:["Decisão aplicada"]},
+    {id:"fn4",role:"action",ic:"act",x:1920,y:215,kind:"Fazer no Tabela",name:"Anexar etiqueta",outs:[["Etiqueta anexada","success"]]},
+    {id:"fe1",role:"end",ic:"flag",x:2560,y:146,kind:"Fim",name:"Concluído",t:"happy",bd:["Concluído"]},
+    {id:"fe2",role:"end",ic:"flag",x:1920,y:426,kind:"Fim",name:"Interrompido",t:"halt"}
+  ];
+  const byId={};ND.forEach(n=>byId[n.id]=n);
+  const world=document.getElementById("world");
+  let h="";
+  ND.forEach(n=>{
+    const end=n.role==="end";
+    h+=`<div class="nd" id="${n.id}" data-role="${n.role}"${end?` data-t="${n.t}"`:""} style="left:${n.x}px;top:${n.y}px">`;
+    if(n.role!=="trigger")h+=`<i class="hin"></i>`;
+    if(n.bd){h+=`<span class="nrb s" id="${n.id}b">${n.bd[0]}</span>`;if(n.bd[1])h+=`<span class="nrb a" id="${n.id}a">${n.bd[1]}</span>`;}
+    h+=`<div class="nh"><span class="ni">${ico(n.ic,end?26:30)}</span><div><p class="nk">${n.kind}</p><p class="nm">${n.name}</p></div></div>`;
+    if(n.ctx)h+=`<dl class="nc"><dt>${n.ctx[0]}</dt><dd>${n.ctx[1]}</dd></dl>`;
+    if(n.outs)n.outs.forEach(o=>{h+=`<div class="no" data-tone="${o[1]}"><span><i></i>${o[0]}</span><b class="hd"></b></div>`;});
+    h+=`</div>`;
+  });
+  // ARESTAS BEZIER (mesma curva do quadro: controle a meio caminho no eixo X)
+  const EG=[
+    ["e01","fn0",0,"fn1","success"],["e12","fn1",0,"fn2","success"],
+    ["e2a","fn2",0,"fn3","success"],["e2b","fn2",1,"fn4","blocked"],["e2c","fn2",2,"fe2","waiting"],
+    ["e3","fn3",0,"fe1","success"],["e4","fn4",0,"fe1","success"]
+  ];
+  const TC={success:"#1F7A52",blocked:"#A3262B",waiting:"#B7791F"};
+  let sv=`<svg id="edges" width="2900" height="620" viewBox="0 0 2900 620">`;
+  const geo={};
+  EG.forEach(([id,s,oi,t,tone])=>{
+    const a=byId[s],b=byId[t];
+    const sx=a.x+W,sy=a.y+HDR+(a.ctx?CTX:0)+oi*ROW+ROW/2;
+    const tx=b.x,ty=b.y+(b.role==="end"?44:56);
+    const off=(tx-sx)*.5;
+    geo[id]={sx,sy,tx,ty,tone,d:`M${sx},${sy} C${sx+off},${sy} ${tx-off},${ty} ${tx},${ty}`};
+    const g=geo[id];
+    sv+=`<path class="eb" id="eb-${id}" d="${g.d}" stroke="${TC[tone]}" opacity=".85"/>`;
+    sv+=`<path class="et" id="et-${id}" d="${g.d}" stroke="${TC[tone]}"/>`;
+    sv+=`<path class="fl" id="fl-${id}" d="${g.d}" stroke="${TC[tone]}"/>`;
+    sv+=`<polygon class="ah" id="ah-${id}" points="${tx-22},${ty-13} ${tx+2},${ty} ${tx-22},${ty+13}" fill="${TC[tone]}"/>`;
+  });
+  sv+=`</svg>`;
+  world.innerHTML=sv+h+`<div id="tok"></div>`;
+  const TH={th1:["fn1",0],th2:["fn2",0],th3:["fn3",0]};
+  Object.keys(TH).forEach(k=>{const n=byId[TH[k][0]];const sx=n.x,sy=n.y+56,tx=n.x+W,ty=n.y+HDR+(n.ctx?CTX:0)+TH[k][1]*ROW+ROW/2;
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("id","eb-"+k);p.setAttribute("d",`M${sx},${sy} L${tx},${ty}`);p.setAttribute("fill","none");document.getElementById("edges").appendChild(p);});
+  const pathEl={},plen={};
+  Object.keys(TH).forEach(k=>{const p=document.getElementById("eb-"+k);pathEl[k]=p;plen[k]=p.getTotalLength();});
+  EG.forEach(([id])=>{const p=document.getElementById("eb-"+id);pathEl[id]=p;plen[id]=p.getTotalLength();
+    const g=geo[id];const mid=p.getPointAtLength(plen[id]/2);
+    const pl=document.createElement("div");pl.className="plus";pl.id="pl-"+id;pl.style.left=mid.x+"px";pl.style.top=mid.y+"px";pl.innerHTML=ico("plus",26);world.appendChild(pl);
+    const et=document.getElementById("et-"+id);et.style.strokeDasharray=plen[id];et.style.strokeDashoffset=plen[id];
+    const eb=p;eb.style.strokeDasharray=plen[id];
+  });
+
+  // MINIMAPA (tokens dos papéis; viewport = retângulo da câmera)
+  const MS=.1,MX=7,MY=60;
+  const rc={trigger:"#C63850",notification:"#0A3F5F",action:"#0D547F",interaction:"#B7791F",end:"#BCCBD4"};
+  let mm=`<defs><mask id="mmk"><rect width="300" height="170" fill="#fff"/><rect class="mmv" fill="#000" x="0" y="0" width="10" height="10"/></mask></defs>`;
+  ND.forEach(n=>{const hh=n.role==="end"?88:HDR+(n.ctx?CTX:0)+(n.outs?n.outs.length*ROW:0);const w=n.role==="end"?330:W;
+    mm+=`<rect id="m-${n.id}" x="${MX+n.x*MS}" y="${MY+n.y*MS}" width="${w*MS}" height="${hh*MS}" rx="2" fill="${rc[n.role]}" opacity="0"/>`;});
+  mm+=`<rect width="300" height="170" fill="rgba(16,40,56,.20)" mask="url(#mmk)"/><rect class="mmv" fill="none" stroke="#0D547F" stroke-width="2" x="0" y="0" width="10" height="10"/>`;
+  put("mmsvg",mm);
+
+  // CÂMERA: pan e zoom do mundo, pontilhado e minimapa sempre juntos
+  const CW=1680,CH=750,DOT=36,CY=185;
+  const V=(cx,z)=>({cx,cy:CY,z:z||1});
+  const vp=v=>({x:MX+(-v.cx/v.z)*MS,y:MY+(-v.cy/v.z)*MS,width:CW/v.z*MS,height:CH/v.z*MS});
+  const cam=(t,d,a,b)=>{
+    tl.fromTo("#world",{x:a.cx,y:a.cy,scale:a.z},{x:b.cx,y:b.cy,scale:b.z,duration:d,ease:"power2.inOut"},t);
+    tl.fromTo("#dots",{backgroundPosition:`${a.cx}px ${a.cy}px`,backgroundSize:`${DOT*a.z}px ${DOT*a.z}px`},{backgroundPosition:`${b.cx}px ${b.cy}px`,backgroundSize:`${DOT*b.z}px ${DOT*b.z}px`,duration:d,ease:"power2.inOut"},t);
+    tl.fromTo(".mmv",{attr:vp(a)},{attr:vp(b),duration:d,ease:"power2.inOut"},t);
+  };
+  const V0=V(520),V1=V(-620),V2=V(-1240),V3=V(-1120,.92),VS=V(-620),R0=V(20),R1=V(-620),R2=V(-1260),R3=V(-1900);
+  tl.set("#world",{x:V0.cx,y:CY,scale:1},0);
+  tl.set("#dots",{backgroundPosition:`${V0.cx}px ${CY}px`},0);
+  tl.set(".mmv",{attr:vp(V0)},0);
+
+  const RUN=22.85;
+  // CENA E MOLDURA
+  lit(m1,3,11.9);
+  m1.from("#s4 h1",{y:24,opacity:0,duration:.5,ease:E},12.0);
+  m1.from("#s4 .chip.sb,#s4 .prev",{opacity:0,duration:.3},12.2);
+  m1.from("#cv",{y:30,opacity:0,duration:.5,ease:E},12.1);
+  // paleta abre
+  tl.fromTo("#pal",{x:-500},{x:0,duration:.45,ease:E},16.4);
+
+  // Nós entram, arestas conectam, setas e "+" aparecem
+  const node=(id,t)=>{
+    tl.fromTo("#"+id,{opacity:0,scale:.86,y:22},{opacity:1,scale:1,y:0,duration:.4,ease:"back.out(1.5)"},t);
+    tl.fromTo("#m-"+id,{opacity:0},{opacity:.95,duration:.3},t);
+  };
+  const edge=(id,t)=>{
+    tl.fromTo("#eb-"+id,{strokeDashoffset:plen[id]},{strokeDashoffset:0,duration:.4,ease:"power1.inOut"},t);
+    tl.fromTo("#ah-"+id,{opacity:0},{opacity:1,duration:.12},t+.34);
+    tl.fromTo("#pl-"+id,{opacity:0,scale:.4},{opacity:1,scale:1,duration:.25,ease:"back.out(2)"},t+.38);
+    tl.fromTo("#fl-"+id,{opacity:0},{opacity:.9,duration:.2},t+.4);
+  };
+  const pflash=(sel,t)=>{tl.to(sel,{backgroundColor:"#E2EDF4",borderColor:AC,duration:.15},t);tl.to(sel,{backgroundColor:"#FFFFFF",borderColor:"#D5E0E6",duration:.3},t+.35);};
+  tl.to("#pmod",{opacity:1,duration:.01},16.5);
+  node("fn0",16.9);                       tl.to("#pmod",{scale:1.03,duration:.2,yoyo:true,repeat:1},16.8);
+  node("fn1",17.3);pflash("#pavi",17.2);edge("e01",17.45);
+  node("fn2",17.7);pflash("#pdec",17.6);edge("e12",17.85);
+  tl.to("#pal",{x:-500,duration:.45,ease:"power2.in"},17.55);
+  cam(17.45,.55,V0,V1);
+  node("fn3",18.1);pflash("#pdo1",18.0);edge("e2a",18.3);
+  node("fn4",18.35);pflash("#pdo2",18.3);edge("e2b",18.55);
+  node("fe2",18.55);edge("e2c",18.75);
+  node("fe1",18.75);edge("e3",18.95);edge("e4",19.05);
+  cam(18.05,.75,V1,V2);
+  // visão ampla leve e volta ao nó que será configurado
+  cam(19.35,.5,V2,V3);
+  cam(19.85,.55,V3,VS);
+
+  // Nó selecionado + painel de configuração
+  tl.to("#fn2",{borderColor:AC,boxShadow:"0 0 0 7px rgba(13,84,127,.20), 0 3px 10px rgba(16,40,56,.10)",duration:.25},20.2);
+  tl.fromTo("#insp",{x:560},{x:0,duration:.45,ease:E},20.35);
+  tl.fromTo("#vp",{width:1676},{width:1136,duration:.45,ease:E},20.35);
+  tl.fromTo("#insp .fd",{opacity:0,y:14},{opacity:1,y:0,duration:.3,stagger:.12,ease:E},20.6);
+  tl.to("#insp",{x:560,duration:.35,ease:"power2.in"},21.7);
+  tl.to("#vp",{width:1676,duration:.35,ease:"power2.in"},21.7);
+  tl.to("#fn2",{borderColor:"#BCCBD4",boxShadow:"0 3px 10px rgba(16,40,56,.10)",duration:.25},21.7);
+
+  // Validar → Publicar → Ativar
+  const press=(sel,t)=>{tl.to(sel,{scale:.93,duration:.12},t);tl.to(sel,{scale:1,duration:.2},t+.12);};
+  const chip=(from,to,t)=>{tl.to(from,{opacity:0,duration:.15},t);tl.to(to,{opacity:1,duration:.2},t);};
+  const badge=(id,t)=>tl.fromTo(id,{opacity:0,y:-18,scale:.8},{opacity:1,y:0,scale:1,duration:.3,ease:"back.out(1.8)"},t);
+  press("#bval",21.8);badge("#bg1",21.9);chip("#c0","#c1",21.9);
+  tl.to("#bval",{borderColor:OK,color:OK,duration:.2},21.9);
+  press("#bpub",22.2);badge("#bg2",22.3);chip("#c1","#c2",22.3);
+  press("#bact",22.6);badge("#bg3",22.7);chip("#c2","#c3",22.7);
+  tl.to("#bact",{backgroundColor:OK,borderColor:OK,color:"#fff",duration:.2},22.7);
+  tl.to(".fl",{opacity:0,duration:.3},RUN);
+  // modo execuções: ferramentas de edição saem e o que está fora do caminho esmaece
+  tl.to("#mm,#ctl,#tools",{opacity:0,duration:.3},RUN);
+  tl.to("#fn4,#fe2",{opacity:.5,duration:.3},RUN);
+  tl.to("#eb-e2b,#eb-e2c,#ah-e2b,#ah-e2c,#pl-e2b,#pl-e2c",{opacity:.3,duration:.3},RUN);
+  // pontos andando nas arestas enquanto o quadro está montado
+  tl.fromTo(".fl",{strokeDashoffset:0},{strokeDashoffset:-635,duration:6.35,ease:"none"},16.5);
+
+  // EXECUÇÃO: token percorre as arestas
+  tl.to("#sgq",{backgroundColor:"#fff",color:"#526678",duration:.2},RUN);
+  tl.to("#sge",{backgroundColor:AC,color:"#fff",duration:.2},RUN);
+  tl.to("#badges",{opacity:0,duration:.3},RUN);
+  tl.fromTo("#runbar",{opacity:0,y:-16},{opacity:1,y:0,duration:.3},RUN+.1);
+  tl.fromTo("#run",{x:560},{x:0,duration:.45,ease:E},RUN+.05);
+  tl.to("#vp",{width:1136,duration:.45,ease:E},RUN+.05);
+  cam(RUN+.05,.55,VS,R0);
+  tl.fromTo("#run .rl li",{opacity:0,x:20},{opacity:1,x:0,duration:.25,stagger:.1,ease:E},RUN+.4);
+
+  // contrato do token: trechos de movimento (aresta) e espera
+  const SEG=[
+    {k:"m",e:"e01",d:.45},{k:"m",e:"th1",d:.15},{k:"m",e:"e12",d:.45},{k:"w",d:.95},{k:"m",e:"th2",d:.15},{k:"m",e:"e2a",d:.45},{k:"m",e:"th3",d:.15},{k:"m",e:"e3",d:.45}
+  ];
+  const T0=23.4;
+  let acc=0;SEG.forEach(s=>{s.t0=T0+acc;acc+=s.d;});
+  const TOTAL=acc;
+  const moves=SEG.filter(s=>s.k==="m");
+  const tokEl=document.getElementById("tok");
+  // easing por trecho: acelera e freia em cada nó
+  const loc=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+  const prog=f=>{const t=f*TOTAL;let mi=0;for(const s of SEG){const a=s.t0-T0,b=a+s.d;if(t<=b||s===SEG[SEG.length-1]){if(s.k==="w")return mi/moves.length;const u=Math.min(1,Math.max(0,(t-a)/s.d));return (mi+loc(u))/moves.length;}if(s.k==="m")mi++;}return 1;};
+  const place=p=>{const n=moves.length;const x=Math.min(n-.000001,p*n);const i=Math.floor(x);const u=Math.min(1,Math.max(0,p*n-i));const e=moves[Math.min(i,n-1)].e;const L=plen[e];const q=pathEl[e].getPointAtLength(L*(p>=1?1:u));tokEl.style.left=q.x+"px";tokEl.style.top=q.y+"px";};
+  const tp={p:0};
+  tl.fromTo("#tok",{opacity:0,scale:.4},{opacity:1,scale:1,duration:.25,ease:"back.out(2)"},T0-.2);
+  tl.fromTo(tp,{p:0},{p:1,duration:TOTAL,ease:prog,onUpdate:()=>place(tp.p)},T0);
+  place(0);
+  // trecho percorrido: aresta acesa em espessura maior, no mesmo ritmo do token
+  moves.filter(s=>!s.e.startsWith("th")).forEach(s=>{tl.fromTo("#et-"+s.e,{strokeDashoffset:plen[s.e]},{strokeDashoffset:0,duration:s.d,ease:loc},s.t0);});
+  const wSeg=SEG.find(s=>s.k==="w");
+
+  // estados das etapas no quadro e na trilha
+  const badgeOn=(id,txt,cls,t)=>{
+    tl.fromTo("#"+id+(cls==="a"?"a":"b"),{opacity:0,y:8},{opacity:1,y:0,duration:.25},t);
+  };
+  const done=(rd,tg,t)=>{tl.to("#"+rd,{backgroundColor:OK,borderColor:OK,duration:.2},t);tl.to("#"+tg,{opacity:1,duration:.2},t);};
+  const runOk=(id,t)=>tl.to("#"+id,{borderColor:OK,duration:.2},t);
+  // gatilho
+  badgeOn("fn0","Recebido","s",T0-.15);runOk("fn0",T0-.15);done("rd1","tg1",T0-.1);
+  const tN1=moves[0].t0+moves[0].d, tN2=moves[2].t0+moves[2].d;
+  badgeOn("fn1","Enviada","s",tN1);runOk("fn1",tN1);done("rd2","tg2",tN1+.05);
+  cam(moves[2].t0-.1,.5,R0,R1);
+  badgeOn("fn2","Aguardando resposta","a",tN2);
+  tl.to("#fn2",{borderColor:"#2B6CB0",boxShadow:"0 0 0 7px rgba(43,108,176,.22), 0 3px 10px rgba(16,40,56,.10)",duration:.25},tN2);
+  tl.to("#rd3",{borderColor:"#2B6CB0",duration:.2},tN2);tl.to("#tg3a",{opacity:1,duration:.2},tN2);
+  tl.to("#rs1",{opacity:0,duration:.15},tN2);tl.to("#rs2",{opacity:1,duration:.2},tN2);
+  // resposta pelo WhatsApp
+  tl.fromTo("#wa",{opacity:0,y:14},{opacity:1,y:0,duration:.3},tN2+.05);
+  const tAns=wSeg.t0+wSeg.d-.1;
+  tl.to("#wab1",{scale:1.12,duration:.15,yoyo:true,repeat:1},tAns-.35);
+  tl.to("#wa",{opacity:0,duration:.2},tAns);tl.to("#ans",{opacity:1,duration:.25},tAns+.1);
+  tl.to("#tg3a",{opacity:0,duration:.15},tAns);tl.to("#tg3b",{opacity:1,duration:.2},tAns+.05);
+  tl.to("#rd3",{backgroundColor:OK,borderColor:OK,duration:.2},tAns+.05);
+  tl.to("#fn2",{boxShadow:"0 3px 10px rgba(16,40,56,.10)",borderColor:OK,duration:.25},tAns+.05);
+  tl.to("#fn2a",{opacity:0,duration:.15},tAns+.05);
+  tl.fromTo("#fn2b",{opacity:0,y:8},{opacity:1,y:0,duration:.25},tAns+.1);
+  cam(tAns+.1,.55,R1,R2);
+  const tN3=moves[4].t0+moves[4].d, tE1=moves[6].t0+moves[6].d;
+  badgeOn("fn3","Decisão aplicada","s",tN3);runOk("fn3",tN3);done("rd4","tg4",tN3+.05);
+  cam(moves[5].t0,.5,R2,R3);
+  badgeOn("fe1","Concluído","s",tE1);runOk("fe1",tE1);
+  tl.to("#rs2",{opacity:0,duration:.15},tE1);tl.to("#rs3",{opacity:1,duration:.2},tE1);
+  tl.to("#tok",{opacity:0,scale:.4,duration:.25},tE1+.05);
+  tl.to("#rcp",{opacity:1,duration:.3},tE1+.1);
+  tl.to("#rpl",{opacity:1,duration:.3},tE1+.2);
+
+  swap(m2,"#s4","#s5",19.3);
+
+  // S5 IA
+  lit(m2,3,19.6,19.6);
+  lit(m2,4,19.7);
+  m2.from("#s5 h1",{y:24,opacity:0,duration:.5,ease:E},19.8);
+  m2.from("#s5 .chip.sb",{opacity:0,duration:.3},20.0);
+  m2.from("#s5 .box",{y:40,opacity:0,duration:.4,stagger:.12,ease:E},20.0);
+  m2.from("#uq",{y:20,opacity:0,duration:.3,ease:E},20.3);
+  m2.from("#ar",{y:20,opacity:0,duration:.4,ease:E},20.7);
+  m2.from("#opn,#pii",{opacity:0,x:-20,duration:.3,stagger:.3,ease:E},21.2);
+  m2.from("#tools .tag",{scale:.7,opacity:0,duration:.25,stagger:.1,ease:E},20.5);
+  swap(m2,"#s5","#s6",22.2);
+
+  // S6 fecho
+  [0,1,2,3].forEach(i=>lit(m2,i,22.5));
+  m2.from("#s6 .close",{y:30,opacity:0,duration:.6,ease:E},22.6);
+  m2.from("#s6 .abs",{scale:.9,opacity:0,duration:.5,ease:E},23.0);
+  tl.to({},{duration:.001},33.999);
+  window.__timelines=window.__timelines||{};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (34 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 34.0;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  window.__timelines["biz-tabela-operacao-intro"] = master;
+})();
+</script>
+</div><!-- /film -->
+</div>
+</body>
+</html>

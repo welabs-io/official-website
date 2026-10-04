@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Sistema de Gerenciamento de Resíduos · ciclo</title>
+<style>
+/* TOKENS E BASE DO CICLO */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0a1a14;--acc:#34d399;--fg:#ffffff;--mut:#a9c7ba;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.16);--warn:#fbbf24;--info:#7dd3fc;--bad:#fca5a5}
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+#root{position:absolute;inset:0;overflow:hidden;background:radial-gradient(1200px 700px at 80% 0%,#12362a 0%,var(--bg) 60%);font-family:"Inter",sans-serif;color:var(--fg);font-size:24px;line-height:1.25}
+.abs{position:absolute}
+#wm{left:96px;top:44px;font-size:28px;font-weight:800;letter-spacing:.04em;color:var(--acc);line-height:36px;white-space:nowrap}
+#demo{right:96px;top:40px;font-size:26px;font-weight:600;color:var(--mut);border:2px solid var(--line);border-radius:999px;padding:4px 20px;line-height:34px;white-space:nowrap}
+.hd{position:absolute;left:96px;top:0;width:1728px;height:230px}
+.h1{position:absolute;left:0;top:104px;width:1728px;font-size:52px;font-weight:800;line-height:60px;white-space:nowrap}
+.sub{position:absolute;left:0;top:174px;width:1728px;font-size:30px;font-weight:500;color:var(--mut);line-height:38px;white-space:nowrap}
+.lbl{font-size:28px;font-weight:800;letter-spacing:.08em;color:var(--acc);line-height:36px;white-space:nowrap}
+.scene{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.chip{display:inline-block;border:2px solid var(--line);border-radius:999px;padding:4px 18px;font-size:24px;font-weight:600;color:var(--mut);line-height:32px;white-space:nowrap}
+
+/* ABERTURA: DUAS ETAPAS DO MESMO CICLO */
+.oc{position:absolute;top:340px;width:740px;height:400px;border:2px solid var(--line);border-radius:24px;background:var(--card);padding:34px 38px}
+.oc .lbl{font-size:32px;line-height:40px}
+.oc .t{margin-top:20px;font-size:40px;font-weight:800;line-height:48px;white-space:nowrap}
+.oc .f{margin-top:22px;font-size:28px;font-weight:600;color:var(--mut);line-height:40px}
+#oArrow{left:860px;top:500px;width:200px;height:80px}
+#oArrow i{position:absolute;left:0;top:38px;width:176px;height:4px;background:var(--acc);transform-origin:0 50%}
+#oArrow em{position:absolute;right:0;top:26px;width:0;height:0;border-top:14px solid transparent;border-bottom:14px solid transparent;border-left:24px solid var(--acc)}
+#oArrowT{left:800px;top:600px;width:320px;text-align:center;font-size:26px;font-weight:700;color:var(--acc);line-height:34px}
+#oNote{left:96px;top:800px;width:1728px;text-align:center;font-size:30px;font-weight:600;color:var(--mut);line-height:40px}
+
+/* TRILHO DO CICLO */
+#rail{left:96px;top:244px;width:1728px;height:96px}
+.seg{position:absolute;top:0;height:96px}
+#segA{left:0;width:950px}#segB{left:990px;width:738px}
+.seg .lbl{position:absolute;left:0;top:0;font-size:24px;line-height:32px}
+.seg .row{position:absolute;left:0;top:44px;width:100%;height:48px;display:flex;gap:10px}
+.st{position:relative;flex:1 1 0;height:48px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:600;color:var(--mut);display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.st b{position:absolute;inset:-2px;border-radius:999px;background:var(--acc);opacity:0}
+.st span{position:relative}
+
+/* CARTÃO DE TRABALHO */
+.wk{position:absolute;left:96px;top:372px;width:1040px;height:660px;border:2px solid var(--line);border-radius:22px;background:#0f241c}
+.wk .tt{position:absolute;left:24px;top:20px;font-size:34px;font-weight:800;line-height:42px;white-space:nowrap}
+.wk .m{position:absolute;left:24px;width:740px;font-size:24px;font-weight:500;color:var(--mut);line-height:32px;white-space:nowrap}
+.sp{position:absolute;right:24px;top:22px;width:250px;height:44px;border-radius:999px;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.sp.w{border:2px solid var(--warn);color:var(--warn)}
+.sp.i{border:2px solid var(--info);color:var(--info)}
+.sp.a{background:var(--acc);color:#0a1a14}
+.ih{position:absolute;left:24px;top:154px;font-size:24px;font-weight:700;color:var(--acc);letter-spacing:.06em;line-height:30px;white-space:nowrap}
+.mt{position:absolute;left:24px;width:992px;height:40px}
+.mt .n{position:absolute;left:0;top:4px;font-size:26px;font-weight:600;line-height:32px;white-space:nowrap}
+.mt .tr{position:absolute;left:180px;top:12px;width:620px;height:16px;border-radius:8px;background:rgba(255,255,255,.08)}
+.mt .br{position:absolute;left:0;top:0;height:16px;border-radius:8px;background:var(--acc);transform-origin:0 50%}
+.mt .v{position:absolute;right:0;top:4px;width:150px;text-align:right;font-size:26px;font-weight:700;line-height:32px;white-space:nowrap}
+.mt .v0{color:var(--mut)}
+.it{position:absolute;left:24px;width:992px;height:64px;border:2px solid var(--line);border-radius:14px}
+.it .n{position:absolute;left:18px;top:14px;font-size:26px;font-weight:600;line-height:32px;white-space:nowrap}
+.it .q{position:absolute;right:20px;top:14px;font-size:26px;font-weight:700;line-height:32px;white-space:nowrap;text-align:right}
+.it .ck{position:absolute;right:20px;top:14px;font-size:26px;font-weight:800;line-height:32px;color:var(--acc);white-space:nowrap}
+.hr{position:absolute;left:24px;top:364px;width:992px;height:2px;background:var(--line)}
+.sl{position:absolute;left:24px;top:384px;width:992px;height:256px}
+.sl .s1{font-size:32px;font-weight:800;line-height:40px;white-space:nowrap}
+.sl .s2{margin-top:10px;font-size:26px;font-weight:500;color:var(--mut);line-height:34px;white-space:nowrap}
+.rc{position:absolute;top:56px;width:220px;height:62px;border:2px solid var(--line);border-radius:14px;font-size:28px;font-weight:700;color:var(--mut);display:flex;align-items:center;justify-content:center}
+.rc b{position:absolute;inset:-2px;border-radius:14px;background:var(--acc);opacity:0}
+.rc span{position:relative}
+.push{position:absolute;left:0;top:136px;width:720px;height:112px;border-radius:24px;background:#f4f7f5;color:#0a1a14;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.push .ic{position:absolute;left:20px;top:18px;width:76px;height:76px;border-radius:18px;background:var(--acc)}
+.push .ic i{position:absolute;left:22px;top:22px;width:32px;height:32px;border:5px solid #0a1a14;border-radius:50%}
+.push .p1{position:absolute;left:118px;top:18px;font-size:24px;font-weight:700;color:#3d5a4e;line-height:30px;white-space:nowrap}
+.push .p2{position:absolute;left:118px;top:54px;font-size:28px;font-weight:700;line-height:36px;white-space:nowrap}
+.vr{position:absolute;left:0;width:992px;height:52px;border:2px solid var(--line);border-radius:12px}
+.vr .n{position:absolute;left:18px;top:9px;font-size:26px;font-weight:600;line-height:32px;white-space:nowrap}
+.vr .r{position:absolute;right:18px;top:9px;font-size:26px;font-weight:800;line-height:32px;white-space:nowrap}
+.vsp{position:absolute;right:0;top:0;width:250px;height:44px;border-radius:999px;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.stamp{position:absolute;left:0;top:60px;width:340px;height:132px;border:4px solid var(--acc);border-radius:16px;background:#0a1a14;color:var(--acc);text-align:center;padding-top:22px;box-shadow:0 0 0 6px rgba(52,211,153,.18)}
+.stamp .a{font-size:32px;font-weight:800;line-height:42px}
+.stamp .b{font-size:24px;font-weight:600;line-height:30px;margin-top:6px}
+.qr{position:absolute;left:0;top:0;width:220px;height:220px;background:#fff;border-radius:12px;padding:18px}
+.okp{display:inline-block;margin-top:18px;padding:6px 22px;border-radius:999px;background:var(--acc);color:#0a1a14;font-size:26px;font-weight:800;line-height:34px;white-space:nowrap}
+
+/* PAINEL DA ETAPA */
+.pt{position:absolute;left:1176px;top:372px;width:648px;height:660px;border:2px solid var(--line);border-radius:22px;background:var(--card);padding:34px 36px}
+.pt .lbl{font-size:24px;line-height:32px}
+.pt .t{margin-top:18px;font-size:40px;font-weight:800;line-height:50px}
+.pt .d{margin-top:20px;font-size:28px;font-weight:500;color:var(--mut);line-height:40px}
+.pt .w{position:absolute;left:36px;bottom:34px;width:576px;display:flex;flex-wrap:wrap;gap:12px}
+.pt .w .chip{color:var(--fg)}
+.pt .x{color:var(--warn);border-color:var(--warn)}
+
+/* PASSAGEM ENTRE AS ETAPAS */
+.bx{position:absolute;top:420px;width:620px;height:300px;border:2px solid var(--line);border-radius:24px;background:var(--card);padding:34px 38px}
+.bx .lbl{font-size:26px;line-height:34px}
+.bx .t{margin-top:18px;font-size:40px;font-weight:800;line-height:48px;white-space:nowrap}
+.bx .d{margin-top:16px;font-size:28px;font-weight:500;color:var(--mut);line-height:38px;white-space:nowrap}
+#xTrack{left:756px;top:566px;width:408px;height:4px;background:var(--line)}
+#xTok{left:756px;top:530px;width:120px;height:76px;border-radius:16px;background:var(--acc);color:#0a1a14;font-size:24px;font-weight:800;line-height:30px;text-align:center;padding-top:8px}
+#xNote{left:96px;top:790px;width:1728px;text-align:center;font-size:30px;font-weight:600;color:var(--mut);line-height:40px}
+
+/* FECHAMENTO */
+.cap{position:absolute;top:380px;width:840px;height:150px;border:2px solid var(--line);border-radius:20px;background:var(--card);padding:22px 28px}
+.cap .lbl{font-size:28px}
+.cap .d{margin-top:12px;font-size:28px;font-weight:600;line-height:36px;white-space:nowrap}
+.logo{position:absolute;top:640px;width:476px;height:238px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center}
+.logo img{max-width:80%;max-height:78%;object-fit:contain}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="residuos-journey-v2" data-width="1920" data-height="1080" data-start="0" data-duration="45.2">
+  <div id="wm" class="abs">Sistema de Gerenciamento de Resíduos</div>
+  <div id="demo" class="abs">Dados DEMO</div>
+
+  <!-- Headlines -->
+  <div id="h0" class="hd"><div class="h1">Um ciclo só, da reciclagem ao destino final</div><div class="sub">Primeiro a reciclagem fechada; depois o material segue em trânsito até o certificado.</div></div>
+  <div id="h1" class="hd"><div class="h1">Etapa 1 · Reciclagem, do ecoponto ao recibo</div><div class="sub">O material entra no ciclo pesado, valorizado e comprovado.</div></div>
+  <div id="h2" class="hd"><div class="h1">O material segue para o destino final</div><div class="sub">A reciclagem está fechada. Agora começa o trânsito do material.</div></div>
+  <div id="h3" class="hd"><div class="h1">Etapa 2 · Trânsito, da MTR ao CDF</div><div class="sub">Gerador, transportador e destinador licenciados, com prova em cada passo.</div></div>
+  <div id="h4" class="hd"><div class="h1">Sistema de Gerenciamento de Resíduos</div><div class="sub">Da reciclagem fechada ao destino final certificado, num ciclo só.</div></div>
+
+  <!-- Abertura -->
+  <div id="sOpen" class="scene">
+    <div id="oA" class="oc" style="left:96px">
+      <div class="lbl">ETAPA 1</div>
+      <div class="t">Reciclagem</div>
+      <div class="f">Ecoponto ou evento → contrato → pesagem por material → bônus → recibo → validação, quando houver</div>
+    </div>
+    <div id="oArrow" class="abs"><i></i><em></em></div>
+    <div id="oArrowT" class="abs">o material segue</div>
+    <div id="oB" class="oc" style="left:1084px">
+      <div class="lbl">ETAPA 2</div>
+      <div class="t">Trânsito</div>
+      <div class="f">MTR → transporte → destino → CDF → verificação pública pelo QR</div>
+    </div>
+    <div id="oNote" class="abs">Cada etapa com a sua operação e o seu comprovante.</div>
+  </div>
+
+  <!-- Trilho do ciclo -->
+  <div id="rail" class="abs">
+    <div id="segA" class="seg"><div class="lbl">ETAPA 1 · RECICLAGEM</div>
+      <div class="row"><div class="st" id="rA0" style="flex-grow:1.15"><b></b><span>Ecoponto</span></div><div class="st" id="rA1" style="flex-grow:1.1"><b></b><span>Contrato</span></div><div class="st" id="rA2" style="flex-grow:1.1"><b></b><span>Pesagem</span></div><div class="st" id="rA3" style="flex-grow:.9"><b></b><span>Bônus</span></div><div class="st" id="rA4" style="flex-grow:.95"><b></b><span>Recibo</span></div><div class="st" id="rA5" style="flex-grow:1.2"><b></b><span>Validação</span></div></div>
+    </div>
+    <div id="segB" class="seg"><div class="lbl">ETAPA 2 · TRÂNSITO</div>
+      <div class="row"><div class="st" id="rB0" style="flex-grow:.8"><b></b><span>MTR</span></div><div class="st" id="rB1" style="flex-grow:1.35"><b></b><span>Transporte</span></div><div class="st" id="rB2" style="flex-grow:1.05"><b></b><span>Destino</span></div><div class="st" id="rB3" style="flex-grow:.75"><b></b><span>CDF</span></div><div class="st" id="rB4" style="flex-grow:.65"><b></b><span>QR</span></div></div>
+    </div>
+  </div>
+
+  <!-- Etapa 1: reciclagem -->
+  <div id="sA" class="scene">
+    <div id="wA" class="wk">
+      <div class="tt">Reciclagem · DEMO-0001</div>
+      <div class="sp i" id="spA0">Ponto aberto</div>
+      <div class="sp w" id="spA1">Em pesagem</div>
+      <div class="sp i" id="spA2">Registrada</div>
+      <div class="sp a" id="spA3">Recibo enviado</div>
+      <div class="m" id="mA1" style="top:74px">Ecoponto DEMO · aberto · horário e escala DEMO</div>
+      <div class="m" id="mA2" style="top:108px">Participante · contrato DEMO</div>
+      <div class="ih">PESAGEM POR MATERIAL</div>
+      <div class="mt" style="top:192px"><div class="n">Papel</div><div class="tr"><div class="br" id="bA0" style="width:420px"></div></div><div class="v v0" id="vA0a">— kg</div><div class="v" id="vA0">3,0 kg</div></div>
+      <div class="mt" style="top:236px"><div class="n">Plástico</div><div class="tr"><div class="br" id="bA1" style="width:240px"></div></div><div class="v v0" id="vA1a">— kg</div><div class="v" id="vA1">1,7 kg</div></div>
+      <div class="mt" style="top:280px"><div class="n">Metal</div><div class="tr"><div class="br" id="bA2" style="width:130px"></div></div><div class="v v0" id="vA2a">— kg</div><div class="v" id="vA2">0,9 kg</div></div>
+      <div class="mt" style="top:324px"><div class="n">Vidro</div><div class="tr"><div class="br" id="bA3" style="width:320px"></div></div><div class="v v0" id="vA3a">— kg</div><div class="v" id="vA3">2,3 kg</div></div>
+      <div class="hr"></div>
+      <div class="sl" id="sA0"><div class="s1">Ponto de entrega aberto</div><div class="s2">Ecoponto fixo ou evento itinerante, com horário e operadores escalados.</div></div>
+      <div class="sl" id="sA1"><div class="s1">Participação aberta</div><div class="s2">Contrato DEMO localizado · participação ligada ao ecoponto.</div></div>
+      <div class="sl" id="sA2"><div class="s1">Pesagem em andamento</div><div class="s2">Cada material pesado entra na mesma reciclagem.</div></div>
+      <div class="sl" id="sA3"><div class="s1">Bônus · R$ —  <span style="color:var(--warn)">(valor DEMO)</span></div><div class="s2">Calculado pelo preço da vigência de cada material.</div><span class="chip" style="margin-top:18px;color:var(--fg)">Doar a uma instituição social</span></div>
+      <div class="sl" id="sA4"><div class="s1">Recibo da reciclagem</div><div class="rc" id="rc0" style="left:0"><b></b><span>Tela</span></div><div class="rc" id="rc1" style="left:240px"><b></b><span>E-mail</span></div><div class="rc" id="rc2" style="left:480px"><b></b><span>SMS</span></div><div class="push" id="push"><div class="ic"><i></i></div><div class="p1">App do participante · agora</div><div class="p2">Sua reciclagem foi registrada.</div></div></div>
+      <div class="sl" id="sA5">
+        <div class="s1">Lançamento do grande gerador · DEMO</div>
+        <div class="vsp" id="vs0" style="border:2px solid var(--info);color:var(--info)">Em validação</div>
+        <div class="vsp" id="vs1" style="border:2px solid var(--warn);color:var(--warn)">Parcial</div>
+        <div class="vr" id="vr0" style="top:58px"><div class="n">Material A · item 1</div><div class="r" id="vq0" style="color:var(--acc)">✓ aprovado</div></div>
+        <div class="vr" id="vr1" style="top:122px"><div class="n">Material B · item 2</div><div class="r" id="vq1" style="color:var(--acc)">✓ aprovado</div></div>
+        <div class="vr" id="vr2" style="top:186px"><div class="n">Material C · item 3</div><div class="r" id="vq2" style="color:var(--bad)">✕ recusado · motivo DEMO</div></div>
+      </div>
+    </div>
+    <div id="pA0" class="pt"><div class="lbl">ETAPA 1 · PASSO 1</div><div class="t">Ecoponto ou evento aberto</div><div class="d">A gestão cadastra o ponto de entrega, o horário e a escala. No app, o operador escolhe o ecoponto ou o evento aberto.</div><div class="w"><span class="chip">Gestão do programa</span><span class="chip">Operador</span></div></div>
+    <div id="pA1" class="pt"><div class="lbl">ETAPA 1 · PASSO 2</div><div class="t">Participante pelo contrato</div><div class="d">O operador localiza ou cadastra o contrato do participante e abre a participação no ponto de entrega.</div><div class="w"><span class="chip">Operador</span><span class="chip">Participante</span></div></div>
+    <div id="pA2" class="pt"><div class="lbl">ETAPA 1 · PASSO 3</div><div class="t">Pesagem por material</div><div class="d">Papel, plástico, metal, vidro: cada material é pesado. A gravação é única, e reenviar não duplica a reciclagem.</div><div class="w"><span class="chip">Operador</span></div></div>
+    <div id="pA3" class="pt"><div class="lbl">ETAPA 1 · PASSO 4</div><div class="t">Bônus pela vigência de preço</div><div class="d">O preço vem da vigência de cada material. O participante pode doar o bônus a uma instituição social.</div><div class="w"><span class="chip">Operador</span><span class="chip">Instituição social</span></div></div>
+    <div id="pA4" class="pt"><div class="lbl">ETAPA 1 · PASSO 5</div><div class="t">Recibo por tela, e-mail e SMS</div><div class="d">O recibo sai na hora, e o participante recebe um push no app com a reciclagem registrada.</div><div class="w"><span class="chip">Operador</span><span class="chip">Participante</span></div></div>
+    <div id="pA5" class="pt"><div class="lbl">ETAPA 1 · PASSO 6</div><div class="t">Validação gerador × reciclador</div><div class="d">Quando há grande gerador, o reciclador aprova ou recusa item a item, com motivo. Os itens aprovados viram reciclagem com bônus.</div><div class="w"><span class="chip x">quando houver</span><span class="chip">Grande gerador</span><span class="chip">Reciclador</span></div></div>
+  </div>
+
+  <!-- Passagem: o material segue -->
+  <div id="sX" class="scene">
+    <div id="xA" class="bx" style="left:96px"><div class="lbl">ETAPA 1 · FECHADA</div><div class="t">Reciclagem fechada</div><div class="d">Pesada, com bônus e recibo.</div></div>
+    <div id="xTrack" class="abs"></div>
+    <div id="xTok" class="abs"><div>material</div><div>DEMO</div></div>
+    <div id="xB" class="bx" style="left:1204px"><div class="lbl">ETAPA 2 · INÍCIO</div><div class="t">Trânsito</div><div class="d">Abre o seu registro: a MTR.</div></div>
+    <div id="xNote" class="abs">O trânsito tem a sua própria operação, do gerador ao destinador.</div>
+  </div>
+
+  <!-- Etapa 2: trânsito -->
+  <div id="sB" class="scene">
+    <div id="wB" class="wk">
+      <div class="tt">MTR · DEMO-0001</div>
+      <div class="sp w" id="spB0">A receber</div>
+      <div class="sp i" id="spB1">Recebida</div>
+      <div class="sp a" id="spB2">Certificada</div>
+      <div class="m" style="top:74px">Gerador DEMO → Destinador DEMO · licenciado para o resíduo</div>
+      <div class="m" style="top:108px">Transportador DEMO · placa, motorista e data DEMO</div>
+      <div class="ih">ITENS DA MTR</div>
+      <div class="it" id="iB0" style="top:192px"><div class="n">Resíduo A · classe e acondicionamento DEMO</div><div class="q" id="qB0">10 t</div><div class="ck" id="cB0">10 t  ✓ recebido</div></div>
+      <div class="it" id="iB1" style="top:272px"><div class="n">Resíduo B · classe e acondicionamento DEMO</div><div class="q" id="qB1">4 t</div><div class="ck" id="cB1" style="color:var(--warn)"><s style="color:var(--mut);margin-right:12px">4 t</s>3,8 t · ajustado</div></div>
+      <div class="hr"></div>
+      <div class="sl" id="sB0"><div class="s1">MTR emitida · PDF com QR</div><div class="s2">Dados · atores · resíduos · transporte e destino · resumo</div><span class="chip" style="margin-top:18px;color:var(--fg)">a partir de um modelo</span> <span class="chip" style="margin-top:18px;color:var(--fg)">licença aprovada</span></div>
+      <div class="sl" id="sB1"><div class="s1">Transportador consulta a MTR</div><div class="s2">Vê as MTRs em que figura e baixa o PDF.</div><span class="chip" style="margin-top:18px;color:var(--warn);border-color:var(--warn)">só consulta, sem aceite</span></div>
+      <div class="sl" id="sB2"><div class="s1">Recebimento item a item</div><div class="s2">Quem recebeu, placa e motorista confirmados.</div><div class="s2">O item original fica preservado no ajuste.</div></div>
+      <div class="sl" id="sB3"><div class="stamp" id="stampB"><div class="a">CDF · DEMO-01</div><div class="b">destinação final</div></div><div class="s1" style="position:absolute;left:380px;top:62px">Certificado emitido</div><div class="s2" style="position:absolute;left:380px;top:112px;margin:0">Agrupa as MTRs recebidas do gerador.</div></div>
+      <div class="sl" id="sB4"><div class="qr"><svg id="qrsvg" viewBox="0 0 21 21" width="184" height="184" shape-rendering="crispEdges"></svg></div><div style="position:absolute;left:260px;top:10px;width:732px"><div class="s1">Verificação pública</div><div class="s2">Leitura do QR, sem login.</div><div class="okp" id="okB">MTR verificada</div></div></div>
+    </div>
+    <div id="pB0" class="pt"><div class="lbl">ETAPA 2 · PASSO 1</div><div class="t">MTR emitida pelo gerador</div><div class="d">Em passos ou a partir de um modelo, com o destinador filtrado pelo resíduo licenciado. Sai o PDF com QR.</div><div class="w"><span class="chip">Gerador</span></div></div>
+    <div id="pB1" class="pt"><div class="lbl">ETAPA 2 · PASSO 2</div><div class="t">Transporte</div><div class="d">O transportador consulta as MTRs em que figura e baixa o PDF. A carga segue com placa, motorista e data na MTR.</div><div class="w"><span class="chip">Transportador</span></div></div>
+    <div id="pB2" class="pt"><div class="lbl">ETAPA 2 · PASSO 3</div><div class="t">Destino recebe item a item</div><div class="d">O destinador confere cada item e ajusta a quantidade sem perder o original. Também pode recusar a MTR, com motivo.</div><div class="w"><span class="chip">Destinador</span></div></div>
+    <div id="pB3" class="pt"><div class="lbl">ETAPA 2 · PASSO 4</div><div class="t">CDF agrupando as MTRs</div><div class="d">O certificado de destinação final reúne as MTRs recebidas do mesmo gerador que ainda não tinham certificado.</div><div class="w"><span class="chip">Destinador</span><span class="chip">Gerador</span></div></div>
+    <div id="pB4" class="pt"><div class="lbl">ETAPA 2 · PASSO 5</div><div class="t">Verificação pública pelo QR</div><div class="d">Qualquer pessoa lê o QR da MTR, sem login, e confere o documento e o PDF.</div><div class="w"><span class="chip">Qualquer pessoa</span></div></div>
+  </div>
+
+  <!-- Fechamento -->
+  <div id="sEnd" class="scene">
+    <div id="cA" class="cap" style="left:96px"><div class="lbl">ETAPA 1 · RECICLAGEM</div><div class="d">Ecoponto · pesagem · bônus · recibo · validação</div></div>
+    <div id="cB" class="cap" style="left:984px"><div class="lbl">ETAPA 2 · TRÂNSITO</div><div class="d">MTR · transporte · destino · CDF · QR</div></div>
+    <div id="cl" class="abs lbl" style="left:96px;top:580px;font-size:32px">CLIENTES</div>
+    <div id="lg0" class="logo" style="left:96px"><img src="./assets/brands/light.png" alt="Light"></div>
+    <div id="lg1" class="logo" style="left:722px"><img src="./assets/brands/neoenergia.png" alt="Neoenergia"></div>
+    <div id="lg2" class="logo" style="left:1348px"><img src="./assets/brands/ecoenel.png" alt="Enel"></div>
+  </div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+// CONSTRUÇÃO DA LINHA DO TEMPO
+(function(){
+  const g = gsap;
+  const tl = g.timeline({paused: true});
+
+  // Deterministic QR-like pattern (illustrative, not a real code)
+  const qr = document.getElementById("qrsvg");
+  const NS = "http://www.w3.org/2000/svg";
+  const finder = (x, y) => (x >= 0 && x < 7 && y >= 0 && y < 7) && (x === 0 || x === 6 || y === 0 || y === 6 || (x >= 2 && x <= 4 && y >= 2 && y <= 4));
+  const inFinderZone = (x, y) => (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+  for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
+    let on;
+    if (inFinderZone(x, y)) on = finder(x > 12 ? x - 14 : x, y > 12 ? y - 14 : y);
+    else on = ((x * 73 + y * 151 + x * y * 7) % 5) < 2;
+    if (on) { const r = document.createElementNS(NS, "rect"); r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", 1); r.setAttribute("height", 1); r.setAttribute("fill", "#0a1a14"); qr.appendChild(r); }
+  }
+
+  // Initial state: everything hidden until its beat
+  g.set(["#h0","#h1","#h2","#h3","#h4","#sOpen > *","#rail","#sA > *","#sX > *","#sB > *","#sEnd > *"], {opacity: 0});
+  g.set([".sp",".sl",".ck","#mA2","#vA0","#vA1","#vA2","#vA3","#vs1","#okB",".vr"], {opacity: 0});
+  g.set([".br"], {scaleX: 0});
+  g.set("#oArrow i", {scaleX: 0});
+  g.set("#oArrow em", {opacity: 0});
+
+  const fin = (sel, t, d = 0.5, y = 18) => tl.fromTo(sel, {opacity: 0, y}, {opacity: 1, y: 0, duration: d, ease: "power2.out", immediateRender: false}, t);
+  const fout = (sel, t, d = 0.3) => tl.to(sel, {opacity: 0, duration: d, ease: "power1.in"}, t);
+  const on = (sel, t, d = 0.3) => tl.to(sel, {opacity: 1, duration: d, ease: "power1.out"}, t);
+  // Rail station: previous one dims to "done", current one lights up
+  const step = (r, i, t) => {
+    if (i > 0) { tl.to(`#${r}${i - 1} b`, {opacity: 0.3, duration: 0.3}, t); tl.to(`#${r}${i - 1} span`, {color: "#ffffff", duration: 0.3}, t); }
+    tl.to(`#${r}${i} b`, {opacity: 1, duration: 0.3}, t); tl.to(`#${r}${i} span`, {color: "#0a1a14", duration: 0.3}, t);
+  };
+  // Sequential swap: the outgoing element is fully gone before the incoming one starts
+  const swap = (from, to, t) => { fout(from, t, 0.3); fin(to, t + 0.32, 0.45, 12); };
+  const status = (from, to, t) => { if (from) fout(from, t, 0.25); tl.fromTo(to, {opacity: 0, scale: 1.25}, {opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false}, t + 0.28); };
+  const hswap = (from, to, t) => { fout(from, t, 0.3); fin(to, t + 0.34, 0.5, 14); };
+
+  // 0–4.7 Abertura: duas etapas do mesmo ciclo
+  fin("#h0", 0.2, 0.6, 14);
+  fin("#oA", 0.8, 0.6);
+  tl.to("#oArrow", {opacity: 1, duration: 0.01}, 1.3);
+  tl.to("#oArrow i", {scaleX: 1, duration: 0.5, ease: "power2.out"}, 1.3);
+  on("#oArrow em", 1.7, 0.2);
+  fin("#oArrowT", 1.6, 0.4, 8);
+  fin("#oB", 1.9, 0.6);
+  fin("#oNote", 2.2, 0.5, 10);
+  fout(["#h0", "#sOpen > *"], 4.3, 0.4);
+
+  // 4.8 Etapa 1 · Passo 1: ecoponto ou evento aberto
+  fin("#h1", 4.8, 0.5, 14);
+  fin("#rail", 4.9, 0.5, 10);
+  fin("#wA", 5.0, 0.6, 24);
+  fin("#pA0", 5.1, 0.6, 24);
+  step("rA", 0, 5.3);
+  status(null, "#spA0", 5.3);
+  fin("#sA0", 5.5, 0.45, 12);
+
+  // 7.6 Passo 2: participante pelo contrato
+  step("rA", 1, 7.6); swap("#pA0", "#pA1", 7.6); swap("#sA0", "#sA1", 7.6);
+  fin("#mA2", 8.0, 0.4, 8);
+
+  // 10.0 Passo 3: pesagem por material
+  step("rA", 2, 10.0); swap("#pA1", "#pA2", 10.0); swap("#sA1", "#sA2", 10.0);
+  status("#spA0", "#spA1", 10.1);
+  [0, 1, 2, 3].forEach(i => {
+    tl.to(`#bA${i}`, {scaleX: 1, duration: 0.5, ease: "power2.out"}, 10.5 + i * 0.3);
+    fout(`#vA${i}a`, 10.7 + i * 0.3, 0.15);
+    on(`#vA${i}`, 10.9 + i * 0.3, 0.25);
+  });
+
+  // 13.6 Passo 4: bônus pela vigência; status Registrada
+  step("rA", 3, 13.6); swap("#pA2", "#pA3", 13.6); swap("#sA2", "#sA3", 13.6);
+  status("#spA1", "#spA2", 14.0);
+
+  // 16.3 Passo 5: recibo por tela, e-mail e SMS + push
+  step("rA", 4, 16.3); swap("#pA3", "#pA4", 16.3); swap("#sA3", "#sA4", 16.3);
+  [0, 1, 2].forEach(i => { on(`#rc${i} b`, 16.9 + i * 0.3, 0.25); tl.to(`#rc${i} span`, {color: "#0a1a14", duration: 0.25}, 16.9 + i * 0.3); });
+  tl.fromTo("#push", {y: -30, opacity: 0}, {y: 0, opacity: 1, duration: 0.5, ease: "power2.out", immediateRender: false}, 17.7);
+  status("#spA2", "#spA3", 17.8);
+
+  // 20.1 Passo 6: validação gerador × reciclador, quando houver
+  step("rA", 5, 20.1); swap("#pA4", "#pA5", 20.1); swap("#sA4", "#sA5", 20.1);
+  on("#vs0", 20.5, 0.3);
+  [0, 1, 2].forEach(i => fin(`#vr${i}`, 20.8 + i * 0.3, 0.35, 8));
+  status("#vs0", "#vs1", 21.7);
+
+  // 24.0 Passagem: a reciclagem fecha, o material segue para o trânsito
+  tl.to("#rA5 b", {opacity: 0.3, duration: 0.3}, 24.0); tl.to("#rA5 span", {color: "#ffffff", duration: 0.3}, 24.0);
+  fout(["#sA > *"], 24.0, 0.35);
+  hswap("#h1", "#h2", 24.0);
+  fin("#xA", 24.4, 0.5);
+  on("#xTrack", 24.6, 0.3);
+  fin("#xB", 24.7, 0.5);
+  tl.fromTo("#xTok", {opacity: 0, x: 0}, {opacity: 1, x: 0, duration: 0.3, immediateRender: false}, 24.8);
+  tl.to("#xTok", {x: 288, duration: 1.0, ease: "power2.inOut"}, 25.1);
+  tl.to("#xB", {borderColor: "#34d399", duration: 0.3}, 26.0);
+  fin("#xNote", 25.8, 0.4, 10);
+
+  // 27.9 Etapa 2 · Passo 1: MTR emitida pelo gerador
+  fout(["#sX > *"], 27.9, 0.35);
+  hswap("#h2", "#h3", 27.9);
+  fin("#wB", 28.3, 0.6, 24);
+  fin("#pB0", 28.4, 0.6, 24);
+  step("rB", 0, 28.5);
+  status(null, "#spB0", 28.6);
+  fin("#sB0", 28.8, 0.45, 12);
+
+  // 30.9 Passo 2: transporte (transportador só consulta)
+  step("rB", 1, 30.9); swap("#pB0", "#pB1", 30.9); swap("#sB0", "#sB1", 30.9);
+
+  // 33.2 Passo 3: destino recebe item a item, ajusta; status Recebida
+  step("rB", 2, 33.2); swap("#pB1", "#pB2", 33.2); swap("#sB1", "#sB2", 33.2);
+  fout("#qB0", 33.6, 0.2); on("#cB0", 33.85, 0.3); tl.to("#iB0", {borderColor: "#34d399", duration: 0.3}, 33.85);
+  fout("#qB1", 34.2, 0.2); on("#cB1", 34.45, 0.3); tl.to("#iB1", {borderColor: "#fbbf24", duration: 0.3}, 34.45);
+  status("#spB0", "#spB1", 34.6);
+
+  // 36.9 Passo 4: CDF agrupando as MTRs; status Certificada
+  step("rB", 3, 36.9); swap("#pB2", "#pB3", 36.9); swap("#sB2", "#sB3", 36.9);
+  tl.fromTo("#stampB", {scale: 1.15}, {scale: 1, duration: 0.5, ease: "back.out(1.6)", immediateRender: false}, 37.25);
+  status("#spB1", "#spB2", 37.6);
+
+  // 39.8 Passo 5: verificação pública pelo QR
+  step("rB", 4, 39.8); swap("#pB3", "#pB4", 39.8); swap("#sB3", "#sB4", 39.8);
+  tl.fromTo("#okB", {opacity: 0, scale: 1.3}, {opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)", immediateRender: false}, 40.5);
+
+  // 42.45 Fechamento: o ciclo inteiro aceso e os clientes como logos
+  fout(["#sB > *"], 42.45, 0.35);
+  hswap("#h3", "#h4", 42.45);
+  // Short snap so the chip fill and its label never sit at a low-contrast midpoint for long
+  tl.to(["#segA .st b", "#segB .st b"], {opacity: 1, duration: 0.12}, 42.45);
+  tl.to(["#segA .st span", "#segB .st span"], {color: "#0a1a14", duration: 0.12}, 42.45);
+  fin("#cA", 42.85, 0.45); fin("#cB", 42.95, 0.45);
+  fin("#cl", 42.95, 0.35, 10);
+  [0, 1, 2].forEach(i => fin(`#lg${i}`, 43.0 + i * 0.1, 0.4));
+
+  // Timeline ends exactly at data-duration
+  tl.set({}, {}, 45.2);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["residuos-journey-v2"] = tl;
+})();
+</script>
+</body>
+</html>

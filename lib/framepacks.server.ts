@@ -5,8 +5,9 @@ import motionCatalog from './motion-catalog.json';
 import type {Manifest} from '@/components/Presentation';
 
 // PACOTES APOSENTADOS
-// Legacy packs that cite a client agency or an internal codename: their manifest never reaches the client.
-const RETIRED=new Set(['malupe','autoinfracao']);
+// Legacy packs that cite a client agency, an internal codename, a retired product name (SGORS, We{product})
+// or a retired product (Kiosk Brands, now CRM Campaigns): their manifest never reaches the client.
+const RETIRED=new Set(['malupe','autoinfracao','sgors','kiosk-brands','erp','wekb','welabs-crm']);
 
 export function getFramepack(id:string) {
  const item=catalog.find(item=>item.id===id);
@@ -18,6 +19,7 @@ export function framepackIds(publisher?:string){return catalog.filter(p=>!publis
 
 // Share image: the accepted film poster when the product has one, the legacy poster otherwise.
 export function publicPoster(id:string,legacy:string){
- const film=motionCatalog.find(f=>f.product===id&&f.kind!=='journey');
+ // Same cover as the product card: first business or topology film, including films a module page reuses.
+ const film=motionCatalog.find(f=>(f.product===id||(f.also as string[]).includes(id))&&(f.kind==='business'||f.kind==='topology'));
  return film?`/motion/${film.id}/poster.png`:RETIRED.has(id)?'/company-brands/welabs-logo.png':legacy;
 }

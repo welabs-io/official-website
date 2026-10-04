@@ -284,7 +284,7 @@
         "posterAlt": "Illustrative board of fictional opportunities grouped by three demonstration brands."
       }
     },
-    "status": "selecionado"
+    "status": "aposentado"
   },
   {
     "id": "wego",
@@ -332,7 +332,7 @@
     "publisher": "Imagine",
     "kind": "client-case",
     "maturity": "concept",
-    "parentId": null,
+    "parentId": "wego",
     "brand": {
       "name": "Auto Infração",
       "status": "verified",
@@ -350,7 +350,7 @@
     "locales": {
       "pt-BR": {
         "title": "Auto Infração",
-        "summary": "Apresentação conceitual de uma jornada de registro em campo e acompanhamento ilustrativo.",
+        "summary": "O app do fiscal dentro da Família WeGO: o auto em doze passos, sem rede, com impressão térmica e o caminho do campo ao processo e à defesa.",
         "audience": "Fiscais e equipes de fiscalização ambiental.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/autoinfracao/1.0.0/posters/pt-BR-scene-1.png",
@@ -358,14 +358,14 @@
       },
       "en": {
         "title": "Auto Infração",
-        "summary": "A concept presentation of field records and illustrative follow-up.",
+        "summary": "The inspector's app inside the WeGO family: the record in twelve steps, offline, with thermal printing and the path from the field to the case and the defence.",
         "audience": "Inspectors and environmental inspection teams.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/autoinfracao/1.0.0/posters/en-scene-1.png",
         "posterAlt": "A fictional mobile screen with a DEMO record and example notes, without cited persons or locations."
       }
     },
-    "status": "selecionado"
+    "status": "modulo"
   },
   {
     "id": "sgici",
@@ -491,13 +491,13 @@
   },
   {
     "id": "sgors",
-    "productName": "SGORS",
+    "productName": "Sistema de Gerenciamento de Resíduos",
     "publisher": "Imagine",
     "kind": "client-case",
     "maturity": "concept",
     "parentId": null,
     "brand": {
-      "name": "SGORS",
+      "name": "Sistema de Gerenciamento de Resíduos",
       "status": "verified",
       "palette": {
         "surface": "#10141C",
@@ -512,16 +512,16 @@
     "presentationBase": "/presentations/sgors/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "SGORS",
-        "summary": "Gestão do ciclo de resíduos, da geração ao destino final, incluindo a reciclagem em pontos de entrega.",
+        "title": "Sistema de Gerenciamento de Resíduos",
+        "summary": "Um ciclo só: a reciclagem fechada no ecoponto e, depois, o trânsito do resíduo com MTR, transporte, destino e CDF.",
         "audience": "Geradores, transportadores e receptores de resíduos.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/sgors/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Quadro ilustrativo com resíduos, registros e atividades DEMO organizados para acompanhamento."
       },
       "en": {
-        "title": "SGORS",
-        "summary": "Waste cycle management, from generation to final destination, including recycling at drop-off points.",
+        "title": "Sistema de Gerenciamento de Resíduos",
+        "summary": "One cycle: closed-loop recycling at the drop-off point, then the waste in transit with manifest, transport, destination and disposal certificate.",
         "audience": "Waste generators, carriers and receivers.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/sgors/1.0.0/posters/en-scene-1.png",
@@ -694,7 +694,7 @@
   },
   {
     "id": "erp",
-    "productName": "ERP",
+    "productName": "Hub de domínio",
     "publisher": "Welabs",
     "kind": "own-product",
     "maturity": "development",
@@ -715,20 +715,20 @@
     "presentationBase": "/presentations/erp/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "ERP",
-        "summary": "Plataforma Welabs em desenvolvimento para compor organização documental e visão de gestão.",
-        "audience": "Organizações que exploram gestão e integrações empresariais.",
+        "title": "Hub de domínio",
+        "summary": "A camada de domínio e integração da plataforma: cadastros, regras, contratos, fiscal e integrações num barramento que cada produto consome com o que lhe foi concedido.",
+        "audience": "Organizações e produtos que compartilham cadastros, regras e integrações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png",
-        "posterAlt": "Documentos vazios e registros fictícios ilustram o contexto de gestão do ERP em desenvolvimento."
+        "posterAlt": "Registros fictícios ilustram o Hub de domínio em desenvolvimento."
       },
       "en": {
-        "title": "ERP",
-        "summary": "A Welabs platform in development to combine document organization with a management view.",
-        "audience": "Organizations exploring management and business integrations.",
+        "title": "Domain hub",
+        "summary": "The platform's domain and integration layer: records, rules, contracts, tax and integrations on one bus that each product consumes with what it has been granted.",
+        "audience": "Organizations and products that share records, rules and integrations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/erp/1.0.0/posters/en-scene-1.png",
-        "posterAlt": "Empty documents and fictional records illustrate the management context of ERP in development."
+        "posterAlt": "Fictional records illustrate the domain hub in development."
       }
     },
     "status": "reservado"

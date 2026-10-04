@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Channels · um contrato, todos os canais</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA WELABS */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0E0F12;--ink:#FFFFFF;--accent:#FF452B;--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:#2A1612;--ok:#3DD68C;--okt:#12301F;--warn:#F5B544;--warnt:#33270F;--info:#7DB4FF;--infot:#14243A}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+p{margin:0}
+.layer{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+
+/* CABEÇALHO FIXO */
+#top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
+#top img{height:42px;display:block;margin-bottom:10px}
+#top .tt{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
+#top .tt em{font-style:normal;color:var(--accent)}
+#top .gr{flex:1}
+.chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
+#top .chip{margin-bottom:10px}
+.badge{font-size:24px;font-weight:800;padding:2px 12px;border-radius:999px;white-space:nowrap}
+.badge.pil{color:var(--warn);border:2px solid var(--warn);background:var(--warnt)}
+.cdot{width:14px;height:14px;border-radius:50%;background:var(--c);display:block;flex:none}
+.chn{display:inline-flex;align-items:center;gap:8px;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+
+/* BATIDAS 1-2: CANAIS SOLTOS E O CONTRATO */
+#edges{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+.edge{fill:none;stroke:#5A5E68;stroke-width:4;opacity:0}
+.tile{position:absolute;left:1340px;width:460px;height:96px;border:2px solid var(--line);border-radius:18px;background:var(--surface2);display:flex;align-items:center;gap:16px;padding:0 18px;opacity:0}
+.tile .ic{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 22%,transparent);flex:none}
+.tile .ic svg{width:32px;height:32px;stroke:var(--c);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.tile .tx{flex:1;min-width:0}
+.tile .nm{display:flex;align-items:center;gap:10px}
+.tile b{display:block;font-size:28px;font-weight:800;white-space:nowrap}
+.tile span.s{display:block;font-size:24px;color:var(--muted);white-space:nowrap}
+.tile .hdl{position:absolute;left:-13px;top:35px;width:22px;height:22px;border-radius:50%;border:4px solid var(--c);background:var(--bg);opacity:0}
+#saas{position:absolute;left:120px;top:290px;width:440px;height:340px;border:2px solid var(--line);border-radius:22px;background:var(--surface);padding:22px 24px;opacity:0}
+#saas h3{margin:0;font-size:34px;font-weight:800}
+#saas .sub{font-size:24px;color:var(--muted);margin-top:4px;white-space:nowrap}
+.cred{margin-top:20px;border:2px solid var(--accent);border-radius:16px;background:var(--soft);padding:12px 16px}
+.cred .h{font-size:24px;font-weight:800;color:var(--accent);white-space:nowrap}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:24px;line-height:36px;white-space:nowrap}
+.kv span:first-child{color:var(--muted)}
+.kv span:last-child{font-weight:700}
+#hub{position:absolute;left:700px;top:240px;width:500px;height:470px;border:3px solid var(--line);border-radius:24px;background:var(--surface);padding:22px 26px;opacity:0}
+#hub h3{margin:0;font-size:34px;white-space:nowrap;font-weight:800;letter-spacing:-.5px}
+#hub h3 em{font-style:normal;color:var(--accent)}
+#hub .sub{font-size:24px;color:var(--muted);margin-top:2px;white-space:nowrap}
+.tr2{display:flex;gap:10px;margin-top:14px}
+.tr2 span{height:46px;padding:0 14px;border:2px solid var(--info);border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--info);background:var(--infot);white-space:nowrap}
+.lbl{font-size:24px;font-weight:800;color:var(--accent);margin-top:18px;white-space:nowrap}
+.scopes{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.scopes span{height:44px;padding:0 12px;border:2px solid var(--line);border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:600;color:#E6E8EC;white-space:nowrap;opacity:0}
+#plug{position:absolute;left:680px;top:448px;width:40px;height:40px;border-radius:50%;background:var(--accent);opacity:0}
+
+/* BATIDA 3: TELA CANAIS DA ÁREA ADMINISTRATIVA */
+#adm{position:absolute;left:120px;top:124px;width:1680px;height:812px;border:2px solid var(--line);border-radius:22px;background:var(--surface);overflow:hidden}
+.wbar{position:absolute;left:0;right:0;top:0;height:60px;background:#101115;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 24px;font-size:26px;font-weight:700;white-space:nowrap}
+.wbar .gr{flex:1}
+.act{height:42px;padding:0 14px;border:2px solid var(--line);border-radius:10px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted)}
+.thead,.trow{position:absolute;left:24px;width:1100px;display:flex;align-items:center}
+.thead{top:78px;height:48px;font-size:24px;font-weight:800;color:var(--muted);border-bottom:2px solid var(--line)}
+.trow{height:84px;border-bottom:2px solid #26282E;font-size:26px;opacity:0}
+.c1{width:310px;display:flex;align-items:center;gap:10px;padding-left:12px;white-space:nowrap}
+.c2{width:240px;white-space:nowrap;color:#E6E8EC}
+.c3{width:300px;white-space:nowrap;color:var(--muted);font-size:24px}
+.c4{width:250px;position:relative;height:48px}
+.c1 b{font-size:26px;font-weight:800}
+.pill{position:absolute;left:0;top:2px;height:44px;padding:0 16px;border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:800;white-space:nowrap}
+.pill.w{color:var(--warn);border:2px solid var(--warn);background:var(--warnt)}
+.pill.g{color:var(--ok);border:2px solid var(--ok);background:var(--okt);opacity:0}
+.fnote{position:absolute;left:36px;width:1080px;display:flex;align-items:center;gap:12px;font-size:24px;color:var(--muted);white-space:nowrap;opacity:0}
+.fnote i{width:10px;height:10px;border-radius:50%;background:var(--accent);display:block;flex:none}
+#apanel{position:absolute;left:1150px;top:78px;width:506px;height:710px}
+#apanel .h{font-size:26px;font-weight:800;white-space:nowrap}
+.acard{position:absolute;width:243px;height:300px;border:2px solid var(--line);border-radius:18px;background:#121317;padding:16px;opacity:0}
+.acard .t{font-size:24px;font-weight:800;white-space:nowrap}
+.acard .n{font-size:24px;color:var(--muted);white-space:nowrap;margin-top:2px}
+.acard .viz{position:absolute;left:16px;right:16px;bottom:18px;height:150px;display:grid;place-items:center}
+.cmd{height:56px;padding:0 16px;border-radius:12px;background:#2B2D45;border:2px solid #A7A2FF;color:#D9D7FF;display:flex;align-items:center;font-size:26px;font-weight:800;white-space:nowrap}
+.btnp{height:56px;padding:0 20px;border-radius:12px;background:#1E8A55;color:#fff;display:flex;align-items:center;font-size:26px;font-weight:800;white-space:nowrap}
+.urlb{width:100%;border:2px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:24px;line-height:32px;color:#E6E8EC;text-align:center}
+.okm{position:absolute;right:-14px;top:-14px;width:36px;height:36px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+.okm svg{width:22px;height:22px;stroke:#0E0F12;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* BATIDA 4: O MESMO EVENTO ASSINADO */
+.bub{position:absolute;left:120px;width:460px;height:128px;border-radius:18px;background:#2A2D35;border-bottom-left-radius:6px;padding:14px 20px;opacity:0}
+.bub p{font-size:26px;font-weight:600;white-space:nowrap;margin-top:8px}
+#evc{position:absolute;left:680px;top:200px;width:600px;height:600px;border:3px solid var(--accent);border-radius:22px;background:var(--surface);padding:20px 24px;opacity:0}
+#evc .hd{display:flex;align-items:center;justify-content:space-between}
+#evc .hd b{font-size:28px;font-weight:800;white-space:nowrap}
+.seal{height:44px;padding:0 14px;border-radius:999px;background:var(--okt);border:2px solid var(--ok);color:var(--ok);display:flex;align-items:center;gap:8px;font-size:24px;font-weight:800;white-space:nowrap}
+.code{margin-top:16px;border-radius:14px;background:#0B0C0F;border:2px solid #26282E;padding:14px 18px}
+.ln{position:relative;height:42px;display:flex;align-items:center;font-size:24px;white-space:nowrap}
+.ln .k{width:150px;color:#8E96A3}
+.ln .k::after{content:":"}
+.ln .v{position:relative;flex:1;height:42px}
+.ln .v span{position:absolute;left:0;top:0;height:42px;display:flex;align-items:center;font-weight:700;color:#FFD3CB;opacity:0}
+.ln .v span.fx{color:#FFFFFF;opacity:1}
+.ln .v span.on{opacity:1}
+.guar{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.guar span{height:44px;padding:0 12px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:600;color:#E6E8EC;white-space:nowrap}
+#rx{position:absolute;left:1320px;top:200px;width:480px;height:600px;border:2px solid var(--line);border-radius:22px;background:var(--surface);padding:20px 22px;opacity:0}
+#rx h3{margin:0;font-size:30px;font-weight:800}
+#rx .sub{font-size:24px;color:var(--muted);white-space:nowrap;margin-top:2px}
+.rxi{position:absolute;left:22px;right:22px;height:56px;border:2px solid var(--ok);border-radius:12px;background:var(--okt);display:flex;align-items:center;gap:12px;padding:0 14px;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
+.rxi svg{width:24px;height:24px;stroke:var(--ok);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#rxo{position:absolute;left:22px;right:22px;top:330px;opacity:0}
+#rxo .t{font-size:24px;font-weight:800;color:var(--accent);white-space:nowrap}
+#rxo .w{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#rxo .w span{height:42px;padding:0 12px;border:2px solid var(--line);border-radius:999px;display:flex;align-items:center;font-size:24px;color:#E6E8EC;white-space:nowrap}
+.mv{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:var(--accent);opacity:0}
+
+/* BATIDA 5: MENU NATIVO POR CANAL */
+#req{position:absolute;left:560px;top:128px;width:800px;height:96px;border:3px solid var(--accent);border-radius:20px;background:var(--soft);display:flex;align-items:center;gap:18px;padding:0 24px;opacity:0}
+#req b{font-size:28px;font-weight:800;white-space:nowrap}
+#req .gr{flex:1}
+.rst{position:relative;width:310px;height:46px}
+.rst span{position:absolute;right:0;top:0;height:46px;padding:0 16px;border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:800;white-space:nowrap}
+#rsA{color:var(--muted);border:2px solid var(--line);background:var(--bg)}
+#rsB{color:var(--ok);border:2px solid var(--ok);background:var(--okt);opacity:0}
+#phone{position:absolute;left:300px;top:280px;width:440px;height:650px;border:3px solid #4A4D56;border-radius:44px;background:#0B141A;overflow:hidden;opacity:0}
+.pbar{position:absolute;left:0;right:0;top:0;height:92px;background:#1F2C33;display:flex;align-items:center;gap:14px;padding:22px 22px 0}
+.pav{width:50px;height:50px;border-radius:50%;background:#25D366;color:#0B141A;display:grid;place-items:center;font-size:24px;font-weight:800;flex:none}
+.pbar b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+.pbar span{display:block;font-size:24px;color:#9FB0B8;white-space:nowrap}
+#pm{position:absolute;left:22px;top:130px;width:340px;border-radius:16px;border-top-left-radius:6px;background:#202C33;padding:14px 18px;opacity:0}
+#pm p{font-size:26px;font-weight:600;white-space:nowrap}
+#pm .lk{margin-top:12px;height:50px;border-top:2px solid #33434C;display:flex;align-items:center;justify-content:center;gap:10px;font-size:24px;font-weight:800;color:#53BDEB;white-space:nowrap}
+#sheet{position:absolute;left:0;right:0;bottom:0;height:330px;background:#1F2C33;border-top-left-radius:26px;border-top-right-radius:26px;padding:20px 24px;opacity:0}
+#sheet .t{font-size:26px;font-weight:800;text-align:center;white-space:nowrap}
+.opt{position:relative;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #2C3A42;font-size:26px;font-weight:600;white-space:nowrap}
+.rad{width:30px;height:30px;border-radius:50%;border:3px solid #8696A0;position:relative;flex:none}
+.rad i{position:absolute;left:4px;top:4px;width:16px;height:16px;border-radius:50%;background:#25D366;opacity:0}
+#dwin{position:absolute;left:1000px;top:280px;width:620px;height:560px;border:2px solid #3A3C55;border-radius:22px;background:#24263A;overflow:hidden;opacity:0}
+.dbar{position:absolute;left:0;right:0;top:0;height:64px;background:#1C1E2E;border-bottom:2px solid #34364C;display:flex;align-items:center;gap:12px;padding:0 22px;font-size:26px;font-weight:800;white-space:nowrap}
+.dbar span{color:#9A9DC0}
+#dm{position:absolute;left:24px;top:92px;right:24px;opacity:0}
+.drow{display:flex;gap:16px}
+.dav{width:56px;height:56px;border-radius:50%;background:#A7A2FF;color:#1C1E2E;display:grid;place-items:center;font-size:24px;font-weight:800;flex:none}
+.dname{font-size:26px;font-weight:800;white-space:nowrap}
+.dname em{font-style:normal;font-size:24px;font-weight:800;color:#fff;background:#5865F2;border-radius:6px;padding:0 8px;margin-left:8px}
+.dtext{font-size:26px;margin-top:6px;white-space:nowrap}
+.dbtns{display:flex;flex-direction:column;gap:12px;margin-top:18px;margin-left:72px}
+.dbtn{position:relative;width:340px;height:56px;border-radius:10px;background:#4E5058;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;white-space:nowrap}
+.dbtn u{position:absolute;inset:0;border-radius:10px;background:#248046;opacity:0;text-decoration:none}
+.dbtn em{position:relative;font-style:normal}
+#dnote{position:absolute;left:24px;right:24px;bottom:22px;height:56px;border-radius:12px;border:2px solid var(--ok);background:var(--okt);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+.cap1{position:absolute;font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+
+/* BATIDA 6: ENTREGA E REGISTRO */
+#dl{position:absolute;left:120px;top:170px;width:800px;height:620px;border:2px solid var(--line);border-radius:22px;background:var(--surface);padding:22px 28px;opacity:0}
+#dl h3,#reg h3{margin:0;font-size:30px;font-weight:800;white-space:nowrap}
+#dl .sub,#reg .sub{font-size:24px;color:var(--muted);white-space:nowrap;margin-top:4px}
+#steps{position:absolute;left:28px;right:28px;top:140px;height:150px}
+#sline{position:absolute;left:60px;right:60px;top:38px;height:8px;border-radius:4px;background:#2C2F37}
+#sfill{position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--ok);border-radius:4px;transform-origin:0 50%}
+.sn{position:absolute;top:0;width:120px;display:flex;flex-direction:column;align-items:center}
+.sn .o{width:84px;height:84px;border-radius:50%;border:4px solid var(--line);background:var(--bg);display:grid;place-items:center;position:relative}
+.sn .o i{position:absolute;inset:-4px;border-radius:50%;background:var(--ok);opacity:0}
+.sn .o svg{position:relative;width:40px;height:40px;stroke:#0E0F12;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.sn span{margin-top:12px;font-size:26px;font-weight:800;white-space:nowrap}
+.dnote{position:absolute;left:28px;right:28px;height:56px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:24px;color:#E6E8EC;white-space:nowrap;opacity:0}
+.dnote b{color:var(--accent)}
+#reg{position:absolute;left:980px;top:170px;width:820px;height:620px;border:2px solid var(--line);border-radius:22px;background:var(--surface);padding:22px 28px;opacity:0}
+.srch{position:absolute;left:28px;right:28px;top:120px;height:60px;border:2px solid var(--accent);border-radius:14px;background:#121317;display:flex;align-items:center;gap:12px;padding:0 18px;font-size:26px;font-weight:700;white-space:nowrap}
+.hit{position:absolute;left:28px;right:28px;height:82px;border:2px solid var(--line);border-radius:14px;display:flex;align-items:center;gap:16px;padding:0 18px;opacity:0}
+.hit .tx{flex:1;min-width:0}
+.hit .tx b{display:block;font-size:26px;font-weight:700;white-space:nowrap}
+.hit .tx span{display:block;font-size:24px;color:var(--muted);white-space:nowrap}
+.hit mark{background:var(--soft);color:#FFB3A8;border-radius:6px;padding:0 4px}
+
+/* LEGENDA DA BATIDA */
+#caps{position:absolute;left:120px;right:120px;top:956px;height:86px}
+.cap{position:absolute;left:0;right:0;top:0;height:86px;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#1A1A1F;border-left:8px solid var(--accent);font-size:32px;font-weight:700;opacity:0;white-space:nowrap}
+.cap small{font-size:24px;font-weight:800;color:var(--accent)}
+
+/* FECHO */
+#fin{position:absolute;left:120px;top:140px;width:1680px;height:800px;opacity:0}
+#fin h2{position:absolute;left:0;right:0;top:20px;margin:0;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px}
+#fin h2 em{font-style:normal;color:var(--accent)}
+.fp{position:absolute;top:190px;width:252px;height:64px;border:2px solid var(--line);border-radius:999px;background:var(--surface2);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:700;white-space:nowrap;opacity:0}
+#fsv{position:absolute;left:0;top:0;width:1680px;height:800px;overflow:visible}
+.fe{fill:none;stroke:#5A5E68;stroke-width:4}
+#fbar{position:absolute;left:340px;top:370px;width:1000px;height:90px;border:3px solid var(--accent);border-radius:999px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;white-space:nowrap;opacity:0}
+.ft{position:absolute;top:530px;width:300px;height:64px;border:2px solid var(--info);border-radius:16px;background:var(--infot);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;white-space:nowrap;opacity:0}
+#fcaps{position:absolute;left:0;right:0;top:650px;display:flex;justify-content:center;gap:14px}
+#fcaps span{height:52px;padding:0 18px;border:2px solid var(--line);border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:600;color:#E6E8EC;white-space:nowrap;opacity:0}
+#fflg{position:absolute;left:0;right:0;top:728px;display:flex;justify-content:center;gap:20px;opacity:0}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="channels-one-contract" data-width="1920" data-height="1080" data-start="0" data-duration="34">
+
+<div id="top"><img src="./assets/welabs-logo.png" alt="Welabs"><div class="tt">Channels · <em>um contrato, todos os canais</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+
+<!-- beats 1-2: loose channels, then one contract -->
+<div class="layer" id="s1">
+  <svg id="edges" viewBox="0 0 1920 1080"></svg>
+  <div id="saas">
+    <h3>SaaS DEMO</h3>
+    <div class="sub">app · portal · CRM</div>
+    <div class="cred" id="cred">
+      <div class="h">Credencial do consumidor</div>
+      <div class="kv"><span>ID</span><span>saas-demo</span></div>
+      <div class="kv"><span>segredo</span><span>••••••••</span></div>
+      <div class="kv"><span>entrega</span><span>auto · HTTP · WS</span></div>
+    </div>
+    <div class="sub" style="margin-top:14px">cria canais, envia, recebe eventos</div>
+  </div>
+  <div id="hub">
+    <h3>Channels · <em>um contrato</em></h3>
+    <div class="sub">o SaaS nunca fala direto com o canal</div>
+    <div class="tr2"><span>API HTTP</span><span>WebSocket</span></div>
+    <div class="lbl">Escopos da credencial</div>
+    <div class="scopes" id="scopes"><span>mensagens</span><span>instalações</span><span>mídia</span><span>diretório</span><span>comandos</span><span>ingestão</span><span>chamadas</span><span>telefone</span></div>
+    <div class="lbl">De volta ao SaaS</div>
+    <div class="sub">eventos assinados · URL ou WebSocket</div>
+  </div>
+  <div id="plug"></div>
+</div>
+
+<!-- beat 3: admin "Canais" screen -->
+<div class="layer" id="s3">
+  <div id="adm">
+    <div class="wbar"><span>Área administrativa · Canais</span><span class="gr"></span><span class="act">Suspender</span><span class="act">Retomar</span><span class="act">Revogar</span></div>
+    <div class="thead"><span class="c1">Plataforma</span><span class="c2">Tenant</span><span class="c3">Ativação</span><span class="c4" style="height:auto">Estado</span></div>
+    <div id="trows"></div>
+    <div class="fnote" id="fn1" style="top:660px"><i></i>Suspender pausa entrada e saída; retomar e revogar no mesmo lugar</div>
+    <div class="fnote" id="fn2" style="top:704px"><i></i>Sessão do WhatsApp cifrada; se um processo cai, outra réplica assume</div>
+    <div class="fnote" id="fn3" style="top:748px"><i></i>Cada mudança de estado sai como evento para o SaaS</div>
+    <div id="apanel">
+      <div class="h">Como cada canal ativa</div>
+      <div class="acard" id="ac0" style="left:0;top:50px"><div class="okm"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div><div class="t">WhatsApp</div><div class="n">QR ou código</div><div class="viz"><svg id="qr" width="140" height="140" viewBox="0 0 140 140"></svg></div></div>
+      <div class="acard" id="ac1" style="left:263px;top:50px"><div class="okm"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div><div class="t">Discord</div><div class="n">convite + comando</div><div class="viz"><div class="cmd">/activate</div></div></div>
+      <div class="acard" id="ac2" style="left:0;top:370px"><div class="okm"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div><div class="t">WhatsApp oficial</div><div class="n">número oficial</div><div class="viz"><div class="btnp">Conectar</div></div></div>
+      <div class="acard" id="ac3" style="left:263px;top:370px"><div class="okm"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div><div class="t">Webhook</div><div class="n">URL pública</div><div class="viz"><div class="urlb">assinada com o segredo da instalação</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- beat 4: same signed event -->
+<div class="layer" id="s4">
+  <div class="bub" id="b0" style="top:200px"><span class="chn" style="--c:#25D366"><i class="cdot"></i>WhatsApp</span><p>Quero agendar uma visita</p></div>
+  <div class="bub" id="b1" style="top:416px"><span class="chn" style="--c:#A7A2FF"><i class="cdot"></i>Discord</span><p>Alguém pode me ajudar?</p></div>
+  <div class="bub" id="b2" style="top:632px"><span class="chn" style="--c:#7DB4FF"><i class="cdot"></i>Chat do site</span><p>Vocês abrem sábado?</p></div>
+  <div id="evc">
+    <div class="hd"><b>Evento recebido</b><span class="seal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3DD68C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>assinado · HMAC</span></div>
+    <div class="code">
+      <div class="ln"><span class="k">tipo</span><span class="v"><span class="fx">message.received</span></span></div>
+      <div class="ln"><span class="k">canal</span><span class="v"><span id="va0">whatsapp</span><span id="va1">discord</span><span id="va2">webchat</span></span></div>
+      <div class="ln"><span class="k">tenant</span><span class="v"><span id="vb0">empresa-demo-b</span><span id="vb1">empresa-demo-a</span><span id="vb2">site-demo</span></span></div>
+      <div class="ln"><span class="k">conversa</span><span class="v"><span id="vc0">conv-DEMO-17</span><span id="vc1">conv-DEMO-08</span><span id="vc2">conv-DEMO-23</span></span></div>
+      <div class="ln"><span class="k">contato</span><span class="v"><span class="fx">nome · foto · id estável</span></span></div>
+      <div class="ln"><span class="k">texto</span><span class="v"><span id="vd0">Quero agendar uma visita</span><span id="vd1">Alguém pode me ajudar?</span><span id="vd2">Vocês abrem sábado?</span></span></div>
+    </div>
+    <div class="guar"><span>pelo menos uma vez</span><span>nova tentativa</span><span>fila de falhas</span><span>reentrega pelo operador</span></div>
+  </div>
+  <div id="rx">
+    <h3>SaaS DEMO</h3>
+    <div class="sub">recebe por HTTP ou WebSocket</div>
+    <div class="rxi" id="rx0" style="top:116px"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>whatsapp · mesmo formato</div>
+    <div class="rxi" id="rx1" style="top:182px"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>discord · mesmo formato</div>
+    <div class="rxi" id="rx2" style="top:248px"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>webchat · mesmo formato</div>
+    <div id="rxo"><div class="t">Outros eventos do contrato</div><div class="w"><span>conversas fundidas</span><span>canal suspenso</span><span>resposta pelo celular</span><span>contato atualizado</span></div></div>
+  </div>
+  <div class="mv" id="mv0"></div><div class="mv" id="mv1"></div><div class="mv" id="mv2"></div><div class="mv" id="mw0"></div><div class="mv" id="mw1"></div><div class="mv" id="mw2"></div>
+</div>
+
+<!-- beat 5: one choice, native menu per channel -->
+<div class="layer" id="s5">
+  <div id="req"><b>Uma mensagem · três opções</b><span class="gr"></span><div class="rst"><span id="rsA">enviando</span><span id="rsB">aceita · fila de saída</span></div></div>
+  <div class="cap1" id="lbW" style="left:300px;top:238px;color:#25D366">vira lista no WhatsApp oficial</div>
+  <div class="cap1" id="lbD" style="left:1000px;top:238px;color:#A7A2FF">vira botões no Discord</div>
+  <div id="phone">
+    <div class="pbar"><div class="pav">ED</div><div><b>Empresa DEMO</b><span>WhatsApp oficial</span></div></div>
+    <div id="pm"><p>Como podemos ajudar?</p><div class="lk"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#53BDEB" stroke-width="2.6" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Ver opções</div></div>
+    <div id="sheet"><div class="t">Escolha uma opção</div>
+      <div class="opt"><span>Agendar visita</span><span class="rad"><i id="radS"></i></span></div>
+      <div class="opt"><span>Falar com atendente</span><span class="rad"></span></div>
+      <div class="opt"><span>Segunda via DEMO</span><span class="rad"></span></div>
+    </div>
+  </div>
+  <div id="dwin">
+    <div class="dbar"><span>#</span>atendimento</div>
+    <div id="dm">
+      <div class="drow"><div class="dav">SD</div><div><div class="dname">Suporte DEMO<em>BOT</em></div><div class="dtext">Como podemos ajudar?</div></div></div>
+      <div class="dbtns"><div class="dbtn" id="db0"><em>Agendar visita</em></div><div class="dbtn" id="db1"><u id="dbS"></u><em>Falar com atendente</em></div><div class="dbtn" id="db2"><em>Segunda via DEMO</em></div></div>
+    </div>
+    <div id="dnote">Botões desativados após o clique</div>
+  </div>
+</div>
+
+<!-- beat 6: delivery status and message registry -->
+<div class="layer" id="s6">
+  <div id="dl">
+    <h3>Entrega DEMO-0042</h3>
+    <div class="sub">consulta pelo ID da entrega · WhatsApp oficial</div>
+    <div id="steps"><div id="sline"><div id="sfill"></div></div></div>
+    <div class="dnote" id="dn0" style="top:330px"><b>falhou?</b>o evento volta com o motivo</div>
+    <div class="dnote" id="dn1" style="top:400px"><b>repete</b>nova tentativa com espera crescente</div>
+    <div class="dnote" id="dn2" style="top:470px"><b>janela</b>fora da janela do WhatsApp oficial, só template</div>
+    <div class="dnote" id="dn3" style="top:540px"><b>mídia</b>anexos por URL assinada</div>
+  </div>
+  <div id="reg">
+    <h3>Registro de mensagens</h3>
+    <div class="sub">o Channels guarda; o SaaS guarda a referência</div>
+    <div class="srch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B4B9C3" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>visita</div>
+    <div class="hit" id="h0" style="top:200px"><span class="chn" style="--c:#25D366;width:200px"><i class="cdot"></i>WhatsApp</span><div class="tx"><b>Quero agendar uma <mark>visita</mark></b><span>conv-DEMO-17</span></div></div>
+    <div class="hit" id="h1" style="top:296px"><span class="chn" style="--c:#A7A2FF;width:200px"><i class="cdot"></i>Discord</span><div class="tx"><b>Agendar <mark>visita</mark> · escolha</b><span>conv-DEMO-08</span></div></div>
+    <div class="hit" id="h2" style="top:392px"><span class="chn" style="--c:#FF8A73;width:200px"><i class="cdot"></i>Webhook</span><div class="tx"><b><mark>Visita</mark> confirmada DEMO</b><span>conv-DEMO-31</span></div></div>
+    <div class="dnote" id="rn0" style="top:500px;left:28px;right:28px">só do seu consumidor e tenant · histórico · importação</div>
+  </div>
+</div>
+
+<!-- closing -->
+<div id="fin">
+  <h2>Um contrato, <em>todos os canais.</em></h2>
+  <svg id="fsv" viewBox="0 0 1680 800"></svg>
+  <div id="fbar">Channels · API HTTP e WebSocket · eventos assinados</div>
+  <div class="ft" id="ft0" style="left:290px">SaaS</div>
+  <div class="ft" id="ft1" style="left:690px">app</div>
+  <div class="ft" id="ft2" style="left:1090px">CRM</div>
+  <div id="fcaps"><span>Área administrativa</span><span>Registro com busca</span><span>Menus nativos</span><span>SDK para integração própria</span></div>
+  <div id="fflg"><span class="badge pil">Telefone e chamadas · em piloto</span></div>
+</div>
+
+<div id="caps"></div>
+<div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+  // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
+  var NS = "http://www.w3.org/2000/svg";
+  var CH = [
+    { t: "Discord",          s: "convite + /activate",       c: "#A7A2FF", ic: '<rect x="3" y="6" width="18" height="12" rx="5"/><circle cx="9" cy="12" r="1.2"/><circle cx="15" cy="12" r="1.2"/>' },
+    { t: "WhatsApp",         s: "QR ou código de pareamento", c: "#25D366", ic: '<path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/>' },
+    { t: "WhatsApp oficial", s: "número oficial conectado",   c: "#3DD68C", ic: '<path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/><path d="M9 12l2 2 4-4"/>' },
+    { t: "Chat do site",     s: "a interface é do SaaS",      c: "#7DB4FF", ic: '<rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l4-4"/>' },
+    { t: "Webhook",          s: "URL pública assinada",       c: "#FF8A73", ic: '<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><circle cx="12" cy="6" r="3"/><path d="M9 17h6M10.5 8.5L7.5 14.5M13.5 8.5l3 6"/>' },
+    { t: "Telefone",         s: "número BR/PT pedido no app", c: "#F5B544", ic: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>', badge: "em piloto" }
+  ];
+  var TX = 1340, TTOP = 150, TSTEP = 122, TH = 96;
+  // Loose (scattered) positions for beat 1, as offsets from the final column slot
+  // Each tile keeps its own horizontal lane so no two tiles cross when they line up
+  var LOOSE = [[300, 158], [820, 266], [220, 404], [760, 508], [380, 644], [880, 750]];
+  var s1 = document.getElementById("s1"), esvg = document.getElementById("edges");
+  CH.forEach(function (c, i) {
+    var d = document.createElement("div");
+    d.className = "tile"; d.id = "t" + i; d.style.top = (TTOP + i * TSTEP) + "px"; d.style.setProperty("--c", c.c);
+    d.innerHTML = '<div class="hdl" id="hd' + i + '"></div><div class="ic"><svg viewBox="0 0 24 24">' + c.ic + '</svg></div><div class="tx"><div class="nm"><b>' + c.t + '</b>' + (c.badge ? '<span class="badge pil">' + c.badge + '</span>' : '') + '</div><span class="s">' + c.s + '</span></div>';
+    s1.appendChild(d);
+    var y1 = TTOP + i * TSTEP + TH / 2, x0 = 1200, y0 = 475, x1 = TX - 14;
+    var e = document.createElementNS(NS, "path");
+    e.setAttribute("d", "M" + x0 + " " + y0 + " C" + (x0 + 80) + " " + y0 + " " + (x1 - 80) + " " + y1 + " " + x1 + " " + y1);
+    e.setAttribute("class", "edge"); e.setAttribute("id", "ed" + i); e.setAttribute("pathLength", "1");
+    e.style.strokeDasharray = "1"; e.style.strokeDashoffset = "1";
+    esvg.appendChild(e);
+  });
+  var sx = document.createElementNS(NS, "path");
+  sx.setAttribute("d", "M560 460 L700 475"); sx.setAttribute("class", "edge"); sx.setAttribute("id", "edS"); sx.setAttribute("pathLength", "1");
+  sx.style.strokeDasharray = "1"; sx.style.strokeDashoffset = "1"; sx.style.stroke = "#FF452B";
+  esvg.appendChild(sx);
+
+  // Admin table rows
+  var ROWS = [
+    { p: 0, t: "Empresa DEMO A", a: "convite + /activate", w: "aguardando", g: "ativa" },
+    { p: 1, t: "Empresa DEMO B", a: "QR ou código", w: "QR pronto", g: "conectado" },
+    { p: 2, t: "Empresa DEMO A", a: "número oficial", w: "conectando", g: "ativa" },
+    { p: 3, t: "Site DEMO", a: "ponte do chat", w: "aguardando", g: "ativa" },
+    { p: 4, t: "Sistema DEMO", a: "URL assinada", w: "aguardando", g: "ativa" },
+    { p: 5, t: "Empresa DEMO C", a: "pedido de número", w: "pendente", g: "ativa" }
+  ];
+  var trows = document.getElementById("trows");
+  ROWS.forEach(function (r, i) {
+    var c = CH[r.p], d = document.createElement("div");
+    d.className = "trow"; d.id = "tr" + i; d.style.top = (128 + i * 86) + "px";
+    d.innerHTML = '<span class="c1" style="--c:' + c.c + '"><i class="cdot"></i><b>' + c.t + '</b>' + (c.badge ? '<span class="badge pil">' + c.badge + '</span>' : '') + '</span><span class="c2">' + r.t + '</span><span class="c3">' + r.a + '</span><span class="c4"><span class="pill w" id="pw' + i + '">' + r.w + '</span><span class="pill g" id="pg' + i + '">' + r.g + '</span></span>';
+    trows.appendChild(d);
+  });
+  // Deterministic QR-like glyph (fixed bit rows, decorative only)
+  var QR = ["1111111010111", "1000001001001", "1011101110101", "1011101010001", "1011101101101", "1000001010101", "1111111010111", "0000000110000", "1101011011010", "0110100100111", "1011011010001", "0100110111010", "1110101001011"];
+  var qr = document.getElementById("qr");
+  QR.forEach(function (row, y) {
+    row.split("").forEach(function (b, x) {
+      if (b === "1") { var r = document.createElementNS(NS, "rect"); r.setAttribute("x", 5 + x * 10); r.setAttribute("y", 5 + y * 10); r.setAttribute("width", 10); r.setAttribute("height", 10); r.setAttribute("fill", "#E6E8EC"); qr.appendChild(r); }
+    });
+  });
+
+  // Delivery stepper nodes
+  var steps = document.getElementById("steps");
+  ["Enviada", "Entregue", "Lida"].forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "sn"; d.id = "sn" + i; d.style.left = (i * 307) + "px";
+    d.innerHTML = '<div class="o"><i id="si' + i + '"></i><svg id="sk' + i + '" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div><span>' + t + '</span>';
+    steps.appendChild(d);
+  });
+
+  // Closing: six channel pills converge into one contract bar, then out to consumers
+  var fin = document.getElementById("fin"), fsv = document.getElementById("fsv");
+  var FPW = 252, FGAP = 33.6;
+  function fpath(id, d) {
+    var e = document.createElementNS(NS, "path"); e.setAttribute("d", d); e.setAttribute("class", "fe"); e.setAttribute("id", id); e.setAttribute("pathLength", "1");
+    e.style.strokeDasharray = "1"; e.style.strokeDashoffset = "1"; fsv.appendChild(e);
+  }
+  ["Discord", "WhatsApp", "WA oficial", "Chat do site", "Webhook", "Telefone"].forEach(function (t, i) {
+    var x = i * (FPW + FGAP), d = document.createElement("div");
+    d.className = "fp"; d.id = "fp" + i; d.style.left = x + "px"; d.style.setProperty("--c", CH[i].c);
+    d.innerHTML = '<i class="cdot"></i>' + t; fin.appendChild(d);
+    var px = x + FPW / 2, tx = 560 + i * 112;
+    fpath("fe" + i, "M" + px + " 256 C" + px + " 310 " + tx + " 316 " + tx + " 368");
+  });
+  [440, 840, 1240].forEach(function (x, i) { fpath("fo" + i, "M" + (640 + i * 200) + " 462 C" + (640 + i * 200) + " 496 " + x + " 496 " + x + " 528"); });
+
+  var CAPS = [
+    "Seis canais, cada um com seu jeito de conectar, enviar e avisar",
+    "Um SaaS pluga uma credencial com escopos e fala com todos",
+    "Cada canal ativa do seu jeito; o estado volta igual para todos",
+    "Mensagens de canais diferentes chegam como o mesmo evento assinado",
+    "A mesma escolha vira lista no WhatsApp e botões no Discord",
+    "Enviada, entregue, lida, e tudo fica no registro com busca"
+  ];
+  var capBox = document.getElementById("caps");
+  CAPS.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/6</small><span>" + t + "</span>"; capBox.appendChild(d);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 34 s)
+  var tl = gsap.timeline({ paused: true });
+  function fin_(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.5, ease: "power2.out" }, t); }
+  function fout(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.4, ease: "power2.in" }, t); }
+  function rise(sel, t, d) { tl.fromTo(sel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: d || 0.5, ease: "power3.out" }, t); }
+  function swap(a, b, t) { fout(a, t, 0.15); fin_(b, t + 0.15, 0.3); }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, a);
+    tl.to("#cap" + i, { opacity: 0, duration: 0.35 }, b - 0.35);
+  }
+  function travel(sel, x0, y0, x1, y1, t, d) {
+    tl.fromTo(sel, { x: x0 - 11, y: y0 - 11, opacity: 0 }, { x: x1 - 11, y: y1 - 11, opacity: 1, duration: d || 0.6, ease: "power1.inOut" }, t);
+    tl.to(sel, { opacity: 0, duration: 0.15 }, t + (d || 0.6));
+  }
+
+  // Beat 1 (0-5.0): six loose channels, each with its own way
+  tl.fromTo("#top", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
+  fin_("#s1", 0.1, 0.3);
+  cap(0, 0.4, 5.0);
+  CH.forEach(function (c, i) {
+    var L = LOOSE[i], fy = TTOP + i * TSTEP;
+    tl.fromTo("#t" + i, { opacity: 0, scale: 0.9, x: L[0] - TX, y: L[1] - fy }, { opacity: 1, scale: 1, x: L[0] - TX, y: L[1] - fy, duration: 0.5, ease: "back.out(1.6)" }, 0.7 + i * 0.3);
+  });
+
+  // Beat 2 (5.0-10.4): SaaS plugs one credential; channels line up behind one contract
+  cap(1, 5.0, 10.4);
+  CH.forEach(function (c, i) {
+    tl.to("#t" + i, { x: 0, y: 0, duration: 1.0, ease: "power3.inOut" }, 5.1 + i * 0.05);
+  });
+  // SaaS and hub enter only after the tiles have left the left/middle lanes
+  rise("#saas", 6.2, 0.5);
+  rise("#hub", 6.3, 0.5);
+  tl.to("#edS", { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.inOut" }, 7.0);
+  tl.fromTo("#plug", { opacity: 0, x: -120, scale: 0.6 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "power2.out" }, 7.0);
+  fout("#plug", 7.5, 0.25);
+  tl.to("#hub", { borderColor: "#FF452B", duration: 0.3 }, 7.5);
+  tl.fromTo("#scopes span", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08 }, 7.6);
+  CH.forEach(function (c, i) {
+    tl.to("#ed" + i, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.inOut" }, 7.9 + i * 0.08);
+    fin_("#hd" + i, 8.2 + i * 0.08, 0.25);
+  });
+
+  // Beat 3 (10.4-16.4): each channel activates its own way in the admin "Canais" screen
+  fout("#s1", 10.4, 0.4);
+  fin_("#s3", 10.85, 0.4);
+  cap(2, 10.6, 16.4);
+  ROWS.forEach(function (r, i) { tl.fromTo("#tr" + i, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 10.9 + i * 0.08); });
+  ["#ac0", "#ac1", "#ac2", "#ac3"].forEach(function (s, i) { rise(s, 11.1 + i * 0.1, 0.4); });
+  var FLIP = [[0, "#ac1"], [1, "#ac0"], [2, "#ac2"], [3, null], [4, "#ac3"], [5, null]];
+  FLIP.forEach(function (f, k) {
+    var t = 12.0 + k * 0.5;
+    swap("#pw" + f[0], "#pg" + f[0], t);
+    if (f[1]) {
+      tl.to(f[1], { borderColor: "#3DD68C", duration: 0.3 }, t);
+      tl.fromTo(f[1] + " .okm", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, t + 0.1);
+    }
+  });
+  fin_("#fn1", 13.2, 0.4); fin_("#fn2", 13.8, 0.4); fin_("#fn3", 14.4, 0.4);
+
+  // Beat 4 (16.4-22.4): three channels, one signed event shape, delivered to the SaaS
+  fout("#s3", 16.4, 0.4);
+  fin_("#s4", 16.85, 0.3);
+  cap(3, 16.6, 22.4);
+  rise("#evc", 17.1, 0.4); rise("#rx", 17.2, 0.4);
+  var EVT = [16.9, 18.4, 19.9];
+  EVT.forEach(function (t, i) {
+    var by = [200, 416, 632][i] + 64;
+    rise("#b" + i, t, 0.4);
+    travel("#mv" + i, 580, by, 680, 420, t + 0.4, 0.5);
+    if (i > 0) { ["#va", "#vb", "#vc", "#vd"].forEach(function (p) { fout(p + (i - 1), t + 0.7, 0.15); }); }
+    ["#va", "#vb", "#vc", "#vd"].forEach(function (p) { fin_(p + i, t + 0.85, 0.3); });
+    tl.fromTo("#evc .seal", { scale: 1 }, { scale: 1.08, duration: 0.15, yoyo: true, repeat: 1 }, t + 0.95);
+    travel("#mw" + i, 1280, 420, 1342, 144 + i * 66 + 200, t + 1.0, 0.4);
+    rise("#rx" + i, t + 1.35, 0.3);
+  });
+  fin_("#rxo", 20.6, 0.4);
+
+  // Beat 5 (22.4-27.6): the same choice becomes a native list or native buttons
+  fout("#s4", 22.4, 0.4);
+  fin_("#s5", 22.85, 0.3);
+  cap(4, 22.6, 27.6);
+  rise("#req", 22.8, 0.4);
+  swap("#rsA", "#rsB", 23.4);
+  fin_("#lbW", 23.7, 0.4); fin_("#lbD", 23.7, 0.4);
+  rise("#phone", 23.7, 0.45); rise("#dwin", 23.7, 0.45);
+  rise("#pm", 24.1, 0.4); rise("#dm", 24.1, 0.4);
+  tl.fromTo("#pm .lk", { scale: 1 }, { scale: 0.94, duration: 0.12, yoyo: true, repeat: 1 }, 24.8);
+  tl.fromTo("#sheet", { opacity: 0, y: 120 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 25.0);
+  fin_("#radS", 25.6, 0.25);
+  tl.fromTo("#db1", { scale: 1 }, { scale: 0.95, duration: 0.12, yoyo: true, repeat: 1 }, 25.6);
+  fin_("#dbS", 25.75, 0.25);
+  tl.to(["#db0", "#db2"], { opacity: 0.4, duration: 0.3 }, 25.85);
+  rise("#dnote", 26.0, 0.35);
+
+  // Beat 6 (27.6-31.2): sent -> delivered -> read; every message kept and searchable
+  fout("#s5", 27.6, 0.4);
+  fin_("#s6", 28.05, 0.3);
+  cap(5, 27.8, 31.2);
+  rise("#dl", 27.95, 0.4); rise("#reg", 28.0, 0.4);
+  tl.fromTo("#sfill", { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 27.95);
+  [0, 1, 2].forEach(function (i) {
+    var t = 28.3 + i * 0.6;
+    if (i > 0) tl.to("#sfill", { scaleX: i / 2, duration: 0.4, ease: "power2.inOut" }, t - 0.3);
+    fin_("#si" + i, t, 0.25); fin_("#sk" + i, t + 0.1, 0.25);
+  });
+  ["#dn0", "#dn1", "#dn2", "#dn3"].forEach(function (s, i) { rise(s, 28.5 + i * 0.15, 0.35); });
+  ["#h0", "#h1", "#h2"].forEach(function (s, i) { rise(s, 28.6 + i * 0.2, 0.35); });
+  rise("#rn0", 29.4, 0.35);
+
+  // Closing (31.2-34.0): one contract, all channels
+  fout("#s6", 31.2, 0.3);
+  fin_("#fin", 31.45, 0.2);
+  tl.fromTo("#fin h2", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 31.45);
+  [0, 1, 2, 3, 4, 5].forEach(function (i) {
+    tl.fromTo("#fp" + i, { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.3 }, 31.5 + i * 0.04);
+    tl.to("#fe" + i, { strokeDashoffset: 0, duration: 0.3, ease: "power2.inOut" }, 31.65 + i * 0.03);
+  });
+  tl.fromTo("#fbar", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, 31.85);
+  [0, 1, 2].forEach(function (i) {
+    tl.to("#fo" + i, { strokeDashoffset: 0, duration: 0.25 }, 31.95 + i * 0.03);
+    rise("#ft" + i, 32.0 + i * 0.04, 0.3);
+  });
+  tl.fromTo("#fcaps span", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.03 }, 32.0);
+  fin_("#fflg", 32.1, 0.3);
+  tl.set("#pad", { opacity: 0 }, 34);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["channels-one-contract"] = tl;
+</script>
+</body>
+</html>

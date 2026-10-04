@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tabe.la · Jornada da proposta (com abertura)</title>
+<style>
+/* TOKENS E BASE DA JORNADA */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#F3F6F8;--ink:#102838;--acc:#0D547F;--sec:#C63850;--surf:#FFFFFF;--mut:#526678;--line:#BCCBD4;--soft:#E2EDF4;--page:#EEF3F7;--ok:#1B7F5C;--okbg:#DFF3EA;--wr:#8F5A00;--wrbg:#FCEFD2;--no:#8A2C3C;--nobg:#F7E0E4}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink);font-size:24px;line-height:1.25}
+#root *{box-sizing:border-box}
+#win{position:absolute;left:40px;top:36px;width:1840px;height:1008px;border-radius:22px;overflow:hidden;background:var(--page);border:1px solid var(--line);box-shadow:0 28px 64px rgba(16,40,56,.22)}
+#side{position:absolute;left:0;top:0;width:260px;height:1008px;background:var(--ink)}
+#side img{position:absolute;left:32px;top:30px;width:150px}
+.sb{position:absolute;left:0;top:130px;width:260px;opacity:0}
+.sb .it{position:relative;height:60px;margin:0 8px 10px;padding:0 14px;display:flex;align-items:center;color:rgba(255,255,255,.78);font-weight:540;letter-spacing:-.012em;white-space:nowrap}
+.sb .hl{position:absolute;inset:0;border-radius:12px;background:rgba(255,255,255,.16);opacity:0}
+.sb .it span{position:relative}
+#demo{position:absolute;left:32px;bottom:34px;width:200px;color:rgba(255,255,255,.7);font-weight:600}
+#demo b{display:block;color:#fff;font-weight:750}
+#top{position:absolute;left:260px;top:0;width:1580px;height:84px;background:var(--surf);border-bottom:1px solid var(--line)}
+#rail{position:absolute;left:36px;top:0;height:84px;display:flex;align-items:center;gap:16px}
+.rs{display:flex;align-items:center;gap:10px;font-weight:620;color:var(--mut)}
+.rs .d{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--mut);font-weight:750}
+.rs .l{color:var(--mut)}
+#badge{position:absolute;right:36px;top:16px;width:250px;height:52px}
+#badge span{position:absolute;inset:0;display:grid;place-items:center;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;opacity:0}
+#main{position:absolute;left:260px;top:84px;width:1580px;height:924px;overflow:hidden}
+.scr{position:absolute;inset:0;padding:36px 56px;opacity:0}
+.cr{color:var(--mut);font-weight:600;margin-bottom:10px}
+.cr b{color:var(--acc);font-weight:700}
+h1{margin:0 0 20px;font-size:52px;line-height:1.08;letter-spacing:-.035em;font-weight:740}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:20px;box-shadow:0 10px 24px rgba(16,40,56,.07)}
+.chip{display:inline-flex;align-items:center;height:42px;padding:0 18px;border-radius:999px;font-weight:680;white-space:nowrap}
+.c-ok{background:var(--okbg);color:var(--ok)}.c-wr{background:var(--wrbg);color:var(--wr)}.c-no{background:var(--nobg);color:var(--no)}.c-in{background:var(--soft);color:var(--acc)}.c-ink{background:var(--ink);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:58px;padding:0 28px;border-radius:14px;background:var(--acc);color:#fff;font-weight:700;white-space:nowrap}
+.btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc)}
+.btn.sm{height:48px;padding:0 20px;border-radius:12px}
+.btn.no{background:#fff;color:var(--no);border:2px solid var(--no)}
+.abs{position:absolute}
+.stack{position:absolute;inset:0;opacity:0}
+/* LISTA DE EMPREENDIMENTOS */
+.bcard{position:absolute;top:210px;width:700px;height:250px;padding:24px;display:flex;gap:24px;align-items:center;opacity:0}
+.bicon{width:170px;height:190px;border-radius:16px;background:var(--soft);position:relative;overflow:hidden;flex:none}
+.bicon i{position:absolute;left:30px;top:30px;width:110px;height:120px;border:5px solid var(--acc);border-radius:8px 8px 0 0;background:#fff}
+.bicon u{position:absolute;left:0;right:0;bottom:0;height:34px;background:var(--line)}
+.bicon s{position:absolute;left:68px;top:110px;width:34px;height:40px;background:var(--sec)}
+.bcard h2{margin:0 0 8px;font-size:34px;letter-spacing:-.02em}
+.bcard p{margin:0 0 14px;color:var(--mut);font-weight:540}
+/* DETALHE DO EMPREENDIMENTO */
+.tabs{position:absolute;left:56px;top:196px;width:1468px;height:64px;border-bottom:2px solid var(--line)}
+.tab{position:absolute;top:0;height:64px;display:flex;align-items:center;font-weight:650;color:var(--mut)}
+#tabul{position:absolute;left:0;bottom:-2px;height:5px;width:230px;border-radius:4px;background:var(--acc)}
+.pane{position:absolute;left:56px;top:290px;width:1468px;height:600px;opacity:0}
+.gcard{position:absolute;top:0;width:470px;height:400px;padding:28px}
+.gcard h3{margin:0 0 18px;font-size:30px}
+.li{display:flex;align-items:center;gap:14px;height:56px;color:var(--mut);font-weight:560;border-top:1px solid var(--soft)}
+.ck{position:relative;flex:none;width:30px;height:30px;border-radius:50%;background:var(--ok)}
+.ck:after{content:"";position:absolute;left:10px;top:5px;width:8px;height:15px;border:solid #fff;border-width:0 3.5px 3.5px 0;transform:rotate(42deg)}
+.ck.p{background:var(--soft)}
+.lg{position:absolute;left:0;top:0;width:1468px;height:64px;display:flex;gap:16px;align-items:center}
+.tbl{position:absolute;left:0;width:1468px;overflow:hidden}
+.tr{position:absolute;left:0;width:1468px;height:76px;display:flex;align-items:center;border-bottom:1px solid var(--soft);padding-left:28px;background:#fff}
+.tr.h{height:60px;background:var(--soft);color:var(--mut);font-weight:700}
+.tr div{flex:none}
+.c1{width:150px;font-weight:720}.c2{width:260px}.c3{width:200px;color:var(--mut)}.c4{width:260px}.c5{width:300px;color:var(--mut)}.c6{width:240px}
+.rowhl{position:absolute;left:0;width:1468px;height:76px;background:rgba(13,84,127,.13);border-left:6px solid var(--acc);opacity:0}
+.colhl{position:absolute;left:0;top:0;width:290px;height:100%;border:4px solid var(--acc);border-radius:14px;background:rgba(13,84,127,.06);opacity:0}
+.ccard{position:absolute;top:0;width:716px;height:520px;padding:28px}
+.ccard h3{margin:0 0 20px;font-size:32px}
+.cp{display:flex;align-items:center;height:76px;gap:16px;font-weight:600}
+.cp .n{width:150px;color:var(--mut)}.cp .bar{width:340px;height:22px;border-radius:11px;background:var(--soft);position:relative;overflow:hidden}
+.cp .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:11px;background:var(--acc)}
+.cp .v{width:80px;text-align:right;color:var(--mut)}
+/* TABELA DO CORRETOR E GAVETA */
+.drawer{position:absolute;right:40px;top:150px;width:600px;height:740px;padding:32px;opacity:0;box-shadow:0 24px 60px rgba(16,40,56,.28)}
+.drawer h3{margin:0 0 6px;font-size:36px}
+.kv{display:flex;justify-content:space-between;align-items:center;height:60px;border-top:1px solid var(--soft);font-weight:600}
+.kv span:first-child{color:var(--mut)}
+/* ASSISTENTE */
+#stp{position:absolute;left:56px;top:140px;width:1468px;height:70px;display:flex;gap:26px;align-items:center}
+.ws{display:flex;align-items:center;gap:10px;font-weight:650;color:var(--mut)}
+.ws .d{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--mut);font-weight:750}
+.wp{position:absolute;left:56px;top:240px;width:940px;height:620px;opacity:0}
+.opt{position:absolute;top:0;width:450px;height:430px;padding:28px}
+.opt h3{margin:0 0 12px;font-size:32px}
+.optsel{position:absolute;inset:-3px;border:5px solid var(--acc);border-radius:22px;opacity:0}
+.radio{position:absolute;right:26px;top:26px;width:36px;height:36px;border-radius:50%;border:3px solid var(--line);background:#fff}
+.radio i{position:absolute;inset:6px;border-radius:50%;background:var(--acc);opacity:0}
+.fld{position:absolute;left:0;width:940px}
+.fld label{display:block;color:var(--mut);font-weight:650;margin-bottom:10px}
+.inp{height:72px;border:2px solid var(--line);border-radius:14px;background:#fff;padding:0 24px;display:flex;align-items:center;font-weight:600;position:relative}
+.inp .cursorbar{position:absolute;width:3px;height:36px;background:var(--acc);opacity:0}
+.sumc{position:absolute;left:1030px;top:240px;width:494px;height:600px;padding:28px}
+.sumc h3{margin:0 0 6px;font-size:32px}
+.sumc .kv{height:66px}
+.sumc .kv span:last-child{font-weight:700;text-align:right}
+.pay{position:absolute;left:0;width:940px;height:86px;display:flex;align-items:center;gap:20px;font-weight:650}
+.pay .n{width:140px}.pay .bar{width:520px;height:30px;border-radius:15px;background:var(--soft);overflow:hidden;position:relative}
+.pay .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);border-radius:15px}
+.pay .v{width:100px;text-align:right;color:var(--mut)}
+.sent{position:absolute;left:56px;top:240px;width:1468px;height:600px;background:var(--bg);opacity:0}
+.node{position:absolute;top:60px;width:400px;height:300px;padding:28px}
+.node h3{margin:12px 0 10px;font-size:32px}
+.node p{margin:0;color:var(--mut);font-weight:560}
+.link{position:absolute;top:205px;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.link i{position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--ok);transform-origin:left;transform:scaleX(0)}
+.toast{position:absolute;display:flex;align-items:center;gap:18px;height:84px;padding:0 30px;border-radius:18px;background:var(--ink);color:#fff;font-weight:650;box-shadow:0 18px 40px rgba(16,40,56,.3);opacity:0}
+/* IMOBILIÁRIA E FILA */
+.arow{position:absolute;left:0;width:800px;height:96px;display:flex;align-items:center;padding-left:24px;background:#fff;border-bottom:1px solid var(--soft)}
+.arow>div{flex:none}
+.apanel{position:absolute;right:56px;top:150px;width:620px;height:730px;padding:32px;opacity:0}
+.apanel h3{margin:0 0 4px;font-size:34px}
+.qr{position:absolute;left:0;width:1468px;height:128px;padding:0 28px;display:flex;align-items:center;gap:26px}
+.qr>div{flex:none}
+.cbx{width:38px;height:38px;border-radius:9px;border:3px solid var(--line);background:#fff;position:relative}
+.cbx i{position:absolute;inset:0;border-radius:6px;background:var(--acc);opacity:0}
+.cbx i:after{content:"";position:absolute;left:11px;top:4px;width:9px;height:17px;border:solid #fff;border-width:0 3.5px 3.5px 0;transform:rotate(42deg)}
+.mt{width:400px}.mt .bar{height:22px;border-radius:11px;background:var(--soft);overflow:hidden;position:relative;margin-top:10px}.mt .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:11px}
+.done{position:absolute;inset:0;border-radius:20px;background:rgba(223,243,234,.96);border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;gap:16px;color:var(--ok);font-weight:750;opacity:0}
+.bat{position:absolute;left:0;top:0;width:1468px;height:84px;padding:0 28px;display:flex;align-items:center;gap:22px;background:var(--soft);border-radius:18px}
+/* STATUS FINAL E PDF */
+.pdf{position:absolute;right:56px;top:210px;width:560px;height:670px;padding:36px;opacity:0;box-shadow:0 24px 60px rgba(16,40,56,.28)}
+.pdf .ln{height:18px;border-radius:9px;background:var(--soft);margin-bottom:18px}
+.stamp{position:absolute;right:34px;bottom:44px;padding:8px 24px;border:5px solid var(--ok);border-radius:14px;color:var(--ok);font-weight:800;font-size:36px;transform:rotate(-8deg);opacity:0}
+/* CURSOR */
+#plane{position:absolute;inset:0;pointer-events:none}
+#cur{position:absolute;left:0;top:0;opacity:0}
+#cur svg{position:absolute;left:0;top:0;width:38px;height:48px;fill:var(--ink);stroke:#fff;stroke-width:2.2px;filter:drop-shadow(0 3px 5px rgba(16,40,56,.35))}
+#ring{position:absolute;left:-30px;top:-30px;width:60px;height:60px;border-radius:50%;border:4px solid var(--acc);opacity:0}
+/* ABERTURA TABE.LA (copiada de pieces/tabela-intro, ids com prefixo intro-) */
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000;background:#6E70BF;font-family:Inter,sans-serif;color:#fff}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#intro-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;opacity:0;text-shadow:0 2px 18px rgba(30,32,90,.28)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="tabela-journey-intro" data-width="1920" data-height="1080" data-duration="55">
+<!-- ABERTURA: marca Tabe.la por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-stage" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Comercialização imobiliária, da tabela à decisão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme, transparente durante a abertura -->
+
+  <div id="win">
+    <div id="side">
+      <img src="./assets/tabela-logo.svg" alt="Tabe.la">
+      <div class="sb" id="sb-inc"><div class="it"><div class="hl" id="hl-emp"></div><span>Empreendimentos</span></div><div class="it"><div class="hl" id="hl-apr"></div><span>Aprovações</span></div><div class="it"><span>Propostas</span></div></div>
+      <div class="sb" id="sb-cor"><div class="it"><div class="hl" id="hl-cemp"></div><span>Empreendimentos</span></div><div class="it"><div class="hl" id="hl-cprop"></div><span>Minhas propostas</span></div><div class="it"><span>Clientes</span></div></div>
+      <div class="sb" id="sb-imo"><div class="it"><span>Corretores</span></div><div class="it"><div class="hl" style="opacity:1"></div><span>Propostas</span></div></div>
+      <div id="demo"><b>DEMO</b>reconstrução ilustrativa</div>
+    </div>
+    <div id="top">
+      <div id="rail"></div>
+      <div id="badge"><span id="b-inc">Incorporadora</span><span id="b-cor">Corretor</span><span id="b-imo">Imobiliária</span></div>
+    </div>
+    <div id="main"></div>
+  </div>
+  <div id="plane"><div id="cur"><div id="ring"></div><svg viewBox="0 0 38 48"><path d="M2 2v33l9-9 7 17 7-3-7-17h14L2 2z"/></svg></div></div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines aqui; a mestra no fim deste script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 dirigido pela timeline, sem relógio próprio)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  // Scene runs at 1/SLOW of the login speed (calm pace); LEAD is a bare-grid beat before the crane enters
+  var SLOW = 1.7, LEAD = 0.3;
+  // Visual scale versus the login panel (logo 340 css px there, 760 px here); also scales stroke widths
+  var LOGO_W = 760, SCALE = LOGO_W / 340;
+  var HERO = [110 / 255, 112 / 255, 191 / 255]; // --brand-hero = oklch(0.58 ...) of series-indigo-200, resolved to sRGB
+  var VB = { w: 218, h: 61 };
+  var LOGO_H = LOGO_W * VB.h / VB.w;
+  var logoRect = [(W - LOGO_W) / 2, (H - LOGO_H) / 2 + 40, LOGO_W, LOGO_H];
+  var layout = { width: W, height: H, dpr: SCALE, logo: logoRect, dot: LOGO_DOT, bounds: LOGO_BOUNDS };
+  var TEX_W = 1140, lod0 = Math.log2(TEX_W / LOGO_W);
+
+  var canvas = document.getElementById('intro-stage');
+  var gl = canvas.getContext('webgl2', { premultipliedAlpha: true, antialias: true, alpha: false, preserveDrawingBuffer: true });
+  var programs = {}, textures = {}, loaded = 0, quadVao = null, curT = 0;
+
+  function compile(fs) {
+    var program = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(program, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+    var uniforms = {}, n = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (var i = 0; i < n; i++) { var info = gl.getActiveUniform(program, i); if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name); }
+    return { program: program, uniforms: uniforms };
+  }
+  function setU(p, extra, base) {
+    gl.useProgram(p.program);
+    var all = Object.assign({}, base, extra);
+    Object.keys(all).forEach(function (name) {
+      var loc = p.uniforms[name]; if (!loc) return; var v = all[name];
+      if (v.length === 1) gl.uniform1f(loc, v[0]); else if (v.length === 2) gl.uniform2f(loc, v[0], v[1]);
+      else if (v.length === 3) gl.uniform3f(loc, v[0], v[1], v[2]); else gl.uniform4f(loc, v[0], v[1], v[2], v[3]);
+    });
+    if (p.uniforms.uPart) gl.uniform1i(p.uniforms.uPart, 3);
+  }
+  function draw(p, extra, base) { setU(p, extra, base); gl.bindVertexArray(quadVao); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+
+  // Deterministic stand-in for Math.random (drill vibration): a pure hash of the time and call index
+  function makeJitter(t) { var n = 0; return function () { var x = Math.sin(t * 1000.7 + (n++) * 12.9898) * 43758.5453; return x - Math.floor(x); }; }
+
+  function render(t) {
+    curT = t;
+    if (!gl || loaded < PART_IDS.length) return;
+    var st = Math.max(0, (t - LEAD) / SLOW);              // scene time, login seconds
+    st = Math.min(st, introTimeline().dur);
+    // Scripted stand-in for the pointer that lights the grid in the login (no real pointer in a film)
+    var mouse = [W * (0.5 + 0.34 * Math.sin(t * 0.42)), H * (0.5 + 0.3 * Math.sin(t * 0.29 + 1.0))];
+    var base = { uRes: [W, H], uRect: logoRect, uLod0: [lod0], uMouse: mouse, uHero: HERO, uDpr: [SCALE] };
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+    gl.disable(gl.BLEND);
+    draw(programs.bg, { uBgT: [t] }, base);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    var pose = sceneAt(st, layout, makeJitter(st));
+    pose.pieces.forEach(function (pc) {
+      gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, textures[pc.id]); gl.activeTexture(gl.TEXTURE0);
+      draw(programs.piece, { uXf: [pc.dx, pc.dy, pc.angle, pc.alpha], uPivot: pc.pivot }, base);
+    });
+    draw(programs.crane, { uCrane: pose.crane }, base);
+    draw(programs.drill, { uDot: pose.dot, uDrill: pose.drill, uScrew: pose.screw, uFx: pose.fx }, base);
+  }
+
+  function init() {
+    programs = { bg: compile(FS_BG), crane: compile(FS_CRANE), piece: compile(FS_PIECE), drill: compile(FS_DRILL) };
+    quadVao = gl.createVertexArray(); gl.bindVertexArray(quadVao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    PART_IDS.forEach(function (id) {
+      var img = new Image();
+      img.onload = function () {
+        var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        textures[id] = tex; loaded++;
+        if (loaded === PART_IDS.length) render(curT);
+      };
+      img.src = './assets/parts/' + id + '.png';
+    });
+  }
+  init();
+
+  // TIMELINE (a única fonte de tempo): um tween linear sobre um proxy dirige o render; a frase entra por cima como os slogans do login
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  var seatAt = LEAD + introTimeline().seat * SLOW;      // dot seated -> line enters (as slogans start at seat in the login)
+  tl.fromTo('#intro-line', { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, seatAt + 0.1);
+  // Registered as a part; only the master timeline at the end of this script is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de conteúdo ou ritmo de pieces/tabela-journey-v2)
+// CONSTRUÇÃO DA INTERFACE DEMO
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const main = $("#main");
+  const el = (html) => { const t = document.createElement("div"); t.innerHTML = html.trim(); return t.firstChild; };
+  const add = (html) => main.appendChild(el(html));
+  const chipOf = { d: '<span class="chip c-ok">Disponível</span>', r: '<span class="chip c-wr">Reservada</span>', v: '<span class="chip c-no">Vendida</span>' };
+  const units = [["301", "2 quartos", "d", "A"], ["302", "2 quartos", "v", "A"], ["303", "3 quartos", "d", "B"], ["304", "3 quartos", "d", "A"], ["305", "3 quartos", "r", "B"], ["306", "Cobertura", "v", "B"]];
+
+  // Rail of the journey (7 steps)
+  const steps = ["Cadastro", "Tabela", "Consulta", "Proposta", "Revisão", "Decisão", "Aviso"];
+  $("#rail").innerHTML = steps.map((s, i) => `<div class="rs" id="rs${i}"><div class="d">${i + 1}</div><div class="l">${s}</div></div>`).join("");
+
+  // Screen 1: list of developments
+  add(`<div class="scr" id="s-list"><div class="cr">Incorporadora DEMO</div><h1>Empreendimentos</h1>
+    <div class="abs" style="left:56px;top:150px;display:flex;gap:16px"><span class="chip c-in">Horizonte Desenvolvimento</span><span class="chip c-in">Seções do cadastro</span></div>
+    <div class="bcard card" id="bc1" style="left:56px"><div class="bicon"><i></i><s></s><u></u></div><div><h2>Residencial Horizonte</h2><p>Boa Viagem · Recife</p><span class="chip c-ok">Em comercialização</span></div></div>
+    <div class="bcard card" id="bc2" style="left:788px"><div class="bicon"><i></i><s></s><u></u></div><div><h2>Residencial Alameda</h2><p>Espinheiro · Recife</p><span class="chip c-wr">Em cadastro</span></div></div>
+  </div>`);
+
+  // Screen 2: development detail with tabs and panes
+  const tabNames = [["Dados gerais", 0, 220], ["Materiais", 250, 190], ["Tabelas de preços", 470, 290], ["Condições", 790, 190]];
+  add(`<div class="scr" id="s-det"><div class="cr">Empreendimentos › <b>Residencial Horizonte</b></div><h1>Residencial Horizonte</h1>
+    <div class="tabs">${tabNames.map((t, i) => `<div class="tab" id="tab${i}" style="left:${t[1]}px;width:${t[2]}px">${t[0]}</div>`).join("")}<div id="tabul"></div></div>
+    <div class="pane" id="p-dados">
+      <div class="gcard card" style="left:0"><h3>Localização</h3><div class="li">Boa Viagem · Recife</div><div class="li">Residencial</div><div class="li">Mapa e entorno</div></div>
+      <div class="gcard card" style="left:499px"><h3>Seções do cadastro</h3><div class="li"><i class="ck"></i>Descrição</div><div class="li"><i class="ck"></i>Plantas e lazer</div><div class="li"><i class="ck p"></i>Revisão final</div></div>
+      <div class="gcard card" style="left:998px"><h3>Equipe da incorporadora</h3><div class="li">Gestor</div><div class="li">Operadores convidados</div><div class="li">Materiais anexados</div></div>
+    </div>
+    <div class="pane" id="p-tab">
+      <div class="lg" id="legend"><span class="chip c-ok">3 disponíveis</span><span class="chip c-wr">1 reservada</span><span class="chip c-no">2 vendidas</span><span style="color:var(--mut);font-weight:600;margin-left:12px">Tabela ativa · versão DEMO</span></div>
+      <div class="tbl" id="t1" style="top:84px;height:520px">
+        <div class="colhl" id="colhl" style="left:628px;top:0;width:284px;height:524px"></div>
+        <div class="tr h" style="top:0"><div class="c1">Unidade</div><div class="c2">Tipologia</div><div class="c3">Valor</div><div class="c4">Status</div><div class="c5">Condição</div><div class="c6">Histórico</div></div>
+        ${units.map((u, i) => `<div class="tr" id="tr1-${i}" style="top:${60 + i * 76}px;opacity:0"><div class="c1">${u[0]}</div><div class="c2">${u[1]}</div><div class="c3">R$ —</div><div class="c4">${chipOf[u[2]]}</div><div class="c5">Cond. ${u[3]} · DEMO</div><div class="c6" style="color:var(--acc);font-weight:650">Ver histórico</div></div>`).join("")}
+      </div>
+    </div>
+    <div class="pane" id="p-cond">
+      ${["A", "B"].map((c, k) => `<div class="ccard card" style="left:${k * 752}px"><h3>Condição ${c} · DEMO</h3>${["Ato", "Parcelas", "Reforços", "Chaves"].map((n, j) => `<div class="cp"><span class="n">${n}</span><div class="bar"><i class="cpb" style="width:${[28, 52, 36, 20][(j + k * 2) % 4] + 14}%"></i></div><span class="v">R$ —</span></div>`).join("")}</div>`).join("")}
+    </div>
+  </div>`);
+
+  // Screen 3: broker price table + drawer
+  add(`<div class="scr" id="s-bt"><div class="cr">Corretor › Empreendimentos › <b>Residencial Horizonte</b></div><h1>Tabela de preços</h1>
+    <div class="abs" style="left:56px;top:150px;display:flex;gap:16px"><span class="chip c-ink">Todas as unidades</span><span class="chip c-in">Condições</span><span class="chip c-in">Buscar unidade</span></div>
+    <div class="tbl" id="t2" style="left:56px;top:240px;height:520px">
+      <div class="tr h" style="top:0"><div class="c1">Unidade</div><div class="c2">Tipologia</div><div class="c3">Valor</div><div class="c4">Status</div><div class="c5">Condição</div><div class="c6">Consulta</div></div>
+      ${units.map((u, i) => `<div class="tr" id="tr2-${i}" style="top:${60 + i * 76}px;${u[2] === "v" ? "opacity:.55" : ""}"><div class="c1">${u[0]}</div><div class="c2">${u[1]}</div><div class="c3">R$ —</div><div class="c4">${chipOf[u[2]]}</div><div class="c5">Cond. ${u[3]} · DEMO</div><div class="c6" id="cq${i}" style="color:var(--acc);font-weight:700">${u[2] === "v" ? "Indisponível" : "Consultar →"}</div></div>`).join("")}
+      <div class="rowhl" id="rowhl" style="top:288px"></div>
+    </div>
+    <div class="drawer card" id="drawer" data-layout-allow-overlap><h3>Unidade 304</h3><div style="margin-bottom:18px"><span class="chip c-ok">Disponível</span></div>
+      <div class="kv"><span>Tipologia</span><span>3 quartos</span></div><div class="kv"><span>Condição</span><span>Cond. A · DEMO</span></div>
+      <div class="cp"><span class="n">Ato</span><div class="bar" style="width:260px"><i class="cpb" style="width:42%"></i></div><span class="v">R$ —</span></div>
+      <div class="cp"><span class="n">Parcelas</span><div class="bar" style="width:260px"><i class="cpb" style="width:66%"></i></div><span class="v">R$ —</span></div>
+      <div class="cp"><span class="n">Chaves</span><div class="bar" style="width:260px"><i class="cpb" style="width:34%"></i></div><span class="v">R$ —</span></div>
+      <div style="margin-top:20px"><div class="btn" id="btnProp" style="width:100%">Montar proposta</div></div></div>
+  </div>`);
+
+  // Screen 4: proposal wizard
+  const wz = ["Empreendimento", "Unidade", "Condição", "Comprador", "Pagamento", "Revisão"];
+  add(`<div class="scr" id="s-wz"><div class="cr">Corretor › <b>Nova proposta</b></div><h1 style="margin:0">Montar proposta</h1>
+    <div id="stp">${wz.map((s, i) => `<div class="ws" id="ws${i}"><div class="d">${i + 1}</div><div>${s}</div></div>`).join("")}</div>
+    <div class="wp" id="w-cond">
+      ${["A", "B"].map((c, k) => `<div class="opt card" id="opt${k}" style="left:${k * 490}px"><div class="optsel"></div><div class="radio"><i></i></div><h3>Condição ${c}</h3><div style="color:var(--mut);font-weight:600;margin-bottom:12px">DEMO</div>${["Ato", "Parcelas", "Reforços", "Chaves"].map((n, j) => `<div class="cp" style="height:62px"><span class="n" style="width:120px">${n}</span><div class="bar" style="width:200px"><i class="cpb" style="width:${[30, 56, 38, 22][(j + k * 2) % 4] + 12}%"></i></div></div>`).join("")}</div>`).join("")}
+      <div class="btn abs" id="cont1" style="left:0;top:500px;width:300px">Continuar</div>
+    </div>
+    <div class="wp" id="w-buy">
+      <div class="fld" style="top:0"><label>Nome do comprador</label><div class="inp"><span id="ty1" style="clip-path:inset(0 100% 0 0)">Comprador DEMO</span></div></div>
+      <div class="fld" style="top:140px"><label>Contato (WhatsApp)</label><div class="inp"><span id="ty2" style="clip-path:inset(0 100% 0 0)">(00) 00000-0000</span></div></div>
+      <div class="fld" style="top:280px"><span class="chip c-in" style="height:56px">Vincular a cliente do CRM</span> <span class="chip c-in" style="height:56px;margin-left:12px">Rascunho salvo</span></div>
+      <div class="btn abs" id="cont2" style="left:0;top:500px;width:300px">Continuar</div>
+    </div>
+    <div class="wp" id="w-pay">
+      <div class="abs" style="left:0;top:0;width:940px;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;font-size:30px">Blocos de pagamento</span><div class="btn sm ghost" id="redis">Redistribuir</div></div>
+      ${["Ato", "Parcelas", "Reforços", "Chaves"].map((n, j) => `<div class="pay card" style="top:${80 + j * 98}px;padding:0 28px"><span class="n">${n}</span><div class="bar"><i class="payb" id="pb${j}" style="width:${[30, 56, 40, 24][j]}%"></i></div><span class="v">R$ —</span></div>`).join("")}
+      <div class="btn abs" id="cont3" style="left:0;top:500px;width:300px">Continuar</div>
+    </div>
+    <div class="wp" id="w-rev">
+      <div class="card" style="padding:12px 32px;width:940px"><div class="kv"><span>Empreendimento</span><span>Residencial Horizonte</span></div><div class="kv"><span>Unidade</span><span>304</span></div><div class="kv"><span>Condição</span><span>Cond. A · DEMO</span></div><div class="kv"><span>Comprador</span><span>Comprador DEMO</span></div><div class="kv"><span>Pagamento</span><span>4 blocos · DEMO</span></div></div>
+      <div class="abs" style="left:0;top:400px;width:940px;color:var(--mut);font-weight:600">Corretor vinculado: a proposta passa pela imobiliária antes da incorporadora.</div>
+      <div class="btn abs" id="btnSend" style="left:0;top:500px;width:340px">Enviar proposta</div>
+    </div>
+    <div class="sumc card" id="sumc"><h3>Proposta</h3><div style="margin-bottom:10px"><span class="chip c-in" id="sumst">Rascunho</span></div>
+      <div class="kv"><span>Empreendimento</span><span>Horizonte</span></div><div class="kv"><span>Unidade</span><span>304</span></div>
+      <div class="kv"><span>Condição</span><span id="sv1" style="opacity:0">Cond. A · DEMO</span></div><div class="kv"><span>Comprador</span><span id="sv2" style="opacity:0">Comprador DEMO</span></div><div class="kv"><span>Pagamento</span><span id="sv3" style="opacity:0">4 blocos · DEMO</span></div></div>
+    <div class="sent" id="w-sent">
+      <div class="node card" style="left:0"><i class="ck" id="n0ck" style="display:block"></i><h3>Corretor</h3><p>Proposta enviada</p></div>
+      <div class="node card" style="left:534px"><i class="ck p" id="n1ck" style="display:block"></i><h3>Imobiliária</h3><p id="n1t">Aguardando validação</p></div>
+      <div class="node card" style="left:1068px"><i class="ck p" id="n2ck" style="display:block"></i><h3>Incorporadora</h3><p>Aguarda o encaminhamento</p></div>
+      <div class="link" style="left:400px;width:134px"><i id="lk0"></i></div><div class="link" style="left:934px;width:134px"><i id="lk1"></i></div>
+      <div class="abs" style="left:0;top:420px"><span class="chip c-wr" id="sentchip" style="height:56px">Em revisão pela imobiliária</span></div>
+    </div>
+    <div class="toast" id="toast1" style="left:56px;top:790px"><span class="ck" style="display:block"></span>Imobiliária notificada</div>
+  </div>`);
+
+  // Screen 5: agency review
+  add(`<div class="scr" id="s-ag"><div class="cr">Imobiliária DEMO › <b>Corretores vinculados</b></div><h1>Propostas dos vinculados</h1>
+    <div class="abs" style="left:56px;top:150px;display:flex;gap:16px"><span class="chip c-in">Aguardando validação</span><span class="chip c-in">Encaminhadas</span><span class="chip c-in">Rejeitadas</span></div>
+    <div class="abs" style="left:56px;top:240px;width:800px;height:420px">
+      <div class="arow" style="top:0;height:60px;background:var(--soft);color:var(--mut);font-weight:700"><div style="width:130px">Unidade</div><div style="width:330px">Corretor</div><div style="width:340px">Status</div></div>
+      <div class="arow" id="ar0" style="top:60px;opacity:0"><div style="width:130px;font-weight:720">304</div><div style="width:330px">Corretor vinculado</div><div style="width:340px"><span class="chip c-wr" id="ag-st1">Aguardando validação</span><span class="chip c-in abs" id="ag-st2" style="opacity:0;left:0;top:0">Encaminhada</span></div></div>
+      <div class="arow" id="ar1" style="top:156px;opacity:0"><div style="width:130px;font-weight:720">201</div><div style="width:330px">Corretor vinculado</div><div style="width:340px"><span class="chip c-in">Encaminhada</span></div></div>
+      <div class="arow" id="ar2" style="top:252px;opacity:0"><div style="width:130px;font-weight:720">105</div><div style="width:330px">Corretor vinculado</div><div style="width:340px"><span class="chip c-no">Rejeitada</span></div></div>
+      <div class="rowhl" id="arhl" style="top:60px;width:800px;height:96px"></div>
+    </div>
+    <div class="apanel card" id="apanel"><h3>Proposta · Unidade 304</h3><div style="margin-bottom:12px"><span class="chip c-wr">Corretor vinculado</span></div>
+      <div class="kv"><span>Condição</span><span>Cond. A · DEMO</span></div><div class="kv"><span>Comprador</span><span>Comprador DEMO</span></div><div class="kv"><span>Pagamento</span><span>4 blocos · DEMO</span></div>
+      <div class="kv"><span>Histórico</span><span>Enviada pelo corretor</span></div>
+      <div style="display:flex;gap:14px;margin-top:24px"><div class="btn sm ghost">Gerar PDF</div><div class="btn sm no">Rejeitar</div></div>
+      <div style="margin-top:20px"><div class="btn" id="btnApprove" style="width:100%">Aprovar e encaminhar</div></div></div>
+    <div class="toast" id="toast2" style="left:56px;top:790px"><span class="ck" style="display:block"></span>Encaminhada à incorporadora</div>
+  </div>`);
+
+  // Screen 6: approval queue
+  const qrows = [["101", "Corretor autônomo", 22, "#C63850"], ["304", "Imobiliária · vinculado", 68, "#0D547F"], ["207", "Corretor autônomo", 48, "#0D547F"]];
+  add(`<div class="scr" id="s-q"><div class="cr">Incorporadora DEMO › <b>Aprovações</b></div><h1>Fila de aprovações</h1>
+    <div class="abs" style="left:56px;top:150px;width:1468px;height:84px">
+      <div class="bat"><span style="font-weight:650;color:var(--mut)" id="qcnt0">Ordenado por urgência de prazo</span><span id="qcnt1" class="abs" style="left:28px;opacity:0;font-weight:750;color:var(--acc)">2 selecionadas</span>
+      <div style="margin-left:auto;display:flex;gap:14px"><div class="btn sm" id="btnBatch">Aceitar em lote</div><div class="btn sm no">Recusar em lote</div></div></div>
+    </div>
+    <div class="abs" style="left:56px;top:262px;width:1468px;height:420px">
+      ${qrows.map((r, i) => `<div class="qr card" id="qr${i}" style="top:${i * 148}px;opacity:0"><div class="cbx" id="cb${i}"><i></i></div><div style="width:330px"><b style="font-size:30px">Unidade ${r[0]}</b><div style="color:var(--mut);font-weight:560">${r[1]}</div></div><div class="mt"><span style="color:var(--mut);font-weight:650">prazo · DEMO</span><div class="bar"><i id="mb${i}" style="width:${r[2]}%;background:${r[3]}"></i></div></div><div class="btn sm" id="acc${i}">Aceitar</div><div class="btn sm no">Recusar</div><div class="done" id="dn${i}"><i class="ck" style="display:block"></i>Aprovada</div></div>`).join("")}
+    </div>
+  </div>`);
+
+  // Screen 7: broker status + notification + PDF
+  add(`<div class="scr" id="s-fin"><div class="cr">Corretor › <b>Minhas propostas</b></div><h1>Minhas propostas</h1>
+    <div class="card abs" style="left:56px;top:150px;width:860px;height:720px;padding:32px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:38px">Unidade 304 · Residencial Horizonte</h2></div>
+      <div style="display:flex;align-items:center;gap:20px;margin:22px 0 32px"><span class="chip c-wr" id="fst0">Em revisão</span><span class="chip c-ok abs" id="fst1" style="opacity:0;left:32px;top:96px">Aprovada</span></div>
+      <div class="kv"><span>Enviada ao tabe.la</span><i class="ck" id="f0" style="display:block"></i></div>
+      <div class="kv"><span>Imobiliária revisou</span><i class="ck p" id="f1" style="display:block"></i></div>
+      <div class="kv"><span>Incorporadora decidiu</span><i class="ck p" id="f2" style="display:block"></i></div>
+      <div class="kv"><span>Histórico de revisão</span><span style="color:var(--acc);font-weight:700">Disponível</span></div>
+      <div style="margin-top:28px"><div class="btn" id="btnPdf" style="width:300px">Baixar PDF</div></div>
+    </div>
+    <div class="pdf card" id="pdf"><b style="font-size:32px">Proposta · Unidade 304</b><div style="color:var(--mut);font-weight:600;margin:6px 0 24px">Residencial Horizonte · DEMO</div>
+      <div class="ln" style="width:92%"></div><div class="ln" style="width:70%"></div><div class="ln" style="width:84%"></div><div class="ln" style="width:56%"></div><div style="height:16px"></div><div class="ln" style="width:88%"></div><div class="ln" style="width:64%"></div><div class="ln" style="width:78%"></div><div class="ln" style="width:48%"></div>
+      <div class="stamp" id="stamp">Aprovada</div></div>
+    <div class="toast" id="push" style="right:56px;top:22px;width:600px;height:110px;padding:0 28px;gap:20px;opacity:0"><div style="width:56px;height:56px;border-radius:14px;background:var(--sec);flex:none"></div><div><div style="font-size:24px;opacity:.8">tabe.la · app do corretor</div><div style="font-size:30px;font-weight:750">Proposta aprovada · 304</div></div></div>
+  </div>`);
+
+  // TIMELINE
+  const tl = gsap.timeline({ paused: true });
+  // RETIME V2 — escala uniforme de posições, durações e stagger (mais tempo de leitura por batida)
+  const RETIME = 46 / 34;
+  ["to", "from", "fromTo", "set"].forEach((m) => {
+    const orig = tl[m].bind(tl);
+    tl[m] = (...a) => {
+      const pi = m === "fromTo" ? 3 : 2;
+      const vi = m === "fromTo" ? 2 : 1;
+      const vars = Object.assign({}, a[vi]);
+      if (vars.duration != null) vars.duration *= RETIME;
+      if (typeof vars.stagger === "number") vars.stagger *= RETIME;
+      a[vi] = vars;
+      if (typeof a[pi] === "number") a[pi] *= RETIME;
+      return orig(...a);
+    };
+  });
+  const R = $("#root").getBoundingClientRect();
+  const P = (sel, fx = 0.5, fy = 0.5) => { const r = $(sel).getBoundingClientRect(); return { x: r.left - R.left + r.width * fx, y: r.top - R.top + r.height * fy }; };
+  const vis = (sel, t, on, d = 0.4) => tl.fromTo(sel, { opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0, duration: d, ease: "none", immediateRender: false }, t);
+  const swap = (a, b, t, d = 0.4) => { vis(a, t, false, d); vis(b, t, true, d); };
+  const col = (sel, prop, from, to, t, d = 0.3) => tl.fromTo(sel, { [prop]: from }, { [prop]: to, duration: d, ease: "none", immediateRender: false }, t);
+
+  // Cursor
+  let cp = { x: 1250, y: 760 };
+  const cur = $("#cur");
+  tl.set(cur, { x: cp.x, y: cp.y, opacity: 0 }, 0);
+  vis(cur, 0.5, true, 0.3);
+  const mv = (t, d, to) => { tl.fromTo(cur, { x: cp.x, y: cp.y }, { x: to.x, y: to.y, duration: d, ease: "power2.inOut", immediateRender: false }, t); cp = { x: to.x, y: to.y }; };
+  const click = (t) => {
+    tl.fromTo("#ring", { scale: 0.4, opacity: 0.95 }, { scale: 1.7, opacity: 0, duration: 0.45, ease: "power1.out", immediateRender: false }, t);
+    tl.fromTo("#cur svg", { scale: 1 }, { scale: 0.86, duration: 0.1, yoyo: true, repeat: 1, ease: "none", transformOrigin: "2px 2px", immediateRender: false }, t);
+  };
+  const ON = { bg: "#0D547F", fg: "#FFFFFF" }, DONE = { bg: "#1B7F5C", fg: "#FFFFFF" }, OFF = { bg: "#E2EDF4", fg: "#526678" };
+  const dot = (sel, from, to, t) => col(sel, "backgroundColor", from.bg, to.bg, t) && col(sel, "color", from.fg, to.fg, t);
+  const rail = (i, tOn, tDone) => { dot(`#rs${i} .d`, OFF, ON, tOn); col(`#rs${i} .l`, "color", "#526678", "#102838", tOn); if (tDone) dot(`#rs${i} .d`, ON, DONE, tDone); };
+
+  // Persona and sidebar
+  vis("#sb-inc", 0, true, 0.01); vis("#b-inc", 0, true, 0.01);
+  swap("#sb-inc", "#sb-cor", 9.2); swap("#b-inc", "#b-cor", 9.2);
+  swap("#sb-cor", "#sb-imo", 23.2); swap("#b-cor", "#b-imo", 23.2);
+  swap("#sb-imo", "#sb-inc", 26.8); swap("#b-imo", "#b-inc", 26.8);
+  swap("#sb-inc", "#sb-cor", 30.8); swap("#b-inc", "#b-cor", 30.8);
+  vis("#hl-emp", 0, true, 0.01); vis("#hl-emp", 26.8, false, 0.01); vis("#hl-apr", 26.8, true, 0.3);
+  vis("#hl-cemp", 9.2, true, 0.01); vis("#hl-cemp", 30.8, false, 0.01); vis("#hl-cprop", 30.8, true, 0.3);
+
+  // Rail timing
+  rail(0, 0.1, 4.2); rail(1, 4.2, 9.2); rail(2, 9.2, 12.5); rail(3, 12.5, 21.2); rail(4, 21.2, 26.4); rail(5, 26.4, 30.8); rail(6, 30.8, 0);
+
+  // S1 0 – 2.9: development list
+  vis("#s-list", 0, true, 0.3);
+  tl.fromTo(["#bc1", "#bc2"], { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.25, ease: "none", immediateRender: false }, 0.25);
+  mv(0.6, 1.5, P("#bc1", 0.6, 0.5));
+  tl.fromTo("#bc1", { boxShadow: "0 10px 24px rgba(16,40,56,.07)" }, { boxShadow: "0 0 0 5px #0D547F", duration: 0.25, ease: "none", immediateRender: false }, 2.0);
+  click(2.2);
+  swap("#s-list", "#s-det", 2.7, 0.4);
+
+  // S2 2.9 – 9.2: detail → tabela → condições
+  vis("#p-dados", 2.9, true, 0.4);
+  const tb = (i) => P(`#tab${i}`, 0.5, 0.5);
+  tl.fromTo("#tabul", { x: 0, width: 220 }, { x: 0, width: 220, duration: 0.01, immediateRender: false }, 0);
+  mv(3.1, 0.9, tb(2));
+  click(4.0);
+  tl.fromTo("#tabul", { x: 0, width: 220 }, { x: 470, width: 290, duration: 0.35, ease: "power2.inOut", immediateRender: false }, 4.05);
+  swap("#p-dados", "#p-tab", 4.1, 0.3);
+  vis("#legend", 4.3, true, 0.01);
+  for (let i = 0; i < 6; i++) tl.fromTo(`#tr1-${i}`, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "none", immediateRender: false }, 4.5 + i * 0.16);
+  tl.fromTo("#colhl", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none", immediateRender: false }, 5.6);
+  tl.fromTo("#colhl", { opacity: 1 }, { opacity: 0, duration: 0.3, ease: "none", immediateRender: false }, 6.7);
+  mv(6.5, 0.9, tb(3));
+  click(7.5);
+  tl.fromTo("#tabul", { x: 470, width: 290 }, { x: 790, width: 190, duration: 0.35, ease: "power2.inOut", immediateRender: false }, 7.55);
+  swap("#p-tab", "#p-cond", 7.6, 0.3);
+  tl.fromTo(".ccard .cpb", { scaleX: 0 }, { scaleX: 1, duration: 0.6, stagger: 0.07, ease: "power2.out", transformOrigin: "left center", immediateRender: false }, 7.9);
+
+  // S3 9.2 – 12.6: broker consults unit 304
+  swap("#s-det", "#s-bt", 9.2, 0.4);
+  mv(9.6, 1.0, P("#cq3", 0.4, 0.5));
+  tl.fromTo("#rowhl", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none", immediateRender: false }, 10.5);
+  click(10.7);
+  vis("#drawer", 10.9, true, 0.4);
+  vis("#t2 .c5, #t2 .c6", 10.9, false, 0.3);
+  tl.fromTo("#drawer .cpb", { scaleX: 0 }, { scaleX: 1, duration: 0.5, stagger: 0.12, ease: "power2.out", transformOrigin: "left center", immediateRender: false }, 11.3);
+  mv(11.2, 0.9, P("#btnProp"));
+  click(12.2);
+
+  // S4 12.6 – 21.4: proposal wizard
+  swap("#s-bt", "#s-wz", 12.5, 0.4);
+  const wsOn = (i, t) => { dot(`#ws${i} .d`, OFF, ON, t); col(`#ws${i}`, "color", "#526678", "#102838", t); };
+  const wsDone = (i, t) => dot(`#ws${i} .d`, ON, DONE, t);
+  dot("#ws0 .d", OFF, DONE, 0); dot("#ws1 .d", OFF, DONE, 0);
+  wsOn(2, 12.9);
+  vis("#w-cond", 12.9, true, 0.35);
+  mv(12.9, 0.9, P("#opt0", 0.5, 0.45));
+  click(13.9);
+  tl.fromTo("#opt0 .optsel", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none", immediateRender: false }, 13.95);
+  tl.fromTo("#opt0 .radio i", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none", immediateRender: false }, 13.95);
+  vis("#sv1", 14.1, true, 0.3);
+  mv(14.2, 0.7, P("#cont1"));
+  click(15.0);
+  wsDone(2, 15.05); wsOn(3, 15.1);
+  swap("#w-cond", "#w-buy", 15.1, 0.3);
+  mv(15.2, 0.6, P("#ty1", 0.1, 0.5));
+  click(15.85);
+  tl.fromTo("#ty1", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "steps(14)", immediateRender: false }, 15.95);
+  tl.fromTo("#ty2", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "steps(15)", immediateRender: false }, 16.85);
+  vis("#sv2", 16.2, true, 0.3);
+  mv(16.9, 0.7, P("#cont2"));
+  click(17.65);
+  wsDone(3, 17.7); wsOn(4, 17.75);
+  swap("#w-buy", "#w-pay", 17.75, 0.3);
+  tl.fromTo(".payb", { scaleX: 0 }, { scaleX: 1, duration: 0.5, stagger: 0.08, ease: "power2.out", transformOrigin: "left center", immediateRender: false }, 18.05);
+  mv(17.9, 0.8, P("#redis"));
+  click(18.8);
+  [[30, 22], [56, 34], [40, 52], [24, 44]].forEach((w, j) => tl.fromTo(`#pb${j}`, { width: w[0] + "%" }, { width: w[1] + "%", duration: 0.6, ease: "power2.inOut", immediateRender: false }, 18.9 + j * 0.05));
+  vis("#sv3", 19.1, true, 0.3);
+  mv(19.3, 0.7, P("#cont3"));
+  click(20.05);
+  wsDone(4, 20.1); wsOn(5, 20.15);
+  swap("#w-pay", "#w-rev", 20.15, 0.3);
+  mv(20.3, 0.7, P("#btnSend"));
+  click(21.05);
+
+  // S5 21.2 – 23.2: submitted, waiting for the agency
+  wsDone(5, 21.2);
+  vis("#w-sent", 21.25, true, 0.35);
+  vis("#w-rev", 21.25, false, 0.35); vis("#sumc", 21.25, false, 0.35);
+  col("#sumst", "backgroundColor", "#E2EDF4", "#FCEFD2", 21.3);
+  col("#sumst", "color", "#0D547F", "#8F5A00", 21.3);
+  tl.fromTo("#lk0", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "none", transformOrigin: "left", immediateRender: false }, 21.7);
+  col("#n1ck", "backgroundColor", "#E2EDF4", "#C98A12", 22.1);
+  tl.fromTo("#toast1", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, 22.2);
+  vis("#toast1", 23.0, false, 0.2);
+
+  // S6 23.2 – 26.8: agency reviews
+  swap("#s-wz", "#s-ag", 23.2, 0.4);
+  for (let i = 0; i < 3; i++) tl.fromTo(`#ar${i}`, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none", immediateRender: false }, 23.55 + i * 0.18);
+  mv(23.8, 1.0, P("#ar0", 0.35, 0.5));
+  tl.fromTo("#arhl", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none", immediateRender: false }, 24.75);
+  click(24.9);
+  vis("#apanel", 25.0, true, 0.35);
+  mv(25.3, 0.8, P("#btnApprove"));
+  click(26.15);
+  swap("#ag-st1", "#ag-st2", 26.25, 0.25);
+  tl.fromTo("#toast2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, 26.3);
+  vis("#toast2", 26.7, false, 0.1);
+
+  // S7 26.8 – 30.8: developer decides in the queue (individual + batch)
+  swap("#s-ag", "#s-q", 26.8, 0.4);
+  for (let i = 0; i < 3; i++) tl.fromTo(`#qr${i}`, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none", immediateRender: false }, 27.1 + i * 0.15);
+  [[22, 6], [68, 40], [48, 30]].forEach((w, i) => tl.fromTo(`#mb${i}`, { width: w[0] + "%" }, { width: w[1] + "%", duration: 3.4, ease: "none", immediateRender: false }, 27.1));
+  mv(27.1, 0.9, P("#acc1"));
+  click(28.05);
+  tl.fromTo("#dn1", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none", immediateRender: false }, 28.15);
+  mv(28.3, 0.5, P("#cb0"));
+  click(28.85);
+  tl.fromTo("#cb0 i", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "none", immediateRender: false }, 28.9);
+  mv(28.95, 0.4, P("#cb2"));
+  click(29.4);
+  tl.fromTo("#cb2 i", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "none", immediateRender: false }, 29.45);
+  swap("#qcnt0", "#qcnt1", 29.45, 0.2);
+  mv(29.55, 0.6, P("#btnBatch"));
+  click(30.2);
+  tl.fromTo(["#dn0", "#dn2"], { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "none", immediateRender: false }, 30.3);
+
+  // S8 30.8 – 34.0: broker is notified, status Aprovada, PDF
+  swap("#s-q", "#s-fin", 30.8, 0.4);
+  col("#f1", "backgroundColor", "#E2EDF4", "#1B7F5C", 31.2); col("#f2", "backgroundColor", "#E2EDF4", "#1B7F5C", 31.55);
+  swap("#fst0", "#fst1", 31.9, 0.25);
+  tl.fromTo("#push", { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 32.0);
+  mv(31.9, 0.9, P("#btnPdf"));
+  click(32.85);
+  vis("#pdf", 33.0, true, 0.35);
+  tl.fromTo("#stamp", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 33.5);
+  vis("#cur", 33.8, false, 0.2);
+
+  // End of timeline exactly at data-duration
+  tl.fromTo("#root", { "--end": 0 }, { "--end": 1, duration: 0.001, immediateRender: false }, 33.999);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (46 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 46.0;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  window.__timelines["tabela-journey-intro"] = master;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Resíduos · ciclo com trânsito</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-style:normal}
+:root{--bg:#0a1a14;--panel:#0f231b;--panel2:#143026;--line:#2c4d40;--ink:#FFFFFF;--mute:#B4CFC3;--acc:#34d399;--warn:#fbbf24;--red:#fca5a5}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;background:var(--bg);overflow:hidden}
+body{font-family:"Inter",system-ui,sans-serif;color:var(--ink)}
+#root{position:relative;width:100%;height:100%;background:radial-gradient(1200px 700px at 85% 0%,#12362a 0%,var(--bg) 60%);overflow:hidden}
+.abs{position:absolute}
+#mark{left:1460px;top:58px;width:360px;text-align:right;font-size:26px;line-height:32px;font-weight:800;letter-spacing:.02em;color:var(--acc)}
+#demo{left:100px;top:1006px;font-size:24px;color:var(--mute);font-weight:500}
+.cap{left:100px;top:46px;width:1320px;height:130px;opacity:0}
+.kick{font-size:26px;font-weight:700;letter-spacing:.14em;color:var(--acc);margin-bottom:10px}
+.cap h1{font-size:48px;line-height:1.12;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+/* janela web */
+#win{left:100px;top:190px;width:1720px;height:790px;background:var(--panel);border:2px solid var(--line);border-radius:22px;overflow:hidden}
+#tb{position:absolute;left:0;top:0;width:1716px;height:56px;background:#0c1d16;border-bottom:2px solid var(--line)}
+#tb i{position:absolute;top:20px;width:16px;height:16px;border-radius:50%;background:#33574a}
+.url{position:absolute;left:150px;top:8px;width:760px;height:40px;border-radius:12px;background:var(--panel2);font-size:24px;font-weight:600;color:var(--mute);padding:5px 18px;white-space:nowrap}
+#side{position:absolute;left:0;top:56px;width:280px;height:732px;background:#0c1d16;border-right:2px solid var(--line);padding:18px 16px}
+.nav{height:60px;border-radius:14px;font-size:24px;font-weight:600;color:var(--mute);padding:15px 16px;margin-bottom:8px;border-left:6px solid transparent;white-space:nowrap}
+#cont{position:absolute;left:280px;top:56px;width:1436px;height:732px}
+.sc{position:absolute;left:22px;top:20px;width:1392px;height:692px;opacity:0}
+.card{position:absolute;background:var(--panel2);border:2px solid var(--line);border-radius:20px;padding:20px 24px}
+.card h3{font-size:30px;font-weight:800;margin-bottom:14px;white-space:nowrap}
+.row{height:56px;border-radius:12px;background:var(--panel);border:2px solid var(--line);font-size:24px;font-weight:600;padding:11px 16px;margin-bottom:10px;white-space:nowrap;position:relative}
+.row.sel{border-color:var(--acc)}
+.row.off{color:var(--mute);border-style:dashed;background:transparent}
+.row .r{position:absolute;right:12px;top:7px}
+.chip{display:inline-block;font-size:24px;font-weight:700;border-radius:999px;padding:3px 14px;border:2px solid var(--line);background:#1d3d31;color:#D5EADF;margin:0 8px 8px 0;white-space:nowrap;line-height:30px}
+.row .chip{margin:0}
+.chip.g{background:rgba(52,211,153,.16);color:var(--acc);border-color:rgba(52,211,153,.5)}
+.chip.y{background:rgba(251,191,36,.14);color:var(--warn);border-color:rgba(251,191,36,.5)}
+.chip.rd{background:rgba(252,165,165,.12);color:var(--red);border-color:rgba(252,165,165,.5)}
+.chip.dash{border-style:dashed;background:transparent;color:var(--mute)}
+.r .sw{position:absolute;right:0;top:0;opacity:0}
+.sub{font-size:24px;font-weight:700;color:var(--mute);margin:10px 0 10px;letter-spacing:.06em;white-space:nowrap}
+.btn{display:inline-block;font-size:26px;font-weight:800;border-radius:14px;background:#1d3d31;color:var(--mute);padding:9px 24px;border:2px solid var(--line);white-space:nowrap}
+.fl{display:flex;align-items:center;flex-wrap:nowrap}
+.ar{font-size:26px;font-weight:800;color:var(--mute);margin:0 8px 8px 0}
+.step{display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--mute);white-space:nowrap}
+.step b{display:inline-block;width:40px;height:40px;border-radius:50%;border:2px solid var(--line);text-align:center;line-height:36px;margin-right:10px;font-size:22px;background:var(--panel)}
+.box{position:absolute;border:2px dashed var(--line);border-radius:14px;padding:10px 16px;font-size:24px;font-weight:600;color:var(--mute);white-space:nowrap}
+.ck{display:inline-block;width:28px;height:28px;border-radius:8px;border:2px solid var(--line);vertical-align:-6px;margin-right:12px;background:var(--panel)}
+#s2 .row{margin-bottom:6px}
+#s2 .sub{margin:6px 0 6px}
+#s2 #f2 .chip,#s2 #f3 .chip{margin-bottom:6px}
+#end{left:0;top:0;width:2px;height:2px;opacity:1;background:var(--bg)}
+#pub{left:100px;top:190px;width:1720px;height:790px;opacity:0;background:var(--panel);border:2px solid var(--line);border-radius:22px;overflow:hidden}
+#closeblk{left:0;top:0;width:1920px;height:1080px;opacity:0}
+#closeblk h2{position:absolute;left:160px;top:330px;width:1600px;font-size:80px;line-height:1.12;font-weight:800;letter-spacing:-.025em}
+#closeblk .chips{position:absolute;left:160px;top:640px;width:1600px}
+#closename{left:160px;top:240px;font-size:34px;font-weight:800;color:var(--acc);letter-spacing:.02em;white-space:nowrap}
+#scan{position:absolute;left:0;top:0;width:340px;height:6px;border-radius:3px;background:var(--acc);box-shadow:0 0 18px var(--acc);opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-residuos-transito" data-width="1920" data-height="1080" data-duration="34">
+  <div id="mark" class="abs">Sistema de Gerenciamento<br>de Resíduos</div>
+  <div id="demo" class="abs">Reconstrução editorial · dados DEMO · empresas e pessoas fictícias</div>
+
+  <!-- LEGENDAS POR BATIDA -->
+  <div id="c1" class="abs cap"><div class="kick">1 · ATORES E LICENÇAS</div><h1>Perfis por empresa e licença por resíduo.</h1></div>
+  <div id="c2" class="abs cap"><div class="kick">2 · MTR EM PASSOS</div><h1>A partir de um modelo, com destinador licenciado.</h1></div>
+  <div id="c3" class="abs cap"><div class="kick">3 · PDF, STATUS E TRANSPORTE</div><h1>PDF com QR após a aprovação; transportador consulta.</h1></div>
+  <div id="c4" class="abs cap"><div class="kick">4 · RECEBIMENTO NO DESTINADOR</div><h1>Item a item: recebe, ajusta ou recusa com motivo.</h1></div>
+  <div id="c5" class="abs cap"><div class="kick">5 · CERTIFICADO DE DESTINAÇÃO FINAL</div><h1>O CDF agrupa as MTRs recebidas do par.</h1></div>
+  <div id="c6" class="abs cap"><div class="kick">6 · VERIFICAÇÃO PÚBLICA</div><h1>Qualquer pessoa confere a MTR pelo QR, sem login.</h1></div>
+
+  <!-- JANELA WEB -->
+  <div id="win" class="abs">
+    <div id="tb"><i style="left:22px"></i><i style="left:50px"></i><i style="left:78px"></i><div class="url">Sistema de Gerenciamento de Resíduos · Empresa DEMO</div></div>
+    <div id="side">
+      <div class="nav" id="n0">Empresa e perfis</div>
+      <div class="nav" id="n1">Licenças</div>
+      <div class="nav" id="n2">Emitir MTR</div>
+      <div class="nav" id="n3">Modelos de MTR</div>
+      <div class="nav" id="n4">MTRs e status</div>
+      <div class="nav" id="n5">Recebimento</div>
+      <div class="nav" id="n6">CDF</div>
+    </div>
+    <div id="cont">
+
+      <!-- BATIDA 1 · ATORES E LICENÇAS -->
+      <div class="sc" id="s1">
+        <div class="card s" style="left:0;top:0;width:560px;height:692px">
+          <h3>Empresa DEMO</h3>
+          <div class="row s">Cadastro da empresa<span class="r"><span class="chip y" id="ca">Aguardando</span><span class="chip g sw" data-layout-allow-overflow id="cb">Aprovado</span></span></div>
+          <div class="sub s">PERFIS DA EMPRESA</div>
+          <div class="s"><span class="chip g">Gerador</span><span class="chip g">Transportador</span><span class="chip g">Destinador</span></div>
+          <div class="s"><span class="chip g">Armazenador temporário</span></div>
+          <div class="sub s">COLABORADORES</div>
+          <div class="row s">Pessoa DEMO 1<span class="r"><span class="chip g">Vínculo aprovado</span></span></div>
+          <div class="row s">Pessoa DEMO 2<span class="r"><span class="chip y">Aguardando</span></span></div>
+          <div class="sub s">CADASTRO</div>
+          <div class="s"><span class="chip dash">Endereço</span><span class="chip dash">Logo</span><span class="chip dash">E-mail confirmado</span></div>
+        </div>
+        <div class="card s" style="left:580px;top:0;width:812px;height:692px">
+          <h3>Licenças por resíduo</h3>
+          <div class="row sel s">Licença DEMO 1 · Destinador<span class="r"><span class="chip dash">Documento · PDF</span></span></div>
+          <div class="sub s">RESÍDUOS LICENCIADOS</div>
+          <div class="s"><span class="chip">Resíduo DEMO A</span><span class="chip">Resíduo DEMO B</span><span class="chip">Resíduo DEMO C</span></div>
+          <div class="sub s">APROVAÇÃO DA LICENÇA</div>
+          <div class="fl s"><span class="chip" id="lc0">Aguardando envio</span><span class="ar">→</span><span class="chip y" id="lc1">Aguardando aprovação</span><span class="ar">→</span><span class="chip" id="lc2">Aprovada</span></div>
+          <div class="s"><span class="chip dash">Recusada · com motivo</span></div>
+          <div class="row s" style="margin-top:6px">Licença DEMO 2 · Transportador<span class="r"><span class="chip g">Aprovada</span></span></div>
+          <div id="warn" style="opacity:0;margin-top:14px;border:2px solid var(--warn);background:rgba(251,191,36,.10);border-radius:14px;padding:12px 18px">
+            <div style="font-size:26px;font-weight:800;color:var(--warn)">Licença DEMO 1 a vencer · prazo DEMO</div>
+            <div style="font-size:24px;font-weight:600;color:var(--mute);margin-top:4px">Alerta no acesso, com aviso para renovar.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BATIDA 2 · MTR EM PASSOS -->
+      <div class="sc" id="s2">
+        <div class="card s fl" style="left:0;top:0;width:1392px;height:68px;padding:12px 24px;justify-content:space-between">
+          <div class="step" id="st0"><b>1</b>Dados</div>
+          <div class="step" id="st1"><b>2</b>Atores</div>
+          <div class="step" id="st2"><b>3</b>Resíduos</div>
+          <div class="step" id="st3"><b>4</b>Transporte e destino</div>
+          <div class="step" id="st4"><b>5</b>Resumo</div>
+        </div>
+        <div class="card s" style="left:0;top:86px;width:380px;height:606px">
+          <h3>Modelos de MTR</h3>
+          <div class="row s" id="md0">Modelo DEMO A</div>
+          <div class="row s">Modelo DEMO B</div>
+          <div class="row s">Modelo DEMO C</div>
+          <div class="s" style="margin-top:6px"><span class="btn" id="usebtn">Usar modelo</span></div>
+          <div class="sub s" style="margin-top:22px">REUTILIZÁVEL</div>
+          <div class="s" style="font-size:24px;color:var(--mute);font-weight:600;line-height:32px;white-space:normal">Atores, resíduos e transporte já preenchidos.</div>
+        </div>
+        <div class="card s" style="left:398px;top:86px;width:994px;height:606px;padding-top:14px">
+          <div id="f1" style="opacity:0">
+            <div class="sub" style="margin-top:0">ATORES · DADOS COPIADOS DO CADASTRO</div>
+            <div class="row">Gerador · Empresa DEMO<span class="r"><span class="chip g">Dados copiados</span></span></div>
+            <div class="row sel">Destinador DEMO 1<span class="r"><span class="chip g">Licenciado p/ Resíduo DEMO A</span></span></div>
+            <div class="row off">Destinador DEMO 2<span class="r"><span class="chip dash">Sem licença p/ o resíduo</span></span></div>
+          </div>
+          <div id="f2" style="opacity:0">
+            <div class="sub">RESÍDUOS</div>
+            <div class="row">Item 1 · Resíduo DEMO A · quantidade — · unidade DEMO</div>
+            <div><span class="chip">Classe DEMO</span><span class="chip">Estado físico DEMO</span><span class="chip">Acondicionamento DEMO</span><span class="chip">Tecnologia DEMO</span></div>
+          </div>
+          <div id="f3" style="opacity:0">
+            <div class="sub">TRANSPORTE E DESTINO</div>
+            <div class="fl" style="justify-content:space-between"><div><span class="chip">Transportador DEMO</span><span class="chip">Motorista DEMO</span><span class="chip">Placa DEMO</span><span class="chip">Data DEMO</span></div></div>
+            <div style="margin-top:6px"><span class="btn" id="emit">Emitir MTR</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BATIDA 3 · PDF, STATUS E TRANSPORTE -->
+      <div class="sc" id="s3">
+        <div class="card s" style="left:0;top:0;width:520px;height:692px">
+          <h3>MTR DEMO-0001 · PDF</h3>
+          <div style="position:relative;height:590px">
+            <svg id="qr" width="260" height="260" viewBox="0 0 260 260" style="position:absolute;left:0;top:0;background:#fff;border-radius:12px;opacity:.3"></svg>
+            <div style="position:absolute;left:284px;top:4px;width:184px">
+              <div style="height:16px;border-radius:8px;background:#2c4d40;margin-bottom:14px;width:180px"></div>
+              <div style="height:16px;border-radius:8px;background:#2c4d40;margin-bottom:14px;width:140px"></div>
+              <div style="height:16px;border-radius:8px;background:#2c4d40;margin-bottom:14px;width:160px"></div>
+              <div style="height:16px;border-radius:8px;background:#2c4d40;width:120px"></div>
+            </div>
+            <div id="docrows" style="position:absolute;left:0;top:286px;width:468px;opacity:0">
+              <div class="row">Gerador DEMO</div>
+              <div class="row">Transportador DEMO</div>
+              <div class="row">Destinador DEMO 1</div>
+              <div class="row">Itens · quantidades —</div>
+            </div>
+            <div id="lock" style="position:absolute;left:0;top:286px;width:468px;height:290px;border-radius:16px;background:rgba(10,26,20,.86);border:2px solid var(--warn);display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <div style="font-size:30px;font-weight:800;color:var(--warn)">PDF bloqueado</div>
+              <div style="font-size:24px;font-weight:600;color:var(--mute);margin-top:8px">até a aprovação da MTR</div>
+            </div>
+            <div id="unl" style="position:absolute;left:284px;top:200px;opacity:0"><span class="chip g">PDF liberado</span></div>
+          </div>
+        </div>
+        <div class="card s" style="left:540px;top:0;width:852px;height:372px">
+          <h3>Status da MTR</h3>
+          <div class="fl"><span class="chip y" id="m0">Aguardando aprovação</span><span class="ar">→</span><span class="chip" id="m1">A receber</span><span class="ar">→</span><span class="chip" id="m2">Recebida</span><span class="ar">→</span></div>
+          <div class="fl"><span class="chip" id="m3">Certificada</span></div>
+          <div class="sub">OUTROS ESTADOS</div>
+          <div><span class="chip dash">Recebida pelo armazenador</span><span class="chip dash">Recusada</span><span class="chip dash">Cancelada · motivo</span><span class="chip dash">Não aprovada</span></div>
+          <div><span class="chip dash">Histórico de alterações</span><span class="chip dash">Exportar planilha</span></div>
+        </div>
+        <div class="card s" style="left:540px;top:390px;width:852px;height:302px">
+          <h3>Transportador DEMO <span class="chip dash" style="margin-left:10px;vertical-align:4px">Somente consulta</span></h3>
+          <div class="row" id="tr1">MTR DEMO-0001 · A receber<span class="r"><span class="chip" id="tr1b">Ver PDF</span></span></div>
+          <div class="row">MTR DEMO-0002 · Recebida<span class="r"><span class="chip">Ver PDF</span></span></div>
+          <div class="row" style="color:var(--mute)">Armazenador temporário recebe antes do destino</div>
+        </div>
+      </div>
+
+      <!-- BATIDA 4 · RECEBIMENTO -->
+      <div class="sc" id="s4">
+        <div class="card s" style="left:0;top:0;width:900px;height:692px">
+          <h3>Receber MTR DEMO-0001</h3>
+          <div style="position:absolute;right:24px;top:20px"><span class="chip" id="rs0">A receber</span><span class="chip g" id="rs1" style="position:absolute;right:0;top:0;opacity:0">Recebida</span></div>
+          <div class="row s">Recebido por · Pessoa DEMO · Cargo DEMO · Data DEMO</div>
+          <div class="s"><span class="chip g">Placa confirmada</span><span class="chip g">Motorista confirmado</span></div>
+          <div class="sub s">ITENS</div>
+          <div class="row s" id="i1">Item 1 · Resíduo DEMO A · — t<span class="r"><span class="chip">Receber</span><span class="chip g sw" data-layout-allow-overflow id="i1b">Recebido</span></span></div>
+          <div class="row s" id="i2">Item 2 · Resíduo DEMO B · — t<span class="r"><span class="chip">Receber</span><span class="chip y sw" data-layout-allow-overflow id="i2b">Quantidade ajustada</span></span></div>
+          <div id="adj" style="opacity:0;margin:0 0 10px 24px;border:2px dashed var(--warn);border-radius:12px;padding:8px 16px;font-size:24px;font-weight:600;color:var(--mute);white-space:nowrap">Original preservado: — t   ·   <span style="color:var(--warn)">Recebido: — t</span></div>
+          <div class="row s" id="i3">Item 3 · Resíduo DEMO C · — t<span class="r"><span class="chip">Receber</span><span class="chip g sw" data-layout-allow-overflow id="i3b">Recebido</span></span></div>
+          <div class="s" style="margin-top:8px"><span class="chip dash">Desfazer recebimento</span><span class="chip dash">Relatório de recebimento · PDF</span></div>
+        </div>
+        <div class="card s" style="left:920px;top:0;width:472px;height:692px">
+          <h3>Ou recusar a MTR</h3>
+          <div class="sub">MOTIVO DA RECUSA</div>
+          <div class="row" style="height:120px;color:var(--mute)">Motivo DEMO</div>
+          <div><span class="btn" style="color:var(--red);border-color:rgba(252,165,165,.6)">Recusar com motivo</span></div>
+          <div style="font-size:24px;font-weight:600;color:var(--mute);line-height:32px;margin-top:22px">A MTR passa a Recusada, com o motivo registrado.</div>
+          <div style="margin-top:22px"><span class="chip rd">Recusada</span></div>
+        </div>
+      </div>
+
+      <!-- BATIDA 5 · CDF -->
+      <div class="sc" id="s5">
+        <div class="card s" style="left:0;top:0;width:820px;height:692px">
+          <h3>Emitir CDF</h3>
+          <div class="row sel s">Gerador DEMO × Destinador DEMO 1</div>
+          <div class="sub s">MTRS RECEBIDAS SEM CERTIFICADO</div>
+          <div class="row s"><span class="ck" id="k1"></span>MTR DEMO-0001<span class="r"><span class="chip">Recebida</span><span class="chip g sw" data-layout-allow-overflow id="q1">Certificada</span></span></div>
+          <div class="row s"><span class="ck" id="k2"></span>MTR DEMO-0002<span class="r"><span class="chip">Recebida</span><span class="chip g sw" data-layout-allow-overflow id="q2">Certificada</span></span></div>
+          <div class="row s"><span class="ck" id="k3"></span>MTR DEMO-0003<span class="r"><span class="chip">Recebida</span><span class="chip g sw" data-layout-allow-overflow id="q3">Certificada</span></span></div>
+          <div class="sub s">FORA DO AGRUPAMENTO</div>
+          <div class="row off s">MTR DEMO-0004<span class="r"><span class="chip">A receber</span></span></div>
+          <div class="row off s">MTR DEMO-0005<span class="r"><span class="chip">Já certificada</span></span></div>
+          <div class="s"><span class="btn" id="cdfbtn">Emitir CDF</span></div>
+        </div>
+        <div class="card" id="cdf" style="left:840px;top:0;width:552px;height:692px;opacity:0;border-color:var(--acc)">
+          <h3>CDF DEMO-01</h3>
+          <div style="font-size:24px;font-weight:600;color:var(--mute);margin-bottom:14px">Certificado de destinação final</div>
+          <div class="row">Gerador DEMO</div>
+          <div class="row">Destinador DEMO 1</div>
+          <div class="sub">MTRS AGRUPADAS</div>
+          <div><span class="chip g">DEMO-0001</span><span class="chip g">DEMO-0002</span></div>
+          <div><span class="chip g">DEMO-0003</span></div>
+          <div class="sub">CONSULTA</div>
+          <div><span class="chip dash">HTML e PDF</span><span class="chip dash">Lista do gerador</span></div>
+          <div><span class="chip dash">Lista do destinador</span><span class="chip dash">Lista do transportador</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PÁGINA PÚBLICA DE VERIFICAÇÃO -->
+  <div id="pub" class="abs">
+    <div style="position:absolute;left:0;top:0;width:1716px;height:56px;background:#0c1d16;border-bottom:2px solid var(--line)"><i style="position:absolute;left:22px;top:20px;width:16px;height:16px;border-radius:50%;background:#33574a"></i><i style="position:absolute;left:50px;top:20px;width:16px;height:16px;border-radius:50%;background:#33574a"></i><i style="position:absolute;left:78px;top:20px;width:16px;height:16px;border-radius:50%;background:#33574a"></i><div class="url" style="width:620px">Verificação de MTR · página pública</div></div>
+    <div class="card" style="left:60px;top:100px;width:500px;height:630px">
+      <h3>Ler o QR do PDF</h3>
+      <div style="position:relative;width:340px;height:340px;margin:30px auto 0">
+        <svg id="qr2" width="340" height="340" viewBox="0 0 260 260" style="position:absolute;left:0;top:0;background:#fff;border-radius:14px"></svg>
+        <div id="scan"></div>
+      </div>
+      <div style="margin-top:36px;text-align:center"><span class="chip g" style="font-size:26px">Sem login</span></div>
+    </div>
+    <div class="card" style="left:590px;top:100px;width:1066px;height:630px">
+      <h3>Verificar MTR</h3>
+      <div class="sub">NÚMERO LIDO NO QR</div>
+      <div class="row sel" style="width:560px">MTR DEMO-0001</div>
+      <div id="vres" style="opacity:0;margin-top:26px;border:2px solid var(--acc);background:rgba(52,211,153,.08);border-radius:18px;padding:22px 26px;height:250px;position:relative">
+        <div style="font-size:34px;font-weight:800;color:var(--acc)">MTR encontrada</div>
+        <div style="font-size:24px;font-weight:600;color:var(--mute);margin-top:6px">O sistema devolve o PDF da própria MTR.</div>
+        <div style="margin-top:22px"><span class="chip">Gerador DEMO</span><span class="chip">Transportador DEMO</span><span class="chip">Destinador DEMO 1</span></div>
+        <div style="margin-top:4px"><span class="chip">Itens · quantidades —</span></div>
+        <div style="position:absolute;right:26px;top:22px;width:150px;height:190px;border-radius:12px;background:#fff;padding:18px 16px">
+          <div style="height:12px;border-radius:6px;background:#9fb8ad;margin-bottom:12px"></div>
+          <div style="height:12px;border-radius:6px;background:#c9d8d1;margin-bottom:12px;width:80%"></div>
+          <div style="height:12px;border-radius:6px;background:#c9d8d1;margin-bottom:12px;width:90%"></div>
+          <div style="height:12px;border-radius:6px;background:#c9d8d1;width:60%"></div>
+          <div style="position:absolute;left:16px;bottom:14px;font-size:24px;font-weight:800;color:#0a1a14">PDF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FECHAMENTO -->
+  <div id="closeblk" class="abs">
+    <div id="closename" class="abs">Sistema de Gerenciamento de Resíduos</div>
+    <h2>Do manifesto ao certificado, cada resíduo rastreado e verificável.</h2>
+    <div class="chips">
+      <span class="chip g">Licença por resíduo</span><span class="chip g">Alerta de vencimento</span><span class="chip g">MTR por modelo</span><span class="chip g">Destinador licenciado</span><span class="chip g">PDF com QR</span><span class="chip g">Status da MTR</span><span class="chip g">Transportador consulta</span><span class="chip g">Recebimento item a item</span><span class="chip g">Ajuste e recusa</span><span class="chip g">CDF agrupado</span><span class="chip g">Verificação sem login</span>
+    </div>
+  </div>
+  <div id="end" class="abs"></div>
+</div>
+<script src="./assets/gsap.min.js"></script>
+<script>
+(function(){
+  var tl = gsap.timeline({paused:true, defaults:{ease:"power2.out"}});
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+  // QR DEMONSTRATIVO (padrão determinístico, sem conteúdo real)
+  function drawQR(svg){
+    var n = 25, c = 260/(n+2), out = "";
+    function finder(x,y){ out += '<rect x="'+(c*(x+1))+'" y="'+(c*(y+1))+'" width="'+(c*7)+'" height="'+(c*7)+'" fill="#0a1a14"/><rect x="'+(c*(x+2))+'" y="'+(c*(y+2))+'" width="'+(c*5)+'" height="'+(c*5)+'" fill="#fff"/><rect x="'+(c*(x+3))+'" y="'+(c*(y+3))+'" width="'+(c*3)+'" height="'+(c*3)+'" fill="#0a1a14"/>'; }
+    for (var y=0;y<n;y++) for (var x=0;x<n;x++){
+      var inF = (x<8&&y<8)||(x>n-9&&y<8)||(x<8&&y>n-9);
+      if (inF) continue;
+      if (((x*7+y*13+x*y*3)%5)<2) out += '<rect x="'+(c*(x+1))+'" y="'+(c*(y+1))+'" width="'+c+'" height="'+c+'" fill="#0a1a14"/>';
+    }
+    finder(0,0); finder(n-7,0); finder(0,n-7);
+    svg.innerHTML = out;
+  }
+  drawQR($("#qr")); drawQR($("#qr2"));
+
+  // NAVEGAÇÃO LATERAL: item ativo por batida
+  function nav(idx, t){
+    $$(".nav").forEach(function(n,i){
+      var on = idx.indexOf(i) >= 0;
+      tl.to(n,{backgroundColor:on?"#173a2e":"rgba(0,0,0,0)",color:on?"#FFFFFF":"#B4CFC3",borderLeftColor:on?"#34d399":"rgba(0,0,0,0)",duration:.4},t);
+    });
+  }
+  tl.set(".nav",{backgroundColor:"rgba(0,0,0,0)",borderLeftColor:"rgba(0,0,0,0)"},0);
+
+  // ENTRADA DE CENA: legenda, cena e elementos em sequência
+  function scene(cap, sc, t0, t1, navIdx){
+    tl.fromTo(cap,{opacity:0,y:14},{opacity:1,y:0,duration:.5},t0);
+    tl.to(cap,{opacity:0,duration:.3,ease:"power1.in"},t1-.3);
+    if (sc){
+      tl.to(sc,{opacity:1,duration:.35},t0);
+      tl.to(sc,{opacity:0,duration:.3,ease:"power1.in"},t1-.3);
+      var els = $$(sc+" .s");
+      tl.fromTo(els,{opacity:0,y:22},{opacity:1,y:0,duration:.45,stagger:Math.min(.08,1.2/els.length)},t0+.25);
+    }
+    if (navIdx) nav(navIdx,t0);
+  }
+  function swap(a,b,t){ tl.to(a,{opacity:0,duration:.25},t); tl.to(b,{opacity:1,duration:.3},t+.1); }
+  var G = {backgroundColor:"rgba(52,211,153,.16)",color:"#34d399",borderColor:"rgba(52,211,153,.5)",duration:.35};
+  var N = {backgroundColor:"#1d3d31",color:"#D5EADF",borderColor:"#2c4d40",duration:.35};
+
+  // B1 · ATORES E LICENÇAS 0.2–5.6
+  scene("#c1","#s1",0.2,5.6,[0,1]);
+  swap("#ca","#cb",2.0);
+  tl.to("#lc1",N,2.0); tl.to("#lc2",G,2.0);
+  tl.fromTo("#warn",{opacity:0,y:16},{opacity:1,y:0,duration:.5},3.6);
+
+  // B2 · MTR EM PASSOS 5.6–12.0
+  scene("#c2","#s2",5.6,12.0,[2,3]);
+  function stepOn(id,t){ tl.to(id,{color:"#FFFFFF",duration:.3},t); tl.to(id+" b",{backgroundColor:"#34d399",borderColor:"#34d399",color:"#0a1a14",duration:.3},t); }
+  tl.to("#md0",{borderColor:"#34d399",duration:.3},6.9);
+  tl.to("#usebtn",{backgroundColor:"#34d399",color:"#0a1a14",borderColor:"#34d399",duration:.3},6.9);
+  stepOn("#st0",6.9); stepOn("#st1",6.9);
+  tl.fromTo("#f1",{opacity:0,y:16},{opacity:1,y:0,duration:.5},7.0);
+  stepOn("#st2",8.5);
+  tl.fromTo("#f2",{opacity:0,y:16},{opacity:1,y:0,duration:.5},8.5);
+  stepOn("#st3",10.1); stepOn("#st4",10.1);
+  tl.fromTo("#f3",{opacity:0,y:16},{opacity:1,y:0,duration:.5},10.1);
+  tl.to("#emit",{backgroundColor:"#34d399",color:"#0a1a14",borderColor:"#34d399",duration:.3},10.4);
+
+  // B3 · PDF, STATUS E TRANSPORTE 12.0–17.0
+  scene("#c3","#s3",12.0,17.0,[4]);
+  tl.to("#lock",{opacity:0,duration:.4},13.6);
+  tl.to("#docrows",{opacity:1,duration:.4},13.9);
+  tl.to("#qr",{opacity:1,duration:.4},13.6);
+  tl.fromTo("#unl",{opacity:0,y:10},{opacity:1,y:0,duration:.4},13.8);
+  tl.to("#m0",N,13.6); tl.to("#m1",G,13.6);
+  tl.to("#tr1",{borderColor:"#34d399",duration:.3},15.2);
+  tl.to("#tr1b",G,15.2);
+
+  // B4 · RECEBIMENTO 17.0–22.6
+  scene("#c4","#s4",17.0,22.6,[5]);
+  swap("#i1 .r .chip:first-child","#i1b",18.4);
+  tl.to("#i1",{borderColor:"#34d399",duration:.3},18.4);
+  swap("#i2 .r .chip:first-child","#i2b",20.0);
+  tl.to("#i2",{borderColor:"#fbbf24",duration:.3},20.0);
+  tl.fromTo("#adj",{opacity:0,y:-8},{opacity:1,y:0,duration:.4},20.1);
+  swap("#i3 .r .chip:first-child","#i3b",20.0);
+  tl.to("#i3",{borderColor:"#34d399",duration:.3},20.0);
+  swap("#rs0","#rs1",20.0);
+
+  // B5 · CDF 22.6–27.4
+  scene("#c5","#s5",22.6,27.4,[6]);
+  tl.to(["#k1","#k2","#k3"],{backgroundColor:"#34d399",borderColor:"#34d399",duration:.3,stagger:.1},23.7);
+  tl.to("#cdfbtn",{backgroundColor:"#34d399",color:"#0a1a14",borderColor:"#34d399",duration:.3},24.0);
+  tl.fromTo("#cdf",{opacity:0,x:30},{opacity:1,x:0,duration:.5},25.2);
+  swap("#k1 ~ .r .chip:first-child","#q1",25.3);
+  swap("#k2 ~ .r .chip:first-child","#q2",25.3);
+  swap("#k3 ~ .r .chip:first-child","#q3",25.3);
+
+  // B6 · VERIFICAÇÃO PÚBLICA 27.4–31.6
+  tl.to("#win",{opacity:0,y:20,duration:.4,ease:"power1.in"},27.1);
+  scene("#c6",null,27.4,31.6,null);
+  tl.fromTo("#pub",{opacity:0,y:20},{opacity:1,y:0,duration:.5},27.5);
+  tl.set("#scan",{y:10},0);
+  tl.fromTo("#scan",{opacity:0},{opacity:1,duration:.2},28.0);
+  tl.to("#scan",{y:324,duration:1.0,ease:"power1.inOut"},28.1);
+  tl.to("#scan",{opacity:0,duration:.2},29.1);
+  tl.fromTo("#vres",{opacity:0,y:16},{opacity:1,y:0,duration:.5},29.4);
+  tl.to("#pub",{opacity:0,y:20,duration:.4,ease:"power1.in"},31.3);
+
+  // FECHAMENTO 31.6–34
+  tl.to("#mark",{opacity:0,duration:.4},31.3);
+  tl.to("#closeblk",{opacity:1,duration:.6},31.6);
+  tl.fromTo("#closeblk h2",{y:24},{y:0,duration:.7},31.6);
+  tl.fromTo("#closeblk .chip",{opacity:0,y:16},{opacity:1,y:0,duration:.35,stagger:.05},31.9);
+
+  // fim exato da timeline
+  tl.to("#end",{opacity:.01,duration:.5},33.5);
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-residuos-transito"] = tl;
+})();
+</script>
+</body>
+</html>

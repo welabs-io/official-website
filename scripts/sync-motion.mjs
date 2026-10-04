@@ -31,33 +31,71 @@ const EXCLUDED = new Set([
 // wemalupe shows the internal codename, which must not be cited.
 const CLIENT_ONLY = new Set(['light-recicla', 'ecoenel', 'avsi-program-case', 'infraction-management', 'wemalupe']);
 
-// Round 20261002 pieces (business overview and topology), bound to the coordinator's accepted hash.
+// Journeys of round 20261001 replaced by the per-product reels below (or retired with their product).
+const SUPERSEDED = new Set(['tabela', 'stant', 'wego', 'sgors', 'ius', 'kiosk-brands', 'erp', 'flow', 'wekb', 'wecrm']);
+
+// Round 20261002 pieces, bound to the coordinator's accepted hash.
 const round2 = resolve(homedir(), 'code/control/portfolio/motion/portfolio-20261002');
-// Insertion order is the emphasis ranking (lib/emphasis.json); galleries keep this order.
+// Reel pieces follow the operator-approved selection and order per product (publish/index.html, PRODUCTS
+// of 2026-10-04); `reel` marks them for the product page gallery and `also` lists other pages that show them.
+const reel = (product, title, kind = 'business', extra = {}) => ({kind, product, title, reel: true, ...extra});
+const RESIDUOS = 'Sistema de Gerenciamento de Resíduos';
+// Insertion order is the gallery order; the collection order lives in lib/emphasis.json.
 const ROUND2 = {
   'svc-integration': {kind: 'topology', page: 'servicos', title: 'Integração e automação'},
   'svc-applied-ai': {kind: 'topology', page: 'servicos', title: 'IA aplicada'},
   'svc-custom-software': {kind: 'topology', page: 'servicos', title: 'Como trabalhamos'},
   'svc-platform-cloud': {kind: 'topology', page: 'servicos', title: 'Infraestrutura e cloud'},
-  'welabs-platform': {kind: 'topology', page: 'welabs', title: 'Plataforma Welabs'},
-  'erp-hub': {kind: 'business', page: 'welabs', product: 'erp', title: 'ERP · o centro do domínio'},
-  'flow-connectors': {kind: 'business', page: 'welabs', product: 'flow', title: 'Flow · tudo pode rodar nele'},
-  'flow-engine': {kind: 'topology', page: 'welabs', product: 'flow', title: 'Flow · motor de workflow'},
-  'security-ops': {kind: 'business', page: 'welabs', product: 'malupe', title: 'Ecossistema Monitoramento'},
-  'biz-welabs-crm': {kind: 'business', page: 'welabs', product: 'welabs-crm', title: 'CRM'},
-  'biz-welabs-kb': {kind: 'business', page: 'welabs', product: 'wekb', title: 'KB · base de conhecimento'},
-  'erp-builder': {kind: 'topology', page: 'welabs', product: 'erp', title: 'ERP · Construtor (previsto)'},
-  'biz-tabela': {kind: 'business', product: 'tabela', title: 'Tabe.la'},
-  'biz-stant': {kind: 'business', product: 'stant', title: 'Stant'},
-  'biz-sgors-cycle': {kind: 'business', product: 'sgors', title: 'SGORS'},
+  'welabs-chain-overview': {kind: 'topology', page: 'welabs', title: 'Plataforma Welabs · Mapa de integração'},
+  'welabs-chain-journey': {kind: 'topology', page: 'welabs', title: 'Plataforma Welabs · Jornada'},
+  'welabs-chain-plug': {kind: 'topology', page: 'welabs', title: 'Plataforma Welabs · Encaixe'},
+  'welabs-chain-horizon': {kind: 'topology', page: 'welabs', title: 'Plataforma Welabs · Horizonte'},
+  'tabela-intro': reel('tabela', 'Tabe.la · Introdução de marca', 'intro'),
+  'biz-tabela-comercializacao-intro': reel('tabela', 'Tabe.la · Comercialização'),
+  'biz-tabela-operacao-intro': reel('tabela', 'Tabe.la · Operação'),
+  'tabela-journey-intro': reel('tabela', 'Tabe.la · Jornada', 'journey'),
+  'stant-intro': reel('stant', 'Stant · Introdução de marca', 'intro'),
+  'biz-stant-campo-intro': reel('stant', 'Stant · Campo'),
+  'biz-stant-gestao-intro': reel('stant', 'Stant · Gestão'),
+  'biz-stant-plataforma-intro': reel('stant', 'Stant · Plataforma'),
+  'stant-journey-intro': reel('stant', 'Stant · Jornada', 'journey'),
+  'wego-topology-v2': reel('wego', 'Família WeGO · Como os módulos conversam', 'topology'),
+  'biz-wego-docgo-signgo': reel('wego', 'Família WeGO · DocGo e SignGo'),
+  'biz-wego-licenciamento': reel('wego', 'Família WeGO · Licenciamento'),
+  'biz-auto-infracao-campo': reel('wego', 'Auto Infração · Campo', 'business', {also: ['autoinfracao']}),
+  'auto-infracao-journey': reel('wego', 'Auto Infração · Jornada', 'journey', {also: ['autoinfracao']}),
+  'wego-journey': reel('wego', 'Família WeGO · Jornada', 'journey'),
+  'residuos-journey-v2': reel('sgors', `${RESIDUOS} · Um ciclo`, 'journey'),
+  'biz-residuos-reciclagem': reel('sgors', `${RESIDUOS} · Reciclagem`),
+  'biz-residuos-transito': reel('sgors', `${RESIDUOS} · Trânsito`),
+  'ius-do-laudo-ao-dado': reel('ius', 'IUS · Do laudo ao dado'),
+  'ius-aceite-e-leitura': reel('ius', 'IUS · Aceite e leitura'),
+  'ius-jornada-medico-paciente': reel('ius', 'IUS · Jornada', 'journey'),
+  'flow-canvas-build': reel('flow', 'Flow · Montar o fluxo'),
+  'flow-durable-run': reel('flow', 'Flow · Execução durável'),
+  'flow-lifecycle': reel('flow', 'Flow · Ciclo de vida'),
+  'flow-copilot': reel('flow', 'Flow · Copiloto'),
+  'crm-omnichannel-inbox': reel('welabs-crm', 'CRM · Caixa omnichannel'),
+  'crm-agent-studio': reel('welabs-crm', 'CRM · Estúdio de agentes'),
+  'crm-flow-builder': reel('welabs-crm', 'CRM · Automações'),
+  'crm-campaigns-journey': reel('welabs-crm', 'CRM · Campanhas', 'journey'),
+  'hub-dominio-spa': reel('erp', 'Hub de domínio · Telas do modelo'),
+  'hub-fiscal-br': reel('erp', 'Hub de domínio · Fiscal'),
+  'hub-concessoes': reel('erp', 'Hub de domínio · Concessões'),
+  'kb-ask-with-proof': reel('wekb', 'KB · Resposta com prova'),
+  'kb-sources-to-knowledge': reel('wekb', 'KB · Fontes viram conhecimento'),
+  'kb-who-reads-what': reel('wekb', 'KB · Quem lê o quê'),
+  'channels-one-contract': reel('channels', 'Channels · Um contrato, todos os canais'),
+  'channels-call-center': reel('channels', 'Channels · Central de voz'),
+  'channels-whatsapp-official': reel('channels', 'Channels · WhatsApp oficial'),
+  'mon-occurrence-desk': reel('malupe', 'Ecossistema Monitoramento · Mesa de ocorrências'),
+  'mon-edge-survives': reel('malupe', 'Ecossistema Monitoramento · O site não para'),
+  'mon-camera-to-case': reel('malupe', 'Ecossistema Monitoramento · Da câmera ao caso'),
+  // Products outside the 2026-10-04 round keep the film the site already showed.
   'biz-central-esg': {kind: 'business', product: 'central-esg', title: 'Central ESG'},
-  'biz-kiosk-brands': {kind: 'business', product: 'kiosk-brands', title: 'Kiosk Brands'},
-  'wego-catalog': {kind: 'topology', product: 'wego', title: 'Família WeGO'},
-  'biz-auto-infracao': {kind: 'business', product: 'autoinfracao', title: 'Auto Infração'},
   'biz-sgici': {kind: 'business', product: 'sgici', title: 'SGICI'},
   'biz-report-crm': {kind: 'business', product: 'report-crm', title: 'Report CRM'},
   'biz-netsafety': {kind: 'business', product: 'netsafety', title: 'Netsafety'},
-  'biz-ius': {kind: 'business', product: 'ius', title: 'IUS'},
 };
 
 // Existing presentation slug for compositions that overlap the 22 framepacks.
@@ -127,7 +165,7 @@ cpSync(findPlayer(), join(publicRoot, 'player.js'));
 const catalog = [];
 for (const id of readdirSync(productsRoot).sort()) {
   const source = join(productsRoot, id);
-  if (EXCLUDED.has(id) || CLIENT_ONLY.has(id) || !titles.has(id) || !existsSync(join(source, 'index.html'))) continue;
+  if (EXCLUDED.has(id) || CLIENT_ONLY.has(id) || SUPERSEDED.has(id) || !titles.has(id)|| !existsSync(join(source, 'index.html'))) continue;
   const target = join(publicRoot, id);
   for (const entry of [...RUNTIME_ENTRIES, ...readdirSync(source).filter(isRootStyle)]) {
     if (existsSync(join(source, entry))) cpSync(join(source, entry), join(target, entry), {recursive: true, dereference: true});
@@ -138,7 +176,7 @@ for (const id of readdirSync(productsRoot).sort()) {
   const duration = Number(html.match(/data-duration="([0-9.]+)"/)?.[1]);
   if (!compositionId || !duration) throw new Error(`${id}: missing data-composition-id or data-duration`);
   writeFileSync(join(target, 'index.html'), seedTimeline(html, compositionId, duration));
-  catalog.push({id, title: titles.get(id), duration, compositionId, src: `/motion/${id}/index.html`, kind: 'journey', page: null, product: PRESENTATION_SLUG[id] ?? id});
+  catalog.push({id, title: titles.get(id), duration, compositionId, src: `/motion/${id}/index.html`, kind: 'journey', page: null, product: PRESENTATION_SLUG[id] ?? id, reel: false, also: []});
 }
 
 // Round 2: only pieces whose index.html still matches the accepted sha256 reach the site.
@@ -158,7 +196,7 @@ for (const [id, meta] of Object.entries(ROUND2)) {
   catalog.push({
     id, title: meta.title, duration: Number(html.match(/data-duration="([0-9.]+)"/)?.[1]),
     compositionId: html.match(/data-composition-id="([^"]+)"/)?.[1], src: `/motion/${id}/index.html`,
-    kind: meta.kind, page: meta.page ?? null, product: meta.product ?? null,
+    kind: meta.kind, page: meta.page ?? null, product: meta.product ?? null, reel: meta.reel ?? false, also: meta.also ?? [],
   });
 }
 

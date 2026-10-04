@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Cadeia Welabs · horizonte</title>
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--real:#A3A8B3}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+p{white-space:nowrap}
+
+/* CABEÇALHO, LEGENDA E SELO */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
+#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+#title span{color:var(--coral)}
+#caps{position:absolute;left:290px;top:24px;width:1020px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
+.cap b{color:var(--coral);font-weight:800;margin-right:10px}
+#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+
+/* QUADRO DA CADEIA */
+#board{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#dots{position:absolute;left:40px;top:116px;width:1840px;height:870px;border-radius:22px;background-image:radial-gradient(circle,#26262E 2.4px,transparent 3px);background-size:32px 32px;opacity:0}
+#edges{position:absolute;left:0;top:0;overflow:visible}
+.e{fill:none;stroke-width:4;stroke-linecap:round}
+.e.real{stroke:var(--real)}
+.e.part{stroke:var(--wait);stroke-dasharray:2 11;stroke-width:5}
+.e.plan{stroke:var(--coral);stroke-dasharray:16 11}
+
+/* NÓS DOS PRODUTOS (MESMA GRAMÁTICA DAS PEÇAS ISOLADAS) */
+.nd{position:absolute;border:3px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 6px 18px rgba(0,0,0,.45);opacity:0}
+.nh{display:flex;align-items:center;gap:14px;padding:14px 18px 0}
+.ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
+.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
+.nm{font-size:30px;font-weight:800;line-height:36px;white-space:nowrap}
+.sub{position:absolute;left:20px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+#nMon{border-style:dashed;border-color:var(--coral);background:#141012}
+#nMon .kd{color:var(--coral)}
+#halo{position:absolute;left:662px;top:434px;width:456px;height:254px;border:3px dashed var(--coral);border-radius:30px;opacity:0}
+#chipNs{position:absolute;left:18px;top:98px;height:40px;display:flex;align-items:center;padding:0 14px;border:2px dashed var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0;background:var(--bg)}
+
+/* RÓTULOS DAS ARESTAS */
+.lw{position:absolute;width:600px;display:flex;justify-content:center}
+.pill span{display:block;text-align:center}
+.pill{padding:4px 14px;border-radius:14px;font-size:24px;line-height:28px;font-weight:800;white-space:nowrap;background:var(--bg);opacity:0}
+.pill.part{border:2px solid var(--wait);color:var(--wait);background:#1E1A10}
+.pill.plan{border:2px dashed var(--coral);color:#FFB3A8;background:#160E0D}
+.pill.plan i{font-style:normal;color:var(--coral)}
+
+/* LEGENDA FIXA */
+#legend{position:absolute;left:100px;top:1000px;height:48px;display:flex;align-items:center;gap:40px;opacity:0}
+.lg{display:flex;align-items:center;gap:14px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.lg svg{flex:none}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-chain-horizon" data-width="1920" data-height="1080" data-start="0" data-duration="30">
+  <div id="hd">
+    <div id="title">Horizonte<span>.</span></div>
+    <div id="caps"></div>
+    <div id="sbx">sandbox · dados DEMO</div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  </div>
+
+  <div id="board">
+    <div id="dots"></div>
+    <div id="halo"></div>
+    <svg id="edges" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+    <div id="nodes"></div>
+    <div id="labels"></div>
+  </div>
+
+  <div id="legend">
+    <span class="lg"><svg width="70" height="12" viewBox="0 0 70 12"><path d="M4 6H66" stroke="#A3A8B3" stroke-width="4" stroke-linecap="round"/></svg>hoje · sandbox</span>
+    <span class="lg"><svg width="70" height="12" viewBox="0 0 70 12"><path d="M4 6H66" stroke="#F5B53F" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 11"/></svg>parcial</span>
+    <span class="lg"><svg width="70" height="12" viewBox="0 0 70 12"><path d="M4 6H66" stroke="#FF452B" stroke-width="4" stroke-linecap="round" stroke-dasharray="16 11"/></svg>Previsto</span>
+  </div>
+  <div id="pad"></div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script>
+(function(){
+  // ÍCONES
+  const IC={
+    hub:'<circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/><path d="m6 6.5 3.7 3.7M18 6.5l-3.7 3.7M6 17.5l3.7-3.7M18 17.5l-3.7-3.7"/>',
+    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+    inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
+    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
+    spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/>',
+    app:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/>',
+    cam:'<path d="M3 7h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3z"/><path d="m16 11 5-3v8l-5-3"/><circle cx="8" cy="12" r="2"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+
+  // NÓS: posição, cor e texto (produtos pelo tipo; o centro é o Hub de domínio)
+  const N={
+    kb:{x:100,y:150,w:380,h:110,acc:"var(--violet)",ic:"book",kd:"Conhecimento",nm:"KB"},
+    crm:{x:100,y:486,w:380,h:110,acc:"var(--ok)",ic:"inbox",kd:"Atendimento",nm:"CRM"},
+    ch:{x:100,y:822,w:380,h:110,acc:"var(--teal)",ic:"chat",kd:"Conversa",nm:"Channels"},
+    hub:{x:680,y:450,w:420,h:180,acc:"var(--coral)",ic:"hub",kd:"Domínio e integração",nm:"Hub de domínio",
+      sub:["cadastros · regras · contratos","fiscal · financeiro · integrações"]},
+    ai:{x:1380,y:150,w:440,h:110,acc:"var(--pink)",ic:"spark",kd:"IA nos produtos",nm:"Assistentes"},
+    flow:{x:1380,y:486,w:440,h:110,acc:"var(--blue)",ic:"flow",kd:"Motor de fluxos",nm:"Flow"},
+    saas:{x:1380,y:822,w:440,h:150,acc:"var(--muted)",ic:"app",kd:"Produto plugado",nm:"SaaS · app · portal"},
+    mon:{x:640,y:150,w:520,h:110,acc:"var(--muted)",ic:"cam",kd:"Previsto",nm:"Ecossistema Monitoramento"}
+  };
+  const nodes=document.getElementById("nodes");
+  Object.entries(N).forEach(([k,n])=>{
+    const d=document.createElement("div");
+    d.className="nd";d.id="n"+k[0].toUpperCase()+k.slice(1);
+    d.style.cssText=`left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px;--acc:${n.acc}`;
+    d.innerHTML=`<div class="nh"><span class="ic">${ico(n.ic,30)}</span><div><p class="kd">${n.kd}</p><p class="nm">${n.nm}</p></div></div>`;
+    (n.sub||[]).forEach((s,i)=>{d.innerHTML+=`<p class="sub" style="top:${96+i*34}px">${s}</p>`;});
+    nodes.appendChild(d);
+  });
+  document.getElementById("nSaas").insertAdjacentHTML("beforeend",'<span id="chipNs">Previsto · namespace próprio</span>');
+
+  // ARESTAS: real = traço cheio (mapa §3a construído), part = âmbar pontilhado (§3a parcial), plan = tracejado (§3b)
+  const E=[
+    {id:"r13",k:"real",d:"M1100,495 L1376,495",row:"R1–R3"},
+    {id:"r4",k:"real",d:"M1380,850 C1150,850 1060,780 1060,640",row:"R4"},
+    {id:"r5",k:"real",d:"M1800,596 L1800,818",row:"R5–R6"},
+    {id:"r7",k:"real",d:"M1380,935 L484,900",row:"R7"},
+    {id:"r8",k:"real",d:"M290,818 L290,600",two:1,row:"R8"},
+    {id:"r9",k:"real",d:"M480,580 C620,940 1200,900 1376,880",row:"R9"},
+    {id:"r10",k:"real",d:"M200,486 L200,264",row:"R10"},
+    {id:"r11",k:"real",d:"M100,880 C30,880 30,200 96,200",row:"R11"},
+    {id:"r12",k:"part",d:"M680,470 C580,470 560,235 484,235",row:"R12"},
+    {id:"r13b",k:"part",d:"M1440,486 C1440,350 600,370 488,172",row:"R13"},
+    {id:"r14",k:"part",d:"M1800,486 L1800,264",row:"R14"},
+    {id:"p1",k:"plan",d:"M480,520 C600,830 1250,790 1420,600",row:"P1"},
+    {id:"p2",k:"plan",d:"M1470,486 C1470,410 600,420 488,205",two:1,row:"P2"},
+    {id:"p3",k:"plan",d:"M1104,600 L1376,600",two:1,row:"P3"},
+    {id:"p4a",k:"plan",d:"M1080,446 C1080,330 1260,206 1376,206",row:"P4"},
+    {id:"p4b",k:"plan",d:"M1510,486 L1510,264",row:"P4"},
+    {id:"p7",k:"plan",d:"M1480,822 L1480,600",row:"P7"},
+    {id:"p8a",k:"plan",d:"M670,264 C670,380 420,340 420,482",two:1,row:"P8"},
+    {id:"p8b",k:"plan",d:"M770,264 L770,430",two:1,row:"P8"}
+  ];
+  const COL={real:"#A3A8B3",part:"#F5B53F",plan:"#FF452B"};
+  const svg=document.getElementById("edges");
+  let defs='<defs>';
+  Object.entries(COL).forEach(([k,c])=>{defs+=`<marker id="ar-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`;});
+  E.forEach(e=>{defs+=`<mask id="m-${e.id}" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><path id="mk-${e.id}" d="${e.d}" fill="none" stroke="#fff" stroke-width="44" stroke-linecap="round"/></mask>`;});
+  defs+='</defs>';
+  let body='';
+  E.forEach(e=>{body+=`<g id="g-${e.id}" mask="url(#m-${e.id})"><path class="e ${e.k}" d="${e.d}" marker-end="url(#ar-${e.k})"${e.two?` marker-start="url(#ar-${e.k})"`:""}/></g>`;});
+  svg.innerHTML=defs+body;
+  // Path lengths measured once at setup, never at tween time
+  const LEN={};
+  E.forEach(e=>{const m=document.getElementById("mk-"+e.id);const L=Math.ceil(m.getTotalLength())+60;LEN[e.id]=L;m.setAttribute("stroke-dasharray",L+" "+L);m.setAttribute("stroke-dashoffset",L);});
+
+  // RÓTULOS: centro (x,y); "parcial" em âmbar, previstos tracejados
+  const LB=[
+    {id:"l12",k:"part",x:600,y:404,t:["parcial"],own:["r12"]},
+    {id:"l13",k:"part",x:960,y:322,t:["parcial"],own:["r13b"]},
+    {id:"l14",k:"part",x:1800,y:300,t:["parcial"],own:["r14"]},
+    {id:"lp1",k:"plan",x:830,y:752,t:["<i>Previsto</i> · CRM aciona fluxos"],own:["p1"]},
+    {id:"lp2",k:"plan",x:1290,y:420,t:["<i>Previsto</i> · conhecimento","dentro do fluxo"],own:["p2","r13b"]},
+    {id:"lp3",k:"plan",x:1240,y:548,t:["<i>Previsto</i>","Studio global"],own:[]},
+    {id:"lp4",k:"plan",x:1655,y:405,t:["<i>Previsto</i>","sessão delegada"],own:[]},
+    {id:"lp7",k:"plan",x:1640,y:709,t:["<i>Previsto</i> · gatilhos","por dado e mensagem"],own:[]},
+    {id:"lp5",k:"plan",x:830,y:662,t:["<i>Previsto</i> · Construtor"],own:[]}
+  ];
+  window.__labelOwners=Object.fromEntries(LB.map(l=>[l.id,l.own]));
+  const lab=document.getElementById("labels");
+  LB.forEach(l=>{
+    const w=document.createElement("div");w.className="lw";
+    const h=l.t.length*28+12;
+    w.style.cssText=`left:${l.x-300}px;top:${l.y-h/2}px;height:${h}px`;
+    w.innerHTML=`<div class="pill ${l.k}" id="${l.id}">${l.t.map(s=>`<span>${s}</span>`).join("")}</div>`;
+    lab.appendChild(w);
+  });
+
+  const tl=gsap.timeline({paused:true});
+  const EO="power3.out",EZ="power2.inOut";
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Hoje, em sandbox: o Hub no centro, cada produto por contrato",
+    "<b>Previsto</b>o CRM aciona fluxos no Flow",
+    "<b>Previsto</b>conhecimento do KB dentro do fluxo",
+    "<b>Previsto</b>Studio global no Hub, lendo o Flow sem cópia",
+    "<b>Previsto</b>sessão delegada para assistentes; a pessoa decide",
+    "<b>Previsto</b>gatilhos por mudança de dado e por mensagem",
+    "<b>Previsto</b>Construtor no Hub e namespace de fluxo por produto",
+    "<b>Previsto</b>Ecossistema Monitoramento ligado ao CRM e ao Hub",
+    "Traço cheio: hoje, em sandbox · tracejado: Previsto"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.innerHTML=c;capBox.appendChild(d);});
+  // Beat starts: each state change is followed by at least 1.5 s of stillness
+  const T=[0.5,5.2,8.2,11.2,14.2,17.2,20.2,23.2,26.2];
+  caps.forEach((c,i)=>{
+    tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},T[i]);
+    if(i<caps.length-1) tl.to("#cap"+i,{opacity:0,duration:.3},T[i+1]-.3);
+  });
+
+  // Helpers
+  // An edge group stays hidden until its own draw starts (no shaft before its endpoints exist)
+  E.forEach(e=>tl.set("#g-"+e.id,{opacity:0},0));
+  const draw=(id,t,dur)=>{tl.set("#g-"+id,{opacity:1},t);tl.to("#mk-"+id,{attr:{"stroke-dashoffset":0},duration:dur||.9,ease:EZ},t);};
+  const pop=(id,t)=>tl.fromTo("#"+id,{opacity:0,scale:.85},{opacity:1,scale:1,duration:.35,ease:"back.out(2)",immediateRender:false},t);
+  const nodeIn=(id,t)=>tl.fromTo("#"+id,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},t);
+  const REAL=E.filter(e=>e.k!=="plan").map(e=>"#g-"+e.id).join(",");
+  const PART_L="#l12,#l13,#l14";
+  const NODE_IDS=["nKb","nCrm","nCh","nHub","nAi","nFlow","nSaas"];
+  const hi=(ids,t)=>ids.forEach(i=>tl.to("#"+i,{borderColor:"#FF452B",duration:.3},t));
+  const lo=(ids,t)=>ids.forEach(i=>tl.to("#"+i,{borderColor:"#3A3A42",duration:.3},t));
+  const planBeat=(edges,labels,nodesHi,t,prevPlan)=>{
+    // Earlier planned edges step back so the new one reads alone
+    if(prevPlan.length) tl.to(prevPlan.map(p=>"#g-"+p).join(","),{opacity:.4,duration:.3},t);
+    if(prevPlan.length) tl.to(prevPlan.map(p=>"#"+p).join(","),{opacity:.45,duration:.3},t);
+    hi(nodesHi,t);
+    edges.forEach((e,i)=>draw(e,t+.3+i*.15,.9));
+    labels.forEach((l,i)=>pop(l,t+1.05+i*.1));
+    lo(nodesHi,t+2.6);
+  };
+
+  // ABERTURA: o mapa real em traço cheio
+  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
+  tl.to("#dots",{opacity:1,duration:.6},.2);
+  tl.to("#legend",{opacity:1,duration:.5},.6);
+  ["nHub","nFlow","nSaas","nCh","nCrm","nKb","nAi"].forEach((n,i)=>nodeIn(n,.3+i*.12));
+  E.filter(e=>e.k==="real").forEach((e,i)=>draw(e.id,1.3+i*.12,.8));
+  E.filter(e=>e.k==="part").forEach((e,i)=>draw(e.id,2.6+i*.12,.6));
+  ["l12","l13","l14"].forEach((l,i)=>pop(l,3.1+i*.1));
+
+  // Real map steps back while the planned layer is built
+  tl.to(REAL,{opacity:.35,duration:.4},5.2);
+  tl.to(PART_L,{opacity:.5,duration:.4},5.2);
+
+  // B1 CRM aciona fluxos (P1)
+  planBeat(["p1"],["lp1"],["nCrm","nFlow"],T[1],[]);
+  // B2 conhecimento dentro do fluxo (P2, sobre o parcial R13)
+  planBeat(["p2"],["lp2"],["nKb","nFlow"],T[2],["p1","lp1"]);
+  // B3 Studio global no Hub (P3)
+  planBeat(["p3"],["lp3"],["nHub","nFlow"],T[3],["p2","lp2"]);
+  // B4 sessão delegada para assistentes (P4: Hub e Flow)
+  planBeat(["p4a","p4b"],["lp4"],["nHub","nFlow","nAi"],T[4],["p3","lp3"]);
+  // B5 gatilhos por dado e mensagem (P7)
+  planBeat(["p7"],["lp7"],["nSaas","nFlow"],T[5],["p4a","p4b","lp4"]);
+  // B6 Construtor no Hub (P5) e namespace por produto (P6)
+  planBeat([],["lp5"],["nHub","nSaas"],T[6],["p7","lp7"]);
+  tl.fromTo("#halo",{opacity:0,scale:.96},{opacity:1,scale:1,duration:.6,ease:EO,immediateRender:false},T[6]+.3);
+  tl.fromTo("#chipNs",{opacity:0,y:8},{opacity:1,y:0,duration:.35,ease:EO,immediateRender:false},T[6]+.8);
+  // B7 Ecossistema Monitoramento ligado ao CRM e ao Hub (P8)
+  tl.to("#halo,#chipNs,#lp5",{opacity:.45,duration:.3},T[7]);
+  tl.fromTo("#nMon",{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},T[7]+.2);
+  planBeat(["p8a","p8b"],[],["nCrm","nHub"],T[7],[]);
+
+  // FECHO: o mapa inteiro, cheio = hoje, tracejado = Previsto
+  const ALLPLAN=E.filter(e=>e.k==="plan").map(e=>"#g-"+e.id).join(",");
+  tl.to(REAL,{opacity:1,duration:.6},T[8]);
+  tl.to(ALLPLAN,{opacity:1,duration:.6},T[8]);
+  tl.to(PART_L+",#lp1,#lp2,#lp3,#lp4,#lp7,#lp5,#halo,#chipNs",{opacity:1,duration:.6},T[8]);
+  tl.fromTo("#legend",{scale:1},{scale:1.04,duration:.4,ease:EO,yoyo:true,repeat:1,immediateRender:false},T[8]+.2);
+  tl.to("#pad",{opacity:.001,duration:1},29);
+
+  // The site Player may load the page before the runtime creates the registry
+  window.__timelines=window.__timelines||{};
+  window.__timelines["welabs-chain-horizon"]=tl;
+})();
+</script>
+</body>
+</html>

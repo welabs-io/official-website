@@ -624,7 +624,7 @@
     }
   },
   "sgors": {
-    "logo": "/product-brands/sgors-wordmark.svg",
+    "logo": "/product-brands/residuos-wordmark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -884,7 +884,7 @@
     }
   },
   "erp": {
-    "logo": "/presentations/erp/1.0.0/assets/logo.png",
+    "logo": "/company-brands/welabs-logo.png",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -936,7 +936,7 @@
     }
   },
   "flow": {
-    "logo": "/presentations/flow/1.0.0/assets/logo.png",
+    "logo": "/company-brands/welabs-logo.png",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -988,7 +988,7 @@
     }
   },
   "wekb": {
-    "logo": "/presentations/wekb/1.0.0/assets/logo.png",
+    "logo": "/company-brands/welabs-logo.png",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -1040,7 +1040,7 @@
     }
   },
   "welabs-crm": {
-    "logo": "/presentations/welabs-crm/1.0.0/assets/logo.png",
+    "logo": "/company-brands/welabs-logo.png",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
