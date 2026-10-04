@@ -169,58 +169,6 @@
     "presentationSlug": "signgo"
   },
   {
-    "id": "svc-integration",
-    "title": "Integração e automação",
-    "duration": 24,
-    "compositionId": "svc-integration",
-    "src": "/motion/svc-integration/index.html",
-    "kind": "topology",
-    "page": "servicos",
-    "product": null,
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "svc-applied-ai",
-    "title": "IA aplicada",
-    "duration": 23,
-    "compositionId": "svc-applied-ai",
-    "src": "/motion/svc-applied-ai/index.html",
-    "kind": "topology",
-    "page": "servicos",
-    "product": null,
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "svc-custom-software",
-    "title": "Como trabalhamos",
-    "duration": 24,
-    "compositionId": "svc-custom-software",
-    "src": "/motion/svc-custom-software/index.html",
-    "kind": "topology",
-    "page": "servicos",
-    "product": null,
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "svc-platform-cloud",
-    "title": "Infraestrutura e cloud",
-    "duration": 24,
-    "compositionId": "svc-platform-cloud",
-    "src": "/motion/svc-platform-cloud/index.html",
-    "kind": "topology",
-    "page": "servicos",
-    "product": null,
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
     "id": "welabs-chain-overview",
     "title": "Plataforma Welabs · Mapa de integração",
     "duration": 34,
@@ -230,7 +178,9 @@
     "page": "welabs",
     "product": null,
     "reel": false,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {
@@ -243,7 +193,9 @@
     "page": "welabs",
     "product": null,
     "reel": false,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {
@@ -256,7 +208,9 @@
     "page": "welabs",
     "product": null,
     "reel": false,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {
@@ -269,7 +223,9 @@
     "page": "welabs",
     "product": null,
     "reel": false,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {
@@ -559,7 +515,9 @@
     "page": null,
     "product": "flow",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "flow"
   },
   {
@@ -572,7 +530,9 @@
     "page": null,
     "product": "flow",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "flow"
   },
   {
@@ -585,7 +545,9 @@
     "page": null,
     "product": "flow",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "flow"
   },
   {
@@ -598,7 +560,9 @@
     "page": null,
     "product": "flow",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "flow"
   },
   {
@@ -663,7 +627,9 @@
     "page": null,
     "product": "erp",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "erp"
   },
   {
@@ -676,7 +642,9 @@
     "page": null,
     "product": "erp",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "erp"
   },
   {
@@ -689,7 +657,9 @@
     "page": null,
     "product": "erp",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "erp"
   },
   {
@@ -702,7 +672,9 @@
     "page": null,
     "product": "wekb",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "wekb"
   },
   {
@@ -715,7 +687,9 @@
     "page": null,
     "product": "wekb",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "wekb"
   },
   {
@@ -728,7 +702,9 @@
     "page": null,
     "product": "wekb",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": "wekb"
   },
   {
@@ -741,7 +717,9 @@
     "page": null,
     "product": "channels",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {
@@ -754,7 +732,9 @@
     "page": null,
     "product": "channels",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {
@@ -767,7 +747,9 @@
     "page": null,
     "product": "channels",
     "reel": true,
-    "also": [],
+    "also": [
+      "servicos"
+    ],
     "presentationSlug": null
   },
   {

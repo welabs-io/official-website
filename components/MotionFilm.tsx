@@ -44,8 +44,9 @@ export function coverFilm(product: string): MotionItem | undefined {
   return motionCatalog.find((item) => (item.product === product || (item.also as string[]).includes(product)) && (item.kind === 'business' || item.kind === 'topology'));
 }
 
+// A film belongs to its own page and to any page listed in `also` (know-how reuses Welabs films).
 export function filmsForPage(page: string): MotionItem[] {
-  return motionCatalog.filter((item) => item.page === page);
+  return motionCatalog.filter((item) => item.page === page || (item.also as string[]).includes(page));
 }
 
 export function filmsByKind(kind: Kind): MotionItem[] {
