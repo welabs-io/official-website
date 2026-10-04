@@ -2,3 +2,21 @@
 @media(max-width:700px){.topbar{padding:18px}.stage{padding:10px}.frame img{max-height:none}.zoomHint{right:8px;bottom:8px;padding:7px 10px;font-size:10px}.sceneContent{padding:22px 18px}.sceneContent p{font-size:15px}.toolbar{padding:18px;align-items:flex-start;flex-wrap:wrap}.primary{width:100%;justify-content:space-between}.navigation{margin-left:auto}.scenePicker{grid-template-columns:1fr;padding:0 18px 18px}.scenePicker button{min-height:52px;justify-content:flex-start}.scenePicker button>span:last-child{margin-left:auto}.reading{padding:18px}.reading li{grid-template-columns:1fr;gap:18px}.stage iframe{height:640px}.dialog{padding:12px;max-height:95vh}.dialogTop{font-size:12px;align-items:flex-start}.dialog img{max-height:75vh}}@media(prefers-reduced-motion:reduce){.presentation *, .dialog *{scroll-behavior:auto}}
 
 .presentation:focus-visible{outline:2px solid var(--accent);outline-offset:5px}.returnGallery{font:inherit;font-size:13px;border:1px solid #6b8292;background:transparent;color:#c2d3dc;border-radius:24px;padding:12px 20px;cursor:pointer}
+
+/* ALINHAMENTO AO SISTEMA FIO CONDUTOR */
+/* Hairlines, small radii and neutral controls; the brand accent is kept for focus and selection only. */
+.presentation{position:relative;z-index:1;border-color:var(--line);border-radius:var(--radius);background:var(--ink-2);box-shadow:none}
+.topbar,.sceneContent,.reading{border-color:var(--line)}
+.label{font-family:var(--font-mono);font-weight:500;letter-spacing:.08em;color:var(--text-3)}
+.topbar p{font-size:16px}
+.counter{font-family:var(--font-mono);font-size:16px;letter-spacing:0}
+.stage{background:#e9ecea}
+.frame,.stage iframe{border-radius:2px}
+.zoomHint{border-radius:2px;font-family:var(--font-mono);font-size:10px}
+.sceneContent h3{font-size:var(--fs-h2);letter-spacing:-.02em}
+.primary{border-radius:2px;background:var(--text);border-color:var(--text);color:var(--ink);font-weight:500;gap:16px;transition:background .4s var(--ease),border-color .4s var(--ease),color .4s var(--ease)}
+.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.navigation button{border-radius:2px;border-color:var(--line-2)}
+.scenePicker button{border-radius:2px;border-color:var(--line)}
+.scenePicker button[aria-pressed=true]{background:var(--text);border-color:var(--text);color:var(--ink)}
+.returnGallery{border-radius:2px;border-color:var(--line-2)}

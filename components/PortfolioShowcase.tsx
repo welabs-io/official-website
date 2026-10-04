@@ -61,7 +61,9 @@ function stage(item: Item, en: boolean) {
   return en ? 'Concept presentation' : 'Apresentação conceitual';
 }
 
-export function ProductCard({item, locale, featured = false}: {item: Item; locale: Locale; featured?: boolean}) {
+// CARTÃO DE PRODUTO
+// `threadTo` makes the card the end of a thread drawn from content that mentions the product.
+export function ProductCard({item, locale, featured = false, threadTo}: {item: Item; locale: Locale; featured?: boolean; threadTo?: string}) {
   const en = locale === 'en';
   const copy = item.locales[locale];
   const visual = (visuals as Record<string, (typeof visuals)[keyof typeof visuals]>)[item.id];
@@ -72,7 +74,7 @@ export function ProductCard({item, locale, featured = false}: {item: Item; local
   const sector = categories[item.id];
   const support = item.publisher === 'Welabs' ? 'welabs' : sector ?? 'public';
   const vars = {'--cover-accent': item.brand.palette.accent} as CSSProperties;
-  return <article className={`${styles.card} ${featured ? styles.featured : ''}`} data-product={item.id} style={vars}>
+  return <article className={`${styles.card} ${featured ? styles.featured : ''}`} data-product={item.id} data-thread-to={threadTo} data-reveal="" style={vars}>
     <Link href={productHref(item)} className={styles.cardLink}>
       <div className={`${styles.cover} ${styles[support]} ${styles[direction.composition]}`}>
         <div className={styles.coverTop}>

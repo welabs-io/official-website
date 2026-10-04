@@ -1,4 +1,3 @@
-import type {CSSProperties} from 'react';
 import Link from './LangLink';
 import catalog from '@/lib/presentation-catalog.json';
 import visuals from '@/lib/presentation-visuals.json';
@@ -61,7 +60,8 @@ function Logo({id}: {id: ProductId}) {
 function ImagineProducts({locale}: {locale: Locale}) {
   const t = words[locale];
   return <div className={styles.imagineProducts}>
-    <Link href="/portfolio/tabela" className={`${styles.product} ${styles.tableProduct}`}>
+    {/* Hero graph: the CTA links to Tabe.la, which fans out to the other two; Tabe.la also threads to its card below */}
+    <Link href="/portfolio/tabela" className={`${styles.product} ${styles.tableProduct}`} data-hero-node="tabela" data-hero-links="stant sgors" data-thread="tabela">
       <div className={styles.productTop}><Logo id="tabela"/><Arrow/></div>
       <div className={styles.productTitle}><strong>Tabe.la</strong><span>{t.table}</span></div>
       <div className={styles.unitMatrix} aria-hidden="true">{['A', 'B', 'C', 'D', 'E', 'F'].map((letter, i) =>
@@ -69,7 +69,7 @@ function ImagineProducts({locale}: {locale: Locale}) {
       )}</div>
       <div className={styles.productBottom}><span>{t.concept}</span><span aria-hidden="true">DEMO</span></div>
     </Link>
-    <Link href="/portfolio/stant" className={`${styles.product} ${styles.siteProduct}`}>
+    <Link href="/portfolio/stant" className={`${styles.product} ${styles.siteProduct}`} data-hero-node="stant">
       <div className={styles.productTop}><Logo id="stant"/><Arrow/></div>
       <div className={styles.productTitle}><strong>Stant</strong><span>{t.site}</span></div>
       <div className={styles.siteDiagram} aria-hidden="true"><span>{t.demo}</span><div className={styles.taskRows}>
@@ -78,7 +78,7 @@ function ImagineProducts({locale}: {locale: Locale}) {
       <div className={styles.productBottom}><span>{t.concept}</span><span aria-hidden="true">DEMO</span></div>
     </Link>
     {/* Recycling is presented inside the waste management system; Light stays a client (decision of 2026-10-02) */}
-    <Link href={`/portfolio/${publicSlug('sgors')}`} className={`${styles.product} ${styles.recycleProduct}`}>
+    <Link href={`/portfolio/${publicSlug('sgors')}`} className={`${styles.product} ${styles.recycleProduct}`} data-hero-node="sgors">
       <div className={styles.productTop}><Logo id="sgors"/><Arrow/></div>
       <div className={styles.productTitle}><strong>{catalog.find(item => item.id === 'sgors')!.productName}</strong><span>{t.recycling}</span></div>
       <div className={styles.materials} aria-hidden="true">{t.materials.map((material, i) => <div key={material}>
@@ -94,7 +94,8 @@ function WelabsProducts({locale}: {locale: Locale}) {
   const t = words[locale];
   const products = ['erp', 'wekb', 'welabs-crm', 'malupe'] as const;
   return <div className={styles.welabsProducts}>
-    <Link href="/welabs/produtos/flow" className={`${styles.product} ${styles.flowProduct}`}>
+    {/* Hero graph: Flow orchestrates the other products, so it links to each of them */}
+    <Link href="/welabs/produtos/flow" className={`${styles.product} ${styles.flowProduct}`} data-thread="flow" data-hero-node="flow" data-hero-links={products.join(' ')}>
       <div className={styles.productTop}><span className={styles.flowMark} aria-hidden="true"><svg viewBox="0 0 36 36" fill="none"><path d="M6 10h18m-5-5 5 5-5 5M30 26H12m5-5-5 5 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span><span className={styles.stage}>{t.development}</span><Arrow/></div>
       <div className={styles.productTitle}><strong>Flow</strong><span>{t.flow}</span></div>
       <div className={styles.flowBoard} aria-hidden="true">{[t.intake, t.work, t.review].map((stage, i) => <div key={stage}>
@@ -103,7 +104,7 @@ function WelabsProducts({locale}: {locale: Locale}) {
     </Link>
     {products.map(id => {
       const product = catalog.find(item => item.id === id)!;
-      return <Link key={id} href={`/welabs/produtos/${publicSlug(id)}`} className={`${styles.product} ${styles.ecosystemProduct}`}>
+      return <Link key={id} href={`/welabs/produtos/${publicSlug(id)}`} className={`${styles.product} ${styles.ecosystemProduct}`} data-hero-node={id}>
         <div className={styles.productTop}><span className={styles.purpose}>{t.purposes[id]}</span><Arrow/></div>
         <div className={styles.productTitle}><strong>{product.productName}</strong></div>
         <div className={`${styles.motif} ${styles[id === 'erp' ? 'managementMotif' : id === 'wekb' ? 'knowledgeMotif' : id === 'welabs-crm' ? 'relationshipMotif' : 'eventMotif']}`} aria-hidden="true"><i/><i/><i/><i/></div>
@@ -113,26 +114,33 @@ function WelabsProducts({locale}: {locale: Locale}) {
   </div>;
 }
 
+// ABERTURA DAS HOMES
+// Signature moment: the title rises line by line, the product cards settle, then a thread leaves
+// the title and draws the product graph (Imagine: Tabe.la → Stant, waste system; Welabs:
+// Flow → every product). The heading also starts the page spine drawn by MotionLayer.
 export function CompanyHero({publisher, locale}: {publisher: Publisher; locale: Locale}) {
   const we = publisher === 'Welabs';
   const t = words[locale];
   const title = we ? t.welabsTitle : t.imagineTitle;
-  return <section className={`${styles.hero} ${we ? styles.welabs : ''}`} style={{'--hero-accent': we ? '#ff6954' : '#46bdf0'} as CSSProperties}>
+  const first = we ? 'flow' : 'tabela';
+  return <section className={`${styles.hero} ${we ? styles.welabs : ''}`}>
+    <div className={styles.field} data-depth="0.08" aria-hidden="true"/>
     <div className={styles.layout}>
       <div className={styles.copy}>
         <img className={`${styles.companyLogo} ${we ? styles.welabsLogo : ''}`} src={we ? '/company-brands/welabs-logo.png' : '/imagine-logo.svg'} alt={publisher} width={we ? 168 : 152} height={we ? 47 : 44}/>
         <p className={styles.eyebrow}>{we ? t.welabsLabel : t.imagineLabel}</p>
-        <h1>{title[0]}<br/><span>{title[1]}</span></h1>
+        {/* The title is the origin of the hero graph: the thread crosses the empty gutter, never the copy */}
+        <h1 data-hero-node="title" data-hero-links={first}><span className={styles.line}><span>{title[0]}</span></span> <span className={`${styles.line} ${styles.muted}`}><span>{title[1]}</span></span></h1>
         <p className={styles.description}>{we ? t.welabsCopy : t.imagineCopy}</p>
         <div className={styles.actions}>
-          <Link className={styles.primary} href={we ? '/welabs/produtos' : '/portfolio'}>{we ? t.welabsCta : t.imagineCta}<Arrow/></Link>
+          <Link className={styles.primary} href={we ? '/welabs/produtos' : '/portfolio'} data-magnetic="">{we ? t.welabsCta : t.imagineCta}<Arrow/></Link>
           <Link className={styles.secondary} href={we ? '/welabs/sobre' : '/servicos'}>{we ? t.welabsSecondary : t.imagineSecondary}<Arrow/></Link>
         </div>
       </div>
       <figure className={styles.exhibit} aria-label={t.illustration}>
         <div className={styles.exhibitHeading}><span><i aria-hidden="true"/>{we ? t.ecosystem : t.selection}</span><span aria-hidden="true">{we ? 'W / 05' : 'I / 03'}</span></div>
         {we ? <WelabsProducts locale={locale}/> : <ImagineProducts locale={locale}/>}
-        <figcaption className={styles.disclaimer}><span aria-hidden="true">◇</span>{t.disclaimer}</figcaption>
+        <figcaption className={styles.disclaimer}>{t.disclaimer}</figcaption>
       </figure>
     </div>
   </section>;

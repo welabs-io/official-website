@@ -80,12 +80,15 @@ export function MotionFilm({item, title, label}: {item: MotionItem; title?: stri
   return (
     <figure className={styles.film} aria-label={title ?? item.title}>
       {label && <span className={styles.label}>{label}</span>}
+      {/* The frame opens with a mask reveal when it enters the viewport (MotionLayer) */}
+      <div className={styles.frame} data-reveal="mask">
       {failed ? <p className={styles.fallback}>Não foi possível carregar o filme.</p>
         : ready ? <div className={styles.stage}>
           {createElement('hyperframes-player', {key: item.id, ref: player, src: item.src, width: 1920, height: 1080, controls: true, class: styles.player})}
-          {paused && <button type="button" className={styles.bigPlay} onClick={start} aria-label={`Reproduzir ${title ?? item.title}`}><span aria-hidden="true"/></button>}
+          {paused && <button type="button" className={styles.bigPlay} onClick={start} aria-label={`Reproduzir ${title ?? item.title}`} data-magnetic=""><span aria-hidden="true"/></button>}
         </div>
         : <div className={styles.player} aria-busy="true"/>}
+      </div>
       <figcaption className={styles.caption}><span>{title ?? item.title}</span><span>{Math.round(item.duration)} s · dados DEMO</span></figcaption>
     </figure>
   );
@@ -96,13 +99,14 @@ export function MotionGallery({items = motionCatalog, label}: {items?: MotionIte
   const item = items.find((film) => film.id === active) ?? items[0];
   if (!item) return null;
   return (
-    <div className={styles.gallery}>
+    // A multi-film gallery reads as film + chapter index side by side on wide screens.
+    <div className={`${styles.gallery} ${items.length > 1 ? styles.withIndex : ''}`}>
       <MotionFilm item={item} label={label}/>
       {items.length > 1 && <ul className={styles.list} aria-label={label ?? 'Filmes'}>
-        {items.map((film) => (
+        {items.map((film, index) => (
           <li key={film.id}>
             <button type="button" aria-pressed={film.id === item.id} onClick={() => setActive(film.id)}>
-              <strong>{film.title}</strong><span>{Math.round(film.duration)} s</span>
+              <em aria-hidden="true">{String(index + 1).padStart(2, '0')}</em><strong>{film.title}</strong><span>{Math.round(film.duration)} s</span>
             </button>
           </li>
         ))}
