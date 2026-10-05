@@ -309,10 +309,12 @@ export function CompanyHero({
         <div className={styles.copy}>
           <img
             className={`${styles.companyLogo} ${we ? styles.welabsLogo : ""}`}
-            src={we ? "/company-brands/welabs-logo.png" : "/imagine-logo.svg"}
+            src={
+              we ? "/brands/welabs/welabs-logo-dark.svg" : "/imagine-logo.svg"
+            }
             alt={publisher}
-            width={we ? 168 : 152}
-            height={we ? 47 : 44}
+            width={we ? 153 : 152}
+            height={we ? 36 : 44}
           />
           <p className={styles.eyebrow}>
             {we ? t.welabsLabel : t.imagineLabel}

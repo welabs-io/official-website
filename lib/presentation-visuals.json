@@ -884,7 +884,7 @@
     }
   },
   "erp": {
-    "logo": "/company-brands/welabs-logo.png",
+    "logo": "/brands/welabs/welabs-logo-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -936,7 +936,7 @@
     }
   },
   "flow": {
-    "logo": "/company-brands/welabs-logo.png",
+    "logo": "/brands/welabs/welabs-logo-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -988,7 +988,7 @@
     }
   },
   "wekb": {
-    "logo": "/company-brands/welabs-logo.png",
+    "logo": "/brands/welabs/welabs-logo-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -1040,7 +1040,7 @@
     }
   },
   "welabs-crm": {
-    "logo": "/company-brands/welabs-logo.png",
+    "logo": "/brands/welabs/welabs-logo-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -1092,7 +1092,7 @@
     }
   },
   "malupe": {
-    "logo": "/company-brands/welabs-logo.png",
+    "logo": "/brands/welabs/welabs-logo-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [

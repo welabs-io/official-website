@@ -705,7 +705,7 @@
       "palette": {
         "surface": "#10141C",
         "ink": "#FFFFFF",
-        "accent": "#FF452B"
+        "accent": "#FFB020"
       },
       "typography": {
         "family": "system-ui"
@@ -746,7 +746,7 @@
       "palette": {
         "surface": "#10141C",
         "ink": "#FFFFFF",
-        "accent": "#FF452B"
+        "accent": "#FFB020"
       },
       "typography": {
         "family": "system-ui"
@@ -787,7 +787,7 @@
       "palette": {
         "surface": "#10141C",
         "ink": "#FFFFFF",
-        "accent": "#FF452B"
+        "accent": "#FFB020"
       },
       "typography": {
         "family": "system-ui"
@@ -828,7 +828,7 @@
       "palette": {
         "surface": "#10141C",
         "ink": "#FFFFFF",
-        "accent": "#FF452B"
+        "accent": "#FFB020"
       },
       "typography": {
         "family": "system-ui"
@@ -869,7 +869,7 @@
       "palette": {
         "surface": "#10141C",
         "ink": "#FFFFFF",
-        "accent": "#FF452B"
+        "accent": "#FFB020"
       },
       "typography": {
         "family": "system-ui"
