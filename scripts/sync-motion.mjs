@@ -115,7 +115,8 @@ const ROUND2 = {
   "welabs-chain-overview": {
     kind: "topology",
     page: "welabs",
-    title: "Plataforma Welabs · Mapa de integração",
+    // Retitled on 2026-10-05: the playful cut shows the products fitting together, not an integration map
+    title: "Plataforma Welabs · Os produtos se encaixam",
     ...KNOWHOW,
   },
   "welabs-chain-journey": {
@@ -133,8 +134,9 @@ const ROUND2 = {
   "welabs-chain-horizon": {
     kind: "topology",
     page: "welabs",
-    // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap
-    title: "Plataforma Welabs · Conjunto",
+    // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap;
+    // the playful cut of the same day shows them as bridges between islands
+    title: "Plataforma Welabs · Pontes",
     ...KNOWHOW,
   },
   "tabela-intro": reel("tabela", "Tabe.la · Introdução de marca", "intro"),

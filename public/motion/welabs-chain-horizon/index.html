@@ -3,223 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Cadeia Welabs · o conjunto</title>
+<title>Plataforma · Pontes</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA MARCA */
+/* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--real:#A3A8B3}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
-p{white-space:nowrap}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
-/* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
-#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
-#title span{color:var(--coral)}
-#caps{position:absolute;left:290px;top:24px;width:1020px;height:56px}
-.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
-.cap b{color:var(--coral);font-weight:800;margin-right:10px}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+/* MAR, PONTES E VIAJANTE */
+#sea{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#sea path{fill:none;stroke:#23232B;stroke-width:4;stroke-linecap:round}
+#br{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#br .deck{fill:none;stroke:#3A1A14;stroke-width:26;stroke-linecap:round;opacity:0}
+#br .rope{fill:none;stroke:var(--coral);stroke-width:10;stroke-linecap:round;opacity:0}
+#br .walker{fill:#fff;opacity:0;filter:drop-shadow(0 0 10px rgba(255,69,43,.95))}
 
-/* QUADRO DA CADEIA */
-#board{position:absolute;left:0;top:0;width:1920px;height:1080px}
-#dots{position:absolute;left:40px;top:116px;width:1840px;height:870px;border-radius:22px;background-image:radial-gradient(circle,#26262E 2.4px,transparent 3px);background-size:32px 32px;opacity:0}
-#edges{position:absolute;left:0;top:0;overflow:visible}
-.e{fill:none;stroke-width:4;stroke-linecap:round}
-.e.real{stroke:var(--real)}
+/* ILHAS (PRODUTOS) E PLACAS DAS PONTES */
+.isl{position:absolute;width:320px;height:100px;margin-left:-160px;margin-top:-50px;border-radius:50px;background:var(--panel);border:3px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 26px;font-size:32px;font-weight:800;white-space:nowrap;box-shadow:0 14px 0 #121216,0 22px 40px rgba(0,0,0,.5);opacity:0}
+.isl .ic{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral);flex:none}
+#iApp{width:420px;margin-left:-210px}
+#iHub{width:380px;margin-left:-190px}
+.sign{position:absolute;height:48px;padding:0 18px;border-radius:12px;background:#F4EFE4;color:#1E1B14;font-size:24px;font-weight:800;line-height:48px;white-space:nowrap;transform:translate(-50%,-50%);box-shadow:0 6px 0 #B8AE98;opacity:0}
 
-/* NÓS DOS PRODUTOS (MESMA GRAMÁTICA DAS PEÇAS ISOLADAS) */
-.nd{position:absolute;border:3px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 6px 18px rgba(0,0,0,.45);opacity:0}
-.nh{display:flex;align-items:center;gap:14px;padding:14px 18px 0}
-.ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
-.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
-.nm{font-size:30px;font-weight:800;line-height:36px;white-space:nowrap}
-.sub{position:absolute;left:20px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
-
-/* RÓTULOS DAS ARESTAS (UM POR BATIDA, O BENEFÍCIO DA LIGAÇÃO) */
-.lw{position:absolute;width:600px;display:flex;justify-content:center}
-.pill span{display:block;text-align:center}
-.pill{padding:4px 14px;border-radius:14px;font-size:24px;line-height:28px;font-weight:800;white-space:nowrap;background:var(--bg);opacity:0}
-.pill.gain{border:2px solid var(--coral);color:#FFFFFF;background:#160E0D}
-#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="welabs-chain-horizon" data-width="1920" data-height="1080" data-start="0" data-duration="30">
+<div id="root" data-composition-id="welabs-chain-horizon" data-width="1920" data-height="1080" data-start="0" data-duration="36">
   <div id="hd">
-    <div id="title">Conjunto<span>.</span></div>
-    <div id="caps"></div>
-    <div id="sbx">sandbox · dados DEMO</div>
+    <div id="wm">Plataforma<span>.</span></div>
+    <div id="kick">Some o trabalho de ponte</div>
+    <div id="demo">DEMO</div>
     <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <div id="board">
-    <div id="dots"></div>
-    <svg id="edges" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
-    <div id="nodes"></div>
-    <div id="labels"></div>
-  </div>
+  <svg id="sea" viewBox="0 0 1920 1080">
+    <path d="M120 180 q20 -12 40 0 t40 0"/><path d="M980 170 q20 -12 40 0 t40 0"/><path d="M1680 220 q20 -12 40 0 t40 0"/>
+    <path d="M560 860 q20 -12 40 0 t40 0"/><path d="M1080 640 q20 -12 40 0 t40 0"/><path d="M1240 820 q20 -12 40 0 t40 0"/>
+    <path d="M110 620 q20 -12 40 0 t40 0"/><path d="M1780 640 q20 -12 40 0 t40 0"/>
+  </svg>
 
-  <div id="pad"></div>
+  <svg id="br" viewBox="0 0 1920 1080">
+    <path class="deck" id="d0" d="M330 280 L760 520"/><path class="rope" id="b0" d="M330 280 L760 520"/>
+    <path class="deck" id="d1" d="M760 520 L330 760"/><path class="rope" id="b1" d="M760 520 L330 760"/>
+    <path class="deck" id="d2" d="M330 280 L330 760"/><path class="rope" id="b2" d="M330 280 L330 760"/>
+    <path class="deck" id="d3" d="M760 520 L1200 260"/><path class="rope" id="b3" d="M760 520 L1200 260"/>
+    <path class="deck" id="d4" d="M1200 260 L330 280"/><path class="rope" id="b4" d="M1200 260 L330 280"/>
+    <path class="deck" id="d5" d="M1600 790 L1600 470"/><path class="rope" id="b5" d="M1600 790 L1600 470"/>
+    <path class="deck" id="d6" d="M1600 470 L1200 260"/><path class="rope" id="b6" d="M1600 470 L1200 260"/>
+    <circle class="walker" id="wk" cx="0" cy="0" r="14"/>
+  </svg>
+
+  <div class="isl" id="iCh" style="left:330px;top:280px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>Channels</div>
+  <div class="isl" id="iKB" style="left:330px;top:760px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div>KB</div>
+  <div class="isl" id="iCRM" style="left:760px;top:520px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>CRM</div>
+  <div class="isl" id="iApp" style="left:1200px;top:260px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 9h18" stroke="currentColor" stroke-width="2.2"/></svg></div>SaaS · app · portal</div>
+  <div class="isl" id="iFlow" style="left:1600px;top:470px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div>Flow</div>
+  <div class="isl" id="iHub" style="left:1600px;top:790px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Hub de domínio</div>
+
+  <div class="sign" id="g0" style="left:545px;top:395px">conversa com histórico</div>
+  <div class="sign" id="g1" style="left:545px;top:645px">resposta com base</div>
+  <div class="sign" id="g2" style="left:330px;top:520px">base certa no canal</div>
+  <div class="sign" id="g3" style="left:980px;top:395px">resolve dentro do app</div>
+  <div class="sign" id="g4" style="left:765px;top:268px">pergunta sem dado exposto</div>
+  <div class="sign" id="g5" style="left:1600px;top:630px">regra vira processo</div>
+  <div class="sign" id="g6" style="left:1400px;top:365px">resultado chega ao app</div>
+
+  <div class="cap" id="c1">Cada produto, <span>uma ilha</span></div>
+  <div class="sub" id="s1">e alguém atravessando a nado entre elas</div>
+  <div class="cap" id="k0">Some a conversa <span>sem histórico</span></div>
+  <div class="sub" id="u0">o que chega pelo Channels vira relacionamento no CRM</div>
+  <div class="cap" id="k1">Some a resposta <span>de memória</span></div>
+  <div class="sub" id="u1">o mesmo KB atende o CRM e o Channels</div>
+  <div class="cap" id="k2">Some o <span>“vou verificar e retorno”</span></div>
+  <div class="sub" id="u2">o atendimento resolve dentro do app</div>
+  <div class="cap" id="k3">Some o <span>dado pessoal à mostra</span></div>
+  <div class="sub" id="u3">a pergunta sai do app já protegida</div>
+  <div class="cap" id="k4">Some a regra <span>que só existe no papel</span></div>
+  <div class="sub" id="u4">a regra do Hub de domínio vira processo andando</div>
+  <div class="cap" id="k5">Some a <span>baixa feita à mão</span></div>
+  <div class="sub" id="u5">o que o Flow resolve chega direto ao app</div>
+  <div class="cap" id="c8">A soma faz <span>o que nenhum faz sozinho</span></div>
+  <div class="sub" id="s8">cada ponte é um trabalho que ninguém mais faz na mão</div>
+
+  <div id="close">
+    <div class="l1">Juntos, os produtos fazem<br><span>o que nenhum faz sozinho.</span></div>
+    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
-(function(){
-  // ÍCONES
-  const IC={
-    hub:'<circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/><path d="m6 6.5 3.7 3.7M18 6.5l-3.7 3.7M6 17.5l3.7-3.7M18 17.5l-3.7-3.7"/>',
-    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
-    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
-    inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
-    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
-    spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/>',
-    app:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/>',
-    cam:'<path d="M3 7h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3z"/><path d="m16 11 5-3v8l-5-3"/><circle cx="8" cy="12" r="2"/>'
-  };
-  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 36;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  // Bridge i gets drawn while the walker crosses it; both ends light up when it lands
+  var P = { iCh: [330, 280], iKB: [330, 760], iCRM: [760, 520], iApp: [1200, 260], iFlow: [1600, 470], iHub: [1600, 790] };
+  function bridge(i, a, b, t) {
+    var rope = document.getElementById('b' + i), L = rope.getTotalLength();
+    // Hidden by CSS until its beat; the dash setup happens at the beat itself
+    tl.set(rope, { strokeDasharray: L + ' ' + L, strokeDashoffset: L, opacity: 1 }, t);
+    tl.to(rope, { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' }, t);
+    tl.set(rope, { strokeDasharray: '18 12', strokeDashoffset: 0 }, t + 0.8);
+    tl.to('#d' + i, { opacity: 1, duration: 0.3 }, t + 0.6);
+    tl.set('#wk', { attr: { cx: P[a][0], cy: P[a][1] }, opacity: 1 }, t);
+    tl.to('#wk', { attr: { cx: P[b][0], cy: P[b][1] }, duration: 0.8, ease: 'power1.inOut' }, t);
+    tl.set('#wk', { opacity: 0 }, t + 0.8);
+    [a, b].forEach(function (id) {
+      tl.to('#' + id, { opacity: 1, borderColor: '#FF452B', duration: 0.25 }, t + 0.8);
+      tl.fromTo('#' + id, { y: 0 }, { y: -12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, t + 0.8);
+    });
+    inn('#g' + i, t + 0.9, { scale: 0.6 }, 0.35);
+  }
 
-  // NÓS: posição, cor e texto (produtos pelo tipo; o centro é o Hub de domínio)
-  const N={
-    kb:{x:100,y:150,w:380,h:110,acc:"var(--violet)",ic:"book",kd:"Conhecimento",nm:"KB"},
-    crm:{x:100,y:486,w:380,h:110,acc:"var(--ok)",ic:"inbox",kd:"Atendimento",nm:"CRM"},
-    ch:{x:100,y:822,w:380,h:110,acc:"var(--teal)",ic:"chat",kd:"Conversa",nm:"Channels"},
-    hub:{x:680,y:450,w:420,h:180,acc:"var(--coral)",ic:"hub",kd:"Domínio e integração",nm:"Hub de domínio",
-      sub:["cadastros · regras · contratos","fiscal · financeiro · integrações"]},
-    ai:{x:1380,y:150,w:440,h:110,acc:"var(--pink)",ic:"spark",kd:"IA nos produtos",nm:"Assistentes"},
-    flow:{x:1380,y:486,w:440,h:110,acc:"var(--blue)",ic:"flow",kd:"Motor de fluxos",nm:"Flow"},
-    saas:{x:1380,y:822,w:440,h:150,acc:"var(--muted)",ic:"app",kd:"Produto plugado",nm:"SaaS · app · portal"}
-  };
-  const nodes=document.getElementById("nodes");
-  Object.entries(N).forEach(([k,n])=>{
-    const d=document.createElement("div");
-    d.className="nd";d.id="n"+k[0].toUpperCase()+k.slice(1);
-    d.style.cssText=`left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px;--acc:${n.acc}`;
-    d.innerHTML=`<div class="nh"><span class="ic">${ico(n.ic,30)}</span><div><p class="kd">${n.kd}</p><p class="nm">${n.nm}</p></div></div>`;
-    (n.sub||[]).forEach((s,i)=>{d.innerHTML+=`<p class="sub" style="top:${96+i*34}px">${s}</p>`;});
-    nodes.appendChild(d);
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: cada produto é uma ilha (0,6–5,4 s)
+  inn('#sea', 0.4, {}, 0.8);
+  ['iCh', 'iCRM', 'iKB', 'iApp', 'iFlow', 'iHub'].forEach(function (id, i) {
+    tl.fromTo('#' + id, { opacity: 0, scale: 0.6 }, { opacity: 0.6, scale: 1, duration: 0.45, ease: 'back.out(2)' }, 0.7 + i * 0.18);
   });
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  out(['#c1', '#s1'], 5.2);
 
-  // ARESTAS: cada ligação entre produtos (linhas do mapa da cadeia), todas no mesmo traço
-  const E=[
-    {id:"r13",k:"real",d:"M1100,495 L1376,495",row:"R1–R3"},
-    {id:"r4",k:"real",d:"M1380,850 C1150,850 1060,780 1060,640",row:"R4"},
-    {id:"r5",k:"real",d:"M1800,596 L1800,818",row:"R5–R6"},
-    {id:"r7",k:"real",d:"M1380,935 L484,900",row:"R7"},
-    {id:"r8",k:"real",d:"M290,818 L290,600",two:1,row:"R8"},
-    {id:"r9",k:"real",d:"M480,580 C620,940 1200,900 1376,880",row:"R9"},
-    {id:"r10",k:"real",d:"M200,486 L200,264",row:"R10"},
-    {id:"r11",k:"real",d:"M100,880 C30,880 30,200 96,200",row:"R11"},
-    {id:"r12",k:"real",d:"M680,470 C580,470 560,235 484,235",row:"R12"},
-    {id:"r13b",k:"real",d:"M1440,486 C1440,350 600,370 488,172",row:"R13"},
-    {id:"r14",k:"real",d:"M1800,486 L1800,264",row:"R14"}
-  ];
-  const COL={real:"#A3A8B3"};
-  const svg=document.getElementById("edges");
-  let defs='<defs>';
-  Object.entries(COL).forEach(([k,c])=>{defs+=`<marker id="ar-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`;});
-  E.forEach(e=>{defs+=`<mask id="m-${e.id}" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><path id="mk-${e.id}" d="${e.d}" fill="none" stroke="#fff" stroke-width="44" stroke-linecap="round"/></mask>`;});
-  defs+='</defs>';
-  let body='';
-  E.forEach(e=>{body+=`<g id="g-${e.id}" mask="url(#m-${e.id})"><path class="e ${e.k}" d="${e.d}" marker-end="url(#ar-${e.k})"${e.two?` marker-start="url(#ar-${e.k})"`:""}/></g>`;});
-  svg.innerHTML=defs+body;
-  // Path lengths measured once at setup, never at tween time
-  const LEN={};
-  E.forEach(e=>{const m=document.getElementById("mk-"+e.id);const L=Math.ceil(m.getTotalLength())+60;LEN[e.id]=L;m.setAttribute("stroke-dasharray",L+" "+L);m.setAttribute("stroke-dashoffset",L);});
+  // Batidas 2 a 7: uma ponte por vez, cada uma com o problema que some (5,6–25,6 s)
+  var t0 = 5.6, S = 3.2;
+  inn('#k0', t0, { y: 16 }); inn('#u0', t0 + 0.3, { y: 12 }); bridge(0, 'iCh', 'iCRM', t0 + 0.1); out(['#k0', '#u0'], t0 + 2.9);
+  var t1 = t0 + S;
+  inn('#k1', t1, { y: 16 }); inn('#u1', t1 + 0.3, { y: 12 }); bridge(1, 'iCRM', 'iKB', t1 + 0.1); bridge(2, 'iKB', 'iCh', t1 + 1.0); out(['#k1', '#u1'], t1 + 3.7);
+  var t2 = t1 + S + 0.8;
+  inn('#k2', t2, { y: 16 }); inn('#u2', t2 + 0.3, { y: 12 }); bridge(3, 'iCRM', 'iApp', t2 + 0.1); out(['#k2', '#u2'], t2 + 2.9);
+  var t3 = t2 + S;
+  inn('#k3', t3, { y: 16 }); inn('#u3', t3 + 0.3, { y: 12 }); bridge(4, 'iApp', 'iCh', t3 + 0.1); out(['#k3', '#u3'], t3 + 2.9);
+  var t4 = t3 + S;
+  inn('#k4', t4, { y: 16 }); inn('#u4', t4 + 0.3, { y: 12 }); bridge(5, 'iHub', 'iFlow', t4 + 0.1); out(['#k4', '#u4'], t4 + 2.9);
+  var t5 = t4 + S;
+  inn('#k5', t5, { y: 16 }); inn('#u5', t5 + 0.3, { y: 12 }); bridge(6, 'iFlow', 'iApp', t5 + 0.1); out(['#k5', '#u5'], t5 + 2.9);
 
-  // RÓTULOS: centro (x,y); um por batida, com o benefício da ligação
-  const LB=[
-    {id:"l1",k:"gain",x:1238,y:420,t:["publica e ativa","os fluxos"],own:["r13"]},
-    {id:"l2",k:"gain",x:1640,y:709,t:["resultados","chegam ao produto"],own:["r5"]},
-    {id:"l3",k:"gain",x:900,y:720,t:["o produto desenha","os próprios fluxos"],own:["r4"]},
-    {id:"l4",k:"gain",x:930,y:968,t:["conversas do produto no CRM"],own:["r7","r8"]},
-    {id:"l5",k:"gain",x:900,y:720,t:["ferramentas","do produto no CRM"],own:["r9"]},
-    {id:"l6",k:"gain",x:350,y:373,t:["respostas","com conhecimento"],own:["r10","r11"]},
-    {id:"l7",k:"gain",x:920,y:190,t:["conhecimento e IA","dentro dos fluxos"],own:["r12","r13b","r14"]}
-  ];
-  window.__labelOwners=Object.fromEntries(LB.map(l=>[l.id,l.own]));
-  const lab=document.getElementById("labels");
-  LB.forEach(l=>{
-    const w=document.createElement("div");w.className="lw";
-    const h=l.t.length*28+12;
-    w.style.cssText=`left:${l.x-300}px;top:${l.y-h/2}px;height:${h}px`;
-    w.innerHTML=`<div class="pill ${l.k}" id="${l.id}">${l.t.map(s=>`<span>${s}</span>`).join("")}</div>`;
-    lab.appendChild(w);
+  // Batida 8: todas as pontes juntas (25,6–30,3 s)
+  var t8 = t5 + S;
+  inn('#c8', t8, { y: 16 }); inn('#s8', t8 + 0.3, { y: 12 });
+  [0, 1, 2, 3, 4, 5, 6].forEach(function (i) {
+    tl.to('#d' + i, { stroke: '#7A2A1C', duration: 0.3 }, t8 + 0.4 + i * 0.2);
+    tl.to('#d' + i, { stroke: '#3A1A14', duration: 0.5 }, t8 + 0.8 + i * 0.2);
   });
+  tl.to(['#sea'], { opacity: 0.5, duration: 0.6 }, t8 + 0.4);
+  out(['#c8', '#s8'], t8 + 4.7);
 
-  const tl=gsap.timeline({paused:true});
-  const EO="power3.out",EZ="power2.inOut";
+  // Fecho (parado da entrada ao fim)
+  var tc = t8 + 5.0;
+  out(['#hd', '#sea', '#br', '.isl', '.sign'], tc - 0.3, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, tc);
+  tl.set('#close', { opacity: 1 }, D);
 
-  // LEGENDAS DAS BATIDAS
-  const caps=[
-    "O Hub de domínio no centro, os produtos ao redor",
-    "O Hub publica e ativa os fluxos no Flow",
-    "O Flow executa e entrega o resultado ao produto",
-    "Cada produto desenha os próprios fluxos no Hub",
-    "Os canais do produto levam as conversas ao CRM",
-    "O CRM usa as ferramentas do próprio produto",
-    "CRM e Channels respondem com o conhecimento do KB",
-    "KB e assistentes de IA dentro do fluxo; a pessoa decide",
-    "Um Hub no centro, cada produto somando ao conjunto"
-  ];
-  const capBox=document.getElementById("caps");
-  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.innerHTML=c;capBox.appendChild(d);});
-  // Beat starts: each state change is followed by at least 1.5 s of stillness
-  const T=[0.5,5.2,8.2,11.2,14.2,17.2,20.2,23.2,26.2];
-  caps.forEach((c,i)=>{
-    tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},T[i]);
-    if(i<caps.length-1) tl.to("#cap"+i,{opacity:0,duration:.3},T[i+1]-.3);
-  });
-
-  // Helpers
-  // An edge group stays hidden until its own draw starts (no shaft before its endpoints exist)
-  E.forEach(e=>tl.set("#g-"+e.id,{opacity:0},0));
-  const draw=(id,t,dur)=>{tl.set("#g-"+id,{opacity:1},t);tl.to("#mk-"+id,{attr:{"stroke-dashoffset":0},duration:dur||.9,ease:EZ},t);};
-  const pop=(id,t)=>tl.fromTo("#"+id,{opacity:0,scale:.85},{opacity:1,scale:1,duration:.35,ease:"back.out(2)",immediateRender:false},t);
-  const nodeIn=(id,t)=>tl.fromTo("#"+id,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},t);
-  const ALL=E.map(e=>"#g-"+e.id).join(",");
-  const hi=(ids,t)=>ids.forEach(i=>tl.to("#"+i,{borderColor:"#FF452B",duration:.3},t));
-  const lo=(ids,t)=>ids.forEach(i=>tl.to("#"+i,{borderColor:"#3A3A42",duration:.3},t));
-  // One beat lights one connection: earlier edges step back, the previous label leaves
-  const beat=(edges,label,nodesHi,t,prev)=>{
-    if(prev){tl.to(prev.edges.map(p=>"#g-"+p).join(","),{opacity:.4,duration:.3},t);tl.to("#"+prev.label,{opacity:0,duration:.25},t);}
-    hi(nodesHi,t);
-    edges.forEach((e,i)=>draw(e,t+.3+i*.15,.9));
-    pop(label,t+1.05);
-    lo(nodesHi,t+2.6);
-    return {edges,label};
-  };
-
-  // ABERTURA: o Hub no centro e os produtos ao redor
-  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
-  tl.to("#dots",{opacity:1,duration:.6},.2);
-  ["nHub","nFlow","nSaas","nCh","nCrm","nKb","nAi"].forEach((n,i)=>nodeIn(n,.3+i*.12));
-
-  // B1 Hub publica e ativa os fluxos (R1–R3)
-  let p=beat(["r13"],"l1",["nHub","nFlow"],T[1],null);
-  // B2 o Flow entrega o resultado ao produto (R5–R6)
-  p=beat(["r5"],"l2",["nFlow","nSaas"],T[2],p);
-  // B3 o produto desenha os próprios fluxos no Hub (R4)
-  p=beat(["r4"],"l3",["nSaas","nHub"],T[3],p);
-  // B4 canais do produto e conversas no CRM (R7, R8)
-  p=beat(["r7","r8"],"l4",["nSaas","nCh","nCrm"],T[4],p);
-  // B5 o CRM usa as ferramentas do produto (R9)
-  p=beat(["r9"],"l5",["nCrm","nSaas"],T[5],p);
-  // B6 CRM e Channels respondem com o KB (R10, R11)
-  p=beat(["r10","r11"],"l6",["nCrm","nCh","nKb"],T[6],p);
-  // B7 conhecimento e assistentes de IA dentro dos fluxos (R12, R13, R14)
-  p=beat(["r12","r13b","r14"],"l7",["nHub","nFlow","nKb","nAi"],T[7],p);
-
-  // FECHO: o mapa inteiro em traço cheio, sem rótulos
-  tl.to(ALL,{opacity:1,duration:.6},T[8]);
-  tl.to("#l7",{opacity:0,duration:.3},T[8]);
-  tl.to("#pad",{opacity:.001,duration:1},29);
-
-  // The site Player may load the page before the runtime creates the registry
-  window.__timelines=window.__timelines||{};
-  window.__timelines["welabs-chain-horizon"]=tl;
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-chain-horizon"] = tl;
 })();
 </script>
 </body>

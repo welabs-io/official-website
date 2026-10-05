@@ -131,7 +131,7 @@
   },
   {
     "id": "welabs-chain-overview",
-    "title": "Plataforma Welabs · Mapa de integração",
+    "title": "Plataforma Welabs · Os produtos se encaixam",
     "duration": 34,
     "compositionId": "welabs-chain-overview",
     "src": "/motion/welabs-chain-overview/index.html",
@@ -147,7 +147,7 @@
   {
     "id": "welabs-chain-journey",
     "title": "Plataforma Welabs · Jornada",
-    "duration": 46,
+    "duration": 44,
     "compositionId": "welabs-chain-journey",
     "src": "/motion/welabs-chain-journey/index.html",
     "kind": "topology",
@@ -176,8 +176,8 @@
   },
   {
     "id": "welabs-chain-horizon",
-    "title": "Plataforma Welabs · Conjunto",
-    "duration": 30,
+    "title": "Plataforma Welabs · Pontes",
+    "duration": 36,
     "compositionId": "welabs-chain-horizon",
     "src": "/motion/welabs-chain-horizon/index.html",
     "kind": "topology",

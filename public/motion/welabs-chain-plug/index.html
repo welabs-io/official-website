@@ -3,359 +3,170 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Cadeia de integração · um SaaS novo pluga</title>
+<title>Plataforma · Encaixe</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA MARCA */
+/* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
-p{white-space:nowrap}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
-/* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
-#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
-#title span{color:var(--coral)}
-#caps{position:absolute;left:250px;top:24px;width:1060px;height:56px}
-.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+/* APP NOVO COM OS QUATRO ENCAIXES */
+.app{position:absolute;left:260px;top:190px;width:1400px;height:400px;border-radius:30px;background:var(--panel);border:3px solid var(--line);opacity:0}
+.app .bar{height:70px;border-radius:27px 27px 0 0;background:var(--panel2);display:flex;align-items:center;gap:12px;padding:0 28px;font-size:30px;font-weight:800}
+.app .bar i{width:16px;height:16px;border-radius:50%;background:#55556A}
+.app .bar span{margin-left:16px}
+.slot{position:absolute;top:120px;width:320px;height:210px;border-radius:22px;border:3px dashed #4A4A56;background:#141418}
+.slot .q{position:absolute;left:128px;top:73px;width:64px;height:64px;border-radius:50%;background:#2A2A33;border:3px solid #55556A;color:var(--muted);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0}
+.slot .fill{position:absolute;inset:-3px;border-radius:22px;border:3px solid var(--coral);background:rgba(255,69,43,.10);padding:22px 22px;opacity:0}
+.slot .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:rgba(255,69,43,.18);color:var(--coral)}
+.slot .tt{margin-top:14px;font-size:30px;font-weight:800;white-space:nowrap}
+.slot .ln{margin-top:6px;font-size:24px;font-weight:600;line-height:30px;color:var(--muted)}
+.slot .tk{position:absolute;right:-16px;top:-16px;width:44px;height:44px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+.s0{left:24px}.s1{left:368px}.s2{left:712px}.s3{left:1056px}
 
-/* PALCO DA TOPOLOGIA */
-#stage{position:absolute;left:0;top:0;width:1920px;height:1080px}
-#wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
-#wires path{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.port{position:absolute;width:16px;height:16px;border-radius:50%;border:3px solid var(--line);background:var(--bg);opacity:0;z-index:6}
-
-/* NÓS DOS PRODUTOS (MESMA GRAMÁTICA DAS PEÇAS ISOLADAS) */
-.nd{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel);opacity:0;z-index:4}
-.ch{display:flex;align-items:center;gap:14px;padding:14px 18px 0}
-.ch .gr{flex:1}
-.ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
-.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
-.nm{font-size:28px;font-weight:700;line-height:34px;white-space:nowrap}
-.tag{display:inline-flex;align-items:center;gap:8px;height:40px;font-size:24px;font-weight:700;border-radius:999px;padding:0 14px;white-space:nowrap}
-.tag.g{background:rgba(61,214,140,.16);color:var(--ok)}
-.tag.a{background:rgba(245,181,63,.16);color:var(--wait)}
-.tag.n{background:#2A2A32;color:var(--muted)}
-.tag.pv{background:var(--bg);border:2px dashed var(--wait);color:var(--wait)}
-.tag.pa{background:var(--bg);border:2px solid var(--wait);color:var(--wait)}
-.sw{position:absolute}
-.sw .tag{position:absolute;left:0;top:0}
-.mut{font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
-
-#nSaas{left:50px;top:430px;width:280px;height:200px;--acc:var(--coral)}
-#nHub{left:460px;top:330px;width:400px;height:440px;--acc:var(--coral)}
-#nKb{left:460px;top:120px;width:400px;height:150px;--acc:var(--violet)}
-#nFlow{left:1040px;top:120px;width:360px;height:200px;--acc:var(--blue)}
-#nCh{left:1040px;top:400px;width:360px;height:220px;--acc:var(--teal)}
-#nCrm{left:1040px;top:720px;width:360px;height:290px;--acc:var(--pink)}
-#nSum{left:50px;top:860px;width:810px;height:150px;--acc:var(--ok)}
-#nSum .chip{padding:0 12px;gap:8px}
-#nSum .sd{width:12px;height:12px;border-radius:50%;flex:none}
-
-.hsub{position:absolute;left:18px;top:84px;line-height:30px}
-.hr{position:absolute;left:18px;width:364px;height:46px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:24px;font-weight:700;white-space:nowrap}
-.hr b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;background:#2A2A32;color:#6A6A75}
-.crow{position:absolute;left:18px;width:324px;height:40px;display:flex;gap:8px}
-.chip{height:40px;display:flex;align-items:center;padding:0 8px;border-radius:10px;border:2px solid var(--line);background:var(--panel2);font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-.ib{position:absolute;left:18px;width:324px;height:46px;border-radius:12px;background:var(--panel2);border:2px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
-.ib .gr{flex:1}
-.ib i{width:12px;height:12px;border-radius:50%;flex:none}
-
-/* RÓTULOS DAS ARESTAS */
-.el{position:absolute;height:36px;display:flex;align-items:center;padding:0 12px;border-radius:999px;font-size:24px;font-weight:700;white-space:nowrap;opacity:0;z-index:5}
-.el.s{background:var(--bg);border:2px solid var(--line);color:var(--muted)}
-.el.pa{background:var(--bg);border:2px solid var(--wait);color:var(--wait)}
-.el.pv{background:var(--bg);border:2px dashed var(--wait);color:var(--wait)}
-
-/* FICHAS EM TRÂNSITO */
-.tok{position:absolute;left:0;top:0;border-radius:12px;display:grid;place-items:center;opacity:0;z-index:8}
-#env{width:48px;height:48px;background:var(--coral);color:#fff;box-shadow:0 8px 20px rgba(255,69,43,.45)}
-.dot{width:18px;height:18px;border-radius:50%}
-
-/* PAINEL DE RECURSOS HERDADOS */
-#pan{position:absolute;left:1430px;top:120px;width:450px;height:890px;border:2px solid var(--line);border-radius:18px;background:var(--panel);opacity:0;z-index:4}
-#pan .kd{position:absolute;left:20px;top:20px;color:var(--coral)}
-#num{position:absolute;left:20px;top:56px;width:220px;height:130px}
-#num span{position:absolute;left:0;top:0;font-size:112px;font-weight:800;letter-spacing:-3px;line-height:130px;opacity:0}
-#num span.z{opacity:1;color:#7A7A85}
-#pan .sub{position:absolute;left:20px;top:192px}
-.ri{position:absolute;left:20px;width:410px;height:48px;display:flex;align-items:center;gap:12px;border-top:2px solid #26262D;font-size:24px;font-weight:600;white-space:nowrap;opacity:0}
-.ri i{width:14px;height:14px;border-radius:4px;flex:none}
-.ri .gr{flex:1}
-.ri .tag{height:34px}
-
-/* LEGENDA DO TRAÇO */
-#leg{position:absolute;left:50px;top:860px;width:350px;height:150px;opacity:0;z-index:4}
-.lg{position:absolute;left:0;height:40px;display:flex;align-items:center;gap:14px;font-size:24px;font-weight:700;white-space:nowrap}
-.lg svg{flex:none}
+/* PLATAFORMA QUE RECEBE O ENCAIXE */
+#plate{position:absolute;left:260px;top:720px;width:1400px;height:150px;border-radius:30px;background:#1A1A20;border:3px solid #4A4A56;opacity:0}
+.sock{position:absolute;top:28px;width:320px;height:88px;border-radius:18px;background:var(--panel2);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;white-space:nowrap}
+.sock.on{border-color:var(--coral)}
+#pipes{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;pointer-events:none}
+#pipes line{stroke:#4A4A56;stroke-width:10;stroke-linecap:round;opacity:0}
+#pipes circle{fill:var(--coral);opacity:0;filter:drop-shadow(0 0 10px rgba(255,69,43,.9))}
 
 /* FECHO */
-#closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
-#cl1{position:absolute;left:0;width:1920px;top:340px;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
-#cl1 span{color:var(--coral)}
-#cl2{position:absolute;left:0;width:1920px;top:470px;text-align:center;font-size:30px;font-weight:600;color:var(--muted);white-space:nowrap}
-#cl3{position:absolute;left:0;width:1920px;top:550px;display:flex;justify-content:center;gap:16px}
-#cl3 span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px;white-space:nowrap}
-#cl3 span.pa{border-color:var(--wait);color:var(--wait)}
-#cl3 span.pv{border-style:dashed;border-color:var(--wait);color:var(--wait)}
-#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="welabs-chain-plug" data-width="1920" data-height="1080" data-start="0" data-duration="36">
   <div id="hd">
-    <div id="title">Encaixe<span>.</span></div>
-    <div id="caps"></div>
-    <div id="sbx">sandbox · dados DEMO</div>
+    <div id="wm">Plataforma<span>.</span></div>
+    <div id="kick">Some o começar do zero</div>
+    <div id="demo">DEMO</div>
     <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <div id="stage">
-    <svg id="wires" viewBox="0 0 1920 1080">
-      <!-- Map edges, colored by the product that provides each connection -->
-      <path id="wReg" d="M330 520 H460" stroke="#FF452B" stroke-width="5"/>
-      <path id="wGrant" d="M860 380 H945 V250 H1040" stroke="#FF452B" stroke-width="5"/>
-      <path id="wCh" d="M180 630 V810 H985 V510 H1040" stroke="#2EC4B6" stroke-width="5"/>
-      <path id="wConv" d="M1220 620 V720" stroke="#E879F9" stroke-width="5"/>
-      <path id="wKb" d="M1040 170 H860" stroke="#A78BFA" stroke-width="5"/>
-    </svg>
+  <div id="plate">
+    <div class="sock" id="k0" style="left:24px">Channels + CRM</div>
+    <div class="sock" id="k1" style="left:368px">KB</div>
+    <div class="sock" id="k2" style="left:712px">Flow</div>
+    <div class="sock" id="k3" style="left:1056px">Hub de domínio</div>
+  </div>
+  <svg id="pipes" viewBox="0 0 1920 1080">
+    <line x1="444" y1="662" x2="444" y2="746"/><line x1="788" y1="662" x2="788" y2="746"/><line x1="1132" y1="662" x2="1132" y2="746"/><line x1="1476" y1="662" x2="1476" y2="746"/>
+    <circle id="e0" cx="444" cy="746" r="14"/><circle id="e1" cx="788" cy="746" r="14"/><circle id="e2" cx="1132" cy="746" r="14"/><circle id="e3" cx="1476" cy="746" r="14"/>
+  </svg>
 
-    <!-- Ports where edges meet nodes (React Flow handles) -->
-    <i class="port" id="p1" style="left:322px;top:512px"></i><i class="port" id="p2" style="left:452px;top:512px"></i>
-    <i class="port" id="p3" style="left:852px;top:372px"></i><i class="port" id="p4" style="left:1032px;top:242px"></i>
-    <i class="port" id="p5" style="left:172px;top:622px"></i><i class="port" id="p6" style="left:1032px;top:502px"></i>
-    <i class="port" id="p7" style="left:1212px;top:612px"></i><i class="port" id="p8" style="left:1212px;top:712px"></i>
-    <i class="port" id="p9" style="left:1032px;top:162px"></i><i class="port" id="p10" style="left:852px;top:162px"></i>
-
-    <!-- New SaaS -->
-    <div class="nd" id="nSaas">
-      <div class="ch"><span class="ic" id="icS"></span><div><p class="kd">SaaS novo</p><p class="nm">Portal DEMO</p></div></div>
-      <div class="sw" style="left:18px;top:92px;width:224px;height:40px"><span class="tag n" id="sA" data-layout-allow-overlap>chegando</span><span class="tag g" id="sB" data-layout-allow-overlap style="opacity:0">plugado</span></div>
-      <p class="mut" style="position:absolute;left:18px;top:146px" id="sC">sem código novo</p>
-    </div>
-
-    <!-- Domain hub -->
-    <div class="nd" id="nHub">
-      <div class="ch"><span class="ic" id="icH"></span><div><p class="kd">Hub de domínio</p><p class="nm">Plataforma</p></div></div>
-      <div class="hsub"><p class="mut">cadastros · regras</p><p class="mut">contratos · fiscal</p><p class="mut">financeiro · integrações</p></div>
-      <div class="hr" id="h1" style="top:190px"><b></b>Produto cadastrado</div>
-      <div class="hr" id="h2" style="top:244px"><b></b>Direito de uso</div>
-      <div class="hr" id="h3" style="top:298px"><b></b>Acesso aos produtos</div>
-      <div class="hr" id="h4" style="top:352px"><b></b>Conexão segura</div>
-    </div>
-
-    <!-- KB -->
-    <div class="nd" id="nKb">
-      <div class="ch"><span class="ic" id="icK"></span><div><p class="kd">KB · base própria</p><p class="nm">portal-demo</p></div></div>
-      <p class="mut" style="position:absolute;left:18px;top:96px;opacity:0" id="kbL">consultada pelos fluxos</p>
-    </div>
-
-    <!-- Flow -->
-    <div class="nd" id="nFlow">
-      <div class="ch"><span class="ic" id="icF"></span><div><p class="kd">Motor de fluxos</p><p class="nm">Flow</p></div></div>
-      <div class="sw" style="left:18px;top:90px;width:324px;height:40px"><span class="tag n" id="fA" data-layout-allow-overlap>aguardando</span><span class="tag g" id="fB" data-layout-allow-overlap style="opacity:0">pronto para usar</span></div>
-      <p class="mut" style="position:absolute;left:18px;top:146px;opacity:0" id="fC">entra por configuração</p>
-    </div>
-
-    <!-- Channels -->
-    <div class="nd" id="nCh">
-      <div class="ch"><span class="ic" id="icC"></span><div><p class="kd">Channels</p><p class="nm">um contrato</p></div></div>
-      <div class="crow" style="top:90px"><div class="chip" id="c1">WhatsApp</div><div class="chip" id="c2">Chat do site</div></div>
-      <div class="crow" style="top:144px"><div class="chip" id="c3">Discord</div><div class="chip" id="c4">Webhook</div></div>
-    </div>
-
-    <!-- CRM -->
-    <div class="nd" id="nCrm">
-      <div class="ch"><span class="ic" id="icR"></span><div><p class="kd">CRM</p><p class="nm">caixa omnichannel</p></div></div>
-      <div class="ib" id="r1" style="top:90px"><i style="background:var(--ok)"></i>WhatsApp<span class="gr"></span><span class="tag g" style="height:32px">nova</span></div>
-      <div class="ib" id="r2" style="top:144px"><i style="background:var(--blue)"></i>Chat do site<span class="gr"></span><span class="tag g" style="height:32px">nova</span></div>
-      <div class="ib" id="r3" style="top:206px;border-color:var(--pink)"><span id="icA" style="display:grid;place-items:center;color:var(--pink)"></span>agente de IA + humano</div>
-    </div>
-
-    <!-- Plugged SaaS summary: what it gained, by configuration -->
-    <div class="nd" id="nSum">
-      <div class="ch"><span class="ic" id="icM"></span><div><p class="kd">Portal DEMO</p><p class="nm">plugado por configuração</p></div></div>
-      <div class="crow" style="top:94px;width:770px;gap:12px">
-        <div class="chip"><i class="sd" style="background:var(--blue)"></i>Flow</div>
-        <div class="chip"><i class="sd" style="background:var(--teal)"></i>Channels</div>
-        <div class="chip"><i class="sd" style="background:var(--pink)"></i>CRM</div>
-        <div class="chip"><i class="sd" style="background:var(--violet)"></i>KB</div>
-        <div class="chip" style="color:var(--ok);border-color:var(--ok)">sem código novo</div>
-      </div>
-    </div>
-
-    <!-- Edge labels -->
-    <div class="el s" id="lReg" style="left:332px;top:546px">registro</div>
-    <div class="el s" id="lGrant" style="left:840px;top:288px">configuração</div>
-    <div class="el s" id="lCh" style="left:460px;top:792px">canais · uma integração</div>
-    <div class="el s" id="lConv" style="left:1149px;top:652px">conversas</div>
-    <div class="el s" id="lKb" style="left:890px;top:152px">consulta</div>
-
-    <!-- Inherited resources -->
-    <div id="pan">
-      <p class="kd">Recursos herdados</p>
-      <div id="num"></div>
-      <p class="mut sub">sem código novo</p>
-    </div>
-
-    <div class="tok" id="env"></div>
-    <div class="tok dot" id="dC" style="background:var(--teal)"></div>
-    <div class="tok dot" id="dR1" style="background:var(--pink)"></div>
-    <div class="tok dot" id="dR2" style="background:var(--pink)"></div>
+  <div class="app" id="a1">
+    <div class="bar"><i></i><i></i><i></i><span>Portal novo · DEMO</span></div>
+    <div class="slot s0"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Atendimento</div><div class="ln">WhatsApp e histórico de cada pessoa</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s1"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">respostas que dizem a fonte</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s2"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Automação</div><div class="ln">processos que vão até o fim</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s3"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Cadastros e regras</div><div class="ln">os mesmos da operação inteira</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
   </div>
 
-  <div id="closing">
-    <div id="cl1">Configurar, <span>não reconstruir.</span></div>
-    <div id="cl2">Um SaaS novo pluga no Hub de domínio e herda Flow, Channels, CRM e KB por configuração.</div>
-    <div id="cl3"><span>sandbox</span><span>dados DEMO</span><span>IA com humano no comando</span></div>
+  <div class="app" id="a2">
+    <div class="bar"><i></i><i></i><i></i><span>Portal de parceiros · DEMO</span></div>
+    <div class="slot s0"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Atendimento</div><div class="ln">WhatsApp e histórico de cada pessoa</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s1"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">respostas que dizem a fonte</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s2"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Automação</div><div class="ln">processos que vão até o fim</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s3"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Cadastros e regras</div><div class="ln">os mesmos da operação inteira</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
   </div>
-  <div id="pad"></div>
+
+  <div class="cap" id="c1">Um app novo <span>começaria do zero</span></div>
+  <div class="sub" id="s1">atendimento, base de respostas, automação e cadastros: tudo por fazer</div>
+  <div class="cap" id="c2">Ele encaixa <span>na plataforma</span></div>
+  <div class="sub" id="s2">que já tem tudo isso de pé</div>
+  <div class="cap" id="h0">Já nasce <span>atendendo pelo WhatsApp</span></div>
+  <div class="cap" id="h1">Já responde <span>com base</span></div>
+  <div class="cap" id="h2">Já tem <span>processo andando</span></div>
+  <div class="cap" id="h3">Já usa <span>os mesmos cadastros e regras</span></div>
+  <div class="cap" id="c7">O próximo app <span>encaixa igual</span></div>
+  <div class="sub" id="s7">e herda tudo de uma vez, sem refazer nada</div>
+
+  <div id="close">
+    <div class="l1">Um app novo já começa<br><span>com tudo pronto.</span></div>
+    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
-(function(){
-  // ÍCONES E UTILITÁRIOS
-  const IC={
-    box:'<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>',
-    layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
-    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
-    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-    inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
-    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
-    eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-    mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
-    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
-    check:'<path d="M20 6 9 17l-5-5"/>'
-  };
-  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
-  const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
-  put("icS",ico("box",28));put("icH",ico("layers",28));put("icK",ico("book",28));put("icF",ico("flow",28));
-  put("icC",ico("chat",28));put("icR",ico("inbox",28));put("icM",ico("check",28));put("icA",ico("user",24));put("env",ico("mail",28));
-  document.querySelectorAll(".hr b").forEach(b=>{b.innerHTML=ico("check",18);});
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 36;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
 
-  // Counter digits are stacked spans so any seek shows exactly one value
-  const N=11,numBox=document.getElementById("num");
-  for(let i=0;i<=N;i++){const s=document.createElement("span");s.id="n"+i;s.textContent=String(i);s.setAttribute("data-layout-allow-overlap","");if(i===0)s.className="z";numBox.appendChild(s);}
-  // Inherited resources list, colored by the product that provides them
-  const RES=[
-    ["var(--coral)","Cadastro e permissões"],["var(--coral)","Conexão segura"],
-    ["var(--blue)","Fluxos com histórico"],["var(--blue)","Aprovações e esperas"],["var(--blue)","Cobrança, ticket e e-mail"],
-    ["var(--teal)","WhatsApp oficial e pareado"],["var(--teal)","Chat do site e webhook"],["var(--teal)","Eventos em tempo real"],
-    ["var(--pink)","Caixa omnichannel"],["var(--pink)","Agente de IA + humano"],
-    ["var(--violet)","Conhecimento"]
-  ];
-  const pan=document.getElementById("pan");
-  RES.forEach((r,i)=>{const d=document.createElement("div");d.className="ri";d.id="ri"+(i+1);d.style.top=(240+i*56)+"px";
-    d.innerHTML=`<i style="background:${r[0]}"></i>${r[1]}<span class="gr"></span>`;pan.appendChild(d);});
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
 
-  const tl=gsap.timeline({paused:true});
-  const EO="power3.out",EZ="power2.inOut";
+  // Batida 1: o app novo está vazio (0,6–5,6 s)
+  inn('#a1', 0.6, { y: 30 }, 0.6);
+  [0, 1, 2, 3].forEach(function (i) { inn('#a1 .s' + i + ' .q', 1.8 + i * 0.2, { scale: 0.4 }, 0.4); });
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  out(['#c1', '#s1'], 5.5);
 
-  // LEGENDAS DAS BATIDAS
-  const caps=[
-    "Um SaaS novo chega e é registrado no Hub de domínio",
-    "O Hub libera os produtos e uma conexão segura",
-    "O Flow fica pronto para o SaaS, por configuração",
-    "Channels liga os canais por uma integração única",
-    "O CRM recebe as conversas; agente de IA com humano",
-    "O KB abre uma base própria, consultada pelos fluxos",
-    "Tudo plugado por configuração, sem código novo"
-  ];
-  const capBox=document.getElementById("caps");
-  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
-  // Beat starts; every state change is followed by at least 1.5 s of stillness
-  const CT=[0.6,5.4,10.0,15.0,20.0,25.0,29.6,32.6];
-  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+  // Batida 2: a plataforma aparece e o app encaixa (5,9–10,9 s)
+  inn('#c2', 5.9, { y: 16 }); inn('#s2', 6.2, { y: 12 });
+  inn('#plate', 6.1, { y: 80 }, 0.7);
+  out('#a1 .q', 7.6, 0.3);
+  tl.to('#a1', { y: 70, duration: 0.6, ease: 'back.out(1.6)' }, 8.2);
+  tl.to('#a1', { borderColor: '#FF452B', duration: 0.15 }, 8.75).to('#a1', { borderColor: '#3A3A44', duration: 0.5 }, 8.9);
+  tl.to('#pipes line', { opacity: 1, duration: 0.4, stagger: 0.12 }, 8.8);
+  out(['#c2', '#s2'], 10.85);
 
-  // Edge drawing via dash offset; lengths are fixed by the path geometry
-  const LEN={wReg:130,wGrant:310,wCh:1380,wConv:100,wKb:180};
-  Object.keys(LEN).forEach(k=>{const p=document.getElementById(k);p.style.strokeDasharray=LEN[k]+" "+LEN[k];p.style.strokeDashoffset=String(LEN[k]);});
-  const draw=(id,t,d)=>tl.to("#"+id,{strokeDashoffset:0,duration:d,ease:EZ},t);
-  const ports=(ids,t)=>tl.fromTo(ids,{opacity:0},{opacity:1,duration:.25,immediateRender:false},t);
-  const lab=(id,t)=>tl.fromTo("#"+id,{opacity:0,y:6},{opacity:1,y:0,duration:.3,ease:EO,immediateRender:false},t);
-  const lit=(sel,col,t)=>{tl.to(sel,{opacity:1,duration:.4},t);tl.to(sel,{borderColor:col,duration:.3},t);};
-  const calm=(sel,t)=>tl.to(sel,{borderColor:"#3A3A42",duration:.4},t);
-  const swap=(a,b,t)=>{tl.to(a,{opacity:0,duration:.2},t);tl.to(b,{opacity:1,duration:.3},t+.05);};
-  const tick=(id,t)=>{tl.to("#"+id+" b",{backgroundColor:"rgba(61,214,140,.18)",color:"#3DD68C",duration:.25},t);tl.to("#"+id,{borderColor:"#3DD68C",duration:.25},t);};
-  let cur=0;
-  const gain=(t)=>{const nx=cur+1;tl.to("#n"+cur,{opacity:0,duration:.15},t);tl.fromTo("#n"+nx,{opacity:0,y:12},{opacity:1,y:0,duration:.25,ease:EO,immediateRender:false},t+.05);
-    tl.fromTo("#ri"+nx,{opacity:0,x:14},{opacity:1,x:0,duration:.3,ease:EO,immediateRender:false},t);cur=nx;};
-  // Token travel along a polyline (centre coordinates, root space)
-  const travel=(sel,pts,t,seg,half)=>{tl.set(sel,{x:pts[0][0]-half,y:pts[0][1]-half},0);tl.to(sel,{opacity:1,duration:.15},t);
-    for(let i=1;i<pts.length;i++){tl.to(sel,{x:pts[i][0]-half,y:pts[i][1]-half,duration:seg[i-1],ease:"none"},t+seg.slice(0,i-1).reduce((a,b)=>a+b,0));}
-    tl.to(sel,{opacity:0,duration:.15},t+seg.reduce((a,b)=>a+b,0));};
+  // Batidas 3 a 6: cada encaixe recebe o que a plataforma já tem (11,0–23,2 s)
+  [0, 1, 2, 3].forEach(function (i) {
+    var t = 11.0 + i * 3.1;
+    inn('#h' + i, t, { y: 16 });
+    tl.to('#k' + i, { borderColor: '#FF452B', duration: 0.25 }, t);
+    tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.1 }, t + 0.05);
+    tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.4, ease: 'power1.in' }, t + 0.1);
+    tl.to('#e' + i, { opacity: 0, duration: 0.1 }, t + 0.5);
+    tl.to('#pipes line:nth-of-type(' + (i + 1) + ')', { stroke: '#FF452B', duration: 0.3 }, t + 0.1);
+    inn('#a1 .s' + i + ' .fill', t + 0.5, { scale: 0.92 }, 0.35);
+    tl.fromTo('#a1 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.7);
+    out('#h' + i, t + 2.8);
+  });
 
-  // ABERTURA: o mapa espera, apagado
-  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
-  tl.fromTo("#nHub,#nKb,#nFlow,#nCh,#nCrm",{opacity:0},{opacity:.35,duration:.5,immediateRender:false},.2);
-  tl.fromTo("#pan",{opacity:0},{opacity:1,duration:.5,immediateRender:false},.4);
+  // Batida 7: o próximo app encaixa igual (23,4–29,0 s)
+  inn('#c7', 23.4, { y: 16 }); inn('#s7', 23.7, { y: 12 });
+  tl.to('#a1', { x: -300, opacity: 0, duration: 0.5, ease: 'power2.in' }, 23.4);
+  tl.fromTo('#a2', { opacity: 0, x: 300, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.5, ease: 'power2.out' }, 23.7);
+  tl.to('#a2', { y: 70, duration: 0.5, ease: 'back.out(1.6)' }, 24.2);
+  [0, 1, 2, 3].forEach(function (i) {
+    tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.05 }, 24.6);
+    tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.35, ease: 'power1.in' }, 24.65);
+    tl.to('#e' + i, { opacity: 0, duration: 0.1 }, 25.0);
+    inn('#a2 .s' + i + ' .fill', 24.85 + i * 0.05, { scale: 0.92 }, 0.3);
+    tl.fromTo('#a2 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2.5)' }, 24.95 + i * 0.05);
+  });
+  out(['#c7', '#s7'], 29.0);
 
-  // B1 SaaS chega e é registrado no Hub
-  tl.fromTo("#nSaas",{opacity:0,x:-24},{opacity:1,x:0,duration:.6,ease:EO,immediateRender:false},1.0);
-  tl.to("#nSaas",{borderColor:"#FF452B",duration:.3},1.0);
-  ports("#p1,#p2",1.7);draw("wReg",1.8,.6);lab("lReg",2.2);
-  lit("#nHub","#FF452B",2.4);
-  tick("h1",2.9);tick("h2",3.5);
+  // Fecho (29,4–36 s, parado de 30,0 s ao fim)
+  out(['#hd', '#a2', '#plate', '#pipes'], 29.1, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.4);
+  tl.set('#close', { opacity: 1 }, D);
 
-  // B2 acesso aos produtos e conexão segura
-  tick("h3",5.8);gain(6.3);
-  tick("h4",7.0);gain(7.5);
-  calm("#nSaas",8.0);
-
-  // B3 o Flow fica pronto por configuração
-  ports("#p3,#p4",10.2);draw("wGrant",10.3,.6);
-  travel("#env",[[860,380],[945,380],[945,250],[1040,250]],10.6,[.3,.45,.3],24);
-  // Label appears only after the envelope has left the vertical segment
-  lab("lGrant",11.7);
-  lit("#nFlow","#4C8DFF",11.6);swap("#fA","#fB",11.8);
-  tl.fromTo("#fC",{opacity:0},{opacity:1,duration:.3,immediateRender:false},12.1);
-  gain(12.4);gain(12.7);gain(13.0);
-  calm("#nHub",13.0);
-
-  // B4 Channels liga os canais
-  ports("#p5,#p6",15.2);draw("wCh",15.3,1.0);lab("lCh",15.8);
-  travel("#dC",[[180,630],[180,810],[985,810],[985,510],[1040,510]],16.1,[.15,.4,.2,.1],9);
-  lit("#nCh","#2EC4B6",16.4);
-  ["c1","c2","c3","c4"].forEach((c,i)=>{const t=16.6+i*.15;tl.to("#"+c,{borderColor:"#3DD68C",color:"#FFFFFF",duration:.25},t);});
-  gain(17.3);gain(17.6);gain(17.9);
-  calm("#nFlow",17.9);
-
-  // B5 o CRM recebe as conversas
-  ports("#p7,#p8",20.2);draw("wConv",20.3,.35);lab("lConv",20.5);
-  travel("#dR1",[[1220,620],[1220,720]],20.6,[.4],9);travel("#dR2",[[1220,620],[1220,720]],21.0,[.4],9);
-  lit("#nCrm","#E879F9",20.9);
-  tl.fromTo("#r1",{opacity:0,y:10},{opacity:1,y:0,duration:.3,ease:EO,immediateRender:false},21.1);
-  tl.fromTo("#r2",{opacity:0,y:10},{opacity:1,y:0,duration:.3,ease:EO,immediateRender:false},21.45);
-  tl.fromTo("#r3",{opacity:0},{opacity:1,duration:.3,immediateRender:false},21.8);
-  gain(22.2);gain(22.5);
-  calm("#nCh",22.5);
-
-  // B6 o KB abre uma base própria para o SaaS
-  lit("#nKb","#A78BFA",25.3);
-  ports("#p9,#p10",25.5);draw("wKb",25.6,.4);lab("lKb",26.0);
-  tl.fromTo("#kbL",{opacity:0},{opacity:1,duration:.3,immediateRender:false},26.3);
-  gain(26.7);
-  calm("#nCrm",26.7);
-
-  // B7 visão inteira: o SaaS plugado e o que ele herdou
-  calm("#nKb",29.6);
-  tl.fromTo("#nSum",{opacity:0,y:12},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},29.8);
-  tl.to("#nSum",{borderColor:"#3DD68C",duration:.3},30.2);
-  swap("#sA","#sB",30.2);tl.to("#nSaas",{borderColor:"#3DD68C",duration:.3},30.2);
-
-  // FECHO
-  tl.to("#stage,#hd",{opacity:0,duration:.5},32.6);
-  tl.to("#closing",{opacity:1,duration:.7},32.9);
-  tl.fromTo("#cl1",{y:20},{y:0,duration:.7,ease:EO,immediateRender:false},32.9);
-  tl.to("#pad",{opacity:.001,duration:1},35);
-
-  // The site Player may load the page before the runtime creates the registry
-  window.__timelines=window.__timelines||{};
-  window.__timelines["welabs-chain-plug"]=tl;
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-chain-plug"] = tl;
 })();
 </script>
 </body>

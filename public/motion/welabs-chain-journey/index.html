@@ -3,454 +3,229 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Cadeia de integração · jornada de um pedido</title>
+<title>Plataforma · Jornada</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA MARCA */
+/* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--plan:#9A9AA6}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--wait:#F5B53F;--wa:#1E3A2B}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
-p{white-space:nowrap}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+.tag{position:absolute;left:-14px;top:-22px;height:44px;padding:0 18px;border-radius:999px;background:var(--coral);color:#fff;font-size:26px;font-weight:800;line-height:44px;white-space:nowrap}
 
-/* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px;z-index:5}
-#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap}
-#title span{color:var(--coral)}
-#caps{position:absolute;left:330px;top:24px;width:960px;height:56px}
-.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto}
+/* CELULAR DA MARINA */
+#phone{position:absolute;left:120px;top:170px;width:460px;height:690px;border-radius:56px;border:4px solid #4A4A56;background:#0F0F12;opacity:0}
+#phone .top{position:absolute;left:0;top:0;width:100%;height:110px;border-radius:52px 52px 0 0;background:#16261D;display:flex;align-items:center;gap:16px;padding:20px 30px 0}
+#phone .dot{width:56px;height:56px;border-radius:50%;background:#2B5A41;display:grid;place-items:center;flex:none}
+#phone .who{font-size:28px;font-weight:800;line-height:32px}
+#phone .who small{display:block;font-size:24px;font-weight:600;color:#9FD4B5}
+.bub{position:absolute;width:350px;padding:18px 22px;border-radius:24px;font-size:27px;font-weight:600;line-height:36px;opacity:0}
+#m1{right:22px;top:140px;background:var(--wa);border-bottom-right-radius:6px}
+#m2{left:22px;top:350px;background:var(--panel2);border-bottom-left-radius:6px}
+#m2 i{display:block;margin-top:10px;font-style:normal;font-size:24px;color:var(--muted)}
 
-/* FAIXA DE PRODUTOS: QUEM AGE AGORA */
-#strip{position:absolute;left:40px;top:108px;height:52px;display:flex;align-items:center;gap:12px;z-index:5}
-#strip .lb{font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;margin-right:4px}
-.pc{height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;border:2px solid var(--line);border-radius:999px;background:#141418;color:var(--muted);font-size:24px;font-weight:800;white-space:nowrap}
-.pc svg{flex:none}
-.pc.pv{border-style:dashed;border-color:var(--plan)}
+/* CENAS: CRM, KB, APP E APROVAÇÃO */
+.card{position:absolute;border-radius:28px;background:var(--panel);border:3px solid var(--line);opacity:0}
+#crm{left:860px;top:220px;width:760px;height:420px;padding:56px 44px}
+#crm .row1{display:flex;align-items:center;gap:28px}
+#crm .nm{font-size:44px;font-weight:800}
+#crm .nm small{display:block;font-size:26px;font-weight:600;color:var(--muted)}
+.fact{display:flex;align-items:center;gap:18px;margin-top:22px;font-size:30px;font-weight:600;opacity:0}
+.fact b{width:40px;height:40px;border-radius:50%;background:var(--ok);display:grid;place-items:center;flex:none}
+#kb{left:860px;top:200px;width:760px;height:460px;padding:56px 48px;background:#EFEDE6;color:#26241E;border-color:#EFEDE6}
+#kb h3{font-size:36px;font-weight:800;margin-bottom:26px}
+#kb .ln{height:22px;border-radius:6px;background:#D6D2C6;margin-bottom:18px}
+#kb .hl{position:relative;font-size:30px;font-weight:700;line-height:42px;padding:10px 14px;margin:6px 0 22px}
+#kb .hl em{position:absolute;inset:0;border-radius:10px;background:#FFC9BE;transform-origin:0 50%}
+#kb .hl span{position:relative}
+#src{position:absolute;left:48px;bottom:-26px;height:52px;padding:0 22px;border-radius:999px;background:#26241E;color:#fff;font-size:24px;font-weight:700;line-height:52px;white-space:nowrap;opacity:0}
+#app{left:760px;top:180px;width:960px;height:300px;overflow:visible}
+#app .bar{height:70px;border-radius:25px 25px 0 0;background:var(--panel2);display:flex;align-items:center;gap:12px;padding:0 28px;font-size:28px;font-weight:800}
+#app .bar i{width:16px;height:16px;border-radius:50%;background:#55556A}
+#app .bar span{margin-left:16px}
+.arow{position:relative;margin:18px 28px 0;height:56px;border-radius:14px;background:#1D1D23}
+.arow.ph::before{content:"";position:absolute;left:24px;top:20px;width:420px;height:16px;border-radius:8px;background:#34343E}
+#newrow{display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 24px;height:76px;background:#24242C;border:3px solid var(--coral);font-size:28px;font-weight:700;opacity:0}
+.st{height:46px;padding:0 18px;border-radius:999px;font-size:24px;font-weight:800;line-height:46px;white-space:nowrap}
+#stWait{background:rgba(245,181,63,.18);color:var(--wait)}
+#stOk{position:absolute;right:18px;top:12px;background:rgba(61,214,140,.18);color:var(--ok);opacity:0}
+#rule{left:760px;top:550px;width:400px;height:200px;padding:28px 30px;border-color:#5A5A66}
+#rule b{display:block;font-size:30px;font-weight:800;line-height:38px}
+#rule small{display:block;margin-top:10px;font-size:24px;font-weight:600;color:var(--muted)}
+#boss{position:absolute;left:1430px;top:540px;width:220px;text-align:center;opacity:0}
+#boss .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
+#boss .ok{position:absolute;left:150px;top:0;width:56px;height:56px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#tok{position:absolute;left:1100px;top:440px;height:52px;padding:0 22px;border-radius:26px;background:var(--coral);color:#fff;font-size:24px;font-weight:800;line-height:52px;box-shadow:0 10px 30px rgba(255,69,43,.45);white-space:nowrap;opacity:0}
 
-/* NÓS DA CADEIA (ECO DAS PEÇAS ISOLADAS) */
-.nd{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel);z-index:2;opacity:0}
-.ch{display:flex;align-items:center;gap:14px;padding:12px 16px 0}
-.ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
-.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
-.nm{font-size:26px;font-weight:700;line-height:32px;white-space:nowrap}
-.gr{flex:1}
-.tag{display:inline-flex;align-items:center;gap:8px;height:40px;font-size:24px;font-weight:700;border-radius:999px;padding:0 14px;white-space:nowrap}
-.tag.g{background:rgba(61,214,140,.16);color:var(--ok)}.tag.r{background:rgba(255,107,107,.16);color:var(--bad)}
-.tag.a{background:rgba(245,181,63,.16);color:var(--wait)}.tag.n{background:#2A2A32;color:var(--muted)}
-.tag.c{background:rgba(255,69,43,.16);color:var(--coral)}.tag.b{background:rgba(76,141,255,.16);color:#8DB6FF}
-.tag.pv{background:#141418;border:2px dashed var(--plan);color:var(--muted)}
-.stk{position:absolute}
-.stk>span{position:absolute;right:0;top:0}
-.ph0{position:absolute;left:18px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+/* TRILHA DA HISTÓRIA */
+#trail{position:absolute;left:620px;top:790px;width:1240px;height:60px;display:flex;align-items:center;justify-content:center;gap:8px;transform-origin:50% 50%}
+.st2{display:flex;align-items:center;gap:8px;height:54px;padding:0 14px;border-radius:999px;border:3px dashed #3A3A44;color:#6A6A78;font-size:24px;font-weight:800;white-space:nowrap}
+.st2 .k{width:28px;height:28px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+.arr{width:14px;height:4px;background:#3A3A44;border-radius:2px;flex:none}
 
-/* SAAS */
-#nS{left:40px;top:184px;width:300px;height:520px;--acc:var(--pink)}
-#rec{position:absolute;left:16px;top:88px;width:264px;height:220px;border:2px solid var(--line);border-radius:14px;background:var(--panel2);padding:12px 14px;opacity:0}
-#rec .l{font-size:24px;font-weight:600;color:var(--muted);line-height:30px}
-#rec .v{font-size:30px;font-weight:800;line-height:38px;margin-bottom:6px}
-.rw{display:flex;justify-content:space-between;font-size:24px;line-height:34px;white-space:nowrap}
-.rw span:first-child{color:var(--muted);font-weight:600}.rw span:last-child{font-weight:700}
-#sst{left:14px;top:168px;width:234px;height:40px}
-#sst>span{left:0;right:auto}
-#bSend{position:absolute;left:16px;top:322px;width:264px;height:48px;border-radius:12px;border:2px solid #4A4A55;display:flex;align-items:center;justify-content:center;gap:8px;font-size:24px;font-weight:800;color:var(--muted);opacity:0}
-#rcpt{position:absolute;left:16px;top:384px;width:264px;height:116px;border:2px solid var(--ok);border-radius:14px;background:rgba(61,214,140,.08);padding:12px 14px;opacity:0}
-#rcpt p{font-size:24px;line-height:30px}
-#rcpt .t{font-weight:800;color:var(--ok);display:flex;align-items:center;gap:8px}
-
-/* HISTÓRICO DO PEDIDO NO SAAS */
-#nM{left:40px;top:744px;width:300px;height:216px;--acc:var(--pink)}
-#nM .hm{position:absolute;left:18px;width:264px;opacity:0}
-
-/* FLOW: QUADRO NO ESTILO DO ESTÚDIO */
-#nF{left:460px;top:184px;width:820px;height:336px;--acc:var(--blue);overflow:hidden;
-  background-color:#131317;background-image:radial-gradient(#2C2C34 1.6px,transparent 1.6px);background-size:22px 22px}
-#nF .ch{background:var(--panel);height:72px;padding-top:0;border-bottom:2px solid var(--line)}
-#fst{right:18px;top:16px;width:300px;height:40px}
-#fsvg{position:absolute;left:0;top:0;width:820px;height:336px;z-index:1}
-.fn{position:absolute;width:370px;height:92px;border:2px solid var(--line);border-radius:14px;background:var(--panel);display:flex;align-items:center;gap:12px;padding:0 14px;z-index:2}
-.fn .ic{width:40px;height:40px;border-radius:12px}
-.fn .kd{font-size:24px;line-height:28px}
-.fn .nm{font-size:24px;line-height:30px}
-#n1{left:20px;top:92px;--acc:var(--coral)}
-#n2{left:430px;top:92px;--acc:var(--violet)}
-#n3{left:20px;top:220px;--acc:var(--wait)}
-#n4{left:430px;top:220px;--acc:var(--teal)}
-.bd{position:absolute;height:34px;font-size:24px;z-index:3;padding:0 12px;opacity:0}
-#bA{left:560px;top:167px;background:#2A2140;color:#C9B8FF;border:2px solid var(--violet)}
-#bP{left:262px;top:295px;background:#2B2312;color:var(--wait);border:2px solid var(--wait);opacity:1}
-#bR{left:676px;top:295px;background:#11281C;color:var(--ok);border:2px solid var(--ok)}
-
-/* HUB DE DOMÍNIO: BARRAMENTO */
-#nH{left:460px;top:600px;width:820px;height:360px;--acc:var(--coral)}
-#hreg{position:absolute;right:18px;top:16px}
-.dm{position:absolute;width:178px;height:44px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-#gr{position:absolute;left:410px;top:88px;width:392px;height:256px;border:2px solid var(--line);border-radius:14px;background:var(--panel2);padding:10px 14px}
-#gr h5{font-size:24px;font-weight:800;line-height:34px;white-space:nowrap;margin-bottom:4px}
-.gi{height:44px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;white-space:nowrap;border-top:2px solid #2A2A32}
-.gi b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;background:#2A2A32;color:#2A2A32}
-#hr{position:absolute;left:20px;top:256px;width:372px;height:88px;border:2px solid var(--ok);border-radius:14px;background:rgba(61,214,140,.08);padding:10px 14px;opacity:0}
-#hr p{font-size:24px;line-height:32px}
-#hr .t{font-weight:800;color:var(--ok);display:flex;align-items:center;gap:8px}
-#hph{position:absolute;left:20px;top:256px;width:372px;height:88px;border:2px dashed var(--line);border-radius:14px;display:flex;align-items:center;padding:0 14px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
-
-/* CHANNELS, CRM E KB */
-#nC{left:1420px;top:184px;width:460px;height:260px;--acc:var(--ok)}
-#nR{left:1420px;top:504px;width:460px;height:250px;--acc:#7DB4FF}
-#nK{left:1420px;top:810px;width:460px;height:150px;--acc:var(--violet)}
-.bub{position:absolute;left:18px;height:50px;border-radius:14px;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:24px;font-weight:600;white-space:nowrap;opacity:0}
-.bub.in{background:#23232A}
-.bub.out{background:#14243A;border:2px solid #4C8DFF}
-.wb{position:absolute;top:146px;width:130px;height:46px;border-radius:12px;border:2px solid var(--ok);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;opacity:0}
-#cst{left:18px;top:204px;width:420px;height:40px}
-#cst>span{left:0;right:auto}
-.ci{flex:none;display:inline-grid;place-items:center;width:32px;height:32px;border-radius:8px;background:#5B2F9E;color:#fff;font-size:24px;font-weight:800}
-#al{position:absolute;left:18px;top:136px;font-size:24px;font-weight:800;color:#8DB6FF;white-space:nowrap;opacity:0}
-#kp{position:absolute;left:18px;top:78px;width:424px;height:56px;border:2px solid var(--line);border-radius:14px;background:var(--panel2);display:flex;align-items:center;gap:12px;padding:0 12px;font-size:24px;font-weight:700;white-space:nowrap}
-
-/* ARESTAS E RÓTULOS */
-#edges{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:1}
-.el{position:absolute;height:34px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;z-index:3;opacity:0}
-.eb{position:absolute;height:34px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;border-radius:999px;white-space:nowrap;z-index:3;opacity:0}
-#bE4{left:1296px;top:500px;width:108px;background:#2B2312;color:var(--wait);border:2px solid var(--wait)}
-
-/* TRILHO DE ESTADO DO PEDIDO */
-#rail{position:absolute;left:40px;top:984px;width:1840px;height:68px;border-radius:14px;border-left:6px solid var(--coral);background:#18141A;z-index:4;opacity:0}
-#rt{position:absolute;left:22px;top:0;height:68px;display:flex;align-items:center;font-size:28px;font-weight:800;white-space:nowrap}
-#rst{left:270px;top:12px;width:600px;height:44px}
-#rst>span{left:0;right:auto;height:44px}
-#dots{position:absolute;right:24px;top:25px;width:250px;height:18px}
-.dt{position:absolute;top:0;width:18px;height:18px;border-radius:50%;background:#3A3A42}
-#leg{position:absolute;left:270px;top:0;height:68px;display:flex;align-items:center;gap:40px;opacity:0}
-#leg span{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700;white-space:nowrap}
-#leg svg{flex:none}
-#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="welabs-chain-journey" data-width="1920" data-height="1080" data-start="0" data-duration="46">
+<div id="root" data-composition-id="welabs-chain-journey" data-width="1920" data-height="1080" data-start="0" data-duration="44">
   <div id="hd">
-    <div id="title">Integração<span>.</span></div>
-    <div id="caps"></div>
-    <div id="sbx">sandbox · dados DEMO</div>
+    <div id="wm">Plataforma<span>.</span></div>
+    <div id="kick">Some a informação repetida</div>
+    <div id="demo">DEMO</div>
     <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <div id="strip"><span class="lb">Quem age agora</span>
-    <span class="pc" id="sS"></span><span class="pc" id="sH"></span><span class="pc" id="sF"></span>
-    <span class="pc" id="sC"></span><span class="pc" id="sR"></span><span class="pc" id="sK"></span></div>
-
-  <svg id="edges" viewBox="0 0 1920 1080"></svg>
-
-  <!-- SaaS where the order is born -->
-  <div class="nd" id="nS">
-    <div class="ch"><span class="ic" id="icS"></span><div><p class="kd">SaaS</p><p class="nm">Portal DEMO</p></div></div>
-    <p class="ph0" id="phS" style="top:110px">Nenhum pedido aberto</p>
-    <div id="rec">
-      <p class="l">Pedido de compra</p>
-      <p class="v">PC-0142</p>
-      <div class="rw"><span>Solicitante</span><span>Bruno</span></div>
-      <div class="rw"><span>Valor</span><span>R$ —</span></div>
-      <span class="stk" id="sst">
-        <span class="tag n" id="ss0" data-layout-allow-overlap>Rascunho</span>
-        <span class="tag b" id="ss1" data-layout-allow-overlap style="opacity:0">Enviado</span>
-        <span class="tag a" id="ss2" data-layout-allow-overlap style="opacity:0">Em análise</span>
-        <span class="tag g" id="ss3" data-layout-allow-overlap style="opacity:0">Aprovado</span></span>
-    </div>
-    <div id="bSend"></div>
-    <div id="rcpt"><p class="t" id="rcT"></p><p>vindo do Flow</p><p style="color:var(--muted)">pedido aprovado</p></div>
+  <div id="phone">
+    <div class="top"><div class="dot"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="who">Loja · DEMO<small>WhatsApp</small></div></div>
+    <div class="bub" id="m1">Oi! Dá para mudar a entrega do meu pedido para sábado?</div>
+    <div class="bub" id="m2">Dá sim. Já abri o pedido de mudança para você.<i>com base na política de entregas</i></div>
   </div>
 
-  <!-- SaaS order history: each step is recorded as it happens -->
-  <div class="nd" id="nM">
-    <div class="ch"><span class="ic" id="icM"></span><div><p class="kd">SaaS</p><p class="nm">Histórico</p></div></div>
-    <p class="ph0" id="phM" style="top:96px" data-layout-allow-overlap>Nada registrado ainda</p>
-    <div class="rw hm" id="hm1" style="top:84px"><span>Enviado</span><span>Bruno</span></div>
-    <div class="rw hm" id="hm2" style="top:124px"><span>Aprovado</span><span>Ana</span></div>
-    <div class="rw hm" id="hm3" style="top:164px"><span>Concluído</span><span>DEMO</span></div>
+  <div class="card" id="crm"><div class="tag">CRM</div>
+    <div class="row1"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Marina · DEMO<small>reconhecida pelo número</small></div></div>
+    <div class="fact" id="f1"><b><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></b>Pedido 1234 · DEMO</div>
+    <div class="fact" id="f2"><b><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></b>Endereço já cadastrado</div>
+    <div class="fact" id="f3"><b><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></b>Conversas anteriores à mão</div>
   </div>
 
-  <!-- Flow: studio-like board with the active revision -->
-  <div class="nd" id="nF">
-    <svg id="fsvg" viewBox="0 0 820 336"></svg>
-    <div class="ch" style="position:relative;z-index:2"><span class="ic" id="icF"></span><div><p class="kd">Flow</p><p class="nm">Aprovação de pedido · v3 ativa</p></div>
-      <span class="stk" id="fst">
-        <span class="tag n" id="fs0" data-layout-allow-overlap>aguardando evento</span>
-        <span class="tag b" id="fs1" data-layout-allow-overlap style="opacity:0">em execução</span>
-        <span class="tag a" id="fs2" data-layout-allow-overlap style="opacity:0">pausado · aguardando</span>
-        <span class="tag b" id="fs3" data-layout-allow-overlap style="opacity:0">retomado</span>
-        <span class="tag g" id="fs4" data-layout-allow-overlap style="opacity:0">concluído</span></span></div>
-    <div class="fn" id="n1"><span class="ic" id="ic1"></span><div><p class="kd">Quando · evento</p><p class="nm">Pedido enviado</p></div></div>
-    <div class="fn" id="n2"><span class="ic" id="ic2"></span><div><p class="kd">Etapa de IA</p><p class="nm">Classificar risco</p></div></div>
-    <div class="fn" id="n3"><span class="ic" id="ic3"></span><div><p class="kd">Esperar · WhatsApp</p><p class="nm">Perguntar e esperar</p></div></div>
-    <div class="fn" id="n4"><span class="ic" id="ic4"></span><div><p class="kd">Fazer · efeito</p><p class="nm">Aprovar pedido</p></div></div>
-    <span class="tag bd" id="bA">IA sugere: alto</span>
-    <span class="tag bd" id="bR">aplicado</span>
+  <div class="card" id="kb"><div class="tag">KB</div>
+    <h3>Política de entregas · DEMO</h3>
+    <div class="ln" style="width:92%"></div><div class="ln" style="width:78%"></div>
+    <div class="hl"><em></em><span>A data de entrega pode ser mudada antes do envio.</span></div>
+    <div class="ln" style="width:86%"></div><div class="ln" style="width:60%"></div>
+    <div id="src">Fonte: Política de entregas, seção 3 · DEMO</div>
   </div>
 
-  <!-- Domain hub as the bus underneath -->
-  <div class="nd" id="nH">
-    <div class="ch"><span class="ic" id="icH"></span><div><p class="kd">Hub de domínio</p><p class="nm">domínio e integração</p></div></div>
-    <span class="tag n" id="hreg" style="position:absolute"></span>
-    <div class="dm" style="left:20px;top:88px">Cadastros</div><div class="dm" style="left:212px;top:88px">Regras</div>
-    <div class="dm" style="left:20px;top:142px">Contratos</div><div class="dm" style="left:212px;top:142px">Fiscal</div>
-    <div class="dm" style="left:20px;top:196px">Financeiro</div><div class="dm" style="left:212px;top:196px">Integrações</div>
-    <div id="hph" data-layout-allow-overlap>Sem efeito pendente</div>
-    <div id="hr" data-layout-allow-overlap><p class="t" id="hrT"></p><p>uma única vez, registrada</p></div>
-    <div id="gr"><h5>Liberado · Portal DEMO</h5>
-      <div class="gi" id="g1"><b></b>Gatilho: pedido enviado</div>
-      <div class="gi" id="g2"><b></b>IA do catálogo</div>
-      <div class="gi" id="g3"><b></b>Perguntar com botões</div>
-      <div class="gi" id="g4"><b></b>Aprovar pedido · efeito</div></div>
+  <div class="card" id="app"><div class="tag">SaaS · app · portal</div>
+    <div class="bar"><i></i><i></i><i></i><span>Portal de pedidos · DEMO</span></div>
+    <div class="arow ph"></div>
+    <div class="arow" id="newrow">Pedido 1234 · entrega no sábado<div class="st" id="stWait">aguardando aprovação</div><div class="st" id="stOk">aprovada ✓</div></div>
   </div>
 
-  <!-- Channels: the person is asked on WhatsApp -->
-  <div class="nd" id="nC">
-    <div class="ch"><span class="ic" id="icC"></span><div><p class="kd">Channels</p><p class="nm">WhatsApp · Ana · DEMO</p></div></div>
-    <p class="ph0" id="phC" style="top:100px">Nenhuma pergunta aberta</p>
-    <div class="bub in" id="cq" style="top:82px">PC-0142 · risco alto. Aprovar?</div>
-    <div class="wb" id="wA" style="left:18px">Aprovar</div>
-    <div class="wb" id="wR" style="left:160px;border-color:var(--line);color:var(--muted)">Recusar</div>
-    <span class="stk" id="cst">
-      <span class="tag a" id="cs0" data-layout-allow-overlap style="opacity:0">aguardando · prazo DEMO</span>
-      <span class="tag g" id="cs1" data-layout-allow-overlap style="opacity:0">Ana tocou “Aprovar”</span></span>
+  <div class="card" id="rule"><div class="tag">Hub de domínio</div><b>Mudança de entrega passa pela gestora</b><small>regra guardada uma vez só · DEMO</small></div>
+  <div id="boss"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#C99A7A"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="#4C8DFF"/></svg><div class="nm">Gestora · DEMO</div><div class="ok"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div id="tok">Flow · aprovação</div>
+
+  <div id="trail">
+    <div class="st2" id="t0"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>Channels</div><div class="arr"></div>
+    <div class="st2" id="t1"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>CRM</div><div class="arr"></div>
+    <div class="st2" id="t2"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>KB</div><div class="arr"></div>
+    <div class="st2" id="t3"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>app</div><div class="arr"></div>
+    <div class="st2" id="t4"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>Hub de domínio</div><div class="arr"></div>
+    <div class="st2" id="t5"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>Flow</div>
   </div>
 
-  <!-- CRM: the conversation and the agent -->
-  <div class="nd" id="nR">
-    <div class="ch"><span class="ic" id="icR"></span><div><p class="kd">CRM</p><p class="nm">Conversa com Ana · DEMO</p></div></div>
-    <p class="ph0" id="phR" style="top:96px">Caixa de entrada em dia</p>
-    <div class="bub in" id="rq" style="top:80px">Ana: e depois da aprovação?</div>
-    <p id="al">Agente de IA · responde, não decide</p>
-    <div class="bub out" id="ra" style="top:172px">Segue para cotação · DEMO<span class="ci">1</span></div>
-  </div>
+  <div class="cap" id="c1">Uma mensagem chega <span>pelo WhatsApp</span></div>
+  <div class="sub" id="s1">a Marina quer mudar a entrega do pedido · DEMO</div>
+  <div class="cap" id="c2">O CRM <span>reconhece a Marina</span></div>
+  <div class="sub" id="s2">ninguém pede nome nem número do pedido de novo</div>
+  <div class="cap" id="c3">O KB responde <span>com base</span></div>
+  <div class="sub" id="s3">a resposta diz de onde veio</div>
+  <div class="cap" id="c4">O pedido entra <span>direto no app</span></div>
+  <div class="sub" id="s4">sem ninguém digitar tudo de novo</div>
+  <div class="cap" id="c5">O Flow leva a aprovação <span>até quem decide</span></div>
+  <div class="sub" id="s5">pela regra que o Hub de domínio guarda</div>
+  <div class="cap" id="c6">Uma conversa, <span>do começo ao fim</span></div>
+  <div class="sub" id="s6">ninguém repetiu nada, nada se perdeu no caminho</div>
 
-  <!-- KB: the cited passage -->
-  <div class="nd" id="nK">
-    <div class="ch"><span class="ic" id="icK"></span><div><p class="kd">KB</p><p class="nm">Base autorizada · compras</p></div></div>
-    <div id="kp"><span class="ci">1</span>Política de compras · DEMO</div>
+  <div id="close">
+    <div class="l1">Ninguém repete informação.<br><span>Nada se perde no caminho.</span></div>
+    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
-
-  <!-- Edge labels -->
-  <p class="el" id="lE1" style="left:350px;top:282px;width:100px;justify-content:center">evento</p>
-  <p class="el" id="lE7" style="left:340px;top:430px;width:120px;justify-content:center">resultado</p>
-  <p class="el" id="lE2" style="left:616px;top:543px">liberação</p>
-  <p class="el" id="lE3" style="left:860px;top:543px;width:264px;justify-content:flex-end">ações e efeitos</p>
-  <p class="el" id="lE5" style="left:1576px;top:457px">conversa</p>
-  <p class="el" id="lE6" style="left:1576px;top:765px">busca autorizada</p>
-
-  <!-- Order state rail -->
-  <div id="rail">
-    <p id="rt">Pedido PC-0142</p>
-    <span class="stk" id="rst">
-      <span class="tag n" id="r0" data-layout-allow-overlap>Rascunho</span>
-      <span class="tag b" id="r1" data-layout-allow-overlap style="opacity:0">Enviado</span>
-      <span class="tag b" id="r2" data-layout-allow-overlap style="opacity:0">Em execução na versão 3</span>
-      <span class="tag a" id="r3" data-layout-allow-overlap style="opacity:0">Risco alto · a IA sugere, não decide</span>
-      <span class="tag a" id="r4" data-layout-allow-overlap style="opacity:0">Aguardando uma pessoa</span>
-      <span class="tag g" id="r5" data-layout-allow-overlap style="opacity:0">Aprovado por Ana · aplicado uma vez</span>
-      <span class="tag b" id="r6" data-layout-allow-overlap style="opacity:0">Dúvida respondida com fonte</span>
-      <span class="tag g" id="r7" data-layout-allow-overlap style="opacity:0">Concluído · resultado no SaaS</span></span>
-    <div id="dots"></div>
-    <div id="leg">
-      <span class="tag g">Concluído de ponta a ponta</span>
-      <span>um pedido · cada passo registrado</span>
-    </div>
-  </div>
-  <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
-(function(){
-  // ÍCONES E UTILITÁRIOS
-  const IC={
-    box:'<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>',
-    layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
-    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
-    msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-    inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
-    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
-    eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-    bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
-    spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
-    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-    check:'<path d="M20 6 9 17l-5-5"/>', send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
-    receipt:'<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/>'
-  };
-  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
-  const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
-  put("icS",ico("box",28));put("icF",ico("flow",28));put("icH",ico("layers",28));put("icC",ico("msg",28));
-  put("icR",ico("inbox",28));put("icK",ico("book",28));
-  put("ic1",ico("bolt",24));put("ic2",ico("spark",24));put("ic3",ico("clock",24));put("ic4",ico("check",24));
-  put("sS",ico("box",22)+"SaaS");put("sH",ico("layers",22)+"Hub de domínio");put("sF",ico("flow",22)+"Flow");
-  put("sC",ico("msg",22)+"Channels");put("sR",ico("inbox",22)+"CRM");put("sK",ico("book",22)+"KB");
-  put("icM",ico("receipt",28));
-  put("bSend",ico("send",22)+"Enviar");put("rcT",ico("check",22)+"Resultado final");
-  put("hrT",ico("check",22)+"Aprovação aplicada");put("hreg",ico("check",22)+"Portal DEMO registrado");
-  document.querySelectorAll(".gi b").forEach(b=>{b.innerHTML=ico("check",18);});
-  const dots=document.getElementById("dots");
-  for(let i=0;i<8;i++){const d=document.createElement("i");d.className="dt";d.id="d"+i;d.style.left=(i*32)+"px";dots.appendChild(d);}
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 44;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale' || k === 'scaleX') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function step(i, t) {
+    tl.to('#t' + i, { borderStyle: 'solid', borderColor: '#3DD68C', color: '#FFFFFF', duration: 0.3 }, t);
+    tl.fromTo('#t' + i + ' .k', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.1);
+  }
 
-  // ARESTAS ENTRE PRODUTOS (GEOMETRIA FIXA, MEDIDA UMA VEZ)
-  const NS="http://www.w3.org/2000/svg";
-  const svg=document.getElementById("edges"), fsvg=document.getElementById("fsvg");
-  const mk=(host,tag,attrs)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);host.appendChild(e);return e;};
-  const arrow=(x,y,a)=>{const r=a*Math.PI/180,c=Math.cos(r),s=Math.sin(r),L=16,W=9;
-    const bx=x-c*L,by=y-s*L;return `M${x} ${y}L${bx-s*W} ${by+c*W}L${bx+s*W} ${by-c*W}Z`;};
-  // Each edge: base (always visible, dim), forward overlay and optional reverse overlay drawn on when traversed
-  const E={
-    E1:{d:"M340 322L458 322",c:"#FF452B",base:"#4A4A55",ar:[[458,322,0]]},
-    E7:{d:"M460 470L342 470",c:"#FF452B",base:"#4A4A55",ar:[[342,470,180]]},
-    E2:{d:"M600 600L600 522",c:"#FF452B",base:"#4A4A55",ar:[[600,522,-90]]},
-    E3:{d:"M1140 520L1140 598",c:"#FF452B",base:"#4A4A55",ar:[[1140,598,90],[1140,522,-90]],rev:"M1140 600L1140 522"},
-    E4:{d:"M1280 720C1350 720 1350 314 1418 314",c:"#FF452B",base:"#4A4A55",ar:[[1418,314,0],[1282,720,180]],rev:"M1420 314C1350 314 1350 720 1282 720"},
-    E5:{d:"M1560 444L1560 502",c:"#FF452B",base:"#4A4A55",ar:[[1560,502,90],[1560,446,-90]],rev:"M1560 504L1560 446"},
-    E6:{d:"M1560 754L1560 808",c:"#FF452B",base:"#4A4A55",ar:[[1560,808,90],[1560,756,-90]],rev:"M1560 810L1560 756"}
-  };
-  const OV={};
-  Object.keys(E).forEach(k=>{const e=E[k];
-    const b=mk(svg,"path",{d:e.d,fill:"none",stroke:e.base,"stroke-width":4,"stroke-linecap":"round",id:"b"+k});
-    if(e.dash)b.setAttribute("stroke-dasharray",e.dash);
-    e.ar.forEach((a,i)=>mk(svg,"path",{d:arrow(a[0],a[1],a[2]),fill:e.base,id:`a${k}${i}`}));
-    if(e.dash)return;
-    const o=mk(svg,"path",{d:e.d,fill:"none",stroke:e.c,"stroke-width":5,"stroke-linecap":"round",id:"o"+k});
-    const L=o.getTotalLength();o.setAttribute("stroke-dasharray",L+" "+L);o.setAttribute("stroke-dashoffset",L);OV[k]=L;
-    if(e.rev){const r=mk(svg,"path",{d:e.rev,fill:"none",stroke:e.c,"stroke-width":5,"stroke-linecap":"round",id:"r"+k});
-      const R=r.getTotalLength();r.setAttribute("stroke-dasharray",R+" "+R);r.setAttribute("stroke-dashoffset",R);OV["r"+k]=R;}
-  });
-  // Edges inside the Flow board (card coordinates)
-  const FE={f1:"M390 138L430 138",f2:"M470 184C470 206 160 198 160 220",f3:"M390 266L430 266"};
-  Object.keys(FE).forEach(k=>{mk(fsvg,"path",{d:FE[k],fill:"none",stroke:"#4A4A55","stroke-width":3});
-    const o=mk(fsvg,"path",{d:FE[k],fill:"none",stroke:"#3DD68C","stroke-width":4,id:"o"+k,"stroke-linecap":"round"});
-    const L=o.getTotalLength();o.setAttribute("stroke-dasharray",L+" "+L);o.setAttribute("stroke-dashoffset",L);OV[k]=L;});
+  // Cabeçalho e trilha vazia
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  inn('#trail', 0.6, { y: 12 }, 0.5);
 
-  const tl=gsap.timeline({paused:true});
-  const EO="power3.out",EZ="power2.inOut";
+  // Batida 1: a mensagem chega pelo WhatsApp (0,6–6,2 s)
+  inn('#phone', 0.6, { y: 30 }, 0.6);
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  inn('#m1', 1.8, { y: 20, scale: 0.9 }, 0.45);
+  step(0, 3.0);
+  out(['#c1', '#s1'], 5.9);
 
-  // LEGENDAS DAS BATIDAS
-  const caps=[
-    "Um pedido atravessa a cadeia e muda de estado",
-    "O pedido nasce num SaaS e é enviado",
-    "O Hub de domínio libera o que o fluxo pode usar",
-    "A IA classifica o risco; quem decide é uma pessoa",
-    "O Flow pausa e pergunta a uma pessoa no WhatsApp",
-    "A pessoa decide; o Hub aplica a aprovação uma única vez",
-    "A conversa chega ao CRM",
-    "O agente do CRM responde citando a fonte no KB",
-    "O SaaS recebe o resultado final do Flow",
-    "Um pedido atravessa cinco produtos e volta com o resultado"
-  ];
-  const capBox=document.getElementById("caps");
-  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
-  // Beat starts; every state change is followed by at least 1.5 s of stillness
-  const CT=[0.6,3.0,7.0,12.0,16.5,22.5,28.0,31.0,35.0,39.5,46.5];
-  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);
-    if(i<caps.length-1)tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+  // Batida 2: o CRM reconhece a pessoa (6,2–12,0 s)
+  inn('#c2', 6.3, { y: 16 }); inn('#s2', 6.6, { y: 12 });
+  inn('#crm', 6.4, { x: 60 }, 0.6);
+  inn('#f1', 7.4, { x: 20 }, 0.35); inn('#f2', 7.8, { x: 20 }, 0.35); inn('#f3', 8.2, { x: 20 }, 0.35);
+  step(1, 8.8);
+  out(['#c2', '#s2'], 11.8); out('#crm', 11.9, 0.4);
 
-  // Helpers: draw an edge, light a card, light the acting product in the strip, swap stacked chips
-  const draw=(k,t,d)=>tl.to("#o"+k,{attr:{"stroke-dashoffset":0},duration:d||.7,ease:EZ},t);
-  const drawR=(k,t,d)=>tl.to("#r"+k,{attr:{"stroke-dashoffset":0},duration:d||.7,ease:EZ},t);
-  const arrows=(k,t,col)=>E[k].ar.forEach((a,i)=>tl.to(`#a${k}${i}`,{attr:{fill:col||E[k].c},duration:.3},t));
-  const lbl=(id,t)=>tl.to("#"+id,{color:"#FFFFFF",duration:.3},t);
-  const lit=(sel,t,col)=>tl.to(sel,{borderColor:col||"#FF452B",duration:.3},t);
-  const unlit=(sel,t)=>tl.to(sel,{borderColor:"#3A3A42",duration:.3},t);
-  const STRIP=["sS","sH","sF","sC","sR","sK"];
-  const act=(on,t)=>STRIP.forEach(s=>{const y=on.includes(s);
-    tl.to("#"+s,{borderColor:y?"#FF452B":"#3A3A42",backgroundColor:y?"#2A1612":"#141418",color:y?"#FFFFFF":"#C9C9D1",duration:.3},t);});
-  const swap=(from,to,t)=>{tl.to(from,{opacity:0,duration:.25},t);tl.to(to,{opacity:1,duration:.3},t+.05);};
-  const pop=(sel,t)=>tl.fromTo(sel,{opacity:0,scale:.85},{opacity:1,scale:1,duration:.35,ease:"back.out(2)",immediateRender:false},t);
-  const fade=(sel,t)=>tl.fromTo(sel,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},t);
-  const dot=(i,t,col)=>tl.to("#d"+i,{backgroundColor:col||"#FF452B",duration:.3},t);
-  const gi=(i,t)=>tl.to(`#g${i} b`,{backgroundColor:"rgba(61,214,140,.2)",color:"#3DD68C",duration:.3},t);
+  // Batida 3: o KB responde com base (12,3–18,6 s)
+  inn('#kb', 12.3, { x: 60 }, 0.6);
+  inn('#c3', 12.5, { y: 16 }); inn('#s3', 12.8, { y: 12 });
+  tl.fromTo('#kb .hl em', { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 13.4);
+  inn('#src', 14.2, { y: 10 }, 0.4);
+  inn('#m2', 15.0, { y: 20, scale: 0.9 }, 0.45);
+  step(2, 15.3);
+  out(['#c3', '#s3'], 18.4); out('#kb', 18.5, 0.4);
 
-  // ABERTURA: o mapa inteiro aparece antes do primeiro movimento
-  // Header and product strip are on screen from the first frame
-  tl.fromTo(".nd",{opacity:0,y:16},{opacity:1,y:0,duration:.5,stagger:.08,ease:EO,immediateRender:false},.1);
-  tl.fromTo(".el",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.3);
-  tl.fromTo("#rail",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.4);
-  dot(0,1.6,"#C9C9D1");
+  // Batida 4: o pedido entra no app (19,0–24,7 s)
+  inn('#app', 19.0, { y: 30 }, 0.6);
+  inn('#c4', 19.2, { y: 16 }); inn('#s4', 19.5, { y: 12 });
+  inn('#newrow', 20.2, { x: -40 }, 0.5);
+  step(3, 21.0);
+  out(['#c4', '#s4'], 24.5);
 
-  // B1 o pedido nasce no SaaS e é enviado
-  act(["sS"],3.0);lit("#nS",3.0,"#E879F9");
-  tl.to("#phS",{opacity:0,duration:.25},3.0);
-  fade("#rec",3.2);fade("#bSend",3.5);
-  tl.to("#bSend",{borderColor:"#FF452B",color:"#FFFFFF",backgroundColor:"#3A1E1A",duration:.15},4.4);
-  tl.to("#bSend",{borderColor:"#4A4A55",color:"#C9C9D1",backgroundColor:"rgba(0,0,0,0)",duration:.3},4.9);
-  swap("#ss0","#ss1",4.6);swap("#r0","#r1",4.6);dot(1,4.6);
-  // The SaaS history records each step as it happens
-  tl.to("#phM",{opacity:0,duration:.25},4.6);fade("#hm1",4.7);
+  // Batida 5: a aprovação anda pela regra do Hub (24,9–32,2 s)
+  inn('#c5', 24.9, { y: 16 }); inn('#s5', 25.2, { y: 12 });
+  inn('#rule', 25.3, { y: -40 }, 0.6);
+  step(4, 25.9);
+  inn('#boss', 26.2, { y: 20 }, 0.5);
+  tl.fromTo('#tok', { opacity: 0, x: 0, y: 0, scale: 0.6 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 26.6);
+  step(5, 26.9);
+  tl.to('#tok', { x: 80, y: 170, duration: 1.0, ease: 'power2.inOut' }, 27.1);
+  tl.fromTo('#boss .ok', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, 28.4);
+  tl.to('#tok', { x: 0, y: 0, duration: 1.0, ease: 'power2.inOut' }, 29.0);
+  out('#tok', 30.0, 0.3);
+  out('#stWait', 29.9, 0.25);
+  tl.fromTo('#stOk', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2)' }, 30.1);
+  tl.to('#newrow', { borderColor: '#3DD68C', duration: 0.3 }, 30.1);
+  out(['#c5', '#s5'], 32.2);
 
-  // B2 o evento chega ao Flow; o Hub libera o que o fluxo usa; a execução começa
-  unlit("#nS",7.0);
-  draw("E1",7.0,.8);arrows("E1",7.6);lbl("lE1",7.0);
-  lit("#n1",7.8,"#FF452B");
-  act(["sH"],7.8);lit("#nH",7.8);
-  gi(1,8.2);gi(2,8.5);gi(3,8.8);gi(4,9.1);
-  draw("E2",9.4,.6);arrows("E2",9.9);lbl("lE2",9.4);
-  act(["sF"],10.0);unlit("#nH",10.0);lit("#nF",10.0,"#4C8DFF");
-  swap("#fs0","#fs1",10.0);tl.to("#n1",{borderColor:"#3DD68C",duration:.3},10.0);
-  swap("#ss1","#ss2",10.0);swap("#r1","#r2",10.0);dot(2,10.0);
+  // Batida 6: a conversa inteira, de ponta a ponta (32,5–38,0 s)
+  out(['#phone', '#app', '#rule', '#boss'], 32.3, 0.45);
+  tl.to('#trail', { x: -280, y: -340, scale: 1.3, duration: 0.9, ease: 'power2.inOut' }, 32.6);
+  tl.to('.arr', { backgroundColor: '#3DD68C', duration: 0.3, stagger: 0.15 }, 33.4);
+  inn('#c6', 33.0, { y: 16 }); inn('#s6', 33.3, { y: 12 });
+  out(['#c6', '#s6'], 37.8);
 
-  // B3 a etapa de IA classifica; a saída só escolhe o caminho que exige uma pessoa
-  draw("f1",12.2,.4);lit("#n2",12.6,"#A78BFA");
-  pop("#bA",13.4);swap("#r2","#r3",13.4);dot(3,13.4,"#F5B53F");
+  // Fecho (38,2–44 s, parado de 38,8 s ao fim)
+  out(['#hd', '#trail'], 37.9, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 38.2);
+  tl.set('#close', { opacity: 1 }, D);
 
-  // B4 o Flow pausa e pergunta pelo WhatsApp (Hub → Channels)
-  tl.to("#n2",{borderColor:"#3DD68C",duration:.3},16.5);
-  draw("f2",16.7,.5);lit("#n3",17.2,"#F5B53F");swap("#fs1","#fs2",17.2);
-  draw("E3",17.4,.5);arrows("E3",17.8);lbl("lE3",17.4);
-  act(["sH"],17.6);lit("#nH",17.6);
-  draw("E4",18.0,.8);arrows("E4",18.7);
-  unlit("#nH",18.8);unlit("#nF",18.8);act(["sC"],18.8);lit("#nC",18.8,"#3DD68C");
-  tl.to("#phC",{opacity:0,duration:.25},18.8);
-  fade("#cq",18.9);fade("#wA,#wR",19.2);fade("#cs0",19.4);
-  swap("#r3","#r4",19.4);dot(4,19.4,"#F5B53F");
-
-  // B5 a pessoa decide; a execução retoma; o Hub aplica a aprovação uma única vez
-  tl.to("#wA",{backgroundColor:"#3DD68C",color:"#0B0B0D",duration:.2},22.7);
-  swap("#cs0","#cs1",23.0);
-  drawR("E4",23.2,.7);
-  unlit("#nC",23.9);act(["sF"],23.9);lit("#nF",23.9,"#4C8DFF");
-  tl.to("#n3",{borderColor:"#3DD68C",duration:.3},23.9);swap("#fs2","#fs3",23.9);
-  draw("f3",24.0,.4);lit("#n4",24.4,"#2EC4B6");
-  drawR("E3",24.6,.5);act(["sH"],24.8);lit("#nH",24.8);unlit("#nF",24.8);
-  tl.to("#hph",{opacity:0,duration:.25},25.1);fade("#hr",25.2);pop("#bR",25.2);
-  tl.to("#n4",{borderColor:"#3DD68C",duration:.3},25.2);
-  swap("#r4","#r5",25.2);dot(5,25.2,"#3DD68C");fade("#hm2",25.3);
-
-  // B6 a conversa chega ao CRM; o agente consulta o KB e cita a fonte
-  unlit("#nH",28.0);
-  draw("E5",28.2,.5);arrows("E5",28.6);lbl("lE5",28.2);
-  act(["sR"],28.7);lit("#nR",28.7,"#7DB4FF");
-  tl.to("#phR",{opacity:0,duration:.25},28.7);fade("#rq",29.0);
-  draw("E6",31.2,.5);arrows("E6",31.6);lbl("lE6",31.2);
-  act(["sK"],31.7);unlit("#nR",31.7);lit("#nK",31.7,"#A78BFA");lit("#kp",31.8,"#A78BFA");
-  drawR("E6",32.2,.4);
-  act(["sR"],32.6);unlit("#nK",32.6);lit("#nR",32.6,"#7DB4FF");
-  fade("#al",32.6);fade("#ra",32.8);
-  swap("#r5","#r6",32.8);dot(6,32.8);
-
-  // B7 resultado final de volta ao SaaS
-  unlit("#nR",35.0);unlit("#kp",35.0);
-  act(["sF"],35.0);lit("#nF",35.0,"#4C8DFF");swap("#fs3","#fs4",35.2);
-  draw("E7",35.4,.8);arrows("E7",36.0);lbl("lE7",35.4);
-  act(["sS"],36.2);unlit("#nF",36.2);lit("#nS",36.2,"#E879F9");
-  // The SaaS learns the outcome only when the final result arrives
-  swap("#ss2","#ss3",36.2);fade("#rcpt",36.4);swap("#r6","#r7",36.4);dot(7,36.4,"#3DD68C");fade("#hm3",36.5);
-
-  // FECHO: a cadeia inteira legível e o pedido concluído de ponta a ponta
-  unlit("#nS",39.5);
-  act(["sS","sH","sF","sC","sR","sK"],39.5);
-  lit("#nM",40.0,"#E879F9");
-  tl.to("#rst,#dots",{opacity:0,duration:.3},40.2);
-  tl.fromTo("#leg",{opacity:0,x:-10},{opacity:1,x:0,duration:.4,ease:EO,immediateRender:false},40.5);
-  tl.to("#pad",{opacity:.001,duration:1},45);
-
-  // The site Player may load the page before the runtime creates the registry
-  window.__timelines=window.__timelines||{};
-  window.__timelines["welabs-chain-journey"]=tl;
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-chain-journey"] = tl;
 })();
 </script>
 </body>

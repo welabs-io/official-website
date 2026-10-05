@@ -3,245 +3,159 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Cadeia de integração · o mapa</title>
+<title>Plataforma · Os produtos se encaixam</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA MARCA */
+/* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--wait:#F5B53F;--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--solid:#E6E6EC}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
-p{white-space:nowrap}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
-/* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
-#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
-#title span,#closing span{color:var(--coral)}
-#caps{position:absolute;left:640px;top:24px;width:760px;height:56px}
-.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
-#closing{position:absolute;left:0;top:22px;font-size:46px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+/* PEÇAS DO QUEBRA-CABEÇA */
+.pz{position:absolute;top:330px;width:320px;height:330px;opacity:0}
+.pz>svg{position:absolute;left:-60px;top:0;width:440px;height:330px;overflow:visible}
+.pz .body{fill:var(--panel);stroke:var(--line);stroke-width:3;stroke-linejoin:round}
+.pz .lit{fill:rgba(255,69,43,.10);stroke:var(--coral);stroke-width:5;stroke-linejoin:round;opacity:0;filter:drop-shadow(0 0 16px rgba(255,69,43,.6))}
+.pz .ic{position:absolute;left:118px;top:40px;width:84px;height:84px;border-radius:24px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral)}
+.pz .nm{position:absolute;left:0;top:150px;width:320px;text-align:center;font-size:34px;font-weight:800;letter-spacing:-.5px;white-space:nowrap}
+.pz .ln{position:absolute;left:30px;top:206px;width:260px;text-align:center;font-size:26px;font-weight:600;line-height:34px;color:var(--muted);opacity:0}
+.pz .tick{position:absolute;left:134px;top:-26px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#p0{left:160px}#p1{left:480px}#p2{left:800px}#p3{left:1120px}#p4{left:1440px}
+#bar{position:absolute;left:160px;top:698px;width:1600px;height:8px;border-radius:4px;background:var(--coral);box-shadow:0 0 24px rgba(255,69,43,.6);transform-origin:0 50%;opacity:0}
 
-/* ARESTAS */
-svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
-.e{fill:none;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}
-.e.ex{stroke:var(--solid)}
-.e.pa{stroke:var(--wait);stroke-width:5;stroke-dasharray:2 12}
-.e.pl{stroke:var(--coral);stroke-dasharray:16 11;stroke-linecap:butt}
-.ah.ex{fill:var(--solid)}.ah.pa{fill:var(--wait)}.ah.pl{fill:var(--coral)}
-.mk{fill:none;stroke:#fff;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
-
-/* NÓS DOS PRODUTOS */
-.card{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel);opacity:0}
-.ch{display:flex;align-items:center;gap:14px;padding:0 18px;height:100%}
-.ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
-.kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
-.nm{font-size:30px;font-weight:700;line-height:36px;white-space:nowrap}
-.gr{flex:1}
-.tag{display:inline-flex;align-items:center;height:40px;font-size:24px;font-weight:700;border-radius:999px;padding:0 14px;white-space:nowrap}
-.tag.dash{background:#1A1210;border:2px dashed var(--coral);color:var(--coral)}
-#tMon{position:absolute;left:1462px;top:900px;opacity:0}
-#nSaaS{left:740px;top:125px;width:440px;height:100px;--acc:var(--ok)}
-#nFlow{left:100px;top:270px;width:400px;height:110px;--acc:var(--blue)}
-#nCh{left:1420px;top:270px;width:400px;height:110px;--acc:var(--teal)}
-#nCRM{left:1420px;top:780px;width:400px;height:110px;--acc:var(--pink)}
-#nKB{left:700px;top:830px;width:360px;height:110px;--acc:var(--violet)}
-#nMon{left:1420px;top:950px;width:400px;height:96px;--acc:var(--coral);border-style:dashed;border-color:var(--coral);background:#1A1210}
-#nHub{left:640px;top:465px;width:640px;height:195px;--acc:var(--coral);border-width:3px;border-color:var(--coral);background:#1C1416}
-#nHub .ch{height:96px}
-#nHub .nm{font-size:34px;line-height:40px}
-#chips{position:absolute;left:18px;right:18px;top:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-#chips span{height:40px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
-
-/* RÓTULOS DO QUE TRAFEGA */
-.lb{position:absolute;height:76px;padding:6px 14px;border-radius:14px;background:#141418;border:2px solid var(--line);opacity:0}
-.lb.ex{border-color:#5A5A66}.lb.pa{border-color:var(--wait)}
-.lb p{height:30px;line-height:30px;font-size:24px;white-space:nowrap;display:flex;align-items:center;gap:10px}
-.lb .l1{font-weight:800;color:var(--text)}
-.lb .l2{font-weight:600;color:var(--muted)}
-.pb{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;background:rgba(245,181,63,.18);color:var(--wait);font-size:24px;font-weight:800}
-
-/* LEGENDA */
-#legend{position:absolute;left:0;width:1920px;top:986px;height:44px;display:flex;align-items:center;justify-content:center;gap:48px;opacity:0}
-#legend div{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="welabs-chain-overview" data-width="1920" data-height="1080" data-start="0" data-duration="34">
   <div id="hd">
-    <div id="title">Cadeia de integração<span>.</span></div>
-    <div id="caps"></div>
-    <div id="closing">Um barramento de domínio, muitos produtos<span>.</span></div>
-    <div id="sbx">sandbox · dados DEMO</div>
+    <div id="wm">Plataforma<span>.</span></div>
+    <div id="kick">Some o sistema solto</div>
+    <div id="demo">DEMO</div>
     <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <svg id="edges" viewBox="0 0 1920 1080"><defs id="defs"></defs><g id="eg"></g></svg>
-
-  <div class="card" id="nSaaS"><div class="ch"><span class="ic" id="iSaaS"></span><div><p class="kd">Encaixe</p><p class="nm">SaaS · app · portal</p></div></div></div>
-  <div class="card" id="nFlow"><div class="ch"><span class="ic" id="iFlow"></span><div><p class="kd">Motor</p><p class="nm">Flow</p></div></div></div>
-  <div class="card" id="nCh"><div class="ch"><span class="ic" id="iCh"></span><div><p class="kd">Canais</p><p class="nm">Channels</p></div></div></div>
-  <div class="card" id="nCRM"><div class="ch"><span class="ic" id="iCRM"></span><div><p class="kd">Relacionamento</p><p class="nm">CRM</p></div></div></div>
-  <div class="card" id="nKB"><div class="ch"><span class="ic" id="iKB"></span><div><p class="kd">Conhecimento</p><p class="nm">KB</p></div></div></div>
-  <div class="card" id="nHub">
-    <div class="ch"><span class="ic" id="iHub"></span><div><p class="kd">Barramento de domínio</p><p class="nm">Hub de domínio</p></div></div>
-    <div id="chips"><span>Cadastros</span><span>Regras</span><span>Contratos</span><span>Fiscal</span><span>Financeiro</span><span>Integrações</span></div>
+  <div class="pz" id="p0">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 10h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+    <div class="nm">Channels</div>
+    <div class="ln">Toda conversa num lugar só</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
-
-  <div id="labels"></div>
-
-  <div id="legend">
-    <div><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#E6E6EC" stroke-width="4" stroke-linecap="round"/></svg>Dados e eventos</div>
-    <div><svg width="56" height="10"><line x1="3" y1="5" x2="54" y2="5" stroke="#F5B53F" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round"/></svg>Pessoas e conhecimento no fluxo</div>
+  <div class="pz" id="p1">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm">CRM</div>
+    <div class="ln">Cada pessoa com a sua história</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
-  <div id="pad"></div>
+  <div class="pz" id="p2">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm">KB</div>
+    <div class="ln">Resposta com a fonte junto</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+  </div>
+  <div class="pz" id="p3">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm">Hub de domínio</div>
+    <div class="ln">Cadastros e regras num lugar só</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+  </div>
+  <div class="pz" id="p4">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm">Flow</div>
+    <div class="ln">Processo que anda até o fim</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+  </div>
+  <div id="bar"></div>
+
+  <div class="cap" id="c1">Cada sistema resolvia <span>um pedaço, sozinho</span></div>
+  <div class="sub" id="s1">e alguém fazia a ponte entre eles na mão</div>
+  <div class="cap" id="k0">Channels: some a <span>conversa perdida no celular</span></div>
+  <div class="cap" id="k1">CRM: some o <span>“quem é você mesmo?”</span></div>
+  <div class="cap" id="k2">KB: some a <span>resposta de memória</span></div>
+  <div class="cap" id="k3">Hub de domínio: some a <span>regra repetida</span></div>
+  <div class="cap" id="k4">Flow: some o <span>processo parado no meio</span></div>
+  <div class="cap" id="c5">Encaixadas, uma termina <span>o que a outra começa</span></div>
+  <div class="sub" id="s5">sem ninguém copiando dado de um sistema para o outro</div>
+
+  <div id="close">
+    <div class="l1">Cada peça tira um problema do caminho.<br><span>Juntas, a operação inteira anda.</span></div>
+    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
-(function(){
-  // ÍCONES E UTILITÁRIOS
-  const IC={
-    app:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01M10 6.5h.01"/>',
-    flow:'<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/>',
-    chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
-    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
-    cam:'<path d="M23 7l-7 5 7 5z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
-    hub:'<circle cx="12" cy="12" r="3"/><path d="M12 2v7M12 15v7M2 12h7M15 12h7"/>'
-  };
-  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
-  [["iSaaS","app"],["iFlow","flow"],["iCh","chat"],["iCRM","users"],["iKB","book"],["iHub","hub"]].forEach(([id,n])=>{document.getElementById(id).innerHTML=ico(n,30);});
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 34;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
 
-  // GEOMETRIA DAS ARESTAS (constantes pré-calculadas)
-  // kind: ex = data and events between products, pa = people and knowledge inside the flow (amber)
-  // both = bidirectional; label box: [left, top, width]
-  const E=[
-    {id:"e1",k:"ex",pts:[[700,465],[700,350],[504,350]],both:false,lb:[530,372,380],l1:"regras e definições",l2:"o Flow recebe tudo pronto"},
-    {id:"e2",k:"ex",pts:[[300,270],[300,175],[736,175]],both:false,lb:[355,137,330],l1:"execução e resultado",l2:"efeitos chegam ao SaaS"},
-    {id:"e3",k:"ex",pts:[[1620,384],[1620,776]],both:true,lb:[1460,542,320],l1:"eventos de conversa",l2:"conversas e mensagens"},
-    {id:"e4",k:"ex",pts:[[1420,865],[1064,865]],both:false,lb:[1075,885,330],l1:"respostas do KB",l2:"com o acesso certo"},
-    {id:"e5",k:"ex",pts:[[1420,345],[1350,345],[1350,760],[980,760],[980,826]],both:false,lb:[1010,676,320],l1:"KB no atendimento",l2:"respostas com fonte"},
-    {id:"e6",k:"pa",pts:[[504,300],[1416,300]],both:true,lb:[720,262,480],l1:"interação humana",l2:"pergunta no canal, resposta retoma"},
-    {id:"e7",k:"pa",pts:[[780,660],[780,826]],both:false,lb:[535,707,460],l1:"documentos do negócio",l2:"viram fonte do KB"},
-    {id:"e8",k:"pa",pts:[[300,380],[300,885],[696,885]],both:false,lb:[100,582,400],l1:"conhecimento no fluxo",l2:"cada execução consulta o KB"}
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: peças soltas, cada uma no seu canto (0,6–5,8 s)
+  var loose = [
+    { x: -110, y: -150, r: -12 }, { x: -40, y: 210, r: 9 }, { x: 0, y: -170, r: 7 }, { x: 40, y: 200, r: -8 }, { x: 110, y: -130, r: 12 }
   ];
-  const NS="http://www.w3.org/2000/svg";
-  const defs=document.getElementById("defs"),eg=document.getElementById("eg"),lbBox=document.getElementById("labels");
-  const mk=(tag,attrs,parent)=>{const n=document.createElementNS(NS,tag);for(const a in attrs)n.setAttribute(a,attrs[a]);parent.appendChild(n);return n;};
-  const dStr=p=>p.map((q,i)=>(i?"L":"M")+q[0]+" "+q[1]).join(" ");
-  const segLen=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
-  const plen=p=>p.slice(1).reduce((s,q,i)=>s+segLen(p[i],q),0);
-  // Arrowhead pointing from a toward b, tip at b
-  const arrow=(a,b,cls,g)=>{const dx=Math.sign(b[0]-a[0]),dy=Math.sign(b[1]-a[1]);const L=16,W=10;
-    const bx=b[0]-dx*L,by=b[1]-dy*L;const px=-dy*W,py=dx*W;
-    return mk("polygon",{points:`${b[0]},${b[1]} ${bx+px},${by+py} ${bx-px},${by-py}`,class:"ah "+cls,opacity:0},g);};
-  E.forEach(e=>{
-    const L=plen(e.pts);e.len=L;
-    const m=mk("mask",{id:"m-"+e.id,maskUnits:"userSpaceOnUse",x:0,y:0,width:1920,height:1080},defs);
-    e.mp=mk("path",{d:dStr(e.pts),class:"mk","stroke-dasharray":L+" "+L,"stroke-dashoffset":L},m);
-    e.g=mk("g",{id:e.id},eg);
-    mk("path",{d:dStr(e.pts),class:"e "+e.k,mask:"url(#m-"+e.id+")"},e.g);
-    const n=e.pts.length;
-    e.a1=arrow(e.pts[n-2],e.pts[n-1],e.k,e.g);
-    if(e.both)e.a0=arrow(e.pts[1],e.pts[0],e.k,e.g);
-    e.dot=mk("circle",{cx:e.pts[0][0],cy:e.pts[0][1],r:10,fill:e.k==="pa"?"#F5B53F":e.k==="pl"?"#FF452B":"#FF452B",opacity:0},eg);
-    if(e.both){const r=e.pts.slice().reverse();e.dot2=mk("circle",{cx:r[0][0],cy:r[0][1],r:10,fill:e.k==="pa"?"#F5B53F":"#FF452B",opacity:0},eg);}
-    if(e.lb){const d=document.createElement("div");d.className="lb "+e.k;d.id="l-"+e.id;
-      d.style.left=e.lb[0]+"px";d.style.top=e.lb[1]+"px";d.style.width=e.lb[2]+"px";
-      d.innerHTML=`<p class="l1">${e.l1}</p><p class="l2">${e.l2}</p>`;
-      lbBox.appendChild(d);e.lbEl=d;}
+  loose.forEach(function (p, i) {
+    tl.fromTo('#p' + i, { opacity: 0, x: p.x, y: p.y + 40, rotation: p.r * 1.6 }, { opacity: 0.7, x: p.x, y: p.y, rotation: p.r, duration: 0.6, ease: 'back.out(1.6)' }, 0.6 + i * 0.22);
+    // Loose pieces drift a little: they never settle on their own
+    tl.to('#p' + i, { rotation: p.r * 0.6, y: p.y - 10, duration: 1.0, ease: 'sine.inOut' }, 2.6 + i * 0.1).to('#p' + i, { rotation: p.r, y: p.y, duration: 1.0, ease: 'sine.inOut' }, 3.6 + i * 0.1);
   });
-  const byId=Object.fromEntries(E.map(e=>[e.id,e]));
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  out(['#c1', '#s1'], 5.6);
 
-  const tl=gsap.timeline({paused:true});
-  const EO="power3.out",EZ="power2.inOut";
+  // Batida 2: cada peça encaixa e tira um problema do caminho (6,0–21,7 s)
+  [0, 1, 2, 3, 4].forEach(function (i) {
+    var t = 6.0 + i * 3.2;
+    inn('#k' + i, t, { y: 16 });
+    tl.to('#p' + i, { opacity: 1, x: 0, y: 0, rotation: 0, duration: 0.7, ease: 'back.out(1.4)' }, t + 0.1);
+    tl.fromTo('#p' + i + ' .lit', { opacity: 0 }, { opacity: 1, duration: 0.25 }, t + 0.8);
+    tl.fromTo('#p' + i + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.85);
+    inn('#p' + i + ' .ln', t + 0.9, { y: 10 }, 0.4);
+    tl.to('#p' + i + ' .lit', { opacity: 0, duration: 0.5 }, t + 2.0);
+    out('#k' + i, t + 2.9);
+  });
 
-  // LEGENDAS DAS BATIDAS
-  const caps=[
-    "Hub de domínio no centro, produtos ao redor",
-    "Hub entrega ao Flow regras e definições",
-    "Flow executa e devolve o resultado ao SaaS",
-    "Channels e CRM trocam conversas em tempo real",
-    "CRM e Channels respondem com o KB",
-    "Pessoas e conhecimento entram no fluxo",
-    "Cadastros, regras e fiscal servem a todos"
-  ];
-  const capBox=document.getElementById("caps");
-  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
-  // Beat starts; each state change settles at least 1.5 s before the next beat
-  const CT=[0.6,4.0,8.0,11.6,15.4,20.0,25.0,28.2];
-  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+  // Batida 3: o encaixe inteiro anda junto (22,0–27,6 s)
+  inn('#c5', 22.1, { y: 16 }); inn('#s5', 22.4, { y: 12 });
+  [0, 1, 2, 3, 4].forEach(function (i) {
+    tl.to('#p' + i + ' .lit', { opacity: 1, duration: 0.25 }, 22.6 + i * 0.3);
+    tl.to('#p' + i + ' .lit', { opacity: 0.45, duration: 0.4 }, 23.0 + i * 0.3);
+  });
+  tl.fromTo('#bar', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 1.4, ease: 'power2.inOut' }, 22.6);
+  out(['#c5', '#s5'], 27.4);
 
-  // Light one edge: draw, arrowheads, travelling dot(s), label
-  const light=(id,t)=>{
-    const e=byId[id];
-    tl.to(e.mp,{attr:{"stroke-dashoffset":0},duration:.9,ease:EZ},t);
-    tl.to([e.a1,e.a0].filter(Boolean),{attr:{opacity:1},duration:.25},t+.85);
-    const run=(dot,pts,t0)=>{
-      tl.set(dot,{attr:{cx:pts[0][0],cy:pts[0][1]}},t0);
-      tl.to(dot,{attr:{opacity:1},duration:.15},t0);
-      let tt=t0+.15;const total=plen(pts);
-      for(let i=1;i<pts.length;i++){const d=1.0*segLen(pts[i-1],pts[i])/total;tl.to(dot,{attr:{cx:pts[i][0],cy:pts[i][1]},duration:d,ease:"none"},tt);tt+=d;}
-      tl.to(dot,{attr:{opacity:0},duration:.2},tt);
-    };
-    run(e.dot,e.pts,t+.2);
-    if(e.dot2)run(e.dot2,e.pts.slice().reverse(),t+.2);
-    if(e.lbEl)tl.fromTo(e.lbEl,{opacity:0,y:8},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},t+1.0);
-  };
-  const dim=(ids,t)=>{ids.forEach(id=>{const e=byId[id];tl.to(e.g,{attr:{opacity:.35},duration:.4},t);if(e.lbEl)tl.to(Array.from(e.lbEl.children),{opacity:.45,duration:.4},t);});};
-  // Labels dim their text only: the box stays opaque so lines never show through the text
-  // Node accent colors (same tokens as the node CSS)
-  const ACC={nSaaS:"#3DD68C",nFlow:"#4C8DFF",nCh:"#2EC4B6",nCRM:"#E879F9",nKB:"#A78BFA"};
-  const focus=(sels,t)=>{sels.split(",").forEach(s=>tl.to(s,{borderColor:ACC[s.slice(1)],duration:.3},t));};
-  const unfocus=(sels,t)=>{tl.to(sels,{borderColor:"#3A3A42",duration:.3},t);};
-  const cardIn=(sel,t)=>tl.fromTo(sel,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},t);
+  // Fecho (27,9–34 s, parado de 28,5 s ao fim)
+  out(['#hd', '#p0', '#p1', '#p2', '#p3', '#p4', '#bar'], 27.6, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 27.9);
+  tl.set('#close', { opacity: 1 }, D);
 
-  // ABERTURA: o Hub no centro e os produtos ao redor
-  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
-  cardIn("#nHub",.3);
-  tl.fromTo("#chips span",{opacity:0,y:8},{opacity:1,y:0,duration:.3,stagger:.08,ease:EO,immediateRender:false},.8);
-  cardIn("#nSaaS",1.0);cardIn("#nFlow",1.15);cardIn("#nCh",1.3);cardIn("#nCRM",1.45);cardIn("#nKB",1.6);
-  tl.fromTo("#legend",{opacity:0},{opacity:1,duration:.4,immediateRender:false},2.0);
-
-  // B1 Hub para Flow: regras e definições (R1-R3)
-  focus("#nFlow",4.0);light("e1",4.0);
-
-  // B2 Flow para SaaS: execução e resultado (R5)
-  dim(["e1"],8.0);unfocus("#nFlow",8.0);focus("#nFlow,#nSaaS",8.0);light("e2",8.0);
-
-  // B3 Channels e CRM: conversas em tempo real (R8)
-  dim(["e2"],11.6);unfocus("#nFlow,#nSaaS",11.6);focus("#nCh,#nCRM",11.6);light("e3",11.6);
-
-  // B4 CRM e Channels respondem com o KB (R10, R11)
-  dim(["e3"],15.4);unfocus("#nCh",15.4);focus("#nKB",15.4);light("e4",15.4);
-  focus("#nCh",16.2);light("e5",16.2);
-
-  // B5 pessoas e conhecimento entram no fluxo
-  dim(["e4","e5"],20.0);unfocus("#nCRM,#nKB,#nCh",20.0);
-  focus("#nFlow,#nCh",20.0);light("e6",20.0);
-  focus("#nKB",20.7);light("e7",20.7);
-  light("e8",21.4);
-
-  // B6 o Hub serve a todos: cadastros, regras e fiscal acendem no centro
-  dim(["e6","e7","e8"],25.0);unfocus("#nFlow,#nCh,#nKB",25.0);
-  tl.to("#nHub",{boxShadow:"0 0 0 10px rgba(255,69,43,.22)",duration:.4},25.2);
-  tl.to("#chips span",{borderColor:"#FF452B",backgroundColor:"#2A1512",duration:.3,stagger:.12},25.4);
-
-  // FECHO: mapa inteiro legível e a frase do barramento
-  tl.to("#nHub",{boxShadow:"0 0 0 0px rgba(255,69,43,0)",duration:.4},28.2);
-  tl.to("#chips span",{borderColor:"#3A3A42",backgroundColor:"#1F1F25",duration:.4},28.2);
-  tl.to(E.map(e=>e.g),{attr:{opacity:1},duration:.5},28.2);
-  tl.to(E.filter(e=>e.lbEl).map(e=>e.lbEl.children).flatMap(c=>Array.from(c)),{opacity:1,duration:.5},28.2);
-  tl.to("#title",{opacity:0,duration:.3},28.0);
-  tl.fromTo("#closing",{opacity:0,y:10},{opacity:1,y:0,duration:.6,ease:EO,immediateRender:false},28.4);
-  tl.to("#pad",{opacity:.001,duration:1},33);
-
-  // The site Player may load the page before the runtime creates the registry
-  window.__timelines=window.__timelines||{};
-  window.__timelines["welabs-chain-overview"]=tl;
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-chain-overview"] = tl;
 })();
 </script>
 </body>
