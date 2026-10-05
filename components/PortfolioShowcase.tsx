@@ -206,7 +206,7 @@ export function ProductCard({
   );
 }
 
-// Products shown only through films (IUS, Netsafety, Report CRM; Channels on Welabs).
+// Products shown only through films (IUS; Channels on Welabs).
 function FilmProductCard({
   product,
   en,
@@ -220,7 +220,7 @@ function FilmProductCard({
       ? `/welabs/produtos/${product.id}`
       : `/portfolio/${product.id}`;
   const logo =
-    "logo" in product && product.logo
+    "logo" in product && typeof product.logo === "string"
       ? { src: product.logo, light: true }
       : null;
   return (

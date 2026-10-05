@@ -117,32 +117,6 @@
     "presentationSlug": "sistema-ima"
   },
   {
-    "id": "netsafety",
-    "title": "Netsafety",
-    "duration": 14,
-    "compositionId": "netsafety-record-link",
-    "src": "/motion/netsafety/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "netsafety",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "report-crm",
-    "title": "Report CRM",
-    "duration": 14.4,
-    "compositionId": "report-crm-concept",
-    "src": "/motion/report-crm/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "report-crm",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
     "id": "sgici",
     "title": "SGICI",
     "duration": 12,
@@ -816,32 +790,6 @@
     "reel": false,
     "also": [],
     "presentationSlug": "sgici"
-  },
-  {
-    "id": "biz-report-crm",
-    "title": "Report CRM",
-    "duration": 18,
-    "compositionId": "biz-report-crm",
-    "src": "/motion/biz-report-crm/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "report-crm",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "biz-netsafety",
-    "title": "Netsafety",
-    "duration": 23,
-    "compositionId": "biz-netsafety",
-    "src": "/motion/biz-netsafety/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "netsafety",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
   },
   {
     "id": "wego-intro",

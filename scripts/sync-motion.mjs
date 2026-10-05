@@ -60,6 +60,9 @@ const EXCLUDED = new Set([
   "mandato-participativo",
   "tetrapak-prospecting-app",
   "helper-project-management",
+  // Operator cut of 2026-10-05: both left the portfolio.
+  "netsafety",
+  "report-crm",
 ]);
 
 // Client programmes shown as clients only: their journey films stay off the product pages.
@@ -246,16 +249,7 @@ const ROUND2 = {
     title: "Central ESG",
   },
   "biz-sgici": { kind: "business", product: "sgici", title: "SGICI" },
-  "biz-report-crm": {
-    kind: "business",
-    product: "report-crm",
-    title: "Report CRM",
-  },
-  "biz-netsafety": {
-    kind: "business",
-    product: "netsafety",
-    title: "Netsafety",
-  },
+  // Report CRM and Netsafety left the portfolio on 2026-10-05.
 };
 
 // Every brand intro of lib/brand-intros.json is synced once accepted: its closing frame is the card

@@ -213,8 +213,8 @@ export function PortfolioIndex({
                   ? "Management, knowledge, relationships and automation in our own product ecosystem."
                   : "Gestão, conhecimento, relacionamento e automação em nosso ecossistema de produtos próprios."
                 : en
-                  ? "Explore product contexts through their brands, challenges and illustrative journeys."
-                  : "Conheça contextos de produto por suas marcas, desafios e jornadas ilustrativas."}
+                  ? "Some of the products in our portfolio, through their brands, challenges and illustrative journeys."
+                  : "Alguns dos produtos do nosso portfólio, por suas marcas, desafios e jornadas ilustrativas."}
             </p>
             <nav
               className={styles.brandLinks}
@@ -936,7 +936,7 @@ function ImagineApproach({ en }: { en: boolean }) {
 }
 
 // PRODUTOS APRESENTADOS SÓ POR FILME
-// Products without a legacy framepack (IUS, Netsafety, Report CRM; Channels on Welabs) get a film-only card and page.
+// Products without a legacy framepack (IUS; Channels on Welabs) get a film-only card and page.
 type MotionProduct = (typeof motionProducts)[number];
 const motionHref = (p: MotionProduct) =>
   p.publisher === "Welabs" ? `/welabs/produtos/${p.id}` : `/portfolio/${p.id}`;
@@ -1020,7 +1020,7 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
               <span className={styles.eyebrow}>
                 {product.publisher} / {en ? "PRODUCT" : "PRODUTO"}
               </span>
-              {"logo" in product && product.logo ? (
+              {"logo" in product && typeof product.logo === "string" ? (
                 <h1 className={styles.logoTitle}>
                   <span className={`${styles.heroLogo} ${styles.lightLogo}`}>
                     <img

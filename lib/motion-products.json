@@ -5,27 +5,14 @@
     "title": "IUS",
     "sector": ["Saúde", "Health"],
     "stage": ["Em desenvolvimento", "In development"],
-    "summary": ["Proposta de saúde para profissionais e pacientes: o exame compartilhado chega ao profissional antes do cadastro e é incorporado depois.", "A health proposition for professionals and patients: a shared exam reaches the professional before sign-up and is incorporated afterwards."],
-    "audience": ["Profissionais de saúde e pacientes.", "Health professionals and patients."]
-  },
-  {
-    "id": "netsafety",
-    "publisher": "Imagine",
-    "title": "Netsafety",
-    "logo": "/product-brands/netsafety.png",
-    "sector": ["Segurança do trabalho", "Workplace safety"],
-    "stage": ["Apresentação conceitual", "Concept presentation"],
-    "summary": ["Segurança do trabalho: a análise de riscos (APR) gera as permissões de trabalho, com assinatura de quem executa, documentos exigidos, estados acompanhados e exportação em PDF.", "Workplace safety: the risk analysis (APR) issues the work permits, with worker signatures, required documents, tracked states and PDF export."],
-    "audience": ["Equipes de segurança e de operação.", "Safety and operations teams."]
-  },
-  {
-    "id": "report-crm",
-    "publisher": "Imagine",
-    "title": "Report CRM",
-    "sector": ["Relacionamento", "Relationships"],
-    "stage": ["Apresentação conceitual", "Concept presentation"],
-    "summary": ["Relacionamento comercial com empresa, contato e proposta ligados no mesmo contexto, do cadastro à aprovação.", "Commercial relationships with company, contact and proposal linked in one context, from registration to approval."],
-    "audience": ["Operadores do relacionamento comercial.", "Commercial relationship operators."]
+    "summary": [
+      "Proposta de saúde para profissionais e pacientes: o exame compartilhado chega ao profissional antes do cadastro e é incorporado depois.",
+      "A health proposition for professionals and patients: a shared exam reaches the professional before sign-up and is incorporated afterwards."
+    ],
+    "audience": [
+      "Profissionais de saúde e pacientes.",
+      "Health professionals and patients."
+    ]
   },
   {
     "id": "channels",
@@ -33,7 +20,13 @@
     "title": "Channels",
     "sector": ["Canais de atendimento", "Service channels"],
     "stage": ["Em desenvolvimento", "In development"],
-    "summary": ["Um contrato para todos os canais: WhatsApp oficial com número próprio e templates, central de voz com fila e transferência, e eventos assinados para qualquer produto que se conecte.", "One contract for every channel: official WhatsApp with its own number and templates, a voice centre with queues and transfers, and signed events for any product that connects."],
-    "audience": ["Produtos e equipes que atendem por mensagem e voz.", "Products and teams that serve people by message and voice."]
+    "summary": [
+      "Um contrato para todos os canais: WhatsApp oficial com número próprio e templates, central de voz com fila e transferência, e eventos assinados para qualquer produto que se conecte.",
+      "One contract for every channel: official WhatsApp with its own number and templates, a voice centre with queues and transfers, and signed events for any product that connects."
+    ],
+    "audience": [
+      "Produtos e equipes que atendem por mensagem e voz.",
+      "Products and teams that serve people by message and voice."
+    ]
   }
 ]
