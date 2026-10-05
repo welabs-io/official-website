@@ -1,82 +1,365 @@
-/* COLEÇÃO E CARTÕES DE PRODUTO */
-.collection { width: 100%; }
-.collectionToolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 40px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
-.filters { display: flex; flex-wrap: wrap; gap: 6px 24px; }
-.filters button { border: 0; border-bottom: 1px solid transparent; background: none; color: var(--text-2); padding: 6px 0; cursor: pointer; font: inherit; font-size: 14px; line-height: 1.2; transition: color .4s var(--ease), border-color .4s var(--ease); }
-.filters button span { margin-left: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
-.filters button[aria-pressed="true"] { color: var(--text); border-bottom-color: var(--accent); }
-.filters button:hover { color: var(--text); }
-.count { margin: 0; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); white-space: nowrap; }
-.collectionLabel { margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
-.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px 32px; }
-.card { min-width: 0; position: relative; z-index: 1; }
-.cardLink { display: block; height: 100%; text-decoration: none; color: var(--text); }
+/* COLEÇÃO E CARTÕES DE SISTEMA */
+.collection {
+  width: 100%;
+}
+.collectionToolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+}
+.filters button {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--text-2);
+  padding: 6px 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  transition:
+    color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.filters button span {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.filters button[aria-pressed="true"] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+.filters button:hover {
+  color: var(--text);
+}
+.count {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.collectionLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
 
-/* The cover stacks the frame and a caption strip (purpose + notice): text never sits on the busy frame */
-.cover { position: relative; display: flex; flex-direction: column; overflow: hidden; isolation: isolate; border-radius: var(--radius); border: 1px solid var(--line); background: var(--ink-2); color: var(--text); transition: border-color .6s var(--ease); }
-/* Short veil under the logo row only */
-.cover::before { content: ''; position: absolute; z-index: 2; inset: 0 0 auto 0; height: 84px; background: linear-gradient(180deg, color-mix(in srgb, var(--ink) 60%, transparent), transparent); pointer-events: none; }
-/* Product colour arrives as a hairline that draws across the top on hover */
-.cover::after { content: ''; position: absolute; z-index: 4; top: 0; left: 0; right: 0; height: 2px; background: var(--cover-accent); transform: scaleX(0); transform-origin: left; transition: transform .8s var(--ease); }
-.cardLink:hover .cover { border-color: var(--line-2); }
-.cardLink:hover .cover::after { transform: scaleX(1); }
-.business, .construction, .sustainability, .public, .welabs { background: var(--ink-3); }
+/* Two systems per row. A thread runs down the gutter between the columns and branches into every
+   cover; each branch draws in when its card is revealed. */
+.grid {
+  --gap-x: 48px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px var(--gap-x);
+}
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-0.5px);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--thread-quiet) 6%,
+    var(--thread-quiet) 94%,
+    transparent
+  );
+  pointer-events: none;
+}
+.card {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+  container-type: inline-size;
+}
+/* Branch from the gutter thread to the middle of the cover (16:9, so its middle is 9/32 of the width) */
+.grid > .card::before {
+  content: "";
+  position: absolute;
+  top: calc(100cqw * 9 / 32);
+  width: calc(var(--gap-x) / 2);
+  height: 1px;
+  background: var(--thread);
+  transform: scaleX(0);
+  transition: transform 0.9s var(--ease) 0.25s;
+  pointer-events: none;
+}
+.grid > .card::after {
+  content: "";
+  position: absolute;
+  top: calc(100cqw * 9 / 32 - 3px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transform: scale(0.2);
+  transition:
+    opacity 0.4s var(--ease) 0.9s,
+    transform 0.6s var(--ease) 0.9s;
+  pointer-events: none;
+}
+.grid > .card:nth-child(odd)::before {
+  left: 100%;
+  transform-origin: left;
+}
+.grid > .card:nth-child(even)::before {
+  right: 100%;
+  transform-origin: right;
+}
+.grid > .card:nth-child(odd)::after {
+  left: calc(100% + var(--gap-x) / 2 - 3.5px);
+}
+.grid > .card:nth-child(even)::after {
+  right: calc(100% + var(--gap-x) / 2 - 3.5px);
+}
+.grid > .card[data-in]::before {
+  transform: scaleX(1);
+}
+.grid > .card[data-in]::after {
+  opacity: 1;
+  transform: none;
+}
+.cardLink {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: var(--text);
+}
 
-.coverTop { position: absolute; z-index: 3; inset: 0 0 auto 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px 18px; }
-.logoPlate { display: flex; align-items: center; justify-content: center; width: 112px; height: 42px; padding: 7px 10px; border-radius: 2px; flex-shrink: 0; }
-.logoPlate img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.lightPlate { background: #eef0ef; }
-.darkPlate { background: var(--ink); border: 1px solid var(--line-2); }
-.contextLabel { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
-.publisher { font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; padding: 4px 8px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 82%, transparent); color: var(--text-2); }
-.purpose { order: 2; position: relative; z-index: 3; margin: 0; padding: 16px 52px 4px 18px; font-size: clamp(16px, 1.3vw, 18px); font-weight: 500; letter-spacing: -.012em; line-height: 1.3; border-top: 1px solid var(--line); }
-.sceneCrop { order: 1; position: relative; z-index: 1; align-self: flex-end; margin: 72px 22px 22px auto; width: 46%; aspect-ratio: 678 / 588; overflow: hidden; border-radius: 2px; background: #fff; }
-/* Crop only the existing synthetic diagram panel. The card supplies its own persistent notice. */
-.sceneCrop img { position: absolute; max-width: none; width: 177%; height: 146.26%; left: -71.09%; top: -26.02%; }
-.coverNotice { order: 3; position: relative; z-index: 3; padding: 0 52px 14px 18px; font-family: var(--font-mono); font-size: 9.5px; line-height: 1.4; color: var(--text-3); }
-.openArrow { position: absolute; z-index: 3; right: 16px; bottom: 12px; font-size: 16px; line-height: 1; color: var(--text); transition: transform .5s var(--ease); }
-.cardLink:hover .openArrow { transform: translate(3px, -3px); }
+/* The cover is the film's closing frame alone: no logo, label or caption on top of it */
+.cover {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+  transition: border-color 0.6s var(--ease);
+}
+.cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.4s var(--ease);
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--cover-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.coverFallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 20px;
+  color: var(--text-2);
+}
+.cardLink:hover .cover {
+  border-color: var(--line-2);
+}
+.cardLink:hover .cover::after {
+  transform: scaleX(1);
+}
+.cardLink:hover .cover img {
+  transform: scale(1.03);
+}
+.openArrow {
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text);
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  opacity: 0;
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.5s var(--ease);
+}
+.cardLink:hover .openArrow,
+.cardLink:focus-visible .openArrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
 
-.cardBody { padding: 18px 0 0; }
-.metadata { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; color: var(--text-3); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase; line-height: 1.5; }
-.stage { padding-left: 12px; border-left: 1px solid var(--line-2); }
-.cardBody h2 { font-size: 21px; letter-spacing: -.018em; font-weight: 500; line-height: 1.2; margin: 10px 0 8px; }
-.summary { font-size: 14px; line-height: 1.65; max-width: 56ch; margin: 0; color: var(--text-2); }
-.explore { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; line-height: 1.5; margin-top: 14px; padding-bottom: 3px; border-bottom: 1px solid var(--line-2); transition: border-color .4s var(--ease); }
-.explore span { font-size: 13px; }
-.cardLink:hover .explore { border-color: var(--accent); }
+.cardBody {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 16px;
+  padding: 14px 0 0;
+}
+.cardBody .name {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -0.016em;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.logoPlate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 112px;
+  height: 36px;
+  padding: 6px 10px;
+  border-radius: 2px;
+}
+.logoPlate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.lightPlate {
+  background: #eef0ef;
+}
+.darkPlate {
+  background: var(--ink-2);
+  border: 1px solid var(--line-2);
+}
+.metadata {
+  justify-self: end;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 10px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  text-align: right;
+}
+.stage {
+  padding-left: 10px;
+  border-left: 1px solid var(--line-2);
+}
+.summary {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 60ch;
+  margin: 2px 0 0;
+  color: var(--text-2);
+}
+.explore {
+  grid-column: 1 / -1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--line-2);
+  transition: border-color 0.4s var(--ease);
+}
+.cardLink:hover .explore {
+  border-color: var(--accent);
+}
+.collectionNote {
+  margin: 40px 0 0;
+  max-width: 72ch;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-3);
+}
+.cardLink:focus-visible,
+.filters button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
 
-.featured { grid-column: span 2; }
-.featured .sceneCrop.filmCrop { aspect-ratio: 21 / 9; }
-.featured .purpose { padding: 18px 60px 4px 24px; font-size: clamp(18px, 1.6vw, 21px); }
-.featured .coverTop { padding: 20px 24px; }
-.featured .coverNotice { padding-left: 24px; }
-.featured .cardBody { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: 0 40px; padding-top: 22px; }
-.featured .metadata { grid-column: 1; }
-.featured .cardBody h2 { grid-column: 1; grid-row: 2 / span 2; margin-bottom: 0; font-size: clamp(22px, 2vw, 26px); }
-.featured .summary { grid-column: 2; grid-row: 1 / span 2; }
-.featured .explore { grid-column: 2; justify-self: start; }
-.collectionNote { margin: 56px 0 0; max-width: 72ch; font-size: 12px; line-height: 1.7; color: var(--text-3); }
-.cardLink:focus-visible, .filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
-
-/* Film covers: a 16:9 frame of the accepted business film fills the cover */
-.sceneCrop.filmCrop { margin: 0; width: 100%; aspect-ratio: 16 / 9; border-radius: 0; background: var(--ink); }
-.sceneCrop.filmCrop img { width: 100%; height: 100%; left: 0; top: 0; object-fit: cover; object-position: center top; transition: transform 1.4s var(--ease); }
-.cardLink:hover .sceneCrop.filmCrop img { transform: scale(1.035); }
-
-@media (prefers-reduced-motion: reduce) { .cardLink:hover .sceneCrop.filmCrop img { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .cardLink:hover .cover img {
+    transform: none;
+  }
+  .grid > .card::before,
+  .grid > .card::after {
+    transition: none;
+  }
+}
+/* One system per row: the thread moves to the left gutter and branches into each cover */
 @media (max-width: 700px) {
-  .collectionToolbar { display: block; margin-bottom: 28px; }
-  .count { margin-top: 14px; }
-  .grid { grid-template-columns: minmax(0, 1fr); gap: 44px; }
-  .featured { grid-column: auto; }
-  .featured .sceneCrop.filmCrop { aspect-ratio: 16 / 9; }
-  .coverTop, .featured .coverTop { padding: 12px 12px; }
-  .logoPlate { width: 88px; height: 32px; }
-  .purpose, .featured .purpose { padding: 14px 44px 4px 14px; font-size: 16px; }
-  .coverNotice, .featured .coverNotice { padding-left: 14px; }
-  .sceneCrop { width: 56%; margin: 56px 14px 14px auto; }
-  .featured .cardBody { display: block; padding-top: 18px; }
-  .featured .cardBody h2 { font-size: 21px; margin: 10px 0 8px; }
-  .featured .explore { margin-top: 14px; }
+  .collectionToolbar {
+    display: block;
+    margin-bottom: 24px;
+  }
+  .count {
+    margin-top: 12px;
+  }
+  .grid {
+    --gap-x: 24px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding-left: 14px;
+  }
+  .grid::before {
+    left: 0;
+    transform: none;
+  }
+  .grid > .card:nth-child(n)::before {
+    left: auto;
+    right: 100%;
+    width: 14px;
+    transform-origin: right;
+  }
+  .grid > .card:nth-child(n)::after {
+    left: auto;
+    right: calc(100% + 14px - 3.5px);
+  }
+  .grid > .card[data-in]:nth-child(n)::before {
+    transform: scaleX(1);
+  }
+  .cardBody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .metadata {
+    justify-self: start;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .logoPlate {
+    width: 100px;
+    height: 32px;
+  }
 }

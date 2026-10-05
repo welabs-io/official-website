@@ -1,4 +1,7 @@
-import type {Metadata} from 'next';
-import {MotionIndex} from '@/components/InstitutionalSite';
-export const metadata: Metadata = {title: 'Filmes de produto | Imagine Apps', description: 'Jornadas de produto em movimento, com dados ilustrativos.', robots: {index: false, follow: false}};
-export default function Page(){return <MotionIndex/>;}
+import { permanentRedirect } from "next/navigation";
+
+// ÍNDICE DE FILMES APOSENTADO
+// The mixed Imagine/Welabs film list left on 2026-10-05; films now live on each product page.
+export default function Page() {
+  permanentRedirect("/portfolio");
+}

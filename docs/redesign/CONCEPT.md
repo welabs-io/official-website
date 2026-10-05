@@ -4,13 +4,13 @@
 
 ## Tipografia
 
-| Papel | Face | Tamanho |
-|---|---|---|
-| Título de abertura (h1) | Instrument Sans 500, tracking −0,03em | `clamp(32px, 4vw, 52px)` |
-| Título de seção (h2) | Instrument Sans 500, tracking −0,022em | `clamp(24px, 2.3vw, 32px)` |
-| Subtítulo (h3) | Instrument Sans 500 | 19px |
-| Lead / corpo | Instrument Sans 400 | 17px / 15px |
-| Rótulos, índices, metadados | IBM Plex Mono 400–500, caixa alta, +0,08em | 10,5–11px |
+| Papel                       | Face                                       | Tamanho                    |
+| --------------------------- | ------------------------------------------ | -------------------------- |
+| Título de abertura (h1)     | Instrument Sans 500, tracking −0,03em      | `clamp(32px, 4vw, 52px)`   |
+| Título de seção (h2)        | Instrument Sans 500, tracking −0,022em     | `clamp(24px, 2.3vw, 32px)` |
+| Subtítulo (h3)              | Instrument Sans 500                        | 19px                       |
+| Lead / corpo                | Instrument Sans 400                        | 17px / 15px                |
+| Rótulos, índices, metadados | IBM Plex Mono 400–500, caixa alta, +0,08em | 10,5–11px                  |
 
 Linhas limitadas por `ch` (títulos 15–24ch, texto 42–60ch). Segunda linha do título em `--text-3` faz o contraste no lugar do tamanho.
 
@@ -38,16 +38,16 @@ O título sobe linha a linha, os cartões de produto assentam, e um fio sai do f
 
 ## O que mudou por página
 
-| Página | Mudança |
-|---|---|
-| Cabeçalho / rodapé | Cabeçalho transparente que ganha fundo ao rolar; links com sublinhado que desenha; rodapé em quatro colunas com rótulos mono. Navegação bilateral Imagine ↔ Welabs mantida. |
-| Home Imagine | Momento-assinatura; seção de contextos com cartão destacado ligado ao herói; frentes de atuação em 4 colunas → fio para o filme de know-how → fio para "Conhecer a plataforma Welabs". |
-| Home Welabs | Mesmo momento com Flow como centro; fio do Flow até seu cartão no ecossistema; tons quentes. |
-| Produto (Imagine e Welabs) | Título reduzido; subnavegação em texto mono; fio desafio → filmes → experiência (no Tabe.la, filmes → link da plataforma Welabs); galeria de filmes vira filme + índice de capítulos. |
-| Atuação / serviços | Frentes em colunas com régua; galeria com índice lateral; fio frentes → filmes → Welabs. |
-| Soluções Welabs | Lista editorial; o Hub de domínio liga um fio a cada produto que o consome. |
-| Portfólio / coleções | Filtros em texto com sublinhado; cartões com quadro do filme e faixa de legenda (texto nunca sobre a imagem). |
-| Contato | Título em caixa normal e menor; formulário com linhas finas. |
+| Página                     | Mudança                                                                                                                                                                                                                                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cabeçalho / rodapé         | Cabeçalho transparente que ganha fundo ao rolar; links com sublinhado que desenha; rodapé em quatro colunas com rótulos mono. Navegação bilateral Imagine ↔ Welabs mantida.                                                                                                                                 |
+| Home Imagine               | Só know-how e clientes (rodada 2, 05/10): o fio do título desenha as capacidades (integração → conhecimento, produto, canais, plataforma); frentes em lista com régua; clientes em carrossel contínuo que vira grade estática com `prefers-reduced-motion`. Sem filme, player nem vitrine de apresentações. |
+| Home Welabs                | Mesmo momento com Flow como centro; fio do Flow até seu cartão no ecossistema; tons quentes.                                                                                                                                                                                                                |
+| Produto (Imagine e Welabs) | Título reduzido; subnavegação em texto mono; fio desafio → filmes → experiência (no Tabe.la, filmes → link da plataforma Welabs); galeria de filmes vira filme + índice de capítulos.                                                                                                                       |
+| Atuação / serviços         | Sem vídeo: contadores tirados dos dados do site, cinco frentes encadeadas pelo fio, etapas com fio que desenha e nós que acendem, e "Você recebe" por etapa.                                                                                                                                                |
+| Soluções Welabs            | Lista editorial; o Hub de domínio liga um fio a cada produto que o consome.                                                                                                                                                                                                                                 |
+| Portfólio / coleções       | Filtros em texto com sublinhado; dois sistemas por linha ligados por um fio no vão entre colunas (no mobile, um por linha com o fio à esquerda); capa = frame final da peça, sem nada sobreposto; logo do produto abaixo da capa. A lista numerada de filmes saiu.                                          |
+| Contato                    | Título em caixa normal e menor; formulário com linhas finas.                                                                                                                                                                                                                                                |
 
 ## Evidência
 
