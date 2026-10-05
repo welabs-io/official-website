@@ -844,6 +844,45 @@
     "presentationSlug": null
   },
   {
+    "id": "wego-intro",
+    "title": "Família WeGO · Introdução de marca",
+    "duration": 8.5,
+    "compositionId": "wego-intro",
+    "src": "/motion/wego-intro/index.html",
+    "kind": "intro",
+    "page": null,
+    "product": null,
+    "reel": false,
+    "also": [],
+    "presentationSlug": null
+  },
+  {
+    "id": "residuos-intro",
+    "title": "Sistema de Gerenciamento de Resíduos · Introdução de marca",
+    "duration": 8.5,
+    "compositionId": "residuos-intro",
+    "src": "/motion/residuos-intro/index.html",
+    "kind": "intro",
+    "page": null,
+    "product": null,
+    "reel": false,
+    "also": [],
+    "presentationSlug": null
+  },
+  {
+    "id": "ius-intro",
+    "title": "IUS · Introdução de marca",
+    "duration": 9,
+    "compositionId": "ius-intro",
+    "src": "/motion/ius-intro/index.html",
+    "kind": "intro",
+    "page": null,
+    "product": null,
+    "reel": false,
+    "also": [],
+    "presentationSlug": null
+  },
+  {
     "id": "welabs-intro",
     "title": "Welabs · Introdução de marca",
     "duration": 8.5,
