@@ -10,7 +10,8 @@ const ID_BY_SLUG = Object.fromEntries(Object.entries(PUBLIC_SLUG).map(([id, slug
 // Earlier public slugs keep redirecting to the current one.
 const FORMER_SLUG: Record<string, string> = {'operacao-seguranca': 'ecossistema-monitoramento'};
 // Retired products redirect to the page that now carries their content (Kiosk Brands became CRM Campaigns).
-const MOVED_PRODUCT: Record<string, string> = {'kiosk-brands': '/welabs/produtos/welabs-crm'};
+// SGICI left the portfolio on 2026-10-05; its old address lands on the portfolio.
+const MOVED_PRODUCT: Record<string, string> = {'kiosk-brands': '/welabs/produtos/welabs-crm', sgici: '/portfolio'};
 
 export const publicSlug = (id: string) => PUBLIC_SLUG[id] ?? id;
 export const idFromSlug = (slug: string) => ID_BY_SLUG[slug] ?? slug;

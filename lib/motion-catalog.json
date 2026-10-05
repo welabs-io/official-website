@@ -117,19 +117,6 @@
     "presentationSlug": "sistema-ima"
   },
   {
-    "id": "sgici",
-    "title": "SGICI",
-    "duration": 12,
-    "compositionId": "sgici-status-transition",
-    "src": "/motion/sgici/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "sgici",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "sgici"
-  },
-  {
     "id": "signgo",
     "title": "SignGo",
     "duration": 12,
@@ -777,19 +764,6 @@
     "reel": false,
     "also": [],
     "presentationSlug": "central-esg"
-  },
-  {
-    "id": "biz-sgici",
-    "title": "SGICI",
-    "duration": 18,
-    "compositionId": "biz-sgici",
-    "src": "/motion/biz-sgici/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "sgici",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "sgici"
   },
   {
     "id": "wego-intro",

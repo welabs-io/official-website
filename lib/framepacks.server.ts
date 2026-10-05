@@ -12,6 +12,8 @@ const RETIRED = new Set([
   "autoinfracao",
   "sgors",
   "kiosk-brands",
+  // SGICI left the portfolio on 2026-10-05.
+  "sgici",
   "erp",
   "wekb",
   "welabs-crm",

@@ -7,8 +7,7 @@
     "wego",
     "autoinfracao",
     "sgors",
-    "ius",
-    "sgici"
+    "ius"
   ],
   "welabs": ["flow", "welabs-crm", "erp", "wekb", "channels", "malupe"],
   "services": [
