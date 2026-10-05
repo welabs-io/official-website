@@ -842,5 +842,18 @@
     "reel": false,
     "also": [],
     "presentationSlug": null
+  },
+  {
+    "id": "welabs-intro",
+    "title": "Welabs · Introdução de marca",
+    "duration": 8.5,
+    "compositionId": "welabs-intro",
+    "src": "/motion/welabs-intro/index.html",
+    "kind": "intro",
+    "page": null,
+    "product": null,
+    "reel": false,
+    "also": [],
+    "presentationSlug": null
   }
 ]
