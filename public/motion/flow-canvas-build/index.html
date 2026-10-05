@@ -3,472 +3,202 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Flow · autoria no quadro</title>
+<title>Flow · Montar o fluxo</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA MARCA */
+/* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--r-trig:#FF452B;--r-do:#4C8DFF;--r-warn:#2EC4B6;--r-wait:#F5B53F;--r-path:#A78BFA;--r-ai:#E879F9;--r-end:#8A8A99}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--note:#F5D26B}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:186px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
-/* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
-#title{position:absolute;left:0;top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
-#title span{color:var(--coral)}
-#caps{position:absolute;left:180px;top:24px;width:1130px;height:56px}
-.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;white-space:nowrap;opacity:0}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+/* BAGUNÇA DE ANTES (PLANILHA, E-MAIL, LEMBRETE) */
+.prop{position:absolute;opacity:0}
+#sheet{left:210px;top:260px;width:420px;height:300px;border-radius:22px;background:#E9F2EC;color:#1B2B22;padding:22px 24px}
+#sheet b{display:block;font-size:30px;font-weight:800;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:6px}
+.grid i{display:block;height:34px;border-radius:6px;background:#C9DCCF}
+.grid i.hl{background:#F7B2A6}
+#mail{left:760px;top:470px;width:420px;height:250px;border-radius:22px;background:#E7ECF7;color:#1C2233;padding:24px 26px}
+#mail .mh{display:flex;align-items:center;gap:16px;font-size:30px;font-weight:800}
+#mail .mh svg{flex:none}
+#mail p{font-size:26px;font-weight:600;line-height:36px;margin-top:16px;color:#3A4560}
+#sticky{left:1300px;top:240px;width:360px;height:330px;border-radius:8px 8px 30px 8px;background:var(--note);color:#3A2E05;padding:34px 30px;font-size:34px;font-weight:800;line-height:44px;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+#sticky small{display:block;margin-top:18px;font-size:26px;font-weight:600}
+#tangle{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;opacity:0}
+#tangle path{fill:none;stroke:#6A6A78;stroke-width:4;stroke-dasharray:10 12;stroke-linecap:round}
+.q{position:absolute;width:64px;height:64px;border-radius:50%;background:#2A2A33;border:3px solid #55556A;color:var(--muted);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0}
 
-/* QUADRO NO ESTILO REACT FLOW (RECONSTRUÇÃO DEMO) */
-#cv{position:absolute;left:40px;top:108px;width:1840px;height:940px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#111115;opacity:0}
-#vp{position:absolute;left:0;top:0;width:1836px;height:936px;overflow:hidden}
-#dots{position:absolute;left:0;top:0;width:1836px;height:936px;background-image:radial-gradient(circle,#34343E 2.6px,transparent 3px);background-size:32px 32px}
-#world{position:absolute;left:0;top:0;width:3400px;height:900px;transform-origin:0 0}
-#edges{position:absolute;left:0;top:0;overflow:visible}
-.eb{fill:none;stroke-width:4}
-.ea{fill:none;stroke:none;opacity:0}
+/* BLOCOS SIMPLES DO CAMINHO */
+.blk{position:absolute;width:380px;height:150px;border-radius:30px;background:var(--panel);border:3px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 28px;font-size:34px;font-weight:700;line-height:40px;opacity:0}
+.blk .ic{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral);flex:none}
+.glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(255,69,43,.55);opacity:0}
+.tick{position:absolute;right:-20px;top:-20px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#b1{left:230px;top:300px}#b2{left:770px;top:300px}#b3{left:1310px;top:300px}#b4{left:1050px;top:600px}
+#wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#wires path{fill:none;stroke:var(--coral);stroke-width:6;stroke-linecap:round}
+#wires .hd{fill:var(--coral);opacity:0}
+#lim{position:absolute;left:1050px;top:770px;width:380px;text-align:center;font-size:26px;font-weight:600;color:var(--muted);opacity:0}
 
-/* NÓS */
-.nd{position:absolute;left:0;top:0;width:420px}
-.ndi{position:relative;width:420px;border:3px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 6px 18px rgba(0,0,0,.45);opacity:0}
-.nd{--acc:var(--r-do)}
-.nd[data-role=trig]{--acc:var(--r-trig)}.nd[data-role=trig] .ndi{border-radius:44px 20px 20px 44px}
-.nd[data-role=warn]{--acc:var(--r-warn)}.nd[data-role=wait]{--acc:var(--r-wait)}
-.nd[data-role=path]{--acc:var(--r-path)}.nd[data-role=ai]{--acc:var(--r-ai)}
-.nh{height:88px;display:flex;align-items:center;gap:14px;padding:0 18px}
-.ni{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--acc);background:color-mix(in srgb,var(--acc) 18%,transparent)}
-.nd p{margin:0;white-space:nowrap}
-.nk{font-size:24px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--acc);line-height:28px}
-.nm{font-size:28px;font-weight:700;line-height:34px}
-.nc{margin:0 16px 10px;height:60px;border-radius:12px;background:var(--panel2);display:flex;align-items:center;padding:0 16px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
-.no{--tone:var(--ok);position:relative;height:48px;border-top:2px solid var(--line);display:flex;align-items:center;padding:0 22px 0 18px;font-size:26px;font-weight:600;white-space:nowrap}
-.no+.no{border-top-style:dashed}
-.no[data-tone=bad]{--tone:var(--bad)}.no[data-tone=wait]{--tone:var(--wait)}
-.no i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--tone);margin-right:12px;flex:none}
-.hd{position:absolute;right:-14px;top:12px;width:24px;height:24px;border-radius:50%;border:4px solid var(--tone);background:#111115}
-.hin{position:absolute;left:-14px;top:32px;width:24px;height:24px;border-radius:50%;border:4px solid #8A8A99;background:#111115}
-.nd[data-role=end],.nd[data-role=end] .ndi{width:240px}
-.nd[data-role=end] .ndi{height:76px;border-radius:38px;display:flex;align-items:center;gap:12px;padding:0 20px 0 16px}
-.nd[data-role=end] .hin{top:22px}
-.nd[data-role=end] .ni{width:44px;height:44px;border-radius:50%}
-.nd[data-role=end][data-t=ok]{--acc:var(--ok)}.nd[data-role=end][data-t=halt]{--acc:var(--r-end)}
-.nd[data-role=end][data-t=halt] .ndi{border-style:dashed}
-.nb{position:absolute;right:16px;top:-30px;height:38px;display:flex;align-items:center;padding:0 14px;border-radius:999px;border:2px dashed var(--wait);background:#2A2110;color:var(--wait);font-size:24px;font-weight:800;white-space:nowrap}
-.plus{position:absolute;left:0;top:0;width:42px;height:42px;border-radius:50%;background:#1F1F25;border:3px solid #5A5A66;color:var(--text);display:grid;place-items:center;opacity:0}
-#ring{position:absolute;left:0;top:0;width:42px;height:42px;border-radius:50%;border:4px solid var(--coral);opacity:0}
-
-/* PAINÉIS SOBRE O QUADRO */
-.ov{position:absolute;z-index:20;background:rgba(23,23,27,.96);border:2px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.4)}
-#cbar{left:16px;right:16px;top:12px;height:68px;border-radius:18px;display:flex;align-items:center;gap:14px;padding:0 14px;font-size:26px;font-weight:700}
-#cbar .tt{font-size:28px;font-weight:800;white-space:nowrap}
-#cbar .sv{font-size:24px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap}
-#cbar .gr{flex:1}
-.bt{height:48px;border-radius:12px;border:2px solid var(--muted);color:var(--text);background:transparent;display:flex;align-items:center;gap:8px;padding:0 16px;font-size:26px;font-weight:700;white-space:nowrap}
-.bt.off{border-color:#4A4A55;color:#8E8E99}
-.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;height:48px}
-.seg span{padding:0 16px;display:flex;align-items:center;font-size:26px;font-weight:700;color:var(--muted)}
-.seg span.on{background:var(--coral);color:#fff}
-#tbar{left:16px;top:92px;height:52px;border-radius:26px;display:flex;align-items:center;gap:6px;padding:0 18px;font-size:26px;font-weight:700;white-space:nowrap}
-#tbar .sp{width:2px;height:26px;background:var(--line);margin:0 8px}
-#torg{display:flex;align-items:center;gap:8px;padding:2px 10px;border-radius:10px}
-#state{right:16px;top:92px;height:52px;border-radius:26px;display:flex;align-items:center;gap:0;padding:0 8px;font-size:24px;font-weight:700;white-space:nowrap}
-#state .sd{display:flex;align-items:center;gap:8px;padding:0 12px;height:52px;color:var(--muted)}
-#state .sd+.sd{border-left:2px solid var(--line)}
-#state .sd b{width:14px;height:14px;border-radius:50%;background:#5A5A66}
-#state .sd.okd{color:var(--ok)}#state .sd.okd b{background:var(--ok)}
-#sval{position:relative;width:282px}
-#sval span{position:absolute;left:34px;top:0;line-height:52px}
-#zout,#zin,#zfit{display:grid;place-items:center;width:40px}
-#mm{right:16px;bottom:16px;width:300px;height:100px;border-radius:14px;overflow:hidden}
-#legend{right:16px;top:160px;width:360px;border-radius:14px;padding:12px 16px;opacity:0}
-#legend h5{font-size:24px;font-weight:800;margin-bottom:6px}
-#legend div{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
-#legend span{font-size:24px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;white-space:nowrap}
-#legend span i{width:16px;height:16px;border-radius:4px;flex:none}
-
-/* GAVETAS: PALETA, INSPECTOR E VALIDAÇÃO */
-.drw{position:absolute;z-index:22;top:152px;bottom:16px;border-radius:20px;background:#17171B;border:2px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.55);overflow:hidden}
-.dh{height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 20px;border-bottom:2px solid var(--line);font-size:28px;font-weight:800;white-space:nowrap}
-.dh .xb{width:40px;height:40px;display:grid;place-items:center;color:var(--muted)}
-#pal{left:16px;width:520px}
-.pg{padding:12px 20px 2px}
-.pg h4{font-size:24px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.pg h4 i{width:14px;height:14px;border-radius:4px}
-.pcs{display:flex;flex-wrap:wrap;gap:8px}
-.pc{height:46px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;padding:0 12px;font-size:24px;font-weight:600;background:#1F1F25;white-space:nowrap}
-.pc.pp{border-style:dashed;border-color:var(--wait);color:var(--wait)}
-.ins{right:16px;width:500px}
-.tbs{display:flex;border-bottom:2px solid var(--line);padding:0 12px}
-.tbs span{padding:12px 6px 10px;font-size:24px;white-space:nowrap;font-weight:700;color:var(--muted);border-bottom:4px solid transparent;margin-bottom:-2px}
-.tbs span.on{color:var(--text);border-color:var(--coral)}
-.fd{padding:12px 20px 0}
-.fd label{display:block;font-size:24px;color:var(--muted);font-weight:600;margin-bottom:6px;white-space:nowrap}
-.fv{min-height:52px;border:2px solid var(--line);border-radius:12px;background:#1F1F25;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:24px;font-weight:600;white-space:nowrap}
-.tag{font-size:24px;font-weight:700;border-radius:999px;padding:2px 12px;white-space:nowrap}
-.tag.g{background:rgba(61,214,140,.16);color:var(--ok)}.tag.r{background:rgba(255,107,107,.16);color:var(--bad)}
-.tag.a{background:rgba(245,181,63,.16);color:var(--wait)}.tag.n{background:#2A2A32;color:var(--muted)}
-.note{margin:14px 20px 0;border-radius:12px;border-left:6px solid var(--coral);background:#22161A;padding:10px 14px;font-size:24px;font-weight:600;line-height:1.3}
-#vbody{position:absolute;left:0;right:0;top:66px;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:40px}
-#vok{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:rgba(61,214,140,.16);color:var(--ok);margin-bottom:26px}
-#vl .vt{font-size:40px;font-weight:800;white-space:nowrap}
-#vl .vs{font-size:28px;font-weight:600;color:var(--muted);white-space:nowrap;margin-top:6px}
-#vl .note{align-self:stretch;margin-top:22px}
-#vres{align-self:stretch;margin:26px 20px 0;height:60px;border-radius:14px;border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:800;color:var(--ok);white-space:nowrap}
-
-/* SELETOR DE GATILHO */
-#pick{position:absolute;z-index:23;left:560px;top:250px;width:720px;border-radius:22px;background:#17171B;border:2px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.6);opacity:0}
-.pr{margin:0 18px 10px;min-height:64px;border:2px solid var(--line);border-radius:14px;display:flex;align-items:center;gap:14px;padding:8px 16px;font-size:26px;font-weight:700;white-space:nowrap}
-.pr small{display:block;font-size:24px;font-weight:600;color:var(--muted)}
-.pr.sel{border-color:var(--coral);background:#22161A}
-.pr.pp{border-style:dashed;border-color:var(--wait)}
-.pr .ni{width:44px;height:44px;border-radius:12px}
-.pr .tag{margin-left:auto}
+/* PESSOA, CURSOR E PEDIDO */
+.av{position:absolute;width:150px;opacity:0;text-align:center}
+.av .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
+#ana{left:56px;top:560px}
+#cur{position:absolute;left:420px;top:720px;width:44px;height:44px;opacity:0}
+#tok{position:absolute;left:320px;top:214px;width:200px;height:58px;border-radius:29px;background:var(--coral);color:#fff;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 30px rgba(255,69,43,.45);opacity:0;white-space:nowrap}
 
 /* FECHO */
-#closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
-#cl1{position:absolute;left:0;width:1920px;top:360px;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
-#cl1 span{color:var(--coral)}
-#cl2{position:absolute;left:0;width:1920px;top:500px;text-align:center;font-size:32px;font-weight:600;color:var(--muted);white-space:nowrap}
-#cl3{position:absolute;left:0;width:1920px;top:580px;display:flex;justify-content:center;gap:16px}
-#cl3 span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px;white-space:nowrap}
-#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="flow-canvas-build" data-width="1920" data-height="1080" data-start="0" data-duration="36">
+<div id="root" data-composition-id="flow-canvas-build" data-width="1920" data-height="1080" data-start="0" data-duration="31">
   <div id="hd">
-    <div id="title">Flow<span>.</span></div>
-    <div id="caps"></div>
-    <div id="sbx">sandbox · dados DEMO</div>
+    <div id="wm">Flow<span>.</span></div>
+    <div id="kick">Some o processo espalhado</div>
+    <div id="demo">DEMO</div>
     <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <div id="cv">
-    <div id="vp"><div id="dots"></div><div id="world" data-layout-allow-overflow></div></div>
-
-    <div class="ov" id="cbar">
-      <span id="cback" style="display:grid;place-items:center;width:36px;height:40px"></span>
-      <span class="tt">Aprovação de pedido de compra</span>
-      <span class="sv" id="svd"></span>
-      <span class="gr"></span>
-      <div class="seg"><span class="on">Editar</span><span>Execuções</span></div>
-      <span class="bt" id="bval"></span>
-      <span class="bt off" id="bpub">Publicar</span>
-      <span class="bt off" id="bact">Ativar</span>
-    </div>
-    <div class="ov" id="tbar"><span id="tstep"></span><span class="sp"></span><span id="tund"></span><span id="tred"></span><span class="sp"></span><span id="torg"></span><span class="sp"></span><span id="zout"></span><span id="zin"></span><span id="zfit"></span></div>
-    <div class="ov" id="state">
-      <span class="sd okd"><b></b>Rascunho salvo</span>
-      <span class="sd" id="sval"><b id="svb" style="position:absolute;left:12px;top:19px"></b><span id="sv0">Validação pendente</span><span id="sv1" style="opacity:0;color:var(--ok)">Validado</span></span>
-      <span class="sd"><b></b>Não publicado</span>
-      <span class="sd"><b></b>Inativo</span>
-    </div>
-    <div class="ov" id="mm"><svg id="mmsvg" width="300" height="100" viewBox="0 0 300 100"></svg></div>
-    <div class="ov" id="legend"><h5>Minimapa por papel</h5><div>
-      <span><i style="background:var(--r-trig)"></i>Gatilho</span><span><i style="background:var(--r-do)"></i>Fazer</span>
-      <span><i style="background:var(--r-ai)"></i>IA</span><span><i style="background:var(--r-warn)"></i>Avisar</span>
-      <span><i style="background:var(--r-wait)"></i>Esperar</span><span><i style="background:var(--r-path)"></i>Caminhos</span>
-      <span><i style="background:var(--r-end)"></i>Fim</span></div></div>
-
-    <div class="drw" id="pal" data-layout-allow-overflow>
-      <div class="dh"><span>Inserir etapa</span><span class="xb" id="palx"></span></div>
-      <div class="pg"><h4><i style="background:var(--r-do)"></i>Fazer</h4><div class="pcs"><span class="pc" id="pler">Ler pedido</span><span class="pc">Mudar status</span><span class="pc">Comentar</span><span class="pc">Gerar PDF</span><span class="pc">E-mail de modelo</span></div></div>
-      <div class="pg"><h4><i style="background:var(--r-warn)"></i>Avisar</h4><div class="pcs"><span class="pc">WhatsApp · modelo aprovado</span></div></div>
-      <div class="pg"><h4><i style="background:var(--r-wait)"></i>Esperar</h4><div class="pcs"><span class="pc">Perguntar e esperar</span><span class="pc">Esperar evento ou prazo</span><span class="pc">Aprovação no documento</span></div></div>
-      <div class="pg"><h4><i style="background:var(--r-path)"></i>Caminhos</h4><div class="pcs"><span class="pc" id="pia">Classificar com IA</span><span class="pc">Paralelo e juntar</span><span class="pc">Para cada item</span><span class="pc">Subfluxo</span></div></div>
-    </div>
-
-    <div class="drw ins" id="insA" data-layout-allow-overflow>
-      <div class="dh"><span style="display:flex;align-items:center;gap:12px"><span class="ni" id="iaic" style="--acc:var(--r-ai);width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--r-ai);background:rgba(232,121,249,.18)"></span>Classificar risco</span><span class="xb" id="iax"></span></div>
-      <div class="tbs"><span class="on">Configuração</span><span>Saídas</span><span>Última execução</span></div>
-      <div class="fd"><label>Provedor e modelo</label><div class="fv">Catálogo de IA do Flow · DEMO</div></div>
-      <div class="fd"><label>Instrução</label><div class="fv">Classifique o risco · DEMO</div></div>
-      <div class="fd"><label>Entrada ligada</label><div class="fv"><span class="tag n">pedido</span>da etapa Ler pedido</div></div>
-      <div class="fd"><label>A resposta escolhe a saída</label><div class="fv"><span class="tag g">baixo</span><span class="tag a">médio</span><span class="tag r">alto</span></div></div>
-      <div class="note">A IA só classifica. O caminho de cada saída é desenhado e publicado pelo autor.</div>
-    </div>
-
-    <div class="drw ins" id="insB" data-layout-allow-overflow>
-      <div class="dh"><span style="display:flex;align-items:center;gap:12px"><span id="ibic" style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--wait);background:rgba(245,181,63,.18)"></span>Perguntar e esperar</span><span class="xb" id="ibx"></span></div>
-      <div class="tbs"><span class="on">Configuração</span><span>Saídas</span><span>Última execução</span></div>
-      <div class="fd"><label>Pergunta no WhatsApp</label><div class="fv">Aprovar o pedido PC-0142?</div></div>
-      <div class="fd"><label>Botões · uma saída por opção</label><div class="fv"><span class="tag g">Aprovar</span><span class="tag r">Recusar</span></div></div>
-      <div class="fd"><label>Quem responde</label><div class="fv">Gestora de compras · DEMO</div></div>
-      <div class="fd"><label>Prazo · sem resposta sai por “Prazo”</label><div class="fv"><span class="tag a">Prazo · DEMO</span></div></div>
-      <div class="note">Quem decide é a pessoa. Aprovar segue para o efeito; Recusar ou Prazo, sem ligação, param o fluxo.</div>
-    </div>
-
-    <div class="drw ins" id="vl" data-layout-allow-overflow>
-      <div class="dh"><span>Validação</span><span class="xb" id="vlx"></span></div>
-      <div id="vbody">
-        <div class="vi" id="vok"></div>
-        <div class="vi vt">Fluxo validado</div>
-        <div class="vi vs">antes de publicar</div>
-        <div id="vres"><span id="vresi"></span>0 pontos a revisar</div>
-        <div class="vi note">Publicar e Ativar ficam liberados.</div>
-      </div>
-    </div>
-
-    <div id="pick">
-      <div class="dh" style="margin-bottom:12px"><span>Quando · escolha o gatilho</span><span class="xb" id="pkx"></span></div>
-      <div class="pr sel" id="prdoc"><span class="ni" id="pk1" style="--acc:var(--r-trig)"></span><div>Evento de documento<small>Pedido de compra · enviado para aprovação</small></div></div>
-      <div class="pr"><span class="ni" id="pk2" style="--acc:var(--r-trig)"></span>Agenda</div>
-      <div class="pr" style="margin-bottom:18px"><span class="ni" id="pk3" style="--acc:var(--r-trig)"></span>Webhook de outro sistema</div>
-    </div>
+  <svg id="tangle" viewBox="0 0 1920 1080">
+    <path d="M630 380 C720 300 680 520 760 560"/>
+    <path d="M1180 560 C1260 500 1220 420 1300 400"/>
+    <path d="M430 560 C520 760 1300 760 1460 570"/>
+  </svg>
+  <div class="prop" id="sheet"><b>Planilha de pedidos</b>
+    <div class="grid"><i></i><i></i><i></i><i></i><i class="hl"></i><i></i><i></i><i></i><i class="hl"></i><i></i><i></i><i></i></div>
   </div>
-
-  <div id="closing">
-    <div id="cl1">Desenhe o processo. <span>O Flow executa.</span></div>
-    <div id="cl2">Gatilho · consulta · IA que classifica · pessoa que decide · ramos em paralelo · validação</div>
-    <div id="cl3"><span>sandbox</span><span>dados DEMO</span></div>
+  <div class="prop" id="mail">
+    <div class="mh"><svg width="44" height="44" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>Re: Re: aprovação?</div>
+    <p>Alguém viu o pedido de ontem? Ainda falta aprovar.</p>
   </div>
-  <div id="pad"></div>
+  <div class="prop" id="sticky">Lembrar a Ana de aprovar!<small>e avisar o financeiro</small></div>
+  <div class="q" id="q1" style="left:690px;top:300px">?</div>
+  <div class="q" id="q2" style="left:1206px;top:640px">?</div>
+
+  <svg id="wires" viewBox="0 0 1920 1080">
+    <path id="w1" d="M612 375 L760 375"/>
+    <path id="w2" d="M1152 375 L1300 375"/>
+    <path id="w3" d="M960 452 C960 580 980 675 1040 675"/>
+    <path id="w4" d="M1432 675 C1500 675 1500 580 1500 462"/>
+    <path class="hd" id="h1" d="M770 375 L752 363 L752 387 Z"/>
+    <path class="hd" id="h2" d="M1310 375 L1292 363 L1292 387 Z"/>
+    <path class="hd" id="h3" d="M1050 675 L1032 663 L1032 687 Z"/>
+    <path class="hd" id="h4" d="M1500 452 L1488 470 L1512 470 Z"/>
+  </svg>
+
+  <div class="blk" id="b1"><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>Pedido chega<div class="glow"></div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b2"><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Ana aprova<div class="glow"></div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b3"><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>Financeiro é avisado<div class="glow"></div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b4"><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Diretor aprova<div class="glow"></div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div id="lim">acima do limite · DEMO</div>
+
+  <div class="av" id="ana"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Ana · DEMO</div></div>
+  <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.6L9.6 21z" fill="#fff" stroke="#0B0B0D" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <div id="tok"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>Pedido · DEMO</div>
+
+  <div class="cap" id="c1">O pedido de compra vivia <span>espalhado</span></div>
+  <div class="sub" id="s1">numa planilha, num e-mail e num lembrete</div>
+  <div class="cap" id="c2">Quem conhece o processo <span>desenha em blocos</span></div>
+  <div class="cap" id="c3">Um desvio? É só <span>puxar outro caminho</span></div>
+  <div class="cap" id="c4">E o desenho já é <span>o processo andando</span></div>
+
+  <div id="close">
+    <div class="l1">Quem conhece o processo monta o fluxo,<br><span>sem programar.</span></div>
+    <div class="brand"><div class="bw">Flow<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
-(function(){
-  // ÍCONES E UTILITÁRIOS
-  const IC={
-    zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
-    search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
-    spark:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
-    act:'<path d="M21 10.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.5"/><path d="m9 11 3 3L22 4"/>',
-    clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
-    bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
-    msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-    split:'<circle cx="6" cy="12" r="2.5"/><path d="M8.5 12H12l4-6h4"/><path d="M12 12l4 6h4"/>',
-    merge:'<circle cx="18" cy="12" r="2.5"/><path d="M15.5 12H12L8 6H4"/><path d="M12 12l-4 6H4"/>',
-    flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
-    cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
-    hook:'<path d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8"/>',
-    plus:'<path d="M5 12h14"/><path d="M12 5v14"/>', minus:'<path d="M5 12h14"/>',
-    check:'<path d="M20 6 9 17l-5-5"/>', x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
-    fit:'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
-    undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
-    redo:'<path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/>',
-    back:'<path d="m15 18-6-6 6-6"/>',
-    grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
-  };
-  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
-  const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
-  put("cback",ico("back",30));put("svd",ico("check",24)+" Salvo automaticamente");put("bval",ico("check",26)+" Validar");
-  put("tstep",ico("plus",26)+" Etapa");put("tund",ico("undo",28));put("tred",ico("redo",28));put("torg",ico("grid",26)+" Organizar");
-  put("zin",ico("plus",28));put("zout",ico("minus",28));put("zfit",ico("fit",26));
-  ["palx","iax","ibx","vlx","pkx"].forEach(k=>put(k,ico("x",28)));
-  put("iaic",ico("spark",26));put("ibic",ico("clock",26));
-  put("pk1",ico("zap",26));put("pk2",ico("cal",26));put("pk3",ico("hook",26));
-  put("vok",ico("check",72));put("vresi",ico("check",28));
-  const S=(n)=>n.toFixed(1);
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 31;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : (k === 'rotation' ? to[k] || 0 : 0); }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
 
-  // MODELO DO GRAFO (posições alinhadas = resultado do "Organizar"; desvio = montagem à mão)
-  const W=420,WE=240,HDR=88,CTX=70,ROW=48;
-  const ND={
-    quando:{role:"trig",ic:"zap",kind:"Quando · documento",name:"Pedido de compra",ctx:"Enviado para aprovação",outs:[["Disparar","ok"]],a:[0,210],o:[0,0]},
-    ler:{role:"do",ic:"search",kind:"Fazer · consulta",name:"Ler pedido",ctx:"Hub de domínio · só leitura",outs:[["Lido","ok"]],a:[520,210],o:[10,-30]},
-    cls:{role:"ai",ic:"spark",kind:"Etapa de IA",name:"Classificar risco",ctx:"A resposta escolhe a saída",outs:[["baixo","ok"],["médio","wait"],["alto","bad"]],a:[1040,210],o:[24,20]},
-    apr:{role:"do",ic:"act",kind:"Fazer · efeito",name:"Aprovar pedido",outs:[["Aprovado","ok"]],a:[1560,40],o:[16,24]},
-    par:{role:"path",ic:"split",kind:"Caminhos",name:"Paralelo",outs:[["Abrir ramos","ok"]],a:[1560,300],o:[0,26]},
-    per:{role:"wait",ic:"clock",kind:"Esperar · WhatsApp",name:"Perguntar e esperar",outs:[["Aprovar","ok"],["Recusar","bad"],["Prazo · DEMO","wait"]],a:[1560,520],o:[20,-14]},
-    fimA:{role:"end",t:"ok",name:"Concluído",a:[2080,114],o:[24,26]},
-    avi:{role:"warn",ic:"bell",kind:"Avisar · WhatsApp",name:"Avisar financeiro",outs:[["Enviado","ok"]],a:[2080,230],o:[30,-6]},
-    com:{role:"do",ic:"msg",kind:"Fazer · documento",name:"Comentar no pedido",outs:[["Comentado","ok"]],a:[2080,392],o:[-12,26]},
-    apr2:{role:"do",ic:"act",kind:"Fazer · efeito",name:"Aprovar pedido",outs:[["Aprovado","ok"]],a:[2080,560],o:[26,18]},
-    jun:{role:"path",ic:"merge",kind:"Caminhos",name:"Juntar",ctx:"Esperar · todos os ramos",outs:[["Concluído","ok"],["Falhou","bad"]],a:[2600,280],o:[22,30]},
-    fim2:{role:"end",t:"ok",name:"Concluído",a:[2600,600],o:[0,-6]},
-    fimB:{role:"end",t:"ok",name:"Concluído",a:[3120,424],o:[0,36]}
-  };
-  const world=document.getElementById("world");
-  let html="";
-  Object.keys(ND).forEach(id=>{
-    const n=ND[id],end=n.role==="end";
-    html+=`<div class="nd" id="n-${id}" data-role="${n.role}"${end?` data-t="${n.t}"`:""}><div class="ndi" id="i-${id}">`;
-    if(n.role!=="trig")html+=`<i class="hin"></i>`;
-    if(end){html+=`<span class="ni">${ico("flag",24)}</span><div><p class="nk">Fim</p><p class="nm">${n.name}</p></div>`;}
-    else{
-      if(n.badge)html+=`<span class="nb">${n.badge}</span>`;
-      html+=`<div class="nh"><span class="ni">${ico(n.ic,28)}</span><div><p class="nk">${n.kind}</p><p class="nm">${n.name}</p></div></div>`;
-      if(n.ctx)html+=`<div class="nc">${n.ctx}</div>`;
-      n.outs.forEach(o=>{html+=`<div class="no" data-tone="${o[1]}"><i></i>${o[0]}<b class="hd"></b></div>`;});
-    }
-    html+=`</div></div>`;
-  });
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
 
-  // ARESTAS: curva bezier com controle a meio caminho no eixo X, rótulo de cor pelo resultado
-  const TONE={ok:"#3DD68C",bad:"#FF6B6B",wait:"#F5B53F"};
-  const EG=[
-    // id, source, out index, target at creation
-    ["e1","quando",0,"fimA"],["e2","ler",0,"fimA"],["e3","cls",0,"fimA"],["e4","apr",0,"fimA"],
-    ["e5","cls",2,"per"],["e6","per",0,"apr2"],["e9","apr2",0,"fim2"],
-    ["e10","cls",1,"par"],["e11","par",0,"avi"],["e12","par",0,"com"],["e13","avi",0,"jun"],["e14","com",0,"jun"],["e15","jun",0,"fimB"]
-  ];
-  const pos={}; // authoring-time positions, updated in timeline order
-  const P=(id,p)=>{pos[id]=p.slice();};
-  const outPt=(id,oi)=>{const n=ND[id],p=pos[id];return [p[0]+W,p[1]+HDR+(n.ctx?CTX:0)+oi*ROW+ROW/2];};
-  const inPt=(id)=>{const n=ND[id],p=pos[id];return [p[0],p[1]+(n.role==="end"?38:44)];};
-  const geo=(e)=>{const a=outPt(e.s,e.o),b=inPt(e.t);const off=Math.max(60,(b[0]-a[0])*.5);
-    return {d:`M${S(a[0])},${S(a[1])} C${S(a[0]+off)},${S(a[1])} ${S(b[0]-off)},${S(b[1])} ${S(b[0])},${S(b[1])}`,mx:(a[0]+b[0])/2,my:(a[1]+b[1])/2};};
-  const E={};EG.forEach(([id,s,o,t])=>{E[id]={id,s,o,t,tone:ND[s].outs[o][1],live:false};});
-  let sv=`<svg id="edges" width="3400" height="900" viewBox="0 0 3400 900"><defs>`;
-  Object.keys(TONE).forEach(k=>{sv+=`<marker id="ar-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0 0L10 5L0 10z" fill="${TONE[k]}"/></marker>`;});
-  sv+=`</defs>`;
-  EG.forEach(([id])=>{const e=E[id];sv+=`<path class="eb" id="eb-${id}" pathLength="1" stroke="${TONE[e.tone]}" stroke-dasharray="1" stroke-dashoffset="1"/><path class="ea" id="ea-${id}" marker-end="url(#ar-${e.tone})"/>`;});
-  sv+=`</svg>`;
-  let plus="";EG.forEach(([id])=>{plus+=`<div class="plus" id="pl-${id}">${ico("plus",24)}</div>`;});
-  world.innerHTML=sv+html+plus+`<div id="ring"></div>`;
+  // Batida 1: o processo espalhado (0,6–6,6 s)
+  tl.fromTo('#sheet', { opacity: 0, y: 30, rotation: -12 }, { opacity: 1, y: 0, rotation: -6, duration: 0.6, ease: 'back.out(1.6)' }, 0.6);
+  tl.fromTo('#mail', { opacity: 0, y: 30, rotation: 10 }, { opacity: 1, y: 0, rotation: 4, duration: 0.6, ease: 'back.out(1.6)' }, 0.95);
+  tl.fromTo('#sticky', { opacity: 0, y: 30, rotation: 14 }, { opacity: 1, y: 0, rotation: 7, duration: 0.6, ease: 'back.out(1.6)' }, 1.3);
+  inn('#tangle', 1.8, {}, 0.6);
+  inn('#q1', 2.1, { scale: 0.4 }, 0.4); inn('#q2', 2.35, { scale: 0.4 }, 0.4);
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  // Props wobble a little: they never settle
+  tl.to('#sheet', { rotation: -3, duration: 0.8, ease: 'sine.inOut' }, 3.0).to('#sheet', { rotation: -6, duration: 0.8, ease: 'sine.inOut' }, 3.8);
+  tl.to('#sticky', { rotation: 10, duration: 0.8, ease: 'sine.inOut' }, 3.2).to('#sticky', { rotation: 7, duration: 0.8, ease: 'sine.inOut' }, 4.0);
+  out('#c1', 6.3); out('#s1', 6.3);
 
-  // MINIMAPA COLORIDO POR PAPEL
-  const RC={trig:"#FF452B",do:"#4C8DFF",warn:"#2EC4B6",wait:"#F5B53F",path:"#A78BFA",ai:"#E879F9",end:"#8A8A99"};
-  const MS=.08,MX=16,MY=14;
-  const hOf=n=>n.role==="end"?76:HDR+(n.ctx?CTX:0)+n.outs.length*ROW;
-  let mm="";Object.keys(ND).forEach(id=>{const n=ND[id];mm+=`<rect id="m-${id}" x="0" y="0" width="${S((n.role==="end"?WE:W)*MS)}" height="${S(hOf(n)*MS)}" rx="2" fill="${RC[n.role]}" opacity="0"/>`;});
-  mm+=`<rect id="mmv" data-layout-allow-overflow fill="none" stroke="#FF452B" stroke-width="2" x="0" y="0" width="${S(1836*MS)}" height="${S(936*MS)}" rx="3"/>`;
-  put("mmsvg",mm);
+  // Batida 2: a pessoa desenha em blocos (6,6–13,6 s)
+  inn('#c2', 6.7, { y: 16 });
+  inn('#ana', 6.8, { y: 20 });
+  out(['#tangle', '#q1', '#q2'], 7.0, 0.4);
+  // Each prop shrinks into the block it becomes
+  tl.to('#sheet', { x: 0, y: -35, scale: 0.35, rotation: 0, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 7.4);
+  inn('#b1', 7.9, { scale: 0.6 }, 0.5);
+  tl.to('#sticky', { x: -520, y: -30, scale: 0.35, rotation: 0, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 8.1);
+  inn('#b2', 8.6, { scale: 0.6 }, 0.5);
+  tl.to('#mail', { x: 530, y: -220, scale: 0.35, rotation: 0, opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 8.8);
+  inn('#b3', 9.3, { scale: 0.6 }, 0.5);
+  tl.set(['#h1', '#h2'], { opacity: 0 }, 0);
+  draw('w1', 10.4, 0.5); tl.to('#h1', { opacity: 1, duration: 0.15 }, 10.85);
+  draw('w2', 10.9, 0.5); tl.to('#h2', { opacity: 1, duration: 0.15 }, 11.35);
+  out('#c2', 13.3);
 
-  const tl=gsap.timeline({paused:true});
-  const EZ="power2.inOut",EO="power3.out";
+  // Batida 3: um desvio vira outro caminho (13,6–18,6 s)
+  inn('#c3', 13.7, { y: 16 });
+  // The new block is dragged from beside Ana to its place (transform offsets from its final CSS spot)
+  tl.fromTo('#b4', { opacity: 0, x: -830, y: 40, scale: 0.8 }, { opacity: 1, x: -830, y: 40, scale: 1, duration: 0.4 }, 14.0);
+  tl.fromTo('#cur', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.3 }, 14.0);
+  tl.to('#b4', { x: 0, y: 0, duration: 1.2, ease: 'power2.inOut' }, 14.5);
+  tl.to('#cur', { x: 830, y: -40, duration: 1.2, ease: 'power2.inOut' }, 14.5);
+  out('#cur', 15.9, 0.3);
+  tl.set(['#h3', '#h4'], { opacity: 0 }, 0);
+  draw('w3', 15.9, 0.6); tl.to('#h3', { opacity: 1, duration: 0.15 }, 16.45);
+  draw('w4', 16.5, 0.6); tl.to('#h4', { opacity: 1, duration: 0.15 }, 17.05);
+  inn('#lim', 16.6, { y: 8 }, 0.4);
+  out('#c3', 18.4);
 
-  // Initial positions (messy = aligned + offset) and edge geometry at creation
-  const messy=id=>[ND[id].a[0]+ND[id].o[0],ND[id].a[1]+ND[id].o[1]];
-  const placeNode=(id,p)=>{P(id,p);tl.set("#n-"+id,{x:p[0],y:p[1]},0);tl.set("#m-"+id,{attr:{x:S(MX+p[0]*MS),y:S(MY+p[1]*MS)}},0);};
-  Object.keys(ND).forEach(id=>placeNode(id,messy(id)));
-  // Fim A starts next to the trigger, then moves as steps are inserted before it
-  placeNode("fimA",[600,354]);
-  Object.keys(ND).forEach(id=>tl.set("#i-"+id,{scale:.86,y:20},0));
+  // Batida 4: o desenho já anda (18,7–24,9 s)
+  inn('#c4', 18.8, { y: 16 });
+  out('#ana', 18.8, 0.4);
+  tl.fromTo('#tok', { opacity: 0, x: 0, y: 0, scale: 0.6 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 19.2);
+  function lit(b, t) { tl.fromTo(b + ' .glow', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t); tl.fromTo(b + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.2); tl.to(b + ' .glow', { opacity: 0, duration: 0.4 }, t + 0.9); }
+  lit('#b1', 19.6);
+  tl.to('#tok', { x: 540, duration: 0.9, ease: 'power2.inOut' }, 20.4);
+  lit('#b2', 21.3);
+  tl.to('#tok', { x: 820, y: 300, duration: 0.9, ease: 'power2.inOut' }, 22.0);
+  lit('#b4', 22.9);
+  tl.to('#tok', { x: 1080, y: 0, duration: 0.9, ease: 'power2.inOut' }, 23.5);
+  lit('#b3', 24.4);
+  out('#c4', 25.3);
 
-  // Step helper: move nodes and retarget edges, tweening every attached edge in lockstep
-  function step(t,d,moves,retarget){
-    const touched=new Set();
-    Object.keys(moves||{}).forEach(id=>Object.values(E).forEach(e=>{if(e.live&&(e.s===id||e.t===id))touched.add(e.id);}));
-    Object.keys(retarget||{}).forEach(k=>touched.add(k));
-    Object.keys(moves||{}).forEach(id=>{const p=moves[id];P(id,p);
-      tl.to("#n-"+id,{x:p[0],y:p[1],duration:d,ease:EZ},t);
-      tl.to("#m-"+id,{attr:{x:S(MX+p[0]*MS),y:S(MY+p[1]*MS)},duration:d,ease:EZ},t);});
-    Object.keys(retarget||{}).forEach(k=>{E[k].t=retarget[k];});
-    touched.forEach(k=>{const g=geo(E[k]);
-      tl.to(["#eb-"+k,"#ea-"+k],{attr:{d:g.d},duration:d,ease:EZ},t);
-      tl.to("#pl-"+k,{x:g.mx,y:g.my,duration:d,ease:EZ},t);});
-  }
-  // Create an edge at its current geometry and draw it
-  function edge(k,t){const e=E[k];e.live=true;const g=geo(e);
-    document.getElementById("eb-"+k).setAttribute("d",g.d);document.getElementById("ea-"+k).setAttribute("d",g.d);
-    tl.set("#pl-"+k,{x:g.mx,y:g.my,xPercent:-50,yPercent:-50},0);
-    tl.to("#eb-"+k,{strokeDashoffset:0,duration:.5,ease:"power1.inOut"},t);
-    tl.to("#ea-"+k,{opacity:1,duration:.15},t+.42);
-    tl.fromTo("#pl-"+k,{opacity:0,scale:.4},{opacity:1,scale:1,duration:.25,ease:"back.out(2)",immediateRender:false},t+.45);
-  }
-  function node(id,t){tl.to("#i-"+id,{opacity:1,scale:1,y:0,duration:.45,ease:"back.out(1.5)"},t);tl.to("#m-"+id,{opacity:.95,duration:.3},t);}
-  // Camera: world, dotted background and minimap viewport move together
-  const CY=112;let cam=[560,CY];
-  const mmv=c=>({x:S(MX-c[0]*MS),y:S(MY-c[1]*MS)});
-  tl.set("#world",{x:cam[0],y:cam[1]},0);tl.set("#dots",{backgroundPosition:`${cam[0]}px ${cam[1]}px`},0);tl.set("#mmv",{attr:mmv(cam)},0);
-  function camTo(cx,t,d){const c=[cx,CY];cam=c;
-    tl.to("#world",{x:c[0],y:c[1],duration:d,ease:EZ},t);
-    tl.to("#dots",{backgroundPosition:`${c[0]}px ${c[1]}px`,duration:d,ease:EZ},t);
-    tl.to("#mmv",{attr:mmv(c),duration:d,ease:EZ},t);}
-  const select=(id,t,on)=>tl.to("#i-"+id,on?{borderColor:"#FF452B",boxShadow:"0 0 0 7px rgba(255,69,43,.25), 0 6px 18px rgba(0,0,0,.45)",duration:.25}:{borderColor:"#3A3A42",boxShadow:"0 0 0 0px rgba(255,69,43,0), 0 6px 18px rgba(0,0,0,.45)",duration:.25},t);
-  const flash=(sel,t)=>{tl.to(sel,{backgroundColor:"#3A1E1A",borderColor:"#FF452B",duration:.15},t);tl.to(sel,{backgroundColor:"#1F1F25",borderColor:"#3A3A42",duration:.3},t+.5);};
-  const drawerIn=(sel,t,from)=>{tl.to(sel,{x:0,duration:.45,ease:EO},t);};
-  const drawerOut=(sel,t,to)=>{tl.to(sel,{x:to,duration:.4,ease:"power2.in"},t);};
-  tl.set("#pal",{x:-560},0);tl.set("#insA,#insB,#vl",{x:600},0);tl.set("#pick",{scale:.94},0);
-  tl.set("#ring",{xPercent:-50,yPercent:-50,scale:1},0);
+  // Fecho (25,6–31 s, parado de 26,3 s ao fim)
+  out(['#hd', '#b1', '#b2', '#b3', '#b4', '#wires', '#lim', '#tok'], 25.4, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 25.8);
+  tl.set('#close', { opacity: 1 }, D);
 
-  // LEGENDAS DAS BATIDAS
-  const caps=[
-    "Todo fluxo começa num gatilho: documento, agenda ou webhook",
-    "O “+” na aresta abre a paleta: Fazer · Avisar · Esperar · Caminhos",
-    "Uma consulta lê o pedido; a etapa de IA classifica o risco",
-    "A IA só classifica: cada saída segue o caminho que o autor desenhou",
-    "Risco baixo aprova direto; risco alto pergunta a uma pessoa",
-    "Pergunta no WhatsApp com botões e prazo; quem decide é a pessoa",
-    "Risco médio abre ramos em paralelo; Juntar espera todos",
-    "Organizar alinha o grafo; o minimapa colore cada papel",
-    "Validar confere o grafo: o estado vai de pendente a Validado"
-  ];
-  const capBox=document.getElementById("caps");
-  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
-  // Beat starts; every state change is followed by at least 1.5 s of stillness
-  const CT=[0.6,5.6,7.9,13.2,16.0,19.9,22.8,26.4,29.1,32.3];
-  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
-
-  // ABERTURA: cabeçalho e quadro vazio
-  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
-  tl.to("#cv",{opacity:1,duration:.6},.2);
-
-  // B1 gatilho: seletor abre, evento de documento escolhido, nó Quando e Fim entram
-  tl.to("#pick",{opacity:1,scale:1,duration:.45,ease:EO},1.0);
-  tl.to("#pick",{opacity:0,scale:.96,duration:.35,ease:"power2.in"},3.0);
-  node("quando",3.2);node("fimA",3.4);edge("e1",3.5);
-
-  // B2 "+" da aresta abre a paleta
-  const ringAt=(k,t)=>{const g=geo(E[k]);tl.set("#ring",{x:g.mx,y:g.my},t);tl.fromTo("#ring",{opacity:1,scale:1},{opacity:0,scale:2.2,duration:.6,ease:"power1.out",immediateRender:false},t);
-    tl.to("#pl-"+k,{borderColor:"#FF452B",backgroundColor:"#3A1E1A",duration:.2},t);tl.to("#pl-"+k,{borderColor:"#5A5A66",backgroundColor:"#1F1F25",duration:.3},t+.9);};
-  ringAt("e1",5.6);
-  drawerIn("#pal",5.9);
-
-  // B3 Ler pedido (consulta) entra no lugar do "+"; Fim desliza para a direita
-  flash("#pler",7.9);
-  step(8.1,.55,{fimA:[1000,354]},{e1:"ler"});
-  node("ler",8.15);E.e2.t="fimA";edge("e2",8.35);
-  // B3b Classificar risco (IA) com três saídas; Fim passa a seguir "baixo"
-  flash("#pia",10.5);drawerOut("#pal",10.55,-560);
-  step(10.7,.6,{fimA:[1560,354]},{e2:"cls"});
-  node("cls",10.75);edge("e3",11.0);
-  camTo(20,10.85,.65);
-  // B3c inspector da etapa de IA (câmera primeiro, gaveta depois: nada fica sob a gaveta)
-  select("cls",13.2,true);camTo(-490,13.2,.45);drawerIn("#insA",13.65);
-  tl.fromTo("#insA .fd,#insA .note",{opacity:0,y:12},{opacity:1,y:0,duration:.3,stagger:.08,ease:EO,immediateRender:false},13.85);
-
-  // B4 baixo → Aprovar pedido (efeito); alto → Perguntar e esperar; respostas ligadas
-  select("cls",16.0,false);drawerOut("#insA",16.0,600);
-  camTo(-1030,16.0,.8);
-  step(16.2,.6,{fimA:messy("fimA")},{e3:"apr"});
-  node("apr",16.25);edge("e4",16.5);
-  node("per",16.55);edge("e5",16.75);
-  node("apr2",16.95);edge("e6",17.1);
-  node("fim2",17.5);edge("e9",17.65);
-  // B4b inspector da pergunta
-  select("per",19.9,true);camTo(-1528,19.9,.5);drawerIn("#insB",20.4);
-  tl.fromTo("#insB .fd,#insB .note",{opacity:0,y:12},{opacity:1,y:0,duration:.3,stagger:.08,ease:EO,immediateRender:false},20.6);
-
-  // B5 médio → Paralelo → Avisar ‖ Comentar → Juntar (todos) → Fim
-  select("per",22.8,false);drawerOut("#insB",22.8,600);
-  camTo(-1540,22.8,.8);
-  node("par",22.9);edge("e10",23.05);
-  node("avi",23.25);node("com",23.3);edge("e11",23.4);edge("e12",23.45);
-  node("jun",23.65);edge("e13",23.75);edge("e14",23.8);
-  node("fimB",23.95);edge("e15",24.1);
-
-  // B6 Organizar: tudo alinha da esquerda para a direita, minimapa por papel
-  tl.to("#torg",{backgroundColor:"#3A1E1A",color:"#FF452B",duration:.2},26.4);
-  tl.to("#torg",{backgroundColor:"rgba(0,0,0,0)",color:"#FFFFFF",duration:.3},27.6);
-  const all={};Object.keys(ND).forEach(id=>{all[id]=ND[id].a.slice();});
-  step(26.6,1.0,all,{});
-  tl.fromTo("#legend",{opacity:0,y:12},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},27.2);
-  tl.to("#mm",{borderColor:"#FF452B",duration:.3},27.2);
-
-  // B7 Validar: fluxo validado antes de publicar e estado Validado
-  tl.to("#legend",{opacity:0,duration:.3},29.1);tl.to("#mm",{borderColor:"#3A3A42",duration:.3},29.1);
-  tl.to("#bval",{scale:.93,duration:.12},29.1);tl.to("#bval",{scale:1,duration:.2},29.25);
-  camTo(-2048,29.1,.7);drawerIn("#vl",29.6);
-  tl.fromTo("#vl .vi",{opacity:0,x:16},{opacity:1,x:0,duration:.25,stagger:.1,ease:EO,immediateRender:false},29.95);
-  tl.fromTo("#vres",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.3,ease:"back.out(1.8)",immediateRender:false},30.5);
-  tl.to("#sv0",{opacity:0,duration:.2},30.5);tl.to("#sv1",{opacity:1,duration:.25},30.5);
-  tl.to("#svb",{backgroundColor:"#3DD68C",duration:.25},30.5);
-  tl.to("#bval",{borderColor:"#3DD68C",color:"#3DD68C",duration:.25},30.5);
-  tl.to("#bpub",{borderColor:"#FF452B",backgroundColor:"#FF452B",color:"#FFFFFF",duration:.25},30.5);
-
-  // FECHO
-  tl.to("#cv",{opacity:0,duration:.6},32.3);
-  tl.to("#closing",{opacity:1,duration:.7},32.6);
-  tl.fromTo("#cl1",{y:20},{y:0,duration:.7,ease:EO,immediateRender:false},32.6);
-  tl.to("#pad",{opacity:.001,duration:1},35);
-
-  // The site Player may load the page before the runtime creates the registry
-  window.__timelines=window.__timelines||{};
-  window.__timelines["flow-canvas-build"]=tl;
+  window.__timelines = window.__timelines || {};
+  window.__timelines["flow-canvas-build"] = tl;
 })();
 </script>
 </body>

@@ -3,467 +3,181 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Flow · copiloto de autoria</title>
+<title>Flow · Copiloto</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA IDENTIDADE WELABS */
-@font-face { font-family: "Inter"; src: url("./assets/fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
-:root { --bg: #0B0B0D; --panel: #17171B; --panel2: #1F1F25; --line: #3A3A42; --coral: #FF452B; --text: #FFFFFF; --muted: #C9C9D1;
-  --ok: #3DD68C; --bad: #FF7A6B; --wait: #F2B33D; --info: #8AB4FF; --teal: #43D1BE; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--bg); width: 1920px; height: 1080px; margin: 0; overflow: hidden; }
-#root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; }
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:186px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 
-/* CABEÇALHO E SELO */
-#title { position: absolute; left: 60px; top: 34px; font-size: 52px; font-weight: 800; letter-spacing: -1px; white-space: nowrap; }
-#title span { color: var(--coral); }
-#hchips { position: absolute; right: 290px; top: 44px; display: flex; gap: 14px; }
-.hc { font-size: 24px; font-weight: 700; padding: 6px 18px; border-radius: 999px; border: 2px solid var(--line); color: var(--muted); white-space: nowrap; }
-.hc.sb { border-color: var(--coral); color: var(--coral); }
-#seal { position: absolute; right: 60px; top: 38px; height: 56px; width: auto; }
+/* A FRASE DA PESSOA */
+.av{position:absolute;width:150px;opacity:0;text-align:center}
+.av .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
+#ana{left:150px;top:196px}
+#say{position:absolute;left:360px;top:180px;width:1360px;height:220px;border-radius:34px 34px 34px 8px;background:var(--panel2);border:3px solid var(--line);padding:38px 46px;font-size:44px;font-weight:700;line-height:64px;opacity:0}
+.w{opacity:0}
+.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(255,69,43,0)}
 
-/* JANELA DO QUADRO */
-#cv { position: absolute; left: 60px; top: 128px; width: 1800px; height: 816px; border: 2px solid var(--line); border-radius: 22px; overflow: hidden; background: #111115; }
-#world { position: absolute; left: 0; top: 0; width: 10px; height: 10px; transform-origin: 0 0; }
-#dots { position: absolute; left: -1400px; top: -700px; width: 5600px; height: 2200px; background-image: radial-gradient(circle, #34343D 2.6px, transparent 3px); background-size: 34px 34px; }
-#edges { position: absolute; left: 0; top: 0; overflow: visible; }
-.eb { fill: none; stroke: #6A6A76; stroke-width: 4; }
-.et { fill: none; stroke: var(--coral); stroke-width: 8; stroke-linecap: round; }
-.gh { fill: none; stroke: var(--coral); stroke-width: 4; stroke-dasharray: 12 10; opacity: 0; }
+/* BLOCOS SUGERIDOS E REVISADOS */
+.blk{position:absolute;top:560px;width:400px;height:150px;border-radius:30px;background:var(--panel);display:flex;align-items:center;gap:22px;padding:0 30px;font-size:34px;font-weight:700;line-height:40px;opacity:0}
+.blk .ic{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral);flex:none}
+.dash{position:absolute;inset:0;border-radius:30px;border:3px dashed #8A8A99}
+.solid{position:absolute;inset:0;border-radius:30px;border:3px solid var(--ok);opacity:0}
+.glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(255,69,43,.55);opacity:0}
+.sg{position:absolute;left:24px;top:-22px;height:40px;padding:0 14px;border-radius:20px;background:#2A2A33;border:2px dashed #8A8A99;color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
+.tick{position:absolute;right:-20px;top:-20px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#b1{left:260px}#b2{left:760px}#b3{left:1260px}
+#wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#wires path{fill:none;stroke:var(--coral);stroke-width:6;stroke-linecap:round}
+#wires .hd{fill:var(--coral);opacity:0}
+#due{position:absolute;left:820px;top:730px;width:280px;height:52px;border-radius:26px;border:2px solid var(--coral);background:#2A1210;color:#FF8A78;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;white-space:nowrap}
+#cur{position:absolute;left:1000px;top:640px;width:44px;height:44px;opacity:0}
+#dot{position:absolute;left:640px;top:617px;width:36px;height:36px;border-radius:50%;background:var(--coral);border:4px solid #FFD0C8;box-shadow:0 0 24px rgba(255,69,43,.9);opacity:0}
 
-/* NÓS NO ESTILO REACT FLOW */
-.nd { position: absolute; border: 3px solid var(--line); border-radius: 20px; background: var(--panel); box-shadow: 0 6px 18px rgba(0,0,0,.45); opacity: 0; color: var(--text); --acc: var(--coral); --tint: rgba(255,69,43,.16); }
-.nd[data-role=trigger] { border-radius: 46px 20px 20px 46px; }
-.nd[data-role=paths] { --acc: var(--info); --tint: rgba(138,180,255,.16); }
-.nd[data-role=interaction] { --acc: var(--wait); --tint: rgba(242,179,61,.18); }
-.nd[data-role=notify] { --acc: var(--teal); --tint: rgba(67,209,190,.16); }
-.nh { display: flex; align-items: center; gap: 16px; padding: 0 20px; }
-.ni { width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; flex: none; background: var(--tint); color: var(--acc); }
-.ni svg { width: 32px; height: 32px; }
-.nk { font-size: 25px; font-weight: 800; letter-spacing: .02em; color: var(--acc); line-height: 30px; white-space: nowrap; }
-.nm { font-size: 30px; font-weight: 700; line-height: 36px; white-space: nowrap; }
-.nc { margin: 0 20px 14px; height: 62px; border-radius: 12px; background: var(--panel2); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 25px; gap: 10px; white-space: nowrap; }
-.nc span { color: var(--muted); } .nc b { font-weight: 700; }
-.no { --tone: var(--muted); position: relative; height: 56px; border-top: 2px solid var(--line); display: flex; align-items: center; padding: 0 24px 0 20px; font-size: 26px; font-weight: 600; white-space: nowrap; }
-.no + .no { border-top-style: dashed; }
-.no[data-tone=success] { --tone: var(--ok); } .no[data-tone=blocked] { --tone: var(--bad); } .no[data-tone=waiting] { --tone: var(--wait); } .no[data-tone=info] { --tone: var(--info); }
-.no i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--tone); margin-right: 12px; flex: none; }
-.hd { position: absolute; right: -15px; top: 50%; margin-top: -13px; width: 26px; height: 26px; border-radius: 50%; border: 4px solid var(--tone); background: #111115; }
-.hin { position: absolute; left: -15px; top: 31px; width: 26px; height: 26px; border-radius: 50%; border: 4px solid #8A8A96; background: #111115; }
-.nd[data-role=end] { border-radius: 42px; display: flex; align-items: center; gap: 14px; padding: 0 22px 0 16px; --acc: var(--ok); --tint: rgba(61,214,140,.16); }
-.nd[data-role=end] .hin { top: 50%; margin-top: -13px; }
-.nd[data-role=end] .ni { width: 50px; height: 50px; border-radius: 50%; }
-.nd[data-role=end][data-t=halt] { --acc: #A9A9B4; --tint: rgba(169,169,180,.16); border-style: dashed; }
-.ghostrow { position: absolute; height: 56px; border: 3px dashed var(--coral); border-top: none; border-radius: 0 0 18px 18px; background: rgba(255,69,43,.10); display: flex; align-items: center; padding: 0 20px; font-size: 26px; font-weight: 600; opacity: 0; white-space: nowrap; }
-.ghostrow i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--wait); margin-right: 12px; }
-.plus { position: absolute; width: 42px; height: 42px; margin: -21px 0 0 -21px; border-radius: 50%; background: var(--panel); border: 3px solid #6A6A76; color: var(--text); display: grid; place-items: center; font-size: 28px; font-weight: 700; line-height: 1; opacity: 0; }
-.bdg { position: absolute; top: -40px; height: 36px; padding: 0 14px; border-radius: 18px; border: 2px solid; font-size: 24px; font-weight: 700; line-height: 32px; white-space: nowrap; opacity: 0; display: flex; align-items: center; gap: 8px; }
-.bdg.sg { color: var(--coral); border-color: var(--coral); background: #2A1512; }
-.bdg.ad { color: var(--ok); border-color: var(--ok); background: #10261B; }
-.bdg.rn { color: var(--ok); border-color: var(--ok); background: #10261B; }
-.bdg.wt { color: var(--info); border-color: var(--info); background: #121B2B; }
-.bdg.pc { color: var(--wait); border-color: var(--wait); border-style: dashed; background: #261E0C; }
+/* ATIVAR */
+#tg{position:absolute;left:770px;top:440px;width:380px;height:84px;border-radius:42px;background:var(--panel2);border:3px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 14px 0 36px;font-size:34px;font-weight:800;opacity:0}
+#tgl{position:relative;width:150px;height:44px;flex:none}
+#tgl em{position:absolute;left:0;top:0;font-style:normal;white-space:nowrap}
+#tgon{opacity:0;color:var(--ok)}
+#sw{position:relative;width:120px;height:62px;border-radius:31px;background:#3A3A44;flex:none;margin-left:auto}
+#swon{position:absolute;inset:0;border-radius:31px;background:var(--ok);opacity:0}
+#knob{position:absolute;left:6px;top:6px;width:50px;height:50px;border-radius:50%;background:#fff}
 
-/* SOBREPOSIÇÕES DO QUADRO: BARRA, CONTROLES, MINIMAPA */
-.ov { position: absolute; z-index: 10; background: rgba(23,23,27,.97); border: 2px solid var(--line); }
-#bar { left: 20px; top: 14px; width: 1760px; height: 68px; border-radius: 18px; }
-#bar > * { position: absolute; top: 10px; height: 48px; display: flex; align-items: center; white-space: nowrap; }
-#bar .tt { left: 16px; font-size: 28px; font-weight: 800; gap: 16px; }
-#bar .sv { left: 380px; font-size: 24px; font-weight: 600; color: var(--muted); }
-.seg { border: 2px solid var(--line); border-radius: 12px; overflow: hidden; }
-.seg span { height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; color: var(--muted); }
-.bt { justify-content: center; border-radius: 12px; border: 2px solid var(--coral); color: var(--coral); font-size: 26px; font-weight: 700; }
-.bt.p { background: var(--coral); color: #fff; }
-.chip { justify-content: center; border-radius: 999px; border: 2px solid; font-size: 26px; font-weight: 700; }
-#ctl { left: 20px; top: 656px; width: 54px; height: 140px; border-radius: 12px; display: flex; flex-direction: column; }
-#ctl div { flex: 1; display: grid; place-items: center; font-size: 30px; font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--line); }
-#ctl div:last-child { border-bottom: none; }
-#mm { left: 84px; top: 656px; width: 264px; height: 140px; border-radius: 12px; overflow: hidden; background: rgba(17,17,21,.97); }
-.mr { position: absolute; border-radius: 3px; opacity: 0; }
-#mmv { position: absolute; border: 2px solid var(--coral); border-radius: 4px; background: rgba(255,69,43,.08); }
-#strip { left: 380px; top: 722px; width: 800px; height: 58px; border-radius: 16px; border-color: var(--coral); display: flex; align-items: center; gap: 14px; padding: 0 20px; font-size: 26px; font-weight: 700; opacity: 0; white-space: nowrap; }
-#strip em { font-style: normal; color: var(--muted); font-weight: 600; }
-
-/* DIÁLOGO DE INÍCIO */
-#dlg { position: absolute; left: 350px; top: 102px; width: 1100px; height: 560px; z-index: 31; border-radius: 26px; background: var(--panel); border: 2px solid var(--line); box-shadow: 0 20px 60px rgba(0,0,0,.6); opacity: 0; }
-#dlg h2 { position: absolute; left: 40px; top: 34px; font-size: 40px; font-weight: 800; }
-#dlg .sub { position: absolute; left: 40px; top: 90px; font-size: 26px; color: var(--muted); font-weight: 500; }
-.opt { position: absolute; width: 500px; height: 170px; border-radius: 18px; border: 2px solid var(--line); background: var(--panel2); padding: 26px 28px; }
-.opt b { display: block; font-size: 32px; font-weight: 800; margin-bottom: 10px; }
-.opt span { display: block; font-size: 26px; color: var(--muted); font-weight: 500; line-height: 1.3; }
-.opt .ic { position: absolute; right: 24px; top: 24px; width: 48px; height: 48px; border-radius: 12px; background: rgba(255,255,255,.06); display: grid; place-items: center; color: var(--muted); }
-.opt .ic svg { width: 28px; height: 28px; }
-#oFz .ic { background: rgba(255,69,43,.18); color: var(--coral); }
-#oSel { position: absolute; width: 500px; height: 170px; border-radius: 18px; border: 4px solid var(--coral); box-shadow: 0 0 0 8px rgba(255,69,43,.2); opacity: 0; }
-
-/* PAINÉIS LATERAIS: FAZER POR MIM, COPILOTO, TESTAR */
-.pn { position: absolute; left: 1200px; top: 96px; width: 580px; height: 704px; z-index: 20; border-radius: 20px; background: var(--panel); border: 2px solid var(--line); box-shadow: -10px 10px 40px rgba(0,0,0,.5); opacity: 0; overflow: hidden; }
-.pn > * { position: absolute; left: 24px; right: 24px; }
-.ph { top: 0; left: 0; right: 0; height: 66px; border-bottom: 2px solid var(--line); display: flex; align-items: center; gap: 14px; padding: 0 24px; font-size: 30px; font-weight: 800; white-space: nowrap; }
-.ph .ic { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,69,43,.18); color: var(--coral); display: grid; place-items: center; }
-.ph .ic svg { width: 24px; height: 24px; }
-.ph .x { margin-left: auto; color: var(--muted); font-weight: 600; }
-.lb { font-size: 25px; color: var(--muted); font-weight: 600; white-space: nowrap; }
-.ta { top: 120px; height: 136px; border: 2px solid var(--coral); border-radius: 14px; background: #111115; padding: 12px 16px; font-size: 27px; line-height: 37px; font-weight: 500; }
-.ta .w { opacity: 0; }
-.btn { height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; white-space: nowrap; }
-.btn.p { background: var(--coral); color: #fff; }
-.btn.o { border: 2px solid var(--line); color: var(--text); }
-.card { border-radius: 16px; border: 2px solid var(--coral); background: #1C1513; opacity: 0; }
-.card > * { position: absolute; left: 16px; right: 16px; }
-.it { display: flex; align-items: center; gap: 14px; font-size: 26px; font-weight: 600; white-space: nowrap; height: 40px; }
-.it i { width: 18px; height: 18px; border-radius: 5px; flex: none; }
-.bub { border-radius: 16px; padding: 14px 18px; font-size: 27px; line-height: 35px; font-weight: 500; opacity: 0; }
-.bub.me { left: auto; width: 440px; background: #2A1512; border: 2px solid rgba(255,69,43,.5); }
-.bub.ai { background: var(--panel2); border: 2px solid var(--line); }
-.pt { font-size: 24px; font-weight: 800; color: var(--coral); display: block; line-height: 30px; }
-.pd { font-size: 26px; font-weight: 500; display: block; line-height: 34px; margin-bottom: 10px; white-space: nowrap; }
-.rec { height: 54px; border-radius: 12px; border: 2px solid var(--line); display: flex; align-items: center; padding: 0 16px; font-size: 26px; font-weight: 600; white-space: nowrap; gap: 12px; }
-.rec.sel { border-color: var(--coral); background: #2A1512; }
-.rec.off { color: #8A8A96; border-style: dashed; }
-.tr { height: 50px; display: flex; align-items: center; gap: 14px; font-size: 26px; font-weight: 600; white-space: nowrap; opacity: 0; }
-.tr .dt { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; flex: none; font-size: 20px; font-weight: 800; color: #0B0B0D; }
-.sim { height: 42px; border-radius: 21px; border: 2px solid var(--info); color: var(--info); background: #121B2B; display: flex; align-items: center; justify-content: center; font-size: 25px; font-weight: 700; opacity: 0; white-space: nowrap; }
-
-/* CURSOR, LEGENDAS E FECHO */
-#cur { position: absolute; left: 0; top: 0; width: 40px; height: 48px; z-index: 60; opacity: 0; }
-#ring { position: absolute; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; border: 4px solid var(--coral); z-index: 59; opacity: 0; }
-#captions { position: absolute; left: 60px; right: 60px; top: 962px; height: 86px; }
-.cap { position: absolute; left: 0; right: 0; top: 0; height: 86px; display: flex; align-items: center; gap: 22px; padding: 0 28px; border-radius: 16px; background: #1A1A1F; border-left: 8px solid var(--coral); font-size: 32px; font-weight: 700; line-height: 1.15; opacity: 0; white-space: nowrap; }
-.cap small { font-size: 24px; font-weight: 800; color: var(--coral); }
-#close { position: absolute; inset: 0; z-index: 40; background: rgba(11,11,13,.92); opacity: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; }
-#close .l1 { font-size: 76px; font-weight: 800; letter-spacing: -2px; line-height: 1.1; text-align: center; white-space: nowrap; }
-#close .l1 span { color: var(--coral); }
-#close .l2 { font-size: 34px; font-weight: 600; color: var(--muted); white-space: nowrap; }
-#close .row { display: flex; gap: 14px; margin-top: 18px; }
-#pad { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; }
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="flow-copilot" data-width="1920" data-height="1080" data-start="0" data-duration="30">
-  <div id="title"><span>Flow</span> · copiloto de autoria</div>
-  <div id="hchips"><div class="hc">DEMO · reconstrução ilustrativa</div><div class="hc sb">sandbox</div></div>
-  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
-
-  <div id="cv">
-    <div id="world" data-layout-allow-overflow><div id="dots"></div><svg id="edges" width="10" height="10" viewBox="0 0 10 10"></svg></div>
-
-    <div id="bar" class="ov">
-      <div class="tt"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9C9D1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Aprovação de pedido</div>
-      <div class="sv">✓ Salvo</div>
-      <div class="seg" style="left:642px;width:300px"><span id="sgE" style="width:118px;background:var(--coral);color:#fff">Editar</span><span id="sgX" style="width:178px">Execuções</span></div>
-      <div class="bt" id="bV" style="left:956px;width:136px">Validar</div>
-      <div class="bt" id="bP" style="left:1104px;width:160px">Publicar</div>
-      <div class="bt" id="bA" style="left:1276px;width:118px">Ativar</div>
-      <div class="chip" id="c0" style="left:1406px;width:340px;color:var(--muted);border-color:var(--line)">Rascunho</div>
-      <div class="chip" id="c1" style="left:1406px;width:340px;color:var(--ok);border-color:var(--ok);opacity:0">Validado</div>
-      <div class="chip" id="c2" style="left:1406px;width:340px;color:var(--ok);border-color:var(--ok);opacity:0">Publicado · versão 1</div>
-      <div class="chip" id="c3" style="left:1406px;width:340px;color:#0B0B0D;border-color:var(--ok);background:var(--ok);opacity:0">Ativo — versão 1</div>
-    </div>
-    <div id="ctl" class="ov"><div>+</div><div>−</div><div>⤢</div></div>
-    <div id="mm" class="ov"><div id="mmv"></div></div>
-    <div id="strip" class="ov"><svg width="26" height="26" viewBox="0 0 24 24" fill="#FF452B"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></svg>Prévia do copiloto<em>· 3 alterações para revisar</em></div>
-
-    <!-- Painel Fazer por mim -->
-    <div class="pn" id="pA">
-      <div class="ph"><div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></svg></div>Fazer por mim<span class="x">×</span></div>
-      <div class="lb" style="top:80px">Ana descreve o fluxo · DEMO</div>
-      <div class="ta" id="ta"></div>
-      <div class="btn p" id="gen" style="top:268px;right:auto;width:260px">Gerar proposta</div>
-      <div class="card" id="prop" style="top:336px;height:360px">
-        <div style="top:14px;font-size:28px;font-weight:800">Proposta do assistente</div>
-        <div class="lb" style="top:50px">revise antes de aplicar</div>
-        <div style="top:90px">
-          <div class="it"><i style="background:var(--coral)"></i>Quando: pedido enviado</div>
-          <div class="it"><i style="background:var(--info)"></i>Caminhos: alçada · DEMO</div>
-          <div class="it"><i style="background:var(--wait)"></i>Perguntar ao diretor</div>
-          <div class="it"><i style="background:var(--teal)"></i>Avisar financeiro</div>
-          <div class="it"><i style="background:var(--ok)"></i>Fim: concluído ou interrompido</div>
-        </div>
-        <div class="btn p" id="apl" style="top:294px;right:auto;width:262px">Aplicar no quadro</div>
-        <div class="btn o" style="top:294px;left:290px;right:16px">Nova proposta</div>
-      </div>
-    </div>
-
-    <!-- Painel Copiloto -->
-    <div class="pn" id="pB">
-      <div class="ph"><div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></svg></div>Copiloto<span class="x">×</span></div>
-      <div class="lb" style="top:80px">Conversa sobre este fluxo</div>
-      <div class="bub me" id="bMe" style="top:122px">Adicione um prazo para a resposta do diretor.</div>
-      <div class="bub ai" id="bAi" style="top:250px">
-        <span class="pt">Assistente · proposta de alteração</span>
-        <span class="pt" style="color:var(--wait);margin-top:8px">atualizar etapa</span><span class="pd">Perguntar ao diretor: prazo · DEMO</span>
-        <span class="pt" style="color:var(--wait)">nova saída</span><span class="pd">Sem resposta no prazo → Interrompido</span>
-        <span class="pt" style="color:var(--wait)">mover etapa</span><span class="pd" style="margin-bottom:0">Interrompido desce no quadro</span>
-      </div>
-      <div class="btn p" id="pApl" style="top:582px;right:auto;width:170px">Aplicar</div>
-      <div class="btn o" id="pDsc" style="top:582px;left:208px;right:auto;width:180px">Descartar</div>
-      <div class="lb" id="pOk" style="top:650px;color:var(--ok);opacity:0">✓ Ana revisou e aplicou</div>
-    </div>
-
-    <!-- Painel Testar -->
-    <div class="pn" id="pC">
-      <div class="ph"><div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg></div>Testar com um caso real<span class="x">×</span></div>
-      <div class="lb" style="top:80px">Pedidos no estado do gatilho · DEMO</div>
-      <div style="top:118px;display:flex;flex-direction:column;gap:8px">
-        <div class="rec sel">PC-0142 · enviado · Aurora</div>
-        <div class="rec">PC-0139 · enviado · Aurora</div>
-        <div class="rec off">PC-0137 · rascunho · não se aplica</div>
-      </div>
-      <div class="btn p" id="fire" style="top:312px;right:auto;width:250px">Disparar teste</div>
-      <div style="top:390px;font-size:27px;font-weight:800">Trilha da execução</div>
-      <div class="sim" id="sim" style="top:434px">Simulada — nada foi alterado</div>
-      <div style="top:490px">
-        <div class="tr" id="tr1"><span class="dt" style="background:var(--ok)">✓</span>Quando · Recebido</div>
-        <div class="tr" id="tr2"><span class="dt" style="background:var(--ok)">✓</span>Conferir alçada · Acima da alçada</div>
-        <div class="tr" id="tr3"><span class="dt" style="background:var(--info)">…</span>Perguntar ao diretor · Aguardando</div>
-      </div>
-      <div class="btn o" id="ans" style="top:644px;right:auto;width:330px;opacity:0">Responder como gestor</div>
-    </div>
-
-    <div id="dlg">
-      <h2>Como você quer começar?</h2>
-      <div class="sub">Novo fluxo · empresa Aurora (DEMO)</div>
-      <div class="opt" style="left:40px;top:140px"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 4h14v16H5zM8 9h8M8 13h5"/></svg></div><b>Receita pronta</b><span>lacunas para preencher</span></div>
-      <div class="opt" style="left:560px;top:140px"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="4" width="7" height="7" rx="2"/><rect x="14" y="13" width="7" height="7" rx="2"/><path d="M10 7.5h4v5.5"/></svg></div><b>Modelo</b><span>parte de um fluxo pronto</span></div>
-      <div class="opt" style="left:40px;top:340px"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></div><b>Em branco</b><span>bloco a bloco no quadro</span></div>
-      <div class="opt" id="oFz" style="left:560px;top:340px"><div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z"/></svg></div><b>Fazer por mim</b><span>descreva em texto; o assistente propõe</span></div>
-      <div id="oSel" style="left:560px;top:340px"></div>
-    </div>
-
-    <div id="close">
-      <div class="l1">Você descreve. <span>O Flow monta, testa e executa.</span></div>
-      <div class="l2">A IA propõe; quem revisa, aplica e ativa é a pessoa.</div>
-      <div class="row"><div class="hc">Fazer por mim</div><div class="hc">Copiloto com prévia</div><div class="hc">Teste com caso real</div><div class="hc sb">sandbox · DEMO</div></div>
-    </div>
+<div id="root" data-composition-id="flow-copilot" data-width="1920" data-height="1080" data-start="0" data-duration="32">
+  <div id="hd">
+    <div id="wm">Flow<span>.</span></div>
+    <div id="kick">Some a página em branco</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <div id="captions"></div>
-  <svg id="cur" viewBox="0 0 40 48"><path d="M4 3l30 22-13 2-7 14z" fill="#fff" stroke="#0B0B0D" stroke-width="3" stroke-linejoin="round"/></svg>
-  <div id="ring"></div>
-  <div id="pad"></div>
+  <div class="av" id="ana"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Ana · DEMO</div></div>
+  <div id="say"><span class="w">“Quando</span> <span class="k" id="k1"><span class="w">chegar</span> <span class="w">um</span> <span class="w">pedido</span> <span class="w">de</span> <span class="w">compra,</span></span> <span class="w">peça</span> <span class="w">a</span> <span class="k" id="k2"><span class="w">aprovação</span> <span class="w">da</span> <span class="w">Ana</span></span> <span class="w">e</span> <span class="k" id="k3"><span class="w">avise</span> <span class="w">o</span> <span class="w">financeiro.”</span></span></div>
+
+  <div id="tg"><div id="tgl"><em id="tgoff">Ativar</em><em id="tgon">Ativo</em></div><div id="sw"><div id="swon"></div><div id="knob"></div></div></div>
+
+  <svg id="wires" viewBox="0 0 1920 1080">
+    <path id="w1" d="M664 635 L748 635"/>
+    <path id="w2" d="M1164 635 L1248 635"/>
+    <path class="hd" id="h1" d="M760 635 L742 623 L742 647 Z"/>
+    <path class="hd" id="h2" d="M1260 635 L1242 623 L1242 647 Z"/>
+  </svg>
+  <div class="blk" id="b1"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>Pedido chega<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b2"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Ana aprova<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b3"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>Financeiro é avisado<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div id="due"><svg width="28" height="28" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>prazo · DEMO</div>
+  <div id="dot"></div>
+  <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.6L9.6 21z" fill="#fff" stroke="#0B0B0D" stroke-width="1.6" stroke-linejoin="round"/></svg>
+
+  <div class="cap" id="c1">Descreva o processo <span>em palavras</span></div>
+  <div class="cap" id="c2">As frases <span>viram blocos</span></div>
+  <div class="cap" id="c3">Você <span>revisa e ajusta</span></div>
+  <div class="cap" id="c4">Ativa, e o processo <span>já está rodando</span></div>
+
+  <div id="close">
+    <div class="l1">Você descreve, revisa e ativa.<br><span>Do texto ao processo rodando.</span></div>
+    <div class="brand"><div class="bw">Flow<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
-  // CONSTRUÇÃO DO QUADRO (posições fixas em coordenadas de mundo, sem aleatoriedade)
-  var ICON = {
-    trigger: '<path d="M13 2L4 14h7l-1 8 9-12h-7z" fill="currentColor"/>',
-    paths: '<path d="M6 3v6a4 4 0 0 0 4 4h8M6 9v12M18 13l-3-3M18 13l-3 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
-    interaction: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
-    notify: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>',
-    ok: '<path d="M5 12l5 5 9-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
-    halt: '<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>'
-  };
-  var HEAD1 = 104, HEAD2 = 140, BOX = 76, ROW = 56;
-  var N = {
-    T:  { x: 40,   y: 130, w: 420, role: "trigger", k: "QUANDO", m: ["Pedido de compra", "enviado"], rows: [["Recebido", "success"]] },
-    C:  { x: 600,  y: 120, w: 400, role: "paths", k: "CAMINHOS", m: ["Conferir alçada"], box: ["Alçada", "DEMO"], rows: [["Acima da alçada", "info"], ["Dentro da alçada", "success"]] },
-    P:  { x: 1160, y: 100, w: 480, role: "interaction", k: "PERGUNTAR E ESPERAR", m: ["Perguntar ao diretor"], box: ["WhatsApp", "Diretor · DEMO"], rows: [["Aprovar", "success"], ["Recusar", "blocked"]] },
-    P3: { x: 1160, y: 100, w: 480, role: "interaction", k: "PERGUNTAR E ESPERAR", m: ["Perguntar ao diretor"], box: ["WhatsApp", "prazo · DEMO"], rows: [["Aprovar", "success"], ["Recusar", "blocked"], ["Sem resposta no prazo", "waiting"]] },
-    F:  { x: 1780, y: 100, w: 420, role: "notify", k: "AVISAR", m: ["Avisar financeiro"], box: ["Modelo", "aprovado · DEMO"], rows: [["Enviado", "success"]] },
-    EO: { x: 2340, y: 266, w: 260, h: 84, role: "end", t: "ok", m: "Concluído" },
-    E2: { x: 1160, y: 500, w: 260, h: 84, role: "end", t: "ok", m: "Concluído" },
-    EH: { x: 1780, y: 430, w: 300, h: 84, role: "end", t: "halt", m: "Interrompido" }
-  };
-  var EH_Y2 = 500;
-  var world = document.getElementById("world"), svg = document.getElementById("edges"), NS = "http://www.w3.org/2000/svg";
-  function rowY(n, i) { var hh = n.m.length > 1 ? HEAD2 : HEAD1; return n.y + 3 + hh + (n.box ? BOX : 0) + ROW * i + ROW / 2; }
-  function inY(n) { return n.role === "end" ? n.y + n.h / 2 : n.y + 47; }
-  Object.keys(N).forEach(function (id) {
-    var n = N[id], d = document.createElement("div");
-    d.className = "nd"; d.id = "n" + id; d.setAttribute("data-role", n.role);
-    d.style.left = n.x + "px"; d.style.top = n.y + "px"; d.style.width = n.w + "px";
-    if (n.role === "end") {
-      d.setAttribute("data-t", n.t); d.style.height = n.h + "px";
-      d.innerHTML = '<div class="hin"></div><div class="ni"><svg viewBox="0 0 24 24">' + ICON[n.t] + '</svg></div><div><div class="nk">FIM</div><div class="nm">' + n.m + "</div></div>";
-    } else {
-      var hh = n.m.length > 1 ? HEAD2 : HEAD1;
-      var h = '<div class="hin"></div><div class="nh" style="height:' + hh + 'px"><div class="ni"><svg viewBox="0 0 24 24">' + ICON[n.role] + '</svg></div><div><div class="nk">' + n.k + '</div>' + n.m.map(function (l) { return '<div class="nm">' + l + "</div>"; }).join("") + "</div></div>";
-      if (n.box) h += '<div class="nc"><span>' + n.box[0] + "</span><b>" + n.box[1] + "</b></div>";
-      n.rows.forEach(function (r) { h += '<div class="no" data-tone="' + r[1] + '"><i></i>' + r[0] + '<div class="hd"></div></div>'; });
-      d.innerHTML = h;
-    }
-    world.appendChild(d);
-  });
-  // Badges above nodes: suggested, adopted, run state
-  function badge(id, node, cls, text, dx) {
-    var b = document.createElement("div"); b.className = "bdg " + cls; b.id = id; b.textContent = text;
-    b.style.left = (dx || 18) + "px"; document.getElementById("n" + node).appendChild(b); return b;
-  }
-  ["T", "C", "P", "F", "EO", "E2", "EH"].forEach(function (k) { badge("sg" + k, k, "sg", "sugerida"); badge("ad" + k, k, "ad", "adotada"); });
-  badge("ad" + "P3", "P3", "ad", "adotada");
-  badge("pcP", "P", "pc", "parcial", 330); badge("pcP3", "P3", "pc", "parcial", 330);
-  badge("rnT", "T", "rn", "Recebido"); badge("rnC", "C", "wt", "Acima da alçada"); badge("rnP", "P3", "wt", "Aguardando resposta");
-  // Ghost row previewing the new output under P
-  var g = document.createElement("div"); g.className = "ghostrow"; g.id = "ghost";
-  g.style.left = (N.P.x + 3) + "px"; g.style.top = (N.P.y + 3 + HEAD1 + BOX + ROW * 2) + "px"; g.style.width = (N.P.w - 6) + "px";
-  g.innerHTML = "<i></i>Sem resposta no prazo"; world.appendChild(g);
-
-  // Bezier like React Flow: control points offset by half the horizontal distance
-  function bez(sx, sy, tx, ty) { var c = Math.max(Math.abs(tx - sx) * 0.5, 60); return "M" + sx + "," + sy + " C" + (sx + c) + "," + sy + " " + (tx - c) + "," + ty + " " + tx + "," + ty; }
-  function outPt(id, i) { var n = N[id]; return [n.x + n.w + 2, rowY(n, i)]; }
-  function inPt(id, y) { var n = N[id]; return [n.x - 14, y === undefined ? inY(n) : y]; }
-  svg.innerHTML = '<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6A6A76"/></marker><marker id="arC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="#FF452B"/></marker></defs>';
-  var E = {}, PL = {};
-  function edge(id, a, b, cls) {
-    var p = document.createElementNS(NS, "path"); p.setAttribute("d", bez(a[0], a[1], b[0], b[1]));
-    p.setAttribute("class", cls || "eb"); p.setAttribute("id", id);
-    if (!cls) { p.setAttribute("pathLength", "1"); p.style.strokeDasharray = "1"; p.style.strokeDashoffset = "1"; p.style.opacity = "0"; p.setAttribute("marker-end", "url(#ar)"); }
-    svg.appendChild(p); E[id] = { a: a, b: b };
-    if (!cls) {
-      var q = document.createElement("div"); q.className = "plus"; q.id = "pl" + id; q.textContent = "+";
-      q.style.left = ((a[0] + b[0]) / 2) + "px"; q.style.top = ((a[1] + b[1]) / 2) + "px"; world.appendChild(q);
-    }
-    return p;
-  }
-  edge("eTC", outPt("T", 0), inPt("C"));
-  edge("eCP", outPt("C", 0), inPt("P"));
-  edge("eCE", outPt("C", 1), inPt("E2"));
-  edge("ePF", outPt("P", 0), inPt("F"));
-  edge("ePH", outPt("P", 1), inPt("EH"));
-  edge("eFO", outPt("F", 0), inPt("EO"));
-  var newEH = N.EH.x - 14, newEHy = EH_Y2 + N.EH.h / 2;
-  edge("ePZ", outPt("P3", 2), [newEH, newEHy]);
-  var gz = document.createElementNS(NS, "path"); gz.setAttribute("id", "gZ"); gz.setAttribute("class", "gh");
-  gz.setAttribute("d", bez(N.P.x + N.P.w + 2, N.P.y + 3 + HEAD1 + BOX + ROW * 2 + ROW / 2, newEH, newEHy)); gz.setAttribute("marker-end", "url(#arC)"); svg.appendChild(gz);
-  // Run trail overlays (painted in Execuções mode)
-  ["eTC", "eCP"].forEach(function (k) {
-    var p = document.createElementNS(NS, "path"); p.setAttribute("d", bez(E[k].a[0], E[k].a[1], E[k].b[0], E[k].b[1]));
-    p.setAttribute("class", "et"); p.setAttribute("id", "t" + k); p.setAttribute("pathLength", "1"); p.style.strokeDasharray = "1"; p.style.strokeDashoffset = "1"; svg.appendChild(p);
-  });
-  var dEH2 = bez(outPt("P", 1)[0], outPt("P", 1)[1], newEH, newEHy);
-
-  // MINIMAPA (cores por papel, janela acompanha a câmera)
-  var MK = 0.086, MX0 = 6, MY0 = 70 - (60 + 620) / 2 * MK;
-  var MCOL = { trigger: "#FF452B", paths: "#8AB4FF", interaction: "#F2B33D", notify: "#43D1BE", end: "#3DD68C" };
-  var mm = document.getElementById("mm");
-  ["T", "C", "P", "F", "EO", "E2", "EH"].forEach(function (k) {
-    var n = N[k], r = document.createElement("div"); r.className = "mr"; r.id = "m" + k;
-    var h = n.role === "end" ? n.h : (k === "T" ? 196 : k === "P" ? 292 : k === "C" ? 292 : 236);
-    r.style.left = (MX0 + n.x * MK) + "px"; r.style.top = (MY0 + n.y * MK) + "px"; r.style.width = (n.w * MK) + "px"; r.style.height = (h * MK) + "px";
-    r.style.background = (n.t === "halt") ? "#A9A9B4" : MCOL[n.role]; mm.appendChild(r);
-  });
-  var mmv = document.getElementById("mmv");
-  mmv.style.left = MX0 + "px"; mmv.style.top = (MY0 + (-40) * MK) + "px"; mmv.style.width = (1800 * MK) + "px"; mmv.style.height = (816 * MK) + "px";
-
-  // TEXTO DIGITADO (palavras reveladas em sequência)
-  var words = "Quando um pedido de compra acima da alçada for enviado, pergunte ao diretor e avise o financeiro.".split(" ");
-  document.getElementById("ta").innerHTML = words.map(function (w) { return '<span class="w">' + w + "</span>"; }).join(" ");
-
-  // LEGENDAS DAS BATIDAS
-  var caps = [
-    "Como começar: receita pronta, modelo, em branco ou “Fazer por mim”",
-    "Ana descreve o processo em texto; o assistente devolve uma proposta",
-    "Aplicar põe as etapas no quadro, cada uma com o selo “sugerida”",
-    "No copiloto, um pedido vira alteração em prévia; Ana revisa e aplica",
-    "Validado, publicado e ativo: o teste usa um caso real e não altera nada"
-  ];
-  var capBox = document.getElementById("captions");
-  caps.forEach(function (t, i) {
-    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
-    d.innerHTML = "<small>" + (i + 1) + "/5</small><span>" + t + "</span>"; capBox.appendChild(d);
-  });
-
-  // LINHA DO TEMPO (pausada, termina exatamente em 30 s)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 32;
   var tl = gsap.timeline({ paused: true });
-  function fin(sel, t, d, extra) { var to = Object.assign({ opacity: 1, duration: d || 0.4, ease: "power2.out" }, extra || {}); tl.to(sel, to, t); }
-  function fout(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: "power2.in" }, t); }
-  function cap(i, a, b) { tl.fromTo("#cap" + i, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, a); if (b) tl.to("#cap" + i, { opacity: 0, duration: 0.3 }, b - 0.3); }
-  // Camera: world x pan at scale 1 (y fixed at 40); minimap window follows
-  function cam(x, t, d) { tl.to("#world", { x: x, duration: d, ease: "power2.inOut" }, t); tl.to("#mmv", { x: -x * MK, duration: d, ease: "power2.inOut" }, t); }
-  function mv(x, y, t, d) { tl.to("#cur", { x: x, y: y, duration: d || 0.5, ease: "power2.inOut" }, t); }
-  function click(x, y, t) { tl.set("#ring", { x: x, y: y, opacity: 0.9, scale: 0.4 }, t); tl.to("#ring", { opacity: 0, scale: 1.3, duration: 0.35, ease: "power2.out" }, t); }
-  function press(sel, t) { tl.fromTo(sel, { scale: 1 }, { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1, ease: "power1.inOut" }, t); }
-  function nodeIn(k, t) { tl.fromTo("#n" + k, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, t); fin("#m" + k, t, 0.3); fin("#sg" + k, t + 0.2, 0.3); }
-  function draw(id, t, d) { tl.set("#" + id, { opacity: 1 }, t); tl.to("#" + id, { strokeDashoffset: 0, duration: d || 0.45, ease: "power2.inOut" }, t); fin("#pl" + id, t + 0.3, 0.25); }
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
 
-  tl.set("#world", { x: 0, y: 40 }, 0);
-  tl.set("#cur", { x: 1500, y: 860 }, 0);
-  tl.fromTo("#title", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
-  tl.fromTo(["#hchips", "#seal"], { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.1);
-  tl.fromTo("#cv", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.1);
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
 
-  // Beat 1: start dialog with four options, "Fazer por mim" chosen
-  cap(0, 0.6, 4.7);
-  tl.fromTo("#dlg", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.65);
-  fin("#cur", 1.0, 0.3);
-  mv(1240, 680, 1.9, 0.8); click(1240, 680, 2.75); press("#oFz", 2.75);
-  tl.fromTo("#oSel", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.8);
+  // Batida 1: descrever em palavras (0,5–6,4 s)
+  inn('#ana', 0.5, { y: 20 });
+  inn('#say', 0.7, { y: 16, scale: 0.97 }, 0.5);
+  inn('#c1', 1.0, { y: 16 });
+  // Words appear one by one, as if typed
+  tl.fromTo('#say .w', { opacity: 0 }, { opacity: 1, duration: 0.06, stagger: 0.16 }, 1.3);
+  out('#c1', 6.2);
 
-  // Beat 2: describe in text, proposal card returns
-  cap(1, 4.7, 10.4);
-  fout("#dlg", 4.6, 0.35);
-  tl.fromTo("#pA", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, 4.95);
-  mv(1420, 590, 4.9, 0.6);
-  tl.to("#ta .w", { opacity: 1, duration: 0.08, stagger: 0.095, ease: "none" }, 5.2);
-  click(1414, 519, 8.2); press("#gen", 8.2); mv(1414, 519, 7.6, 0.55);
-  tl.fromTo("#prop", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 8.35);
+  // Batida 2: as frases viram blocos (6,5–12,4 s)
+  inn('#c2', 6.5, { y: 16 });
+  ['#k1', '#k2', '#k3'].forEach(function (k, i) { tl.to(k, { backgroundColor: 'rgba(255,69,43,0.28)', duration: 0.3 }, 6.8 + 0.3 * i); });
+  tl.fromTo('#b1', { opacity: 0, x: 300, y: -310, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 7.8);
+  tl.fromTo('#b2', { opacity: 0, x: -120, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.3);
+  tl.fromTo('#b3', { opacity: 0, x: -60, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.8);
+  draw('w1', 9.9, 0.4); tl.fromTo('#h1', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.25);
+  draw('w2', 10.4, 0.4); tl.fromTo('#h2', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.75);
+  out('#c2', 12.3);
 
-  // Beat 3: apply proposal, nodes enter with "sugerida" badges, camera follows
-  cap(2, 10.4, 13.9);
-  mv(1430, 883, 9.85, 0.5); click(1430, 883, 10.4); press("#apl", 10.4);
-  tl.to("#pA", { opacity: 0, x: 40, duration: 0.35, ease: "power2.in" }, 10.6);
-  mv(1500, 880, 10.7, 0.5);
-  nodeIn("T", 10.8); nodeIn("C", 11.0); draw("eTC", 11.15);
-  nodeIn("P", 11.25); fin("#pcP", 11.45, 0.3); draw("eCP", 11.4); nodeIn("E2", 11.4); draw("eCE", 11.55);
-  cam(-1020, 11.5, 0.9);
-  nodeIn("F", 11.75); draw("ePF", 11.9); nodeIn("EH", 11.9); draw("ePH", 12.05); nodeIn("EO", 12.1); draw("eFO", 12.25);
+  // Batida 3: revisar e ajustar (12,6–18,6 s)
+  inn('#c3', 12.6, { y: 16 });
+  tl.fromTo('#cur', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.3 }, 12.9);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 13.6).to('#cur', { scale: 1, duration: 0.15 }, 13.72);
+  inn('#due', 13.8, { y: -10, scale: 0.8 }, 0.4);
+  function approve(b, t) {
+    tl.to(b + ' .dash', { opacity: 0, duration: 0.3 }, t);
+    tl.to(b + ' .sg', { opacity: 0, duration: 0.25 }, t);
+    tl.fromTo(b + ' .solid', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t);
+    tl.fromTo(b + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.15);
+  }
+  approve('#b1', 14.9); approve('#b2', 15.5); approve('#b3', 16.1);
+  out('#c3', 18.5);
 
-  // Beat 4: copilot turn, preview patch on the board, author applies
-  cap(3, 13.9, 20.4);
-  tl.fromTo("#pB", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 13.9);
-  // Node that falls under the opaque panel leaves with it
-  fout("#nEO", 13.9, 0.3);
-  cam(-1100, 13.9, 0.5);
-  tl.fromTo("#bMe", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35 }, 14.25);
-  tl.fromTo("#bAi", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4 }, 16.1);
-  fin("#ghost", 16.2, 0.4); tl.to("#gZ", { opacity: 1, duration: 0.4 }, 16.25);
-  tl.to("#nEH", { boxShadow: "0 0 0 5px rgba(255,69,43,.45)", duration: 0.3 }, 16.25);
-  tl.fromTo("#strip", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, 16.25);
-  mv(1364, 827, 17.6, 0.6); click(1364, 827, 18.3); press("#pApl", 18.3);
-  tl.set(["#ghost", "#gZ"], { opacity: 0 }, 18.45); fout("#strip", 18.4, 0.3);
-  tl.set("#nP3", { opacity: 1 }, 18.45); tl.set(["#adP3", "#pcP3"], { opacity: 1 }, 18.45); tl.set("#nP", { opacity: 0 }, 18.45);
-  tl.to("#nEH", { y: EH_Y2 - N.EH.y, boxShadow: "0 0 0 0px rgba(255,69,43,0)", duration: 0.45, ease: "power2.inOut" }, 18.45);
-  tl.to("#mEH", { y: (EH_Y2 - N.EH.y) * MK, duration: 0.45 }, 18.45);
-  tl.to("#ePH", { attr: { d: dEH2 }, duration: 0.45, ease: "power2.inOut" }, 18.45);
-  tl.to("#plePH", { y: (newEHy - inY(N.EH)) / 2, duration: 0.45 }, 18.45);
-  tl.set("#ePZ", { opacity: 1 }, 18.6); tl.to("#ePZ", { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" }, 18.6);
-  ["T", "C", "F", "EO", "E2", "EH"].forEach(function (k) { fout("#sg" + k, 18.6, 0.2); fin("#ad" + k, 18.85, 0.3); });
-  fin("#pOk", 18.7, 0.3);
+  // Batida 4: ativar e rodar (18,8–25,4 s)
+  inn('#c4', 18.8, { y: 16 });
+  out(['#say', '#ana'], 18.8, 0.4);
+  inn('#tg', 19.0, { y: 14 }, 0.45);
+  tl.to('#cur', { x: 110, y: -180, duration: 0.6, ease: 'power2.inOut' }, 19.1);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 19.8).to('#cur', { scale: 1, duration: 0.15 }, 19.92);
+  tl.to('#knob', { x: 58, duration: 0.3, ease: 'power2.out' }, 19.9);
+  tl.fromTo('#swon', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 19.9);
+  tl.to('#tg', { borderColor: '#3DD68C', duration: 0.3 }, 20.0);
+  out('#tgoff', 20.0, 0.2); tl.fromTo('#tgon', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 20.15);
+  out('#cur', 20.5, 0.3);
+  function lit(b, t) { tl.fromTo(b + ' .glow', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t); tl.to(b + ' .glow', { opacity: 0, duration: 0.4 }, t + 0.9); }
+  lit('#b1', 20.9);
+  tl.fromTo('#dot', { opacity: 0, x: 0 }, { opacity: 1, x: 0, duration: 0.2 }, 21.4);
+  tl.to('#dot', { x: 100, duration: 0.6, ease: 'power1.inOut' }, 21.6);
+  lit('#b2', 22.2);
+  // The dot hides while the block works, then reappears on the next arrow
+  tl.to('#dot', { opacity: 0, duration: 0.15 }, 22.2);
+  tl.set('#dot', { x: 500 }, 22.5);
+  tl.to('#dot', { opacity: 1, duration: 0.15 }, 22.6);
+  tl.to('#dot', { x: 600, duration: 0.6, ease: 'power1.inOut' }, 22.75);
+  lit('#b3', 23.4);
+  out('#dot', 23.45, 0.3);
+  out('#c4', 25.3);
 
-  // Beat 5: validate, publish, activate; test with a real case, trail painted
-  cap(4, 20.4, 26.5);
-  mv(1113, 176, 19.9, 0.55); click(1113, 176, 20.45); press("#bV", 20.45);
-  // Chip states swap instantly so two labels never share the frame
-  tl.set("#c0", { opacity: 0 }, 20.5); tl.set("#c1", { opacity: 1 }, 20.5);
-  mv(1269, 176, 20.6, 0.3); click(1269, 176, 20.85); press("#bP", 20.85);
-  tl.set("#c1", { opacity: 0 }, 20.9); tl.set("#c2", { opacity: 1 }, 20.9);
-  mv(1416, 176, 21.0, 0.3); click(1416, 176, 21.25); press("#bA", 21.25);
-  tl.set("#c2", { opacity: 0 }, 21.3); tl.set("#c3", { opacity: 1 }, 21.3);
-  tl.to("#pB", { opacity: 0, x: 40, duration: 0.3, ease: "power2.in" }, 22.8);
-  tl.fromTo("#pC", { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 23.1);
-  mv(1404, 557, 22.7, 0.55); click(1404, 557, 23.45); press("#fire", 23.45);
-  tl.to("#sgE", { backgroundColor: "rgba(0,0,0,0)", color: "#C9C9D1", duration: 0.2 }, 23.45);
-  tl.to("#sgX", { backgroundColor: "#FF452B", color: "#FFFFFF", duration: 0.2 }, 23.45);
-  cam(-560, 23.4, 0.6);
-  fout(".plus", 23.45, 0.2);
-  ["T", "C", "P3", "F", "EO", "E2", "EH"].forEach(function (k) { fout("#ad" + k, 23.45, 0.2); });
-  tl.to(["#nF", "#nEH"], { opacity: 0, duration: 0.3 }, 23.55);
-  tl.to(["#nE2", "#ePF", "#ePH", "#eFO", "#eCE", "#ePZ"], { opacity: 0.35, duration: 0.3 }, 23.5);
-  fin("#rnT", 23.85, 0.25); fin("#tr1", 23.85, 0.25);
-  tl.to("#teTC", { strokeDashoffset: 0, duration: 0.35, ease: "power2.inOut" }, 24.0);
-  fin("#rnC", 24.25, 0.25); fin("#tr2", 24.25, 0.25);
-  tl.to("#teCP", { strokeDashoffset: 0, duration: 0.35, ease: "power2.inOut" }, 24.4);
-  fin("#rnP", 24.75, 0.25); fin("#tr3", 24.75, 0.25);
-  fin("#sim", 24.85, 0.3); fin("#ans", 24.9, 0.3);
-  fout("#cur", 25.0, 0.3);
-
-  // Closing card
-  fout(["#world", "#bar", "#ctl", "#mm", "#pC"], 26.2, 0.3);
-  tl.fromTo("#close", { opacity: 0 }, { opacity: 1, duration: 0.55, ease: "power2.out" }, 26.5);
-  tl.fromTo("#pad", { opacity: 0 }, { opacity: 0.001, duration: 1 }, 29);
+  // Fecho (25,9–32 s, parado de 26,5 s ao fim)
+  out(['#hd', '#b1', '#b2', '#b3', '#wires', '#due', '#tg'], 25.5, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 25.9);
+  tl.set('#close', { opacity: 1 }, D);
 
   window.__timelines = window.__timelines || {};
   window.__timelines["flow-copilot"] = tl;
+})();
 </script>
 </body>
 </html>

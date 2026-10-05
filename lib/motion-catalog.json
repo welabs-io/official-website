@@ -508,7 +508,7 @@
   {
     "id": "flow-canvas-build",
     "title": "Flow · Montar o fluxo",
-    "duration": 36,
+    "duration": 31,
     "compositionId": "flow-canvas-build",
     "src": "/motion/flow-canvas-build/index.html",
     "kind": "business",
@@ -523,7 +523,7 @@
   {
     "id": "flow-durable-run",
     "title": "Flow · Execução durável",
-    "duration": 44,
+    "duration": 34,
     "compositionId": "flow-durable-run",
     "src": "/motion/flow-durable-run/index.html",
     "kind": "business",
@@ -538,7 +538,7 @@
   {
     "id": "flow-lifecycle",
     "title": "Flow · Ciclo de vida",
-    "duration": 34,
+    "duration": 35,
     "compositionId": "flow-lifecycle",
     "src": "/motion/flow-lifecycle/index.html",
     "kind": "business",
@@ -553,7 +553,7 @@
   {
     "id": "flow-copilot",
     "title": "Flow · Copiloto",
-    "duration": 30,
+    "duration": 32,
     "compositionId": "flow-copilot",
     "src": "/motion/flow-copilot/index.html",
     "kind": "business",

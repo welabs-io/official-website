@@ -3,576 +3,192 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Flow · execução durável</title>
+<title>Flow · Execução durável</title>
 <style>
-/* TIPOGRAFIA E TOKENS DA IDENTIDADE WELABS */
+/* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;--ok:#4ADE9B;--warn:#F5B841;--bad:#F87171;--info:#7DB4FF;--ai:#B79CFF}
+:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--wait:#F5B53F}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidden}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;line-height:1.25}
-.abs{position:absolute}
-.ic{display:inline-flex;align-items:center;justify-content:center;flex:none}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:186px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:10px;height:52px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;z-index:8}
 
-/* CABEÇALHO E SELO */
-#title{position:absolute;left:60px;top:34px;font-size:54px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
-#title span{color:var(--coral)}
-#hchips{position:absolute;right:290px;top:44px;display:flex;gap:14px;opacity:0}
-.hc{height:48px;padding:0 20px;border-radius:999px;border:2px solid var(--line);color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
-.hc.sb{border-color:var(--coral);color:var(--coral)}
-#seal{position:absolute;right:60px;top:40px;height:52px;width:auto;opacity:0}
+/* ESTAÇÕES DO CAMINHO E O FIO */
+.st{position:absolute;top:395px;width:150px;height:150px;border-radius:50%;background:var(--panel);border:4px solid var(--line);display:grid;place-items:center;color:var(--coral);opacity:0;z-index:2}
+.st .tick{position:absolute;right:-6px;top:-6px;width:50px;height:50px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+.sl{position:absolute;top:592px;width:320px;text-align:center;font-size:30px;font-weight:700;opacity:0;white-space:nowrap;z-index:2}
+#st1{left:225px}#st2{left:705px}#st3{left:1185px}#st4{left:1585px}
+#sl1{left:140px}#sl2{left:620px}#sl3{left:1100px}#sl4{left:1500px}
+.seg{position:absolute;top:465px;height:10px;border-radius:5px;background:var(--coral);box-shadow:0 0 18px rgba(255,69,43,.7);transform-origin:0 50%;transform:scaleX(0);z-index:6}
+#g1{left:375px;width:330px}#g2{left:855px;width:330px}#g3{left:1335px;width:250px}
+#rail{position:absolute;left:375px;top:468px;width:1210px;height:4px;background:repeating-linear-gradient(90deg,#3A3A44 0 14px,transparent 14px 26px);opacity:0;z-index:1}
+#bead{position:absolute;left:278px;top:448px;width:44px;height:44px;border-radius:50%;background:var(--coral);border:5px solid #FFD0C8;box-shadow:0 0 30px rgba(255,69,43,.9);opacity:0;z-index:7}
+#ghost{position:absolute;left:278px;top:448px;width:44px;height:44px;border-radius:50%;border:4px dashed var(--muted);opacity:0;z-index:7}
+#ring{position:absolute;left:680px;top:370px;width:200px;height:200px;border-radius:50%;border:6px solid var(--coral);box-shadow:0 0 40px rgba(255,69,43,.6),inset 0 0 30px rgba(255,69,43,.35);opacity:0;z-index:6}
 
-/* QUADRO NO ESTILO REACT FLOW, MODO EXECUÇÕES */
-#cv{position:absolute;left:60px;top:128px;width:1230px;height:814px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#111115;opacity:0}
-#vp{position:absolute;left:0;top:0;width:1226px;height:810px;overflow:hidden}
-#dots{position:absolute;inset:0;background-image:radial-gradient(circle,#34343D 3px,transparent 3.5px);background-size:33px 33px}
-#world{position:absolute;left:0;top:0;width:3700px;height:600px;transform-origin:0 0}
-#edges{position:absolute;left:0;top:0;overflow:visible}
-#down{position:absolute;inset:0;background:rgba(11,11,13,.5);opacity:0;z-index:8}
-.nd{position:absolute;width:440px;border:3px solid var(--line);border-radius:22px;background:#1C1C22;box-shadow:0 4px 14px rgba(0,0,0,.45);color:var(--text);--acc:#7DB4FF;--tint:rgba(125,180,255,.16)}
-.nd[data-role=trigger]{border-radius:44px 22px 22px 44px;--acc:#FF452B;--tint:rgba(255,69,43,.16)}
-.nd[data-role=query]{--acc:#7DB4FF;--tint:rgba(125,180,255,.16)}
-.nd[data-role=ai]{--acc:#B79CFF;--tint:rgba(183,156,255,.18)}
-.nd[data-role=interaction]{--acc:#F5B841;--tint:rgba(245,184,65,.18)}
-.nd[data-role=effect]{--acc:#4ADE9B;--tint:rgba(74,222,155,.16)}
-.nh{height:100px;display:flex;align-items:center;gap:14px;padding:0 18px}
-.ni{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;flex:none;background:var(--tint);color:var(--acc)}
-.nd p{margin:0;white-space:nowrap}
-.nk{font-size:27px;font-weight:800;letter-spacing:.01em;text-transform:uppercase;color:var(--acc);line-height:31px}
-.nm{font-size:29px;font-weight:700;line-height:36px}
-.nc{margin:0 18px 16px;height:70px;border-radius:14px;background:#26262E;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:27px;gap:10px}
-.nc dt{color:var(--muted);margin:0;white-space:nowrap}.nc dd{margin:0;font-weight:700;white-space:nowrap}
-.no{--tone:#C9C9D1;position:relative;height:52px;border-top:2px solid var(--line);display:flex;align-items:center;padding:0 24px 0 18px;font-size:27px;font-weight:600;white-space:nowrap}
-.no+.no{border-top-style:dashed}
-.no[data-tone=success]{--tone:#4ADE9B}.no[data-tone=blocked]{--tone:#F87171}.no[data-tone=waiting]{--tone:#F5B841}
-.no i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--tone);margin-right:12px}
-.hd{position:absolute;right:-14px;top:50%;margin-top:-12px;width:24px;height:24px;border-radius:50%;border:4px solid var(--tone);background:#111115}
-.hin{position:absolute;left:-14px;top:44px;width:24px;height:24px;border-radius:50%;border:4px solid #8A8A96;background:#111115}
-.nd[data-role=end]{width:300px;height:84px;border-radius:42px;display:flex;align-items:center;gap:14px;padding:0 22px 0 18px;--acc:#4ADE9B;--tint:rgba(74,222,155,.16)}
-.nd[data-role=end][data-t=halt]{--acc:#C9C9D1;--tint:#26262E;border-style:dashed}
-.nd[data-role=end] .hin{top:27px}
-.nd[data-role=end] .ni{border-radius:50%}
-.nd[data-role=end] .nrb{top:-44px}
-.nrb{position:absolute;left:18px;top:-28px;font-size:27px;font-weight:800;line-height:32px;padding:2px 14px;border-radius:20px;border:2px solid;white-space:nowrap;opacity:0;z-index:3;background:#111115}
-.nrb.s{color:var(--ok);border-color:var(--ok)}
-.nrb.w{color:var(--warn);border-color:var(--warn)}
-.nrb.v{color:var(--ai);border-color:var(--ai)}
-.eb{fill:none;stroke-width:4}
-.et{fill:none;stroke-width:9;stroke-linecap:butt}
-.plus{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#1C1C22;border:3px solid var(--line);color:var(--muted);display:grid;place-items:center}
-#tok{position:absolute;left:0;top:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--coral);border:6px solid #fff;box-shadow:0 0 0 7px rgba(255,69,43,.30);opacity:0;z-index:6}
-.ov{position:absolute;z-index:20;background:rgba(23,23,27,.96);border:2px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.5)}
-#cbar{left:16px;right:16px;top:12px;height:64px;border-radius:18px;display:flex;align-items:center;gap:14px;padding:0 14px}
-#cbar .tt{font-size:26px;font-weight:800;white-space:nowrap}
-#cbar .gr{flex:1}
-.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;height:46px}
-.seg span{padding:0 14px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-.seg span.on{background:var(--coral);color:#fff}
-.chipA{height:46px;display:flex;align-items:center;padding:0 16px;border-radius:999px;border:2px solid var(--ok);background:rgba(74,222,155,.14);color:var(--ok);font-size:24px;font-weight:800;white-space:nowrap}
-#runbar{left:16px;top:88px;height:52px;width:440px;border-radius:14px}
-#runbar span{position:absolute;left:0;top:0;width:436px;height:48px;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:24px;font-weight:700;white-space:nowrap}
-#rstat{position:absolute;left:470px;top:88px;height:52px;width:370px;z-index:20}
-#rstat span{position:absolute;left:0;top:0;height:52px;display:flex;align-items:center;padding:0 18px;border-radius:999px;border:2px solid;font-size:24px;font-weight:800;white-space:nowrap;opacity:0;background:#17171B}
-#srv{right:16px;top:88px;height:52px;width:300px;border-radius:14px}
-#srv span.st{position:absolute;left:0;top:0;width:296px;height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-.dot{width:16px;height:16px;border-radius:50%;flex:none}
-#ctl{left:16px;bottom:16px;height:50px;border-radius:14px;overflow:hidden;display:flex}
-#ctl b{width:52px;height:46px;display:grid;place-items:center;color:var(--text);border-right:2px solid var(--line)}
-#ctl b:last-child{border-right:0}
-#mm{right:16px;bottom:16px;width:240px;height:104px;border-radius:14px;overflow:hidden}
+/* ESPERA PELA PESSOA */
+#clock{position:absolute;left:735px;top:226px;width:90px;height:90px;border-radius:50%;border:5px solid var(--wait);opacity:0;z-index:2}
+#hand{position:absolute;left:37px;top:12px;width:6px;height:30px;border-radius:3px;background:var(--wait);transform-origin:50% 100%}
+#clockl{position:absolute;left:846px;top:250px;font-size:30px;font-weight:600;color:var(--wait);opacity:0;white-space:nowrap;z-index:2}
+.av{position:absolute;width:150px;opacity:0;text-align:center;z-index:2}
+.av .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
+#ana{left:540px;top:668px}
+#bub{position:absolute;left:730px;top:680px;width:440px;height:176px;border-radius:26px 26px 26px 6px;background:var(--panel2);border:3px solid var(--line);padding:22px 26px;opacity:0;z-index:2}
+#bub b{display:block;font-size:32px;font-weight:800}
+.btns{display:flex;gap:16px;margin-top:20px}
+.bt{height:56px;padding:0 26px;border-radius:28px;border:3px solid var(--line);font-size:28px;font-weight:700;display:flex;align-items:center;color:var(--muted)}
+#yes{border-color:var(--ok);color:var(--ok)}
+#yesf{position:absolute;inset:-3px;border-radius:28px;background:var(--ok);opacity:0}
+#yes{position:relative}
+#yes em{position:relative;font-style:normal}
 
-/* GAVETA DE EXECUÇÕES */
-#exec{position:absolute;z-index:22;left:620px;top:150px;width:590px;height:646px;border-radius:20px;background:#17171B;border:2px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.6);overflow:hidden;opacity:0}
-#exec .dh{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 22px;border-bottom:2px solid var(--line);font-size:30px;font-weight:800}
-.flt{display:flex;gap:10px;padding:12px 22px 0}
-.flt span{height:40px;padding:0 14px;border-radius:999px;border:2px solid var(--line);font-size:24px;font-weight:700;color:var(--muted);display:flex;align-items:center;white-space:nowrap}
-.flt span.on{border-color:var(--coral);color:#fff;background:rgba(255,69,43,.18)}
-.rlist{position:absolute;left:14px;right:14px;top:126px}
-.rrow{height:52px;display:flex;align-items:center;gap:12px;padding:0 10px;border-radius:12px;font-size:24px;font-weight:700;white-space:nowrap}
-.rrow.sel{background:#26262E;outline:2px solid var(--coral)}
-.rrow .id{width:172px}
-.pill{height:36px;padding:0 12px;border-radius:999px;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap;border:2px solid}
-.pill.ok{color:var(--ok);border-color:var(--ok)}
-.pill.w{color:var(--warn);border-color:var(--warn)}
-.pill.i{color:var(--info);border-color:var(--info)}
-.pill.b{color:var(--bad);border-color:var(--bad)}
-.btn{margin-left:auto;height:38px;padding:0 14px;border-radius:10px;border:2px solid var(--muted);color:var(--text);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
-.tlh{position:absolute;left:24px;top:358px;font-size:24px;font-weight:800;color:var(--muted);white-space:nowrap}
-.tline{position:absolute;left:24px;right:24px;top:396px}
-.tline div{height:40px;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;white-space:nowrap;position:relative}
-.tline i{width:16px;height:16px;border-radius:50%;background:var(--ok);flex:none}
-.tline em{font-style:normal;color:var(--muted)}
+/* QUEDA E VOLTA */
+#dark{position:absolute;left:0;top:0;width:1920px;height:1080px;background:#050507;opacity:0;z-index:5}
+.badge{position:absolute;left:710px;top:140px;width:500px;height:66px;border-radius:33px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:30px;font-weight:800;opacity:0;z-index:7;white-space:nowrap}
+#down{background:#2A1210;border:3px solid var(--coral);color:#FF8A78}
+#back{background:#0F2A1D;border:3px solid var(--ok);color:var(--ok)}
+.chip{position:absolute;height:52px;padding:0 22px;border-radius:26px;font-size:26px;font-weight:700;display:flex;align-items:center;opacity:0;white-space:nowrap;z-index:2}
+#once{left:1130px;top:644px;border:2px solid var(--ok);color:var(--ok);background:#0F2A1D}
+#done{left:1090px;top:300px;border:2px dashed var(--muted);color:var(--text);background:var(--panel2)}
 
-/* PAINEL LATERAL */
-#side{position:absolute;left:1320px;top:128px;width:540px;height:814px;border:2px solid var(--line);border-radius:22px;background:var(--panel);overflow:hidden;opacity:0}
-.pn{position:absolute;inset:0;opacity:0}
-.lab{position:absolute;left:24px;top:22px;font-size:24px;font-weight:800;color:var(--coral);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
-.h2{position:absolute;left:24px;top:58px;font-size:34px;font-weight:800;white-space:nowrap}
-.sub{position:absolute;left:24px;top:106px;font-size:26px;font-weight:600;color:var(--muted);white-space:nowrap}
-.kv{position:absolute;left:24px;right:24px;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--line);font-size:26px;white-space:nowrap}
-.kv span:first-child{color:var(--muted);font-weight:600}
-.kv b{font-weight:700}
-.sp{position:relative;width:330px;height:44px}
-.sp span{position:absolute;right:0;top:0;height:44px;display:flex;align-items:center;padding:0 16px;border-radius:999px;border:2px solid;font-size:24px;font-weight:800;white-space:nowrap}
-.card{position:absolute;left:24px;right:24px;border-radius:18px;background:var(--panel2);border:2px solid var(--line);padding:16px 18px}
-.card .ct{font-size:26px;font-weight:800;white-space:nowrap}
-.card .cl{font-size:24px;font-weight:600;color:var(--muted);margin-top:8px;line-height:1.3}
-.trow{position:absolute;left:24px;right:24px;height:60px;display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--line);font-size:26px;font-weight:600;white-space:nowrap}
-.trow .rd{width:22px;height:22px;border-radius:50%;border:3px solid #6A6A75;flex:none}
-.trow .tg{margin-left:auto;position:relative;height:38px;width:170px}
-.trow .tg span{position:absolute;right:0;top:0;height:38px;display:flex;align-items:center;padding:0 12px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap;opacity:0;border:2px solid}
-.code{margin-top:10px;height:56px;border-radius:12px;background:#0E0E11;border:2px solid var(--line);display:flex;align-items:center;padding:0 16px;font-size:26px;font-weight:700;color:var(--ai);letter-spacing:.02em;white-space:nowrap}
-#evelope{position:absolute;left:0;top:0;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 8px rgba(255,69,43,.25);opacity:0;z-index:30}
-
-/* CELULAR COM WHATSAPP */
-#phone{position:absolute;left:66px;top:104px;width:408px;height:512px;border-radius:44px;border:10px solid #2A2A31;background:#0B141A;overflow:hidden}
-#phone .wh{height:74px;background:#1F2C34;display:flex;align-items:center;gap:12px;padding:0 18px;font-size:24px;font-weight:800;white-space:nowrap}
-#phone .av{width:42px;height:42px;border-radius:50%;background:#2A3942;display:grid;place-items:center;color:#8FA1AB;flex:none}
-.wb{position:absolute;left:16px;width:350px;border-radius:4px 18px 18px 18px;background:#1F2C34;padding:12px 16px;font-size:24px;font-weight:600;line-height:1.3}
-.qr{position:absolute;left:16px;width:350px;height:52px;border-radius:14px;background:#1F2C34;color:#53BDEB;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;overflow:hidden}
-#ripple{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:rgba(83,189,235,.45);opacity:0}
-#wout{position:absolute;right:16px;top:396px;height:52px;padding:0 18px;border-radius:18px 4px 18px 18px;background:#005C4B;font-size:26px;font-weight:800;display:flex;align-items:center;gap:8px;opacity:0;white-space:nowrap}
-#ring circle{fill:none;stroke-width:9}
-.badgeP{height:40px;padding:0 14px;border-radius:999px;border:2px dashed var(--warn);color:var(--warn);font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
-
-/* LEGENDAS DAS BATIDAS */
-#caps{position:absolute;left:60px;top:962px;width:1800px;height:86px}
-.cap{position:absolute;inset:0;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#1A1A1F;border-left:8px solid var(--coral);font-size:32px;font-weight:700;white-space:nowrap;opacity:0}
-.cap small{font-size:24px;font-weight:800;color:var(--coral)}
-#tagline{justify-content:center;font-size:42px;font-weight:800;letter-spacing:-.5px}
-#tagline span{color:var(--coral)}
-#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;z-index:9}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="flow-durable-run" data-width="1920" data-height="1080" data-start="0" data-duration="44">
-  <div id="title">Flow · <span>execução durável</span></div>
-  <div id="hchips"><span class="hc">DEMO · reconstrução ilustrativa</span><span class="hc sb">sandbox</span></div>
-  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
-
-  <!-- QUADRO -->
-  <div id="cv">
-    <div id="vp"><div id="dots"></div><div id="world" data-layout-allow-overflow></div><div id="down" data-layout-allow-occlusion></div></div>
-    <div class="ov" id="cbar">
-      <span class="ic" id="cback"></span>
-      <span class="tt">Aprovação de pedido de compra</span>
-      <span class="gr"></span>
-      <div class="seg"><span>Editar</span><span class="on">Execuções</span></div>
-      <span class="chipA">Ativo — versão 3</span>
-    </div>
-    <div class="ov" id="runbar"><span id="rb0" style="color:var(--muted)">Nenhuma execução em curso</span><span id="rb1" style="opacity:0"></span></div>
-    <div id="rstat">
-      <span id="st0" style="color:var(--muted);border-color:var(--line);opacity:1">Aguardando evento</span>
-      <span id="st1" style="color:var(--info);border-color:var(--info)">Em andamento</span>
-      <span id="st2" style="color:var(--warn);border-color:var(--warn)">Em pausa · estado salvo</span>
-      <span id="st3" style="color:var(--ok);border-color:var(--ok)">Retomou no mesmo ponto</span>
-      <span id="st4" style="color:var(--info);border-color:var(--info)">Em andamento</span>
-      <span id="st5" style="color:#0B0B0D;border-color:var(--ok);background:var(--ok)">Concluída</span>
-    </div>
-    <div class="ov" id="srv">
-      <span class="st" id="sv0" style="opacity:1"><i class="dot" style="background:var(--ok)"></i>Motor · online</span>
-      <span class="st" id="sv1" style="color:var(--bad)"><span class="ic" id="spin"></span>Motor · fora do ar</span>
-      <span class="st" id="sv2" style="color:var(--ok)"><i class="dot" style="background:var(--ok)"></i>Motor · de volta</span>
-    </div>
-    <div class="ov" id="ctl"><b id="zin"></b><b id="zout"></b><b id="zfit"></b></div>
-    <div class="ov" id="mm" data-layout-allow-overflow><svg id="mmsvg" width="240" height="104" viewBox="0 0 240 104"></svg></div>
-
-    <div id="exec">
-      <div class="dh"><span>Execuções</span><span class="pill i">sandbox</span></div>
-      <div class="flt"><span class="on">Todas</span><span>Em pausa</span><span>Concluídas</span></div>
-      <div class="rlist">
-        <div class="rrow sel"><span class="id">#DEMO-0142</span><span class="pill ok">Concluída</span></div>
-        <div class="rrow"><span class="id">#DEMO-0141</span><span class="pill w">Em pausa</span><span class="btn">Cancelar</span></div>
-        <div class="rrow"><span class="id">#DEMO-0140</span><span class="pill i">Em andamento</span></div>
-        <div class="rrow"><span class="id">#DEMO-0138</span><span class="pill ok">Concluída</span></div>
-      </div>
-      <div class="tlh">Linha do tempo · #DEMO-0142</div>
-      <div class="tline">
-        <div><i></i>Pedido recebido</div>
-        <div><i></i><span>Ler pedido <em>· lido</em></span></div>
-        <div><i></i><span>Classificar risco <em>· alto</em></span></div>
-        <div><i></i><span>Perguntar e esperar <em>· Aprovar</em></span></div>
-        <div><i></i><span>Aprovar pedido <em>· aplicado</em></span></div>
-        <div><i></i><span>Fim <em>· concluída</em></span></div>
-      </div>
-    </div>
+<div id="root" data-composition-id="flow-durable-run" data-width="1920" data-height="1080" data-start="0" data-duration="34">
+  <div id="hd">
+    <div id="wm">Flow<span>.</span></div>
+    <div id="kick">Some o processo pela metade</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
   </div>
 
-  <!-- PAINEL LATERAL -->
-  <div id="side">
-    <!-- Documento no Hub de domínio -->
-    <div class="pn" id="pDoc">
-      <div class="lab">Hub de domínio · documento</div>
-      <div class="h2">Pedido de compra PC-0142</div>
-      <div class="sub">Empresa Aurora · DEMO</div>
-      <div class="kv" style="top:150px"><span>Status</span><div class="sp">
-        <span id="ds0" style="color:var(--muted);border-color:var(--line)">Rascunho</span>
-        <span id="ds1" style="color:var(--warn);border-color:var(--warn);opacity:0">Enviado para aprovação</span>
-        <span id="ds2" style="color:var(--ok);border-color:var(--ok);opacity:0">Aprovado</span></div></div>
-      <div class="kv" style="top:208px"><span>Fornecedor</span><b>DEMO</b></div>
-      <div class="kv" style="top:266px"><span>Itens</span><b>DEMO</b></div>
-      <div class="kv" style="top:324px"><span>Valor</span><b>R$ — · DEMO</b></div>
-      <div class="kv" style="top:394px;border-bottom:0"><span>Conexões</span><span class="btn" id="bflx" style="margin-left:0"><span class="ic" id="iflx"></span>&nbsp;Fluxos<span id="nflx" style="margin-left:10px;color:var(--coral);opacity:0">1</span></span></div>
-      <div class="card" id="evt" style="top:470px;height:160px;opacity:0"><div class="ct" style="color:var(--coral)">Evento emitido</div><div class="cl">status alterado, rumo ao Flow</div><div class="cl">A aprovação começa sozinha.</div></div>
-      <div class="card" id="adm" style="top:648px;height:136px;opacity:0;border-color:var(--ok)"><div class="ct" style="color:var(--ok)">Recebido no Flow</div><div class="cl">Ninguém precisa copiar dados de um sistema para outro.</div></div>
-      <div class="card" id="flx" style="top:470px;height:314px;opacity:0;border-color:var(--coral)">
-        <div class="ct">Fluxos deste documento</div>
-        <div style="margin-top:14px;border-radius:14px;background:#17171B;border:2px solid var(--line);padding:14px 16px">
-          <div style="font-size:26px;font-weight:800;white-space:nowrap">Aprovação de pedido de compra</div>
-          <div style="font-size:24px;font-weight:600;color:var(--muted);margin-top:6px;white-space:nowrap">versão 3 · #DEMO-0142</div>
-          <div style="display:flex;margin-top:12px"><span class="pill ok">Concluída</span></div>
-        </div>
-        <div class="cl" style="margin-top:14px">O andamento aparece no próprio documento.</div>
-      </div>
-    </div>
+  <div id="rail"></div>
+  <div class="st" id="st1"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st2"><svg width="64" height="64" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st3"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st4"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="sl" id="sl1">Pedido enviado</div>
+  <div class="sl" id="sl2">Ana decide</div>
+  <div class="sl" id="sl3">Financeiro avisado</div>
+  <div class="sl" id="sl4">Concluído</div>
+  <div class="seg" id="g1"></div><div class="seg" id="g2"></div><div class="seg" id="g3"></div>
 
-    <!-- Última execução -->
-    <div class="pn" id="pTrail">
-      <div class="lab">Execução #DEMO-0142</div>
-      <div class="h2">Última execução</div>
-      <div class="sub">versão 3 do fluxo</div>
-      <div class="trow" style="top:152px"><span class="rd" id="td1"></span>Pedido recebido<span class="tg"><span id="tt1" style="color:var(--ok);border-color:var(--ok)">Recebido</span></span></div>
-      <div class="trow" style="top:212px"><span class="rd" id="td2"></span>Ler pedido<span class="tg"><span id="tt2" style="color:var(--ok);border-color:var(--ok)">Lido</span></span></div>
-      <div class="trow" style="top:272px"><span class="rd" id="td3"></span>Classificar risco<span class="tg"><span id="tt3" style="color:var(--ai);border-color:var(--ai)">alto</span></span></div>
-      <div class="trow" style="top:332px"><span class="rd" id="td4"></span>Perguntar e esperar<span class="tg"><span id="tt4" style="color:var(--warn);border-color:var(--warn)">aguardando</span></span></div>
-      <div class="trow" style="top:392px"><span class="rd"></span>Aprovar pedido</div>
-      <div class="trow" style="top:452px"><span class="rd"></span>Fim</div>
-      <div class="card" id="aiCard" style="top:540px;height:246px;opacity:0;border-color:var(--ai)">
-        <div class="ct" style="color:var(--ai)">Saída da etapa de IA</div>
-        <div class="code">{ "risco": "alto" }</div>
-        <div class="cl">A resposta escolhe a saída “alto” do cartão. A IA classifica; quem aprova é uma pessoa.</div>
-      </div>
-    </div>
+  <div id="clock"><div id="hand"></div></div>
+  <div id="clockl">o tempo que for</div>
+  <div class="av" id="ana"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Ana · DEMO</div></div>
+  <div id="bub"><b>Aprovar o pedido?</b><div class="btns"><div class="bt" id="yes"><div id="yesf"></div><em>Aprovar</em></div><div class="bt">Recusar</div></div></div>
+  <div class="chip" id="once">enviado 1 vez</div>
 
-    <!-- Pergunta pelo WhatsApp -->
-    <div class="pn" id="pPhone">
-      <div class="lab">WhatsApp · via Channels</div>
-      <div class="sub" style="top:56px;color:#fff;font-weight:800">Ana · gestora · DEMO</div>
-      <div id="phone">
-        <div class="wh"><span class="av" id="iav"></span>Aprovações · Aurora</div>
-        <div class="wb" id="wmsg" style="top:96px;opacity:0">Pedido de compra PC-0142 aguarda sua decisão. Risco: alto.</div>
-        <div class="qr" id="qa" style="top:236px;opacity:0" data-layout-allow-overflow><span id="ripple"></span>Aprovar</div>
-        <div class="qr" id="qb" style="top:296px;opacity:0">Recusar</div>
-        <div id="wout">Aprovar <span class="ic" id="iwck"></span></div>
-      </div>
-      <div class="card" id="prz" style="top:646px;height:136px;display:flex;align-items:center;gap:18px;padding:12px 18px">
-        <svg id="ring" width="78" height="78" viewBox="0 0 78 78"><circle cx="39" cy="39" r="30" stroke="#3A3A42"/><circle id="ringArc" cx="39" cy="39" r="30" stroke="#F5B841" stroke-dasharray="188.5" stroke-dashoffset="0" transform="rotate(-90 39 39)"/></svg>
-        <div><div class="ct" style="color:var(--warn)">Prazo da resposta · DEMO</div><div class="cl" style="margin-top:4px">sem resposta → saída “Prazo”</div></div>
-      </div>
-      <div class="card" id="sig" style="top:646px;height:136px;opacity:0;border-color:var(--ok)">
-        <div class="ct" style="color:var(--ok)">Resposta registrada</div>
-        <div class="cl">A decisão da Ana entra no histórico da execução.</div>
-      </div>
-    </div>
+  <div id="dark"></div>
+  <div class="badge" id="down"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Sistema fora do ar</div>
+  <div class="badge" id="back"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>De volta</div>
+  <div id="ring"></div>
+  <div id="bead"></div>
+  <div id="ghost"></div>
+  <div class="chip" id="done">já foi feito, não repete</div>
 
-    <!-- Efeito aplicado e registrado -->
-    <div class="pn" id="pEffect">
-      <div class="lab">Efeito no Hub de domínio</div>
-      <div class="h2">Aprovar pedido</div>
-      <div class="sub" style="font-size:24px">PC-0142 · DEMO</div>
-      <div class="trow" style="top:150px"><span class="rd" id="ed1" style="background:var(--ok);border-color:var(--ok)"></span>Decisão recebida<span class="tg"><span style="opacity:1;color:var(--ok);border-color:var(--ok)">Aprovar</span></span></div>
-      <div class="trow" style="top:210px"><span class="rd" id="ed2" style="background:var(--warn);border-color:var(--warn)"></span>Aplicando no pedido<span class="tg"><span style="opacity:1;color:var(--warn);border-color:var(--warn)">em curso</span></span></div>
-      <div class="trow" style="top:270px"><span class="rd" id="ed3"></span>Status do pedido<span class="tg" style="width:190px"><span id="et3" style="color:var(--info);border-color:var(--info)">Aprovado</span></span></div>
-      <div class="trow" style="top:330px"><span class="rd" id="ed4"></span>Aplicado uma vez<span class="tg" style="width:190px"><span id="et4" style="color:var(--ok);border-color:var(--ok)">registrado</span></span></div>
-      <div class="card" id="rcp" style="top:416px;height:370px;opacity:0;border-color:var(--ok)">
-        <div class="ct" style="color:var(--ok)">Registro do efeito</div>
-        <div class="kv" style="left:18px;right:18px;top:52px"><span>Etapa</span><b>Aprovar pedido</b></div>
-        <div class="kv" style="left:18px;right:18px;top:110px"><span>Resultado</span><b>aplicado</b></div>
-        <div class="kv" style="left:18px;right:18px;top:168px"><span>Aprovado por</span><b>Ana · DEMO</b></div>
-        <div class="kv" style="left:18px;right:18px;top:226px"><span>Vezes aplicado</span><b>uma</b></div>
-        <div class="kv" style="left:18px;right:18px;top:284px;border-bottom:0"><span>Quando</span><b>DEMO</b></div>
-      </div>
-    </div>
+  <div class="cap" id="c1">Um pedido <span>começa a andar</span></div>
+  <div class="cap" id="c2">Para e <span>espera a Ana</span>, o tempo que for</div>
+  <div class="cap" id="c3">O sistema cai. <span>O fio não se perde.</span></div>
+  <div class="cap" id="c4">Volta e segue <span>do mesmo ponto</span></div>
+  <div class="cap" id="c5">Cada passo acontece <span>uma vez só</span></div>
 
-    <!-- Registro da execução -->
-    <div class="pn" id="pTerm">
-      <div class="lab">Registro da execução</div>
-      <div class="h2">#DEMO-0142 · Concluída</div>
-      <div class="sub">etapas, decisão e resultado · auditável</div>
-      <div class="kv" style="top:150px"><span>Empresa</span><b>Aurora · DEMO</b></div>
-      <div class="kv" style="top:208px"><span>Versão do fluxo</span><b>versão 3</b></div>
-      <div class="kv" style="top:266px"><span>Etapas</span><b>5 concluídas</b></div>
-      <div class="kv" style="top:324px"><span>Classificação da IA</span><b>risco alto</b></div>
-      <div class="kv" style="top:382px"><span>Decisão</span><b>Aprovar · Ana</b></div>
-      <div class="kv" style="top:440px"><span>Resultado</span><b>pedido aprovado</b></div>
-      <div class="kv" style="top:498px"><span>Registrado em</span><b>DEMO</b></div>
-      <div class="card" style="top:590px;height:192px">
-        <div class="ct">Auditável de ponta a ponta</div>
-        <div class="cl">Quem decidiu, o que mudou e quando: tudo fica registrado e pode ser consultado depois.</div>
-      </div>
-    </div>
+  <div id="close">
+    <div class="l1">Nada fica pela metade.<br><span>Nada acontece duas vezes.</span></div>
+    <div class="brand"><div class="bw">Flow<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
-
-  <div id="evelope"></div>
-
-  <!-- LEGENDAS -->
-  <div id="caps">
-    <div class="cap" id="cap0"><small>1/7</small><span>O pedido muda de status no Hub de domínio e o Flow começa a aprovação</span></div>
-    <div class="cap" id="cap1"><small>2/7</small><span>A trilha pinta o quadro: a consulta conclui e a IA classifica o risco, sem decidir</span></div>
-    <div class="cap" id="cap2"><small>3/7</small><span>Pausa: a pergunta chega por WhatsApp, com botões, e o prazo corre</span></div>
-    <div class="cap" id="cap3"><small>4/7</small><span>O servidor do motor cai e volta: a execução continua de onde parou</span></div>
-    <div class="cap" id="cap4"><small>5/7</small><span>Ana toca “Aprovar”: a execução retoma pelo caminho da resposta</span></div>
-    <div class="cap" id="cap5"><small>6/7</small><span>A aprovação é aplicada no pedido uma única vez e fica registrada</span></div>
-    <div class="cap" id="cap6"><small>7/7</small><span>Registro da execução, painel Execuções e o documento mostram o mesmo resultado</span></div>
-    <div class="cap" id="tagline">Para, espera, retoma.<span>E registra.</span></div>
-  </div>
-  <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
-  // ÍCONES
-  var IC = {
-    zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
-    search: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
-    spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
-    clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
-    act: '<path d="M21 10.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.5"/><path d="m9 11 3 3L22 4"/>',
-    flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
-    stop: '<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>',
-    plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
-    minus: '<path d="M5 12h14"/>',
-    fit: '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
-    back: '<path d="m15 18-6-6 6-6"/>',
-    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
-    spin: '<path d="M21 12a9 9 0 1 1-6.2-8.6"/>',
-    flow: '<circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h4a3 3 0 0 1 3 3v6"/>',
-    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
-    check: '<path d="M20 6 9 17l-5-5"/>'
-  };
-  function ico(n, s) { return '<svg viewBox="0 0 24 24" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + IC[n] + '</svg>'; }
-  function put(id, html) { document.getElementById(id).innerHTML = html; }
-  put("cback", ico("back", 30)); put("zin", ico("plus", 28)); put("zout", ico("minus", 28)); put("zfit", ico("fit", 26));
-  put("spin", ico("spin", 24)); put("evelope", ico("mail", 28)); put("iflx", ico("flow", 24)); put("iav", ico("user", 24)); put("iwck", ico("check", 24));
-  put("rb1", ico("flow", 24) + "Execução #DEMO-0142 · versão 3");
-
-  // NÓS DO QUADRO (coordenadas do mundo, sem aleatoriedade)
-  var W = 440, HDR = 100, ROW = 52, CTX = 86, Z = 0.92, CY = 172;
-  var ND = [
-    { id: "n0", role: "trigger", ic: "zap", x: 0, y: 0, kind: "Quando", name: "Pedido de compra", ctx: ["Evento", "status alterado"], outs: [["Iniciar", "success"]], bd: [["s", "Recebido"]] },
-    { id: "n1", role: "query", ic: "search", x: 660, y: 0, kind: "Consulta", name: "Ler pedido", outs: [["Lido", "success"]], bd: [["s", "Lido"]] },
-    { id: "n2", role: "ai", ic: "spark", x: 1320, y: 0, kind: "Etapa de IA", name: "Classificar risco", outs: [["baixo", "success"], ["médio", "waiting"], ["alto", "blocked"]], bd: [["v", "risco: alto"]] },
-    { id: "n3", role: "interaction", ic: "clock", x: 1980, y: 200, kind: "Interação", name: "Perguntar e esperar", ctx: ["Canal", "WhatsApp"], outs: [["Aprovar", "success"], ["Recusar", "blocked"], ["Prazo", "waiting"]], bd: [["w", "Aguardando resposta"], ["s", "Respondido: Aprovar"]] },
-    { id: "n4", role: "effect", ic: "act", x: 2640, y: 0, kind: "Efeito · Hub", name: "Aprovar pedido", outs: [["Aplicado", "success"]], bd: [["w", "Aplicando"], ["s", "Aplicado uma vez"]] },
-    { id: "f1", role: "end", t: "happy", ic: "flag", x: 3300, y: 84, kind: "Fim", name: "Concluído", bd: [["s", "Fim feliz"]] },
-    { id: "f2", role: "end", t: "halt", ic: "stop", x: 2640, y: 462, kind: "Fim", name: "Interrompido" }
-  ];
-  var byId = {}; ND.forEach(function (n) { byId[n.id] = n; });
-  var world = document.getElementById("world");
-  var h = "";
-  ND.forEach(function (n) {
-    var end = n.role === "end";
-    h += '<div class="nd" id="' + n.id + '" data-role="' + n.role + '"' + (end ? ' data-t="' + n.t + '"' : "") + ' style="left:' + n.x + 'px;top:' + n.y + 'px">';
-    if (n.role !== "trigger") h += '<i class="hin"></i>';
-    (n.bd || []).forEach(function (b, k) { h += '<span class="nrb ' + b[0] + '" id="' + n.id + 'b' + k + '">' + b[1] + '</span>'; });
-    if (end) {
-      h += '<span class="ni">' + ico(n.ic, 26) + '</span><div><p class="nk" style="font-size:27px;line-height:30px">' + n.kind + '</p><p class="nm">' + n.name + '</p></div>';
-    } else {
-      h += '<div class="nh"><span class="ni">' + ico(n.ic, 28) + '</span><div><p class="nk">' + n.kind + '</p><p class="nm">' + n.name + '</p></div></div>';
-      if (n.ctx) h += '<dl class="nc"><dt>' + n.ctx[0] + '</dt><dd>' + n.ctx[1] + '</dd></dl>';
-      n.outs.forEach(function (o, k) { h += '<div class="no" id="' + n.id + 'o' + k + '" data-tone="' + o[1] + '"><span><i></i>' + o[0] + '</span><b class="hd"></b></div>'; });
-    }
-    h += '</div>';
-  });
-
-  // ARESTAS BEZIER (controle a meio caminho no eixo X, como no quadro)
-  var EG = [
-    ["e01", "n0", 0, "n1", "success", 1], ["e12", "n1", 0, "n2", "success", 1],
-    ["e2b", "n2", 0, "n4", "success", 1], ["e2m", "n2", 1, "n3", "waiting", 0], ["e2a", "n2", 2, "n3", "blocked", 1],
-    ["e3a", "n3", 0, "n4", "success", 1], ["e3r", "n3", 1, "f2", "blocked", 1], ["e3p", "n3", 2, "f2", "waiting", 0],
-    ["e4", "n4", 0, "f1", "success", 1]
-  ];
-  var TC = { success: "#4ADE9B", blocked: "#F87171", waiting: "#F5B841" };
-  var sv = '<svg id="edges" width="3700" height="600" viewBox="0 0 3700 600">';
-  var geo = {};
-  EG.forEach(function (e) {
-    var a = byId[e[1]], b = byId[e[3]];
-    var sx = a.x + W, sy = a.y + HDR + (a.ctx ? CTX : 0) + e[2] * ROW + ROW / 2;
-    var tx = b.x, ty = b.y + (b.role === "end" ? 42 : 56);
-    var off = (tx - sx) * 0.5;
-    var d = "M" + sx + "," + sy + " C" + (sx + off) + "," + sy + " " + (tx - off) + "," + ty + " " + tx + "," + ty;
-    geo[e[0]] = { tx: tx, ty: ty };
-    sv += '<g id="eg-' + e[0] + '"><path class="eb" id="eb-' + e[0] + '" d="' + d + '" stroke="' + TC[e[4]] + '" opacity=".6"/>';
-    sv += '<path class="et" id="et-' + e[0] + '" d="' + d + '" stroke="' + TC[e[4]] + '"/>';
-    sv += '<polygon points="' + (tx - 22) + ',' + (ty - 13) + ' ' + (tx + 2) + ',' + ty + ' ' + (tx - 22) + ',' + (ty + 13) + '" fill="' + TC[e[4]] + '"/></g>';
-  });
-  sv += '</svg>';
-  world.innerHTML = sv + h + '<div id="tok"></div>';
-  var pathEl = {}, plen = {};
-  EG.forEach(function (e) {
-    var id = e[0], p = document.getElementById("eb-" + id);
-    pathEl[id] = p; plen[id] = p.getTotalLength();
-    var et = document.getElementById("et-" + id);
-    et.style.strokeDasharray = plen[id]; et.style.strokeDashoffset = plen[id];
-    if (e[5]) {
-      var mid = p.getPointAtLength(plen[id] / 2);
-      var pl = document.createElement("div"); pl.className = "plus"; pl.id = "pl-" + id;
-      pl.style.left = mid.x + "px"; pl.style.top = mid.y + "px"; pl.innerHTML = ico("plus", 22); world.appendChild(pl);
-    }
-  });
-
-  // MINIMAPA (cores por papel; retângulo = janela da câmera)
-  var MS = 0.062, MX = 8, MY = 34;
-  var RC = { trigger: "#FF452B", query: "#7DB4FF", ai: "#B79CFF", interaction: "#F5B841", effect: "#4ADE9B", end: "#6A6A75" };
-  var mm = '<defs><mask id="mmk"><rect width="240" height="104" fill="#fff"/><rect class="mmv" fill="#000" x="0" y="0" width="10" height="10"/></mask></defs>';
-  ND.forEach(function (n) {
-    var hh = n.role === "end" ? 84 : HDR + (n.ctx ? CTX : 0) + n.outs.length * ROW, w = n.role === "end" ? 300 : W;
-    mm += '<rect x="' + (MX + n.x * MS) + '" y="' + (MY + n.y * MS) + '" width="' + (w * MS) + '" height="' + (hh * MS) + '" rx="2" fill="' + RC[n.role] + '"/>';
-  });
-  mm += '<rect width="240" height="104" fill="rgba(0,0,0,.35)" mask="url(#mmk)"/><rect class="mmv" fill="none" stroke="#FF452B" stroke-width="2" x="0" y="0" width="10" height="10"/>';
-  put("mmsvg", mm);
-
-  // LINHA DO TEMPO (pausada, termina em 44 s)
+  var D = 34;
   var tl = gsap.timeline({ paused: true });
-  var E = "power2.out";
-  function fadeIn(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.4, ease: E }, t); }
-  function fadeOut(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power1.in" }, t); }
-  function swap(a, b, t) { fadeOut(a, t, 0.25); fadeIn(b, t + 0.2, 0.3); }
-  function panel(a, b, t) { fadeOut(a, t, 0.3); tl.fromTo(b, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.45, ease: E, immediateRender: false }, t + 0.25); }
-  function badge(id, t) { tl.fromTo("#" + id, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.8)" }, t); }
-  function ring(id, color, t) { tl.to("#" + id, { borderColor: color, boxShadow: "0 0 0 7px " + color.replace(")", ",.22)").replace("rgb", "rgba"), duration: 0.3 }, t); }
-  function settle(id, color, t) { tl.to("#" + id, { borderColor: color, boxShadow: "0 4px 14px rgba(0,0,0,.45)", duration: 0.3 }, t); }
-  function cap(i, a, b) { tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: E }, a); if (b) fadeOut("#cap" + i, b - 0.3, 0.3); }
-  function dim(sel, t) { tl.to(sel, { opacity: 0.25, duration: 0.4 }, t); }
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function tick(id, t) { tl.fromTo(id + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t); tl.to(id, { borderColor: '#3DD68C', duration: 0.3 }, t); }
+  function grow(id, t, d) { tl.fromTo(id, { scaleX: 0 }, { scaleX: 1, duration: d, ease: 'none' }, t); }
 
-  // Camera: world x offset (cx), fixed y and zoom; dots and minimap follow
-  var CW = 1226, CH = 810, DOT = 33;
-  function K(a, vw) { return { cx: -a * Z, a: a, vw: vw || CW }; }
-  function vpr(k) { return { x: MX + k.a * MS, y: MY - (CY / Z) * MS, width: (k.vw / Z) * MS, height: (CH / Z) * MS }; }
-  function cam(t, d, A, B) {
-    tl.fromTo("#world", { x: A.cx, y: CY, scale: Z }, { x: B.cx, y: CY, scale: Z, duration: d, ease: "power2.inOut" }, t);
-    tl.fromTo("#dots", { backgroundPosition: A.cx + "px " + CY + "px" }, { backgroundPosition: B.cx + "px " + CY + "px", duration: d, ease: "power2.inOut" }, t);
-    tl.fromTo(".mmv", { attr: vpr(A) }, { attr: vpr(B), duration: d, ease: "power2.inOut" }, t);
-  }
-  var K0 = K(-43.5), K1 = K(550), K2 = K(1200), K3 = K(1860), K4 = K(2500), K5 = K(3150, 590);
-  tl.set("#world", { x: K0.cx, y: CY, scale: Z }, 0);
-  tl.set("#dots", { backgroundPosition: K0.cx + "px " + CY + "px" }, 0);
-  tl.set(".mmv", { attr: vpr(K0) }, 0);
-  // Nodes outside the camera window are hidden so clipped text never sits under the panels
-  var NIDS = ["n0", "n1", "n2", "n3", "n4", "f1", "f2"];
-  function inView(t, ids) { NIDS.forEach(function (id) { tl.set("#" + id, { visibility: ids.indexOf(id) >= 0 ? "visible" : "hidden" }, t); }); }
-  inView(0, ["n0", "n1"]); inView(7.3, ["n0", "n1", "n2"]); inView(8.1, ["n1", "n2"]);
-  inView(10.3, ["n1", "n2", "n3"]); inView(11.1, ["n2", "n3"]);
-  inView(23.3, ["n2", "n3", "n4", "f2"]); inView(24.1, ["n3", "n4", "f2"]);
-  inView(33.4, ["n3", "n4", "f2", "f1"]); inView(34.2, ["n4", "f2", "f1"]);
-  inView(38.5, ["f1"]);
+  // Cabeçalho e estações
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  ['#st1', '#st2', '#st3', '#st4'].forEach(function (s, i) { inn(s, 0.6 + 0.2 * i, { scale: 0.5 }, 0.45); inn('#sl' + (i + 1), 0.75 + 0.2 * i, { y: 10 }, 0.4); });
+  inn('#rail', 1.2, {}, 0.5);
 
-  // Token on the edges: one proxy drives position from a fixed move schedule
-  var MOVES = [{ e: "e01", t0: 5.6, d: 0.8 }, { e: "e12", t0: 8.0, d: 0.8 }, { e: "e2a", t0: 11.0, d: 0.8 }, { e: "e3a", t0: 23.8, d: 0.8 }, { e: "e4", t0: 33.9, d: 0.8 }];
-  var tokEl = document.getElementById("tok");
-  function quad(u) { return u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; }
-  function place(t) {
-    var m = MOVES[0], u = 0;
-    for (var i = 0; i < MOVES.length; i++) { if (t >= MOVES[i].t0) { m = MOVES[i]; u = Math.min(1, (t - m.t0) / m.d); } }
-    var q = pathEl[m.e].getPointAtLength(plen[m.e] * quad(Math.max(0, u)));
-    tokEl.style.left = q.x + "px"; tokEl.style.top = q.y + "px";
-  }
-  var tp = { t: 5.3 };
-  place(5.3);
-  tl.fromTo(tp, { t: 5.3 }, { t: 34.9, duration: 29.6, ease: "none", onUpdate: function () { place(tp.t); } }, 5.3);
-  MOVES.forEach(function (m) { tl.fromTo("#et-" + m.e, { strokeDashoffset: plen[m.e] }, { strokeDashoffset: 0, duration: m.d, ease: "power1.inOut" }, m.t0); });
-  tl.fromTo("#tok", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2)" }, 5.35);
-  tl.to("#tok", { opacity: 0, scale: 0.4, duration: 0.25 }, 34.8);
+  // Batida 1: o pedido começa a andar (1,0–6,0 s)
+  inn('#c1', 1.0, { y: 16 });
+  inn('#bead', 1.8, { scale: 0.3 }, 0.4);
+  tick('#st1', 2.1);
+  grow('#g1', 2.5, 1.4);
+  tl.fromTo('#bead', { x: 0 }, { x: 480, duration: 1.4, ease: 'none' }, 2.5);
+  inn('#ring', 3.9, { scale: 0.7 }, 0.45);
+  out('#c1', 5.8);
 
-  // ABERTURA
-  fadeIn("#title", 0, 0.6); fadeIn("#hchips", 0.15, 0.5); fadeIn("#seal", 0.1, 0.6);
-  tl.fromTo("#cv", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.1);
-  tl.fromTo("#side", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.2);
-  fadeIn("#pDoc", 0.3, 0.4);
+  // Batida 2: espera pela pessoa (6,1–11,4 s)
+  inn('#c2', 6.1, { y: 16 });
+  inn('#clock', 6.3, { scale: 0.6 }, 0.4); inn('#clockl', 6.5, { x: -10 }, 0.4);
+  tl.fromTo('#hand', { rotation: 0 }, { rotation: 1440, duration: 4.7, ease: 'none' }, 6.5);
+  inn('#ana', 6.6, { y: 20 });
+  inn('#bub', 7.0, { y: 14, scale: 0.9 }, 0.45);
+  tl.to('#ring', { scale: 1.12, duration: 0.5, ease: 'sine.inOut' }, 8.0).to('#ring', { scale: 1, duration: 0.5, ease: 'sine.inOut' }, 8.5);
+  tl.to('#ring', { scale: 1.12, duration: 0.5, ease: 'sine.inOut' }, 9.6).to('#ring', { scale: 1, duration: 0.5, ease: 'sine.inOut' }, 10.1);
+  out('#c2', 11.2);
 
-  // BATIDA 1 · O pedido muda de status e o Flow começa a aprovação
-  cap(0, 0.4, 5.2);
-  swap("#ds0", "#ds1", 1.1);
-  tl.fromTo("#evt", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 1.9);
-  tl.fromTo("#evelope", { opacity: 0, scale: 0.5, x: 1306, y: 700 }, { opacity: 1, scale: 1, duration: 0.2 }, 2.3);
-  tl.to("#evelope", { x: 300, duration: 0.6, ease: "power1.inOut" }, 2.4);
-  tl.to("#evelope", { y: 540, duration: 0.3, ease: "power1.out" }, 2.95);
-  tl.to("#evelope", { opacity: 0, scale: 0.4, duration: 0.15 }, 3.2);
-  badge("n0b0", 3.25); ring("n0", "rgb(255,69,43)", 3.25);
-  tl.fromTo("#adm", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 3.3);
-  swap("#rb0", "#rb1", 3.25); swap("#st0", "#st1", 3.25);
+  // Batida 3: o sistema cai e o fio fica (11,5–17,0 s)
+  tl.fromTo('#dark', { opacity: 0 }, { opacity: 0.6, duration: 0.1 }, 11.5);
+  tl.to('#dark', { opacity: 0.15, duration: 0.1 }, 11.65);
+  tl.to('#dark', { opacity: 0.86, duration: 0.15 }, 11.8);
+  inn('#down', 11.9, { y: -12 }, 0.4);
+  inn('#c3', 12.1, { y: 16 });
+  tl.to('#ring', { scale: 1.15, duration: 0.6, ease: 'sine.inOut' }, 13.6).to('#ring', { scale: 1, duration: 0.6, ease: 'sine.inOut' }, 14.2);
+  out('#c3', 16.8);
 
-  // BATIDA 2 · A trilha pinta o quadro; a IA classifica sem decidir
-  cap(1, 5.2, 10.6);
-  panel("#pDoc", "#pTrail", 5.4);
-  tl.set("#td1", { backgroundColor: "#4ADE9B", borderColor: "#4ADE9B" }, 5.6); tl.set("#tt1", { opacity: 1 }, 5.6);
-  settle("n0", "#4ADE9B", 5.6);
-  badge("n1b0", 6.4); settle("n1", "#4ADE9B", 6.4);
-  tl.to("#td2", { backgroundColor: "#4ADE9B", borderColor: "#4ADE9B", duration: 0.2 }, 6.45); fadeIn("#tt2", 6.45, 0.25);
-  cam(7.3, 0.8, K0, K1);
-  ring("n2", "rgb(183,156,255)", 8.8); badge("n2b0", 8.9);
-  tl.to("#n2o2", { backgroundColor: "rgba(248,113,113,.16)", duration: 0.3 }, 8.9);
-  tl.to("#td3", { backgroundColor: "#B79CFF", borderColor: "#B79CFF", duration: 0.2 }, 8.9); fadeIn("#tt3", 8.9, 0.25);
-  tl.fromTo("#aiCard", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 9.0);
-  dim("#eg-e2b,#pl-e2b,#eg-e2m", 9.0);
+  // Batida 4: volta do mesmo ponto (17,1–22,9 s)
+  tl.to('#dark', { opacity: 0, duration: 0.5, ease: 'power2.out' }, 17.1);
+  out('#down', 17.1, 0.25);
+  inn('#back', 17.3, { y: -12 }, 0.4);
+  inn('#c4', 17.4, { y: 16 });
+  tl.to('#yes', { scale: 0.92, duration: 0.15 }, 18.6).to('#yes', { scale: 1, duration: 0.2 }, 18.75);
+  tl.fromTo('#yesf', { opacity: 0 }, { opacity: 0.35, duration: 0.2 }, 18.6);
+  tick('#st2', 19.1);
+  out(['#ring', '#clock', '#clockl'], 19.3, 0.35);
+  out(['#bub', '#ana', '#back'], 19.6, 0.4);
+  grow('#g2', 19.6, 1.4);
+  tl.to('#bead', { x: 960, duration: 1.4, ease: 'none' }, 19.6);
+  tick('#st3', 21.0);
+  inn('#once', 21.3, { y: 10 }, 0.4);
+  out('#c4', 22.8);
 
-  // BATIDA 3 · Pausa com pergunta no WhatsApp e prazo correndo
-  cap(2, 10.6, 16.0);
-  cam(10.3, 0.8, K1, K2);
-  settle("n2", "#B79CFF", 10.9);
-  ring("n3", "rgb(245,184,65)", 11.8); badge("n3b0", 11.8);
-  tl.to("#td4", { borderColor: "#F5B841", duration: 0.2 }, 11.8); fadeIn("#tt4", 11.8, 0.25);
-  swap("#st1", "#st2", 11.8);
-  panel("#pTrail", "#pPhone", 12.2);
-  tl.fromTo("#wmsg", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: E }, 12.6);
-  tl.fromTo("#qa,#qb", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.12, ease: E }, 12.8);
-  tl.fromTo("#ringArc", { strokeDashoffset: 0 }, { strokeDashoffset: 120, duration: 9.5, ease: "none" }, 12.8);
+  // Batida 5: nada se repete (23,1–28,3 s)
+  inn('#c5', 23.1, { y: 16 });
+  tl.fromTo('#ghost', { opacity: 0, x: 480 }, { opacity: 1, x: 480, duration: 0.25 }, 23.6);
+  tl.to('#ghost', { x: 860, duration: 0.8, ease: 'power1.in' }, 23.9);
+  tl.to('#ghost', { x: 800, duration: 0.4, ease: 'power2.out' }, 24.7);
+  inn('#done', 24.7, { y: 10, scale: 0.8 }, 0.35);
+  out('#ghost', 25.2, 0.4);
+  grow('#g3', 25.8, 1.1);
+  tl.to('#bead', { x: 1360, duration: 1.1, ease: 'none' }, 25.8);
+  tick('#st4', 26.9);
+  out('#c5', 28.3);
 
-  // BATIDA 4 · O servidor do motor cai e volta
-  cap(3, 16.0, 22.0);
-  swap("#sv0", "#sv1", 16.4);
-  tl.to("#down", { opacity: 1, duration: 0.4 }, 16.4);
-  tl.to("#srv", { borderColor: "#F87171", backgroundColor: "rgba(80,20,20,.96)", duration: 0.3 }, 16.4);
-  tl.fromTo("#spin", { rotation: 0 }, { rotation: 720, duration: 2.0, ease: "none" }, 16.4);
-  swap("#sv1", "#sv2", 18.4);
-  tl.to("#srv", { borderColor: "#4ADE9B", backgroundColor: "rgba(23,23,27,.96)", duration: 0.3 }, 18.4);
-  tl.to("#down", { opacity: 0, duration: 0.5 }, 18.4);
-  swap("#st2", "#st3", 19.0);
-  tl.to("#n3", { boxShadow: "0 0 0 12px rgba(245,184,65,.30)", duration: 0.35, yoyo: true, repeat: 1 }, 19.0);
-
-  // BATIDA 5 · Ana responde e a execução retoma
-  cap(4, 22.0, 27.0);
-  tl.fromTo("#ripple", { opacity: 0.9, scale: 0.2 }, { opacity: 0, scale: 6, duration: 0.6, ease: "power1.out" }, 22.3);
-  tl.to("#qa", { backgroundColor: "#2A3942", duration: 0.2 }, 22.3);
-  tl.fromTo("#wout", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: E }, 22.8);
-  fadeOut("#n3b0", 23.2, 0.2); badge("n3b1", 23.45);
-  settle("n3", "#4ADE9B", 23.2);
-  tl.to("#n3o0", { backgroundColor: "rgba(74,222,155,.14)", duration: 0.3 }, 23.3);
-  swap("#st3", "#st4", 23.2);
-  swap("#prz", "#sig", 23.2);
-  tl.to("#eg-e3r,#pl-e3r,#eg-e3p", { opacity: 0.25, duration: 0.4 }, 23.4); tl.to("#f2", { opacity: 0.45, duration: 0.4 }, 23.4);
-  cam(23.3, 0.8, K2, K3);
-  ring("n4", "rgb(125,180,255)", 24.6);
-
-  // BATIDA 6 · A aprovação é aplicada uma única vez e fica registrada
-  cap(5, 27.0, 33.6);
-  panel("#pPhone", "#pEffect", 27.1);
-  ring("n4", "rgb(245,184,65)", 27.2); badge("n4b0", 27.2);
-  tl.to("#ed3", { backgroundColor: "#7DB4FF", borderColor: "#7DB4FF", duration: 0.2 }, 28.9); fadeIn("#et3", 28.9, 0.25);
-  tl.to("#ed4", { backgroundColor: "#4ADE9B", borderColor: "#4ADE9B", duration: 0.2 }, 30.5); fadeIn("#et4", 30.5, 0.25);
-  fadeOut("#n4b0", 30.5, 0.2); badge("n4b1", 30.75); settle("n4", "#4ADE9B", 30.5);
-  tl.to("#n4o0", { backgroundColor: "rgba(74,222,155,.14)", duration: 0.3 }, 30.6);
-  tl.fromTo("#rcp", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: E }, 31.9);
-
-  // BATIDA 7 · Registro da execução, Execuções e o documento no Hub
-  cap(6, 33.6, 41.7);
-  cam(33.4, 0.8, K3, K4);
-  ring("f1", "rgb(74,222,155)", 34.7); badge("f1b0", 34.7);
-  swap("#st4", "#st5", 34.7);
-  panel("#pEffect", "#pTerm", 36.3);
-  tl.fromTo("#vp", { width: 1226 }, { width: 606, duration: 0.5, ease: E }, 38.0);
-  cam(38.0, 0.5, K4, K5);
-  fadeOut("#mm,#ctl", 38.0, 0.3);
-  tl.fromTo("#exec", { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.5, ease: E }, 38.5);
-  // Document panel returns: status approved and the Fluxos strip reads the run
-  tl.set("#evt,#adm", { opacity: 0 }, 39.7);
-  tl.set("#ds1", { opacity: 0 }, 39.7); tl.set("#ds2", { opacity: 1 }, 39.7);
-  tl.set("#nflx", { opacity: 1 }, 39.7);
-  tl.set("#bflx", { borderColor: "#FF452B", backgroundColor: "rgba(255,69,43,.18)" }, 39.7);
-  tl.set("#flx", { opacity: 1 }, 39.7);
-  panel("#pTerm", "#pDoc", 39.6);
-  tl.fromTo("#tagline", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: E }, 41.7);
-  tl.fromTo("#pad", { opacity: 0 }, { opacity: 0.001, duration: 0.5 }, 43.5);
+  // Fecho (28,6–34 s, parado de 29,2 s ao fim)
+  out(['#hd', '#st1', '#st2', '#st3', '#st4', '#sl1', '#sl2', '#sl3', '#sl4', '#g1', '#g2', '#g3', '#rail', '#bead', '#once', '#done'], 28.4, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 28.8);
+  tl.set('#close', { opacity: 1 }, D);
 
   window.__timelines = window.__timelines || {};
   window.__timelines["flow-durable-run"] = tl;
