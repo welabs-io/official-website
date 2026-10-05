@@ -111,11 +111,12 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .tag.g{background:rgba(61,214,140,.16);color:var(--ok)}.tag.r{background:rgba(255,107,107,.16);color:var(--bad)}
 .tag.a{background:rgba(245,181,63,.16);color:var(--wait)}.tag.n{background:#2A2A32;color:var(--muted)}
 .note{margin:14px 20px 0;border-radius:12px;border-left:6px solid var(--coral);background:#22161A;padding:10px 14px;font-size:24px;font-weight:600;line-height:1.3}
-#vl ul{list-style:none;padding:8px 20px 0}
-#vl li{height:54px;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;white-space:nowrap;border-bottom:2px solid #26262D}
-#vl li b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;background:rgba(61,214,140,.16);color:var(--ok)}
-#vl li.inf b{background:rgba(245,181,63,.16);color:var(--wait)}
-#vres{margin:14px 20px 0;height:60px;border-radius:14px;border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:800;color:var(--ok);white-space:nowrap}
+#vbody{position:absolute;left:0;right:0;top:66px;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:40px}
+#vok{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:rgba(61,214,140,.16);color:var(--ok);margin-bottom:26px}
+#vl .vt{font-size:40px;font-weight:800;white-space:nowrap}
+#vl .vs{font-size:28px;font-weight:600;color:var(--muted);white-space:nowrap;margin-top:6px}
+#vl .note{align-self:stretch;margin-top:22px}
+#vres{align-self:stretch;margin:26px 20px 0;height:60px;border-radius:14px;border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:800;color:var(--ok);white-space:nowrap}
 
 /* SELETOR DE GATILHO */
 #pick{position:absolute;z-index:23;left:560px;top:250px;width:720px;border-radius:22px;background:#17171B;border:2px solid var(--line);box-shadow:0 18px 48px rgba(0,0,0,.6);opacity:0}
@@ -176,7 +177,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
       <div class="dh"><span>Inserir etapa</span><span class="xb" id="palx"></span></div>
       <div class="pg"><h4><i style="background:var(--r-do)"></i>Fazer</h4><div class="pcs"><span class="pc" id="pler">Ler pedido</span><span class="pc">Mudar status</span><span class="pc">Comentar</span><span class="pc">Gerar PDF</span><span class="pc">E-mail de modelo</span></div></div>
       <div class="pg"><h4><i style="background:var(--r-warn)"></i>Avisar</h4><div class="pcs"><span class="pc">WhatsApp · modelo aprovado</span></div></div>
-      <div class="pg"><h4><i style="background:var(--r-wait)"></i>Esperar</h4><div class="pcs"><span class="pc pp">Perguntar e esperar · parcial</span><span class="pc">Esperar evento ou prazo</span><span class="pc">Aprovação no documento</span></div></div>
+      <div class="pg"><h4><i style="background:var(--r-wait)"></i>Esperar</h4><div class="pcs"><span class="pc">Perguntar e esperar</span><span class="pc">Esperar evento ou prazo</span><span class="pc">Aprovação no documento</span></div></div>
       <div class="pg"><h4><i style="background:var(--r-path)"></i>Caminhos</h4><div class="pcs"><span class="pc" id="pia">Classificar com IA</span><span class="pc">Paralelo e juntar</span><span class="pc">Para cada item</span><span class="pc">Subfluxo</span></div></div>
     </div>
 
@@ -193,7 +194,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div class="drw ins" id="insB" data-layout-allow-overflow>
       <div class="dh"><span style="display:flex;align-items:center;gap:12px"><span id="ibic" style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--wait);background:rgba(245,181,63,.18)"></span>Perguntar e esperar</span><span class="xb" id="ibx"></span></div>
       <div class="tbs"><span class="on">Configuração</span><span>Saídas</span><span>Última execução</span></div>
-      <div class="fd"><label>Pergunta no WhatsApp <span class="tag a">parcial</span></label><div class="fv">Aprovar o pedido PC-0142?</div></div>
+      <div class="fd"><label>Pergunta no WhatsApp</label><div class="fv">Aprovar o pedido PC-0142?</div></div>
       <div class="fd"><label>Botões · uma saída por opção</label><div class="fv"><span class="tag g">Aprovar</span><span class="tag r">Recusar</span></div></div>
       <div class="fd"><label>Quem responde</label><div class="fv">Gestora de compras · DEMO</div></div>
       <div class="fd"><label>Prazo · sem resposta sai por “Prazo”</label><div class="fv"><span class="tag a">Prazo · DEMO</span></div></div>
@@ -202,30 +203,27 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
     <div class="drw ins" id="vl" data-layout-allow-overflow>
       <div class="dh"><span>Validação</span><span class="xb" id="vlx"></span></div>
-      <ul>
-        <li><b id="v1"></b>Nenhum nó solto, nenhum ciclo</li>
-        <li><b id="v2"></b>Entradas obrigatórias ligadas</li>
-        <li><b id="v3"></b>Tipos das ligações conferem</li>
-        <li><b id="v4"></b>Saídas são resultados declarados</li>
-        <li><b id="v5"></b>Etapas cabem no gatilho escolhido</li>
-        <li class="inf"><b>i</b>Saídas sem ligação viram parada</li>
-      </ul>
-      <div id="vres"><span id="vresi"></span>0 pontos a revisar</div>
+      <div id="vbody">
+        <div class="vi" id="vok"></div>
+        <div class="vi vt">Fluxo validado</div>
+        <div class="vi vs">antes de publicar</div>
+        <div id="vres"><span id="vresi"></span>0 pontos a revisar</div>
+        <div class="vi note">Publicar e Ativar ficam liberados.</div>
+      </div>
     </div>
 
     <div id="pick">
       <div class="dh" style="margin-bottom:12px"><span>Quando · escolha o gatilho</span><span class="xb" id="pkx"></span></div>
       <div class="pr sel" id="prdoc"><span class="ni" id="pk1" style="--acc:var(--r-trig)"></span><div>Evento de documento<small>Pedido de compra · enviado para aprovação</small></div></div>
       <div class="pr"><span class="ni" id="pk2" style="--acc:var(--r-trig)"></span>Agenda</div>
-      <div class="pr"><span class="ni" id="pk3" style="--acc:var(--r-trig)"></span>Webhook de outro sistema</div>
-      <div class="pr pp"><span class="ni" id="pk4" style="--acc:var(--wait)"></span>Mensagem no WhatsApp<span class="tag a">Previsto</span></div>
+      <div class="pr" style="margin-bottom:18px"><span class="ni" id="pk3" style="--acc:var(--r-trig)"></span>Webhook de outro sistema</div>
     </div>
   </div>
 
   <div id="closing">
     <div id="cl1">Desenhe o processo. <span>O Flow executa.</span></div>
     <div id="cl2">Gatilho · consulta · IA que classifica · pessoa que decide · ramos em paralelo · validação</div>
-    <div id="cl3"><span>sandbox</span><span>dados DEMO</span><span>“Perguntar e esperar” parcial</span></div>
+    <div id="cl3"><span>sandbox</span><span>dados DEMO</span></div>
   </div>
   <div id="pad"></div>
 </div>
@@ -261,8 +259,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   put("zin",ico("plus",28));put("zout",ico("minus",28));put("zfit",ico("fit",26));
   ["palx","iax","ibx","vlx","pkx"].forEach(k=>put(k,ico("x",28)));
   put("iaic",ico("spark",26));put("ibic",ico("clock",26));
-  put("pk1",ico("zap",26));put("pk2",ico("cal",26));put("pk3",ico("hook",26));put("pk4",ico("msg",26));
-  ["v1","v2","v3","v4","v5"].forEach(k=>put(k,ico("check",20)));put("vresi",ico("check",28));
+  put("pk1",ico("zap",26));put("pk2",ico("cal",26));put("pk3",ico("hook",26));
+  put("vok",ico("check",72));put("vresi",ico("check",28));
   const S=(n)=>n.toFixed(1);
 
   // MODELO DO GRAFO (posições alinhadas = resultado do "Organizar"; desvio = montagem à mão)
@@ -271,13 +269,13 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     quando:{role:"trig",ic:"zap",kind:"Quando · documento",name:"Pedido de compra",ctx:"Enviado para aprovação",outs:[["Disparar","ok"]],a:[0,210],o:[0,0]},
     ler:{role:"do",ic:"search",kind:"Fazer · consulta",name:"Ler pedido",ctx:"Hub de domínio · só leitura",outs:[["Lido","ok"]],a:[520,210],o:[10,-30]},
     cls:{role:"ai",ic:"spark",kind:"Etapa de IA",name:"Classificar risco",ctx:"A resposta escolhe a saída",outs:[["baixo","ok"],["médio","wait"],["alto","bad"]],a:[1040,210],o:[24,20]},
-    apr:{role:"do",ic:"act",kind:"Fazer · efeito",name:"Aprovar pedido",outs:[["Aprovado · recibo","ok"]],a:[1560,40],o:[16,24]},
+    apr:{role:"do",ic:"act",kind:"Fazer · efeito",name:"Aprovar pedido",outs:[["Aprovado","ok"]],a:[1560,40],o:[16,24]},
     par:{role:"path",ic:"split",kind:"Caminhos",name:"Paralelo",outs:[["Abrir ramos","ok"]],a:[1560,300],o:[0,26]},
-    per:{role:"wait",ic:"clock",kind:"Esperar · WhatsApp",name:"Perguntar e esperar",badge:"parcial",outs:[["Aprovar","ok"],["Recusar","bad"],["Prazo · DEMO","wait"]],a:[1560,520],o:[20,-14]},
+    per:{role:"wait",ic:"clock",kind:"Esperar · WhatsApp",name:"Perguntar e esperar",outs:[["Aprovar","ok"],["Recusar","bad"],["Prazo · DEMO","wait"]],a:[1560,520],o:[20,-14]},
     fimA:{role:"end",t:"ok",name:"Concluído",a:[2080,114],o:[24,26]},
     avi:{role:"warn",ic:"bell",kind:"Avisar · WhatsApp",name:"Avisar financeiro",outs:[["Enviado","ok"]],a:[2080,230],o:[30,-6]},
     com:{role:"do",ic:"msg",kind:"Fazer · documento",name:"Comentar no pedido",outs:[["Comentado","ok"]],a:[2080,392],o:[-12,26]},
-    apr2:{role:"do",ic:"act",kind:"Fazer · efeito",name:"Aprovar pedido",outs:[["Aprovado · recibo","ok"]],a:[2080,560],o:[26,18]},
+    apr2:{role:"do",ic:"act",kind:"Fazer · efeito",name:"Aprovar pedido",outs:[["Aprovado","ok"]],a:[2080,560],o:[26,18]},
     jun:{role:"path",ic:"merge",kind:"Caminhos",name:"Juntar",ctx:"Esperar · todos os ramos",outs:[["Concluído","ok"],["Falhou","bad"]],a:[2600,280],o:[22,30]},
     fim2:{role:"end",t:"ok",name:"Concluído",a:[2600,600],o:[0,-6]},
     fimB:{role:"end",t:"ok",name:"Concluído",a:[3120,424],o:[0,36]}
@@ -383,7 +381,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     "O “+” na aresta abre a paleta: Fazer · Avisar · Esperar · Caminhos",
     "Uma consulta lê o pedido; a etapa de IA classifica o risco",
     "A IA só classifica: cada saída segue o caminho que o autor desenhou",
-    "Risco baixo aprova com recibo; risco alto pergunta a uma pessoa",
+    "Risco baixo aprova direto; risco alto pergunta a uma pessoa",
     "Pergunta no WhatsApp com botões e prazo; quem decide é a pessoa",
     "Risco médio abre ramos em paralelo; Juntar espera todos",
     "Organizar alinha o grafo; o minimapa colore cada papel",
@@ -451,11 +449,11 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   tl.fromTo("#legend",{opacity:0,y:12},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},27.2);
   tl.to("#mm",{borderColor:"#FF452B",duration:.3},27.2);
 
-  // B7 Validar: diagnósticos do compilador e estado Validado
+  // B7 Validar: fluxo validado antes de publicar e estado Validado
   tl.to("#legend",{opacity:0,duration:.3},29.1);tl.to("#mm",{borderColor:"#3A3A42",duration:.3},29.1);
   tl.to("#bval",{scale:.93,duration:.12},29.1);tl.to("#bval",{scale:1,duration:.2},29.25);
   camTo(-2048,29.1,.7);drawerIn("#vl",29.6);
-  tl.fromTo("#vl li",{opacity:0,x:16},{opacity:1,x:0,duration:.25,stagger:.1,ease:EO,immediateRender:false},29.95);
+  tl.fromTo("#vl .vi",{opacity:0,x:16},{opacity:1,x:0,duration:.25,stagger:.1,ease:EO,immediateRender:false},29.95);
   tl.fromTo("#vres",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.3,ease:"back.out(1.8)",immediateRender:false},30.5);
   tl.to("#sv0",{opacity:0,duration:.2},30.5);tl.to("#sv1",{opacity:1,duration:.25},30.5);
   tl.to("#svb",{backgroundColor:"#3DD68C",duration:.25},30.5);

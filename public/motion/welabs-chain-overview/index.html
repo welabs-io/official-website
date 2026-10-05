@@ -64,7 +64,7 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
 .pb{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;background:rgba(245,181,63,.18);color:var(--wait);font-size:24px;font-weight:800}
 
 /* LEGENDA */
-#legend{position:absolute;left:100px;top:986px;height:44px;display:flex;align-items:center;gap:30px;opacity:0}
+#legend{position:absolute;left:0;width:1920px;top:986px;height:44px;display:flex;align-items:center;justify-content:center;gap:48px;opacity:0}
 #legend div{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
 #pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
 </style>
@@ -86,8 +86,6 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
   <div class="card" id="nCh"><div class="ch"><span class="ic" id="iCh"></span><div><p class="kd">Canais</p><p class="nm">Channels</p></div></div></div>
   <div class="card" id="nCRM"><div class="ch"><span class="ic" id="iCRM"></span><div><p class="kd">Relacionamento</p><p class="nm">CRM</p></div></div></div>
   <div class="card" id="nKB"><div class="ch"><span class="ic" id="iKB"></span><div><p class="kd">Conhecimento</p><p class="nm">KB</p></div></div></div>
-  <div class="card" id="nMon"><div class="ch"><span class="ic" id="iMon"></span><div><p class="kd">Ecossistema</p><p class="nm">Monitoramento</p></div></div></div>
-  <span class="tag dash" id="tMon">Previsto</span>
   <div class="card" id="nHub">
     <div class="ch"><span class="ic" id="iHub"></span><div><p class="kd">Barramento de domínio</p><p class="nm">Hub de domínio</p></div></div>
     <div id="chips"><span>Cadastros</span><span>Regras</span><span>Contratos</span><span>Fiscal</span><span>Financeiro</span><span>Integrações</span></div>
@@ -96,9 +94,8 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
   <div id="labels"></div>
 
   <div id="legend">
-    <div><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#E6E6EC" stroke-width="4" stroke-linecap="round"/></svg>Existente (sandbox)</div>
-    <div><svg width="56" height="10"><line x1="3" y1="5" x2="54" y2="5" stroke="#F5B53F" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round"/></svg>Parcial</div>
-    <div><svg width="56" height="10"><line x1="0" y1="5" x2="56" y2="5" stroke="#FF452B" stroke-width="4" stroke-dasharray="16 11"/></svg>Previsto</div>
+    <div><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#E6E6EC" stroke-width="4" stroke-linecap="round"/></svg>Dados e eventos</div>
+    <div><svg width="56" height="10"><line x1="3" y1="5" x2="54" y2="5" stroke="#F5B53F" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round"/></svg>Pessoas e conhecimento no fluxo</div>
   </div>
   <div id="pad"></div>
 </div>
@@ -116,21 +113,20 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
     hub:'<circle cx="12" cy="12" r="3"/><path d="M12 2v7M12 15v7M2 12h7M15 12h7"/>'
   };
   const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
-  [["iSaaS","app"],["iFlow","flow"],["iCh","chat"],["iCRM","users"],["iKB","book"],["iMon","cam"],["iHub","hub"]].forEach(([id,n])=>{document.getElementById(id).innerHTML=ico(n,30);});
+  [["iSaaS","app"],["iFlow","flow"],["iCh","chat"],["iCRM","users"],["iKB","book"],["iHub","hub"]].forEach(([id,n])=>{document.getElementById(id).innerHTML=ico(n,30);});
 
   // GEOMETRIA DAS ARESTAS (constantes pré-calculadas)
-  // kind: ex = built (map §3a solid), pa = partial (amber), pl = planned (dashed, "Previsto")
+  // kind: ex = data and events between products, pa = people and knowledge inside the flow (amber)
   // both = bidirectional; label box: [left, top, width]
   const E=[
-    {id:"e1",k:"ex",pts:[[700,465],[700,350],[504,350]],both:false,lb:[530,372,380],l1:"concessão + definições",l2:"assinadas, revisão imutável"},
-    {id:"e2",k:"ex",pts:[[300,270],[300,175],[736,175]],both:false,lb:[355,137,330],l1:"execução + recibo",l2:"efeitos chegam ao SaaS"},
-    {id:"e3",k:"ex",pts:[[1620,384],[1620,776]],both:true,lb:[1460,542,320],l1:"eventos assinados",l2:"conversas e mensagens"},
-    {id:"e4",k:"ex",pts:[[1420,865],[1064,865]],both:false,lb:[1075,885,330],l1:"busca por MCP",l2:"recorte da organização"},
-    {id:"e5",k:"ex",pts:[[1420,345],[1350,345],[1350,760],[980,760],[980,826]],both:false,lb:[1010,676,320],l1:"tools do KB por MCP",l2:"recorte por namespace"},
-    {id:"e6",k:"pa",pts:[[504,300],[1416,300]],both:true,lb:[720,262,480],l1:"interação humana",l2:"pergunta no canal, resposta retoma",pb:true},
-    {id:"e7",k:"pa",pts:[[780,660],[780,826]],both:false,lb:[535,707,460],l1:"namespace na concessão",l2:"documentos como fonte",pb:true},
-    {id:"e8",k:"pa",pts:[[300,380],[300,885],[696,885]],both:false,lb:[100,582,400],l1:"conhecimento no run",l2:"namespace selado na admissão",pb:true},
-    {id:"p8",k:"pl",pts:[[1620,894],[1620,946]],both:true,lb:null}
+    {id:"e1",k:"ex",pts:[[700,465],[700,350],[504,350]],both:false,lb:[530,372,380],l1:"regras e definições",l2:"o Flow recebe tudo pronto"},
+    {id:"e2",k:"ex",pts:[[300,270],[300,175],[736,175]],both:false,lb:[355,137,330],l1:"execução e resultado",l2:"efeitos chegam ao SaaS"},
+    {id:"e3",k:"ex",pts:[[1620,384],[1620,776]],both:true,lb:[1460,542,320],l1:"eventos de conversa",l2:"conversas e mensagens"},
+    {id:"e4",k:"ex",pts:[[1420,865],[1064,865]],both:false,lb:[1075,885,330],l1:"respostas do KB",l2:"com o acesso certo"},
+    {id:"e5",k:"ex",pts:[[1420,345],[1350,345],[1350,760],[980,760],[980,826]],both:false,lb:[1010,676,320],l1:"KB no atendimento",l2:"respostas com fonte"},
+    {id:"e6",k:"pa",pts:[[504,300],[1416,300]],both:true,lb:[720,262,480],l1:"interação humana",l2:"pergunta no canal, resposta retoma"},
+    {id:"e7",k:"pa",pts:[[780,660],[780,826]],both:false,lb:[535,707,460],l1:"documentos do negócio",l2:"viram fonte do KB"},
+    {id:"e8",k:"pa",pts:[[300,380],[300,885],[696,885]],both:false,lb:[100,582,400],l1:"conhecimento no fluxo",l2:"cada execução consulta o KB"}
   ];
   const NS="http://www.w3.org/2000/svg";
   const defs=document.getElementById("defs"),eg=document.getElementById("eg"),lbBox=document.getElementById("labels");
@@ -155,7 +151,7 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
     if(e.both){const r=e.pts.slice().reverse();e.dot2=mk("circle",{cx:r[0][0],cy:r[0][1],r:10,fill:e.k==="pa"?"#F5B53F":"#FF452B",opacity:0},eg);}
     if(e.lb){const d=document.createElement("div");d.className="lb "+e.k;d.id="l-"+e.id;
       d.style.left=e.lb[0]+"px";d.style.top=e.lb[1]+"px";d.style.width=e.lb[2]+"px";
-      d.innerHTML=`<p class="l1">${e.l1}${e.pb?'<span class="pb">parcial</span>':""}</p><p class="l2">${e.l2}</p>`;
+      d.innerHTML=`<p class="l1">${e.l1}</p><p class="l2">${e.l2}</p>`;
       lbBox.appendChild(d);e.lbEl=d;}
   });
   const byId=Object.fromEntries(E.map(e=>[e.id,e]));
@@ -166,12 +162,12 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
   // LEGENDAS DAS BATIDAS
   const caps=[
     "Hub de domínio no centro, produtos ao redor",
-    "Hub entrega ao Flow concessão e definições",
-    "Flow executa e devolve recibo ao SaaS",
-    "Channels e CRM trocam eventos assinados",
-    "CRM e Channels leem o KB, com recorte",
-    "Parcial: interação humana e KB no fluxo",
-    "Previsto: Monitoramento com CRM e Hub"
+    "Hub entrega ao Flow regras e definições",
+    "Flow executa e devolve o resultado ao SaaS",
+    "Channels e CRM trocam conversas em tempo real",
+    "CRM e Channels respondem com o KB",
+    "Pessoas e conhecimento entram no fluxo",
+    "Cadastros, regras e fiscal servem a todos"
   ];
   const capBox=document.getElementById("caps");
   caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
@@ -210,32 +206,33 @@ svg#edges{position:absolute;left:0;top:0;width:1920px;height:1080px}
   cardIn("#nSaaS",1.0);cardIn("#nFlow",1.15);cardIn("#nCh",1.3);cardIn("#nCRM",1.45);cardIn("#nKB",1.6);
   tl.fromTo("#legend",{opacity:0},{opacity:1,duration:.4,immediateRender:false},2.0);
 
-  // B1 Hub para Flow: concessão e definições assinadas (R1-R3)
+  // B1 Hub para Flow: regras e definições (R1-R3)
   focus("#nFlow",4.0);light("e1",4.0);
 
-  // B2 Flow para SaaS: execução e recibo (R5)
+  // B2 Flow para SaaS: execução e resultado (R5)
   dim(["e1"],8.0);unfocus("#nFlow",8.0);focus("#nFlow,#nSaaS",8.0);light("e2",8.0);
 
-  // B3 Channels e CRM: eventos assinados (R8)
+  // B3 Channels e CRM: conversas em tempo real (R8)
   dim(["e2"],11.6);unfocus("#nFlow,#nSaaS",11.6);focus("#nCh,#nCRM",11.6);light("e3",11.6);
 
-  // B4 CRM e Channels para KB por MCP com recorte (R10, R11)
+  // B4 CRM e Channels respondem com o KB (R10, R11)
   dim(["e3"],15.4);unfocus("#nCh",15.4);focus("#nKB",15.4);light("e4",15.4);
   focus("#nCh",16.2);light("e5",16.2);
 
-  // B5 arestas parciais: interação humana, namespace na concessão, conhecimento no run
+  // B5 pessoas e conhecimento entram no fluxo
   dim(["e4","e5"],20.0);unfocus("#nCRM,#nKB,#nCh",20.0);
   focus("#nFlow,#nCh",20.0);light("e6",20.0);
   focus("#nKB",20.7);light("e7",20.7);
   light("e8",21.4);
 
-  // B6 previsto: Ecossistema Monitoramento, só tracejado
+  // B6 o Hub serve a todos: cadastros, regras e fiscal acendem no centro
   dim(["e6","e7","e8"],25.0);unfocus("#nFlow,#nCh,#nKB",25.0);
-  cardIn("#nMon",25.0);focus("#nCRM",25.2);light("p8",25.4);
-  tl.fromTo("#tMon",{opacity:0,x:-8},{opacity:1,x:0,duration:.35,ease:EO,immediateRender:false},26.1);
+  tl.to("#nHub",{boxShadow:"0 0 0 10px rgba(255,69,43,.22)",duration:.4},25.2);
+  tl.to("#chips span",{borderColor:"#FF452B",backgroundColor:"#2A1512",duration:.3,stagger:.12},25.4);
 
   // FECHO: mapa inteiro legível e a frase do barramento
-  unfocus("#nCRM",28.2);
+  tl.to("#nHub",{boxShadow:"0 0 0 0px rgba(255,69,43,0)",duration:.4},28.2);
+  tl.to("#chips span",{borderColor:"#3A3A42",backgroundColor:"#1F1F25",duration:.4},28.2);
   tl.to(E.map(e=>e.g),{attr:{opacity:1},duration:.5},28.2);
   tl.to(E.filter(e=>e.lbEl).map(e=>e.lbEl.children).flatMap(c=>Array.from(c)),{opacity:1,duration:.5},28.2);
   tl.to("#title",{opacity:0,duration:.3},28.0);

@@ -52,7 +52,9 @@ p{white-space:nowrap}
 #nFlow{left:1040px;top:120px;width:360px;height:200px;--acc:var(--blue)}
 #nCh{left:1040px;top:400px;width:360px;height:220px;--acc:var(--teal)}
 #nCrm{left:1040px;top:720px;width:360px;height:290px;--acc:var(--pink)}
-#nMon{left:460px;top:860px;width:400px;height:150px;--acc:var(--muted);border-style:dashed;background:#121216}
+#nSum{left:50px;top:860px;width:810px;height:150px;--acc:var(--ok)}
+#nSum .chip{padding:0 12px;gap:8px}
+#nSum .sd{width:12px;height:12px;border-radius:50%;flex:none}
 
 .hsub{position:absolute;left:18px;top:84px;line-height:30px}
 .hr{position:absolute;left:18px;width:364px;height:46px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:24px;font-weight:700;white-space:nowrap}
@@ -114,13 +116,12 @@ p{white-space:nowrap}
 
   <div id="stage">
     <svg id="wires" viewBox="0 0 1920 1080">
-      <!-- Map edges: solid = built (sandbox), amber = partial, dashed = planned -->
+      <!-- Map edges, colored by the product that provides each connection -->
       <path id="wReg" d="M330 520 H460" stroke="#FF452B" stroke-width="5"/>
       <path id="wGrant" d="M860 380 H945 V250 H1040" stroke="#FF452B" stroke-width="5"/>
       <path id="wCh" d="M180 630 V810 H985 V510 H1040" stroke="#2EC4B6" stroke-width="5"/>
       <path id="wConv" d="M1220 620 V720" stroke="#E879F9" stroke-width="5"/>
-      <path id="wKb" d="M1040 170 H860" stroke="#F5B53F" stroke-width="5"/>
-      <path id="wMon" d="M860 935 H1040" stroke="#8A8A95" stroke-width="4" stroke-dasharray="14 12" opacity="0"/>
+      <path id="wKb" d="M1040 170 H860" stroke="#A78BFA" stroke-width="5"/>
     </svg>
 
     <!-- Ports where edges meet nodes (React Flow handles) -->
@@ -141,22 +142,22 @@ p{white-space:nowrap}
     <div class="nd" id="nHub">
       <div class="ch"><span class="ic" id="icH"></span><div><p class="kd">Hub de domínio</p><p class="nm">Plataforma</p></div></div>
       <div class="hsub"><p class="mut">cadastros · regras</p><p class="mut">contratos · fiscal</p><p class="mut">financeiro · integrações</p></div>
-      <div class="hr" id="h1" style="top:190px"><b></b>Produto e namespace</div>
-      <div class="hr" id="h2" style="top:244px"><b></b>Direito de uso · sandbox</div>
-      <div class="hr" id="h3" style="top:298px"><b></b>Concessão versionada</div>
-      <div class="hr" id="h4" style="top:352px"><b></b>Identidade de serviço</div>
+      <div class="hr" id="h1" style="top:190px"><b></b>Produto cadastrado</div>
+      <div class="hr" id="h2" style="top:244px"><b></b>Direito de uso</div>
+      <div class="hr" id="h3" style="top:298px"><b></b>Acesso aos produtos</div>
+      <div class="hr" id="h4" style="top:352px"><b></b>Conexão segura</div>
     </div>
 
     <!-- KB -->
     <div class="nd" id="nKb">
-      <div class="ch"><span class="ic" id="icK"></span><div><p class="kd">KB · namespace</p><p class="nm">portal-demo</p></div></div>
-      <p class="mut" style="position:absolute;left:18px;top:96px;opacity:0" id="kbL">lido pelo fluxo · parcial</p>
+      <div class="ch"><span class="ic" id="icK"></span><div><p class="kd">KB · base própria</p><p class="nm">portal-demo</p></div></div>
+      <p class="mut" style="position:absolute;left:18px;top:96px;opacity:0" id="kbL">consultada pelos fluxos</p>
     </div>
 
     <!-- Flow -->
     <div class="nd" id="nFlow">
       <div class="ch"><span class="ic" id="icF"></span><div><p class="kd">Motor de fluxos</p><p class="nm">Flow</p></div></div>
-      <div class="sw" style="left:18px;top:90px;width:324px;height:40px"><span class="tag n" id="fA" data-layout-allow-overlap>aguardando</span><span class="tag g" id="fB" data-layout-allow-overlap style="opacity:0">concessão recebida</span></div>
+      <div class="sw" style="left:18px;top:90px;width:324px;height:40px"><span class="tag n" id="fA" data-layout-allow-overlap>aguardando</span><span class="tag g" id="fB" data-layout-allow-overlap style="opacity:0">pronto para usar</span></div>
       <p class="mut" style="position:absolute;left:18px;top:146px;opacity:0" id="fC">entra por configuração</p>
     </div>
 
@@ -175,26 +176,24 @@ p{white-space:nowrap}
       <div class="ib" id="r3" style="top:206px;border-color:var(--pink)"><span id="icA" style="display:grid;place-items:center;color:var(--pink)"></span>agente de IA + humano</div>
     </div>
 
-    <!-- Monitoring ecosystem: planned only -->
-    <div class="nd" id="nMon">
-      <div class="ch"><span class="ic" id="icM"></span><div><p class="kd" style="color:var(--muted)">Ecossistema</p><p class="nm" style="color:var(--muted)">Monitoramento</p></div></div>
-      <p class="mut" style="position:absolute;left:18px;top:96px">Previsto · com CRM e Hub</p>
+    <!-- Plugged SaaS summary: what it gained, by configuration -->
+    <div class="nd" id="nSum">
+      <div class="ch"><span class="ic" id="icM"></span><div><p class="kd">Portal DEMO</p><p class="nm">plugado por configuração</p></div></div>
+      <div class="crow" style="top:94px;width:770px;gap:12px">
+        <div class="chip"><i class="sd" style="background:var(--blue)"></i>Flow</div>
+        <div class="chip"><i class="sd" style="background:var(--teal)"></i>Channels</div>
+        <div class="chip"><i class="sd" style="background:var(--pink)"></i>CRM</div>
+        <div class="chip"><i class="sd" style="background:var(--violet)"></i>KB</div>
+        <div class="chip" style="color:var(--ok);border-color:var(--ok)">sem código novo</div>
+      </div>
     </div>
 
     <!-- Edge labels -->
     <div class="el s" id="lReg" style="left:332px;top:546px">registro</div>
-    <div class="el s" id="lGrant" style="left:840px;top:288px">entrega selada</div>
-    <div class="el s" id="lCh" style="left:460px;top:792px">consumidor · um contrato</div>
+    <div class="el s" id="lGrant" style="left:840px;top:288px">configuração</div>
+    <div class="el s" id="lCh" style="left:460px;top:792px">canais · uma integração</div>
     <div class="el s" id="lConv" style="left:1149px;top:652px">conversas</div>
-    <div class="el pa" id="lKb" style="left:898px;top:152px">parcial</div>
-    <div class="el pv" id="lMon" style="left:885px;top:880px">Previsto</div>
-
-    <!-- Legend -->
-    <div id="leg">
-      <div class="lg" style="top:0"><svg width="60" height="10"><path d="M2 5H58" stroke="#FF452B" stroke-width="5" stroke-linecap="round"/></svg>construído · sandbox</div>
-      <div class="lg" style="top:52px"><svg width="60" height="10"><path d="M2 5H58" stroke="#F5B53F" stroke-width="5" stroke-linecap="round"/></svg>parcial</div>
-      <div class="lg" style="top:104px"><svg width="60" height="10"><path d="M2 5H58" stroke="#8A8A95" stroke-width="4" stroke-dasharray="12 10"/></svg>Previsto</div>
-    </div>
+    <div class="el s" id="lKb" style="left:890px;top:152px">consulta</div>
 
     <!-- Inherited resources -->
     <div id="pan">
@@ -211,8 +210,8 @@ p{white-space:nowrap}
 
   <div id="closing">
     <div id="cl1">Configurar, <span>não reconstruir.</span></div>
-    <div id="cl2">Um SaaS novo pluga no Hub de domínio e herda Flow, Channels e CRM por configuração; o KB, em parte.</div>
-    <div id="cl3"><span>sandbox</span><span>dados DEMO</span><span>IA com humano no comando</span><span class="pa">conhecimento · parcial</span><span class="pv">Ecossistema Monitoramento · Previsto</span></div>
+    <div id="cl2">Um SaaS novo pluga no Hub de domínio e herda Flow, Channels, CRM e KB por configuração.</div>
+    <div id="cl3"><span>sandbox</span><span>dados DEMO</span><span>IA com humano no comando</span></div>
   </div>
   <div id="pad"></div>
 </div>
@@ -235,7 +234,7 @@ p{white-space:nowrap}
   const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
   const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
   put("icS",ico("box",28));put("icH",ico("layers",28));put("icK",ico("book",28));put("icF",ico("flow",28));
-  put("icC",ico("chat",28));put("icR",ico("inbox",28));put("icM",ico("eye",28));put("icA",ico("user",24));put("env",ico("mail",28));
+  put("icC",ico("chat",28));put("icR",ico("inbox",28));put("icM",ico("check",28));put("icA",ico("user",24));put("env",ico("mail",28));
   document.querySelectorAll(".hr b").forEach(b=>{b.innerHTML=ico("check",18);});
 
   // Counter digits are stacked spans so any seek shows exactly one value
@@ -243,15 +242,15 @@ p{white-space:nowrap}
   for(let i=0;i<=N;i++){const s=document.createElement("span");s.id="n"+i;s.textContent=String(i);s.setAttribute("data-layout-allow-overlap","");if(i===0)s.className="z";numBox.appendChild(s);}
   // Inherited resources list, colored by the product that provides them
   const RES=[
-    ["var(--coral)","Concessão versionada"],["var(--coral)","Identidade de serviço"],
-    ["var(--blue)","Fluxos duráveis com recibo"],["var(--blue)","Aprovações e esperas"],["var(--blue)","Cobrança, ticket e e-mail"],
-    ["var(--teal)","WhatsApp oficial e pareado"],["var(--teal)","Chat do site e webhook"],["var(--teal)","Eventos assinados"],
+    ["var(--coral)","Cadastro e permissões"],["var(--coral)","Conexão segura"],
+    ["var(--blue)","Fluxos com histórico"],["var(--blue)","Aprovações e esperas"],["var(--blue)","Cobrança, ticket e e-mail"],
+    ["var(--teal)","WhatsApp oficial e pareado"],["var(--teal)","Chat do site e webhook"],["var(--teal)","Eventos em tempo real"],
     ["var(--pink)","Caixa omnichannel"],["var(--pink)","Agente de IA + humano"],
     ["var(--violet)","Conhecimento"]
   ];
   const pan=document.getElementById("pan");
   RES.forEach((r,i)=>{const d=document.createElement("div");d.className="ri";d.id="ri"+(i+1);d.style.top=(240+i*56)+"px";
-    d.innerHTML=`<i style="background:${r[0]}"></i>${r[1]}<span class="gr"></span>`+(i===10?'<span class="tag a">parcial</span>':"");pan.appendChild(d);});
+    d.innerHTML=`<i style="background:${r[0]}"></i>${r[1]}<span class="gr"></span>`;pan.appendChild(d);});
 
   const tl=gsap.timeline({paused:true});
   const EO="power3.out",EZ="power2.inOut";
@@ -259,12 +258,12 @@ p{white-space:nowrap}
   // LEGENDAS DAS BATIDAS
   const caps=[
     "Um SaaS novo chega e é registrado no Hub de domínio",
-    "Concessão versionada e identidade de serviço própria",
-    "Entrega selada: o Flow recebe a concessão",
-    "Channels liga os canais por um contrato único",
+    "O Hub libera os produtos e uma conexão segura",
+    "O Flow fica pronto para o SaaS, por configuração",
+    "Channels liga os canais por uma integração única",
     "O CRM recebe as conversas; agente de IA com humano",
-    "O KB libera o namespace: leitura no fluxo, parcial",
-    "Real, parcial e previsto, cada um com o seu traço"
+    "O KB abre uma base própria, consultada pelos fluxos",
+    "Tudo plugado por configuração, sem código novo"
   ];
   const capBox=document.getElementById("caps");
   caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
@@ -302,12 +301,12 @@ p{white-space:nowrap}
   lit("#nHub","#FF452B",2.4);
   tick("h1",2.9);tick("h2",3.5);
 
-  // B2 concessão versionada e identidade de serviço
+  // B2 acesso aos produtos e conexão segura
   tick("h3",5.8);gain(6.3);
   tick("h4",7.0);gain(7.5);
   calm("#nSaas",8.0);
 
-  // B3 entrega selada ao Flow
+  // B3 o Flow fica pronto por configuração
   ports("#p3,#p4",10.2);draw("wGrant",10.3,.6);
   travel("#env",[[860,380],[945,380],[945,250],[1040,250]],10.6,[.3,.45,.3],24);
   // Label appears only after the envelope has left the vertical segment
@@ -335,19 +334,18 @@ p{white-space:nowrap}
   gain(22.2);gain(22.5);
   calm("#nCh",22.5);
 
-  // B6 KB libera o namespace (parcial)
+  // B6 o KB abre uma base própria para o SaaS
   lit("#nKb","#A78BFA",25.3);
   ports("#p9,#p10",25.5);draw("wKb",25.6,.4);lab("lKb",26.0);
   tl.fromTo("#kbL",{opacity:0},{opacity:1,duration:.3,immediateRender:false},26.3);
   gain(26.7);
   calm("#nCrm",26.7);
 
-  // B7 visão inteira: real, parcial e previsto
+  // B7 visão inteira: o SaaS plugado e o que ele herdou
   calm("#nKb",29.6);
-  tl.fromTo("#nMon",{opacity:0},{opacity:1,duration:.5,immediateRender:false},29.8);
-  tl.to("#wMon",{opacity:1,duration:.4},30.1);lab("lMon",30.2);
+  tl.fromTo("#nSum",{opacity:0,y:12},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},29.8);
+  tl.to("#nSum",{borderColor:"#3DD68C",duration:.3},30.2);
   swap("#sA","#sB",30.2);tl.to("#nSaas",{borderColor:"#3DD68C",duration:.3},30.2);
-  tl.fromTo("#leg",{opacity:0},{opacity:1,duration:.4,immediateRender:false},30.5);
 
   // FECHO
   tl.to("#stage,#hd",{opacity:0,duration:.5},32.6);

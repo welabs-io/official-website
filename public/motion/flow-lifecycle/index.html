@@ -149,17 +149,17 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
       <div id="svd"><span id="sv0" style="color:var(--dim)">Não salvo</span><span id="sv1" style="color:var(--ok);opacity:0"></span></div>
       <span class="gr"></span>
       <div class="bw"><span class="bt en" id="bS"><span class="bi"><i class="lk"></i><i class="ck"></i></span>Salvar</span></div><span class="chev"></span>
-      <div class="bw"><span class="bt" id="bC"><span class="bi"><i class="lk"></i><i class="ck"></i></span>Compilar</span></div><span class="chev"></span>
+      <div class="bw"><span class="bt" id="bC"><span class="bi"><i class="lk"></i><i class="ck"></i></span>Verificar</span></div><span class="chev"></span>
       <div class="bw"><span class="bt" id="bV"><span class="bi"><i class="lk"></i><i class="ck"></i></span>Validar</span></div><span class="chev"></span>
       <div class="bw"><span class="bt" id="bP"><span class="bi"><i class="lk"></i><i class="ck"></i></span>Publicar</span></div><span class="chev"></span>
       <div class="bw"><span class="bt" id="bA"><span class="bi"><i class="lk"></i><i class="ck"></i></span>Ativar</span>
-        <div id="tip"><p><span class="tli"></span><b>Publicar:</b> compile e valide antes</p><p><span class="tli"></span><b>Ativar:</b> publique uma versão antes</p></div>
+        <div id="tip"><p><span class="tli"></span><b>Publicar:</b> valide antes</p><p><span class="tli"></span><b>Ativar:</b> publique uma versão antes</p></div>
       </div>
     </div>
 
     <div class="ov" id="state">
       <div class="sg"><span class="sl">Rascunho</span><span class="sv" style="width:122px"><b class="on" id="s1a" style="color:var(--dim)">não salvo</b><b id="s1b" style="color:var(--ok)">salvo</b></span></div>
-      <div class="sg"><span class="sl">Validação</span><span class="sv" style="width:132px"><b class="on" id="s2a" style="color:var(--dim)">—</b><b id="s2b" style="color:var(--err)">pendente</b><b id="s2c" style="color:var(--ok)">compilado</b><b id="s2d" style="color:var(--ok)">validado</b></span></div>
+      <div class="sg"><span class="sl">Validação</span><span class="sv" style="width:142px"><b class="on" id="s2a" style="color:var(--dim)">—</b><b id="s2b" style="color:var(--err)">pendente</b><b id="s2c" style="color:var(--ok)">verificado</b><b id="s2d" style="color:var(--ok)">validado</b></span></div>
       <div class="sg"><span class="sl">Publicação</span><span class="sv" style="width:112px"><b class="on" id="s3a" style="color:var(--dim)">—</b><b id="s3b" style="color:var(--ok)">versão 3</b></span></div>
       <div class="sg"><span class="sl">Ativação</span><span class="sv" style="width:112px"><b class="on" id="s4a" style="color:#fff">versão 2</b><b id="s4b" style="color:var(--ok)">versão 3</b><b id="s4c" style="color:var(--amber)">versão 2</b></span></div>
     </div>
@@ -168,7 +168,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
 
     <div class="ov" id="dock" data-layout-allow-overflow>
       <div class="dh"><span id="dh1">Validação</span><span id="dh2">Histórico</span></div>
-      <div class="tabs"><span>Blocos</span><span>Conectores</span><span>Etapa</span><span>Concessão</span><span id="tbV">Validação</span><span id="tbH">Histórico</span><span>Testar</span></div>
+      <div class="tabs"><span>Blocos</span><span>Conectores</span><span>Etapa</span><span>Acesso</span><span id="tbV">Validação</span><span id="tbH">Histórico</span><span>Testar</span></div>
 
       <!-- ABA VALIDAÇÃO -->
       <div class="pane" id="pVal">
@@ -180,42 +180,42 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
           <div class="cm">porta “pedido” · ligue uma aresta de dado</div>
         </div>
         <div class="card" id="cOk" style="top:54px;height:150px;border-color:var(--ok);opacity:0">
-          <div class="ct" style="color:var(--ok)"><span class="ic-chk"></span>Compilado</div>
-          <div class="cs">Grafo, portas e resultados conferidos</div>
+          <div class="ct" style="color:var(--ok)"><span class="ic-chk"></span>Verificado</div>
+          <div class="cs">Fluxo completo e consistente</div>
           <div class="cm">o nó volta ao normal no quadro</div>
         </div>
         <div class="card" id="cVal" style="top:218px;height:110px;border-color:var(--ok);opacity:0">
           <div class="ct" style="color:var(--ok)"><span class="ic-chk"></span>Validado</div>
-          <div class="cm">concessão e executores conferidos</div>
+          <div class="cm">pronto para publicar</div>
         </div>
-        <div style="position:absolute;left:0;right:0;top:344px">
-          <div class="h4" style="margin-bottom:10px">O compilador também aponta</div>
-          <span class="tg">ciclo</span><span class="tg">nó solto</span><span class="tg">tipo de aresta divergente</span><span class="tg">resultado não declarado</span>
+        <div class="card" style="top:344px;height:110px">
+          <div class="ct">Publicar só depois de validar</div>
+          <div class="cm">nenhuma versão com erro chega à operação</div>
         </div>
       </div>
 
       <!-- ABA HISTÓRICO -->
       <div class="pane" id="pHis">
         <div class="h4" style="height:30px">Revisões</div>
-        <div class="rv" style="top:38px">Versão 1<em>· digest DEMO</em></div>
-        <div class="rv" style="top:94px">Versão 2<em>· digest DEMO</em></div>
-        <div class="rv" id="rv3" style="top:150px;opacity:0;border-color:var(--ok)">Versão 3<em>· digest DEMO</em></div>
+        <div class="rv" style="top:38px">Versão 1<em>· publicada por Bruno</em></div>
+        <div class="rv" style="top:94px">Versão 2<em>· publicada por Ana</em></div>
+        <div class="rv" id="rv3" style="top:150px;opacity:0;border-color:var(--ok)">Versão 3<em>· publicada por Ana</em></div>
         <div id="ptr"><span class="ic-back"></span>ativa</div>
 
         <div class="sw" id="wPub">
-          <div class="lane"><div class="lb" style="left:0">Hub de domínio</div><div class="lb" style="right:0">Flow · motor</div>
+          <div class="lane"><div class="lb" style="left:0">Studio</div><div class="lb" style="right:0">Flow</div>
             <svg class="abs" style="left:204px;top:31px" width="140" height="4"><line x1="0" y1="2" x2="140" y2="2" stroke="#3A3A42" stroke-width="4" stroke-dasharray="8 6"/></svg>
-            <span class="env" id="env1"></span><span class="env" id="env2" style="color:var(--err)"></span></div>
-          <div class="ln m">envelope assinado · anti-réplica</div>
-          <div class="ln" id="lOk" style="opacity:0"><span class="ic-chk" style="color:var(--ok)"></span>Entregue · recibo de publicação lido</div>
-          <div class="ln" id="lNo" style="opacity:0"><span class="ic-xc" style="color:var(--err)"></span><span style="color:var(--err)">Réplica do envelope recusada</span></div>
-          <div class="ln m" id="lImu" style="opacity:0">versão 3 imutável: nunca recompilada</div>
+            <span class="env" id="env1"></span></div>
+          <div class="ln m">a versão 3 sai do Studio para o Flow</div>
+          <div class="ln" id="lOk" style="opacity:0"><span class="ic-chk" style="color:var(--ok)"></span>Publicada · pronta para ativar</div>
+          <div class="ln" id="lNo" style="opacity:0"><span class="ic-chk" style="color:var(--ok)"></span>A versão 2 segue ativa até você decidir</div>
+          <div class="ln m" id="lImu" style="opacity:0">versão publicada não muda depois</div>
         </div>
 
         <div class="sw" id="wAct">
-          <div class="ln" style="font-weight:800;font-size:27px">Ponteiro de ativação</div>
+          <div class="ln" style="font-weight:800;font-size:27px">Versão ativa</div>
           <div class="ln">empresa DEMO · este fluxo → versão 3</div>
-          <div class="ln m">entregue depois da publicação, em ordem</div>
+          <div class="ln m">novos pedidos já seguem a versão 3</div>
           <div style="margin-top:14px"><span class="bt2"><span class="ic-pow"></span>Desativar</span><span class="bt2" style="border-color:var(--coral)"><span class="ic-rot"></span>Reverter</span></div>
         </div>
 
@@ -229,9 +229,9 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
 
         <div class="sw" id="wRev">
           <div style="height:54px"><span class="bt2" id="bRev" style="border-color:var(--coral)"><span class="ic-rot"></span>Reverter para versão 2</span></div>
-          <div class="ln" id="lRev" style="opacity:0"><span class="ic-chk" style="color:var(--ok)"></span>Ponteiro de volta à versão 2</div>
-          <div class="ln m">sem recompilar: roda igual, byte a byte</div>
-          <div class="ln m">desativar viaja pelo mesmo canal</div>
+          <div class="ln" id="lRev" style="opacity:0"><span class="ic-chk" style="color:var(--ok)"></span>Versão 2 ativa de novo</div>
+          <div class="ln m">volta exatamente como estava</div>
+          <div class="ln m">em um clique, sem retrabalho</div>
         </div>
 
         <div class="sw" id="wHis">
@@ -250,9 +250,9 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
 
   <!-- FECHO -->
   <div id="closing">
-    <div class="big">Cada mudança, <span>uma versão provada.</span></div>
-    <div class="sub">Salvar · Compilar · Validar · Publicar · Ativar · Comparar · Reverter</div>
-    <div class="row"><span class="hc sb">sandbox</span><span class="prev">Previsto: Studio global lendo o estado do Flow sem cópia</span></div>
+    <div class="big">Cada mudança, <span>uma versão segura.</span></div>
+    <div class="sub">Salvar · Verificar · Validar · Publicar · Ativar · Comparar · Reverter</div>
+    <div class="row"><span class="hc sb">sandbox</span><span class="hc">quem fez o quê, sempre registrado</span></div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
@@ -289,7 +289,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   fill(".bi .lk",ico("lock",26));fill(".bi .ck",ico("check",26));fill(".chev",ico("chev",24));fill(".tli",ico("lock",24));
   fill(".ic-alert",ico("alert",30));fill(".ic-chk",ico("chk",30));fill(".ic-xc",ico("xc",30));fill(".ic-rot",ico("rot",24));
   fill(".ic-pow",ico("pow",24));fill(".ic-cmp",ico("cmp",28));fill(".ic-back",ico("left",22));
-  put("env1",ico("mail",40));put("env2",ico("mail",40));
+  put("env1",ico("mail",40));
   document.querySelectorAll(".bi .ck").forEach(function(e){e.style.opacity=0;});
   document.querySelectorAll(".bt:not(.en) .bi .lk").forEach(function(e){e.style.opacity=1;});
   document.querySelector("#bS .bi .lk").style.opacity=0;
@@ -363,12 +363,12 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   // LEGENDAS DAS BATIDAS
   var caps=[
     "Rascunho: cada botão bloqueado diz o que falta",
-    "Compilar aponta o nó: entrada obrigatória sem ligação",
-    "Ligada a porta de dado, o diagnóstico some; compila e valida",
-    "Publicar sela a versão 3; a réplica do envelope é recusada",
-    "Ativar move o ponteiro para a versão 3",
+    "Verificar aponta o nó: entrada obrigatória sem ligação",
+    "Ligada a porta de dado, o aviso some; verifica e valida",
+    "Publicar guarda a versão 3, pronta para ativar",
+    "Ativar põe a versão 3 em uso",
     "Comparar versão 2 × versão 3, nó a nó",
-    "Reverter devolve o ponteiro à versão 2, sem recompilar",
+    "Reverter volta à versão 2 com segurança, em um clique",
     "O histórico conta cada passo em frases de negócio"
   ];
   var cb=document.getElementById("captions");
@@ -417,7 +417,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   capOn(0,.6);
   tl.fromTo("#tip",{opacity:0,y:-8},{opacity:1,y:0,duration:.3,ease:E},2.0);
 
-  // B1 · salvar e compilar com erro (4–8.5 s)
+  // B1 · salvar e verificar com erro (4–8.5 s)
   tl.to("#tip",{opacity:0,duration:.2},4.0);
   press("#bS",4.2);
   bDone("#bS",4.35);xf("#sv0","#sv1",4.35);xf("#s1a","#s1b",4.35);bEnable("#bC",4.45);
@@ -440,7 +440,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   tl.to("#pv1",{opacity:1,duration:.25},6.6);
   tl.fromTo("#cErr",{opacity:0,y:10},{opacity:1,y:0,duration:.3},6.65);
 
-  // B2 · ligar a porta, compilar e validar (8.5–13.3 s)
+  // B2 · ligar a porta, verificar e validar (8.5–13.3 s)
   capOn(2,8.5);
   tl.to("#dcr",{attr:{width:100},duration:.7,ease:"power1.inOut"},8.5);
   tl.to("#n1-dh",{borderColor:DIM,backgroundColor:"#C9C9D1",duration:.2},9.15);
@@ -454,7 +454,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   bDone("#bV",11.35);xf("#s2c","#s2d",11.35);bEnable("#bP",11.45);
   tl.fromTo("#cVal",{opacity:0,y:10},{opacity:1,y:0,duration:.3},11.4);
 
-  // B3 · publicar: versão 3 selada, envelope e réplica (13.3–18.5 s)
+  // B3 · publicar: versão 3 guardada e pronta para ativar (13.3–18.5 s)
   capOn(3,13.3);
   tl.to("#pVal",{opacity:0,duration:.2},13.3);
   xf("#dh1","#dh2",13.3);
@@ -470,14 +470,11 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   tl.to("#env1",{x:120,duration:.8,ease:"power1.inOut"},14.9);
   tl.to("#env1",{opacity:0,duration:.15},15.7);
   tl.fromTo("#lOk",{opacity:0,x:10},{opacity:1,x:0,duration:.25},15.7);
-  tl.set("#env2",{x:0},15.9);
-  tl.fromTo("#env2",{opacity:0},{opacity:1,duration:.15},16.0);
-  tl.to("#env2",{x:120,duration:.6,ease:"power1.inOut"},16.1);
-  tl.to("#env2",{opacity:0,duration:.15},16.7);
+  // The previous active version stays in use until the author activates the new one
   tl.fromTo("#lNo",{opacity:0,x:10},{opacity:1,x:0,duration:.25},16.7);
   tl.fromTo("#lImu",{opacity:0},{opacity:1,duration:.25},16.9);
 
-  // B4 · ativar: ponteiro v2 → v3 (18.5–21.2 s)
+  // B4 · ativar: versão 3 em uso (18.5–21.2 s)
   capOn(4,18.5);
   press("#bA",18.7);
   bDone("#bA",18.85);
@@ -497,7 +494,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
   tl.to("#eb-e24,#eb-e4f",{attr:{"stroke-width":8},duration:.3},22.3);
   tl.fromTo("#banner",{opacity:0,y:12},{opacity:1,y:0,duration:.3},22.4);
 
-  // B6 · reverter para a versão 2 sem recompilar (24.4–27.4 s)
+  // B6 · reverter para a versão 2 com segurança (24.4–27.4 s)
   capOn(6,24.4);
   tl.to("#n4,#f2,#n2",{borderColor:LINE,boxShadow:"0 6px 18px rgba(0,0,0,.45)",duration:.3},24.5);
   tl.to("#n4-tag,#f2-tag,#n2-tag,#banner",{opacity:0,duration:.25},24.5);

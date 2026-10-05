@@ -129,7 +129,8 @@ const ROUND2 = {
   "welabs-chain-horizon": {
     kind: "topology",
     page: "welabs",
-    title: "Plataforma Welabs · Horizonte",
+    // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap
+    title: "Plataforma Welabs · Conjunto",
     ...KNOWHOW,
   },
   "tabela-intro": reel("tabela", "Tabe.la · Introdução de marca", "intro"),

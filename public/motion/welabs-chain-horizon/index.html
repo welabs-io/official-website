@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=1920, height=1080">
-<title>Cadeia Welabs · horizonte</title>
+<title>Cadeia Welabs · o conjunto</title>
 <style>
 /* TIPOGRAFIA E TOKENS DA MARCA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
@@ -30,8 +30,6 @@ p{white-space:nowrap}
 #edges{position:absolute;left:0;top:0;overflow:visible}
 .e{fill:none;stroke-width:4;stroke-linecap:round}
 .e.real{stroke:var(--real)}
-.e.part{stroke:var(--wait);stroke-dasharray:2 11;stroke-width:5}
-.e.plan{stroke:var(--coral);stroke-dasharray:16 11}
 
 /* NÓS DOS PRODUTOS (MESMA GRAMÁTICA DAS PEÇAS ISOLADAS) */
 .nd{position:absolute;border:3px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 6px 18px rgba(0,0,0,.45);opacity:0}
@@ -40,30 +38,19 @@ p{white-space:nowrap}
 .kd{font-size:24px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--acc);line-height:28px;white-space:nowrap}
 .nm{font-size:30px;font-weight:800;line-height:36px;white-space:nowrap}
 .sub{position:absolute;left:20px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
-#nMon{border-style:dashed;border-color:var(--coral);background:#141012}
-#nMon .kd{color:var(--coral)}
-#halo{position:absolute;left:662px;top:434px;width:456px;height:254px;border:3px dashed var(--coral);border-radius:30px;opacity:0}
-#chipNs{position:absolute;left:18px;top:98px;height:40px;display:flex;align-items:center;padding:0 14px;border:2px dashed var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0;background:var(--bg)}
 
-/* RÓTULOS DAS ARESTAS */
+/* RÓTULOS DAS ARESTAS (UM POR BATIDA, O BENEFÍCIO DA LIGAÇÃO) */
 .lw{position:absolute;width:600px;display:flex;justify-content:center}
 .pill span{display:block;text-align:center}
 .pill{padding:4px 14px;border-radius:14px;font-size:24px;line-height:28px;font-weight:800;white-space:nowrap;background:var(--bg);opacity:0}
-.pill.part{border:2px solid var(--wait);color:var(--wait);background:#1E1A10}
-.pill.plan{border:2px dashed var(--coral);color:#FFB3A8;background:#160E0D}
-.pill.plan i{font-style:normal;color:var(--coral)}
-
-/* LEGENDA FIXA */
-#legend{position:absolute;left:100px;top:1000px;height:48px;display:flex;align-items:center;gap:40px;opacity:0}
-.lg{display:flex;align-items:center;gap:14px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-.lg svg{flex:none}
+.pill.gain{border:2px solid var(--coral);color:#FFFFFF;background:#160E0D}
 #pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="welabs-chain-horizon" data-width="1920" data-height="1080" data-start="0" data-duration="30">
   <div id="hd">
-    <div id="title">Horizonte<span>.</span></div>
+    <div id="title">Conjunto<span>.</span></div>
     <div id="caps"></div>
     <div id="sbx">sandbox · dados DEMO</div>
     <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
@@ -71,17 +58,11 @@ p{white-space:nowrap}
 
   <div id="board">
     <div id="dots"></div>
-    <div id="halo"></div>
     <svg id="edges" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
     <div id="nodes"></div>
     <div id="labels"></div>
   </div>
 
-  <div id="legend">
-    <span class="lg"><svg width="70" height="12" viewBox="0 0 70 12"><path d="M4 6H66" stroke="#A3A8B3" stroke-width="4" stroke-linecap="round"/></svg>hoje · sandbox</span>
-    <span class="lg"><svg width="70" height="12" viewBox="0 0 70 12"><path d="M4 6H66" stroke="#F5B53F" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 11"/></svg>parcial</span>
-    <span class="lg"><svg width="70" height="12" viewBox="0 0 70 12"><path d="M4 6H66" stroke="#FF452B" stroke-width="4" stroke-linecap="round" stroke-dasharray="16 11"/></svg>Previsto</span>
-  </div>
   <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
@@ -109,8 +90,7 @@ p{white-space:nowrap}
       sub:["cadastros · regras · contratos","fiscal · financeiro · integrações"]},
     ai:{x:1380,y:150,w:440,h:110,acc:"var(--pink)",ic:"spark",kd:"IA nos produtos",nm:"Assistentes"},
     flow:{x:1380,y:486,w:440,h:110,acc:"var(--blue)",ic:"flow",kd:"Motor de fluxos",nm:"Flow"},
-    saas:{x:1380,y:822,w:440,h:150,acc:"var(--muted)",ic:"app",kd:"Produto plugado",nm:"SaaS · app · portal"},
-    mon:{x:640,y:150,w:520,h:110,acc:"var(--muted)",ic:"cam",kd:"Previsto",nm:"Ecossistema Monitoramento"}
+    saas:{x:1380,y:822,w:440,h:150,acc:"var(--muted)",ic:"app",kd:"Produto plugado",nm:"SaaS · app · portal"}
   };
   const nodes=document.getElementById("nodes");
   Object.entries(N).forEach(([k,n])=>{
@@ -121,9 +101,8 @@ p{white-space:nowrap}
     (n.sub||[]).forEach((s,i)=>{d.innerHTML+=`<p class="sub" style="top:${96+i*34}px">${s}</p>`;});
     nodes.appendChild(d);
   });
-  document.getElementById("nSaas").insertAdjacentHTML("beforeend",'<span id="chipNs">Previsto · namespace próprio</span>');
 
-  // ARESTAS: real = traço cheio (mapa §3a construído), part = âmbar pontilhado (§3a parcial), plan = tracejado (§3b)
+  // ARESTAS: cada ligação entre produtos (linhas do mapa da cadeia), todas no mesmo traço
   const E=[
     {id:"r13",k:"real",d:"M1100,495 L1376,495",row:"R1–R3"},
     {id:"r4",k:"real",d:"M1380,850 C1150,850 1060,780 1060,640",row:"R4"},
@@ -133,19 +112,11 @@ p{white-space:nowrap}
     {id:"r9",k:"real",d:"M480,580 C620,940 1200,900 1376,880",row:"R9"},
     {id:"r10",k:"real",d:"M200,486 L200,264",row:"R10"},
     {id:"r11",k:"real",d:"M100,880 C30,880 30,200 96,200",row:"R11"},
-    {id:"r12",k:"part",d:"M680,470 C580,470 560,235 484,235",row:"R12"},
-    {id:"r13b",k:"part",d:"M1440,486 C1440,350 600,370 488,172",row:"R13"},
-    {id:"r14",k:"part",d:"M1800,486 L1800,264",row:"R14"},
-    {id:"p1",k:"plan",d:"M480,520 C600,830 1250,790 1420,600",row:"P1"},
-    {id:"p2",k:"plan",d:"M1470,486 C1470,410 600,420 488,205",two:1,row:"P2"},
-    {id:"p3",k:"plan",d:"M1104,600 L1376,600",two:1,row:"P3"},
-    {id:"p4a",k:"plan",d:"M1080,446 C1080,330 1260,206 1376,206",row:"P4"},
-    {id:"p4b",k:"plan",d:"M1510,486 L1510,264",row:"P4"},
-    {id:"p7",k:"plan",d:"M1480,822 L1480,600",row:"P7"},
-    {id:"p8a",k:"plan",d:"M670,264 C670,380 420,340 420,482",two:1,row:"P8"},
-    {id:"p8b",k:"plan",d:"M770,264 L770,430",two:1,row:"P8"}
+    {id:"r12",k:"real",d:"M680,470 C580,470 560,235 484,235",row:"R12"},
+    {id:"r13b",k:"real",d:"M1440,486 C1440,350 600,370 488,172",row:"R13"},
+    {id:"r14",k:"real",d:"M1800,486 L1800,264",row:"R14"}
   ];
-  const COL={real:"#A3A8B3",part:"#F5B53F",plan:"#FF452B"};
+  const COL={real:"#A3A8B3"};
   const svg=document.getElementById("edges");
   let defs='<defs>';
   Object.entries(COL).forEach(([k,c])=>{defs+=`<marker id="ar-${k}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`;});
@@ -158,17 +129,15 @@ p{white-space:nowrap}
   const LEN={};
   E.forEach(e=>{const m=document.getElementById("mk-"+e.id);const L=Math.ceil(m.getTotalLength())+60;LEN[e.id]=L;m.setAttribute("stroke-dasharray",L+" "+L);m.setAttribute("stroke-dashoffset",L);});
 
-  // RÓTULOS: centro (x,y); "parcial" em âmbar, previstos tracejados
+  // RÓTULOS: centro (x,y); um por batida, com o benefício da ligação
   const LB=[
-    {id:"l12",k:"part",x:600,y:404,t:["parcial"],own:["r12"]},
-    {id:"l13",k:"part",x:960,y:322,t:["parcial"],own:["r13b"]},
-    {id:"l14",k:"part",x:1800,y:300,t:["parcial"],own:["r14"]},
-    {id:"lp1",k:"plan",x:830,y:752,t:["<i>Previsto</i> · CRM aciona fluxos"],own:["p1"]},
-    {id:"lp2",k:"plan",x:1290,y:420,t:["<i>Previsto</i> · conhecimento","dentro do fluxo"],own:["p2","r13b"]},
-    {id:"lp3",k:"plan",x:1240,y:548,t:["<i>Previsto</i>","Studio global"],own:[]},
-    {id:"lp4",k:"plan",x:1655,y:405,t:["<i>Previsto</i>","sessão delegada"],own:[]},
-    {id:"lp7",k:"plan",x:1640,y:709,t:["<i>Previsto</i> · gatilhos","por dado e mensagem"],own:[]},
-    {id:"lp5",k:"plan",x:830,y:662,t:["<i>Previsto</i> · Construtor"],own:[]}
+    {id:"l1",k:"gain",x:1238,y:420,t:["publica e ativa","os fluxos"],own:["r13"]},
+    {id:"l2",k:"gain",x:1640,y:709,t:["resultados","chegam ao produto"],own:["r5"]},
+    {id:"l3",k:"gain",x:900,y:720,t:["o produto desenha","os próprios fluxos"],own:["r4"]},
+    {id:"l4",k:"gain",x:930,y:968,t:["conversas do produto no CRM"],own:["r7","r8"]},
+    {id:"l5",k:"gain",x:900,y:720,t:["ferramentas","do produto no CRM"],own:["r9"]},
+    {id:"l6",k:"gain",x:350,y:373,t:["respostas","com conhecimento"],own:["r10","r11"]},
+    {id:"l7",k:"gain",x:920,y:190,t:["conhecimento e IA","dentro dos fluxos"],own:["r12","r13b","r14"]}
   ];
   window.__labelOwners=Object.fromEntries(LB.map(l=>[l.id,l.own]));
   const lab=document.getElementById("labels");
@@ -185,15 +154,15 @@ p{white-space:nowrap}
 
   // LEGENDAS DAS BATIDAS
   const caps=[
-    "Hoje, em sandbox: o Hub no centro, cada produto por contrato",
-    "<b>Previsto</b>o CRM aciona fluxos no Flow",
-    "<b>Previsto</b>conhecimento do KB dentro do fluxo",
-    "<b>Previsto</b>Studio global no Hub, lendo o Flow sem cópia",
-    "<b>Previsto</b>sessão delegada para assistentes; a pessoa decide",
-    "<b>Previsto</b>gatilhos por mudança de dado e por mensagem",
-    "<b>Previsto</b>Construtor no Hub e namespace de fluxo por produto",
-    "<b>Previsto</b>Ecossistema Monitoramento ligado ao CRM e ao Hub",
-    "Traço cheio: hoje, em sandbox · tracejado: Previsto"
+    "O Hub de domínio no centro, os produtos ao redor",
+    "O Hub publica e ativa os fluxos no Flow",
+    "O Flow executa e entrega o resultado ao produto",
+    "Cada produto desenha os próprios fluxos no Hub",
+    "Os canais do produto levam as conversas ao CRM",
+    "O CRM usa as ferramentas do próprio produto",
+    "CRM e Channels respondem com o conhecimento do KB",
+    "KB e assistentes de IA dentro do fluxo; a pessoa decide",
+    "Um Hub no centro, cada produto somando ao conjunto"
   ];
   const capBox=document.getElementById("caps");
   caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.innerHTML=c;capBox.appendChild(d);});
@@ -210,59 +179,42 @@ p{white-space:nowrap}
   const draw=(id,t,dur)=>{tl.set("#g-"+id,{opacity:1},t);tl.to("#mk-"+id,{attr:{"stroke-dashoffset":0},duration:dur||.9,ease:EZ},t);};
   const pop=(id,t)=>tl.fromTo("#"+id,{opacity:0,scale:.85},{opacity:1,scale:1,duration:.35,ease:"back.out(2)",immediateRender:false},t);
   const nodeIn=(id,t)=>tl.fromTo("#"+id,{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},t);
-  const REAL=E.filter(e=>e.k!=="plan").map(e=>"#g-"+e.id).join(",");
-  const PART_L="#l12,#l13,#l14";
-  const NODE_IDS=["nKb","nCrm","nCh","nHub","nAi","nFlow","nSaas"];
+  const ALL=E.map(e=>"#g-"+e.id).join(",");
   const hi=(ids,t)=>ids.forEach(i=>tl.to("#"+i,{borderColor:"#FF452B",duration:.3},t));
   const lo=(ids,t)=>ids.forEach(i=>tl.to("#"+i,{borderColor:"#3A3A42",duration:.3},t));
-  const planBeat=(edges,labels,nodesHi,t,prevPlan)=>{
-    // Earlier planned edges step back so the new one reads alone
-    if(prevPlan.length) tl.to(prevPlan.map(p=>"#g-"+p).join(","),{opacity:.4,duration:.3},t);
-    if(prevPlan.length) tl.to(prevPlan.map(p=>"#"+p).join(","),{opacity:.45,duration:.3},t);
+  // One beat lights one connection: earlier edges step back, the previous label leaves
+  const beat=(edges,label,nodesHi,t,prev)=>{
+    if(prev){tl.to(prev.edges.map(p=>"#g-"+p).join(","),{opacity:.4,duration:.3},t);tl.to("#"+prev.label,{opacity:0,duration:.25},t);}
     hi(nodesHi,t);
     edges.forEach((e,i)=>draw(e,t+.3+i*.15,.9));
-    labels.forEach((l,i)=>pop(l,t+1.05+i*.1));
+    pop(label,t+1.05);
     lo(nodesHi,t+2.6);
+    return {edges,label};
   };
 
-  // ABERTURA: o mapa real em traço cheio
+  // ABERTURA: o Hub no centro e os produtos ao redor
   tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
   tl.to("#dots",{opacity:1,duration:.6},.2);
-  tl.to("#legend",{opacity:1,duration:.5},.6);
   ["nHub","nFlow","nSaas","nCh","nCrm","nKb","nAi"].forEach((n,i)=>nodeIn(n,.3+i*.12));
-  E.filter(e=>e.k==="real").forEach((e,i)=>draw(e.id,1.3+i*.12,.8));
-  E.filter(e=>e.k==="part").forEach((e,i)=>draw(e.id,2.6+i*.12,.6));
-  ["l12","l13","l14"].forEach((l,i)=>pop(l,3.1+i*.1));
 
-  // Real map steps back while the planned layer is built
-  tl.to(REAL,{opacity:.35,duration:.4},5.2);
-  tl.to(PART_L,{opacity:.5,duration:.4},5.2);
+  // B1 Hub publica e ativa os fluxos (R1–R3)
+  let p=beat(["r13"],"l1",["nHub","nFlow"],T[1],null);
+  // B2 o Flow entrega o resultado ao produto (R5–R6)
+  p=beat(["r5"],"l2",["nFlow","nSaas"],T[2],p);
+  // B3 o produto desenha os próprios fluxos no Hub (R4)
+  p=beat(["r4"],"l3",["nSaas","nHub"],T[3],p);
+  // B4 canais do produto e conversas no CRM (R7, R8)
+  p=beat(["r7","r8"],"l4",["nSaas","nCh","nCrm"],T[4],p);
+  // B5 o CRM usa as ferramentas do produto (R9)
+  p=beat(["r9"],"l5",["nCrm","nSaas"],T[5],p);
+  // B6 CRM e Channels respondem com o KB (R10, R11)
+  p=beat(["r10","r11"],"l6",["nCrm","nCh","nKb"],T[6],p);
+  // B7 conhecimento e assistentes de IA dentro dos fluxos (R12, R13, R14)
+  p=beat(["r12","r13b","r14"],"l7",["nHub","nFlow","nKb","nAi"],T[7],p);
 
-  // B1 CRM aciona fluxos (P1)
-  planBeat(["p1"],["lp1"],["nCrm","nFlow"],T[1],[]);
-  // B2 conhecimento dentro do fluxo (P2, sobre o parcial R13)
-  planBeat(["p2"],["lp2"],["nKb","nFlow"],T[2],["p1","lp1"]);
-  // B3 Studio global no Hub (P3)
-  planBeat(["p3"],["lp3"],["nHub","nFlow"],T[3],["p2","lp2"]);
-  // B4 sessão delegada para assistentes (P4: Hub e Flow)
-  planBeat(["p4a","p4b"],["lp4"],["nHub","nFlow","nAi"],T[4],["p3","lp3"]);
-  // B5 gatilhos por dado e mensagem (P7)
-  planBeat(["p7"],["lp7"],["nSaas","nFlow"],T[5],["p4a","p4b","lp4"]);
-  // B6 Construtor no Hub (P5) e namespace por produto (P6)
-  planBeat([],["lp5"],["nHub","nSaas"],T[6],["p7","lp7"]);
-  tl.fromTo("#halo",{opacity:0,scale:.96},{opacity:1,scale:1,duration:.6,ease:EO,immediateRender:false},T[6]+.3);
-  tl.fromTo("#chipNs",{opacity:0,y:8},{opacity:1,y:0,duration:.35,ease:EO,immediateRender:false},T[6]+.8);
-  // B7 Ecossistema Monitoramento ligado ao CRM e ao Hub (P8)
-  tl.to("#halo,#chipNs,#lp5",{opacity:.45,duration:.3},T[7]);
-  tl.fromTo("#nMon",{opacity:0,y:16},{opacity:1,y:0,duration:.5,ease:EO,immediateRender:false},T[7]+.2);
-  planBeat(["p8a","p8b"],[],["nCrm","nHub"],T[7],[]);
-
-  // FECHO: o mapa inteiro, cheio = hoje, tracejado = Previsto
-  const ALLPLAN=E.filter(e=>e.k==="plan").map(e=>"#g-"+e.id).join(",");
-  tl.to(REAL,{opacity:1,duration:.6},T[8]);
-  tl.to(ALLPLAN,{opacity:1,duration:.6},T[8]);
-  tl.to(PART_L+",#lp1,#lp2,#lp3,#lp4,#lp7,#lp5,#halo,#chipNs",{opacity:1,duration:.6},T[8]);
-  tl.fromTo("#legend",{scale:1},{scale:1.04,duration:.4,ease:EO,yoyo:true,repeat:1,immediateRender:false},T[8]+.2);
+  // FECHO: o mapa inteiro em traço cheio, sem rótulos
+  tl.to(ALL,{opacity:1,duration:.6},T[8]);
+  tl.to("#l7",{opacity:0,duration:.3},T[8]);
   tl.to("#pad",{opacity:.001,duration:1},29);
 
   // The site Player may load the page before the runtime creates the registry

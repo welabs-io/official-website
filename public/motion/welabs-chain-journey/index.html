@@ -60,11 +60,9 @@ p{white-space:nowrap}
 #rcpt p{font-size:24px;line-height:30px}
 #rcpt .t{font-weight:800;color:var(--ok);display:flex;align-items:center;gap:8px}
 
-/* MONITORAMENTO (PREVISTO) */
-#nM{left:40px;top:744px;width:300px;height:216px;border-style:dashed;border-color:var(--plan);background:#121216;--acc:var(--plan)}
-#nM .tag{position:absolute;left:16px;top:16px}
-#nM .nm{position:absolute;left:18px;color:var(--muted)}
-#nM .ds{position:absolute;left:18px;top:150px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+/* HISTÓRICO DO PEDIDO NO SAAS */
+#nM{left:40px;top:744px;width:300px;height:216px;--acc:var(--pink)}
+#nM .hm{position:absolute;left:18px;width:264px;opacity:0}
 
 /* FLOW: QUADRO NO ESTILO DO ESTÚDIO */
 #nF{left:460px;top:184px;width:820px;height:336px;--acc:var(--blue);overflow:hidden;
@@ -142,8 +140,7 @@ p{white-space:nowrap}
 
   <div id="strip"><span class="lb">Quem age agora</span>
     <span class="pc" id="sS"></span><span class="pc" id="sH"></span><span class="pc" id="sF"></span>
-    <span class="pc" id="sC"></span><span class="pc" id="sR"></span><span class="pc" id="sK"></span>
-    <span class="pc pv" id="sM"></span></div>
+    <span class="pc" id="sC"></span><span class="pc" id="sR"></span><span class="pc" id="sK"></span></div>
 
   <svg id="edges" viewBox="0 0 1920 1080"></svg>
 
@@ -163,15 +160,16 @@ p{white-space:nowrap}
         <span class="tag g" id="ss3" data-layout-allow-overlap style="opacity:0">Aprovado</span></span>
     </div>
     <div id="bSend"></div>
-    <div id="rcpt"><p class="t" id="rcT"></p><p>vindo do Flow</p><p style="color:var(--muted)">digest · DEMO</p></div>
+    <div id="rcpt"><p class="t" id="rcT"></p><p>vindo do Flow</p><p style="color:var(--muted)">pedido aprovado</p></div>
   </div>
 
-  <!-- Planned product: dashed only -->
+  <!-- SaaS order history: each step is recorded as it happens -->
   <div class="nd" id="nM">
-    <span class="tag pv">Previsto</span>
-    <p class="nm" style="top:64px">Ecossistema</p>
-    <p class="nm" style="top:98px">Monitoramento</p>
-    <p class="ds">liga ao Hub e ao CRM</p>
+    <div class="ch"><span class="ic" id="icM"></span><div><p class="kd">SaaS</p><p class="nm">Histórico</p></div></div>
+    <p class="ph0" id="phM" style="top:96px" data-layout-allow-overlap>Nada registrado ainda</p>
+    <div class="rw hm" id="hm1" style="top:84px"><span>Enviado</span><span>Bruno</span></div>
+    <div class="rw hm" id="hm2" style="top:124px"><span>Aprovado</span><span>Ana</span></div>
+    <div class="rw hm" id="hm3" style="top:164px"><span>Concluído</span><span>DEMO</span></div>
   </div>
 
   <!-- Flow: studio-like board with the active revision -->
@@ -189,8 +187,7 @@ p{white-space:nowrap}
     <div class="fn" id="n3"><span class="ic" id="ic3"></span><div><p class="kd">Esperar · WhatsApp</p><p class="nm">Perguntar e esperar</p></div></div>
     <div class="fn" id="n4"><span class="ic" id="ic4"></span><div><p class="kd">Fazer · efeito</p><p class="nm">Aprovar pedido</p></div></div>
     <span class="tag bd" id="bA">IA sugere: alto</span>
-    <span class="tag bd" id="bP">parcial</span>
-    <span class="tag bd" id="bR">recibo</span>
+    <span class="tag bd" id="bR">aplicado</span>
   </div>
 
   <!-- Domain hub as the bus underneath -->
@@ -201,8 +198,8 @@ p{white-space:nowrap}
     <div class="dm" style="left:20px;top:142px">Contratos</div><div class="dm" style="left:212px;top:142px">Fiscal</div>
     <div class="dm" style="left:20px;top:196px">Financeiro</div><div class="dm" style="left:212px;top:196px">Integrações</div>
     <div id="hph" data-layout-allow-overlap>Sem efeito pendente</div>
-    <div id="hr" data-layout-allow-overlap><p class="t" id="hrT"></p><p>mesma chave, mesmo recibo</p></div>
-    <div id="gr"><h5>Concessão · Portal DEMO</h5>
+    <div id="hr" data-layout-allow-overlap><p class="t" id="hrT"></p><p>uma única vez, registrada</p></div>
+    <div id="gr"><h5>Liberado · Portal DEMO</h5>
       <div class="gi" id="g1"><b></b>Gatilho: pedido enviado</div>
       <div class="gi" id="g2"><b></b>IA do catálogo</div>
       <div class="gi" id="g3"><b></b>Perguntar com botões</div>
@@ -223,7 +220,7 @@ p{white-space:nowrap}
 
   <!-- CRM: the conversation and the agent -->
   <div class="nd" id="nR">
-    <div class="ch"><span class="ic" id="icR"></span><div><p class="kd">CRM</p><p class="nm">Conversa · protocolo DEMO</p></div></div>
+    <div class="ch"><span class="ic" id="icR"></span><div><p class="kd">CRM</p><p class="nm">Conversa com Ana · DEMO</p></div></div>
     <p class="ph0" id="phR" style="top:96px">Caixa de entrada em dia</p>
     <div class="bub in" id="rq" style="top:80px">Ana: e depois da aprovação?</div>
     <p id="al">Agente de IA · responde, não decide</p>
@@ -238,12 +235,11 @@ p{white-space:nowrap}
 
   <!-- Edge labels -->
   <p class="el" id="lE1" style="left:350px;top:282px;width:100px;justify-content:center">evento</p>
-  <p class="el" id="lE7" style="left:350px;top:430px;width:100px;justify-content:center">recibo</p>
-  <p class="el" id="lE2" style="left:616px;top:543px">concessão</p>
-  <p class="el" id="lE3" style="left:860px;top:543px;width:264px;justify-content:flex-end">capacidade · recibo</p>
+  <p class="el" id="lE7" style="left:340px;top:430px;width:120px;justify-content:center">resultado</p>
+  <p class="el" id="lE2" style="left:616px;top:543px">liberação</p>
+  <p class="el" id="lE3" style="left:860px;top:543px;width:264px;justify-content:flex-end">ações e efeitos</p>
   <p class="el" id="lE5" style="left:1576px;top:457px">conversa</p>
   <p class="el" id="lE6" style="left:1576px;top:765px">busca autorizada</p>
-  <span class="eb" id="bE4">parcial</span>
 
   <!-- Order state rail -->
   <div id="rail">
@@ -251,17 +247,16 @@ p{white-space:nowrap}
     <span class="stk" id="rst">
       <span class="tag n" id="r0" data-layout-allow-overlap>Rascunho</span>
       <span class="tag b" id="r1" data-layout-allow-overlap style="opacity:0">Enviado</span>
-      <span class="tag b" id="r2" data-layout-allow-overlap style="opacity:0">Admitido na revisão v3</span>
+      <span class="tag b" id="r2" data-layout-allow-overlap style="opacity:0">Em execução na versão 3</span>
       <span class="tag a" id="r3" data-layout-allow-overlap style="opacity:0">Risco alto · a IA sugere, não decide</span>
       <span class="tag a" id="r4" data-layout-allow-overlap style="opacity:0">Aguardando uma pessoa</span>
-      <span class="tag g" id="r5" data-layout-allow-overlap style="opacity:0">Aprovado por Ana · efeito com recibo</span>
+      <span class="tag g" id="r5" data-layout-allow-overlap style="opacity:0">Aprovado por Ana · aplicado uma vez</span>
       <span class="tag b" id="r6" data-layout-allow-overlap style="opacity:0">Dúvida respondida com fonte</span>
-      <span class="tag g" id="r7" data-layout-allow-overlap style="opacity:0">Concluído · recibo final no SaaS</span></span>
+      <span class="tag g" id="r7" data-layout-allow-overlap style="opacity:0">Concluído · resultado no SaaS</span></span>
     <div id="dots"></div>
     <div id="leg">
-      <span><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#FF452B" stroke-width="5" stroke-linecap="round"/></svg>construído · sandbox</span>
-      <span><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#F5B53F" stroke-width="5" stroke-linecap="round"/></svg>parcial</span>
-      <span><svg width="56" height="10"><line x1="2" y1="5" x2="54" y2="5" stroke="#9A9AA6" stroke-width="4" stroke-dasharray="9 8"/></svg>Previsto</span>
+      <span class="tag g">Concluído de ponta a ponta</span>
+      <span>um pedido · cada passo registrado</span>
     </div>
   </div>
   <div id="pad"></div>
@@ -291,9 +286,9 @@ p{white-space:nowrap}
   put("ic1",ico("bolt",24));put("ic2",ico("spark",24));put("ic3",ico("clock",24));put("ic4",ico("check",24));
   put("sS",ico("box",22)+"SaaS");put("sH",ico("layers",22)+"Hub de domínio");put("sF",ico("flow",22)+"Flow");
   put("sC",ico("msg",22)+"Channels");put("sR",ico("inbox",22)+"CRM");put("sK",ico("book",22)+"KB");
-  put("sM",ico("eye",22)+"Ecossistema Monitoramento · Previsto");
-  put("bSend",ico("send",22)+"Enviar");put("rcT",ico("receipt",22)+"Recibo final");
-  put("hrT",ico("receipt",22)+"Recibo · aprovar pedido");put("hreg",ico("check",22)+"Portal DEMO registrado");
+  put("icM",ico("receipt",28));
+  put("bSend",ico("send",22)+"Enviar");put("rcT",ico("check",22)+"Resultado final");
+  put("hrT",ico("check",22)+"Aprovação aplicada");put("hreg",ico("check",22)+"Portal DEMO registrado");
   document.querySelectorAll(".gi b").forEach(b=>{b.innerHTML=ico("check",18);});
   const dots=document.getElementById("dots");
   for(let i=0;i<8;i++){const d=document.createElement("i");d.className="dt";d.id="d"+i;d.style.left=(i*32)+"px";dots.appendChild(d);}
@@ -310,10 +305,9 @@ p{white-space:nowrap}
     E7:{d:"M460 470L342 470",c:"#FF452B",base:"#4A4A55",ar:[[342,470,180]]},
     E2:{d:"M600 600L600 522",c:"#FF452B",base:"#4A4A55",ar:[[600,522,-90]]},
     E3:{d:"M1140 520L1140 598",c:"#FF452B",base:"#4A4A55",ar:[[1140,598,90],[1140,522,-90]],rev:"M1140 600L1140 522"},
-    E4:{d:"M1280 720C1350 720 1350 314 1418 314",c:"#F5B53F",base:"#6E5520",ar:[[1418,314,0],[1282,720,180]],rev:"M1420 314C1350 314 1350 720 1282 720"},
+    E4:{d:"M1280 720C1350 720 1350 314 1418 314",c:"#FF452B",base:"#4A4A55",ar:[[1418,314,0],[1282,720,180]],rev:"M1420 314C1350 314 1350 720 1282 720"},
     E5:{d:"M1560 444L1560 502",c:"#FF452B",base:"#4A4A55",ar:[[1560,502,90],[1560,446,-90]],rev:"M1560 504L1560 446"},
-    E6:{d:"M1560 754L1560 808",c:"#FF452B",base:"#4A4A55",ar:[[1560,808,90],[1560,756,-90]],rev:"M1560 810L1560 756"},
-    P8:{d:"M340 852L460 852",c:"#C9C9D1",base:"#6A6A75",ar:[],dash:"9 8"}
+    E6:{d:"M1560 754L1560 808",c:"#FF452B",base:"#4A4A55",ar:[[1560,808,90],[1560,756,-90]],rev:"M1560 810L1560 756"}
   };
   const OV={};
   Object.keys(E).forEach(k=>{const e=E[k];
@@ -339,14 +333,14 @@ p{white-space:nowrap}
   const caps=[
     "Um pedido atravessa a cadeia e muda de estado",
     "O pedido nasce num SaaS e é enviado",
-    "O Hub de domínio concede o que pode rodar",
+    "O Hub de domínio libera o que o fluxo pode usar",
     "A IA classifica o risco; quem decide é uma pessoa",
     "O Flow pausa e pergunta a uma pessoa no WhatsApp",
-    "A pessoa decide; o Hub aplica o efeito com recibo",
+    "A pessoa decide; o Hub aplica a aprovação uma única vez",
     "A conversa chega ao CRM",
     "O agente do CRM responde citando a fonte no KB",
-    "O SaaS recebe o recibo final do Flow",
-    "Um pedido atravessa cinco produtos e volta com recibo"
+    "O SaaS recebe o resultado final do Flow",
+    "Um pedido atravessa cinco produtos e volta com o resultado"
   ];
   const capBox=document.getElementById("caps");
   caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
@@ -374,7 +368,7 @@ p{white-space:nowrap}
   // ABERTURA: o mapa inteiro aparece antes do primeiro movimento
   // Header and product strip are on screen from the first frame
   tl.fromTo(".nd",{opacity:0,y:16},{opacity:1,y:0,duration:.5,stagger:.08,ease:EO,immediateRender:false},.1);
-  tl.fromTo(".el,#bE4",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.3);
+  tl.fromTo(".el",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.3);
   tl.fromTo("#rail",{opacity:0},{opacity:1,duration:.4,immediateRender:false},1.4);
   dot(0,1.6,"#C9C9D1");
 
@@ -385,8 +379,10 @@ p{white-space:nowrap}
   tl.to("#bSend",{borderColor:"#FF452B",color:"#FFFFFF",backgroundColor:"#3A1E1A",duration:.15},4.4);
   tl.to("#bSend",{borderColor:"#4A4A55",color:"#C9C9D1",backgroundColor:"rgba(0,0,0,0)",duration:.3},4.9);
   swap("#ss0","#ss1",4.6);swap("#r0","#r1",4.6);dot(1,4.6);
+  // The SaaS history records each step as it happens
+  tl.to("#phM",{opacity:0,duration:.25},4.6);fade("#hm1",4.7);
 
-  // B2 o evento chega ao Flow; o Hub confere a concessão; o run é admitido
+  // B2 o evento chega ao Flow; o Hub libera o que o fluxo usa; a execução começa
   unlit("#nS",7.0);
   draw("E1",7.0,.8);arrows("E1",7.6);lbl("lE1",7.0);
   lit("#n1",7.8,"#FF452B");
@@ -401,7 +397,7 @@ p{white-space:nowrap}
   draw("f1",12.2,.4);lit("#n2",12.6,"#A78BFA");
   pop("#bA",13.4);swap("#r2","#r3",13.4);dot(3,13.4,"#F5B53F");
 
-  // B4 o Flow pausa e pergunta pelo WhatsApp (Hub → Channels é parcial)
+  // B4 o Flow pausa e pergunta pelo WhatsApp (Hub → Channels)
   tl.to("#n2",{borderColor:"#3DD68C",duration:.3},16.5);
   draw("f2",16.7,.5);lit("#n3",17.2,"#F5B53F");swap("#fs1","#fs2",17.2);
   draw("E3",17.4,.5);arrows("E3",17.8);lbl("lE3",17.4);
@@ -412,7 +408,7 @@ p{white-space:nowrap}
   fade("#cq",18.9);fade("#wA,#wR",19.2);fade("#cs0",19.4);
   swap("#r3","#r4",19.4);dot(4,19.4,"#F5B53F");
 
-  // B5 a pessoa decide; o run retoma; o Hub aplica o efeito e devolve recibo
+  // B5 a pessoa decide; a execução retoma; o Hub aplica a aprovação uma única vez
   tl.to("#wA",{backgroundColor:"#3DD68C",color:"#0B0B0D",duration:.2},22.7);
   swap("#cs0","#cs1",23.0);
   drawR("E4",23.2,.7);
@@ -422,7 +418,7 @@ p{white-space:nowrap}
   drawR("E3",24.6,.5);act(["sH"],24.8);lit("#nH",24.8);unlit("#nF",24.8);
   tl.to("#hph",{opacity:0,duration:.25},25.1);fade("#hr",25.2);pop("#bR",25.2);
   tl.to("#n4",{borderColor:"#3DD68C",duration:.3},25.2);
-  swap("#r4","#r5",25.2);dot(5,25.2,"#3DD68C");
+  swap("#r4","#r5",25.2);dot(5,25.2,"#3DD68C");fade("#hm2",25.3);
 
   // B6 a conversa chega ao CRM; o agente consulta o KB e cita a fonte
   unlit("#nH",28.0);
@@ -436,20 +432,18 @@ p{white-space:nowrap}
   fade("#al",32.6);fade("#ra",32.8);
   swap("#r5","#r6",32.8);dot(6,32.8);
 
-  // B7 recibo final de volta ao SaaS
+  // B7 resultado final de volta ao SaaS
   unlit("#nR",35.0);unlit("#kp",35.0);
   act(["sF"],35.0);lit("#nF",35.0,"#4C8DFF");swap("#fs3","#fs4",35.2);
   draw("E7",35.4,.8);arrows("E7",36.0);lbl("lE7",35.4);
   act(["sS"],36.2);unlit("#nF",36.2);lit("#nS",36.2,"#E879F9");
-  // The SaaS learns the outcome only when the final receipt arrives
-  swap("#ss2","#ss3",36.2);fade("#rcpt",36.4);swap("#r6","#r7",36.4);dot(7,36.4,"#3DD68C");
+  // The SaaS learns the outcome only when the final result arrives
+  swap("#ss2","#ss3",36.2);fade("#rcpt",36.4);swap("#r6","#r7",36.4);dot(7,36.4,"#3DD68C");fade("#hm3",36.5);
 
-  // FECHO: a cadeia inteira legível, com o previsto tracejado
+  // FECHO: a cadeia inteira legível e o pedido concluído de ponta a ponta
   unlit("#nS",39.5);
   act(["sS","sH","sF","sC","sR","sK"],39.5);
-  tl.to("#bP8",{attr:{stroke:"#C9C9D1"},duration:.4},40.0);
-  tl.to("#nM",{borderColor:"#C9C9D1",duration:.4},40.0);
-  tl.to("#sM",{borderColor:"#C9C9D1",color:"#FFFFFF",duration:.4},40.0);
+  lit("#nM",40.0,"#E879F9");
   tl.to("#rst,#dots",{opacity:0,duration:.3},40.2);
   tl.fromTo("#leg",{opacity:0,x:-10},{opacity:1,x:0,duration:.4,ease:EO,immediateRender:false},40.5);
   tl.to("#pad",{opacity:.001,duration:1},45);
