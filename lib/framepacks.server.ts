@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import catalog from "./presentation-catalog.json";
-import motionCatalog from "./motion-catalog.json";
+import { coverFilmOf } from "./brand-cover";
 import type { Manifest } from "@/components/Presentation";
 
 // PACOTES APOSENTADOS
@@ -43,16 +43,8 @@ export function framepackIds(publisher?: string) {
 
 // Share image: the accepted film poster when the product has one, the legacy poster otherwise.
 export function publicPoster(id: string, legacy: string) {
-  // Same cover as the product card (coverFilm): brand intro first, then the first business or topology film.
-  const owns = (f: (typeof motionCatalog)[number]) =>
-    f.product === id || (f.also as string[]).includes(id);
-  const welabs = catalog.find((p) => p.id === id)?.publisher === "Welabs";
-  const film =
-    motionCatalog.find((f) => owns(f) && f.kind === "intro") ??
-    (welabs ? motionCatalog.find((f) => f.id === "welabs-intro") : undefined) ??
-    motionCatalog.find(
-      (f) => owns(f) && (f.kind === "business" || f.kind === "topology"),
-    );
+  // Same cover as the product card: brand intro first, then the first business or topology film.
+  const film = coverFilmOf(id, catalog.find((p) => p.id === id)?.publisher);
   return film
     ? `/motion/${film.id}/poster.jpg`
     : RETIRED.has(id)

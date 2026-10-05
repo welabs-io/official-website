@@ -1,6 +1,7 @@
 "use client";
 import { createElement, useEffect, useRef, useState } from "react";
 import motionCatalog from "@/lib/motion-catalog.json";
+import { coverFilmOf } from "@/lib/brand-cover";
 import styles from "./MotionFilm.module.css";
 
 export type MotionItem = (typeof motionCatalog)[number];
@@ -53,27 +54,13 @@ export function reelFilms(product: string): MotionItem[] {
   );
 }
 
-// Company brand intro that covers every Welabs product card; absent until the piece is accepted.
-const WELABS_INTRO = "welabs-intro";
-
-// Card cover and share image. A brand intro wins (the product's own, or the Welabs company intro for
-// Welabs products); otherwise the first overview film shown on the product page.
+// Card cover and share image: the brand intro mapped in lib/brand-intros.json once accepted
+// (Welabs products share the company intro); otherwise the first overview film of the product.
 export function coverFilm(
   product: string,
   publisher?: string,
 ): MotionItem | undefined {
-  const owns = (item: MotionItem) =>
-    item.product === product || (item.also as string[]).includes(product);
-  return (
-    motionCatalog.find((item) => owns(item) && item.kind === "intro") ??
-    (publisher === "Welabs"
-      ? motionCatalog.find((item) => item.id === WELABS_INTRO)
-      : undefined) ??
-    motionCatalog.find(
-      (item) =>
-        owns(item) && (item.kind === "business" || item.kind === "topology"),
-    )
-  );
+  return coverFilmOf(product, publisher);
 }
 
 // Poster rendered from the film's closing brand frame (scripts/generate-motion-posters.mjs).

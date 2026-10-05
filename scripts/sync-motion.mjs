@@ -255,9 +255,20 @@ const ROUND2 = {
     product: "netsafety",
     title: "Netsafety",
   },
-  // Company brand intro: its closing frame becomes the cover of the Welabs product cards once accepted.
-  "welabs-intro": { kind: "intro", title: "Welabs · Introdução de marca" },
 };
+
+// Every brand intro of lib/brand-intros.json is synced once accepted: its closing frame is the card
+// cover of the brand's products. Intros outside a product reel carry no product, so they never
+// show up in a gallery; the cover lookup goes by id through the same map.
+const brandIntros = JSON.parse(
+  readFileSync(join(siteRoot, "lib/brand-intros.json"), "utf8"),
+);
+for (const [brand, id] of Object.entries(brandIntros.brands)) {
+  ROUND2[id] ??= {
+    kind: "intro",
+    title: `${brandIntros.names[brand] ?? brand} · Introdução de marca`,
+  };
+}
 
 // Existing presentation slug for compositions that overlap the 22 framepacks.
 const PRESENTATION_SLUG = {

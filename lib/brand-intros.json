@@ -1,0 +1,32 @@
+{
+  "_note": "Brand → intro piece (round 20261002). The card cover of every product is the closing frame of its brand intro once the intro is accepted; until then the product falls back to its first overview film. Welabs products share the company intro.",
+  "brands": {
+    "tabela": "tabela-intro",
+    "stant": "stant-intro",
+    "wego": "wego-intro",
+    "sgors": "residuos-intro",
+    "ius": "ius-intro",
+    "welabs": "welabs-intro"
+  },
+  "products": {
+    "tabela": "tabela",
+    "stant": "stant",
+    "wego": "wego",
+    "autoinfracao": "wego",
+    "docgo": "wego",
+    "signgo": "wego",
+    "sgors": "sgors",
+    "ius": "ius"
+  },
+  "publishers": {
+    "Welabs": "welabs"
+  },
+  "names": {
+    "tabela": "Tabe.la",
+    "stant": "Stant",
+    "wego": "Família WeGO",
+    "sgors": "Sistema de Gerenciamento de Resíduos",
+    "ius": "IUS",
+    "welabs": "Welabs"
+  }
+}

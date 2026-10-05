@@ -16,16 +16,25 @@ const catalog = JSON.parse(
 );
 const only = new Set(process.argv.slice(2));
 
-// Pieces assembled as "<brand intro> + passage + film" (RECEIPT: abertura 8,5 s + passagem 0,5 s).
-// The intro closes on its brand frame just before the passage starts.
-const INTRO_END = 8.45;
 // Seek slightly before the end: the last instant can already be past the final tween.
 const END_MARGIN = 0.04;
+// Pieces assembled as "<brand intro> + passage + film" (`<film>-intro`) close the intro on its brand
+// frame at the end of the brand intro's own timeline, looked up through lib/brand-intros.json.
+// Fallback when the brand intro is not synced: RECEIPT "abertura 8,5 s + passagem 0,5 s".
+const INTRO_END = 8.5;
+const brandIntros = JSON.parse(
+  readFileSync(join(siteRoot, "lib/brand-intros.json"), "utf8"),
+);
+const introLength = (item) => {
+  const brand = brandIntros.products[item.product];
+  const intro = catalog.find((f) => f.id === brandIntros.brands[brand]);
+  return intro?.duration ?? INTRO_END;
+};
 const posterTime = (item) =>
   item.kind !== "intro" &&
   item.id.endsWith("-intro") &&
-  item.duration > INTRO_END + 1
-    ? INTRO_END
+  item.duration > introLength(item) + 1
+    ? introLength(item) - END_MARGIN
     : item.duration - END_MARGIN;
 
 // Playwright is not a site dependency; reuse the copy in the npx cache, as the motion tooling does.
