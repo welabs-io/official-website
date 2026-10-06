@@ -7,7 +7,9 @@
 <style>
 /* TIPOGRAFIA E TOKENS DA IDENTIDADE WELABS */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--soft:#2A1612;--text:#FFFFFF;--muted:#C9C9D1;--ok:#4ADE9B;--okt:#12301F;--warn:#F5B841;--warnt:#33270F;--info:#7DB4FF;--infot:#14243A}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; --soft is the amber-tinted dark surface; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:var(--wl-amber);--soft:var(--wl-amber-soft);--text:#FFFFFF;--muted:#C9C9D1;--ok:#4ADE9B;--okt:#12301F;--warn:var(--wl-warn);--warnt:var(--wl-warn-soft);--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--info:#7DB4FF;--infot:#14243A}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the red-orange alert tone (partial/flagged badges, billing note); new --wait/--waitt carry the cool lilac for ringing, offered and busy call states */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidden}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;line-height:1.25}
@@ -15,6 +17,10 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 .sw{position:relative;display:block}
 .sw>span{position:absolute;left:0;top:0;white-space:nowrap;opacity:0}
 .sw>span.on{opacity:1}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Panel headers are uppercase labels; the injected name follows them */
+.ph [data-wl-name]{text-transform:uppercase}
 
 /* CABEÇALHO E SELO */
 #title{position:absolute;left:60px;top:34px;font-size:54px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
@@ -22,7 +28,8 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 #hchips{position:absolute;right:290px;top:44px;display:flex;gap:14px;opacity:0}
 .hc{height:48px;padding:0 20px;border-radius:999px;border:2px solid var(--line);color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
 .hc.pa{border-color:var(--warn);color:var(--warn)}
-#seal{position:absolute;right:60px;top:40px;height:52px;width:auto;opacity:0}
+/* New wider SVG logo (905x213) at the ~48px seal height; still clears the header chips */
+#seal{position:absolute;right:60px;top:42px;height:48px;width:auto;opacity:0}
 
 /* PAINÉIS DO PALCO */
 #stage{position:absolute;left:0;top:0;width:1920px;height:1080px}
@@ -96,14 +103,14 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 .pr .stt{position:absolute;right:16px;top:14px;width:200px;height:32px}
 .pr .stt span{position:absolute;right:0;top:0;display:flex;align-items:center;gap:8px;font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
 .pr .stt i{display:block;width:12px;height:12px;border-radius:50%;background:currentColor}
-.ok{color:var(--ok)}.wn{color:var(--warn)}.co{color:var(--coral)}.inf{color:var(--info)}
+.ok{color:var(--ok)}.wn{color:var(--wait)}.co{color:var(--coral)}.inf{color:var(--info)}
 .mid{position:absolute;left:20px;top:372px;width:606px;height:340px;border:2px solid var(--line);border-radius:18px;background:var(--panel2);opacity:0}
 .qr{position:absolute;left:18px;right:18px;height:66px;border:2px solid var(--line);border-radius:14px;background:var(--bg);display:flex;align-items:center;gap:16px;padding:0 16px;font-size:26px;font-weight:700;white-space:nowrap}
 .qr .pos{position:relative;width:56px;height:40px;flex:none}
 .qr .pos span{position:absolute;left:0;top:0;font-size:32px;line-height:40px;font-weight:800;color:var(--coral);opacity:0}
 .qr .gr{flex:1}
 .qr .tg{font-size:24px;font-weight:800}
-#sp{border-color:var(--warn);background:var(--warnt)}
+#sp{border-color:var(--wait);background:var(--waitt)}
 .k{position:absolute;left:22px;top:18px;width:420px;height:32px}
 .k span{font-size:26px;font-weight:800}
 #spb{position:absolute;left:22px;top:58px;font-size:28px;font-weight:800;white-space:nowrap}
@@ -119,7 +126,8 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 #cv .ln{position:absolute;left:22px;font-size:26px;font-weight:700;white-space:nowrap}
 #evp{position:absolute;left:22px;top:60px;height:44px;padding:0 16px;border-radius:999px;border:2px solid var(--info);background:var(--infot);color:var(--info);display:flex;align-items:center;font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
 #pl{position:absolute;left:22px;right:22px;top:176px;height:96px;border:2px solid var(--line);border-radius:16px;background:var(--bg);opacity:0}
-#plb{position:absolute;left:16px;top:18px;width:56px;height:56px;border-radius:50%;background:var(--coral);display:grid;place-items:center}
+/* Play button sits on amber, so its icon uses the dark ink-on-amber */
+#plb{position:absolute;left:16px;top:18px;width:56px;height:56px;border-radius:50%;background:var(--coral);color:var(--wl-ink-on-amber);display:grid;place-items:center}
 #plw{position:absolute;left:88px;top:24px;width:350px;height:44px;display:flex;align-items:center;justify-content:space-between}
 #plw i{display:block;width:6px;border-radius:3px;background:#5A5E68}
 #plt{position:absolute;right:18px;top:28px;font-size:28px;font-weight:800;white-space:nowrap}
@@ -144,9 +152,9 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 </head>
 <body>
 <div id="root" data-composition-id="channels-call-center" data-width="1920" data-height="1080" data-start="0" data-duration="44">
-  <div id="title">Channels · <span>central de voz</span></div>
+  <div id="title"><span data-wl-name="channels">Channels</span> · <span>central de voz</span></div>
   <div id="hchips"><span class="hc">DEMO · reconstrução ilustrativa</span><span class="hc pa">telefone · parcial</span></div>
-  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
 
   <div id="stage">
     <!-- contact panel -->
@@ -160,7 +168,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
         <div class="pc" style="top:236px;font-size:28px;font-weight:800">+55 11 4000-0000</div>
         <div class="pc" style="top:274px;font-size:24px;color:var(--muted)">Empresa DEMO</div>
         <div id="pst">
-          <span id="ps0" style="opacity:1;color:var(--warn);border:2px solid var(--warn);background:var(--warnt)">Chamando…</span>
+          <span id="ps0" style="opacity:1;color:var(--wait);border:2px solid var(--wait);background:var(--waitt)">Chamando…</span>
           <span id="ps1" style="color:var(--coral);border:2px solid var(--coral);background:var(--soft)">Ouvindo boas-vindas</span>
           <span id="ps2" style="color:var(--info);border:2px solid var(--info);background:var(--infot)">Na fila</span>
           <span id="ps3" style="color:var(--ok);border:2px solid var(--ok);background:var(--okt)">Em ligação</span>
@@ -170,18 +178,18 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
       <div id="ac">
         <div class="ph" style="left:20px;top:18px">O QUE O CONTATO OUVE</div>
         <div class="ast" id="a0" style="opacity:1">
-          <div style="display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;white-space:nowrap"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F5B841" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Toque de chamada</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;white-space:nowrap"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--wait)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Toque de chamada</div>
           <div style="position:absolute;left:0;top:50px;font-size:24px;color:var(--muted);white-space:nowrap">chega ao número da empresa</div>
         </div>
         <div class="ast" id="aA"><div class="wave" id="wA"></div><p class="qt">“Olá! Você ligou para a Empresa DEMO. Já vamos atender.”</p></div>
         <div class="ast" id="aB">
-          <div style="display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;white-space:nowrap"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FF452B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Música de espera</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;white-space:nowrap"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--coral)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>Música de espera</div>
           <div style="position:absolute;left:0;top:50px;font-size:24px;color:var(--muted);white-space:nowrap">e a posição na fila, falada</div>
           <div class="big"><span id="bg2" style="opacity:1">2º</span><span id="bg1">1º</span></div>
         </div>
         <div class="ast" id="aC"><div class="wave" id="wC"></div>
           <div class="sw" style="position:absolute;left:0;top:104px;width:370px;height:34px;font-size:26px;font-weight:800"><span id="cw0" class="on">Conversa com Rita</span><span id="cw1">Conversa com Davi</span></div>
-          <div style="position:absolute;left:0;top:144px;font-size:24px;color:var(--muted);white-space:nowrap">áudio passa pelo Channels</div>
+          <div style="position:absolute;left:0;top:144px;font-size:24px;color:var(--muted);white-space:nowrap">áudio passa pelo <span data-wl-name="channels">Channels</span></div>
         </div>
         <div class="ast" id="aD">
           <div style="font-size:30px;font-weight:800;white-space:nowrap">Ligação encerrada</div>
@@ -193,7 +201,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 
     <!-- channels call center panel -->
     <div class="pn" id="pC">
-      <div class="ph">CHANNELS · CENTRAL DO CANAL</div>
+      <div class="ph"><span data-wl-name="channels">Channels</span> · CENTRAL DO CANAL</div>
       <div id="cbad" class="badge pa">parcial</div>
       <div class="ps">guarda estado, prazos e áudio</div>
       <div id="cnum">+55 11 4000-0000</div>
@@ -220,8 +228,8 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
       <div id="prows"></div>
 
       <div class="mid" id="ec">
-        <div class="ph" style="left:18px;top:16px">ESTADO DA CHAMADA · VIA CHANNELS</div>
-        <div class="qr" id="e0" style="top:60px;opacity:0"><i style="display:block;flex:none;width:16px;height:16px;border-radius:50%;background:var(--warn)"></i><span>Ligação recebida</span><span class="gr"></span><span class="tg" style="color:var(--muted)">evento</span></div>
+        <div class="ph" style="left:18px;top:16px">ESTADO DA CHAMADA · VIA <span data-wl-name="channels">Channels</span></div>
+        <div class="qr" id="e0" style="top:60px;opacity:0"><i style="display:block;flex:none;width:16px;height:16px;border-radius:50%;background:var(--wait)"></i><span>Ligação recebida</span><span class="gr"></span><span class="tg" style="color:var(--muted)">evento</span></div>
         <div class="qr" id="e1" style="top:138px;opacity:0"><i style="display:block;flex:none;width:16px;height:16px;border-radius:50%;background:var(--coral)"></i><span>Boas-vindas tocando</span><span class="gr"></span><span class="tg" style="color:var(--muted)">estado</span></div>
         <div style="position:absolute;left:18px;top:236px;font-size:24px;color:var(--muted);white-space:nowrap">o SaaS acompanha; ainda não há atendente</div>
       </div>
@@ -230,7 +238,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
         <div class="ph" style="left:18px;top:16px">FILA DO CANAL</div>
         <div class="qr" id="q0" style="top:60px"><div class="pos"><span style="opacity:1">1º</span></div><span>Contato · 9xxxx-0011</span><span class="gr"></span><span class="tg" style="color:var(--muted)">esperando</span></div>
         <div class="qr" id="q1" style="top:138px;border-color:var(--coral)"><div class="pos"><span id="qp2" style="opacity:1">2º</span><span id="qp1">1º</span></div><span>Contato · 9xxxx-0000</span><span class="gr"></span><span class="tg co">esta ligação</span></div>
-        <div class="qr" id="q2" style="top:138px;opacity:0"><div class="pos"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F5B841" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-top:3px"><path d="M5 12l5 5 9-10"/></svg></div><span style="color:var(--muted)">Contato · 9xxxx-0011</span><span class="gr"></span><span class="tg wn">com Mara C.</span></div>
+        <div class="qr" id="q2" style="top:138px;opacity:0"><div class="pos"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--wait)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-top:3px"><path d="M5 12l5 5 9-10"/></svg></div><span style="color:var(--muted)">Contato · 9xxxx-0011</span><span class="gr"></span><span class="tg wn">com Mara C.</span></div>
         <div style="position:absolute;left:18px;top:236px;font-size:24px;color:var(--muted);white-space:nowrap">a posição é falada ao contato</div>
       </div>
 
@@ -239,7 +247,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
         <div id="spring" class="ring"><svg width="64" height="64" viewBox="0 0 64 64"><circle class="rbg" cx="32" cy="32" r="26" stroke-width="7"/><circle class="rfg" id="rg2" cx="32" cy="32" r="26" stroke-width="7" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0" transform="rotate(-90 32 32)"/></svg></div>
         <div id="spdl">prazo · DEMO</div>
         <div id="spb">Contato · 9xxxx-0000</div>
-        <div id="spn">fila do canal · 1º · via Channels</div>
+        <div id="spn">fila do canal · 1º · via <span data-wl-name="channels">Channels</span></div>
         <div id="spd" class="sw"><span id="d0" class="on wn">toca nos 2 aparelhos de Rita</span><span id="d1" class="ok">Rita atende no navegador</span><span id="d2" class="inf">Davi atende no navegador</span></div>
         <div class="cb" id="cb1"><span class="g" id="bAt">Atender</span><span class="r">Recusar</span></div>
         <div class="cb" id="cb2"><span class="o" id="bTr">Transferir</span><span class="r" id="bEn">Encerrar</span></div>
@@ -249,7 +257,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
         <div class="ph" style="left:22px;top:18px">CONVERSA · CONTATO 9xxxx-0000</div>
         <div id="evp">evento · gravação disponível</div>
         <div class="ln" style="top:122px">Ligação · Rita → Davi</div>
-        <div id="pl"><div id="plb"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></div><div id="plw"></div><div id="plt">36 s</div></div>
+        <div id="pl"><div id="plb"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></div><div id="plw"></div><div id="plt">36 s</div></div>
         <div class="ln" style="top:288px;font-size:24px;color:var(--muted);font-weight:600">gravação ligada à conversa</div>
       </div>
     </div>
@@ -257,10 +265,11 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
     <svg id="links" viewBox="0 0 1920 1080">
       <path class="lk" id="lk1" d="M457 382 L586 382"/>
       <path class="lk" id="lk2" d="M1148 658 L1228 658"/>
-      <circle id="da" r="9" cx="457" cy="382" fill="#FF452B" opacity="0"/>
-      <circle id="db" r="9" cx="586" cy="382" fill="#FF452B" opacity="0"/>
+      <!-- Amber dots: fill comes from the brand token via CSS (GSAP only moves cx and opacity) -->
+      <circle id="da" r="9" cx="457" cy="382" style="fill:var(--coral)" opacity="0"/>
+      <circle id="db" r="9" cx="586" cy="382" style="fill:var(--coral)" opacity="0"/>
       <circle id="dc" r="9" cx="1148" cy="658" fill="#7DB4FF" opacity="0"/>
-      <circle id="dd" r="9" cx="1228" cy="658" fill="#FF452B" opacity="0"/>
+      <circle id="dd" r="9" cx="1228" cy="658" style="fill:var(--coral)" opacity="0"/>
     </svg>
   </div>
 
@@ -270,7 +279,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   <div id="fin">
     <h2 style="top:20px">Central de voz pronta</h2>
     <h2 class="b" style="top:116px">dentro do seu produto.</h2>
-    <p id="fst">O SaaS decide quem atende. O Channels cuida do estado, dos prazos e do áudio.</p>
+    <p id="fst">O SaaS decide quem atende. O <span data-wl-name="channels">Channels</span> cuida do estado, dos prazos e do áudio.</p>
     <div class="frow" style="top:350px"><span>Boas-vindas falada</span><span>Fila com música e posição</span><span>Oferta com prazo</span><span>Transferência</span></div>
     <div class="frow" style="top:426px"><span>Mensagem final ao esgotar</span><span>Ouvir a mensagem salva</span><span>Gravação na conversa</span><span>Uso por item, em segundos</span></div>
     <div class="frow" style="top:540px"><span class="badge pa">Telefone BR e PT · parcial</span><span class="badge sg">Chamadas no WhatsApp com permissão do contato · sinalizado</span></div>
@@ -278,8 +287,11 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
   // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
+  // Brand literals for GSAP tweens (GSAP cannot interpolate var()); CH is the product name from the brand file
+  var AMBER = WELABS_BRAND.color.amber, AMBER_SOFT = WELABS_BRAND.color.amberSoft, GRAPHITE = WELABS_BRAND.color.graphite, CH = WELABS_BRAND.names.channels;
   var IC = {
     voice: '<path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/>',
     music: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
@@ -344,8 +356,8 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
     "O contato liga para o número BR da Empresa DEMO",
     "Boas-vindas falada: sintetizada uma vez, guardada e reaproveitada",
     "Fila do canal com música: o contato ouve que é o 2º, depois o 1º",
-    "O SaaS escolhe quem atende; o Channels oferece com prazo a todos os aparelhos",
-    "Atendida no navegador: o áudio passa pelo Channels, nunca direto ao provedor",
+    "O SaaS escolhe quem atende; o " + CH + " oferece com prazo a todos os aparelhos",
+    "Atendida no navegador: o áudio passa pelo " + CH + ", nunca direto ao provedor",
     "Transferência: a mesma ligação passa de Rita para Davi",
     "Encerrada: a gravação chega à conversa do SaaS como evento",
     "Uso registrado por item, com a duração exata: 36 s, não 1 min"
@@ -366,7 +378,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   // Sequential swap in the same place: old leaves before new arrives
   function swap(a, b, t) { fadeOut(a, t, 0.15); fadeIn(b, t + 0.15, 0.3); }
   function cap(i, a, b) { tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: E, immediateRender: false }, a); fadeOut("#cap" + i, b - 0.3, 0.3); }
-  function rowOn(i, t) { tl.to("#cr" + i, { borderColor: "#FF452B", backgroundColor: "#2A1612", duration: 0.35 }, t); }
+  function rowOn(i, t) { tl.to("#cr" + i, { borderColor: AMBER, backgroundColor: AMBER_SOFT, duration: 0.35 }, t); }
   function rowDone(i, t) { tl.to("#cr" + i, { borderColor: "#3A3A42", backgroundColor: "#1F1F25", duration: 0.35 }, t); fadeIn("#ck" + i, t, 0.3); }
   function waveRun(bars, t0, t1, amp) {
     var pr = { p: 0 };
@@ -402,11 +414,12 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   rise("#e1", 5.7, 0.4);
   waveRun(wA, 5.5, 8.2, 0.85);
   swap("#cs0_0", "#cs0_1", 6.6);
-  tl.to("#ouv", { borderColor: "#FF452B", backgroundColor: "#2A1612", duration: 0.3 }, 7.1);
+  tl.to("#ouv", { borderColor: AMBER, backgroundColor: AMBER_SOFT, duration: 0.3 }, 7.1);
 
   // Beat 3 (10.2-15.8): queue with music and spoken position
   cap(2, 10.2, 15.8);
-  tl.to("#ouv", { borderColor: "#3A3A42", backgroundColor: "#0B0B0D", duration: 0.3 }, 10.2);
+  // Back to the button's resting background, now brand graphite
+  tl.to("#ouv", { borderColor: "#3A3A42", backgroundColor: GRAPHITE, duration: 0.3 }, 10.2);
   rowDone(0, 10.2); rowOn(1, 10.3);
   swap("#cs1", "#cs2", 10.2);
   swap("#ps1", "#ps2", 10.3);
@@ -425,7 +438,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   rowDone(1, 15.8); rowOn(2, 15.9);
   swap("#cs2", "#cs3", 15.8);
   fadeOut("#qc", 15.8, 0.3);
-  tl.to("#pr0", { borderColor: "#FF452B", backgroundColor: "#2A1612", duration: 0.35 }, 16.0);
+  tl.to("#pr0", { borderColor: AMBER, backgroundColor: AMBER_SOFT, duration: 0.35 }, 16.0);
   swap("#pst0_0", "#pst0_1", 16.0);
   dot("#dc", "cx", 1148, 1228, 16.0, 0.5);
   rise("#sp", 16.25, 0.45);
@@ -446,7 +459,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   swap("#cs3", "#cs4", 22.1);
   swap("#ps2", "#ps3", 22.2);
   fadeOut("#aB", 22.2, 0.25); fadeIn("#aC", 22.5, 0.4);
-  tl.to(["#lk1", "#lk2"], { stroke: "#FF452B", duration: 0.4 }, 22.3);
+  tl.to(["#lk1", "#lk2"], { stroke: AMBER, duration: 0.4 }, 22.3);
   [0, 1].forEach(function (k) {
     var t = 22.6 + k * 0.9;
     dot("#da", "cx", 457, 586, t, 0.5); dot("#dd", "cx", 1148, 1228, t + 0.05, 0.5);
@@ -458,7 +471,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   cap(5, 27.0, 32.4);
   tl.fromTo("#bTr", { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1 }, 27.2);
   swap("#ph0", "#ph1", 27.5);
-  tl.to("#pr1", { borderColor: "#FF452B", backgroundColor: "#2A1612", duration: 0.35 }, 28.0);
+  tl.to("#pr1", { borderColor: AMBER, backgroundColor: AMBER_SOFT, duration: 0.35 }, 28.0);
   rowOn(3, 28.0);
   swap("#k1", "#k2", 28.7);
   swap("#d1", "#d2", 28.7);
@@ -492,7 +505,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   fadeOut("#crows", 37.5, 0.35); fadeOut("#cst", 37.5, 0.35);
   fadeIn("#usage", 37.85, 0.3);
   ["#ur0", "#ur1", "#ur2", "#ur3"].forEach(function (s, i) { rise(s, 37.95 + i * 0.15, 0.4); });
-  tl.to("#ur2", { borderColor: "#FF452B", duration: 0.35 }, 38.7);
+  tl.to("#ur2", { borderColor: AMBER, duration: 0.35 }, 38.7);
   fadeIn("#u1m", 38.9, 0.35);
   fadeIn("#uok", 39.1, 0.35);
 

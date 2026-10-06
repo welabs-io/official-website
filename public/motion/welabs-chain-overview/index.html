@@ -7,16 +7,20 @@
 <style>
 /* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 #hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
 #wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
-#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
-#seal{position:absolute;right:0;top:10px;height:52px}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 .sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
@@ -24,13 +28,13 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .pz{position:absolute;top:330px;width:320px;height:330px;opacity:0}
 .pz>svg{position:absolute;left:-60px;top:0;width:440px;height:330px;overflow:visible}
 .pz .body{fill:var(--panel);stroke:var(--line);stroke-width:3;stroke-linejoin:round}
-.pz .lit{fill:rgba(255,69,43,.10);stroke:var(--coral);stroke-width:5;stroke-linejoin:round;opacity:0;filter:drop-shadow(0 0 16px rgba(255,69,43,.6))}
-.pz .ic{position:absolute;left:118px;top:40px;width:84px;height:84px;border-radius:24px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral)}
+.pz .lit{fill:rgba(var(--wl-amber-rgb),.10);stroke:var(--coral);stroke-width:5;stroke-linejoin:round;opacity:0;filter:drop-shadow(0 0 16px rgba(var(--wl-amber-rgb),.6))}
+.pz .ic{position:absolute;left:118px;top:40px;width:84px;height:84px;border-radius:24px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral)}
 .pz .nm{position:absolute;left:0;top:150px;width:320px;text-align:center;font-size:34px;font-weight:800;letter-spacing:-.5px;white-space:nowrap}
 .pz .ln{position:absolute;left:30px;top:206px;width:260px;text-align:center;font-size:26px;font-weight:600;line-height:34px;color:var(--muted);opacity:0}
 .pz .tick{position:absolute;left:134px;top:-26px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
 #p0{left:160px}#p1{left:480px}#p2{left:800px}#p3{left:1120px}#p4{left:1440px}
-#bar{position:absolute;left:160px;top:698px;width:1600px;height:8px;border-radius:4px;background:var(--coral);box-shadow:0 0 24px rgba(255,69,43,.6);transform-origin:0 50%;opacity:0}
+#bar{position:absolute;left:160px;top:698px;width:1600px;height:8px;border-radius:4px;background:var(--coral);box-shadow:0 0 24px rgba(var(--wl-amber-rgb),.6);transform-origin:0 50%;opacity:0}
 
 /* FECHO */
 #close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
@@ -48,41 +52,41 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div id="wm">Plataforma<span>.</span></div>
     <div id="kick">Some o sistema solto</div>
     <div id="demo">DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div class="pz" id="p0">
     <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 Z"/></svg>
     <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 10h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-    <div class="nm">Channels</div>
+    <div class="nm"><span data-wl-name="channels">Channels</span></div>
     <div class="ln">Toda conversa num lugar só</div>
     <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
   <div class="pz" id="p1">
     <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/></svg>
     <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
-    <div class="nm">CRM</div>
+    <div class="nm"><span data-wl-name="crm">CRM</span></div>
     <div class="ln">Cada pessoa com a sua história</div>
     <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
   <div class="pz" id="p2">
     <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/></svg>
     <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div>
-    <div class="nm">KB</div>
+    <div class="nm"><span data-wl-name="kb">KB</span></div>
     <div class="ln">Resposta com a fonte junto</div>
     <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
   <div class="pz" id="p3">
     <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/></svg>
     <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
-    <div class="nm">Hub de domínio</div>
+    <div class="nm"><span data-wl-name="hub">Hub de domínio</span></div>
     <div class="ln">Cadastros e regras num lugar só</div>
     <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
   <div class="pz" id="p4">
     <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/></svg>
     <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div>
-    <div class="nm">Flow</div>
+    <div class="nm"><span data-wl-name="flow">Flow</span></div>
     <div class="ln">Processo que anda até o fim</div>
     <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
   </div>
@@ -90,21 +94,23 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <div class="cap" id="c1">Cada sistema resolvia <span>um pedaço, sozinho</span></div>
   <div class="sub" id="s1">e alguém fazia a ponte entre eles na mão</div>
-  <div class="cap" id="k0">Channels: some a <span>conversa perdida no celular</span></div>
-  <div class="cap" id="k1">CRM: some o <span>“quem é você mesmo?”</span></div>
-  <div class="cap" id="k2">KB: some a <span>resposta de memória</span></div>
-  <div class="cap" id="k3">Hub de domínio: some a <span>regra repetida</span></div>
-  <div class="cap" id="k4">Flow: some o <span>processo parado no meio</span></div>
+  <div class="cap" id="k0"><span data-wl-name="channels">Channels</span>: some a <span>conversa perdida no celular</span></div>
+  <div class="cap" id="k1"><span data-wl-name="crm">CRM</span>: some o <span>“quem é você mesmo?”</span></div>
+  <div class="cap" id="k2"><span data-wl-name="kb">KB</span>: some a <span>resposta de memória</span></div>
+  <div class="cap" id="k3"><span data-wl-name="hub">Hub de domínio</span>: some a <span>regra repetida</span></div>
+  <div class="cap" id="k4"><span data-wl-name="flow">Flow</span>: some o <span>processo parado no meio</span></div>
   <div class="cap" id="c5">Encaixadas, uma termina <span>o que a outra começa</span></div>
   <div class="sub" id="s5">sem ninguém copiando dado de um sistema para o outro</div>
 
   <div id="close">
     <div class="l1">Cada peça tira um problema do caminho.<br><span>Juntas, a operação inteira anda.</span></div>
-    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw">Plataforma<span>.</span></div></div>
     <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {

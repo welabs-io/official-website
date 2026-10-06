@@ -7,16 +7,22 @@
 <style>
 /* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--wait:#F5B53F}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+/* --wait keeps its name but is now the cool lilac pending color: the old status yellow was too close to the brand amber */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--wait:var(--wl-wait)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
-#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8}
-#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header in a row, so a longer product name pushes the kicker instead of overlapping it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8;display:flex;align-items:center}
+#wm{position:relative;flex:none;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
-#kick{position:absolute;left:186px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
-#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
-#seal{position:absolute;right:0;top:10px;height:52px}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;z-index:8}
 
 /* ESTAÇÕES DO CAMINHO E O FIO */
@@ -25,12 +31,12 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .sl{position:absolute;top:592px;width:320px;text-align:center;font-size:30px;font-weight:700;opacity:0;white-space:nowrap;z-index:2}
 #st1{left:225px}#st2{left:705px}#st3{left:1185px}#st4{left:1585px}
 #sl1{left:140px}#sl2{left:620px}#sl3{left:1100px}#sl4{left:1500px}
-.seg{position:absolute;top:465px;height:10px;border-radius:5px;background:var(--coral);box-shadow:0 0 18px rgba(255,69,43,.7);transform-origin:0 50%;transform:scaleX(0);z-index:6}
+.seg{position:absolute;top:465px;height:10px;border-radius:5px;background:var(--coral);box-shadow:0 0 18px rgba(var(--wl-amber-rgb),.7);transform-origin:0 50%;transform:scaleX(0);z-index:6}
 #g1{left:375px;width:330px}#g2{left:855px;width:330px}#g3{left:1335px;width:250px}
 #rail{position:absolute;left:375px;top:468px;width:1210px;height:4px;background:repeating-linear-gradient(90deg,#3A3A44 0 14px,transparent 14px 26px);opacity:0;z-index:1}
-#bead{position:absolute;left:278px;top:448px;width:44px;height:44px;border-radius:50%;background:var(--coral);border:5px solid #FFD0C8;box-shadow:0 0 30px rgba(255,69,43,.9);opacity:0;z-index:7}
+#bead{position:absolute;left:278px;top:448px;width:44px;height:44px;border-radius:50%;background:var(--coral);border:5px solid #FFC75A;box-shadow:0 0 30px rgba(var(--wl-amber-rgb),.9);opacity:0;z-index:7}
 #ghost{position:absolute;left:278px;top:448px;width:44px;height:44px;border-radius:50%;border:4px dashed var(--muted);opacity:0;z-index:7}
-#ring{position:absolute;left:680px;top:370px;width:200px;height:200px;border-radius:50%;border:6px solid var(--coral);box-shadow:0 0 40px rgba(255,69,43,.6),inset 0 0 30px rgba(255,69,43,.35);opacity:0;z-index:6}
+#ring{position:absolute;left:680px;top:370px;width:200px;height:200px;border-radius:50%;border:6px solid var(--coral);box-shadow:0 0 40px rgba(var(--wl-amber-rgb),.6),inset 0 0 30px rgba(var(--wl-amber-rgb),.35);opacity:0;z-index:6}
 
 /* ESPERA PELA PESSOA */
 #clock{position:absolute;left:735px;top:226px;width:90px;height:90px;border-radius:50%;border:5px solid var(--wait);opacity:0;z-index:2}
@@ -51,7 +57,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 /* QUEDA E VOLTA */
 #dark{position:absolute;left:0;top:0;width:1920px;height:1080px;background:#050507;opacity:0;z-index:5}
 .badge{position:absolute;left:710px;top:140px;width:500px;height:66px;border-radius:33px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:30px;font-weight:800;opacity:0;z-index:7;white-space:nowrap}
-#down{background:#2A1210;border:3px solid var(--coral);color:#FF8A78}
+/* Outage badge is an alert state, not brand: was red coral on a reddish surface, now the warn orange-red so it stays apart from the brand amber */
+#down{background:var(--wl-warn-soft);border:3px solid var(--wl-warn);color:var(--wl-warn)}
 #back{background:#0F2A1D;border:3px solid var(--ok);color:var(--ok)}
 .chip{position:absolute;height:52px;padding:0 22px;border-radius:26px;font-size:26px;font-weight:700;display:flex;align-items:center;opacity:0;white-space:nowrap;z-index:2}
 #once{left:1130px;top:644px;border:2px solid var(--ok);color:var(--ok);background:#0F2A1D}
@@ -70,10 +77,10 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 <body>
 <div id="root" data-composition-id="flow-durable-run" data-width="1920" data-height="1080" data-start="0" data-duration="34">
   <div id="hd">
-    <div id="wm">Flow<span>.</span></div>
+    <div id="wm"><span data-wl-name="flow">Flow</span><span>.</span></div>
     <div id="kick">Some o processo pela metade</div>
     <div id="demo">DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div id="rail"></div>
@@ -109,11 +116,13 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <div id="close">
     <div class="l1">Nada fica pela metade.<br><span>Nada acontece duas vezes.</span></div>
-    <div class="brand"><div class="bw">Flow<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw"><span data-wl-name="flow">Flow</span><span>.</span></div></div>
     <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {

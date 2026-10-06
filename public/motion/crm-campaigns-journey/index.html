@@ -7,11 +7,15 @@
 <style>
 /* TOKENS DA MARCA WELABS */
 @font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0E0F12;--ink:#FFFFFF;--accent:#FF452B;--surface:#1A1C21;--s2:#22252B;--muted:#A9AEB8;--line:#3A3D45;--ok:#3DD68C;--info:#7FB2FF;--warn:#F2B544;--bad:#FF7A7A}
+/* Brand amber: --accent keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite.
+   --warn keeps its name but now carries the brand alert orange (pluggable module, partial, condition); the old state yellow read as brand amber */
+:root{--bg:#10141C;--ink:#FFFFFF;--accent:var(--wl-amber);--surface:#1A1C21;--s2:#22252B;--muted:#A9AEB8;--line:#3A3D45;--ok:#3DD68C;--info:#7FB2FF;--warn:var(--wl-warn);--bad:#FF7A7A}
 html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
 *{box-sizing:border-box}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
 .abs{position:absolute}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 p{margin:0}
 
 /* CABEÇALHO, MATURIDADE E TRILHO */
@@ -19,15 +23,17 @@ p{margin:0}
 .brand{font-size:32px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;white-space:nowrap}
 .brand span{color:var(--muted);font-weight:600}
 .topr{display:flex;align-items:center;gap:24px;margin-bottom:8px}
-.topr img{height:44px;display:block}
+/* New SVG logo (ratio 4.25) at the ~48 px seal height */
+.topr img{height:48px;display:block}
 .chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
 #mat{position:absolute;right:120px;top:132px;display:flex;gap:12px}
-.adv{font-size:26px;font-weight:800;color:#fff;background:var(--accent);border:2px solid var(--accent);border-radius:999px;padding:4px 18px;white-space:nowrap}
+/* Amber fills carry the brand ink, never white (AA contrast) */
+.adv{font-size:26px;font-weight:800;color:var(--wl-ink-on-amber);background:var(--accent);border:2px solid var(--accent);border-radius:999px;padding:4px 18px;white-space:nowrap}
 .prev{font-size:26px;font-weight:700;color:var(--accent);border:2px dashed var(--accent);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
 .lig{font-size:24px;font-weight:700;color:var(--warn);border:2px solid var(--warn);border-radius:999px;padding:2px 14px;white-space:nowrap}
 .part{font-size:24px;font-weight:700;color:var(--warn);border:2px dashed var(--warn);border-radius:999px;padding:2px 14px;white-space:nowrap}
 #rail{position:absolute;left:120px;top:982px;width:1680px;height:62px;display:flex;align-items:center;justify-content:space-between}
-#rail .rn{padding:0 20px;height:58px;border-radius:29px;border:2px solid #3A3D45;background:#0E0F12;color:#A9AEB8;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+#rail .rn{padding:0 20px;height:58px;border-radius:29px;border:2px solid #3A3D45;background:var(--bg);color:#A9AEB8;font-size:24px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap}
 #rail .re{flex:1;min-width:16px;height:3px;background:var(--line)}
 
 .scene{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
@@ -37,12 +43,12 @@ h1{position:absolute;left:120px;top:122px;margin:0;font-size:52px;line-height:1.
 .m{font-size:24px;font-weight:500;color:var(--muted)}
 .sl{font-size:24px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .tag{display:inline-flex;align-items:center;font-size:24px;font-weight:700;padding:2px 14px;border-radius:999px;background:#2A2D35;color:#D8DBE2;white-space:nowrap}
-.tag.c{background:#3A1A14;color:#FF8A75}
+.tag.c{background:var(--wl-amber-soft);color:#FFC75A}
 .tag.g{background:#143326;color:var(--ok)}
 .tag.b{background:#17263D;color:var(--info)}
 .tag.dim{opacity:.45}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 18px;border-radius:14px;border:2px solid var(--line);background:var(--s2);font-size:24px;font-weight:600;white-space:nowrap}
-.btn{height:58px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:700;white-space:nowrap}
+.btn{height:58px;border-radius:14px;background:var(--accent);color:var(--wl-ink-on-amber);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:700;white-space:nowrap}
 .btn.o{background:transparent;color:var(--accent);border:2px solid var(--accent)}
 .stack{position:relative;display:inline-block;height:40px}
 .stack span{position:absolute;right:0;top:0;white-space:nowrap}
@@ -65,10 +71,10 @@ svg.ic{display:block;flex:none}
 #dots{position:absolute;inset:0;background-image:radial-gradient(circle,#2F323A 3px,transparent 3.5px);background-size:36px 36px}
 #world{position:absolute;left:0;top:0;width:2000px;height:600px;transform-origin:0 0}
 #edges{position:absolute;left:0;top:0;overflow:visible}
-.nd{position:absolute;border:3px solid #3A3D45;border-radius:20px;background:#1C1E24;box-shadow:0 4px 14px rgba(0,0,0,.35);color:#fff;--acc:#FF452B;--tint:rgba(255,69,43,.16)}
+.nd{position:absolute;border:3px solid #3A3D45;border-radius:20px;background:#1C1E24;box-shadow:0 4px 14px rgba(0,0,0,.35);color:#fff;--acc:var(--wl-amber);--tint:rgba(var(--wl-amber-rgb),.16)}
 .nd[data-role=start]{border-radius:44px 20px 20px 44px}
 .nd[data-role=question]{--acc:#7FB2FF;--tint:rgba(127,178,255,.16)}
-.nd[data-role=condition]{--acc:#F2B544;--tint:rgba(242,181,68,.18)}
+.nd[data-role=condition]{--acc:var(--wl-warn);--tint:rgba(var(--wl-warn-rgb),.18)}
 .nd[data-role=result]{--acc:#3DD68C;--tint:rgba(61,214,140,.16)}
 .nd[data-role=reject]{--acc:#FF7A7A;--tint:rgba(255,122,122,.16)}
 .nh{height:96px;display:flex;align-items:center;gap:14px;padding:0 18px}
@@ -87,7 +93,7 @@ svg.ic{display:block;flex:none}
 .nr b{width:34px;height:34px;border-radius:10px;background:#143326;color:var(--ok);display:grid;place-items:center;font-size:24px}
 .eb{fill:none;stroke-width:4}
 .ah{opacity:0}
-.plus{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#1C1E24;border:3px solid #3A3D45;color:#FF8A75;display:grid;place-items:center;opacity:0}
+.plus{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#1C1E24;border:3px solid #3A3D45;color:#FFC75A;display:grid;place-items:center;opacity:0}
 .ov{position:absolute;z-index:20;background:rgba(28,30,36,.97);border:2px solid #3A3D45;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 #cbar{left:20px;right:20px;top:12px;height:68px;border-radius:20px;display:flex;align-items:center;gap:14px;padding:0 14px;font-size:26px;font-weight:700}
 #cbar .tt{font-size:28px;font-weight:800;white-space:nowrap}
@@ -95,7 +101,7 @@ svg.ic{display:block;flex:none}
 .bt{height:48px;border-radius:12px;border:2px solid var(--accent);color:var(--accent);background:transparent;display:flex;align-items:center;gap:8px;padding:0 16px;font-size:26px;font-weight:700;white-space:nowrap}
 .seg{display:flex;border:2px solid #3A3D45;border-radius:12px;overflow:hidden;height:48px}
 .seg span{padding:0 16px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-.seg span.on{background:var(--accent);color:#fff}
+.seg span.on{background:var(--accent);color:var(--wl-ink-on-amber)}
 #fchip{position:relative;height:48px;width:186px}
 #fchip span{position:absolute;right:0;top:0;white-space:nowrap;height:48px;display:flex;align-items:center;padding:0 16px;border-radius:999px;border:2px solid;font-size:24px;font-weight:700}
 #fc0{color:var(--muted);border-color:#3A3D45}
@@ -107,7 +113,7 @@ svg.ic{display:block;flex:none}
 #ctl b{height:54px;display:grid;place-items:center;color:#fff;border-bottom:2px solid #3A3D45}
 #ctl b:last-child{border-bottom:0}
 #mm{left:92px;bottom:92px;width:240px;height:130px;border-radius:14px;overflow:hidden}
-#tools{left:20px;bottom:16px;height:62px;border-radius:31px;display:flex;align-items:center;gap:8px;padding:0 20px;font-size:24px;font-weight:700;color:#FF8A75;white-space:nowrap}
+#tools{left:20px;bottom:16px;height:62px;border-radius:31px;display:flex;align-items:center;gap:8px;padding:0 20px;font-size:24px;font-weight:700;color:#FFC75A;white-space:nowrap}
 #tools>span{display:flex;align-items:center;gap:6px}
 #tools .sp{width:2px;height:28px;background:#3A3D45;margin:0 6px}
 .drw{position:absolute;z-index:22;top:100px;bottom:12px;border-radius:22px;background:#1C1E24;border:2px solid #3A3D45;box-shadow:0 18px 48px rgba(0,0,0,.45);overflow:hidden}
@@ -147,24 +153,25 @@ svg.ic{display:block;flex:none}
 .bub.out{right:20px;background:#1E4D3A;border-top-right-radius:4px}
 
 /* PAINEL */
-.fb{position:absolute;left:40px;height:84px;border-radius:14px;background:var(--accent);display:flex;align-items:center;padding:0 24px;font-size:28px;font-weight:800;transform-origin:left center;white-space:nowrap}
+/* Funnel bars are amber shades (inline darker tones on f2/f3) with brand ink text */
+.fb{position:absolute;left:40px;height:84px;border-radius:14px;background:var(--accent);color:var(--wl-ink-on-amber);display:flex;align-items:center;padding:0 24px;font-size:28px;font-weight:800;transform-origin:left center;white-space:nowrap}
 .vb{display:flex;align-items:flex-end;gap:22px;height:110px}
-.vb div{width:70px;border-radius:8px 8px 0 0;background:#FF8A75;transform-origin:bottom}
+.vb div{width:70px;border-radius:8px 8px 0 0;background:#FFC75A;transform-origin:bottom}
 #fecho{position:absolute;left:120px;top:842px;width:1680px;height:108px;border-radius:18px;background:var(--surface);border-left:10px solid var(--accent);display:flex;align-items:center;padding:0 36px;font-size:46px;font-weight:800;letter-spacing:-1px;white-space:nowrap}
 #pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="crm-campaigns-journey" data-width="1920" data-height="1080" data-start="0" data-duration="44">
-<div class="top"><div class="brand">CRM <span>· Campanhas</span></div><div class="topr"><span class="chip">DEMO · reconstrução ilustrativa</span><img src="./assets/welabs-logo.png" alt="Welabs"></div></div>
-<div id="mat"><span class="adv">Recurso avançado</span><span class="prev">Previsto no CRM</span></div>
+<div class="top"><div class="brand"><span data-wl-name="crm">CRM</span> <span>· Campanhas</span></div><div class="topr"><span class="chip">DEMO · reconstrução ilustrativa</span><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"></div></div>
+<div id="mat"><span class="adv">Recurso avançado</span><span class="prev">Previsto no <span data-wl-name="crm">CRM</span></span></div>
 
 <!-- ABERTURA -->
 <div class="scene" id="s0">
   <div class="big">Do primeiro contato à <em>recompra</em></div>
-  <p class="sub">Recursos avançados de Campanhas do CRM numa jornada só: gerador de formulários, app de campo, campanha, roleta, cupom, pré-venda, cashback e painel.</p>
+  <p class="sub">Recursos avançados de Campanhas do <span data-wl-name="crm">CRM</span> numa jornada só: gerador de formulários, app de campo, campanha, roleta, cupom, pré-venda, cashback e painel.</p>
   <div class="leg" style="top:560px"><div class="k"><span class="adv">Recurso avançado</span></div><span>existe em código de geração anterior, com dados DEMO</span></div>
-  <div class="leg" style="top:636px"><div class="k"><span class="prev">Previsto no CRM</span></div><span>a chegada ao núcleo do CRM é convergência planejada</span></div>
+  <div class="leg" style="top:636px"><div class="k"><span class="prev">Previsto no <span data-wl-name="crm">CRM</span></span></div><span>a chegada ao núcleo do <span data-wl-name="crm">CRM</span> é convergência planejada</span></div>
   <div class="leg" style="top:712px"><div class="k"><span class="lig">módulo ligável</span></div><span>ligado por organização</span></div>
 </div>
 
@@ -189,9 +196,9 @@ svg.ic{display:block;flex:none}
     <div class="drw" id="pal" data-layout-allow-overflow>
       <div class="dh"><span>Blocos</span><span id="palx" style="color:#A9AEB8"></span></div>
       <div class="pg"><div class="sl">Nós</div>
-        <div class="pi" id="pa0"><i style="background:#FF452B"></i>Início</div>
+        <div class="pi" id="pa0"><i style="background:var(--wl-amber)"></i>Início</div>
         <div class="pi" id="pa1"><i style="background:#7FB2FF"></i>Pergunta</div>
-        <div class="pi" id="pa2"><i style="background:#F2B544"></i>Condição</div>
+        <div class="pi" id="pa2"><i style="background:var(--wl-warn)"></i>Condição</div>
         <div class="pi" id="pa3"><i style="background:#3DD68C"></i>Resultado</div>
       </div>
       <div class="pg"><div class="sl">Tipos de pergunta</div>
@@ -285,7 +292,7 @@ svg.ic{display:block;flex:none}
   <div class="ph" id="sph" style="left:160px;top:210px;width:460px;height:740px"><div class="nt"></div><div class="in">
     <div class="hd2"><span>App do vendedor</span><span class="tag">câmera</span></div>
     <p class="m" style="margin:8px 0 14px">Validar cupom por QR ou código</p>
-    <div style="position:relative;height:300px;border-radius:18px;border:4px solid #0B0C0E;background:#0B0C0E;display:grid;place-items:center;overflow:hidden" id="scan"><span id="qr2" style="background:#fff;border-radius:10px;padding:10px;display:block"></span><div id="sline" style="position:absolute;left:30px;right:30px;top:40px;height:4px;background:#FF452B;box-shadow:0 0 14px #FF452B"></div></div>
+    <div style="position:relative;height:300px;border-radius:18px;border:4px solid #0B0C0E;background:#0B0C0E;display:grid;place-items:center;overflow:hidden" id="scan"><span id="qr2" style="background:#fff;border-radius:10px;padding:10px;display:block"></span><div id="sline" style="position:absolute;left:30px;right:30px;top:40px;height:4px;background:var(--wl-amber);box-shadow:0 0 14px var(--wl-amber)"></div></div>
     <div class="row" style="margin-top:14px;height:56px"><span class="m">ou digitar código</span><span>DEMO-7K2</span></div>
     <div class="row" id="valid" style="margin-top:12px;height:60px;border-color:#3DD68C"><span style="color:#3DD68C">Cupom válido · Prêmio B</span></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span class="m">Status</span><span class="stack" style="width:120px;height:34px"><span class="tag b" id="cu0">ativo</span><span class="tag g" id="cu1" style="opacity:0">usado</span></span></div>
@@ -302,7 +309,7 @@ svg.ic{display:block;flex:none}
     <div style="display:flex;gap:14px;margin-top:22px"><div class="btn o" style="flex:1">Pausar</div><div class="btn" id="bsend" style="flex:1.6"><span id="ic-send"></span>Enviar ao caixa</div></div>
     <p class="m" style="margin-top:22px;line-height:1.4">Montada pelo vendedor a partir do resultado: carrinho, substituição, brindes e cupom.</p>
   </div>
-  <svg class="abs" style="left:1240px;top:560px;overflow:visible" width="40" height="20"><path id="arw" d="M0 10 L40 10" stroke="#FF452B" stroke-width="4" fill="none"/><polygon id="arwh" points="28,2 40,10 28,18" fill="#FF452B"/></svg>
+  <svg class="abs" style="left:1240px;top:560px;overflow:visible" width="40" height="20"><path id="arw" d="M0 10 L40 10" style="stroke:var(--wl-amber)" stroke-width="4" fill="none"/><polygon id="arwh" points="28,2 40,10 28,18" style="fill:var(--wl-amber)"/></svg>
   <div class="box" id="pdv" style="left:1280px;top:210px;width:520px;height:740px;padding:24px 28px">
     <div class="hd2"><span>Caixa da unidade</span><span class="tag b">tempo real</span></div>
     <p class="m" style="margin-top:8px">Sistema de PDV · conector</p>
@@ -313,7 +320,7 @@ svg.ic{display:block;flex:none}
     </div>
     <div class="abs row" id="conf" style="left:28px;right:28px;top:300px;height:60px;border-color:#3DD68C"><span style="color:#3DD68C">Confirmada no caixa</span><span id="ic-ok"></span></div>
     <div class="abs" id="sync" style="left:28px;right:28px;top:390px">
-      <div class="sl" style="margin-bottom:8px">Volta ao CRM</div>
+      <div class="sl" style="margin-bottom:8px">Volta ao <span data-wl-name="crm">CRM</span></div>
       <div class="row" style="height:56px"><span>Venda #DEMO-31</span><span class="tag g">sincronizada</span></div>
       <p class="m" style="margin-top:12px;white-space:normal;line-height:1.35">Sincronização periódica de vendas, unidades e contatos</p>
     </div>
@@ -337,7 +344,7 @@ svg.ic{display:block;flex:none}
     <p class="m" style="margin-top:12px">Gatilho: venda integrada do caixa</p>
   </div>
   <div class="box" id="hs" style="left:980px;top:210px;width:820px;height:740px;overflow:hidden">
-    <div class="abs" style="left:0;right:0;top:0;height:70px;background:#22252B;display:flex;align-items:center;gap:14px;padding:0 22px"><span style="display:flex;gap:8px"><i style="width:14px;height:14px;border-radius:50%;background:#FF7A7A;display:block"></i><i style="width:14px;height:14px;border-radius:50%;background:#F2B544;display:block"></i><i style="width:14px;height:14px;border-radius:50%;background:#3DD68C;display:block"></i></span><span class="m" style="background:#15161A;border-radius:10px;padding:4px 16px;flex:1">rede-demo.exemplo/fidelidade</span></div>
+    <div class="abs" style="left:0;right:0;top:0;height:70px;background:#22252B;display:flex;align-items:center;gap:14px;padding:0 22px"><span style="display:flex;gap:8px"><i style="width:14px;height:14px;border-radius:50%;background:#FF7A7A;display:block"></i><i style="width:14px;height:14px;border-radius:50%;background:#FFC75A;display:block"></i><i style="width:14px;height:14px;border-radius:50%;background:#3DD68C;display:block"></i></span><span class="m" style="background:#15161A;border-radius:10px;padding:4px 16px;flex:1">rede-demo.exemplo/fidelidade</span></div>
     <div class="abs" style="left:36px;right:36px;top:100px">
       <p style="font-size:36px;font-weight:800">Programa Rede Demo</p>
       <p class="m" style="margin-top:6px">Hotsite público, sem login</p>
@@ -359,8 +366,8 @@ svg.ic{display:block;flex:none}
   <div class="box" id="fun" style="left:120px;top:210px;width:1000px;height:600px">
     <div class="abs" style="left:40px;right:40px;top:24px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:30px;font-weight:800">Funil · Unidade Centro</span><span class="tag">layout configurável</span></div>
     <div class="fb" id="f1" style="top:100px;width:840px">Formulários</div>
-    <div class="fb" id="f2" style="top:196px;width:620px;background:#C9361F">Pré-vendas</div>
-    <div class="fb" id="f3" style="top:292px;width:420px;background:#8E2716">Vendas</div>
+    <div class="fb" id="f2" style="top:196px;width:620px;background:#DB961A">Pré-vendas</div>
+    <div class="fb" id="f3" style="top:292px;width:420px;background:#B87A12">Vendas</div>
     <p class="m abs" style="left:40px;top:392px">sem escala · DEMO</p>
     <div class="abs" style="left:40px;top:430px;display:flex;gap:40px;align-items:flex-end">
       <div><div class="vb"><div style="height:100px"></div><div style="height:74px"></div><div style="height:52px"></div></div><p class="m" style="margin-top:8px">Vendas por vendedor · DEMO</p></div>
@@ -375,15 +382,19 @@ svg.ic{display:block;flex:none}
     <div style="display:flex;gap:10px;flex-wrap:wrap"><span class="tag">conversão · DEMO</span><span class="tag">tempo até a venda · DEMO</span><span class="tag">ticket médio · DEMO</span></div>
     <div style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><span class="part">Análise de anúncios · parcial</span></div>
   </div>
-  <div id="fecho">Do primeiro contato à recompra, no mesmo CRM.</div>
+  <!-- Single inline wrapper: #fecho is a flex row, so the space before the product name must stay inside one item -->
+  <div id="fecho"><span>Do primeiro contato à recompra, no mesmo <span data-wl-name="crm">CRM</span>.</span></div>
 </div>
 
 <div id="rail"><div class="rn" id="r0">Formulário</div><div class="re"></div><div class="rn" id="r1">App de campo</div><div class="re"></div><div class="rn" id="r2">Recomendação</div><div class="re"></div><div class="rn" id="r3">Campanha</div><div class="re"></div><div class="rn" id="r4">Roleta e cupom</div><div class="re"></div><div class="rn" id="r5">Pré-venda</div><div class="re"></div><div class="rn" id="r6">Cashback</div><div class="re"></div><div class="rn" id="r7">Painel</div></div>
 <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 (function(){
+  // Literal brand colors for GSAP tweens and generated SVG (GSAP cannot tween var())
+  const BC=WELABS_BRAND.color,AMB=BC.amber,AMB_LIGHT="#FFC75A";
   // ÍCONES E UTILITÁRIOS
   const IC={
     zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
@@ -417,8 +428,8 @@ svg.ic{display:block;flex:none}
   put("bval",ico("check",24)+" Validar");put("bg1",ico("check",24)+" Validado");
   put("camic",ico("camera",56));
   put("ic-rec",ico("star",28,"#3DD68C"));put("ic-gift",ico("gift",28,"#3DD68C"));put("ic-ban",ico("ban",28,"#FF7A7A"));
-  put("ic-file",ico("file",30,"#FF8A75"));put("ic-msg",ico("msg",30));put("ic-send",ico("send",26));
-  put("ic-ok",ico("check",30,"#3DD68C"));put("ic-coin",ico("coin",28,"#3DD68C"));put("ic-dl",ico("dl",26));put("ic-spark",ico("spark",34,"#FF452B"));
+  put("ic-file",ico("file",30,AMB_LIGHT));put("ic-msg",ico("msg",30));put("ic-send",ico("send",26));
+  put("ic-ok",ico("check",30,"#3DD68C"));put("ic-coin",ico("coin",28,"#3DD68C"));put("ic-dl",ico("dl",26));put("ic-spark",ico("spark",34,AMB));
 
   // QR DEMO deterministico (padrão fixo, sem aleatoriedade)
   const qr=(size)=>{const n=21,c=size/n;let s=`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" fill="#fff"/>`;
@@ -428,10 +439,12 @@ svg.ic{display:block;flex:none}
   put("qr1",qr(150));put("qr2",qr(210));
 
   // ROLETA: seis setores fixos; o setor 1 (Prêmio B) para sob o ponteiro
-  (function(){const R=176,C=180;let s=`<svg width="360" height="360" viewBox="0 0 360 360">`;const L=["A","B","C","A","B","C"];const F=["#FF452B","#2A2D35","#8E2716","#FF452B","#2A2D35","#8E2716"];
+  (function(){const R=176,C=180;let s=`<svg width="360" height="360" viewBox="0 0 360 360">`;const L=["A","B","C","A","B","C"];
+    // Amber sectors (brand amber and a darker amber) carry brand ink letters; grey sectors keep white
+    const F=[AMB,"#2A2D35","#B87A12",AMB,"#2A2D35","#B87A12"];const TX=[BC.inkOnAmber,"#fff",BC.inkOnAmber,BC.inkOnAmber,"#fff",BC.inkOnAmber];
     for(let i=0;i<6;i++){const a0=(i*60-90)*Math.PI/180,a1=((i+1)*60-90)*Math.PI/180;const x0=C+R*Math.cos(a0),y0=C+R*Math.sin(a0),x1=C+R*Math.cos(a1),y1=C+R*Math.sin(a1);
       s+=`<path id="ws${i}" d="M${C},${C} L${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} Z" fill="${F[i]}" stroke="#15161A" stroke-width="4"/>`;
-      const am=((i+.5)*60-90)*Math.PI/180;s+=`<text x="${C+112*Math.cos(am)}" y="${C+112*Math.sin(am)+16}" text-anchor="middle" font-family="Inter" font-size="44" font-weight="800" fill="#fff">${L[i]}</text>`;}
+      const am=((i+.5)*60-90)*Math.PI/180;s+=`<text x="${C+112*Math.cos(am)}" y="${C+112*Math.sin(am)+16}" text-anchor="middle" font-family="Inter" font-size="44" font-weight="800" fill="${TX[i]}">${L[i]}</text>`;}
     s+=`<circle cx="${C}" cy="${C}" r="34" fill="#15161A" stroke="#fff" stroke-width="4"/></svg>`;put("wheel",s);})();
 
   // QUADRO EM GRAFO DO FORMULÁRIO (coordenadas fixas do mundo)
@@ -474,10 +487,10 @@ svg.ic{display:block;flex:none}
 
   // MINIMAPA (retângulo da câmera acompanha o mundo)
   const MS=.11,MX=10,MY=34,CY=150,VW=1676,VH=746;
-  const rc={start:"#FF452B",question:"#7FB2FF",condition:"#F2B544",result:"#3DD68C",reject:"#FF7A7A"};
+  const rc={start:AMB,question:"#7FB2FF",condition:BC.warn,result:"#3DD68C",reject:"#FF7A7A"};
   let mm=`<defs><mask id="mmk"><rect width="240" height="130" fill="#fff"/><rect class="mmv" fill="#000" x="0" y="0" width="10" height="10"/></mask></defs>`;
   ND.forEach(n=>{mm+=`<rect id="m-${n.id}" x="${MX+n.x*MS}" y="${MY+n.y*MS}" width="${n.w*MS}" height="${nodeH(n)*MS}" rx="2" fill="${rc[n.role]}" opacity="0"/>`;});
-  mm+=`<rect width="240" height="130" fill="rgba(0,0,0,.35)" mask="url(#mmk)"/><rect class="mmv" fill="none" stroke="#FF452B" stroke-width="2" x="0" y="0" width="10" height="10"/>`;
+  mm+=`<rect width="240" height="130" fill="rgba(0,0,0,.35)" mask="url(#mmk)"/><rect class="mmv" fill="none" stroke="${AMB}" stroke-width="2" x="0" y="0" width="10" height="10"/>`;
   put("mmsvg",mm);
   const vp=cx=>({x:MX+(-cx)*MS,y:MY+(-CY)*MS,width:VW*MS,height:VH*MS});
 
@@ -490,7 +503,8 @@ svg.ic{display:block;flex:none}
   const fade=(sel,t,d)=>tl.fromTo(sel,{opacity:0},{opacity:1,duration:d||.3},t);
   const swap=(a,b,t)=>{tl.to(a,{opacity:0,duration:.15},t);tl.fromTo(b,{opacity:0},{opacity:1,duration:.2},t+.15);};
   const press=(sel,t)=>{tl.to(sel,{scale:.93,duration:.12},t);tl.to(sel,{scale:1,duration:.18},t+.12);};
-  const CUR={backgroundColor:"#FF452B",borderColor:"#FF452B",color:"#FFFFFF"},DONE={backgroundColor:"#0E0F12",borderColor:"#FF452B",color:"#FF8A75"},TODO={backgroundColor:"#0E0F12",borderColor:"#3A3D45",color:"#A9AEB8"};
+  // Rail states: current = amber fill with brand ink, done = amber outline on graphite
+  const CUR={backgroundColor:AMB,borderColor:AMB,color:BC.inkOnAmber},DONE={backgroundColor:BC.graphite,borderColor:AMB,color:AMB_LIGHT},TODO={backgroundColor:BC.graphite,borderColor:"#3A3D45",color:"#A9AEB8"};
   const rail=(i,t)=>{for(let j=0;j<8;j++)tl.to("#r"+j,Object.assign({duration:.3},j<i?DONE:j===i?CUR:TODO),t);};
 
   // Moldura persistente
@@ -520,7 +534,7 @@ svg.ic{display:block;flex:none}
   tl.fromTo("#pal",{x:-480},{x:0,duration:.4,ease:E},3.9);
   const node=(id,t)=>{tl.fromTo("#"+id,{opacity:0,scale:.88,y:20},{opacity:1,scale:1,y:0,duration:.4,ease:"back.out(1.5)"},t);tl.fromTo("#m-"+id,{opacity:0},{opacity:.95,duration:.3},t);};
   const edge=(id,t)=>{tl.fromTo("#eb-"+id,{strokeDashoffset:lens[id]},{strokeDashoffset:0,duration:.4,ease:"power1.inOut"},t);tl.fromTo("#ah-"+id,{opacity:0},{opacity:1,duration:.12},t+.34);tl.fromTo("#pl-"+id,{opacity:0,scale:.4},{opacity:1,scale:1,duration:.25,ease:"back.out(2)"},t+.36);};
-  const pflash=(sel,t)=>{tl.to(sel,{borderColor:"#FF452B",backgroundColor:"#3A1A14",duration:.15},t);tl.to(sel,{borderColor:"#2E3038",backgroundColor:"#22252B",duration:.3},t+.35);};
+  const pflash=(sel,t)=>{tl.to(sel,{borderColor:AMB,backgroundColor:BC.amberSoft,duration:.15},t);tl.to(sel,{borderColor:"#2E3038",backgroundColor:"#22252B",duration:.3},t+.35);};
   pflash("#pa0",4.3);node("n0",4.35);
   pflash("#pa1",4.55);node("n1",4.6);edge("e01",4.7);
   node("n2",4.85);edge("e12",4.95);
@@ -569,7 +583,7 @@ svg.ic{display:block;flex:none}
   tl.set("#wheel",{rotation:0},0);
   // campanha ativada
   swap("#cs0","#cs1",19.1);
-  tl.set("#cy0",{borderColor:"#FF452B",color:"#FF8A75"},0);
+  tl.set("#cy0",{borderColor:AMB,color:AMB_LIGHT},0);
   tl.to("#cy0",{borderColor:"#3A3D45",color:"#A9AEB8",duration:.25},19.25);
   tl.to("#cy1",{borderColor:"#3DD68C",color:"#3DD68C",backgroundColor:"#143326",duration:.25},19.25);
   // giro da roleta (rotação determinística até o setor B)
@@ -582,7 +596,7 @@ svg.ic{display:block;flex:none}
   tl.to("#cwait",{opacity:0,duration:.15},22.7);
   up("#b1",22.85,{y:14,d:.3});
   // resgate e cupom QR
-  tl.to("#bres",{backgroundColor:"#FF452B",color:"#FFFFFF",duration:.15},24.65);
+  tl.to("#bres",{backgroundColor:AMB,color:BC.inkOnAmber,duration:.15},24.65);
   up("#b2",24.8,{y:12,d:.25});
   up("#b3",25.0,{y:14,d:.3});
   ["#k0","#k1","#k2"].forEach((k,j)=>tl.to(k,{borderColor:"#3DD68C",color:"#3DD68C",backgroundColor:"#143326",duration:.2},25.1+j*.12));

@@ -7,20 +7,26 @@
 <style>
 /* TIPOGRAFIA E TOKENS DA MARCA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--info:#4C8DFF}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:var(--wl-wait);--warn:var(--wl-warn);--info:#4C8DFF}
+/* State yellow is gone: --wait (in progress: emitindo, enviando) is now the brand lilac; the new --warn (review, caution notes, certificate key) is the brand red-orange */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
 p,span,b,div{white-space:nowrap}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 
 /* CABEÇALHO E LEGENDAS */
-#hd{position:absolute;left:40px;right:40px;top:0;height:104px}
-#title{position:absolute;left:0;top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;opacity:0}
+/* Header in a row, so a longer product name pushes the captions instead of overlapping them */
+#hd{position:absolute;left:40px;right:40px;top:0;height:104px;display:flex;align-items:flex-start}
+#title{position:relative;flex:none;margin-top:24px;font-size:48px;font-weight:800;letter-spacing:-1px;opacity:0}
 #title span{color:var(--coral)}
-#caps{position:absolute;left:440px;top:26px;width:1220px;height:56px}
+/* Captions take the space between the name and the wider amber seal (48 px tall, about 204 px wide) */
+#caps{position:relative;flex:1 1 auto;min-width:0;margin:26px 228px 0 40px;height:56px}
 .cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding-left:20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;opacity:0}
-#seal{position:absolute;right:0;top:28px;height:50px;width:auto;opacity:0}
+#seal{position:absolute;right:0;top:30px;height:48px;width:auto;opacity:0}
 
 /* JANELA DO HUB (RECONSTRUÇÃO DEMO) */
 #win{position:absolute;left:40px;top:112px;width:1840px;height:816px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#111115;opacity:0}
@@ -48,13 +54,15 @@ p,span,b,div{white-space:nowrap}
 .chip{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border-radius:999px;font-size:24px;font-weight:800}
 .stk .chip{position:absolute;left:0;top:0}
 .c-ok{background:rgba(61,214,140,.16);color:var(--ok)}.c-n{background:#2A2A32;color:var(--muted)}
-.c-w{background:rgba(245,181,63,.16);color:var(--wait)}.c-i{background:rgba(76,141,255,.18);color:#8DB5FF}
+.c-w{background:rgba(var(--wl-wait-rgb),.16);color:var(--wait)}
+/* Review chip (A revisar) means attention, not waiting */
+.c-warn{background:rgba(var(--wl-warn-rgb),.16);color:var(--warn)}.c-i{background:rgba(76,141,255,.18);color:#8DB5FF}
 .c-r{background:rgba(255,107,107,.16);color:var(--bad)}
-.c-fl{border:2px dashed var(--wait);background:#2A2110;color:var(--wait)}
+.c-fl{border:2px dashed var(--warn);background:var(--wl-warn-soft);color:var(--warn)}
 .btn{position:relative;height:52px;display:flex;align-items:center;gap:8px;padding:0 20px;border-radius:12px;border:2px solid var(--muted);font-size:26px;font-weight:700}
-.btn.pri{background:var(--coral);border-color:var(--coral)}
+.btn.pri{background:var(--coral);border-color:var(--coral);color:var(--wl-ink-on-amber)}
 .btn.off{border-color:#4A4A55;color:#8E8E99}
-.btn .on2{position:absolute;inset:-2px;border-radius:12px;background:var(--coral);border:2px solid var(--coral);display:flex;align-items:center;gap:8px;padding:0 20px;color:#fff;opacity:0}
+.btn .on2{position:absolute;inset:-2px;border-radius:12px;background:var(--coral);border:2px solid var(--coral);display:flex;align-items:center;gap:8px;padding:0 20px;color:var(--wl-ink-on-amber);opacity:0}
 .card{position:absolute;border:2px solid var(--line);border-radius:18px;background:var(--panel)}
 .card h3{font-size:28px;font-weight:800;display:flex;align-items:center;gap:12px}
 .lbl{font-size:24px;font-weight:600;color:var(--muted)}
@@ -64,22 +72,22 @@ p,span,b,div{white-space:nowrap}
 .box .gr{flex:1}
 .li{display:flex;align-items:flex-start;gap:14px;font-size:24px;font-weight:600;line-height:32px;white-space:normal}
 .li i{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(61,214,140,.16);color:var(--ok)}
-.li.sh i{background:rgba(255,69,43,.16);color:var(--coral)}
-.li.am i{background:rgba(245,181,63,.16);color:var(--wait)}
+.li.sh i{background:rgba(var(--wl-amber-rgb),.16);color:var(--coral)}
+.li.am i{background:rgba(var(--wl-warn-rgb),.16);color:var(--warn)}
 .li span{white-space:normal}
 .tbl{position:absolute;border:2px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel)}
 .th,.trw{display:flex;align-items:center;padding:0 18px}
 .th{height:46px;background:#1C1C22;font-size:24px;font-weight:700;color:var(--muted)}
 .trw{height:58px;border-top:2px solid #26262D;font-size:26px;font-weight:600;position:relative}
-.trw .hl2{position:absolute;inset:0;background:rgba(255,69,43,.10);border-left:5px solid var(--coral);opacity:0}
+.trw .hl2{position:absolute;inset:0;background:rgba(var(--wl-amber-rgb),.10);border-left:5px solid var(--coral);opacity:0}
 .trw>span,.th>span{position:relative;display:flex;align-items:center;gap:10px}
 .mut{color:var(--muted)}
 .strip{position:absolute;left:0;top:112px;height:52px;display:flex;gap:12px}
 .cn{height:52px;display:flex;align-items:center;gap:10px;padding:0 16px;border:2px solid var(--line);border-radius:14px;background:#16161A;font-size:24px;font-weight:700;color:var(--muted)}
 .cnt{position:relative;width:34px;height:34px}
 .cnt span{position:absolute;inset:0;border-radius:10px;display:grid;place-items:center;font-size:24px;font-weight:800;background:#2A2A32;color:var(--muted)}
-.cnt span.n1{background:var(--coral);color:#fff;opacity:0}
-.note{position:absolute;border-left:6px solid var(--coral);background:#22161A;border-radius:12px;padding:10px 16px;font-size:24px;font-weight:600;line-height:32px;white-space:normal}
+.cnt span.n1{background:var(--coral);color:var(--wl-ink-on-amber);opacity:0}
+.note{position:absolute;border-left:6px solid var(--coral);background:var(--wl-amber-soft);border-radius:12px;padding:10px 16px;font-size:24px;font-weight:600;line-height:32px;white-space:normal}
 
 /* DIÁLOGO DE REAUTENTICAÇÃO */
 .bd{position:absolute;left:0;top:0;width:1468px;height:702px}
@@ -113,9 +121,9 @@ p,span,b,div{white-space:nowrap}
 <body>
 <div id="root" data-composition-id="hub-fiscal-br" data-width="1920" data-height="1080" data-start="0" data-duration="44">
   <div id="hd">
-    <div id="title">Hub de domínio<span>.</span></div>
+    <div id="title"><span data-wl-name="hub">Hub de domínio</span><span>.</span></div>
     <div id="caps"></div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div id="win">
@@ -137,7 +145,7 @@ p,span,b,div{white-space:nowrap}
       <div class="fld" style="left:0;top:232px;width:440px"><p class="lbl">Inscrição municipal</p><div class="box">DEMO</div></div>
       <div class="fld" style="left:460px;top:232px;width:440px"><p class="lbl">Validação do CNPJ</p><div class="box"><span class="mut" id="cv0">aguardando</span><span id="cv1" style="position:absolute;left:16px;opacity:0;color:var(--ok)">alfanumérico · válido</span></div></div>
       <div class="fld" style="left:0;top:340px;width:900px"><p class="lbl">Situação cadastral</p>
-        <div class="box" style="padding:4px;gap:4px"><span class="chip c-n" style="flex:1;justify-content:center;border-radius:10px">Em formação</span><span class="chip" style="flex:1;justify-content:center;border-radius:10px;background:var(--coral)">Operando</span><span class="chip c-n" style="flex:1;justify-content:center;border-radius:10px">Holding agregadora</span></div></div>
+        <div class="box" style="padding:4px;gap:4px"><span class="chip c-n" style="flex:1;justify-content:center;border-radius:10px">Em formação</span><span class="chip" style="flex:1;justify-content:center;border-radius:10px;background:var(--coral);color:var(--wl-ink-on-amber)">Operando</span><span class="chip c-n" style="flex:1;justify-content:center;border-radius:10px">Holding agregadora</span></div></div>
       <p style="position:absolute;left:0;top:466px;font-size:26px;font-weight:800">Regime tributário com vigência</p>
       <div class="tbl" style="left:0;top:510px;width:900px">
         <div class="th"><span style="width:300px">Regime</span><span style="width:150px">Anexo</span><span style="width:230px">Vigência</span><span>Estado</span></div>
@@ -163,7 +171,7 @@ p,span,b,div{white-space:nowrap}
         <span class="btn off" id="brev">Revogar</span><span class="btn pri" id="bopen"><span class="ic-key"></span>Abrir autorização</span></div>
       <div class="bd" id="b2">
       <div class="card" style="left:0;top:124px;width:720px;height:300px;padding:22px 24px">
-        <h3><span class="ic-key" style="color:var(--wait)"></span>Certificado A1 · DEMO</h3>
+        <h3><span class="ic-key" style="color:var(--warn)"></span>Certificado A1 · DEMO</h3>
         <div style="margin-top:20px;display:flex;flex-direction:column;gap:16px">
           <div class="li"><i class="ic-lock"></i><span>Guardado no cofre de segredos, nunca no banco</span></div>
           <div class="li"><i class="ic-ck"></i><span>Válida até o vencimento do certificado</span></div>
@@ -284,7 +292,7 @@ p,span,b,div{white-space:nowrap}
         <div class="trw xr"><div class="hl2" id="x3hl"></div><span style="width:250px">TED enviada</span><span style="width:180px;color:var(--bad)"><span class="ic-out"></span>Saída</span><span style="width:160px;color:var(--bad)">− R$ —</span>
           <span style="width:520px"><span style="position:relative;display:block;width:500px;height:44px"><span class="mut" id="x3p0" style="position:absolute;left:0;top:6px">procurando…</span><span id="x3p1" style="position:absolute;left:0;top:0;height:44px;opacity:0;display:flex;gap:10px;align-items:center">Fornecedor DEMO Ltda<span class="chip c-i">pelo CNPJ</span></span></span></span>
           <span><span class="chip c-n">A conciliar</span></span></div>
-        <div class="trw xr"><span style="width:250px">PIX recebido</span><span style="width:180px;color:var(--ok)"><span class="ic-in"></span>Entrada</span><span style="width:160px;color:var(--ok)">+ R$ —</span><span style="width:520px;color:var(--wait)">sem correspondência única</span><span><span class="chip c-w">A revisar</span></span></div>
+        <div class="trw xr"><span style="width:250px">PIX recebido</span><span style="width:180px;color:var(--ok)"><span class="ic-in"></span>Entrada</span><span style="width:160px;color:var(--ok)">+ R$ —</span><span style="width:520px;color:var(--warn)">sem correspondência única</span><span><span class="chip c-warn">A revisar</span></span></div>
       </div>
       <div class="card" id="x5" style="left:0;top:470px;width:720px;height:200px;padding:20px 24px;opacity:0">
         <h3><span class="ic-ck" style="color:var(--ok)"></span>Pagamento ligado à FAT-DEMO-0001</h3>
@@ -325,7 +333,7 @@ p,span,b,div{white-space:nowrap}
       <div class="card" style="left:740px;top:190px;width:728px;height:512px;padding:20px 22px">
         <h3>Conexões · grupo Fiscal</h3>
         <p class="lbl" style="margin-top:14px">Autorizações fiscais</p>
-        <div class="box" style="margin-top:8px"><span class="ic-key" style="color:var(--wait)"></span>Autorização A1<span class="gr"></span><span class="chip c-ok">Ativa</span></div>
+        <div class="box" style="margin-top:8px"><span class="ic-key" style="color:var(--warn)"></span>Autorização A1<span class="gr"></span><span class="chip c-ok">Ativa</span></div>
         <p class="lbl" style="margin-top:16px">Documentos fiscais</p>
         <div style="margin-top:8px;display:flex;flex-direction:column;gap:10px">
           <div class="box">NFS-e emitida · FAT-DEMO-0001<span class="gr"></span><span class="chip c-ok">Autorizada</span></div>
@@ -363,6 +371,7 @@ p,span,b,div{white-space:nowrap}
 </div>
 
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 (function(){
   // ÍCONES E UTILITÁRIOS
@@ -421,9 +430,11 @@ p,span,b,div{white-space:nowrap}
   // Beat boundaries; each state change is followed by >= 1.5 s of stillness
   const BT=[0.6,6.2,12.0,17.6,23.4,30.0,35.4,40.4];
   caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},BT[i]+.05);tl.to("#cap"+i,{opacity:0,duration:.3},BT[i+1]-.35);});
-  // Journey rail: active on beat start, done on next beat start
+  // GSAP cannot tween var(): literal brand amber values from WELABS_BRAND
+  const BC=window.WELABS_BRAND.color,AMB=BC.amber,INK=BC.inkOnAmber;
+  // Journey rail: active on beat start, done on next beat start (active number badge is amber with ink text)
   STEPS.forEach((s,i)=>{
-    tl.to("#st"+i,{borderColor:"#FF452B",backgroundColor:"#22161A",color:"#FFFFFF",duration:.3},BT[i]);tl.to("#sn"+i,{backgroundColor:"#FF452B",color:"#FFFFFF",duration:.3},BT[i]);
+    tl.to("#st"+i,{borderColor:AMB,backgroundColor:BC.amberSoft,color:"#FFFFFF",duration:.3},BT[i]);tl.to("#sn"+i,{backgroundColor:AMB,color:INK,duration:.3},BT[i]);
     tl.to("#st"+i,{borderColor:"#2A5A44",backgroundColor:"#122019",color:"#3DD68C",duration:.3},BT[i+1]);tl.to("#sn"+i,{backgroundColor:"#1E4A35",color:"#3DD68C",duration:.3},BT[i+1]);});
   // Helpers
   const swap=(a,b,t)=>{tl.to(a,{opacity:0,duration:.15},t);tl.to(b,{opacity:1,duration:.2},t+.15);};
@@ -463,7 +474,8 @@ p,span,b,div{white-space:nowrap}
   tl.fromTo("#pAl .li",{opacity:0,x:-14},{opacity:1,x:0,duration:.3,stagger:.15,ease:EO,immediateRender:false},14.6);
 
   // B4 SUBMETER: cobrança no banco e título na contabilidade externa
-  press("#bsub",17.6);tl.to("#bsub",{backgroundColor:"#FF452B",borderColor:"#FF452B",duration:.15},17.6);tl.to("#bsub",{backgroundColor:"rgba(0,0,0,0)",borderColor:"#4A4A55",color:"#8E8E99",duration:.3},18.0);
+  // Pressed buttons fill amber, so their label turns to ink (AA)
+  press("#bsub",17.6);tl.to("#bsub",{backgroundColor:AMB,borderColor:AMB,color:INK,duration:.15},17.6);tl.to("#bsub",{backgroundColor:"rgba(0,0,0,0)",borderColor:"#4A4A55",color:"#8E8E99",duration:.3},18.0);
     swap("#fs0","#fs1",17.85);
   tl.to("#pA",{opacity:0,duration:.25},17.9);tl.to("#pB",{opacity:1,duration:.25},18.15);
   swap("#bk0","#bk1",18.9);swap("#k1 span:first-child","#k1 .n1",18.9);
@@ -472,7 +484,7 @@ p,span,b,div{white-space:nowrap}
   tl.to("#bnf",{borderColor:"#C9C9D1",color:"#FFFFFF",duration:.25},20.4);
 
   // B5 EMITIR NFS-E: senha de novo, DPS assinada, autorizada
-  press("#bnf",23.4);tl.to("#bnf",{backgroundColor:"#FF452B",borderColor:"#FF452B",duration:.15},23.4);
+  press("#bnf",23.4);tl.to("#bnf",{backgroundColor:AMB,borderColor:AMB,color:INK,duration:.15},23.4);
   tl.to("#b3",{opacity:0,duration:.25},23.55);tl.fromTo("#d2",{opacity:0,scale:.95},{opacity:1,scale:1,duration:.35,ease:EO,immediateRender:false},23.85);
   typeIn("#d2p",24.4,.7);press("#d2b",25.5);
   tl.to("#d2",{opacity:0,scale:.97,duration:.25,ease:EI},25.7);tl.to("#b3",{opacity:1,duration:.3},25.95);

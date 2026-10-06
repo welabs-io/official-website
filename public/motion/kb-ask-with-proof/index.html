@@ -7,22 +7,30 @@
 <style>
 /* TIPOGRAFIA E TOKENS DA MARCA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;
-  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--vec:#4C8DFF;--ft:#2EC4B6;--tech:#A78BFA}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:var(--wl-wait);--warn:var(--wl-warn);--vec:#4C8DFF;--ft:#2EC4B6;--tech:#A78BFA}
+/* State yellow left (too close to the brand amber): --wait is now the brand lilac (pending: refine loop, illustrative seal);
+   new --warn is the brand red-orange (attention: weak evidence, declared gap, ranking caveat) */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 p{white-space:nowrap}
-code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A1714;border-radius:8px;padding:0 8px}
+/* Inline code chip: light amber on the dark amber surface (was light coral on dark red) */
+code{font-family:"Inter",sans-serif;font-weight:700;color:#FFC75A;background:var(--wl-amber-soft);border-radius:8px;padding:0 8px}
 
 /* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
-#title{position:absolute;left:0;top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+/* Header in a row, so a longer product name pushes the captions instead of overlapping them */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px;display:flex;align-items:flex-start}
+#title{position:relative;flex:none;margin-top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
 #title span{color:var(--coral)}
-#caps{position:absolute;left:150px;top:24px;width:1150px;height:56px}
+#caps{position:relative;flex:none;margin:24px 0 0 62px;width:1150px;height:56px}
 .cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;white-space:nowrap;opacity:0}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+/* Pill moved left so the wider amber logo keeps the same gap */
+#sbx{position:absolute;right:240px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#seal{position:absolute;right:0;top:28px;height:48px;width:auto;opacity:0}
 
 /* TRILHA DO AGENTE (ETAPAS EM ESTILO DE NÓS) */
 .pn{position:absolute;background:var(--panel);border:2px solid var(--line);border-radius:22px;overflow:hidden;opacity:0}
@@ -36,7 +44,7 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 .ar:after{content:"";position:absolute;right:-6px;top:-5px;border-left:9px solid #4A4A55;border-top:7px solid transparent;border-bottom:7px solid transparent}
 #loop{position:absolute;left:0;top:0;overflow:visible}
 #looplab{position:absolute;left:0;top:92px;width:1840px;display:flex;justify-content:center;opacity:0}
-#looplab span{height:40px;display:flex;align-items:center;padding:0 16px;border-radius:999px;background:#2A2110;border:2px solid var(--wait);color:var(--wait);font-size:24px;font-weight:800;white-space:nowrap}
+#looplab span{height:40px;display:flex;align-items:center;padding:0 16px;border-radius:999px;background:var(--wl-wait-soft);border:2px solid var(--wait);color:var(--wait);font-size:24px;font-weight:800;white-space:nowrap}
 
 /* PAINEL DE CONVERSA (RECONSTRUÇÃO ILUSTRATIVA) */
 #chat{left:40px;top:266px;width:880px;height:782px}
@@ -45,13 +53,15 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 #chd .tt{font-size:30px;font-weight:800;white-space:nowrap}
 .seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;height:44px}
 .seg span{padding:0 14px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
-.seg span.on{background:var(--coral);color:#fff}
+/* Text on amber uses the brand ink for AA contrast */
+.seg span.on{background:var(--coral);color:var(--wl-ink-on-amber)}
 #chd .r2{display:flex;align-items:center;gap:10px;height:48px;margin-top:4px}
 .chip{height:40px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:#1F1F25;font-size:24px;font-weight:700;white-space:nowrap;color:var(--muted)}
 .chip b{color:var(--text)}
 #cbody{position:absolute;left:0;top:122px;width:876px;height:656px;overflow:hidden}
 #cscroll{position:absolute;left:0;top:0;width:876px;height:960px}
-.bub{position:absolute;right:22px;height:72px;display:flex;align-items:center;padding:0 22px;border-radius:22px 22px 6px 22px;background:#2A1714;border:2px solid #5A2A22;font-size:28px;font-weight:700;white-space:nowrap}
+/* Question bubble and highlight surfaces use the dark amber surface instead of dark red */
+.bub{position:absolute;right:22px;height:72px;display:flex;align-items:center;padding:0 22px;border-radius:22px 22px 6px 22px;background:var(--wl-amber-soft);border:2px solid rgba(var(--wl-amber-rgb),.35);font-size:28px;font-weight:700;white-space:nowrap}
 #lab{position:absolute;left:22px;top:100px;height:36px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;color:var(--coral);white-space:nowrap;opacity:0}
 #wk{position:absolute;left:22px;top:100px;height:36px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;opacity:0}
 .cl{position:absolute;left:22px;width:832px;height:112px;border-left:5px solid var(--line);padding:4px 0 0 16px;opacity:0}
@@ -61,7 +71,8 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 .cite{height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:10px;border:2px solid #3A4A6A;background:#16203A;color:#BFD3FF;font-size:24px;font-weight:700;white-space:nowrap}
 .cite em{font-style:normal;color:#fff;background:#2C4A8A;border-radius:6px;padding:0 6px}
 .stt{position:absolute;right:0;top:1px;height:40px;display:flex;align-items:center;padding:0 12px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap}
-.stt.a{background:rgba(245,181,63,.16);color:var(--wait)}
+/* Weak evidence is an attention state: brand red-orange */
+.stt.a{background:rgba(var(--wl-warn-rgb),.16);color:var(--warn)}
 .stt.g{background:rgba(61,214,140,.16);color:var(--ok)}
 .stt.r{background:rgba(255,107,107,.16);color:var(--bad)}
 #strike{position:absolute;left:66px;top:21px;height:3px;width:330px;background:var(--bad);transform-origin:0 50%}
@@ -70,7 +81,7 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 #bar{position:relative;width:340px;height:16px;border-radius:8px;background:#2A2A32;overflow:hidden}
 #barf{position:absolute;left:0;top:0;width:340px;height:16px;border-radius:8px;background:var(--ok);transform-origin:0 50%}
 #cf1 .dm{color:var(--ok)}
-#cf2{position:absolute;left:0;top:52px;width:832px;height:48px;display:flex;align-items:center;gap:12px;padding:0 14px;border-radius:12px;border:2px dashed var(--wait);background:#2A2110;color:var(--wait);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#cf2{position:absolute;left:0;top:52px;width:832px;height:48px;display:flex;align-items:center;gap:12px;padding:0 14px;border-radius:12px;border:2px dashed var(--warn);background:var(--wl-warn-soft);color:var(--warn);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
 #cf2 span{color:var(--text);font-weight:700}
 #cf3{position:absolute;left:0;top:104px;width:832px;height:34px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap;opacity:0}
 #cond{position:absolute;left:22px;top:776px;width:832px;height:130px;border-radius:16px;border:2px solid var(--line);background:#1F1F25;padding:10px 16px;opacity:0}
@@ -82,9 +93,9 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 #work{left:940px;top:266px;width:940px;height:782px;background:#111115}
 .md{position:absolute;left:0;top:0;width:936px;height:778px;opacity:0}
 .mh{position:absolute;left:0;top:0;width:936px;height:64px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 22px;font-size:28px;font-weight:800;white-space:nowrap}
-.mh .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#2A1714;color:var(--coral)}
+.mh .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--wl-amber-soft);color:var(--coral)}
 .ns{position:absolute;height:68px;display:flex;align-items:center;gap:14px;padding:0 18px;border:2px solid var(--line);border-radius:16px;background:var(--panel);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
-.ns.on{border-color:var(--coral);background:#22161A}
+.ns.on{border-color:var(--coral);background:var(--wl-amber-soft)}
 .tg.n2{background:#2A2A32;color:var(--muted)}
 .note2{position:absolute;left:22px;width:892px;height:64px;border-radius:12px;border-left:6px solid var(--coral);background:#1F1F25;display:flex;align-items:center;padding:0 16px;font-size:24px;font-weight:600;white-space:nowrap;opacity:0}
 .sq{position:absolute;left:22px;width:892px;height:92px;border:2px solid var(--line);border-radius:16px;background:var(--panel);display:flex;align-items:center;gap:16px;padding:0 18px;opacity:0}
@@ -97,13 +108,15 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 .tg.vec{background:rgba(76,141,255,.16);color:#8DB5FF}
 .tg.ft{background:rgba(46,196,182,.16);color:#5FE0D3}
 .tg.both{background:rgba(61,214,140,.16);color:var(--ok)}
-.tg.amb{background:rgba(245,181,63,.16);color:var(--wait)}
+/* .amb is the ranking caveat (attention, red-orange); .rfn tags the refine-loop evidence (pending, lilac) */
+.tg.amb{background:rgba(var(--wl-warn-rgb),.16);color:var(--warn)}
+.tg.rfn{background:rgba(var(--wl-wait-rgb),.16);color:var(--wait)}
 #swap{position:relative;display:inline-block;width:150px;height:40px;margin-left:10px}
 #swap span{position:absolute;left:0;top:0;height:40px;display:flex;align-items:center;white-space:nowrap}
 #sw1{color:var(--text)}
 #sw2{opacity:0}
 #sw2 code{font-size:28px}
-#gl{position:absolute;left:22px;top:440px;width:892px;height:220px;border:2px solid var(--coral);border-radius:18px;background:#1A1315;padding:16px 22px;opacity:0}
+#gl{position:absolute;left:22px;top:440px;width:892px;height:220px;border:2px solid var(--coral);border-radius:18px;background:var(--wl-amber-soft);padding:16px 22px;opacity:0}
 #gl .k{font-size:24px;font-weight:800;color:var(--coral);white-space:nowrap}
 #gl .big{display:flex;align-items:center;gap:26px;margin-top:22px;font-size:44px;font-weight:800;white-space:nowrap}
 #gl .big code{font-size:44px;padding:2px 14px}
@@ -137,25 +150,26 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 #cl2{position:absolute;left:0;width:1920px;top:470px;text-align:center;font-size:30px;font-weight:600;color:var(--muted);white-space:nowrap}
 #cl2b{position:absolute;left:0;width:1920px;top:530px;text-align:center;font-size:30px;font-weight:700;color:var(--text);white-space:nowrap}
 #cl3{position:absolute;left:0;width:1920px;top:610px;display:flex;justify-content:center;gap:16px}
-#cl3 span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px;white-space:nowrap}
-#cl3 span.p{border-style:dashed;border-color:var(--wait);color:var(--wait)}
+/* Child combinator: the pill style must not reach the product-name span nested inside a pill */
+#cl3>span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px;white-space:nowrap}
+#cl3>span.p{border-style:dashed;border-color:var(--wait);color:var(--wait)}
 #pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="kb-ask-with-proof" data-width="1920" data-height="1080" data-start="0" data-duration="44">
   <div id="hd">
-    <div id="title">KB<span>.</span></div>
+    <div id="title"><span data-wl-name="kb">KB</span><span>.</span></div>
     <div id="caps"></div>
     <div id="sbx">em desenvolvimento · dados DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div class="pn" id="trail"><div id="steps"></div><svg id="loop" width="1840" height="144" viewBox="0 0 1840 144"></svg><div id="looplab"><span>1 volta de refino · no máximo</span></div></div>
 
   <div class="pn" id="chat">
     <div id="chd">
-      <div class="r1"><span class="tt">Pergunte ao KB</span><div class="seg"><span class="on">Detalhado</span><span>Conciso</span></div></div>
+      <div class="r1"><span class="tt">Pergunte ao <span data-wl-name="kb">KB</span></span><div class="seg"><span class="on">Detalhado</span><span>Conciso</span></div></div>
       <div class="r2"><span class="chip">Escopo <b>Atlas Vendas › Atlas Norte</b></span><span class="chip">também por API e MCP</span></div>
     </div>
     <div id="cbody"><div id="cscroll" data-layout-allow-overflow>
@@ -233,7 +247,7 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
         <div class="es"><code>expireBooking()</code>função · muda o status para expirada</div>
         <div class="ef">snapshot num commit fixado · arquivo fatiado em símbolos</div></div>
       <div class="ev rf" id="ev4" style="top:604px"><span class="en">4</span>
-        <div class="eh"><span class="ic" id="e4i"></span>Ticket · ATL-188<span class="tg amb">volta de refino</span></div>
+        <div class="eh"><span class="ic" id="e4i"></span>Ticket · ATL-188<span class="tg rfn">volta de refino</span></div>
         <div class="es">“Decisão: proposta expirada não reabre; cria-se outra.”</div>
         <div class="ef">achado pela nova busca da volta de refino</div></div>
     </div>
@@ -242,12 +256,13 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
   <div id="closing">
     <div id="cl1">Resposta com prova. <span>E o que falta, dito.</span></div>
     <div id="cl2">Plano · glossário · busca híbrida · passagens citáveis · afirmações com prova · refino · lacunas · conversa</div>
-    <div id="cl2b">O KB cita a fonte; a decisão continua com quem pergunta.</div>
-    <div id="cl3"><span>em desenvolvimento</span><span>dados DEMO</span><span class="p">tela de conversa ilustrativa · KB por API e MCP</span></div>
+    <div id="cl2b">O <span data-wl-name="kb">KB</span> cita a fonte; a decisão continua com quem pergunta.</div>
+    <div id="cl3"><span>em desenvolvimento</span><span>dados DEMO</span><span class="p">tela de conversa ilustrativa · <span data-wl-name="kb">KB</span> por API e MCP</span></div>
   </div>
   <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 (function(){
   // ÍCONES E UTILITÁRIOS
@@ -281,10 +296,10 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
     if(i<STEPS.length-1)sh+=`<div class="ar" style="left:${SX(i)+208}px"></div>`;
   });
   put("steps",sh);
-  // Refinement loop: from "Avaliar" (6) back to "Buscar" (2), drawn under the nodes
-  const ax=SX(6)+103,bx=SX(2)+103;
-  put("loop",`<defs><marker id="lm" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="18" orient="auto"><path d="M0 0L10 5L0 10z" fill="#F5B53F"/></marker></defs>
-    <path id="lp" d="M${ax},79 C${ax},116 ${ax-40},112 ${(ax+bx)/2},112 C${bx+40},112 ${bx},116 ${bx},82" fill="none" stroke="#F5B53F" stroke-width="4" stroke-dasharray="1" stroke-dashoffset="1" pathLength="1" marker-end="url(#lm)"/>`);
+  // Refinement loop: from "Avaliar" (6) back to "Buscar" (2), drawn under the nodes; pending state in the brand lilac
+  const ax=SX(6)+103,bx=SX(2)+103,WAIT=window.WELABS_BRAND.color.wait;
+  put("loop",`<defs><marker id="lm" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="18" orient="auto"><path d="M0 0L10 5L0 10z" fill="${WAIT}"/></marker></defs>
+    <path id="lp" d="M${ax},79 C${ax},116 ${ax-40},112 ${(ax+bx)/2},112 C${bx+40},112 ${bx},116 ${bx},82" fill="none" stroke="${WAIT}" stroke-width="4" stroke-dasharray="1" stroke-dashoffset="1" pathLength="1" marker-end="url(#lm)"/>`);
 
   // ITENS DA BUSCA HÍBRIDA E RANKING FUNDIDO
   const VEC=["ATL-142 · ticket","Reunião 12/09 · trecho","expireBooking() · código","Artigo · ciclo da proposta"];
@@ -309,13 +324,15 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
   const EO="power3.out",EZ="power2.inOut";
 
   // ESTADOS DOS NÓS DA TRILHA
-  const ST={idle:{borderColor:"#3A3A42",backgroundColor:"#17171B",color:"#C9C9D1",boxShadow:"0 0 0 0px rgba(255,69,43,0)"},
-    act:{borderColor:"#FF452B",backgroundColor:"#2A1714",color:"#FFFFFF",boxShadow:"0 0 0 6px rgba(255,69,43,.22)"},
-    done:{borderColor:"#3DD68C",backgroundColor:"#13261C",color:"#FFFFFF",boxShadow:"0 0 0 0px rgba(255,69,43,0)"}};
+  // Active step and evidence flash use the brand amber literals, since GSAP cannot tween var()
+  const BC=window.WELABS_BRAND.color;
+  const ST={idle:{borderColor:"#3A3A42",backgroundColor:"#17171B",color:"#C9C9D1",boxShadow:`0 0 0 0px rgba(${BC.amberRgb},0)`},
+    act:{borderColor:BC.amber,backgroundColor:BC.amberSoft,color:"#FFFFFF",boxShadow:`0 0 0 6px rgba(${BC.amberRgb},.22)`},
+    done:{borderColor:"#3DD68C",backgroundColor:"#13261C",color:"#FFFFFF",boxShadow:`0 0 0 0px rgba(${BC.amberRgb},0)`}};
   function node(i,s,t){tl.to("#st"+i,Object.assign({duration:.3},ST[s]),t);
     tl.to(`#st${i} .sn i`,{opacity:s==="done"?1:0,duration:.25},t);tl.to(`#st${i} .sn b`,{opacity:s==="done"?0:1,duration:.25},t);}
-  const flash=(sel,t)=>{tl.to(sel,{borderColor:"#FF452B",boxShadow:"0 0 0 5px rgba(255,69,43,.25)",duration:.2},t);
-    tl.to(sel,{borderColor:"#3A3A42",boxShadow:"0 0 0 0px rgba(255,69,43,0)",duration:.4},t+.7);};
+  const flash=(sel,t)=>{tl.to(sel,{borderColor:BC.amber,boxShadow:`0 0 0 5px rgba(${BC.amberRgb},.25)`,duration:.2},t);
+    tl.to(sel,{borderColor:"#3A3A42",boxShadow:`0 0 0 0px rgba(${BC.amberRgb},0)`,duration:.4},t+.7);};
   const inUp=(sel,t,st)=>tl.fromTo(sel,{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:EO,stagger:st||0,immediateRender:false},t);
   tl.set("#barf",{scaleX:0},0);tl.set("#strike",{scaleX:0},0);tl.set("#lp",{opacity:0},0);
 
@@ -393,7 +410,8 @@ code{font-family:"Inter",sans-serif;font-weight:700;color:#FF8A75;background:#2A
 
   // B6 AVALIAR: LACUNA E UMA VOLTA DE REFINO
   node(5,"done",27.0);node(6,"act",27.0);
-  tl.to("#c3",{borderLeftColor:"#F5B53F",duration:.3},27.1);tl.to("#c3w",{opacity:1,duration:.3},27.1);
+  // Weak evidence marks the claim with the attention colour (brand red-orange)
+  tl.to("#c3",{borderLeftColor:BC.warn,duration:.3},27.1);tl.to("#c3w",{opacity:1,duration:.3},27.1);
   tl.set("#lp",{opacity:1},27.5);
   tl.to("#lp",{strokeDashoffset:0,duration:.6,ease:"power1.inOut"},27.5);
   tl.to("#looplab",{opacity:1,duration:.3},27.9);

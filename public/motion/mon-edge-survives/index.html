@@ -7,7 +7,8 @@
 <style>
 /* TIPOGRAFIA E TOKENS DA IDENTIDADE WELABS */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;--ok:#4ADE9B;--okt:#12301F;--warn:#F5B841;--warnt:#33270F;--bad:#F87171;--badt:#3A1717;--info:#7DB4FF;--infot:#14243A}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;--ok:#4ADE9B;--okt:#12301F;--warn:var(--wl-warn);--warnt:var(--wl-warn-soft);--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--bad:#F87171;--badt:#3A1717;--info:#7DB4FF;--infot:#14243A}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidden}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;line-height:1.25}
@@ -19,7 +20,8 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 #hchips{position:absolute;right:290px;top:44px;display:flex;gap:14px;opacity:0}
 .hc{height:48px;padding:0 20px;border-radius:999px;border:2px solid var(--line);color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
 .hc.al{border-color:var(--coral);color:var(--coral)}
-#seal{position:absolute;right:60px;top:40px;height:52px;width:auto;opacity:0}
+/* New wider SVG logo (905x213) at the ~48px seal height; still clears the header chip */
+#seal{position:absolute;right:60px;top:42px;height:48px;width:auto;opacity:0}
 
 /* PAINÉIS */
 .pnl{position:absolute;top:128px;height:814px;border:2px solid var(--line);border-radius:22px;background:var(--panel);overflow:hidden;opacity:0}
@@ -32,7 +34,9 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 .bdg{height:42px;display:flex;align-items:center;padding:0 16px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap}
 .b-ok{color:var(--ok);border:2px solid var(--ok);background:var(--okt)}
 .b-bad{color:var(--bad);border:2px solid var(--bad);background:var(--badt)}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the red-orange alert tone (disk "Atenção", degraded capture); new --wait/--waitt carry the cool lilac for in-flight uploads and still-open ledger sequences */
 .b-warn{color:var(--warn);border:2px solid var(--warn);background:var(--warnt)}
+.b-wait{color:var(--wait);border:2px solid var(--wait);background:var(--waitt)}
 .b-info{color:var(--info);border:2px solid var(--info);background:var(--infot)}
 .b-mut{color:var(--muted);border:2px solid var(--line);background:var(--panel2)}
 
@@ -43,7 +47,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 .cam{position:absolute;top:130px;width:268px;height:130px;border-radius:14px;border:2px solid var(--line);overflow:hidden;background:linear-gradient(180deg,#22252D 0%,#15171C 100%)}
 .cam .fl{position:absolute;left:0;right:0;bottom:0;height:40px;background:#1B1D23;border-top:2px solid #2C2F38}
 .cam .lb{position:absolute;left:12px;bottom:6px;font-size:24px;font-weight:800;white-space:nowrap}
-.cam .live{position:absolute;left:10px;top:8px;height:34px;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:999px;background:rgba(11,11,13,.8);font-size:24px;font-weight:700;color:var(--ok);white-space:nowrap}
+.cam .live{position:absolute;left:10px;top:8px;height:34px;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:999px;background:rgba(var(--wl-graphite-rgb),.8);font-size:24px;font-weight:700;color:var(--ok);white-space:nowrap}
 .cam .live i{width:12px;height:12px;border-radius:50%;background:var(--ok);display:block}
 .cam svg.sil{position:absolute;top:30px;width:46px;height:92px}
 .cam .box{position:absolute;top:24px;width:66px;height:100px;border:3px solid var(--coral);border-radius:6px;opacity:0}
@@ -99,7 +103,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 .sub{position:absolute;left:18px;width:402px;font-size:24px;line-height:30px;color:var(--muted)}
 .cell{position:absolute;width:60px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;opacity:0}
 .cell.d{background:var(--okt);border:2px solid var(--ok);color:var(--ok)}
-.cell.g{background:var(--warnt);border:2px dashed var(--warn);color:var(--warn)}
+.cell.g{background:var(--waitt);border:2px dashed var(--wait);color:var(--wait)}
 .lst{position:absolute;left:18px;top:256px;width:402px;height:34px}
 .lst span{position:absolute;left:0;top:0;font-size:24px;font-weight:700;white-space:nowrap;opacity:0}
 .tr{position:absolute;left:18px;width:402px;height:36px;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;white-space:nowrap;opacity:0}
@@ -126,7 +130,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 <div id="root" data-composition-id="mon-edge-survives" data-width="1920" data-height="1080" data-start="0" data-duration="34">
   <div id="title">Ecossistema Monitoramento · <span>o site não para</span></div>
   <div id="hchips"><span class="hc al">Alpha · laboratório · DEMO</span></div>
-  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
 
   <!-- APPLIANCE EDGE -->
   <div class="pnl" id="edge">
@@ -200,7 +204,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 
     <div class="card" id="cC"><div class="ct">Reconciliação · livro de entregas</div>
       <div class="sub" style="top:52px">O que a Central sabe não ter recebido desta instalação.</div>
-      <div class="lst"><span id="ls0" style="opacity:1;color:var(--ok)">Todas as sequências no lugar.</span><span id="ls1" style="color:var(--warn)">Aberto: 145 a 147 e 150</span><span id="ls2" style="color:var(--warn)">Fechado: 145 a 147 · aberto: 150</span></div>
+      <div class="lst"><span id="ls0" style="opacity:1;color:var(--ok)">Todas as sequências no lugar.</span><span id="ls1" style="color:var(--wait)">Aberto: 145 a 147 e 150</span><span id="ls2" style="color:var(--wait)">Fechado: 145 a 147 · aberto: 150</span></div>
     </div>
 
     <div class="card" id="cD"><div class="ct">Ocorrência · Doca 02</div>
@@ -208,7 +212,7 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
       <div class="ph" id="dph0" style="top:70px;opacity:1">Nenhuma ocorrência nova.</div>
       <div class="tr" id="t0" style="top:64px;--c:var(--info)"><i></i>Criada a partir da cena do Edge</div>
       <div class="tr" id="t1" style="top:108px;--c:var(--ok)"><i></i>Snapshot principal · Na nuvem</div>
-      <div class="tr" id="t2" style="top:152px;--c:var(--warn);color:var(--warn)"><i></i>Período não reconciliado</div>
+      <div class="tr" id="t2" style="top:152px;--c:var(--wait);color:var(--wait)"><i></i>Período não reconciliado</div>
       <div class="sub" id="t2s" style="top:194px;opacity:0">Os dados deste período ainda não foram reconciliados.</div>
     </div>
   </div>
@@ -228,10 +232,11 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
   // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
   var MEDIA = [["Portão 01 · snapshot"], ["Doca 02 · snapshot"], ["Doca 02 · clipe"], ["Portão 01 · clipe"]];
-  var SYNC = [["Só no Edge", "b-mut"], ["Na fila", "b-info"], ["Enviando", "b-warn"], ["Conferindo", "b-info"], ["Na nuvem", "b-ok"]];
+  var SYNC = [["Só no Edge", "b-mut"], ["Na fila", "b-info"], ["Enviando", "b-wait"], ["Conferindo", "b-info"], ["Na nuvem", "b-ok"]];
   var cB = document.getElementById("cB");
   MEDIA.forEach(function (m, i) {
     var d = document.createElement("div");
@@ -309,13 +314,15 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
 
   // Beat 3 (11.4-17.4): disk ladder degrades capture, detection continues
   cap(2, 11.4, 17.4);
-  tl.to("#dfill", { scaleX: 0.74, backgroundColor: "#F5B841", duration: 0.6, ease: E }, 11.6);
+  // Alert tone literals from the brand file (GSAP cannot interpolate var())
+  var WARN = WELABS_BRAND.color.warn, WARN_SOFT = WELABS_BRAND.color.warnSoft, WAIT = WELABS_BRAND.color.wait;
+  tl.to("#dfill", { scaleX: 0.74, backgroundColor: WARN, duration: 0.6, ease: E }, 11.6);
   swap("#lv0", "#lv1", 11.6);
-  tl.to("#hlL", { y: ROWH, borderColor: "#F5B841", backgroundColor: "#33270F", duration: 0.5, ease: "power2.inOut" }, 11.6);
-  tl.to("#hlR", { y: ROWH, borderColor: "#F5B841", backgroundColor: "#33270F", duration: 0.5, ease: "power2.inOut" }, 11.6);
+  tl.to("#hlL", { y: ROWH, borderColor: WARN, backgroundColor: WARN_SOFT, duration: 0.5, ease: "power2.inOut" }, 11.6);
+  tl.to("#hlR", { y: ROWH, borderColor: WARN, backgroundColor: WARN_SOFT, duration: 0.5, ease: "power2.inOut" }, 11.6);
   tl.to(["#L1", "#R1"], { color: "#FFFFFF", duration: 0.3 }, 11.8);
   fadeOut("#ec0", 11.6, 0.2); fadeIn("#ec1", 11.8, 0.3);
-  tl.to("#eCond", { borderColor: "#F5B841", duration: 0.3 }, 11.8);
+  tl.to("#eCond", { borderColor: WARN, duration: 0.3 }, 11.8);
   tl.to("#dfill", { scaleX: 0.9, backgroundColor: "#F87171", duration: 0.6, ease: E }, 13.6);
   swap("#lv1", "#lv2", 13.6);
   tl.to("#hlL", { y: ROWH * 2, borderColor: "#F87171", backgroundColor: "#3A1717", duration: 0.5, ease: "power2.inOut" }, 13.6);
@@ -358,7 +365,8 @@ html,body{background:var(--bg);width:1920px;height:1080px;margin:0;overflow:hidd
   swap("#ls1", "#ls2", 28.4);
   tl.to("#sq150", { scale: 1.08, duration: 0.25, yoyo: true, repeat: 1 }, 28.7);
   rise("#t2", 28.7); fadeIn("#t2s", 28.9, 0.4);
-  tl.to("#cD", { borderColor: "#F5B841", duration: 0.4 }, 28.7);
+  // Still-open sequence keeps the occurrence card in the lilac "pending" tone
+  tl.to("#cD", { borderColor: WAIT, duration: 0.4 }, 28.7);
 
   // Closing (31.0-34.0): the promise and the limits
   fadeOut(["#edge", "#cen", "#midsv", "#mid"], 31.0, 0.35);

@@ -7,7 +7,9 @@
 <style>
 /* TOKENS DA MARCA WELABS */
 @font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0E0F12;--ink:#FFFFFF;--accent:#FF452B;--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:#2A1612;--ok:#3DD68C;--okt:#12301F;--warn:#F5B544;--warnt:#33270F;--info:#7DB4FF;--infot:#14243A;--bad:#F87171;--badt:#3A1717}
+/* Brand amber: --accent keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; --soft is the amber-tinted dark surface; background is brand graphite */
+:root{--bg:#10141C;--ink:#FFFFFF;--accent:var(--wl-amber);--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:var(--wl-amber-soft);--ok:#3DD68C;--okt:#12301F;--warn:var(--wl-warn);--warnt:var(--wl-warn-soft);--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--info:#7DB4FF;--infot:#14243A;--bad:#F87171;--badt:#3A1717}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the red-orange alert tone (Alpha flag, sealed credential, entry zone, duplicate); new --wait/--waitt carry the cool lilac for "Aguardando conexão" and "Previsto" */
 html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
 *{box-sizing:border-box}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink);line-height:1.25}
@@ -17,7 +19,8 @@ p{margin:0}
 
 /* CABEÇALHO FIXO */
 #top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
-#top img{height:42px;display:block;margin-bottom:10px}
+/* New wider SVG logo (905x213) at the ~48px seal height */
+#top img{height:48px;display:block;margin-bottom:10px}
 #top .tt{font-size:32px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
 #top .tt em{font-style:normal;color:var(--accent)}
 #top .gr{flex:1}
@@ -41,13 +44,14 @@ p{margin:0}
 .ps{position:absolute;left:28px;top:62px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
 .pill{height:40px;padding:0 14px;border-radius:999px;border:2px solid;font-size:24px;font-weight:800;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .pill.ok{color:var(--ok);border-color:var(--ok);background:var(--okt)}
-.pill.w{color:var(--warn);border-color:var(--warn);background:var(--warnt)}
+.pill.w{color:var(--wait);border-color:var(--wait);background:var(--waitt)}
 .pill.i{color:var(--info);border-color:var(--info);background:var(--infot)}
 .pill.g{color:var(--muted);border-color:var(--line);background:#16171B}
 .pill.b{color:var(--bad);border-color:var(--bad);background:var(--badt)}
-.pill.pv{color:var(--warn);border-color:var(--warn);border-style:dashed;background:transparent}
+.pill.pv{color:var(--wait);border-color:var(--wait);border-style:dashed;background:transparent}
 .btn{height:50px;padding:0 20px;border-radius:12px;border:2px solid var(--line);font-size:24px;font-weight:800;display:inline-flex;align-items:center;gap:10px;white-space:nowrap;color:var(--ink);background:#22242B}
-.btn.pr{background:var(--accent);border-color:var(--accent)}
+/* Primary button sits on amber: text and currentColor icons use the dark ink-on-amber */
+.btn.pr{background:var(--accent);border-color:var(--accent);color:var(--wl-ink-on-amber)}
 
 /* CÂMERAS: LISTA E DIÁLOGO */
 .crow{position:absolute;left:28px;width:1010px;height:76px;border:2px solid var(--line);border-radius:16px;background:#1B1C21;display:flex;align-items:center;gap:16px;padding:0 18px}
@@ -93,9 +97,9 @@ p{margin:0}
 .off{position:absolute;inset:0;background:#1A1B1F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted)}
 .off b{font-size:26px;color:var(--ink);white-space:nowrap}
 .off em{font-style:normal;font-size:24px;white-space:nowrap}
-.tile.pv{border:3px dashed var(--warn);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.tile.pv{border:3px dashed var(--wait);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .tile.pv b{font-size:26px;white-space:nowrap}
-#hl{position:absolute;border:4px solid var(--accent);border-radius:16px;box-shadow:0 0 0 8px rgba(255,69,43,.22);opacity:0}
+#hl{position:absolute;border:4px solid var(--accent);border-radius:16px;box-shadow:0 0 0 8px rgba(var(--wl-amber-rgb),.22);opacity:0}
 
 /* DESTAQUE COM DETECÇÃO */
 #vid{position:absolute;left:28px;top:80px;width:1010px;height:470px;border-radius:16px;overflow:hidden;border:3px solid var(--accent);background:#15171B}
@@ -104,7 +108,7 @@ p{margin:0}
 .box{position:absolute;top:160px;width:122px;height:262px;border:3px solid var(--info);border-radius:6px;opacity:0}
 .box span{position:absolute;left:-3px;top:-40px;height:34px;padding:0 10px;border-radius:8px;background:var(--info);color:#0B0B0D;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
 #scene{position:absolute;left:166px;top:146px;width:540px;height:290px;border:4px dashed var(--accent);border-radius:10px;opacity:0}
-#scene span{position:absolute;left:-4px;top:-46px;height:38px;padding:0 12px;border-radius:8px;background:var(--accent);color:#fff;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+#scene span{position:absolute;left:-4px;top:-46px;height:38px;padding:0 12px;border-radius:8px;background:var(--accent);color:var(--wl-ink-on-amber);font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
 #zlab{position:absolute;left:830px;top:254px;height:36px;padding:0 12px;border-radius:8px;background:rgba(10,10,12,.82);color:var(--warn);font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
 #indic{position:absolute;right:12px;top:12px;height:36px;padding:0 12px;border-radius:8px;background:rgba(10,10,12,.82);color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
 .dc{position:absolute;top:574px;width:172px;height:50px;border-radius:12px;border:2px solid var(--info);background:var(--infot);color:var(--info);font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;white-space:nowrap;opacity:0}
@@ -161,7 +165,7 @@ p{margin:0}
 <body>
 <div id="root" data-composition-id="mon-camera-to-case" data-width="1920" data-height="1080" data-start="0" data-duration="32">
   <div id="top">
-    <img src="./assets/welabs-logo.png" alt="Welabs">
+    <img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
     <div class="tt">Ecossistema Monitoramento · <em>da câmera ao caso</em></div>
     <div class="gr"></div>
     <span class="chip al">Alpha · laboratório</span>
@@ -222,7 +226,7 @@ p{margin:0}
       </div>
       <div class="lbl" style="top:116px">Ciclo de estado</div>
       <div class="step" style="top:154px">
-        <span class="sc" style="--c:var(--warn);--ct:var(--warnt)">Aguardando conexão<span class="on" id="sAg">Aguardando conexão</span></span>
+        <span class="sc" style="--c:var(--wait);--ct:var(--waitt)">Aguardando conexão<span class="on" id="sAg">Aguardando conexão</span></span>
         <span class="sar">→</span>
         <span class="sc" style="--c:var(--ok);--ct:var(--okt)">Online<span class="on" id="sOn">Online</span></span>
         <span class="sar">⇄</span>
@@ -267,7 +271,7 @@ p{margin:0}
       <span class="pill g abs" style="right:28px;top:20px">Motor de vídeo local · no appliance</span>
       <div id="vid">
         <div class="scn"><div class="door"></div></div>
-        <svg class="abs" style="left:0;top:0" width="1004" height="464" viewBox="0 0 1004 464"><polygon points="300,300 830,300 930,462 200,462" fill="rgba(245,181,68,.10)" stroke="#F5B544" stroke-width="4" stroke-dasharray="14 10"/></svg>
+        <svg class="abs" style="left:0;top:0" width="1004" height="464" viewBox="0 0 1004 464"><polygon points="300,300 830,300 930,462 200,462" style="fill:rgba(var(--wl-warn-rgb),.10);stroke:var(--warn)" stroke-width="4" stroke-dasharray="14 10"/></svg>
         <div id="zlab">zona entrada</div>
         <div id="indic">caixas indicativas</div>
         <div class="box" id="bx1" style="left:180px"><span>pessoa</span></div>
@@ -329,7 +333,7 @@ p{margin:0}
       <div class="nt" style="font-size:26px"><span class="ic" id="isv"></span>Site Galpão Norte · Edge</div>
       <div class="nsub">grava e detecta mesmo sem internet</div>
       <div class="nr" id="e1" style="top:100px"><span>Estado reportado</span><div class="nv"><b class="z" id="e1a">—</b><b id="e1b" style="color:var(--ok)">aplicado</b></div></div>
-      <div class="nr" id="e2" style="top:164px"><span>Câmera Doca 02</span><div class="nv"><b class="z" id="e2a">—</b><b id="e2b" style="color:var(--warn)">aguardando</b><b id="e2c" style="color:var(--ok)">online</b></div></div>
+      <div class="nr" id="e2" style="top:164px"><span>Câmera Doca 02</span><div class="nv"><b class="z" id="e2a">—</b><b id="e2b" style="color:var(--wait)">aguardando</b><b id="e2c" style="color:var(--ok)">online</b></div></div>
       <div class="nr" id="e3" style="top:228px"><span>Motor de vídeo</span><div class="nv"><b class="z" id="e3a">—</b><b id="e3b" style="color:var(--info)">3 detecções</b><b id="e3c" style="color:var(--accent)">1 cena</b></div></div>
     </div>
   </div>
@@ -349,8 +353,13 @@ p{margin:0}
   <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 (function () {
+  // Brand amber literals for GSAP tweens (GSAP cannot interpolate var()); glow() needs the rgb() form
+  var AMBER = WELABS_BRAND.color.amber, AMBER_RGBFN = "rgb(" + WELABS_BRAND.color.amberRgb + ")";
+  // Alert tone replaces the retired state yellow in tweens (credential vault, duplicate)
+  var WARN = WELABS_BRAND.color.warn, WARN_RGBFN = "rgb(" + WELABS_BRAND.color.warnRgb + ")";
   // ÍCONES
   var IC = {
     cam: '<path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
@@ -426,12 +435,12 @@ p{margin:0}
   tl.to("#lockFly", { x: 1744, y: 255, duration: 0.6, ease: "power2.inOut" }, 2.7);
   tl.to("#lockFly", { opacity: 0, duration: 0.12 }, 3.3);
   fadeIn("#vault", 3.28, 0.2);
-  glow("#r1", "rgb(245,181,68)", 3.28);
+  glow("#r1", WARN_RGBFN, 3.28);
   fadeOut("#dlg", 2.6, 0.3);
   fadeIn("#clist", 2.95, 0.3);
   tl.fromTo("#newrow", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 2.95);
   swap("#r2a", "#r2b", 3.3);
-  glow("#r2", "rgb(245,181,68)", 3.4);
+  glow("#r2", WARN_RGBFN, 3.4);
   tl.fromTo("#credNote", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: E, immediateRender: false }, 3.4);
 
   // BATIDA 2 · Estado desejado por conexão de saída
@@ -441,7 +450,7 @@ p{margin:0}
   tl.fromTo("#sAg", { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, 6.1);
   swap("#r3a", "#r3b", 6.2); glow("#r3", "rgb(125,180,255)", 6.3);
   packet(6.55, true, "#7DB4FF");
-  packet(7.35, false, "#FF452B");
+  packet(7.35, false, AMBER);
   swap("#e1a", "#e1b", 7.95); swap("#e2a", "#e2b", 7.95); glow("#e1", "rgb(61,214,140)", 8.0);
   packet(8.15, true, "#3DD68C");
   swap("#r3b", "#r3c", 8.75); glow("#r3", "rgb(61,214,140)", 8.8);
@@ -463,7 +472,7 @@ p{margin:0}
   pane("#pDet", "#pLive", 15.2);
   fadeIn("#hl", 16.0, 0.3);
   tl.fromTo("#tkt", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: E, immediateRender: false }, 16.5);
-  glow("#e2", "rgb(255,69,43)", 16.5);
+  glow("#e2", AMBER_RGBFN, 16.5);
 
   // BATIDA 5 · Três detecções viram uma cena
   cap(4, 18.9, 24.4);
@@ -483,22 +492,22 @@ p{margin:0}
   fadeIn("#scene", 22.05, 0.35); fadeIn("#sarr", 22.2, 0.3);
   tl.fromTo("#scard", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, 22.2);
   fadeIn("#honest", 22.25, 0.3);
-  swap("#e3b", "#e3c", 21.85); glow("#e3", "rgb(255,69,43)", 21.9);
+  swap("#e3b", "#e3c", 21.85); glow("#e3", AMBER_RGBFN, 21.9);
 
   // BATIDA 6 · A cena abre uma ocorrência; a duplicata é reconhecida
   cap(5, 24.4, 30.0);
   calm("#e3", 24.4);
   tab(0, 24.45, 1);
   pane("#pFocus", "#pOcc", 24.45);
-  packet(24.9, true, "#FF452B");
+  packet(24.9, true, AMBER);
   swap("#r4a", "#r4b", 25.4); glow("#r4", "rgb(125,180,255)", 25.45);
   swap("#k0", "#k1", 25.4);
   tl.fromTo("#orow", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 25.45);
   tl.fromTo("#tx", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 25.75);
-  packet(26.25, true, "#FF452B");
+  packet(26.25, true, AMBER);
   tl.fromTo("#ghost", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: E, immediateRender: false }, 26.4);
-  swap("#gh0", "#gh1", 26.9); tl.to("#ghost", { borderColor: "#F5B544", duration: 0.3 }, 26.9);
-  swap("#r4b", "#r4c", 26.9); glow("#r4", "rgb(245,181,68)", 26.95);
+  swap("#gh0", "#gh1", 26.9); tl.to("#ghost", { borderColor: WARN, duration: 0.3 }, 26.9);
+  swap("#r4b", "#r4c", 26.9); glow("#r4", WARN_RGBFN, 26.95);
   tl.fromTo("#human", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: E, immediateRender: false }, 27.5);
 
   // FECHO

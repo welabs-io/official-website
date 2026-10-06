@@ -7,15 +7,21 @@
 <style>
 /* TIPOGRAFIA E TOKENS WELABS */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--card:#1C1C22;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;--ok:#3DD598;--bad:#FF7A85;--wait:#F5B94A;--opt:#9EA3FF;--info:#7DB7FF}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite.
+   --wait keeps its name but now carries the wait lilac (paused, queued); the old state yellow read as brand amber.
+   --waitt is its soft surface; partial maturity and the Logic node use the brand alert orange */
+:root{--bg:#10141C;--panel:#17171B;--card:#1C1C22;--line:#3A3A42;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;--ok:#3DD598;--bad:#FF7A85;--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--opt:#9EA3FF;--info:#7DB7FF}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);width:1920px;height:1080px;overflow:hidden}
 #root{position:relative;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
 p{white-space:nowrap}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 /* CABEÇALHO */
 #title{position:absolute;left:60px;top:34px;font-size:56px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
 #title span{color:var(--coral)}
-#seal{position:absolute;right:60px;top:38px;height:58px;width:auto;opacity:0}
+/* New SVG logo (ratio 4.25) at the ~48 px seal height, centred on the title line */
+#seal{position:absolute;right:60px;top:43px;height:48px;width:auto;opacity:0}
 #demo{position:absolute;right:330px;top:46px;font-size:26px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;opacity:0}
 /* CANVAS EM GRAFO */
 #cv{position:absolute;left:60px;top:136px;width:1800px;height:794px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#111115;opacity:0}
@@ -45,10 +51,10 @@ p{white-space:nowrap}
 .sp8{height:8px}
 .rb{position:absolute;left:16px;top:-54px;height:46px;font-size:30px;font-weight:700;line-height:40px;padding:0 14px;border-radius:20px;border:3px solid;white-space:nowrap;opacity:0;display:flex;align-items:center;gap:8px}
 .rb.ok{background:#0F2A20;color:var(--ok);border-color:var(--ok)}
-.rb.wt{background:#2E2410;color:var(--wait);border-color:var(--wait)}
+.rb.wt{background:var(--waitt);color:var(--wait);border-color:var(--wait)}
 .nd[data-t=trig]{--acc:#7DB7FF;--tint:rgba(125,183,255,.16)}
 .nd[data-t=menu]{--acc:#9EA3FF;--tint:rgba(158,163,255,.16)}
-.nd[data-t=cond]{--acc:#F5B94A;--tint:rgba(245,185,74,.16)}
+.nd[data-t=cond]{--acc:var(--wl-warn);--tint:rgba(var(--wl-warn-rgb),.16)}
 .nd[data-t=agent]{--acc:#C3A2FF;--tint:rgba(195,162,255,.16)}
 .nd[data-t=tag]{--acc:#FF8CC0;--tint:rgba(255,140,192,.16)}
 .nd[data-t=assign]{--acc:#3DD598;--tint:rgba(61,213,152,.16)}
@@ -60,10 +66,11 @@ p{white-space:nowrap}
 #cbar .tt{font-size:28px;font-weight:800;white-space:nowrap}
 #cbar .gr{flex:1}
 .bt{height:48px;border-radius:12px;border:2px solid var(--line);color:var(--text);display:flex;align-items:center;gap:8px;padding:0 16px;font-size:26px;font-weight:700;white-space:nowrap;background:#1F1F25}
-.bt.p{background:var(--coral);border-color:var(--coral)}
+/* Amber fills carry the brand ink (text and currentColor icons), never white (AA contrast) */
+.bt.p{background:var(--coral);border-color:var(--coral);color:var(--wl-ink-on-amber)}
 .seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;height:48px}
 .seg span{padding:0 16px;display:flex;align-items:center;font-size:26px;font-weight:700;color:var(--muted)}
-#sgE{background:var(--coral);color:#fff}
+#sgE{background:var(--coral);color:var(--wl-ink-on-amber)}
 #stc{position:relative;height:48px;width:150px}
 #stc span{position:absolute;right:0;top:0;height:48px;display:flex;align-items:center;padding:0 16px;border-radius:999px;border:2px solid;font-size:26px;font-weight:700;white-space:nowrap}
 #st0{color:var(--muted);border-color:var(--line)}
@@ -93,19 +100,19 @@ p{white-space:nowrap}
 .tg{font-size:24px;font-weight:700;padding:2px 12px;border-radius:999px;background:#2A2A33;color:var(--text);white-space:nowrap}
 .tg.ai{background:rgba(195,162,255,.18);color:#C3A2FF}
 .tg.ok{background:#0F2A20;color:var(--ok)}
-.tg.wt{background:#2E2410;color:var(--wait)}
-.tg.pc{background:#2E2410;color:var(--wait);border:2px solid var(--wait)}
+.tg.wt{background:var(--waitt);color:var(--wait)}
+.tg.pc{background:var(--wl-warn-soft);color:var(--wl-warn);border:2px solid var(--wl-warn)}
 .rule{margin:12px 22px 0;border:2px solid var(--line);border-radius:14px;padding:4px 0 14px}
 .rule .fd{padding-top:10px}
 .seg2{display:inline-flex;border:2px solid var(--line);border-radius:10px;overflow:hidden;vertical-align:middle}
 .seg2 span{padding:2px 12px;font-size:24px;font-weight:700;color:var(--muted)}
-.seg2 span.on{background:var(--coral);color:#fff}
+.seg2 span.on{background:var(--coral);color:var(--wl-ink-on-amber)}
 .add{margin:12px 22px 0;height:48px;border:2px dashed var(--line);border-radius:12px;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:26px;font-weight:700;color:var(--muted);white-space:nowrap}
 #run{right:14px;width:540px}
 .rs{position:relative;height:62px;margin:10px 22px 0}
 .rs span.s{position:absolute;left:0;top:6px;height:48px;display:flex;align-items:center;gap:8px;padding:0 16px;border-radius:999px;border:2px solid;font-size:26px;font-weight:700;white-space:nowrap;opacity:0}
 #rsA{color:var(--info);border-color:var(--info);opacity:1}
-#rsB{color:var(--wait);border-color:var(--wait);background:#2E2410}
+#rsB{color:var(--wait);border-color:var(--wait);background:var(--waitt)}
 #rsC{color:var(--ok);border-color:var(--ok);background:#0F2A20}
 .rs .meta{position:absolute;right:0;top:16px;font-size:24px;color:var(--muted);font-weight:600;white-space:nowrap}
 .rh{padding:4px 22px 4px;font-size:24px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
@@ -118,7 +125,7 @@ p{white-space:nowrap}
 #chat .m{font-size:24px;color:var(--muted);font-weight:600}
 .bub{display:inline-block;margin-top:8px;border-radius:16px;padding:8px 16px;font-size:26px;font-weight:600;background:#21402F;color:#E8FFF3;white-space:nowrap}
 #map{margin-top:10px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap;opacity:0}
-.obs{margin:12px 22px 0;height:52px;display:flex;align-items:center;justify-content:space-between;border:2px dashed var(--wait);border-radius:12px;padding:0 14px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+.obs{margin:12px 22px 0;height:52px;display:flex;align-items:center;justify-content:space-between;border:2px dashed var(--wl-warn);border-radius:12px;padding:0 14px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
 /* LEGENDA DAS BATIDAS */
 #caps{position:absolute;left:60px;right:60px;top:950px;height:96px}
 .cap{position:absolute;left:0;right:0;top:0;height:96px;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#1A1A1F;border-left:8px solid var(--coral);font-size:34px;font-weight:700;line-height:1.15;opacity:0;white-space:nowrap}
@@ -127,9 +134,9 @@ p{white-space:nowrap}
 </head>
 <body>
 <div id="root" data-composition-id="crm-flow-builder" data-width="1920" data-height="1080" data-start="0" data-duration="32">
-  <div id="title">CRM · <span>Automações</span></div>
+  <div id="title"><span data-wl-name="crm">CRM</span> · <span>Automações</span></div>
   <div id="demo">DEMO · reconstrução ilustrativa</div>
-  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
 
   <!-- QUADRO DO EDITOR -->
   <div id="cv">
@@ -168,7 +175,7 @@ p{white-space:nowrap}
         <div class="pi"><i style="background:#62A8E8"></i>Chamar API</div>
         <div class="pi" id="pEnd"><i style="background:#FF7A85"></i>Encerrar conversa</div>
       </div></div>
-      <div class="pg"><h4>Lógica</h4><div class="pgr"><div class="pi" id="pCond"><i style="background:#F5B94A"></i>Condição (Se)</div></div></div>
+      <div class="pg"><h4>Lógica</h4><div class="pgr"><div class="pi" id="pCond"><i style="background:var(--wl-warn)"></i>Condição (Se)</div></div></div>
     </div>
 
     <!-- PAINEL DO NÓ SELECIONADO -->
@@ -217,8 +224,11 @@ p{white-space:nowrap}
   <div id="caps"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 (function(){
+  // Literal brand colors for GSAP tweens and generated SVG (GSAP cannot tween var())
+  var AMB=WELABS_BRAND.color.amber,AMB_RGB=WELABS_BRAND.color.amberRgb;
   // ÍCONES (traços simples, estilo lucide)
   var IC={
     msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
@@ -273,7 +283,8 @@ p{white-space:nowrap}
     n.h=HDR+n.rows.length*ROW+(n.outs?n.outs.length*ROW:8);
   });
   // ARESTAS BEZIER (entrada à esquerda no cabeçalho, saída por linha nomeada)
-  var TONE={ok:"#3DD598",bad:"#FF7A85",opt:"#9EA3FF",wait:"#F5B94A",plain:"#8A8A96"};
+  // Wait tone is the brand wait lilac (literal value for generated SVG)
+  var TONE={ok:"#3DD598",bad:"#FF7A85",opt:"#9EA3FF",wait:WELABS_BRAND.color.wait,plain:"#8A8A96"};
   function src(n,oi){if(oi<0)return {x:n.x+W,y:n.y+55};return {x:n.x+W,y:n.y+HDR+n.rows.length*ROW+oi*ROW+ROW/2};}
   var EG=[["e1","trig",-1,"menu","plain"],["e2","menu",0,"cond","opt"],["e3","menu",1,"cond","opt"],["e4","cond",0,"agent","ok"],["e5","cond",1,"tag","bad"],["e6","tag",-1,"assign","plain"],["e7","agent",-1,"end","plain"]];
   var sv='<svg id="edges" width="2200" height="700" viewBox="0 0 2200 700">';
@@ -287,7 +298,7 @@ p{white-space:nowrap}
     sv+='<path class="et" id="et-'+e[0]+'" d="'+d+'"/>';
     sv+='<polygon class="ah" id="ah-'+e[0]+'" points="'+(b.x-30)+','+(b.y-11)+' '+(b.x-10)+','+b.y+' '+(b.x-30)+','+(b.y+11)+'" fill="'+TONE[e[4]]+'"/>';
   });
-  sv+='</svg><div id="tok" style="position:absolute;left:0;top:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#FF452B;border:6px solid #fff;box-shadow:0 0 0 8px rgba(255,69,43,.3);opacity:0;z-index:6"></div>';
+  sv+='</svg><div id="tok" style="position:absolute;left:0;top:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:'+AMB+';border:6px solid #fff;box-shadow:0 0 0 8px rgba('+AMB_RGB+',.3);opacity:0;z-index:6"></div>';
   document.getElementById("world").innerHTML=sv+h;
   var LEN={},PEL={};
   EG.forEach(function(e){var p=document.getElementById("eb-"+e[0]);PEL[e[0]]=p;LEN[e[0]]=p.getTotalLength();
@@ -299,15 +310,16 @@ p{white-space:nowrap}
 
   // MINIMAPA (mundo -300..2500 x -400..1200 em 280x160)
   var MS=.1,MX=30,MY=40;
-  var RC={trig:"#7DB7FF",menu:"#9EA3FF",cond:"#F5B94A",agent:"#C3A2FF",tag:"#FF8CC0",end:"#FF7A85",assign:"#3DD598"};
+  var RC={trig:"#7DB7FF",menu:"#9EA3FF",cond:WELABS_BRAND.color.warn,agent:"#C3A2FF",tag:"#FF8CC0",end:"#FF7A85",assign:"#3DD598"};
   var mm='<defs><mask id="mmk"><rect width="280" height="160" fill="#fff"/><rect class="mmv" fill="#000" x="0" y="0" width="10" height="10"/></mask></defs>';
   ND.forEach(function(n){mm+='<rect id="m-'+n.id+'" x="'+(MX+n.x*MS)+'" y="'+(MY+n.y*MS)+'" width="'+(W*MS)+'" height="'+(n.h*MS)+'" rx="2" fill="'+RC[n.t]+'" opacity="0"/>';});
-  mm+='<rect width="280" height="160" fill="rgba(0,0,0,.35)" mask="url(#mmk)"/><rect class="mmv" fill="none" stroke="#FF452B" stroke-width="2" x="0" y="0" width="10" height="10"/>';
+  mm+='<rect width="280" height="160" fill="rgba(0,0,0,.35)" mask="url(#mmk)"/><rect class="mmv" fill="none" stroke="'+AMB+'" stroke-width="2" x="0" y="0" width="10" height="10"/>';
   put("mmsvg",mm);
 
   // LEGENDAS
   var CAPS=[
-    "Automações do CRM: canvas em grafo com paleta de gatilhos, ações e lógica",
+    // Product name comes from the brand file (single swap point)
+    "Automações do "+WELABS_BRAND.names.crm+": canvas em grafo com paleta de gatilhos, ações e lógica",
     "Gatilho “Conversa iniciada”: só os canais escolhidos disparam o fluxo",
     "Menu de opções: cada opção vira uma saída, e o fluxo pausa até a resposta",
     "Condição montada por formulário: resposta contém “orçamento” → Sim ou Não",
@@ -346,9 +358,9 @@ p{white-space:nowrap}
     tl.fromTo("#eb-"+id,{strokeDashoffset:LEN[id]},{strokeDashoffset:0,duration:.4,ease:"power1.inOut"},t);
     tl.fromTo("#ah-"+id,{opacity:0},{opacity:1,duration:.12},t+.34);
   }
-  function pflash(sel,t){tl.to(sel,{borderColor:"#FF452B",backgroundColor:"#3A1A14",duration:.15},t);tl.to(sel,{borderColor:"#3A3A42",backgroundColor:"#1F1F25",duration:.3},t+.45);}
+  function pflash(sel,t){tl.to(sel,{borderColor:AMB,backgroundColor:WELABS_BRAND.color.amberSoft,duration:.15},t);tl.to(sel,{borderColor:"#3A3A42",backgroundColor:"#1F1F25",duration:.3},t+.45);}
   function press(sel,t){tl.to(sel,{scale:.92,duration:.1},t);tl.to(sel,{scale:1,duration:.18},t+.1);}
-  function sel(id,t){tl.to("#n-"+id,{borderColor:"#FF452B",boxShadow:"0 0 0 7px rgba(255,69,43,.22), 0 6px 18px rgba(0,0,0,.35)",duration:.25},t);}
+  function sel(id,t){tl.to("#n-"+id,{borderColor:AMB,boxShadow:"0 0 0 7px rgba("+AMB_RGB+",.22), 0 6px 18px rgba(0,0,0,.35)",duration:.25},t);}
   function unsel(id,t){tl.to("#n-"+id,{borderColor:"#3A3A42",boxShadow:"0 6px 18px rgba(0,0,0,.35)",duration:.25},t);}
 
   // 1 · canvas vazio e paleta (0–2,8 s)
@@ -393,6 +405,9 @@ p{white-space:nowrap}
   cap(4,13.6,18.0);
   tl.to("#insp",{x:600,duration:.35,ease:"power2.in"},13.6);
   tl.to("#vp",{width:1796,duration:.35,ease:"power2.in"},13.6);
+  // Hide the off-canvas pane once the drawer is out: its amber chip with brand ink would otherwise
+  // be sampled against the dark page by the contrast check (no visible frame changes)
+  tl.set("#paneCond",{opacity:0},13.96);
   unsel("cond",13.6);
   cam(13.7,.7,C2,C3);
   node("agent",14.4);edge("e4",14.7);
@@ -413,7 +428,7 @@ p{white-space:nowrap}
   cap(6,21.6,29.0);
   tl.to(".bg",{opacity:0,duration:.25},21.6);
   tl.to("#sgE",{backgroundColor:"rgba(0,0,0,0)",color:"#C9C9D1",duration:.2},21.6);
-  tl.to("#sgX",{backgroundColor:"#FF452B",color:"#FFFFFF",duration:.2},21.6);
+  tl.to("#sgX",{backgroundColor:AMB,color:WELABS_BRAND.color.inkOnAmber,duration:.2},21.6);
   tl.to("#mm,#ctl",{opacity:0,duration:.3},21.6);
   tl.to("#run",{x:0,duration:.45,ease:E},21.7);
   tl.to("#vp",{width:1228,duration:.45,ease:E},21.7);
@@ -443,9 +458,9 @@ p{white-space:nowrap}
   okNode("trig",T0-.15);step("rd1","s1",T0-.1);
   var tP=SEG[1].t0, tR=SEG[2].t0;
   // pausa no menu: aguardando a resposta do contato
-  tl.to("#n-menu",{borderColor:"#F5B94A",boxShadow:"0 0 0 7px rgba(245,185,74,.22), 0 6px 18px rgba(0,0,0,.35)",duration:.25},tP);
+  tl.to("#n-menu",{borderColor:WELABS_BRAND.color.wait,boxShadow:"0 0 0 7px rgba("+WELABS_BRAND.color.waitRgb+",.22), 0 6px 18px rgba(0,0,0,.35)",duration:.25},tP);
   tl.fromTo("#rw-menu",{opacity:0,y:8},{opacity:1,y:0,duration:.25},tP);
-  tl.to("#rd2",{borderColor:"#F5B94A",duration:.2},tP);tl.to("#s2a",{opacity:1,duration:.2},tP);
+  tl.to("#rd2",{borderColor:WELABS_BRAND.color.wait,duration:.2},tP);tl.to("#s2a",{opacity:1,duration:.2},tP);
   tl.to("#rsA",{opacity:0,duration:.15},tP);tl.to("#rsB",{opacity:1,duration:.2},tP);
   tl.fromTo("#chat",{opacity:0,y:12},{opacity:1,y:0,duration:.3,ease:E},tP+.1);
   // resposta livre chega e a IA associa à opção desenhada; o fluxo retoma

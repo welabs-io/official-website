@@ -9,7 +9,14 @@ const SC = (function () {
   const lerp = (a, b, k) => a + (b - a) * k;
   const prog = (t, t0, d) => clamp01((t - t0) / d);
   const frac = (x) => x - Math.floor(x);
-  const CORAL = '255,69,43', INK = '230,230,236';
+  // Brand palette and logo outlines come from assets/brand/welabs-brand.js (generated); amber replaces the old vermilion
+  const BRAND = window.WELABS_BRAND, LOGO = BRAND.logo;
+  const AMBER = BRAND.color.amberRgb, AMBER_HEX = BRAND.color.amber, INK = '230,230,236';
+  // Pale amber for the output comets (was pale vermilion)
+  const AMBER_PALE = '255,226,170';
+  const WL_VB = { w: LOGO.w, h: LOGO.h };
+  // Bounding box of the "w" glyph in the Ibrand outlines (x 0..240.6, y 60..210)
+  const WL_W_BOX = { x: 0, y: 60, w: 240.6, h: 150 };
 
   // Platform node (the knot every stream runs through)
   const K = [1040, 540], KR = 26;
@@ -62,15 +69,13 @@ const SC = (function () {
   const MARK_T0 = 4.75, MARK_D = 0.45, MARK_W0 = 300;
   const GLIDE_T0 = 5.3, GLIDE_D = 0.7;
   const TRACE_T0 = 5.75, TRACE_STEP = 0.12, TRACE_D = 0.55, FILL_T0 = 6.0, FILL_STEP = 0.1, FILL_D = 0.4;
-  const SLOGAN_T0 = 6.2, SLOGAN_D = 0.35;
 
-  // Final lockup: logo-slogan 905x288 scaled 1.1, centered horizontally
-  const S = 1.1, LW = WL_VB.w * S, LX = (W - LW) / 2, LY = 318;
+  // New lockup: Ibrand logo 905x213 without slogan, scaled 1.2 and centered above the editorial line
+  const S = 1.2, LW = WL_VB.w * S, LX = (W - LW) / 2, LY = 372;
   const SLOT = { cx: LX + (WL_W_BOX.x + WL_W_BOX.w / 2) * S, cy: LY + (WL_W_BOX.y + WL_W_BOX.h / 2) * S, w: WL_W_BOX.w * S };
-  const markPath = new Path2D(WL_MARK);
-  const wPath = new Path2D(WL_W);
-  const letters = [{ p: new Path2D(WL_E), col: CORAL, L: 900 }, { p: new Path2D(WL_LABS), col: '255,255,255', L: 3400 }];
-  const sloganPath = new Path2D(WL_SLOGAN);
+  // The knot becomes the amber "w" itself (the old separate vermilion mark no longer exists)
+  const wPath = new Path2D(LOGO.w0);
+  const letters = [{ p: new Path2D(LOGO.e), col: AMBER, L: 900 }, { p: new Path2D(LOGO.labs), col: '255,255,255', L: 3400 }];
 
   const pulseAlpha = (t) => prog(t, 1.3, 0.4) * (1 - prog(t, COL_T0 - 0.05, 0.3));
 
@@ -128,7 +133,7 @@ const SC = (function () {
           ctx.beginPath(); ctx.arc(IN_X0, s.c.pts[0][1], 5, 0, Math.PI * 2); ctx.fill();
         }
         if (!s.planned && pa > 0) {
-          for (let m = 0; m < 2; m++) drawComet(ctx, s.c, frac((t - 1.0) * 0.42 + s.phase + m * 0.5), lo, hi, pa, CORAL);
+          for (let m = 0; m < 2; m++) drawComet(ctx, s.c, frac((t - 1.0) * 0.42 + s.phase + m * 0.5), lo, hi, pa, AMBER);
         }
       });
 
@@ -140,10 +145,10 @@ const SC = (function () {
         strokeRange(ctx, s.c, 0, hi);
         const na = prog(t, s.t0 + OUT_D - 0.1, 0.2) * (1 - prog(t, COL_T0, 0.3));
         if (na > 0) {
-          ctx.strokeStyle = 'rgba(' + CORAL + ',' + na + ')'; ctx.lineWidth = 2.5;
+          ctx.strokeStyle = 'rgba(' + AMBER + ',' + na + ')'; ctx.lineWidth = 2.5;
           ctx.beginPath(); ctx.arc(OUT_X1, s.c.pts[s.c.pts.length - 1][1], 7, 0, Math.PI * 2); ctx.stroke();
         }
-        if (pa > 0) for (let m = 0; m < 2; m++) drawComet(ctx, s.c, frac((t - 1.8) * 0.5 + s.phase + m * 0.5), 0, hi, pa, '255,214,204');
+        if (pa > 0) for (let m = 0; m < 2; m++) drawComet(ctx, s.c, frac((t - 1.8) * 0.5 + s.phase + m * 0.5), 0, hi, pa, AMBER_PALE);
       });
     }
 
@@ -151,39 +156,40 @@ const SC = (function () {
     const kIn = easeOutBack(prog(t, 1.45, 0.4)), kOut = 1 - prog(t, MARK_T0, 0.25);
     if (kIn > 0 && kOut > 0) {
       const r = KR * kIn * (1 + 0.25 * col);
-      ctx.fillStyle = 'rgba(' + CORAL + ',' + kOut + ')';
+      ctx.fillStyle = 'rgba(' + AMBER + ',' + kOut + ')';
       ctx.beginPath(); ctx.arc(K[0], K[1], r * 0.55, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = 'rgba(' + CORAL + ',' + 0.6 * kOut + ')'; ctx.lineWidth = 2.5;
+      ctx.strokeStyle = 'rgba(' + AMBER + ',' + 0.6 * kOut + ')'; ctx.lineWidth = 2.5;
       ctx.beginPath(); ctx.arc(K[0], K[1], r, 0, Math.PI * 2); ctx.stroke();
       // Breathing ring while traffic flows
       if (t > 2.0 && t < COL_T0 + 0.4) {
         const ph = frac((t - 2.0) / 1.1), ra = (1 - ph) * 0.4 * (1 - prog(t, COL_T0, 0.4));
-        ctx.strokeStyle = 'rgba(' + CORAL + ',' + ra + ')'; ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(' + AMBER + ',' + ra + ')'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(K[0], K[1], KR + 46 * easeOut(ph), 0, Math.PI * 2); ctx.stroke();
       }
     }
 
-    // MARCA: o "W" nasce no nó e desliza para o seu lugar no logotipo
+    // MARCA: o "w" âmbar do logo nasce no nó e desliza para o seu lugar no logotipo
     if (t >= MARK_T0) {
       if (t < GLIDE_T0 + GLIDE_D) {
-        const m = markGeom(t), sc = m.w / WL_MARK_VB.w;
+        const m = markGeom(t), sc = m.w / WL_W_BOX.w;
         if (sc > 0) {
           ctx.save();
           ctx.globalAlpha = prog(t, MARK_T0, 0.12);
           ctx.translate(m.cx, m.cy); ctx.rotate(-0.25 * (1 - easeOut(prog(t, MARK_T0, MARK_D)))); ctx.scale(sc, sc);
-          ctx.translate(-WL_MARK_VB.w / 2, -WL_MARK_VB.h / 2);
-          ctx.fillStyle = WL_VERMILION; ctx.fill(markPath);
+          // Center the "w" glyph on the knot (it is the logo's own "w", not a separate mark)
+          ctx.translate(-(WL_W_BOX.x + WL_W_BOX.w / 2), -(WL_W_BOX.y + WL_W_BOX.h / 2));
+          ctx.fillStyle = AMBER_HEX; ctx.fill(wPath);
           ctx.restore();
         }
       } else {
         ctx.save(); ctx.translate(LX, LY); ctx.scale(S, S);
-        ctx.fillStyle = WL_VERMILION; ctx.fill(wPath);
+        ctx.fillStyle = AMBER_HEX; ctx.fill(wPath);
         ctx.restore();
       }
       // Settle ring when the W lands
       const rk = prog(t, GLIDE_T0 + GLIDE_D - 0.05, 0.6);
       if (rk > 0 && rk < 1) {
-        ctx.strokeStyle = 'rgba(' + CORAL + ',' + 0.4 * (1 - rk) + ')'; ctx.lineWidth = 2.5;
+        ctx.strokeStyle = 'rgba(' + AMBER + ',' + 0.4 * (1 - rk) + ')'; ctx.lineWidth = 2.5;
         ctx.beginPath(); ctx.arc(SLOT.cx, SLOT.cy, 110 + 120 * easeOut(rk), 0, Math.PI * 2); ctx.stroke();
       }
     }
@@ -201,14 +207,7 @@ const SC = (function () {
       }
       ctx.restore();
     });
-
-    // SLOGAN DA MARCA ("think beyond")
-    const sk = easeOut(prog(t, SLOGAN_T0, SLOGAN_D));
-    if (sk > 0) {
-      ctx.save(); ctx.globalAlpha = sk; ctx.translate(LX, LY + 10 * (1 - sk)); ctx.scale(S, S);
-      ctx.fillStyle = '#FFFFFF'; ctx.fill(sloganPath);
-      ctx.restore();
-    }
+    // No slogan: the new brand material has none, so the lockup is the logo plus the editorial line (DOM)
   }
 
   const settleAt = (t) => easeInOut(prog(t, COL_T0, 1.6));

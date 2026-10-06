@@ -7,16 +7,21 @@
 <style>
 /* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--blue:#7AA7FF}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--blue:#7AA7FF}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
-#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
-#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header in a row, so a longer product name pushes the kicker instead of overlapping it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;display:flex;align-items:center}
+#wm{position:relative;flex:none;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
-#kick{position:absolute;left:186px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
-#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
-#seal{position:absolute;right:0;top:10px;height:52px}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 
 /* CARTAS DE VERSÃO DA REGRA */
@@ -28,8 +33,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .ln{position:relative;display:flex;align-items:center;gap:18px;height:62px;margin-top:10px;font-size:30px;font-weight:700;white-space:nowrap}
 .ln:first-of-type{margin-top:24px}
 .ln i{width:42px;height:42px;border-radius:12px;background:var(--panel2);color:var(--muted);font-style:normal;font-size:24px;font-weight:800;display:grid;place-items:center;flex:none}
-.ln.new{color:#FF8A78}
-.ln.new i{background:rgba(255,69,43,.2);color:var(--coral)}
+/* New rule line: light coral accent became the light brand amber */
+.ln.new{color:#FFC75A}
+.ln.new i{background:rgba(var(--wl-amber-rgb),.2);color:var(--coral)}
 .ok{position:absolute;right:0;top:9px;width:44px;height:44px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
 .pill{position:absolute;right:34px;top:34px;height:46px;padding:0 18px;border-radius:23px;font-size:24px;font-weight:700;display:flex;align-items:center;gap:8px;opacity:0;white-space:nowrap}
 .draft{border:2px dashed var(--muted);color:var(--muted)}
@@ -49,7 +55,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 /* REGISTRO DE QUEM MUDOU */
 .row{position:absolute;left:560px;width:800px;height:62px;border-radius:31px;background:var(--panel2);border:2px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 10px;font-size:30px;font-weight:700;opacity:0;white-space:nowrap}
 .row em{width:44px;height:44px;border-radius:50%;font-style:normal;font-size:24px;font-weight:800;display:grid;place-items:center;flex:none}
-.row .a{background:var(--coral);color:#fff}.row .b{background:var(--blue);color:#0B1430}
+/* Initial on an amber disc uses the dark ink for AA contrast */
+.row .a{background:var(--coral);color:var(--wl-ink-on-amber)}.row .b{background:var(--blue);color:#0B1430}
 #r1{top:660px}#r2{top:734px}#r3{top:808px}
 
 /* FECHO */
@@ -65,10 +72,10 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 <body>
 <div id="root" data-composition-id="flow-lifecycle" data-width="1920" data-height="1080" data-start="0" data-duration="35">
   <div id="hd">
-    <div id="wm">Flow<span>.</span></div>
+    <div id="wm"><span data-wl-name="flow">Flow</span><span>.</span></div>
     <div id="kick">Some o medo de mexer na regra</div>
     <div id="demo">DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div class="card" id="v2">
@@ -108,11 +115,13 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <div id="close">
     <div class="l1">Mude a regra com segurança,<br><span>sabendo quem mudou o quê.</span></div>
-    <div class="brand"><div class="bw">Flow<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw"><span data-wl-name="flow">Flow</span><span>.</span></div></div>
     <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {

@@ -7,16 +7,21 @@
 <style>
 /* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
-#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
-#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header in a row, so a longer product name pushes the kicker instead of overlapping it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;display:flex;align-items:center}
+#wm{position:relative;flex:none;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
-#kick{position:absolute;left:186px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
-#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
-#seal{position:absolute;right:0;top:10px;height:52px}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 
 /* A FRASE DA PESSOA */
@@ -25,23 +30,24 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #ana{left:150px;top:196px}
 #say{position:absolute;left:360px;top:180px;width:1360px;height:220px;border-radius:34px 34px 34px 8px;background:var(--panel2);border:3px solid var(--line);padding:38px 46px;font-size:44px;font-weight:700;line-height:64px;opacity:0}
 .w{opacity:0}
-.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(255,69,43,0)}
+.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(var(--wl-amber-rgb),0)}
 
 /* BLOCOS SUGERIDOS E REVISADOS */
 .blk{position:absolute;top:560px;width:400px;height:150px;border-radius:30px;background:var(--panel);display:flex;align-items:center;gap:22px;padding:0 30px;font-size:34px;font-weight:700;line-height:40px;opacity:0}
-.blk .ic{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral);flex:none}
+.blk .ic{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral);flex:none}
 .dash{position:absolute;inset:0;border-radius:30px;border:3px dashed #8A8A99}
 .solid{position:absolute;inset:0;border-radius:30px;border:3px solid var(--ok);opacity:0}
-.glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(255,69,43,.55);opacity:0}
+.glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(var(--wl-amber-rgb),.55);opacity:0}
 .sg{position:absolute;left:24px;top:-22px;height:40px;padding:0 14px;border-radius:20px;background:#2A2A33;border:2px dashed #8A8A99;color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
 .tick{position:absolute;right:-20px;top:-20px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
 #b1{left:260px}#b2{left:760px}#b3{left:1260px}
 #wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
 #wires path{fill:none;stroke:var(--coral);stroke-width:6;stroke-linecap:round}
 #wires .hd{fill:var(--coral);opacity:0}
-#due{position:absolute;left:820px;top:730px;width:280px;height:52px;border-radius:26px;border:2px solid var(--coral);background:#2A1210;color:#FF8A78;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;white-space:nowrap}
+/* Deadline chip is the reviewer's accent, not an alert: reddish surface and light coral text became the brand amber surface and light amber */
+#due{position:absolute;left:820px;top:730px;width:280px;height:52px;border-radius:26px;border:2px solid var(--coral);background:var(--wl-amber-soft);color:#FFC75A;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;white-space:nowrap}
 #cur{position:absolute;left:1000px;top:640px;width:44px;height:44px;opacity:0}
-#dot{position:absolute;left:640px;top:617px;width:36px;height:36px;border-radius:50%;background:var(--coral);border:4px solid #FFD0C8;box-shadow:0 0 24px rgba(255,69,43,.9);opacity:0}
+#dot{position:absolute;left:640px;top:617px;width:36px;height:36px;border-radius:50%;background:var(--coral);border:4px solid #FFC75A;box-shadow:0 0 24px rgba(var(--wl-amber-rgb),.9);opacity:0}
 
 /* ATIVAR */
 #tg{position:absolute;left:770px;top:440px;width:380px;height:84px;border-radius:42px;background:var(--panel2);border:3px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 14px 0 36px;font-size:34px;font-weight:800;opacity:0}
@@ -65,10 +71,10 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 <body>
 <div id="root" data-composition-id="flow-copilot" data-width="1920" data-height="1080" data-start="0" data-duration="32">
   <div id="hd">
-    <div id="wm">Flow<span>.</span></div>
+    <div id="wm"><span data-wl-name="flow">Flow</span><span>.</span></div>
     <div id="kick">Some a página em branco</div>
     <div id="demo">DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div class="av" id="ana"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Ana · DEMO</div></div>
@@ -96,11 +102,13 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <div id="close">
     <div class="l1">Você descreve, revisa e ativa.<br><span>Do texto ao processo rodando.</span></div>
-    <div class="brand"><div class="bw">Flow<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw"><span data-wl-name="flow">Flow</span><span>.</span></div></div>
     <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
@@ -123,7 +131,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   // Batida 2: as frases viram blocos (6,5–12,4 s)
   inn('#c2', 6.5, { y: 16 });
-  ['#k1', '#k2', '#k3'].forEach(function (k, i) { tl.to(k, { backgroundColor: 'rgba(255,69,43,0.28)', duration: 0.3 }, 6.8 + 0.3 * i); });
+  // Phrase highlight uses the brand amber as a literal rgba: GSAP cannot tween var()
+  ['#k1', '#k2', '#k3'].forEach(function (k, i) { tl.to(k, { backgroundColor: 'rgba(' + WELABS_BRAND.color.amberRgb + ',0.28)', duration: 0.3 }, 6.8 + 0.3 * i); });
   tl.fromTo('#b1', { opacity: 0, x: 300, y: -310, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 7.8);
   tl.fromTo('#b2', { opacity: 0, x: -120, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.3);
   tl.fromTo('#b3', { opacity: 0, x: -60, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.8);

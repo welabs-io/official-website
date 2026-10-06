@@ -5,29 +5,31 @@
 <meta name="viewport" content="width=1920, height=1080">
 <title>Welabs · Abertura</title>
 <style>
-/* BASE DA ABERTURA */
-@font-face{font-family:Sora;src:url("./assets/fonts/Sora-latin.woff2") format("woff2");font-weight:100 800;font-display:block}
-@font-face{font-family:"DM Sans";src:url("./assets/fonts/DMSans-latin.woff2") format("woff2");font-weight:100 1000;font-display:block}
-html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:#0B0B0D}
-#root{position:relative;width:100%;height:100%;overflow:hidden;background:#0B0B0D;font-family:"DM Sans",sans-serif;color:#fff}
+/* BASE DA ABERTURA (marca âmbar: fundo grafite, texto Inter; cores em assets/brand/welabs-brand.js) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:#10141C}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
 #bg,#fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
 .lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
 .lbl.in{left:150px}
-.lbl.out{right:150px;text-align:right;font-family:Sora,sans-serif;font-weight:600}
+.lbl.out{right:150px;text-align:right;font-weight:600}
+/* Official product symbol (brand/svg/<key>-mark-dark.svg) before the product name */
+.lbl .mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
 .lbl .soon{font-size:24px;font-weight:500;color:#A9A9B3;margin-left:14px;letter-spacing:.02em}
-#line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-family:Sora,sans-serif;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
 </style>
 </head>
 <body>
 <div id="root" data-composition-id="welabs-intro" data-width="1920" data-height="1080" data-duration="8.5">
   <canvas id="bg" width="1920" height="1080" aria-hidden="true"></canvas>
   <canvas id="fg" width="1920" height="1080" aria-hidden="true"></canvas>
-  <div class="lbl in" id="in0" style="top:176px">Flow</div>
-  <div class="lbl in" id="in1" style="top:300px">Hub de domínio</div>
-  <div class="lbl in" id="in2" style="top:424px">KB</div>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <div class="lbl in" id="in0" style="top:176px"><img class="mk" src="./assets/brand/marks/flow-mark-dark.svg" alt=""><span data-wl-name="flow">Flow</span></div>
+  <div class="lbl in" id="in1" style="top:300px"><img class="mk" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span data-wl-name="hub">Hub de domínio</span></div>
+  <div class="lbl in" id="in2" style="top:424px"><img class="mk" src="./assets/brand/marks/lore-mark-dark.svg" alt=""><span data-wl-name="kb">KB</span></div>
   <!-- Lower streams rise toward the knot, so their labels sit below the line -->
-  <div class="lbl in" id="in3" style="top:614px">CRM</div>
-  <div class="lbl in" id="in4" style="top:738px">Channels</div>
+  <div class="lbl in" id="in3" style="top:614px"><img class="mk" src="./assets/brand/marks/kin-mark-dark.svg" alt=""><span data-wl-name="crm">CRM</span></div>
+  <div class="lbl in" id="in4" style="top:738px"><img class="mk" src="./assets/brand/marks/vox-mark-dark.svg" alt=""><span data-wl-name="channels">Channels</span></div>
   <div class="lbl in" id="in5" style="top:862px">Monitoramento<span class="soon">previsto</span></div>
   <div class="lbl out" id="out0" style="top:276px">SaaS</div>
   <div class="lbl out" id="out1" style="top:486px">Apps</div>
@@ -36,7 +38,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:#0B0B0D
 </div>
 <script src="./assets/js/gsap.min.js"></script>
 <script src="./assets/js/shaders.js"></script>
-<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script src="./assets/js/choreography.js"></script>
 <script>
 // RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)

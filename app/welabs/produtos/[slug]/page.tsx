@@ -8,6 +8,7 @@ import {
 } from "@/lib/framepacks.server";
 import { idFromSlug, publicSlug, retiredSlug } from "@/lib/public-slugs";
 import motionProducts from "@/lib/motion-products.json";
+import { WELABS_ICONS } from "@/lib/welabs-icons";
 // Public slugs replace internal ids in URLs; the old id redirects to the public slug.
 // Film-only Welabs products (Channels) share this route with the presentation pages.
 const motionProduct = (slug: string) =>
@@ -35,7 +36,7 @@ export async function generateMetadata({
       title: `${m.title} | Welabs`,
       description: m.summary[en ? 1 : 0],
       robots: { index: false, follow: false },
-      icons: { icon: "/brands/welabs/welabs-favicon.svg" },
+      icons: WELABS_ICONS,
     };
   }
   const p = getFramepack(idFromSlug(slug));
@@ -47,7 +48,7 @@ export async function generateMetadata({
     title: `${d.title} | ${p.item.publisher}`,
     description: d.summary,
     robots: { index: false, follow: false },
-    icons: { icon: "/brands/welabs/welabs-favicon.svg" },
+    icons: WELABS_ICONS,
     openGraph: {
       type: "website",
       siteName: p.item.publisher,

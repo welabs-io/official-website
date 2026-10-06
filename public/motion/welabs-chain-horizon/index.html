@@ -7,16 +7,20 @@
 <style>
 /* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 #hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
 #wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
-#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
-#seal{position:absolute;right:0;top:10px;height:52px}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 .sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
@@ -24,13 +28,14 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #sea{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
 #sea path{fill:none;stroke:#23232B;stroke-width:4;stroke-linecap:round}
 #br{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
-#br .deck{fill:none;stroke:#3A1A14;stroke-width:26;stroke-linecap:round;opacity:0}
+/* Bridge deck was a dark reddish surface; now the dark amber surface of the brand */
+#br .deck{fill:none;stroke:var(--wl-amber-soft);stroke-width:26;stroke-linecap:round;opacity:0}
 #br .rope{fill:none;stroke:var(--coral);stroke-width:10;stroke-linecap:round;opacity:0}
-#br .walker{fill:#fff;opacity:0;filter:drop-shadow(0 0 10px rgba(255,69,43,.95))}
+#br .walker{fill:#fff;opacity:0;filter:drop-shadow(0 0 10px rgba(var(--wl-amber-rgb),.95))}
 
 /* ILHAS (PRODUTOS) E PLACAS DAS PONTES */
 .isl{position:absolute;width:320px;height:100px;margin-left:-160px;margin-top:-50px;border-radius:50px;background:var(--panel);border:3px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 26px;font-size:32px;font-weight:800;white-space:nowrap;box-shadow:0 14px 0 #121216,0 22px 40px rgba(0,0,0,.5);opacity:0}
-.isl .ic{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:rgba(255,69,43,.16);color:var(--coral);flex:none}
+.isl .ic{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral);flex:none}
 #iApp{width:420px;margin-left:-210px}
 #iHub{width:380px;margin-left:-190px}
 .sign{position:absolute;height:48px;padding:0 18px;border-radius:12px;background:#F4EFE4;color:#1E1B14;font-size:24px;font-weight:800;line-height:48px;white-space:nowrap;transform:translate(-50%,-50%);box-shadow:0 6px 0 #B8AE98;opacity:0}
@@ -51,7 +56,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div id="wm">Plataforma<span>.</span></div>
     <div id="kick">Some o trabalho de ponte</div>
     <div id="demo">DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <svg id="sea" viewBox="0 0 1920 1080">
@@ -71,12 +76,12 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <circle class="walker" id="wk" cx="0" cy="0" r="14"/>
   </svg>
 
-  <div class="isl" id="iCh" style="left:330px;top:280px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>Channels</div>
-  <div class="isl" id="iKB" style="left:330px;top:760px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div>KB</div>
-  <div class="isl" id="iCRM" style="left:760px;top:520px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>CRM</div>
+  <div class="isl" id="iCh" style="left:330px;top:280px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><span data-wl-name="channels">Channels</span></div>
+  <div class="isl" id="iKB" style="left:330px;top:760px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><span data-wl-name="kb">KB</span></div>
+  <div class="isl" id="iCRM" style="left:760px;top:520px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><span data-wl-name="crm">CRM</span></div>
   <div class="isl" id="iApp" style="left:1200px;top:260px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 9h18" stroke="currentColor" stroke-width="2.2"/></svg></div>SaaS · app · portal</div>
-  <div class="isl" id="iFlow" style="left:1600px;top:470px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div>Flow</div>
-  <div class="isl" id="iHub" style="left:1600px;top:790px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Hub de domínio</div>
+  <div class="isl" id="iFlow" style="left:1600px;top:470px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><span data-wl-name="flow">Flow</span></div>
+  <div class="isl" id="iHub" style="left:1600px;top:790px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><span data-wl-name="hub">Hub de domínio</span></div>
 
   <div class="sign" id="g0" style="left:545px;top:395px">conversa com histórico</div>
   <div class="sign" id="g1" style="left:545px;top:645px">resposta com base</div>
@@ -89,32 +94,36 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   <div class="cap" id="c1">Cada produto, <span>uma ilha</span></div>
   <div class="sub" id="s1">e alguém atravessando a nado entre elas</div>
   <div class="cap" id="k0">Some a conversa <span>sem histórico</span></div>
-  <div class="sub" id="u0">o que chega pelo Channels vira relacionamento no CRM</div>
+  <div class="sub" id="u0">o que chega pelo <span data-wl-name="channels">Channels</span> vira relacionamento no <span data-wl-name="crm">CRM</span></div>
   <div class="cap" id="k1">Some a resposta <span>de memória</span></div>
-  <div class="sub" id="u1">o mesmo KB atende o CRM e o Channels</div>
+  <div class="sub" id="u1">o mesmo <span data-wl-name="kb">KB</span> atende o <span data-wl-name="crm">CRM</span> e o <span data-wl-name="channels">Channels</span></div>
   <div class="cap" id="k2">Some o <span>“vou verificar e retorno”</span></div>
   <div class="sub" id="u2">o atendimento resolve dentro do app</div>
   <div class="cap" id="k3">Some o <span>dado pessoal à mostra</span></div>
   <div class="sub" id="u3">a pergunta sai do app já protegida</div>
   <div class="cap" id="k4">Some a regra <span>que só existe no papel</span></div>
-  <div class="sub" id="u4">a regra do Hub de domínio vira processo andando</div>
+  <div class="sub" id="u4">a regra do <span data-wl-name="hub">Hub de domínio</span> vira processo andando</div>
   <div class="cap" id="k5">Some a <span>baixa feita à mão</span></div>
-  <div class="sub" id="u5">o que o Flow resolve chega direto ao app</div>
+  <div class="sub" id="u5">o que o <span data-wl-name="flow">Flow</span> resolve chega direto ao app</div>
   <div class="cap" id="c8">A soma faz <span>o que nenhum faz sozinho</span></div>
   <div class="sub" id="s8">cada ponte é um trabalho que ninguém mais faz na mão</div>
 
   <div id="close">
     <div class="l1">Juntos, os produtos fazem<br><span>o que nenhum faz sozinho.</span></div>
-    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw">Plataforma<span>.</span></div></div>
     <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
   var D = 36;
   var tl = gsap.timeline({ paused: true });
+  // Brand colors as literals: GSAP cannot tween var()
+  var C = WELABS_BRAND.color;
   function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
   function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
   // Bridge i gets drawn while the walker crosses it; both ends light up when it lands
@@ -130,7 +139,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     tl.to('#wk', { attr: { cx: P[b][0], cy: P[b][1] }, duration: 0.8, ease: 'power1.inOut' }, t);
     tl.set('#wk', { opacity: 0 }, t + 0.8);
     [a, b].forEach(function (id) {
-      tl.to('#' + id, { opacity: 1, borderColor: '#FF452B', duration: 0.25 }, t + 0.8);
+      tl.to('#' + id, { opacity: 1, borderColor: C.amber, duration: 0.25 }, t + 0.8);
       tl.fromTo('#' + id, { y: 0 }, { y: -12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, t + 0.8);
     });
     inn('#g' + i, t + 0.9, { scale: 0.6 }, 0.35);
@@ -165,8 +174,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   var t8 = t5 + S;
   inn('#c8', t8, { y: 16 }); inn('#s8', t8 + 0.3, { y: 12 });
   [0, 1, 2, 3, 4, 5, 6].forEach(function (i) {
-    tl.to('#d' + i, { stroke: '#7A2A1C', duration: 0.3 }, t8 + 0.4 + i * 0.2);
-    tl.to('#d' + i, { stroke: '#3A1A14', duration: 0.5 }, t8 + 0.8 + i * 0.2);
+    // Deck pulse: was red #7A2A1C over #3A1A14; now translucent brand amber over the dark amber surface
+    tl.to('#d' + i, { stroke: 'rgba(' + C.amberRgb + ',0.45)', duration: 0.3 }, t8 + 0.4 + i * 0.2);
+    tl.to('#d' + i, { stroke: C.amberSoft, duration: 0.5 }, t8 + 0.8 + i * 0.2);
   });
   tl.to(['#sea'], { opacity: 0.5, duration: 0.6 }, t8 + 0.4);
   out(['#c8', '#s8'], t8 + 4.7);

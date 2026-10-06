@@ -7,17 +7,22 @@
 <style>
 /* TOKENS DA MARCA WELABS */
 @font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0E0F12;--ink:#FFFFFF;--accent:#FF452B;--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:#2A1612;--ok:#3DD68C;--okt:#12301F;--warn:#F5B544;--warnt:#33270F;--info:#7DB4FF;--infot:#14243A;--bad:#FF8A7A;--badt:#3A1714;--wa:#25D366}
+/* Brand amber: --accent keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; --soft is the amber-tinted dark surface; background is brand graphite; --bad stays as the semantic error tone */
+:root{--bg:#10141C;--ink:#FFFFFF;--accent:var(--wl-amber);--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:var(--wl-amber-soft);--ok:#3DD68C;--okt:#12301F;--warn:var(--wl-warn);--warnt:var(--wl-warn-soft);--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--info:#7DB4FF;--infot:#14243A;--bad:#FF8A7A;--badt:#3A1714;--wa:#25D366}
 html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
 *{box-sizing:border-box}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
 p{margin:0}
 .sw{position:relative;display:inline-block}
 .sw>span{white-space:nowrap}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the red-orange alert tone (closed 24 h window, pilot caveat); new --wait/--waitt carry the cool lilac for connecting and under-review states */
 
 /* CABEÇALHO FIXO */
 #top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
-#top img{height:42px;display:block;margin-bottom:10px}
+/* New wider SVG logo (905x213) at the ~48px seal height */
+#top img{height:48px;display:block;margin-bottom:10px}
 #top .tt{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
 #top .tt em{font-style:normal;color:var(--accent)}
 #top .gr{flex:1}
@@ -38,9 +43,10 @@ p{margin:0}
 .opt{position:absolute;left:28px;width:770px;border:2px solid var(--line);border-radius:18px;background:var(--surface2);padding:16px 22px;opacity:0}
 .opt b{display:block;font-size:28px;font-weight:800;white-space:nowrap}
 .opt span{display:block;font-size:24px;color:var(--muted);line-height:32px;white-space:nowrap}
-.opt .sel{position:absolute;inset:-2px;border-radius:18px;border:3px solid var(--accent);background:rgba(255,69,43,.08);opacity:0}
+.opt .sel{position:absolute;inset:-2px;border-radius:18px;border:3px solid var(--accent);background:rgba(var(--wl-amber-rgb),.08);opacity:0}
 .btn{position:absolute;height:50px;padding:0 22px;border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:800;white-space:nowrap}
-.btn.pri{background:var(--accent);color:#fff}
+/* Text on an amber fill uses the dark ink-on-amber for AA contrast */
+.btn.pri{background:var(--accent);color:var(--wl-ink-on-amber)}
 .btn.sec{border:2px solid var(--line);color:var(--muted);background:var(--bg)}
 .stt{position:absolute;left:28px;top:454px;font-size:24px;font-weight:800;color:var(--accent);letter-spacing:.02em;opacity:0}
 .step{position:absolute;left:28px;width:770px;height:54px;display:flex;align-items:center;gap:16px;opacity:0}
@@ -76,7 +82,7 @@ p{margin:0}
 .ihd .gr{flex:1}
 .ist{position:relative;width:190px;height:44px}
 .ist span{position:absolute;right:0;top:0;height:44px;display:flex;align-items:center;padding:0 16px;border-radius:999px;font-size:24px;font-weight:800;white-space:nowrap}
-#isC{color:var(--warn);border:2px solid var(--warn);background:var(--warnt)}
+#isC{color:var(--wait);border:2px solid var(--wait);background:var(--waitt)}
 #isA{color:var(--ok);border:2px solid var(--ok);background:var(--okt);opacity:0}
 .ikv{display:flex;justify-content:space-between;font-size:26px;line-height:44px;white-space:nowrap}
 .ikv span:first-child{color:var(--muted)}
@@ -136,7 +142,7 @@ p{margin:0}
 .ctools{position:absolute;left:14px;right:14px;bottom:12px;height:50px;display:flex;align-items:center;gap:10px}
 .ctools span{height:46px;padding:0 14px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
 .ctools .gr{flex:1;border:0;padding:0}
-.ctools .send{background:var(--accent);border-color:var(--accent);color:#fff}
+.ctools .send{background:var(--accent);border-color:var(--accent);color:var(--wl-ink-on-amber)}
 #side{position:absolute;left:1120px;top:0;width:560px;height:750px}
 .sh{position:absolute;left:24px;font-size:28px;font-weight:800;white-space:nowrap;opacity:0}
 .ss{position:absolute;left:24px;font-size:24px;color:var(--muted);white-space:nowrap;opacity:0}
@@ -144,9 +150,9 @@ p{margin:0}
 .srow b{font-weight:800}
 .srow span{color:var(--muted);margin-left:auto}
 .srow i{width:12px;height:12px;border-radius:50%;background:var(--wa);display:block;flex:none}
-.srow u{position:absolute;inset:-2px;border-radius:12px;border:3px solid var(--accent);background:rgba(255,69,43,.12);opacity:0;text-decoration:none}
+.srow u{position:absolute;inset:-2px;border-radius:12px;border:3px solid var(--accent);background:rgba(var(--wl-amber-rgb),.12);opacity:0;text-decoration:none}
 .srow .ap{color:var(--ok);font-weight:800}
-.srow .pe{color:var(--warn);font-weight:800}
+.srow .pe{color:var(--wait);font-weight:800}
 .note{position:absolute;left:24px;width:512px;font-size:24px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:10px;opacity:0}
 .note svg{width:24px;height:24px;stroke:var(--ok);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .strow{position:absolute;left:24px;width:512px;height:52px;display:flex;align-items:center;gap:14px;font-size:26px;font-weight:700;white-space:nowrap;opacity:0}
@@ -215,10 +221,10 @@ p{margin:0}
 <body>
 <div id="root" data-composition-id="channels-whatsapp-official" data-width="1920" data-height="1080" data-start="0" data-duration="40">
 
-<div id="top"><img src="./assets/welabs-logo.png" alt="Welabs"><div class="tt">Channels · <em>WhatsApp API oficial</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+<div id="top"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="tt"><span data-wl-name="channels">Channels</span> · <em>WhatsApp API oficial</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
 
 <div id="win">
-  <div id="wbar"><span>App DEMO · Canais da empresa DEMO</span><span class="via">via Channels</span><span class="gr"></span><span class="rt">um contrato para todos os canais</span></div>
+  <div id="wbar"><span>App DEMO · Canais da empresa DEMO</span><span class="via">via <span data-wl-name="channels">Channels</span></span><span class="gr"></span><span class="rt">um contrato para todos os canais</span></div>
 
   <!-- scene 1: connect the official number -->
   <div class="scene" id="sc1">
@@ -268,7 +274,7 @@ p{margin:0}
       <div class="ch2"><span class="chn"><i></i>WhatsApp API oficial</span> · +55 11 9xxxx-0000</div>
       <div id="marea"><div id="msgs" data-layout-allow-overflow>
         <div class="bub in" id="m1" style="top:8px"><div class="img"><svg viewBox="0 0 264 148"><circle cx="200" cy="40" r="18" fill="#C9D3E0" opacity=".7"/><path d="M0 148 L70 70 L120 118 L170 80 L264 148 Z" fill="#5F7189"/></svg></div><p>Foto do pedido</p><span class="ty">imagem com legenda</span></div>
-        <div class="bub in" id="m2" style="top:252px"><div class="map"><svg viewBox="0 0 344 108"><path d="M0 36H344M0 76H344M90 0V108M210 0V108M290 0V108" stroke="#33485A" stroke-width="6"/><path d="M150 18c-12 0-20 9-20 20 0 15 20 36 20 36s20-21 20-36c0-11-8-20-20-20z" fill="#FF452B"/><circle cx="150" cy="38" r="7" fill="#22303A"/></svg></div><span class="ty">localização · Rua DEMO, 100</span></div>
+        <div class="bub in" id="m2" style="top:252px"><div class="map"><svg viewBox="0 0 344 108"><path d="M0 36H344M0 76H344M90 0V108M210 0V108M290 0V108" stroke="#33485A" stroke-width="6"/><path d="M150 18c-12 0-20 9-20 20 0 15 20 36 20 36s20-21 20-36c0-11-8-20-20-20z" style="fill:var(--accent)"/><circle cx="150" cy="38" r="7" fill="#22303A"/></svg></div><span class="ty">localização · Rua DEMO, 100</span></div>
         <div class="sep" id="sep" style="top:452px"><span>24 h depois da última mensagem</span></div>
         <div class="bub out" id="m3" style="top:506px"><span class="who">Template aprovado · Retomar contato</span><p>Olá Paula, podemos continuar seu pedido?</p><div class="cta"><span>Sim, continuar</span><span>Falar com a equipe</span></div><div class="tick"><span id="tk1">enviada ✓</span><span id="tk2">entregue ✓✓</span><span id="tk3">lida ✓✓</span></div></div>
       </div></div>
@@ -339,7 +345,7 @@ p{margin:0}
   <div class="flow">
     <div class="fpl" id="fp0"><i></i>WhatsApp oficial e comum</div>
     <div class="far"><svg viewBox="0 0 110 20"><path id="fa0" d="M8 10H96M86 2l10 8-10 8" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1"/></svg></div>
-    <div class="fpl c" id="fp1">Channels</div>
+    <div class="fpl c" id="fp1"><span data-wl-name="channels">Channels</span></div>
     <div class="far"><svg viewBox="0 0 110 20"><path id="fa1" d="M8 10H96M86 2l10 8-10 8" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1"/></svg></div>
     <div class="fpl" id="fp2">Seu SaaS, app ou portal</div>
   </div>
@@ -353,6 +359,7 @@ p{margin:0}
 <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
   // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
   var NS = "http://www.w3.org/2000/svg";

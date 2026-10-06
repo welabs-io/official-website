@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-// Amber brand: graphite browser chrome and the amber "we" favicon.
+import { WELABS_ICONS } from "@/lib/welabs-icons";
+// Amber brand: graphite browser chrome and the official favicon (amber "we" on a graphite tile).
 export const viewport: Viewport = { themeColor: "#10141C" };
 export const metadata: Metadata = {
   title: "Welabs",
   description: "Empresa e produtos Welabs.",
-  icons: { icon: "/brands/welabs/welabs-favicon.svg" },
+  icons: WELABS_ICONS,
   authors: [{ name: "Welabs" }],
   openGraph: {
     type: "website",

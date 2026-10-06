@@ -7,20 +7,26 @@
 <style>
 /* TIPOGRAFIA E TOKENS DA MARCA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:#FF452B;--text:#FFFFFF;--muted:#C9C9D1;--dim:#9A9AA5;
-  --ok:#3DD68C;--bad:#FF6B6B;--wait:#F5B53F;--l1:#4C8DFF;--l2:#2EC4B6;--l3:#A78BFA}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;--dim:#9A9AA5;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:var(--wl-wait);--l1:#4C8DFF;--l2:#2EC4B6;--l3:#A78BFA}
+/* State yellow left (too close to the brand amber): --wait ("Previsto", pending) is now the brand lilac */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 
 /* CABEÇALHO, LEGENDA E SELO */
-#hd{position:absolute;left:40px;right:40px;top:0;height:100px}
-#title{position:absolute;left:0;top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+/* Header in a row, so a longer product name pushes the captions instead of overlapping them */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px;display:flex;align-items:flex-start}
+#title{position:relative;flex:none;margin-top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
 #title span{color:var(--coral)}
-#caps{position:absolute;left:150px;top:24px;width:1160px;height:56px}
+#caps{position:relative;flex:none;margin:24px 0 0 62px;width:1160px;height:56px}
 .cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;white-space:nowrap;opacity:0}
-#sbx{position:absolute;right:220px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
-#seal{position:absolute;right:0;top:27px;height:50px;width:auto;opacity:0}
+/* Pill moved left so the wider amber logo keeps the same gap */
+#sbx{position:absolute;right:240px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;white-space:nowrap;opacity:0}
+#seal{position:absolute;right:0;top:28px;height:48px;width:auto;opacity:0}
 
 /* ÁRVORE DE NAMESPACES */
 #tp{position:absolute;left:40px;top:112px;width:1200px;height:620px;border:2px solid var(--line);border-radius:22px;background:#111115;overflow:hidden;opacity:0}
@@ -67,7 +73,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #c5{top:778px;height:266px;--c:var(--muted)}
 .rr{display:flex;align-items:center;justify-content:space-between;gap:12px;height:52px;border-bottom:2px solid #26262D;font-size:24px;font-weight:600;white-space:nowrap}
 .rr:last-child{border-bottom:0}
-.pv{font-size:24px;font-weight:800;color:var(--wait);border:2px dashed var(--wait);border-radius:999px;padding:0 14px;line-height:34px;background:#2A2110}
+.pv{font-size:24px;font-weight:800;color:var(--wait);border:2px dashed var(--wait);border-radius:999px;padding:0 14px;line-height:34px;background:var(--wl-wait-soft)}
 .ico{display:inline-grid;place-items:center;width:34px;height:34px;flex:none}
 
 /* AUDITORIA */
@@ -97,10 +103,10 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 <body>
 <div id="root" data-composition-id="kb-who-reads-what" data-width="1920" data-height="1080" data-start="0" data-duration="30">
   <div id="hd">
-    <div id="title">KB<span>.</span></div>
+    <div id="title"><span data-wl-name="kb">KB</span><span>.</span></div>
     <div id="caps"></div>
     <div id="sbx">sandbox · dados DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div id="tp">
@@ -113,7 +119,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
       <path class="eg" id="e4" d="M340 356 V393 H540 V430"/>
       <path class="eg" id="e5" d="M940 356 V430"/>
     </svg>
-    <div class="ll" id="ll1">1 · Plataforma CRM</div>
+    <div class="ll" id="ll1">1 · Plataforma <span data-wl-name="crm">CRM</span></div>
     <div class="ll" id="ll2">2 · Pessoa</div>
     <div class="ll" id="ll3">3 · Conexão</div>
     <div class="nd" id="n-org" style="left:450px;top:40px"><div class="ndi"><p class="nk">Organização</p><p class="nm">Atlas</p><p class="nt">tenant · Atlas</p></div></div>
@@ -126,7 +132,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   </div>
 
   <div id="au">
-    <h4><span class="ico" id="i-audit"></span>Auditoria de cada decisão de acesso<small>pessoa do grupo Vendas Norte, pelo CRM</small></h4>
+    <h4><span class="ico" id="i-audit"></span>Auditoria de cada decisão de acesso<small>pessoa do grupo Vendas Norte, pelo <span data-wl-name="crm">CRM</span></small></h4>
     <div id="rows">
       <div id="ph">Cada acesso, permitido ou negado, fica registrado aqui</div>
       <div class="ar" id="a1" style="top:0"><span>Pergunta</span><span class="who">em Atlas Norte</span><span class="chip g">permitido</span></div>
@@ -146,7 +152,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   </div>
   <div class="cd" id="c1">
     <p class="ct"><span class="ico" id="i-plat"></span>1 · Plataforma</p>
-    <p class="ch">CRM · chave da plataforma</p>
+    <p class="ch"><span data-wl-name="crm">CRM</span> · chave da plataforma</p>
     <p class="cl">libera: <b>organização Atlas</b></p>
     <p class="cl">herança: produtos e implantações abaixo</p>
   </div>
@@ -184,6 +190,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 </div>
 
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 (function(){
   // ÍCONES EM LINHA
@@ -202,6 +209,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   const tl=gsap.timeline({paused:true});
   const EO="power3.out";
+  // Brand amber literals for GSAP (it cannot tween var()); product name from WELABS_BRAND.names
+  const BR=window.WELABS_BRAND,BC=BR.color;
   const fin=(sel,t,d,y)=>tl.fromTo(sel,{opacity:0,y:y==null?12:y},{opacity:1,y:0,duration:d||.4,ease:EO,immediateRender:false},t);
   const fout=(sel,t,d)=>tl.to(sel,{opacity:0,duration:d||.3},t);
   const node=(id,t)=>tl.fromTo("#n-"+id+" .ndi",{opacity:0,scale:.9},{opacity:1,scale:1,duration:.45,ease:"back.out(1.5)",immediateRender:false},t);
@@ -210,7 +219,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   // LEGENDAS DAS BATIDAS
   const caps=[
     "Namespaces em árvore: organização → produto → implantação",
-    "A plataforma CRM recebe a organização e herda o que está abaixo",
+    `A plataforma ${BR.names.crm} recebe a organização e herda o que está abaixo`,
     "A pessoa entra pelo login da empresa; o grupo libera Vendas",
     "A conexão MCP declara o recorte: só Atlas Norte",
     "Só a interseção das três camadas acende",
@@ -256,7 +265,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   const others=["org","vendas","suporte","sul","central"];
   tl.to(others.map(i=>"#n-"+i+" .nm"),{color:"#9A9AA5",duration:.4},15.1);
   tl.to(others.map(i=>"#n-"+i+" .ndi"),{borderColor:"#3A3A42",backgroundColor:"#141418",duration:.4},15.1);
-  tl.to("#n-norte .ndi",{borderColor:"#FF452B",boxShadow:"0 0 0 8px rgba(255,69,43,.28), 0 6px 18px rgba(0,0,0,.45)",duration:.4},15.3);
+  tl.to("#n-norte .ndi",{borderColor:BC.amber,boxShadow:`0 0 0 8px rgba(${BC.amberRgb},.28), 0 6px 18px rgba(0,0,0,.45)`,duration:.4},15.3);
   fout("#t-norte",15.5,.2);tl.to("#b-norte",{opacity:1,duration:.3},15.75);
   fin("#c4",15.6,.45);
   fout("#ph",15.8,.25);fin("#a1",16.1,.35,8);
@@ -273,7 +282,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   tl.to("#ly2,#ll2",{opacity:0,duration:.5},23.2);
   tint(["vendas","sul"],23.2,"#3A3A42");
   fout("#b-norte",23.5,.25);
-  tl.to("#n-norte .ndi",{borderColor:"#FF6B6B",boxShadow:"0 0 0 0px rgba(255,69,43,0), 0 6px 18px rgba(0,0,0,.45)",duration:.4},23.5);
+  tl.to("#n-norte .ndi",{borderColor:"#FF6B6B",boxShadow:`0 0 0 0px rgba(${BC.amberRgb},0), 0 6px 18px rgba(0,0,0,.45)`,duration:.4},23.5);
   tl.to("#n-norte .nm",{color:"#9A9AA5",duration:.4},23.5);
   tl.to("#b-norte2",{opacity:1,duration:.3},23.8);
   tl.to("#c4",{borderLeftColor:"#FF6B6B",duration:.3},23.6);

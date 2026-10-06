@@ -7,16 +7,20 @@
 <style>
 /* TIPOGRAFIA, TOKENS E MOLDURA */
 @font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0B0B0D;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:#FF452B;--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
-#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#18181E 0%,#0B0B0D 72%);color:var(--text);font-family:"Inter",sans-serif}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 #hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
 #wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
-#demo{position:absolute;right:250px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
-#seal{position:absolute;right:0;top:10px;height:52px}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 .sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
@@ -27,8 +31,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .app .bar span{margin-left:16px}
 .slot{position:absolute;top:120px;width:320px;height:210px;border-radius:22px;border:3px dashed #4A4A56;background:#141418}
 .slot .q{position:absolute;left:128px;top:73px;width:64px;height:64px;border-radius:50%;background:#2A2A33;border:3px solid #55556A;color:var(--muted);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0}
-.slot .fill{position:absolute;inset:-3px;border-radius:22px;border:3px solid var(--coral);background:rgba(255,69,43,.10);padding:22px 22px;opacity:0}
-.slot .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:rgba(255,69,43,.18);color:var(--coral)}
+.slot .fill{position:absolute;inset:-3px;border-radius:22px;border:3px solid var(--coral);background:rgba(var(--wl-amber-rgb),.10);padding:22px 22px;opacity:0}
+.slot .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.18);color:var(--coral)}
 .slot .tt{margin-top:14px;font-size:30px;font-weight:800;white-space:nowrap}
 .slot .ln{margin-top:6px;font-size:24px;font-weight:600;line-height:30px;color:var(--muted)}
 .slot .tk{position:absolute;right:-16px;top:-16px;width:44px;height:44px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
@@ -40,7 +44,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .sock.on{border-color:var(--coral)}
 #pipes{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;pointer-events:none}
 #pipes line{stroke:#4A4A56;stroke-width:10;stroke-linecap:round;opacity:0}
-#pipes circle{fill:var(--coral);opacity:0;filter:drop-shadow(0 0 10px rgba(255,69,43,.9))}
+#pipes circle{fill:var(--coral);opacity:0;filter:drop-shadow(0 0 10px rgba(var(--wl-amber-rgb),.9))}
 
 /* FECHO */
 #close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
@@ -58,14 +62,14 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div id="wm">Plataforma<span>.</span></div>
     <div id="kick">Some o começar do zero</div>
     <div id="demo">DEMO</div>
-    <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
   </div>
 
   <div id="plate">
-    <div class="sock" id="k0" style="left:24px">Channels + CRM</div>
-    <div class="sock" id="k1" style="left:368px">KB</div>
-    <div class="sock" id="k2" style="left:712px">Flow</div>
-    <div class="sock" id="k3" style="left:1056px">Hub de domínio</div>
+    <div class="sock" id="k0" style="left:24px"><span data-wl-name="channels">Channels</span>&nbsp;+&nbsp;<span data-wl-name="crm">CRM</span></div>
+    <div class="sock" id="k1" style="left:368px"><span data-wl-name="kb">KB</span></div>
+    <div class="sock" id="k2" style="left:712px"><span data-wl-name="flow">Flow</span></div>
+    <div class="sock" id="k3" style="left:1056px"><span data-wl-name="hub">Hub de domínio</span></div>
   </div>
   <svg id="pipes" viewBox="0 0 1920 1080">
     <line x1="444" y1="662" x2="444" y2="746"/><line x1="788" y1="662" x2="788" y2="746"/><line x1="1132" y1="662" x2="1132" y2="746"/><line x1="1476" y1="662" x2="1476" y2="746"/>
@@ -101,16 +105,20 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <div id="close">
     <div class="l1">Um app novo já começa<br><span>com tudo pronto.</span></div>
-    <div class="brand"><div class="bw">Plataforma<span>.</span></div><div class="bs"></div><img src="./assets/welabs-logo.png" alt="Welabs"></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw">Plataforma<span>.</span></div></div>
     <div class="dm">Exemplo ilustrativo · DEMO</div>
   </div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
   var D = 36;
   var tl = gsap.timeline({ paused: true });
+  // Brand amber as a literal hex: GSAP cannot tween var()
+  var AMBER = WELABS_BRAND.color.amber;
   function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
   function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
 
@@ -128,7 +136,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   inn('#plate', 6.1, { y: 80 }, 0.7);
   out('#a1 .q', 7.6, 0.3);
   tl.to('#a1', { y: 70, duration: 0.6, ease: 'back.out(1.6)' }, 8.2);
-  tl.to('#a1', { borderColor: '#FF452B', duration: 0.15 }, 8.75).to('#a1', { borderColor: '#3A3A44', duration: 0.5 }, 8.9);
+  tl.to('#a1', { borderColor: AMBER, duration: 0.15 }, 8.75).to('#a1', { borderColor: '#3A3A44', duration: 0.5 }, 8.9);
   tl.to('#pipes line', { opacity: 1, duration: 0.4, stagger: 0.12 }, 8.8);
   out(['#c2', '#s2'], 10.85);
 
@@ -136,11 +144,11 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   [0, 1, 2, 3].forEach(function (i) {
     var t = 11.0 + i * 3.1;
     inn('#h' + i, t, { y: 16 });
-    tl.to('#k' + i, { borderColor: '#FF452B', duration: 0.25 }, t);
+    tl.to('#k' + i, { borderColor: AMBER, duration: 0.25 }, t);
     tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.1 }, t + 0.05);
     tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.4, ease: 'power1.in' }, t + 0.1);
     tl.to('#e' + i, { opacity: 0, duration: 0.1 }, t + 0.5);
-    tl.to('#pipes line:nth-of-type(' + (i + 1) + ')', { stroke: '#FF452B', duration: 0.3 }, t + 0.1);
+    tl.to('#pipes line:nth-of-type(' + (i + 1) + ')', { stroke: AMBER, duration: 0.3 }, t + 0.1);
     inn('#a1 .s' + i + ' .fill', t + 0.5, { scale: 0.92 }, 0.35);
     tl.fromTo('#a1 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.7);
     out('#h' + i, t + 2.8);

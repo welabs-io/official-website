@@ -7,7 +7,11 @@
 <style>
 /* TOKENS DA MARCA WELABS */
 @font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
-:root{--bg:#0E0F12;--ink:#FFFFFF;--accent:#FF452B;--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:#2A1612;--ok:#3DD68C;--okt:#12301F;--warn:#F5B544;--warnt:#33270F;--info:#7DB4FF;--infot:#14243A}
+/* Brand amber: --accent keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; --soft is the amber-tinted dark surface; background is brand graphite */
+:root{--bg:#10141C;--ink:#FFFFFF;--accent:var(--wl-amber);--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:var(--wl-amber-soft);--ok:#3DD68C;--okt:#12301F;--warn:var(--wl-wait);--warnt:var(--wl-wait-soft);--info:#7DB4FF;--infot:#14243A}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the cool lilac "waiting" tone, used by the pending pills; the "em piloto" caveat uses the alert tone below */
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
 html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
 *{box-sizing:border-box}
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
@@ -16,14 +20,16 @@ p{margin:0}
 
 /* CABEÇALHO FIXO */
 #top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
-#top img{height:42px;display:block;margin-bottom:10px}
+/* New wider SVG logo (905x213) at the ~48px seal height */
+#top img{height:48px;display:block;margin-bottom:10px}
 #top .tt{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
 #top .tt em{font-style:normal;color:var(--accent)}
 #top .gr{flex:1}
 .chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
 #top .chip{margin-bottom:10px}
 .badge{font-size:24px;font-weight:800;padding:2px 12px;border-radius:999px;white-space:nowrap}
-.badge.pil{color:var(--warn);border:2px solid var(--warn);background:var(--warnt)}
+/* Pilot caveat is an attention flag, so it takes the red-orange alert tone */
+.badge.pil{color:var(--wl-warn);border:2px solid var(--wl-warn);background:var(--wl-warn-soft)}
 .cdot{width:14px;height:14px;border-radius:50%;background:var(--c);display:block;flex:none}
 .chn{display:inline-flex;align-items:center;gap:8px;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
 
@@ -99,7 +105,7 @@ p{margin:0}
 .ln .k{width:150px;color:#8E96A3}
 .ln .k::after{content:":"}
 .ln .v{position:relative;flex:1;height:42px}
-.ln .v span{position:absolute;left:0;top:0;height:42px;display:flex;align-items:center;font-weight:700;color:#FFD3CB;opacity:0}
+.ln .v span{position:absolute;left:0;top:0;height:42px;display:flex;align-items:center;font-weight:700;color:#FFC75A;opacity:0}
 .ln .v span.fx{color:#FFFFFF;opacity:1}
 .ln .v span.on{opacity:1}
 .guar{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
@@ -172,7 +178,7 @@ p{margin:0}
 .hit .tx{flex:1;min-width:0}
 .hit .tx b{display:block;font-size:26px;font-weight:700;white-space:nowrap}
 .hit .tx span{display:block;font-size:24px;color:var(--muted);white-space:nowrap}
-.hit mark{background:var(--soft);color:#FFB3A8;border-radius:6px;padding:0 4px}
+.hit mark{background:var(--soft);color:#FFC75A;border-radius:6px;padding:0 4px}
 
 /* LEGENDA DA BATIDA */
 #caps{position:absolute;left:120px;right:120px;top:956px;height:86px}
@@ -197,7 +203,7 @@ p{margin:0}
 <body>
 <div id="root" data-composition-id="channels-one-contract" data-width="1920" data-height="1080" data-start="0" data-duration="34">
 
-<div id="top"><img src="./assets/welabs-logo.png" alt="Welabs"><div class="tt">Channels · <em>um contrato, todos os canais</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
+<div id="top"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="tt"><span data-wl-name="channels">Channels</span> · <em>um contrato, todos os canais</em></div><div class="gr"></div><div class="chip">DEMO · reconstrução ilustrativa</div></div>
 
 <!-- beats 1-2: loose channels, then one contract -->
 <div class="layer" id="s1">
@@ -214,7 +220,7 @@ p{margin:0}
     <div class="sub" style="margin-top:14px">cria canais, envia, recebe eventos</div>
   </div>
   <div id="hub">
-    <h3>Channels · <em>um contrato</em></h3>
+    <h3><span data-wl-name="channels">Channels</span> · <em>um contrato</em></h3>
     <div class="sub">o SaaS nunca fala direto com o canal</div>
     <div class="tr2"><span>API HTTP</span><span>WebSocket</span></div>
     <div class="lbl">Escopos da credencial</div>
@@ -309,11 +315,11 @@ p{margin:0}
   </div>
   <div id="reg">
     <h3>Registro de mensagens</h3>
-    <div class="sub">o Channels guarda; o SaaS guarda a referência</div>
+    <div class="sub">o <span data-wl-name="channels">Channels</span> guarda; o SaaS guarda a referência</div>
     <div class="srch"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B4B9C3" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>visita</div>
     <div class="hit" id="h0" style="top:200px"><span class="chn" style="--c:#25D366;width:200px"><i class="cdot"></i>WhatsApp</span><div class="tx"><b>Quero agendar uma <mark>visita</mark></b><span>conv-DEMO-17</span></div></div>
     <div class="hit" id="h1" style="top:296px"><span class="chn" style="--c:#A7A2FF;width:200px"><i class="cdot"></i>Discord</span><div class="tx"><b>Agendar <mark>visita</mark> · escolha</b><span>conv-DEMO-08</span></div></div>
-    <div class="hit" id="h2" style="top:392px"><span class="chn" style="--c:#FF8A73;width:200px"><i class="cdot"></i>Webhook</span><div class="tx"><b><mark>Visita</mark> confirmada DEMO</b><span>conv-DEMO-31</span></div></div>
+    <div class="hit" id="h2" style="top:392px"><span class="chn" style="--c:#FFC75A;width:200px"><i class="cdot"></i>Webhook</span><div class="tx"><b><mark>Visita</mark> confirmada DEMO</b><span>conv-DEMO-31</span></div></div>
     <div class="dnote" id="rn0" style="top:500px;left:28px;right:28px">só do seu consumidor e tenant · histórico · importação</div>
   </div>
 </div>
@@ -322,7 +328,8 @@ p{margin:0}
 <div id="fin">
   <h2>Um contrato, <em>todos os canais.</em></h2>
   <svg id="fsv" viewBox="0 0 1680 800"></svg>
-  <div id="fbar">Channels · API HTTP e WebSocket · eventos assinados</div>
+  <!-- One inline wrapper so the flex bar keeps the space after the product name -->
+  <div id="fbar"><span><span data-wl-name="channels">Channels</span> · API HTTP e WebSocket · eventos assinados</span></div>
   <div class="ft" id="ft0" style="left:290px">SaaS</div>
   <div class="ft" id="ft1" style="left:690px">app</div>
   <div class="ft" id="ft2" style="left:1090px">CRM</div>
@@ -334,16 +341,19 @@ p{margin:0}
 <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
   // MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
   var NS = "http://www.w3.org/2000/svg";
+  // Brand amber as a literal hex: GSAP and inline SVG strokes cannot interpolate var()
+  var AMBER = WELABS_BRAND.color.amber;
   var CH = [
     { t: "Discord",          s: "convite + /activate",       c: "#A7A2FF", ic: '<rect x="3" y="6" width="18" height="12" rx="5"/><circle cx="9" cy="12" r="1.2"/><circle cx="15" cy="12" r="1.2"/>' },
     { t: "WhatsApp",         s: "QR ou código de pareamento", c: "#25D366", ic: '<path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/>' },
     { t: "WhatsApp oficial", s: "número oficial conectado",   c: "#3DD68C", ic: '<path d="M4 20l1.4-4A8 8 0 1 1 8 18.6z"/><path d="M9 12l2 2 4-4"/>' },
     { t: "Chat do site",     s: "a interface é do SaaS",      c: "#7DB4FF", ic: '<rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l4-4"/>' },
-    { t: "Webhook",          s: "URL pública assinada",       c: "#FF8A73", ic: '<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><circle cx="12" cy="6" r="3"/><path d="M9 17h6M10.5 8.5L7.5 14.5M13.5 8.5l3 6"/>' },
-    { t: "Telefone",         s: "número BR/PT pedido no app", c: "#F5B544", ic: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>', badge: "em piloto" }
+    { t: "Webhook",          s: "URL pública assinada",       c: "#FFC75A", /* light coral -> light amber */ ic: '<circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><circle cx="12" cy="6" r="3"/><path d="M9 17h6M10.5 8.5L7.5 14.5M13.5 8.5l3 6"/>' },
+    { t: "Telefone",         s: "número BR/PT pedido no app", c: WELABS_BRAND.color.warn, /* pilot channel: alert tone instead of the retired state yellow */ ic: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>', badge: "em piloto" }
   ];
   var TX = 1340, TTOP = 150, TSTEP = 122, TH = 96;
   // Loose (scattered) positions for beat 1, as offsets from the final column slot
@@ -364,7 +374,7 @@ p{margin:0}
   });
   var sx = document.createElementNS(NS, "path");
   sx.setAttribute("d", "M560 460 L700 475"); sx.setAttribute("class", "edge"); sx.setAttribute("id", "edS"); sx.setAttribute("pathLength", "1");
-  sx.style.strokeDasharray = "1"; sx.style.strokeDashoffset = "1"; sx.style.stroke = "#FF452B";
+  sx.style.strokeDasharray = "1"; sx.style.strokeDashoffset = "1"; sx.style.stroke = AMBER;
   esvg.appendChild(sx);
 
   // Admin table rows
@@ -465,7 +475,7 @@ p{margin:0}
   tl.to("#edS", { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.inOut" }, 7.0);
   tl.fromTo("#plug", { opacity: 0, x: -120, scale: 0.6 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: "power2.out" }, 7.0);
   fout("#plug", 7.5, 0.25);
-  tl.to("#hub", { borderColor: "#FF452B", duration: 0.3 }, 7.5);
+  tl.to("#hub", { borderColor: AMBER, duration: 0.3 }, 7.5);
   tl.fromTo("#scopes span", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08 }, 7.6);
   CH.forEach(function (c, i) {
     tl.to("#ed" + i, { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.inOut" }, 7.9 + i * 0.08);

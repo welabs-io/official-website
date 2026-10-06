@@ -7,7 +7,11 @@
 <style>
   /* TIPOGRAFIA E TOKENS */
   @font-face { font-family: "Inter"; src: url("./assets/fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; }
-  :root { --bg: #0B0B0D; --win: #111115; --panel: #17171B; --panel2: #1F1F25; --line: #3A3A42; --coral: #FF452B; --text: #FFFFFF; --muted: #C9C9D1; --ok: #3DDC84; --amber: #F5B13D; }
+  /* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite.
+     --amber keeps its name but now carries the wait lilac (indexing, awaiting promotion); the old state yellow read as brand amber */
+  :root { --bg: #10141C; --win: #111115; --panel: #17171B; --panel2: #1F1F25; --line: #3A3A42; --coral: var(--wl-amber); --text: #FFFFFF; --muted: #C9C9D1; --ok: #3DDC84; --amber: var(--wl-wait); }
+  /* Product names come from WELABS_BRAND.names and keep their parent's color */
+  #root [data-wl-name] { color: inherit; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); width: 1920px; height: 1080px; margin: 0; overflow: hidden; }
   #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; }
@@ -17,7 +21,8 @@
   #title { position: absolute; left: 60px; top: 36px; font-size: 56px; font-weight: 800; letter-spacing: -1px; white-space: nowrap; }
   #title span { color: var(--coral); }
   #demo { position: absolute; right: 300px; top: 46px; padding: 6px 22px; border: 2px solid var(--line); border-radius: 999px; font-size: 24px; font-weight: 600; color: var(--muted); white-space: nowrap; }
-  #seal { position: absolute; right: 60px; top: 38px; height: 56px; width: auto; }
+  /* New SVG logo (ratio 4.25) at the ~48 px seal height, vertically centred on the title */
+  #seal { position: absolute; right: 60px; top: 42px; height: 48px; width: auto; }
 
   /* JANELA DO ESTUDIO */
   #win { position: absolute; left: 60px; top: 130px; width: 1800px; height: 780px; border: 2px solid var(--line); border-radius: 22px; background: var(--win); overflow: hidden; }
@@ -32,7 +37,8 @@
 
   /* BARRA LATERAL */
   #side { position: absolute; left: 0; top: 76px; width: 330px; height: 704px; border-right: 2px solid var(--line); background: #141418; }
-  #avatar { position: absolute; left: 20px; top: 22px; width: 60px; height: 60px; border-radius: 50%; background: var(--coral); font-size: 30px; font-weight: 800; text-align: center; line-height: 60px; }
+  /* Amber fills carry the brand ink, never white (AA contrast) */
+  #avatar { position: absolute; left: 20px; top: 22px; width: 60px; height: 60px; border-radius: 50%; background: var(--coral); color: var(--wl-ink-on-amber); font-size: 30px; font-weight: 800; text-align: center; line-height: 60px; }
   #sideName { position: absolute; left: 96px; top: 22px; width: 220px; height: 36px; }
   #sideName span { position: absolute; left: 0; top: 0; font-size: 24px; font-weight: 800; white-space: nowrap; }
   #sideSub { position: absolute; left: 96px; top: 56px; font-size: 24px; color: var(--muted); white-space: nowrap; }
@@ -55,10 +61,12 @@
   .seg { position: absolute; display: flex; height: 58px; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel2); }
   .seg div { padding: 0 22px; font-size: 24px; font-weight: 600; line-height: 54px; color: var(--muted); white-space: nowrap; border-right: 2px solid var(--line); }
   .seg div:last-child { border-right: 0; }
-  .seg .on { background: var(--coral); color: #fff; }
+  .seg .on { background: var(--coral); color: var(--wl-ink-on-amber); }
   .pill { position: absolute; height: 40px; padding: 0 16px; border-radius: 999px; font-size: 24px; font-weight: 700; line-height: 36px; white-space: nowrap; border: 2px solid var(--line); color: var(--muted); }
   .pill.ok { border-color: var(--ok); color: var(--ok); }
   .pill.amb { border-color: var(--amber); color: var(--amber); }
+  /* Partial maturity is an attention state: brand alert orange */
+  .pill.wrn { border-color: var(--wl-warn); color: var(--wl-warn); }
   .pill.cor { border-color: var(--coral); color: var(--coral); }
   .t26 { font-size: 26px; font-weight: 700; white-space: nowrap; }
   .t24 { font-size: 24px; white-space: nowrap; }
@@ -70,7 +78,7 @@
   .tpl em { position: absolute; left: 22px; top: 56px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
   .tpl .ck { position: absolute; right: 18px; top: 18px; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); }
   .tpl .ckf { position: absolute; right: 18px; top: 18px; width: 34px; height: 34px; border-radius: 50%; background: var(--coral); opacity: 0; }
-  .tpl .ckf::after { content: ""; position: absolute; left: 11px; top: 6px; width: 8px; height: 15px; border: solid #fff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+  .tpl .ckf::after { content: ""; position: absolute; left: 11px; top: 6px; width: 8px; height: 15px; border: solid var(--wl-ink-on-amber); border-width: 0 4px 4px 0; transform: rotate(45deg); }
   .tpl .sel { position: absolute; left: -2px; top: -2px; width: 450px; height: 104px; border: 3px solid var(--coral); border-radius: 14px; opacity: 0; }
 
   /* P3 CONHECIMENTO */
@@ -89,7 +97,7 @@
   .frow .c1 { position: absolute; left: 0; top: 12px; font-size: 26px; font-weight: 700; white-space: nowrap; }
   .frow .c2 { position: absolute; left: 200px; top: 12px; font-size: 24px; color: var(--muted); white-space: nowrap; }
   .frow .c3 { position: absolute; left: 420px; top: 8px; height: 42px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); font-size: 24px; font-weight: 700; line-height: 38px; color: var(--muted); white-space: nowrap; }
-  .frow .c3h { position: absolute; left: 420px; top: 8px; height: 42px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--coral); background: var(--coral); font-size: 24px; font-weight: 700; line-height: 38px; color: #fff; white-space: nowrap; opacity: 0; }
+  .frow .c3h { position: absolute; left: 420px; top: 8px; height: 42px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--coral); background: var(--coral); font-size: 24px; font-weight: 700; line-height: 38px; color: var(--wl-ink-on-amber); white-space: nowrap; opacity: 0; }
   .tool { position: absolute; left: 24px; font-size: 24px; white-space: nowrap; opacity: 0; }
   .tool i { display: inline-block; width: 44px; height: 24px; margin-right: 14px; border-radius: 12px; background: var(--ok); vertical-align: -3px; position: relative; }
   .tool i::after { content: ""; position: absolute; right: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; }
@@ -108,7 +116,7 @@
   #ctrls { position: absolute; left: 14px; bottom: 14px; width: 44px; border: 2px solid var(--line); border-radius: 10px; background: var(--panel); }
   #ctrls div { height: 36px; border-bottom: 2px solid var(--line); color: var(--muted); font-size: 24px; text-align: center; line-height: 34px; }
   #ctrls div:last-child { border-bottom: 0; }
-  #tok { position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 6px rgba(255,69,43,0.25); opacity: 0; }
+  #tok { position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 6px rgba(var(--wl-amber-rgb),0.25); opacity: 0; }
   .ver { position: absolute; left: 24px; width: 830px; height: 50px; }
   .ver b { position: absolute; left: 0; top: 8px; font-size: 26px; font-weight: 800; white-space: nowrap; }
   .ver em { position: absolute; left: 150px; top: 10px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
@@ -116,7 +124,7 @@
 
   /* P6 SIMULADOR */
   .bub { position: absolute; padding: 12px 20px; border-radius: 18px; font-size: 26px; line-height: 36px; opacity: 0; }
-  .bub.user { right: 24px; background: var(--coral); color: #fff; white-space: nowrap; }
+  .bub.user { right: 24px; background: var(--coral); color: var(--wl-ink-on-amber); white-space: nowrap; }
   .bub.bot { left: 24px; width: 640px; background: var(--panel2); border: 2px solid var(--line); }
   .bub.bot small { display: block; margin-top: 8px; font-size: 24px; color: var(--ok); font-weight: 600; }
   .gate { position: absolute; left: 24px; width: 510px; height: 42px; }
@@ -131,7 +139,7 @@
   .vrow b { position: absolute; left: 0; top: 14px; font-size: 28px; font-weight: 800; white-space: nowrap; }
   .vrow em { position: absolute; left: 0; top: 54px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
   .vrow .pill { top: 26px; }
-  #promBtn { position: absolute; left: 1150px; top: 22px; width: 180px; height: 50px; border-radius: 12px; background: var(--coral); color: #fff; font-size: 24px; font-weight: 800; text-align: center; line-height: 50px; }
+  #promBtn { position: absolute; left: 1150px; top: 22px; width: 180px; height: 50px; border-radius: 12px; background: var(--coral); color: var(--wl-ink-on-amber); font-size: 24px; font-weight: 800; text-align: center; line-height: 50px; }
   .after { position: absolute; width: 640px; white-space: nowrap; font-size: 24px; line-height: 32px; }
   .after::before { content: ""; position: absolute; left: 0; top: 10px; width: 12px; height: 12px; border-radius: 50%; background: var(--ok); }
   .after span { display: block; padding-left: 26px; }
@@ -140,7 +148,7 @@
   #rail { position: absolute; left: 60px; top: 950px; width: 1800px; height: 64px; }
   #railLine { position: absolute; left: 20px; right: 20px; top: 31px; height: 2px; background: var(--line); }
   .rp { position: absolute; top: 0; width: 244px; height: 64px; border: 2px solid var(--line); border-radius: 999px; background: var(--bg); font-size: 24px; font-weight: 700; color: var(--muted); text-align: center; line-height: 60px; white-space: nowrap; }
-  .rp .on { position: absolute; left: -2px; top: -2px; width: 244px; height: 64px; border-radius: 999px; background: var(--coral); color: #fff; line-height: 64px; opacity: 0; }
+  .rp .on { position: absolute; left: -2px; top: -2px; width: 244px; height: 64px; border-radius: 999px; background: var(--coral); color: var(--wl-ink-on-amber); line-height: 64px; opacity: 0; }
 
   /* FECHO */
   #close { position: absolute; left: 60px; top: 130px; width: 1800px; height: 780px; opacity: 0; }
@@ -157,9 +165,9 @@
 </head>
 <body>
 <div id="root" data-composition-id="crm-agent-studio" data-width="1920" data-height="1080" data-start="0" data-duration="36">
-  <div id="title">Estúdio de agentes <span>do CRM</span></div>
+  <div id="title">Estúdio de agentes <span>do <span data-wl-name="crm">CRM</span></span></div>
   <div id="demo">DEMO · reconstrução ilustrativa</div>
-  <img id="seal" src="./assets/welabs-logo.png" alt="Welabs">
+  <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
 
   <div id="win">
     <div id="topbar">
@@ -296,8 +304,8 @@
           <div class="step" style="top:272px"><b>5</b>Resume e cita a fonte</div>
         </div>
         <div class="card" style="left:920px;top:450px;width:490px;height:130px">
-          <div class="t26" style="position:absolute;left:24px;top:20px">KB corporativo via MCP</div>
-          <div class="pill amb" style="right:20px;top:18px">parcial</div>
+          <div class="t26" style="position:absolute;left:24px;top:20px"><span data-wl-name="kb">KB</span> corporativo via MCP</div>
+          <div class="pill wrn" style="right:20px;top:18px">parcial</div>
           <div class="t24 mut" style="position:absolute;left:24px;top:72px">busca autorizada por organização</div>
         </div>
       </div>
@@ -423,7 +431,7 @@
           <div class="after" style="left:720px;top:24px"><span>Escala para a equipe com nota interna e atribuição</span></div>
           <div class="after" style="left:24px;top:84px"><span>Prazo de primeira resposta humana · DEMO</span></div>
           <div class="after" style="left:720px;top:84px"><span>Observabilidade por execução</span></div>
-          <div class="pill amb" style="left:1110px;top:78px">parcial</div>
+          <div class="pill wrn" style="left:1110px;top:78px">parcial</div>
         </div>
         <div class="t24 mut" style="position:absolute;left:0;top:612px">A IA responde dentro do que foi concedido; ligar, promover e assumir a conversa é decisão da equipe.</div>
       </div>
@@ -436,7 +444,7 @@
       <div>Modelos prontos combináveis</div><div>Personalidade, modelo e memória</div><div>Bases com fonte citada</div>
       <div>Ferramentas tipadas e MCP</div><div>Compilação validada e versionada</div><div>Simulador com 7 portões</div><div>Promoção pela equipe</div>
     </div>
-    <div id="closeL"><b>CRM</b> · estúdio de agentes · a IA responde, a equipe decide</div>
+    <div id="closeL"><b><span data-wl-name="crm">CRM</span></b> · estúdio de agentes · a IA responde, a equipe decide</div>
   </div>
 
   <div id="rail">
@@ -454,6 +462,7 @@
   <div id="pad"></div>
 </div>
 <script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
 <script>
   // LINHA DO TEMPO (pausada, termina em 36 s)
   var tl = gsap.timeline({ paused: true });
@@ -478,7 +487,8 @@
     railOn = i;
   }
   function tab(i, t) { tl.to("#tabHi", { y: i * 54, opacity: 1, duration: 0.4, ease: "power2.inOut" }, t); }
-  var BTN_ON = { backgroundColor: "#FF452B", borderColor: "#FF452B", color: "#FFFFFF", duration: 0.3 };
+  // GSAP cannot tween var(): lit buttons use the literal brand amber with brand ink text
+  var BTN_ON = { backgroundColor: WELABS_BRAND.color.amber, borderColor: WELABS_BRAND.color.amber, color: WELABS_BRAND.color.inkOnAmber, duration: 0.3 };
   var BTN_OFF = { backgroundColor: "#17171B", borderColor: "#3A3A42", color: "#C9C9D1", duration: 0.3 };
   function cursorTo(x, y, t, d) { tl.to("#cursor", { x: x, y: y, duration: d || 0.45, ease: "power2.inOut" }, t); }
   function click(t) { tl.to("#cursor", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1, transformOrigin: "4px 2px" }, t); }
@@ -538,7 +548,7 @@
   tl.set("#cursor", { x: 1560, y: 760 }, 18.1);
   tl.to("#cursor", { opacity: 1, duration: 0.2 }, 18.2);
   cursorTo(1478, 428, 18.25, 0.4); click(18.68);
-  tl.to("#testBtn", { backgroundColor: "#FF452B", color: "#FFFFFF", duration: 0.2 }, 18.72);
+  tl.to("#testBtn", { backgroundColor: WELABS_BRAND.color.amber, color: WELABS_BRAND.color.inkOnAmber, duration: 0.2 }, 18.72);
   swap("#mcpOff", "#mcpOn", 18.76);
   tl.to("#p4 .tool", { opacity: 1, duration: 0.25, stagger: 0.1 }, 18.95);
   tl.to("#cursor", { opacity: 0, duration: 0.2 }, 19);
