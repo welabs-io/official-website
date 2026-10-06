@@ -217,28 +217,18 @@ function WelabsProducts({ locale }: { locale: Locale }) {
         data-hero-links={products.join(" ")}
       >
         <div className={styles.productTop}>
-          <span className={styles.flowMark} aria-hidden="true">
-            {/* Official Magneto symbol (brand/welabs-produtos/svg/flow-mark-dark.svg), one color on the amber tile */}
-            <svg viewBox="0 0 64 64" fill="none">
-              <path
-                d="M11.7 54V24.85A10.15 10.15 0 0 1 32 24.85V54M32 24.85A10.15 10.15 0 0 1 52.3 24.85V38"
-                stroke="currentColor"
-                strokeWidth="9.4"
-              />
-              <rect
-                x="47.6"
-                y="38"
-                width="9.4"
-                height="16"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
           <span className={styles.stage}>{t.development}</span>
           <Arrow />
         </div>
         <div className={styles.productTitle}>
-          <strong>Magneto</strong>
+          {/* Whole endorsed Magneto logo (symbol + name + "by welabs") replaces the symbol tile + name text */}
+          <img
+            className={styles.productLogo}
+            src="/brands/welabs/products/magneto-dark-endorsed.svg"
+            alt="Magneto"
+            width="160"
+            height="56"
+          />
           <span>{t.flow}</span>
         </div>
         <div className={styles.flowBoard} aria-hidden="true">

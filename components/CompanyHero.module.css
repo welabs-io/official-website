@@ -451,6 +451,12 @@
 .flowProduct .productTitle strong {
   font-size: 26px;
 }
+/* Whole Welabs product logo with its own plate and clear zone, sized by height only (name x-height 15px) */
+.productLogo {
+  display: block;
+  width: auto;
+  height: 56px;
+}
 .flowBoard {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

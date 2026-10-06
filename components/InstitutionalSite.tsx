@@ -356,8 +356,9 @@ export function ProductPage({
               </span>
               {productLogo.has(item.id) && visual.logo ? (
                 <h1 className={styles.logoTitle}>
+                  {/* Welabs product logos carry their own plate and clear zone: no extra plate, sized by height */}
                   <span
-                    className={`${styles.heroLogo} ${visual.logoPlate === "light" ? styles.lightLogo : styles.darkLogo}`}
+                    className={`${styles.heroLogo} ${item.publisher === "Welabs" ? styles.ownPlateLogo : visual.logoPlate === "light" ? styles.lightLogo : styles.darkLogo}`}
                   >
                     <img
                       src={visual.logo}
@@ -1034,9 +1035,9 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
               </span>
               {"logo" in product && typeof product.logo === "string" ? (
                 <h1 className={styles.logoTitle}>
-                  {/* Plate follows `logoPlate`; Tuner's official lockup is drawn for a dark plate */}
+                  {/* Plate follows `logoPlate`; a Welabs product logo (Tuner) carries its own plate, sized by height */}
                   <span
-                    className={`${styles.heroLogo} ${"logoPlate" in product && product.logoPlate === "dark" ? styles.darkLogo : styles.lightLogo}`}
+                    className={`${styles.heroLogo} ${product.publisher === "Welabs" ? styles.ownPlateLogo : "logoPlate" in product && product.logoPlate === "dark" ? styles.darkLogo : styles.lightLogo}`}
                   >
                     <img
                       src={product.logo}

@@ -42,7 +42,8 @@ const categories: Record<string, Sector> = {
 };
 
 // Products whose own logo names them; group or company logos (Report, Welabs) keep the name in text.
-// Welabs products named on 2026-10-06 use their official lockup (symbol + welabs + name); the
+// Welabs products named on 2026-10-06 use their endorsed product logo (symbol + name + "by welabs",
+// public/brands/welabs/products/; the "welabs <product>" lockups are retired); the
 // monitoring ecosystem has no product name yet and keeps the company logo with the name in text.
 export const PRODUCT_LOGO = new Set([
   "flow",
@@ -84,7 +85,7 @@ type CardProps = {
   href: string;
   title: string;
   cover?: string;
-  // `wide`: Welabs product lockup, wider than a product logo and drawn on its own plate
+  // `wide`: Welabs product logo, drawn on its own plate and sized by height only
   logo?: { src: string; light: boolean; wide?: boolean } | null;
   meta: [string, string];
   summary: string;
@@ -218,7 +219,7 @@ export function ProductCard({
 }
 
 // Products shown only through films (IUS; Tuner on Welabs). Links use the public slug; the logo
-// plate follows `logoPlate` (Tuner's lockup is drawn for a dark plate).
+// plate follows `logoPlate` (Tuner's logo is drawn for a dark plate).
 function FilmProductCard({
   product,
   en,
