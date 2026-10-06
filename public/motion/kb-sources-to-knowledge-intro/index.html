@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>KB · das fontes ao conhecimento (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#1F1F25;--line:#3A3A42;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;
+  --ok:#3DD68C;--bad:#FF6B6B;--wait:var(--wl-wait);--warn:var(--wl-warn);--blue:#4C8DFF;--teal:#2EC4B6;--violet:#A78BFA;--pink:#E879F9;--grey:#8A8A99}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+p,span,div{white-space:nowrap}
+/* State yellow left (too close to the brand amber): --wait is now the brand lilac (pending: partial, default, retry);
+   new --warn is the brand red-orange (attention: freshness above the SLO) */
+
+/* CABEÇALHO, LEGENDA E SELO */
+/* Header in a row, so a longer product name pushes the captions instead of overlapping them */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px;display:flex;align-items:flex-start}
+#title{position:relative;flex:none;margin-top:22px;font-size:52px;font-weight:800;letter-spacing:-1px;opacity:0}
+#title span{color:var(--coral)}
+#caps{position:relative;flex:none;margin:24px 0 0 52px;width:1060px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:30px;font-weight:700;opacity:0}
+/* Pill moved left so the wider amber logo keeps the same gap */
+#sbx{position:absolute;right:240px;top:30px;height:44px;display:flex;align-items:center;padding:0 16px;border:2px solid var(--coral);border-radius:999px;color:var(--coral);font-size:24px;font-weight:800;opacity:0}
+#seal{position:absolute;right:0;top:28px;height:48px;width:auto;opacity:0}
+
+/* QUADRO PRINCIPAL */
+#cv{position:absolute;left:40px;top:108px;width:1840px;height:940px;border:2px solid var(--line);border-radius:22px;overflow:hidden;background:#111115;opacity:0}
+#dots{position:absolute;left:0;top:0;width:1836px;height:936px;background-image:radial-gradient(circle,#26262E 2.4px,transparent 2.8px);background-size:32px 32px}
+#wires{position:absolute;left:0;top:0;overflow:visible}
+.zh{font-size:28px;font-weight:800;height:44px;display:flex;align-items:center;gap:12px}
+.zh small{font-size:24px;font-weight:600;color:var(--muted)}
+.pill{font-size:24px;font-weight:700;border-radius:999px;padding:2px 14px;display:inline-flex;align-items:center;height:38px}
+.pill.g{background:rgba(61,214,140,.16);color:var(--ok)}.pill.r{background:rgba(255,107,107,.16);color:var(--bad)}
+.pill.a{background:rgba(var(--wl-wait-rgb),.16);color:var(--wait)}.pill.n{background:#2A2A32;color:var(--muted)}
+.pill.c{background:rgba(var(--wl-amber-rgb),.16);color:var(--coral)}.pill.b{background:rgba(76,141,255,.18);color:#8FB6FF}
+.pill.pp{background:var(--wl-wait-soft);color:var(--wait);border:2px dashed var(--wait)}
+
+/* COLUNA DE FONTES */
+#za{position:absolute;left:20px;top:20px;width:460px;height:896px}
+.src{position:absolute;left:0;width:460px;height:100px;border:3px solid var(--line);border-radius:18px;background:var(--panel);display:flex;align-items:center;gap:16px;padding:0 16px;opacity:0}
+.src .ic{width:52px;height:52px;border-radius:14px;flex:none;display:grid;place-items:center;font-size:24px;font-weight:800}
+.src .nm{font-size:28px;font-weight:700;line-height:34px;display:flex;align-items:center;gap:10px}
+.src .sb{font-size:24px;font-weight:600;color:var(--muted);line-height:30px}
+.src .pill{height:34px;font-size:24px}
+#nocon{position:absolute;left:0;top:700px;width:460px;height:150px;border:3px dashed #4A4A55;border-radius:18px;padding:14px 16px;opacity:0}
+#nocon .t1{font-size:26px;font-weight:700;display:flex;align-items:center;gap:10px}
+#nocon .t2{font-size:24px;font-weight:600;color:var(--muted);margin-top:10px;white-space:normal;line-height:30px}
+
+/* BANCADA CENTRAL (UMA POR BATIDA) */
+.wb{position:absolute;left:560px;top:20px;width:700px;height:896px;border:2px solid var(--line);border-radius:20px;background:var(--panel);padding:20px 24px;opacity:0}
+.fl{font-size:24px;font-weight:600;color:var(--muted);margin:14px 0 6px}
+.fv{height:56px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);display:flex;align-items:center;gap:12px;padding:0 16px;font-size:26px;font-weight:700}
+.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;height:56px;width:max-content}
+.seg span{padding:0 18px;display:flex;align-items:center;font-size:26px;font-weight:700;color:var(--muted)}
+/* Text on amber uses the brand ink for AA contrast; notes sit on the dark amber surface */
+.seg span.on{background:var(--coral);color:var(--wl-ink-on-amber)}
+.note{border-radius:12px;border-left:6px solid var(--coral);background:var(--wl-amber-soft);padding:12px 16px;font-size:24px;font-weight:600;line-height:32px;white-space:normal}
+.btn{height:56px;border-radius:12px;border:2px solid var(--coral);background:var(--coral);color:var(--wl-ink-on-amber);display:inline-flex;align-items:center;padding:0 22px;font-size:26px;font-weight:800}
+#okline{position:absolute;left:24px;top:690px;width:650px;height:56px;border-radius:12px;border:3px solid var(--ok);display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;font-weight:800;color:var(--ok);opacity:0}
+
+.pin{display:flex;align-items:center;gap:12px;margin-top:10px}
+.pin .ar{font-size:28px;color:var(--muted)}
+.fr{height:48px;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;border-bottom:2px solid #26262D}
+.fr b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:20px}
+.fr.y b{background:rgba(61,214,140,.16);color:var(--ok)}
+.fr.x{color:#9A9AA6}.fr.x b{background:rgba(255,107,107,.14);color:var(--bad)}
+.fr.sel{color:var(--text)}
+#code{position:absolute;left:24px;top:408px;width:650px;height:300px}
+.cg{position:absolute;left:0;width:650px;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 16px;border-left:6px solid var(--acc);background:#141418;border-radius:4px}
+.cg code{font-family:monospace;font-size:24px;font-weight:600;color:#E6E6EE}
+.cg .pill{opacity:0;height:34px}
+#histnote{position:absolute;left:24px;top:744px;width:650px}
+
+.pr{position:absolute;left:24px;width:650px;height:100px;display:flex;gap:16px;align-items:flex-start;padding-top:8px;border-bottom:2px solid #26262D}
+.pr .k{width:136px;flex:none}
+.pr .k .pill{width:136px;justify-content:center}
+.pr .tx{position:relative;width:498px}
+.pr .bf{position:relative;font-size:26px;font-weight:600;line-height:38px;width:max-content}
+.pr .bf i{position:absolute;left:0;top:19px;height:3px;width:100%;background:var(--bad);transform-origin:0 50%;font-style:normal}
+.pr .af{font-size:24px;font-weight:700;line-height:34px;margin-top:4px;opacity:0}
+.pr .af.g{color:var(--ok)}.pr .af.r{color:var(--bad)}
+#pfoot{position:absolute;left:24px;top:640px;width:650px}
+
+#track{position:absolute;left:24px;top:220px;width:650px;height:40px;border-radius:10px;background:#2A2A32;overflow:hidden}
+#fbk{position:absolute;left:0;top:0;width:650px;height:40px;background:var(--blue);transform-origin:0 50%}
+#fdl{position:absolute;left:0;top:0;width:650px;height:40px;background:var(--ok);transform-origin:0 50%}
+#cur{position:absolute;left:24px;top:150px;width:2px;height:120px}
+#cur i{position:absolute;left:-2px;top:58px;width:6px;height:62px;background:var(--coral);border-radius:3px}
+/* Cursor label on amber: brand ink text */
+#cur span{position:absolute;left:-8px;top:0;width:120px;height:40px;border-radius:10px;background:var(--coral);color:var(--wl-ink-on-amber);font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.tl{position:absolute;top:272px;font-size:24px;font-weight:700;opacity:0}
+.jr{position:absolute;left:24px;width:650px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border:2px solid var(--line);border-radius:12px;background:var(--panel2);font-size:24px;font-weight:700;opacity:0}
+
+/* DOMÍNIOS DE CONHECIMENTO */
+#zc{position:absolute;left:1300px;top:20px;width:516px;height:896px}
+.ns{position:absolute;height:104px;border:3px solid var(--line);border-radius:18px;background:var(--panel);padding:10px 18px;opacity:0}
+.ns .n1{font-size:30px;font-weight:800;line-height:40px;display:flex;align-items:center;gap:12px}
+.ns .n2{font-size:24px;font-weight:600;color:var(--muted);line-height:34px}
+.nsl{position:absolute;width:4px;background:#4A4A55;transform-origin:50% 0}
+.nn{position:absolute;left:0;width:516px;font-size:24px;font-weight:600;color:var(--muted);line-height:32px;display:flex;gap:10px;opacity:0}
+.nn i{width:12px;height:12px;border-radius:50%;background:var(--coral);flex:none;margin-top:10px}
+
+/* GRAFO DE CONHECIMENTO */
+#zg{position:absolute;left:560px;top:20px;width:1256px;height:896px;opacity:0}
+#gbox{position:absolute;left:0;top:0;width:1256px;height:640px;border:3px dashed rgba(var(--wl-amber-rgb),.55);border-radius:22px;background:rgba(var(--wl-amber-rgb),.03)}
+#gtab{position:absolute;left:20px;top:14px;display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800}
+.gn{position:absolute;width:300px;height:92px;border:3px solid var(--line);border-left:8px solid var(--acc);border-radius:16px;background:var(--panel);padding:8px 16px;opacity:0}
+.gn .k{font-size:24px;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.02em;line-height:32px}
+.gn .v{font-size:28px;font-weight:700;line-height:38px}
+.gn.old{border-style:dashed;border-left-style:solid;opacity:0}
+.gp{position:absolute;width:340px;height:68px;border:3px solid var(--line);border-left:8px solid var(--teal);border-radius:14px;background:var(--panel);display:flex;align-items:center;padding:0 16px;font-size:26px;font-weight:700;opacity:0}
+.gl{position:absolute;font-size:24px;font-weight:700;color:var(--muted);opacity:0}
+#gstate{position:absolute;left:0;top:668px;width:1256px;height:100px;display:flex;align-items:center;gap:14px}
+#gstate .lb{font-size:26px;font-weight:800;margin-right:6px}
+.st{height:52px;border:3px solid var(--line);border-radius:14px;display:flex;align-items:center;padding:0 18px;font-size:26px;font-weight:700;color:var(--muted);background:var(--panel)}
+.sa{font-size:28px;color:#6A6A76}
+#gnote{position:absolute;left:0;top:790px;width:1256px}
+
+/* PAINEL DE OPERAÇÃO DAS FONTES */
+#zp{position:absolute;left:20px;top:20px;width:1796px;height:896px;opacity:0}
+#tb{position:absolute;left:0;top:70px;width:1230px;border:2px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+.trw{display:grid;grid-template-columns:320px 220px 180px 190px 150px 126px;height:84px;align-items:center;padding:0 20px;border-top:2px solid #26262D;font-size:26px;font-weight:700}
+.trw.h{height:56px;border-top:none;font-size:24px;color:var(--muted);font-weight:700;background:#141418}
+.trw .s{font-size:24px;font-weight:600;color:var(--muted)}
+.fd{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:700;color:var(--muted)}
+.fd b{width:18px;height:18px;border-radius:50%;background:#5A5A66;flex:none}
+.act{font-size:24px;font-weight:700;color:#8FB6FF}
+#tleg{position:absolute;left:0;top:600px;width:1230px;display:flex;gap:28px;font-size:24px;font-weight:600;color:var(--muted)}
+#tleg span{display:flex;align-items:center;gap:10px}
+#tleg b{width:16px;height:16px;border-radius:50%}
+#tcli{position:absolute;left:0;top:660px;width:1230px}
+.sc{position:absolute;left:1270px;width:526px;border:2px solid var(--line);border-radius:18px;background:var(--panel);padding:14px 20px;opacity:0}
+.sc .zh{height:40px}
+.sr{height:52px;display:flex;align-items:center;justify-content:space-between;font-size:24px;font-weight:600;border-bottom:2px solid #26262D}
+.sr:last-child{border-bottom:none}
+#rbtn{height:52px;border-radius:12px;border:2px solid var(--coral);color:var(--coral);display:inline-flex;align-items:center;padding:0 20px;font-size:26px;font-weight:800;margin-top:12px}
+#dlqst{position:relative;width:170px;height:38px}
+#dlqst .pill{position:absolute;right:0;top:0}
+
+/* FECHO */
+#closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
+.clt{position:absolute;left:0;width:1920px;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px}
+.clt span{color:var(--coral)}
+#cl2{position:absolute;left:0;width:1920px;top:560px;text-align:center;font-size:32px;font-weight:600;color:var(--muted)}
+#cl3{position:absolute;left:0;width:1920px;top:640px;display:flex;justify-content:center;gap:16px}
+/* Child combinator: the pill style must not reach the product-name span nested inside a pill */
+#cl3>span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px}
+#cl3>span.pp{border-style:dashed;border-color:var(--wait);color:var(--wait)}
+/* Elements revealed by the timeline start hidden */
+#histnote,#pfoot,#gnote,#tleg,#tcli,.pr,.fr,.cg,#tb .trw:not(.h){opacity:0}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* ABERTURA WELABS-INTRO (copiada de pieces/welabs-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+.intro-lbl .intro-soon{font-size:24px;font-weight:500;color:#A9A9B3;margin-left:14px;letter-spacing:.02em}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="kb-sources-to-knowledge-intro" data-width="1920" data-height="1080" data-start="0" data-duration="43">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:176px"><img class="intro-mk" src="./assets/brand/marks/flow-mark-dark.svg" alt=""><span data-wl-name="flow">Flow</span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:300px"><img class="intro-mk" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span data-wl-name="hub">Hub de domínio</span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:424px"><img class="intro-mk" src="./assets/brand/marks/lore-mark-dark.svg" alt=""><span data-wl-name="kb">KB</span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:614px"><img class="intro-mk" src="./assets/brand/marks/kin-mark-dark.svg" alt=""><span data-wl-name="crm">CRM</span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:738px"><img class="intro-mk" src="./assets/brand/marks/vox-mark-dark.svg" alt=""><span data-wl-name="channels">Channels</span></div>
+  <div class="intro-lbl intro-in" id="intro-in5" style="top:862px">Monitoramento<span class="intro-soon">previsto</span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/kb-sources-to-knowledge, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="title"><span data-wl-name="kb">KB</span><span>.</span></div>
+    <div id="caps"></div>
+    <div id="sbx">em desenvolvimento · dados DEMO</div>
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div id="cv">
+    <div id="dots"></div>
+    <svg id="wires" width="1836" height="936" viewBox="0 0 1836 936"></svg>
+
+    <!-- Sources column -->
+    <div id="za">
+      <div class="zh" id="zah" style="opacity:0">Fontes <small>conectores</small></div>
+      <div id="srcs"></div>
+      <div id="nocon">
+        <div class="t1">Página web · mensagem · dataset</div>
+        <div class="t2" style="display:flex;align-items:center;gap:10px"><span class="pill pp" style="height:34px">parcial</span>sem conector ainda</div>
+      </div>
+    </div>
+
+    <!-- B1: register a source -->
+    <div class="wb" id="wb1">
+      <div class="zh">Registrar fonte <small>operador</small></div>
+      <div class="fl">Tipo</div>
+      <div class="seg"><span class="on">Tracker</span><span>Repositório</span><span>Reuniões</span></div>
+      <div class="fl">Projeto no tracker</div>
+      <div class="fv">ATL</div>
+      <div class="fl">Namespace</div>
+      <div class="fv">Atlas Vendas <span class="pill n" style="height:34px;margin-left:auto">já existe</span></div>
+      <div class="fl">Agenda</div>
+      <div class="fv">Só manual <span class="pill a" style="height:34px;margin-left:auto">padrão</span></div>
+      <div class="note" style="margin-top:22px">Toda fonte nasce só manual: nenhum backfill caro começa sem decisão do operador.</div>
+      <div style="margin-top:20px;display:flex;gap:14px;align-items:center"><span class="btn" id="breg">Registrar</span><span style="font-size:24px;color:var(--muted);font-weight:600">sem editar arquivo de configuração</span></div>
+      <div id="okline">✓ Tickets ATL alimenta Atlas Vendas</div>
+    </div>
+
+    <!-- B2: repository snapshot cut into symbols -->
+    <div class="wb" id="wb2">
+      <div class="zh">Repositório · snapshot fixado</div>
+      <div class="pin"><span class="pill n">tag v2.3</span><span class="ar">→</span><span class="pill b">commit 7f3a9c1</span><span class="pill g">fixado</span><span style="font-size:24px;color:var(--muted);font-weight:600">DEMO</span></div>
+      <div class="fl" style="margin-top:18px">Arquivos elegíveis</div>
+      <div class="fr y sel" id="fsel"><b>✓</b>booking/expiration.service.ts</div>
+      <div class="fr y"><b>✓</b>booking/proposal-card.tsx</div>
+      <div class="fr x"><b>×</b>dist/bundle.js · lista de exclusão</div>
+      <div class="fr x"><b>×</b>docs/manual.pdf · acima do teto de tamanho</div>
+      <div id="code">
+        <div class="cg" id="cg0" style="--acc:var(--violet);top:0"><code>export enum BookingStatus {…}</code><span class="pill" style="background:rgba(167,139,250,.18);color:var(--violet)">enum</span></div>
+        <div class="cg" id="cg1" style="--acc:var(--teal);top:52px"><code>interface ExpirationRule {…}</code><span class="pill" style="background:rgba(46,196,182,.18);color:var(--teal)">interface</span></div>
+        <div class="cg" id="cg2" style="--acc:var(--blue);top:104px"><code>export class BookingExpiration {</code><span class="pill b">classe</span></div>
+        <div class="cg" id="cg3" style="--acc:var(--pink);top:156px"><code>  expireBooking(id) {…}</code><span class="pill" style="background:rgba(232,121,249,.18);color:var(--pink)">método</span></div>
+      </div>
+      <div id="histnote"><div class="note" id="hn">Cada símbolo leva assinatura e doc. Componentes de interface também viram símbolo. No modo histórico, o commit vira trechos de diff e se liga ao ticket ATL-142 pelo prefixo.</div></div>
+    </div>
+
+    <!-- B3: personal data gate -->
+    <div class="wb" id="wb3">
+      <div class="zh">Barreira de dado pessoal <small>antes de virar passagem</small></div>
+      <div class="pr" id="pr0" style="top:80px"><div class="k"><span class="pill b">Reunião</span></div><div class="tx"><div class="bf">‹nome›: a proposta vence no prazo<i data-layout-allow-occlusion></i></div><div class="af g">→ [participante] no lugar do nome</div></div></div>
+      <div class="pr" id="pr1" style="top:190px"><div class="k"><span class="pill b">Ticket</span></div><div class="tx"><div class="bf">comentário com CPF ···.···.···-··<i data-layout-allow-occlusion></i></div><div class="af r">barrado · CPF com dígito verificador</div></div></div>
+      <div class="pr" id="pr2" style="top:300px"><div class="k"><span class="pill b">Código</span></div><div class="tx"><div class="bf"><code style="font-family:monospace" data-layout-allow-occlusion>senha = "…"</code><i data-layout-allow-occlusion></i></div><div class="af r">barrado · credencial em texto no código</div></div></div>
+      <div class="pr" id="pr3" style="top:410px"><div class="k"><span class="pill b">Commit</span></div><div class="tx"><div class="bf">Co-authored-by: ‹nome›<i data-layout-allow-occlusion></i></div><div class="af g">→ linha com pessoa removida</div></div></div>
+      <div class="pr" id="pr4" style="top:520px"><div class="k"><span class="pill b">Anexo</span></div><div class="tx"><div class="bf">link assinado com credencial<i data-layout-allow-occlusion></i></div><div class="af g">→ localizador limpo, sem credencial</div></div></div>
+      <div id="pfoot">
+        <div class="note">Pessoa não é conhecimento: autor, responsável e participante nunca entram no grafo.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px">
+          <span class="pill n">cartão · chaves · tokens</span><span class="pill n">censo por namespace</span>
+          <span class="pill n">quarentena</span><span class="pill n">apagamento auditado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- B4: queue with cursor -->
+    <div class="wb" id="wb4">
+      <div class="zh">Sincronização · Tickets ATL</div>
+      <div style="display:flex;gap:10px;margin-top:10px"><span class="pill n">agendador único</span><span class="pill n">1 run por fonte</span><span class="pill n">recolhe órfãos</span></div>
+      <div id="cur" data-layout-allow-overflow><span>cursor</span><i></i></div>
+      <div id="track"><div id="fbk"></div><div id="fdl"></div></div>
+      <div class="tl" id="tl1" style="left:24px;color:#8FB6FF">1º sync · backfill</div>
+      <div class="tl" id="tl2" style="left:500px;color:var(--ok)">só o delta</div>
+      <div class="note" id="curnote" style="position:absolute;left:24px;top:322px;width:650px;opacity:0">O cursor só avança depois que o lote foi gravado.</div>
+      <div class="fl" style="position:absolute;left:24px;top:400px">Fila de jobs</div>
+      <div class="jr" id="j0" style="top:444px">Tickets ATL · delta <span class="pill g">concluído</span></div>
+      <div class="jr" id="j1" style="top:516px">Reuniões · delta <span class="pill a">nova tentativa · espera</span></div>
+      <div class="jr" id="j2" style="top:588px">Artigos ATL · delta <span class="pill r">fila de falhas</span></div>
+      <div class="note" id="jnote" style="position:absolute;left:24px;top:666px;width:650px;opacity:0">Falha vai para a fila de falhas; a fonte segue.</div>
+      <div id="dry" style="position:absolute;left:24px;top:754px;width:650px;opacity:0">
+        <div style="font-size:24px;font-weight:700;color:var(--muted)">Prévia sem escrever (dry-run)</div>
+        <div style="display:flex;gap:10px;margin-top:10px"><span class="pill n">tamanho do delta · DEMO</span><span class="pill n">cabe no limite · DEMO</span></div>
+      </div>
+    </div>
+
+    <!-- Namespaces -->
+    <div id="zc">
+      <div class="zh" id="zch" style="opacity:0">Domínios de conhecimento</div>
+      <div class="nsl" id="nl1" style="left:30px;top:166px;height:80px"></div>
+      <div class="nsl" id="nl2" style="left:70px;top:350px;height:80px"></div>
+      <div class="ns" id="ns0" style="left:0;top:62px;width:440px"><div class="n1">Atlas <span class="pill n" style="height:34px">organização</span></div><div class="n2">tenant declarado · DEMO</div></div>
+      <div class="ns" id="ns1" style="left:40px;top:246px;width:440px"><div class="n1">Atlas Vendas <span class="pill n" style="height:34px">produto</span></div><div class="n2">tenant declarado · DEMO</div></div>
+      <div class="ns" id="ns2" style="left:80px;top:430px;width:436px"><div class="n1">Atlas Norte <span class="pill n" style="height:34px">implantação</span></div><div class="n2">tenant declarado · DEMO</div></div>
+      <div class="nn" id="nn0" style="top:578px"><i></i>Cada fonte alimenta um namespace</div>
+      <div class="nn" id="nn1" style="top:624px"><i></i>Um artefato pode estar em vários</div>
+      <div class="nn" id="nn2" style="top:670px"><i></i>Liberar a org libera o que está abaixo</div>
+      <div class="nn" id="nn3" style="top:716px"><i></i>Tenant declarado, nunca herdado</div>
+    </div>
+
+    <!-- B5: graph -->
+    <div id="zg">
+      <div id="gbox"><div id="gtab">namespace · Atlas Vendas <span class="pill n" style="height:34px">artefato em N namespaces</span></div></div>
+      <svg id="gw" width="1256" height="640" viewBox="0 0 1256 640" style="position:absolute;left:0;top:0;overflow:visible"></svg>
+      <div class="gn" id="g-c" style="--acc:var(--blue);left:40px;top:90px"><div class="k">Comentário</div><div class="v">ATL-142 · nº 3</div></div>
+      <div class="gn" id="g-t" style="--acc:var(--coral);left:40px;top:300px"><div class="k">Ticket · artefato</div><div class="v">ATL-142</div></div>
+      <div class="gn" id="g-a" style="--acc:var(--blue);left:40px;top:510px"><div class="k">Anexo</div><div class="v">proposta.pdf</div></div>
+      <div class="gn old" id="g-v1" style="--acc:var(--grey);left:450px;top:170px"><div class="k">Versão 1</div><div class="v">substituída</div></div>
+      <div class="gn" id="g-v2" style="--acc:var(--ok);left:450px;top:310px"><div class="k">Versão 2 · atual</div><div class="v">embedada</div></div>
+      <div class="gn" id="g-cm" style="--acc:var(--violet);left:450px;top:510px"><div class="k">Commit</div><div class="v">7f3a9c1 · DEMO</div></div>
+      <div class="gp" id="g-p0" style="left:870px;top:210px">Passagem 1 · versão 2</div>
+      <div class="gp" id="g-p1" style="left:870px;top:312px">Passagem 2 · versão 2</div>
+      <div class="gp" id="g-p2" style="left:870px;top:414px">Passagem 3 · versão 2</div>
+      <div class="gl" id="gl-c" style="left:206px;top:220px">parte de</div>
+      <div class="gl" id="gl-a" style="left:206px;top:430px">anexado a</div>
+      <div class="gl" id="gl-cm" style="left:470px;top:452px">implementa ATL-142</div>
+      <div class="gl" id="gl-p" style="left:880px;top:500px">servíveis por versão</div>
+      <div id="gstate">
+        <span class="lb">Estados da versão</span>
+        <span class="st" id="st0">descoberto</span><span class="sa">→</span>
+        <span class="st" id="st1">extraído</span><span class="sa">→</span>
+        <span class="st" id="st2">fatiado</span><span class="sa">→</span>
+        <span class="st" id="st3">embedado</span>
+      </div>
+      <div id="gnote"><div class="note" id="gn">Fatia e embeda só quando o conteúdo muda; os vínculos são reafirmados a cada ingestão; cache por conteúdo. Uma versão também pode ficar parcial, falhar ou ir para quarentena.</div></div>
+    </div>
+
+    <!-- B6: operations panel -->
+    <div id="zp">
+      <div class="zh" style="height:50px">Fontes <span class="pill n">SLO de frescor · DEMO</span><span class="pill n">histórico de runs</span></div>
+      <div id="tb">
+        <div class="trw h"><span>Fonte</span><span>Namespace</span><span>Agenda</span><span>Último sync</span><span>Frescor</span><span>Ação</span></div>
+        <div class="trw" id="r0"><span>Tickets ATL</span><span class="s">Atlas Vendas</span><span class="s">agendada</span><span class="s">hoje · DEMO</span><span class="fd" id="fd0"><b></b>no SLO</span><span class="act">Sync</span></div>
+        <div class="trw" id="r1"><span>Artigos ATL</span><span class="s">Atlas</span><span class="s">agendada</span><span class="s">hoje · DEMO</span><span class="fd" id="fd1"><b></b>no SLO</span><span class="act">Pausar</span></div>
+        <div class="trw" id="r2"><span>Reuniões</span><span class="s">Atlas Vendas</span><span class="s">agendada</span><span class="s">ontem · DEMO</span><span class="fd" id="fd2"><b></b>acima</span><span class="act">Sync</span></div>
+        <div class="trw" id="r3"><span>Repositório · snapshot</span><span class="s">Atlas Norte</span><span class="s">só manual</span><span class="s">— · DEMO</span><span class="fd"><b></b>manual</span><span class="act">Sync</span></div>
+        <div class="trw" id="r4"><span>Documentos</span><span class="s">Atlas</span><span class="s">pausada</span><span class="s">— · DEMO</span><span class="fd"><b></b>pausada</span><span class="act">Retomar</span></div>
+      </div>
+      <div id="tleg"><span><b style="background:var(--ok)"></b>dentro do SLO</span><span><b style="background:var(--warn)"></b>acima do SLO</span><span><b style="background:#5A5A66"></b>manual ou pausada</span></div>
+      <div id="tcli"><div class="note">Pelo terminal o operador lista, agenda, sincroniza, pausa e retoma cada fonte, e registra fonte nova sem editar configuração.</div></div>
+      <div class="sc" id="sc0" style="top:70px">
+        <div class="zh">Runs recentes</div>
+        <div class="sr">Tickets ATL · delta <span class="pill g">concluído</span></div>
+        <div class="sr">Reuniões · delta <span class="pill b">em andamento</span></div>
+        <div class="sr">Artigos ATL · delta <span class="pill r">falhou</span></div>
+      </div>
+      <div class="sc" id="sc1" style="top:340px">
+        <div class="zh">Fila de falhas (DLQ)</div>
+        <div class="sr">Artigos ATL · delta <span id="dlqst"><span class="pill r" id="dq0">falhou</span><span class="pill b" id="dq1" style="opacity:0">na fila</span></span></div>
+        <div style="font-size:24px;font-weight:600;color:var(--muted);margin-top:10px">depois de novas tentativas com espera</div>
+        <span id="rbtn">Reprocessar</span>
+      </div>
+      <div class="sc" id="sc2" style="top:606px">
+        <div class="zh">Campos do tracker, por dados</div>
+        <div class="sr">status → estado canônico</div>
+        <div class="sr">rótulo cru guardado junto</div>
+        <div class="sr">a fazer · em andamento · concluído</div>
+        <div class="sr">atualiza só o que divergiu</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="closing">
+    <div class="clt" style="top:300px">Toda fonte, sempre fresca,</div>
+    <div class="clt" style="top:410px">sem dado <span>pessoal</span>.</div>
+    <div id="cl2">Tickets, artigos, reuniões e código viram conhecimento versionado e citável.</div>
+    <div id="cl3"><span>em desenvolvimento</span><span>dados DEMO</span><span class="pp"><span data-wl-name="hub">Hub de domínio</span> · parcial</span><span class="pp">web, mensagem, dataset · parcial</span></div>
+  </div>
+  <div id="pad"></div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/kb-sources-to-knowledge; só o registro da timeline virou __pieceParts.film)
+(function(){
+  // FONTES (DADOS DEMO)
+  // Brand amber literals for GSAP and generated markup (GSAP cannot tween var()); hub name comes from WELABS_BRAND.names
+  const BR=window.WELABS_BRAND,BC=BR.color;
+  const SRC=[
+    {id:"tk",n:"Tickets",s:"comentários, anexos e links",ic:"#",c:"#4C8DFF"},
+    {id:"ar",n:"Artigos",s:"árvore pai e filho",ic:"A",c:"#2EC4B6"},
+    // Meetings category colour moved off the state yellow (it read as the brand amber) to a lime that no state uses
+    {id:"mt",n:"Reuniões",s:"transcrição + resumo",ic:"R",c:"#A3E635"},
+    {id:"rp",n:"Repositório",s:"histórico e snapshot",ic:"&lt;/&gt;",c:"#A78BFA"},
+    {id:"dc",n:"Documentos",s:"Markdown e texto",ic:"D",c:"#E879F9"},
+    {id:"hb",n:BR.names.hub,s:"só leitura, sem campo pessoal",ic:"H",c:BC.amber,badge:"parcial"}
+  ];
+  const box=document.getElementById("srcs");
+  SRC.forEach((s,i)=>{const d=document.createElement("div");d.className="src";d.id="s-"+s.id;d.style.top=(60+i*106)+"px";
+    if(s.badge)d.style.borderStyle="dashed";
+    d.innerHTML=`<div class="ic" style="color:${s.c};background:${s.c}2E">${s.ic}</div><div><div class="nm">${s.n}${s.badge?` <span class="pill pp">${s.badge}</span>`:""}</div><div class="sb">${s.s}</div></div>`;
+    box.appendChild(d);});
+
+  // Wires: each source card feeds the central bench; bench feeds the namespace
+  const NS="http://www.w3.org/2000/svg",W=document.getElementById("wires");
+  const mk=(d,id,dash)=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);p.setAttribute("id",id);p.setAttribute("fill","none");
+    p.setAttribute("stroke","#4A4A55");p.setAttribute("stroke-width","4");if(dash)p.setAttribute("stroke-dasharray",dash);W.appendChild(p);return p;};
+  SRC.forEach((s,i)=>{const y=20+60+i*106+50;mk(`M480,${y} C520,${y} 520,468 560,468`,"w-"+s.id,s.badge?"10 8":null);});
+  mk("M1260,324 L1340,324","w-ns",null);
+
+  // Graph edges
+  const G=document.getElementById("gw");
+  const ge=(d,id)=>{const p=document.createElementNS(NS,"path");p.setAttribute("d",d);p.setAttribute("id",id);p.setAttribute("fill","none");
+    p.setAttribute("stroke","#6A6A76");p.setAttribute("stroke-width","4");G.appendChild(p);return p;};
+  ge("M190,182 L190,300","ge-c");ge("M190,510 L190,392","ge-a");
+  ge("M340,330 C395,330 395,216 450,216","ge-v1");ge("M340,352 L450,356","ge-v2");
+  ge("M450,556 C395,556 395,380 340,380","ge-cm");
+  ge("M750,356 C810,356 810,244 870,244","ge-p0");ge("M750,356 L870,346","ge-p1");ge("M750,356 C810,356 810,448 870,448","ge-p2");
+  document.querySelectorAll("#wires path,#gw path").forEach(p=>{const L=Math.ceil(p.getTotalLength());p.dataset.len=L;});
+
+  const tl=gsap.timeline({paused:true});
+  const EZ="power2.inOut",EO="power3.out";
+  const draw=(sel,t,d)=>{document.querySelectorAll(sel).forEach(p=>{const L=+p.dataset.len;const dash=p.getAttribute("stroke-dasharray");
+    if(dash){tl.fromTo(p,{opacity:0},{opacity:1,duration:d||.5,immediateRender:true},t);}
+    else{tl.fromTo(p,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:d||.5,ease:"power1.inOut",immediateRender:true},t);}});};
+  const pop=(sel,t,st)=>tl.fromTo(sel,{opacity:0,y:14},{opacity:1,y:0,duration:.4,stagger:st||0,ease:EO,immediateRender:false},t);
+  const hi=(id,t,on)=>tl.to("#s-"+id,on?{borderColor:BC.amber,backgroundColor:BC.amberSoft,duration:.3}:{borderColor:"#3A3A42",backgroundColor:"#17171B",duration:.3},t);
+  const wire=(id,t,on)=>tl.to("#w-"+id,{stroke:on?BC.amber:"#4A4A55",duration:.3},t);
+  const swap=(out,inn,t)=>{if(out)tl.to(out,{opacity:0,duration:.3},t);tl.fromTo(inn,{opacity:0,y:16},{opacity:1,y:0,duration:.45,ease:EO,immediateRender:false},t+.35);};
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Tickets, artigos, reuniões e código entram como fontes",
+    "Repositório num commit fixado, fatiado em símbolos",
+    "Nome vira [participante]; CPF e senha são barrados",
+    "Fila com cursor: primeiro o backfill, depois só o delta",
+    "O grafo cresce: artefato → versão → passagens",
+    "Frescor contra o SLO; a falha volta com “Reprocessar”"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
+  // Beat starts; every state change is followed by at least 1.5 s of stillness
+  const CT=[0.6,5.2,10.4,15.4,20.4,25.6,30.8];
+  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+
+  // ABERTURA E B1: fontes entram, registro de fonte, namespace alimentado
+  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal,#sbx",{opacity:1,duration:.5},.15);
+  tl.to("#cv",{opacity:1,duration:.6},.2);
+  pop("#zah",.6);pop(".src",.9,.22);draw("#wires path:not(#w-ns)",1.1,.6);
+  pop("#nocon",2.3);
+  swap(null,"#wb1",.9);
+  pop("#zch",1.2);pop("#ns0,#ns1,#ns2",1.4,.2);
+  tl.fromTo(".nsl",{scaleY:0},{scaleY:1,duration:.4,ease:EO,immediateRender:true},1.8);
+  pop(".nn",2.3,.12);
+  hi("tk",2.6,true);wire("tk",2.6,true);
+  tl.to("#breg",{scale:.94,duration:.12},2.8);tl.to("#breg",{scale:1,duration:.2},2.94);
+  tl.fromTo("#okline",{opacity:0,scale:.95},{opacity:1,scale:1,duration:.35,ease:"back.out(1.6)",immediateRender:false},3.0);
+  draw("#w-ns",3.0,.4);tl.to("#w-ns",{stroke:BC.amber,duration:.1},3.0);
+  tl.to("#ns1",{borderColor:BC.amber,backgroundColor:BC.amberSoft,duration:.3},3.2);
+
+  // B2 repositório: commit fixado, arquivos elegíveis, arquivo fatiado em símbolos
+  hi("tk",5.2,false);wire("tk",5.2,false);tl.to("#ns1",{borderColor:"#3A3A42",backgroundColor:"#17171B",duration:.3},5.2);tl.to("#w-ns",{stroke:"#4A4A55",duration:.3},5.2);
+  hi("rp",5.2,true);wire("rp",5.2,true);
+  swap("#wb1","#wb2",5.2);
+  tl.fromTo("#wb2 .fr",{opacity:0,x:-12},{opacity:1,x:0,duration:.3,stagger:.12,ease:EO,immediateRender:false},5.8);
+  tl.to("#fsel",{backgroundColor:BC.amberSoft,duration:.3},6.6);
+  tl.fromTo(".cg",{opacity:0},{opacity:1,duration:.35,stagger:.08,immediateRender:false},6.8);
+  // Cut: the listing splits into separate symbols with their kind
+  [0,1,2,3].forEach(i=>tl.to("#cg"+i,{y:i*18,duration:.6,ease:EZ},7.6));
+  tl.to(".cg .pill",{opacity:1,duration:.3,stagger:.1},7.9);
+  pop("#histnote",8.4);
+
+  // B3 barreira de dado pessoal
+  hi("rp",10.4,false);wire("rp",10.4,false);hi("mt",10.4,true);wire("mt",10.4,true);
+  swap("#wb2","#wb3",10.4);
+  pop(".pr",10.8,.1);
+  tl.fromTo(".pr .bf i",{scaleX:0},{scaleX:1,duration:.35,stagger:.18,ease:EO,immediateRender:true},12.2);
+  tl.to(".pr .bf",{color:"#8E8E99",duration:.3,stagger:.18},12.3);
+  tl.fromTo(".pr .af",{opacity:0,x:-10},{opacity:1,x:0,duration:.35,stagger:.18,ease:EO,immediateRender:false},12.45);
+  pop("#pfoot",13.0);
+
+  // B4 fila com cursor: backfill, depois delta; jobs e fila de falhas
+  hi("mt",15.4,false);wire("mt",15.4,false);hi("tk",15.4,true);wire("tk",15.4,true);
+  swap("#wb3","#wb4",15.4);
+  tl.set("#fbk",{scaleX:0},0);tl.set("#fdl",{scaleX:0},0);tl.set("#cur",{x:0},0);
+  tl.to("#fbk",{scaleX:.72,duration:1.2,ease:"power1.inOut"},16.0);tl.to("#cur",{x:650*.72,duration:1.2,ease:"power1.inOut"},16.0);
+  pop("#tl1",16.4);pop("#curnote",16.6);
+  tl.set("#fdl",{scaleX:.72},17.6);tl.set("#fbk",{zIndex:1},0);tl.set("#fdl",{zIndex:0},0);
+  tl.to("#fdl",{scaleX:.86,duration:.6,ease:"power1.inOut"},17.6);tl.to("#cur",{x:650*.86,duration:.6,ease:"power1.inOut"},17.6);
+  pop("#tl2",17.9);
+  pop(".jr",17.9,.12);pop("#jnote",18.3);pop("#dry",18.3);
+
+  // B5 grafo: artefato → versões → passagens; comentário, anexo e commit ligados
+  hi("tk",20.4,false);wire("tk",20.4,false);
+  tl.to("#wb4,#zc",{opacity:0,duration:.35},20.4);tl.to("#w-ns",{opacity:0,duration:.3},20.4);
+  tl.to("#zg",{opacity:1,duration:.5},20.6);
+  hi("tk",20.7,true);hi("rp",20.7,true);wire("tk",20.7,true);wire("rp",20.7,true);
+  pop("#g-t",20.9);
+  pop("#g-c,#g-a",21.2,.1);draw("#ge-c,#ge-a",21.35,.4);pop("#gl-c,#gl-a",21.6);
+  tl.fromTo("#g-v1",{opacity:0,y:14},{opacity:.6,y:0,duration:.4,ease:EO,immediateRender:false},21.7);pop("#g-v2",21.8);
+  draw("#ge-v1,#ge-v2",21.8,.4);tl.to("#ge-v1",{stroke:"#45454F",duration:.2},22.2);
+  pop("#g-p0,#g-p1,#g-p2",22.2,.1);draw("#ge-p0,#ge-p1,#ge-p2",22.25,.4);pop("#gl-p",22.6);
+  pop("#g-cm",22.5);draw("#ge-cm",22.6,.45);pop("#gl-cm",22.9);
+  ["#st0","#st1","#st2","#st3"].forEach((s,i)=>tl.to(s,{borderColor:i<3?"#4C8DFF":"#3DD68C",color:"#FFFFFF",backgroundColor:i<3?"#17203A":"#123222",duration:.25},22.9+i*.2));
+  pop("#gnote",23.6);
+
+  // B6 painel de fontes: frescor contra o SLO, fila de falhas com reprocessar
+  hi("tk",25.6,false);hi("rp",25.6,false);
+  tl.to("#zg,#za,#wires",{opacity:0,duration:.35},25.6);
+  tl.to("#zp",{opacity:1,duration:.45},25.9);
+  tl.fromTo("#tb .trw:not(.h)",{opacity:0,x:-12},{opacity:1,x:0,duration:.3,stagger:.1,ease:EO,immediateRender:false},26.1);
+  tl.to("#fd0 b,#fd1 b",{backgroundColor:"#3DD68C",duration:.3},26.9);tl.to("#fd0,#fd1",{color:"#3DD68C",duration:.3},26.9);
+  // Freshness above the SLO is an attention state: brand red-orange
+  tl.to("#fd2 b",{backgroundColor:BC.warn,duration:.3},26.9);tl.to("#fd2",{color:BC.warn,duration:.3},26.9);
+  pop("#tleg,#tcli",27.0,.1);
+  pop("#sc0,#sc1,#sc2",27.2,.15);
+  tl.to("#rbtn",{scale:.94,backgroundColor:BC.amberSoft,duration:.12},28.5);tl.to("#rbtn",{scale:1,duration:.2},28.62);
+  tl.to("#dq0",{opacity:0,duration:.2},28.7);tl.to("#dq1",{opacity:1,duration:.25},28.75);
+
+  // FECHO
+  tl.to("#cv",{opacity:0,duration:.5},30.8);
+  tl.to("#closing",{opacity:1,duration:.7},31.1);
+  tl.fromTo(".clt",{y:20},{y:0,duration:.7,ease:EO,immediateRender:false},31.1);
+  tl.to("#pad",{opacity:.001,duration:1},33);
+
+  // The site Player may load the page before the runtime creates the registry
+  window.__timelines=window.__timelines||{};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (34 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 34;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["kb-sources-to-knowledge-intro"] = master;
+})();
+</script>
+</body>
+</html>

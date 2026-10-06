@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Central ESG · Abertura</title>
+<style>
+/* BASE DA ABERTURA */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-display:block}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:#F3F6FB}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:#F3F6FB;font-family:Inter,sans-serif;color:#172A45}
+#fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.row{position:absolute;left:548px;font-size:30px;font-weight:650;line-height:40px;letter-spacing:-.005em;color:#172A45;opacity:0;white-space:nowrap}
+#mark{position:absolute;left:0;top:305px;width:1920px;text-align:center;font-size:150px;font-weight:800;line-height:180px;letter-spacing:-.035em;color:#223F67;opacity:0;white-space:nowrap}
+#mark b{font-weight:800;color:#3A6BAE}
+#line{position:absolute;left:0;top:712px;width:1920px;text-align:center;font-size:44px;font-weight:500;line-height:60px;letter-spacing:-.01em;color:#334155;opacity:0;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="central-esg-intro" data-width="1920" data-height="1080" data-duration="8.5">
+  <canvas id="fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div class="row" id="row0" style="top:425px">Ambiental</div>
+  <div class="row" id="row1" style="top:525px">Social</div>
+  <div class="row" id="row2" style="top:625px">Governança</div>
+  <div id="mark">Central <b>ESG</b></div>
+  <div id="line">Do dado espalhado ao relato claro</div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// RENDER DETERMINÍSTICO DA ABERTURA (Canvas 2D dirigido pela timeline; rótulos, marca e frase em DOM)
+(function () {
+  var DURATION = 8.5;
+  var ctx = document.getElementById('fg').getContext('2d');
+  function render(t) { SC.drawScene(ctx, t); }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o canvas
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  [0, 1, 2].forEach(function (r) {
+    tl.fromTo('#row' + r, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, SC.T.rows + r * 0.08);
+    tl.to('#row' + r, { opacity: 0, x: -12, duration: 0.3, ease: 'power2.in' }, SC.T.cardOut - 0.05 + r * 0.03);
+  });
+  tl.fromTo('#mark', { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, SC.T.wordmark);
+  tl.fromTo('#line', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.T.slogan);
+  render(0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines['central-esg-intro'] = tl;
+})();
+</script>
+</body>
+</html>

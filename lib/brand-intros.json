@@ -6,6 +6,7 @@
     "wego": "wego-intro",
     "sgors": "residuos-intro",
     "ius": "ius-intro",
+    "central-esg": "central-esg-intro",
     "welabs": "welabs-intro"
   },
   "products": {
@@ -16,7 +17,8 @@
     "docgo": "wego",
     "signgo": "wego",
     "sgors": "sgors",
-    "ius": "ius"
+    "ius": "ius",
+    "central-esg": "central-esg"
   },
   "publishers": {
     "Welabs": "welabs"
@@ -27,6 +29,7 @@
     "wego": "Família WeGO",
     "sgors": "Sistema de Gerenciamento de Resíduos",
     "ius": "IUS",
+    "central-esg": "Central ESG",
     "welabs": "Welabs"
   }
 }

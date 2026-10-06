@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ecossistema Monitoramento · mesa de ocorrências (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA WELABS */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --accent keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; --soft is the amber-tinted dark surface; background is brand graphite */
+:root{--bg:#10141C;--ink:#FFFFFF;--accent:var(--wl-amber);--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:var(--wl-amber-soft);--ok:#3DD68C;--okt:#12301F;--warn:var(--wl-warn);--warnt:var(--wl-warn-soft);--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--info:#7DB4FF;--infot:#14243A}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the red-orange alert tone (Alpha flag, disconnected site, lease conflict, "apoio, não fato"); new --wait/--waitt carry the cool lilac for the in-progress pill and the lease timer */
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink)}
+p{margin:0}
+
+/* CABEÇALHO FIXO */
+#top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
+/* New wider SVG logo (905x213) at the ~48px seal height */
+#top img{height:48px;display:block;margin-bottom:10px}
+#top .tt{font-size:34px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
+#top .tt em{font-style:normal;color:var(--accent)}
+#top .gr{flex:1}
+.chip{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
+#top .chip{margin-bottom:10px}
+#top .chip.al{color:var(--warn);border-color:var(--warn);background:var(--warnt);font-weight:800}
+
+/* JANELA DA CENTRAL */
+#win{position:absolute;left:120px;top:124px;width:1680px;height:812px;border:2px solid var(--line);border-radius:22px;background:var(--surface);overflow:hidden;opacity:0}
+#wbar{position:absolute;left:0;right:0;top:0;height:60px;background:#101115;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 20px}
+#wbar .gr{flex:1}
+.nav{height:44px;padding:0 16px;border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.nav.on{color:#fff;background:var(--soft);border:2px solid var(--accent)}
+.scope{font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+.conn{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;color:var(--ok);white-space:nowrap;border:2px solid var(--ok);background:var(--okt);border-radius:999px;padding:2px 14px}
+.conn i{width:12px;height:12px;border-radius:50%;background:var(--ok);display:block}
+
+/* INDICADORES */
+#kpi{position:absolute;left:0;right:0;top:60px;height:112px;border-bottom:2px solid var(--line);background:#141519}
+.kt{position:absolute;top:12px;width:310px;height:86px;border:2px solid var(--line);border-radius:14px;background:var(--surface2);padding:6px 18px;opacity:0}
+.kt .kl{display:block;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap;line-height:32px}
+.kt .kn{position:relative;height:44px}
+.kt .kn span{position:absolute;left:0;top:0;font-size:38px;line-height:44px;font-weight:800;white-space:nowrap}
+.kt .kn span.dm{font-size:28px;color:#E6E8EC}
+.h0{opacity:0}
+
+/* FILA */
+#colq{position:absolute;left:0;top:172px;width:620px;bottom:0;border-right:2px solid var(--line)}
+.qh{position:absolute;left:24px;top:14px;font-size:30px;font-weight:800}
+.qsel{position:absolute;right:20px;top:12px;height:44px;padding:0 16px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+.qsub{position:absolute;left:24px;top:62px;font-size:24px;color:var(--muted);white-space:nowrap}
+.row{position:absolute;left:12px;width:594px;height:96px;border-radius:14px;border:2px solid var(--line);background:#191A1F;opacity:0}
+.row .t1{position:absolute;left:22px;top:12px;font-size:26px;font-weight:700;white-space:nowrap}
+.row .t2{position:absolute;left:22px;top:52px;font-size:24px;color:var(--muted);white-space:nowrap}
+.row .t2 b{color:var(--warn);font-weight:700}
+.pbox{position:absolute;right:14px;top:10px;width:236px;height:42px}
+.pbox .pill{position:absolute;right:0;top:0}
+.pill{height:42px;padding:0 16px;border-radius:999px;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+.p-new{color:var(--info);border:2px solid var(--info);background:var(--infot)}
+.p-run{color:var(--wait);border:2px solid var(--wait);background:var(--waitt)}
+.p-done{color:#D4D7DE;border:2px solid #6A6E78;background:#24262C}
+.ring{position:absolute;inset:-2px;border-radius:14px;border:3px solid var(--info);opacity:0}
+
+/* DETALHE */
+#cold{position:absolute;left:620px;top:172px;width:1056px;bottom:0}
+#empty{position:absolute;left:0;right:0;top:250px;text-align:center;font-size:26px;font-weight:600;color:var(--muted);opacity:0}
+#dh{position:absolute;left:0;top:0;width:1056px;height:128px;border-bottom:2px solid var(--line);opacity:0}
+#dtitle{position:absolute;left:24px;top:16px;font-size:30px;font-weight:800;white-space:nowrap;line-height:44px}
+#dmeta{position:absolute;left:24px;top:68px;font-size:24px;color:var(--muted);white-space:nowrap}
+#dpill{position:absolute;left:290px;top:17px;width:250px;height:42px}
+#dpill .pill{position:absolute;left:0;top:0}
+#bAssume{position:absolute;right:24px;top:34px;height:60px;padding:0 30px;border-radius:14px;background:var(--accent);color:var(--wl-ink-on-amber);display:flex;align-items:center;font-size:26px;font-weight:800;white-space:nowrap}
+#lease{position:absolute;right:24px;top:20px;width:380px;height:90px;opacity:0}
+#lease svg{position:absolute;left:0;top:8px;width:60px;height:60px}
+#lease b{position:absolute;left:76px;top:4px;font-size:26px;font-weight:800;white-space:nowrap}
+#lease span{position:absolute;left:76px;top:42px;font-size:24px;color:var(--muted);white-space:nowrap}
+.rbg{fill:none;stroke:#2C2F37;stroke-width:7}
+.rfg{fill:none;stroke:var(--wait);stroke-width:7;stroke-linecap:round}
+#lock{position:absolute;right:24px;top:36px;height:56px;padding:0 20px;border-radius:14px;border:2px solid #6A6E78;background:#24262C;display:flex;align-items:center;gap:12px;font-size:26px;font-weight:800;white-space:nowrap;opacity:0}
+#lock svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round}
+
+.pane{position:absolute;left:0;top:128px;width:1056px;height:508px;opacity:0}
+.sec{position:absolute;font-size:24px;font-weight:800;color:var(--accent);letter-spacing:.03em;white-space:nowrap}
+.kvr{position:absolute;left:24px;width:500px;height:40px;display:flex;justify-content:space-between;align-items:center;font-size:24px;white-space:nowrap;border-bottom:2px solid #24262C}
+.kvr span:first-child{color:var(--muted)}
+.kvr span:last-child{font-weight:700}
+.tagc{position:absolute;left:24px;height:46px;padding:0 16px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;color:#E6E8EC;white-space:nowrap;background:#121317}
+.tagc i{width:10px;height:10px;border-radius:50%;background:var(--accent);display:block}
+.img{position:absolute;border-radius:12px;overflow:hidden;border:2px solid var(--line);background:#1C2330}
+.img svg{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.sync{position:absolute;height:40px;padding:0 14px;border-radius:999px;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap;color:var(--ok);border:2px solid var(--ok);background:var(--okt)}
+.note{position:absolute;font-size:24px;color:var(--muted);white-space:nowrap}
+
+/* POSSE E CONFLITO */
+.card{position:absolute;border:2px solid var(--line);border-radius:16px;background:#121317}
+.mini{position:absolute;left:548px;top:20px;width:484px;height:400px;border:2px solid var(--line);border-radius:16px;background:#111216;overflow:hidden}
+.mini .mb{position:absolute;left:0;right:0;top:0;height:52px;background:#0B0C0F;border-bottom:2px solid var(--line);display:flex;align-items:center;padding:0 18px;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+/* Amber buttons and labels carry the dark ink-on-amber for AA contrast */
+#bB{position:absolute;left:20px;top:150px;height:54px;padding:0 26px;border-radius:12px;background:var(--accent);color:var(--wl-ink-on-amber);display:flex;align-items:center;font-size:26px;font-weight:800;white-space:nowrap}
+#banner{position:absolute;left:20px;right:20px;top:226px;height:150px;border:2px solid var(--warn);border-radius:14px;background:var(--warnt);padding:14px 12px;opacity:0}
+#banner b{display:block;font-size:26px;font-weight:800;color:var(--warn);white-space:nowrap;line-height:36px}
+#banner span{display:block;font-size:24px;color:#E6E8EC;white-space:nowrap;line-height:34px}
+
+/* GALERIA E CLIPE */
+.seg{position:absolute;height:46px;display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden}
+.seg span{position:relative;height:42px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+.seg u{position:absolute;inset:0;background:var(--soft);border:2px solid var(--accent);border-radius:10px;text-decoration:none}
+.seg em{position:relative;font-style:normal}
+.lab{position:absolute;height:36px;padding:0 12px;border-radius:8px;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap;background:var(--accent);color:var(--wl-ink-on-amber)}
+/* Non-amber label variants keep light text */
+.lab.b{background:#1F4E8C;color:#fff}
+.lab.z{background:rgba(var(--wl-graphite-rgb),.82);border:2px dashed var(--accent);color:#FFC75A}
+.ovl{position:absolute;left:0;top:0;width:600px;height:338px;opacity:0}
+#legsync{position:absolute;left:24px;top:456px;display:flex;align-items:center;gap:10px;font-size:24px;color:var(--muted);white-space:nowrap}
+#legsync b{color:var(--ok)}
+#bRedrive{position:absolute;left:648px;top:300px;width:384px;height:52px;border:2px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#E6E8EC;white-space:nowrap}
+.scr{position:absolute;left:24px;top:414px;width:600px;height:12px;border-radius:6px;background:#2C2F37;overflow:hidden}
+#scrFill{position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--accent);transform-origin:0 50%}
+#apoio{position:absolute;left:648px;top:60px;width:384px;height:318px;border:2px solid var(--info);border-radius:16px;background:var(--infot);padding:16px 20px;opacity:0}
+#apoio .ah{font-size:24px;font-weight:800;color:var(--info);letter-spacing:.03em;white-space:nowrap}
+#apoio .al{font-size:24px;color:var(--muted);white-space:nowrap;margin-top:14px}
+#apoio .av{font-size:28px;font-weight:800;white-space:nowrap;margin-top:2px}
+#apoio .af{position:absolute;left:20px;right:20px;bottom:16px;border-top:2px solid #2E4566;padding-top:10px}
+#apoio .af b{display:block;font-size:26px;font-weight:800;color:var(--warn);white-space:nowrap}
+#apoio .af span{display:block;font-size:24px;color:#E6E8EC;white-space:nowrap}
+
+/* ATENDIMENTO */
+.ta{position:absolute;left:24px;top:56px;width:480px;height:170px;border:2px solid var(--line);border-radius:14px;background:#121317;padding:14px 18px}
+#obs{font-size:26px;line-height:36px;width:440px;opacity:0}
+.cnt{position:absolute;right:16px;bottom:10px;width:140px;height:32px}
+.cnt span{position:absolute;right:0;top:0;font-size:24px;color:var(--muted);white-space:nowrap}
+.opt{position:absolute;left:528px;width:504px;height:46px;display:flex;align-items:center;gap:14px;font-size:24px;font-weight:600;white-space:nowrap;padding:0 14px;border-radius:12px;border:2px solid transparent}
+.opt i{position:relative;width:24px;height:24px;border-radius:50%;border:3px solid #6A6E78;display:block;flex:none}
+.opt i u{position:absolute;inset:3px;border-radius:50%;background:var(--accent);opacity:0;text-decoration:none}
+.opt s{position:absolute;inset:-2px;border-radius:12px;border:2px solid var(--accent);background:rgba(var(--wl-amber-rgb),.10);opacity:0;text-decoration:none}
+.fld{position:absolute;height:60px;border:2px solid var(--line);border-radius:12px;background:#121317;padding:0 16px;display:flex;align-items:center;font-size:24px;white-space:nowrap}
+.fld p{opacity:0}
+.btn{position:absolute;height:52px;padding:0 24px;border-radius:12px;display:flex;align-items:center;font-size:24px;font-weight:800;white-space:nowrap}
+.btn.a{background:var(--accent);color:var(--wl-ink-on-amber)}
+.btn.o{border:2px solid var(--line);color:#E6E8EC}
+.toast{position:absolute;left:24px;height:48px;padding:0 16px;border-radius:12px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;white-space:nowrap;color:var(--ok);border:2px solid var(--ok);background:var(--okt);opacity:0}
+
+/* ENCERRAMENTO COM DESFECHO */
+.opt.l{left:24px;width:480px}
+
+/* TIMELINE */
+.tline{position:absolute;left:43px;top:84px;width:4px;height:264px;background:#3A3D45}
+.tev{position:absolute;left:24px;width:1008px;height:56px;opacity:0}
+.tev i{position:absolute;left:8px;top:16px;width:24px;height:24px;border-radius:50%;background:var(--surface);border:4px solid var(--accent)}
+.tev b{position:absolute;left:56px;top:10px;font-size:26px;font-weight:800;white-space:nowrap}
+.tev span{position:absolute;right:0;top:12px;font-size:24px;color:var(--muted);white-space:nowrap}
+#tfoot{position:absolute;left:24px;top:400px;width:1008px;font-size:24px;line-height:34px;color:var(--muted);opacity:0}
+
+/* LEGENDA DA BATIDA */
+#caps{position:absolute;left:120px;right:120px;top:956px;height:86px}
+.cap{position:absolute;left:0;right:0;top:0;height:86px;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#1A1A1F;border-left:8px solid var(--accent);font-size:32px;font-weight:700;opacity:0;white-space:nowrap}
+.cap small{font-size:24px;font-weight:800;color:var(--accent)}
+
+/* FECHO */
+#fin{position:absolute;left:120px;top:124px;width:1680px;height:812px;opacity:0}
+#fin h2{position:absolute;left:0;right:0;margin:0;text-align:center;font-size:72px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
+#fin h2 em{font-style:normal;color:var(--accent)}
+.fc{position:absolute;top:290px;width:196px;height:68px;border:2px solid var(--line);border-radius:999px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;white-space:nowrap;opacity:0}
+.fc.hi{border-color:var(--accent);background:var(--soft)}
+#fsv{position:absolute;left:0;top:0;width:1680px;height:812px;overflow:visible}
+.fa{fill:none;stroke:#6A6E78;stroke-width:4}
+.frow{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:16px}
+.frow span{height:54px;padding:0 20px;border:2px solid var(--line);border-radius:999px;display:flex;align-items:center;font-size:24px;font-weight:600;color:#E6E8EC;white-space:nowrap;opacity:0}
+.frow span.al{color:var(--warn);border-color:var(--warn);background:var(--warnt);font-weight:800}
+.frow span.pv{color:var(--accent);border:2px dashed var(--accent);background:var(--bg);font-weight:800}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* ABERTURA WELABS-INTRO (copiada de pieces/welabs-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+.intro-lbl .intro-soon{font-size:24px;font-weight:500;color:#A9A9B3;margin-left:14px;letter-spacing:.02em}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mon-occurrence-desk-intro" data-width="1920" data-height="1080" data-start="0" data-duration="53">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:176px"><img class="intro-mk" src="./assets/brand/marks/flow-mark-dark.svg" alt=""><span data-wl-name="flow">Flow</span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:300px"><img class="intro-mk" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span data-wl-name="hub">Hub de domínio</span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:424px"><img class="intro-mk" src="./assets/brand/marks/lore-mark-dark.svg" alt=""><span data-wl-name="kb">KB</span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:614px"><img class="intro-mk" src="./assets/brand/marks/kin-mark-dark.svg" alt=""><span data-wl-name="crm">CRM</span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:738px"><img class="intro-mk" src="./assets/brand/marks/vox-mark-dark.svg" alt=""><span data-wl-name="channels">Channels</span></div>
+  <div class="intro-lbl intro-in" id="intro-in5" style="top:862px">Monitoramento<span class="intro-soon">previsto</span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/mon-occurrence-desk, sem mudança), transparente durante a abertura -->
+
+<div id="top"><img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs"><div class="tt">Ecossistema Monitoramento · <em>mesa de ocorrências</em></div><div class="gr"></div><div class="chip al">Alpha · laboratório</div><div class="chip">dados DEMO</div></div>
+
+<div id="win">
+  <div id="wbar"><span class="nav on">Ocorrências</span><span class="nav">Ao vivo</span><span class="nav">Câmeras</span><span class="nav">Instalações</span><span class="nav">Pessoas</span><span class="gr"></span><span class="scope">Operadora Demo · Galpão Norte</span><span class="conn"><i></i>Conectada</span></div>
+
+  <div id="kpi">
+    <div class="kt" id="k0" style="left:24px"><span class="kl">Novas</span><div class="kn"><span id="kn3">3</span><span id="kn2" class="h0">2</span></div></div>
+    <div class="kt" id="k1" style="left:350px"><span class="kl">Em atendimento</span><div class="kn"><span id="ka1">1</span><span id="ka2" class="h0">2</span><span id="ka1b" class="h0">1</span></div></div>
+    <div class="kt" id="k2" style="left:676px"><span class="kl">Encerradas</span><div class="kn"><span id="ke12">12</span><span id="ke13" class="h0">13</span></div></div>
+    <div class="kt" id="k3" style="left:1002px"><span class="kl">Mediana até aceite</span><div class="kn"><span class="dm">DEMO</span></div></div>
+    <div class="kt" id="k4" style="left:1328px"><span class="kl">Mediana até encerrar</span><div class="kn"><span class="dm">DEMO</span></div></div>
+  </div>
+
+  <!-- queue -->
+  <div id="colq">
+    <div class="qh">Fila</div>
+    <div class="qsel">Estado · Todos</div>
+    <div class="qsub">20 por página · atualiza a cada 10 s</div>
+    <div class="row" id="r0" style="top:106px"><div class="ring" id="rg0"></div><div class="t1">Pessoa · zona entrada</div><div class="t2">Portão 01 · Galpão Norte</div><div class="pbox"><span class="pill p-new" id="r0n">Nova</span><span class="pill p-run h0" id="r0r">Em atendimento</span><span class="pill p-done h0" id="r0d">Encerrada</span></div></div>
+    <div class="row" id="r1" style="top:210px"><div class="t1">Pessoa · zona doca</div><div class="t2">Doca 02 · Galpão Norte</div><div class="pbox"><span class="pill p-new">Nova</span></div></div>
+    <div class="row" id="r2" style="top:314px"><div class="t1">Pessoa · zona pátio</div><div class="t2">Loja Centro · <b>Instalação desconectada</b></div><div class="pbox"><span class="pill p-new">Nova</span></div></div>
+    <div class="row" id="r3" style="top:418px"><div class="t1">Pessoa · zona doca</div><div class="t2">Doca 02 · posse do Operador B</div><div class="pbox"><span class="pill p-run">Em atendimento</span></div></div>
+    <div class="row" id="r4" style="top:522px"><div class="t1">Pessoa · zona entrada</div><div class="t2">Portão 01 · Falso positivo analítico</div><div class="pbox"><span class="pill p-done">Encerrada</span></div></div>
+  </div>
+
+  <!-- detail -->
+  <div id="cold">
+    <div id="empty">Selecione uma ocorrência da fila</div>
+    <div id="dh">
+      <div id="dtitle">Pessoa na zona</div>
+      <div id="dpill"><span class="pill p-new" id="dpn">Nova</span><span class="pill p-run h0" id="dpr">Em atendimento</span><span class="pill p-done h0" id="dpd">Encerrada</span></div>
+      <div id="dmeta">zona entrada · Portão 01 · Galpão Norte</div>
+      <div id="bAssume">Assumir</div>
+      <div id="lease"><svg viewBox="0 0 60 60"><circle class="rbg" cx="30" cy="30" r="24"/><circle class="rfg" id="rfg" cx="30" cy="30" r="24" pathLength="1" transform="rotate(-90 30 30)" style="stroke-dasharray:1;stroke-dashoffset:1"/></svg><b>Sua posse · 5 min</b><span>renova com a aba visível</span></div>
+      <div id="lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Encerrada · imutável</div>
+    </div>
+
+    <!-- pane: scene facts -->
+    <div class="pane" id="pf">
+      <div class="sec" style="left:24px;top:20px">FATOS DA CENA</div>
+      <div class="kvr" style="top:60px"><span>Detecções (não indivíduos)</span><span>3</span></div>
+      <div class="kvr" style="top:106px"><span>Câmera</span><span>Portão 01</span></div>
+      <div class="kvr" style="top:152px"><span>Início · fim</span><span>DEMO</span></div>
+      <div class="kvr" style="top:198px"><span>Zonas acessadas</span><span>entrada</span></div>
+      <div class="kvr" style="top:244px"><span>Reconciliação</span><span>completa</span></div>
+      <div class="tagc" style="top:316px"><i></i>Aberta automaticamente pela cena</div>
+      <div class="tagc" style="top:374px"><i></i>Repetição reconhecida, sem duplicar</div>
+      <div class="sec" style="left:548px;top:20px">EVIDÊNCIA PRINCIPAL</div>
+      <div class="img" id="fimg" style="left:548px;top:60px;width:484px;height:272px"></div>
+      <div class="sync" style="left:548px;top:350px">Na nuvem</div>
+      <div class="note" style="left:712px;top:356px">sincronia da evidência</div>
+    </div>
+
+    <!-- pane: ownership conflict -->
+    <div class="pane" id="pc">
+      <div class="sec" style="left:24px;top:20px">VOCÊ · OPERADOR A</div>
+      <div class="card pci" style="left:24px;top:60px;width:500px;height:150px">
+        <svg viewBox="0 0 60 60" style="position:absolute;left:20px;top:22px;width:60px;height:60px"><circle class="rbg" cx="30" cy="30" r="24"/><circle class="rfg" cx="30" cy="30" r="24"/></svg>
+        <b style="position:absolute;left:96px;top:22px;font-size:26px;font-weight:800;white-space:nowrap">Posse ativa · 5 min</b>
+        <span style="position:absolute;left:96px;top:60px;font-size:24px;color:var(--muted);white-space:nowrap">renovada a cada 2 min</span>
+        <span style="position:absolute;left:96px;top:94px;font-size:24px;color:var(--muted);white-space:nowrap">expirada, outro pode assumir</span>
+      </div>
+      <div class="tagc pci" style="top:236px"><i></i>Sem dois vencedores</div>
+      <div class="tagc pci" style="top:294px"><i></i>Clique repetido não duplica</div>
+      <div class="tagc pci" style="top:352px"><i></i>Troca de posse fica na timeline</div>
+      <div class="mini pci">
+        <div class="mb">Tela do Operador B · outra aba</div>
+        <div style="position:absolute;left:20px;top:74px;font-size:26px;font-weight:800;white-space:nowrap">Pessoa na zona</div>
+        <div style="position:absolute;left:228px;top:70px;width:236px;height:42px"><span class="pill p-new" id="bpn" style="position:absolute;left:0;top:0">Nova</span><span class="pill p-run h0" id="bpr" style="position:absolute;left:0;top:0">Em atendimento</span></div>
+        <div id="bB">Assumir</div>
+        <div id="banner"><b>Outro operador está com a posse</b><span>Estado atual: Em atendimento</span><span>atualizado sem recarregar</span></div>
+      </div>
+    </div>
+
+    <!-- pane: evidence gallery -->
+    <div class="pane" id="pg">
+      <div class="sec" style="left:24px;top:16px">GALERIA DE EVIDÊNCIA</div>
+      <div class="seg" style="left:384px;top:6px"><span style="width:110px"><u id="sgL"></u><em>Limpo</em></span><span style="width:126px"><u id="sgA" style="opacity:0"></u><em>Anotado</em></span></div>
+      <div class="img" id="gmain" style="left:24px;top:60px;width:604px;height:342px">
+        <div class="ovl" id="govl"></div>
+        <div class="lab" style="left:14px;top:14px;background:rgba(var(--wl-graphite-rgb),.82);border:2px solid var(--line);color:#fff">Principal · automática</div>
+      </div>
+      <div class="note" id="gnA" style="left:24px;top:412px">Quadro limpo: evidência canônica</div>
+      <div class="note h0" id="gnB" style="left:24px;top:412px">Anotado: variante com hash próprio</div>
+      <div id="legsync">Sincronia: Só no Edge → Na fila → Enviando → Conferindo → <b>Na nuvem</b></div>
+      <div class="sec" style="left:648px;top:16px">MAIS ATÉ 4 QUADROS</div>
+      <div class="img gth" id="gt0" style="left:648px;top:60px;width:184px;height:104px"></div>
+      <div class="img gth" id="gt1" style="left:848px;top:60px;width:184px;height:104px"></div>
+      <div class="img gth" id="gt2" style="left:648px;top:180px;width:184px;height:104px"></div>
+      <div class="img gth" id="gt3" style="left:848px;top:180px;width:184px;height:104px"></div>
+      <div id="bRedrive">Pedir reenvio da mídia</div>
+      <div class="sync" style="left:648px;top:370px">Na nuvem</div>
+      <div class="note" style="left:812px;top:376px">por evidência</div>
+    </div>
+
+    <!-- pane: clip with indicative tracks -->
+    <div class="pane" id="pk">
+      <div class="sec" style="left:24px;top:16px">CLIPE DA CENA</div>
+      <div class="lab z" style="left:364px;top:10px">Rastros (indicativo)</div>
+      <div class="img" id="kimg" style="left:24px;top:60px;width:604px;height:342px"></div>
+      <div class="scr"><div id="scrFill"></div></div>
+      <div class="note" style="left:24px;top:442px">caixas e rastros sincronizados ao vídeo</div>
+      <div id="apoio">
+        <div class="ah">APOIO DO MODELO</div>
+        <div class="al">Objeto portado</div>
+        <div class="av">celular · 89% DEMO</div>
+        <div class="al">Identidade</div>
+        <div class="av">sem correspondência</div>
+        <div class="af"><b>apoio, não fato</b><span>quem decide é o operador</span></div>
+      </div>
+    </div>
+
+    <!-- pane: handling (observation + classification) -->
+    <div class="pane" id="ph">
+      <div class="sec" style="left:24px;top:16px">OBSERVAÇÃO</div>
+      <div class="ta"><p id="obs">Pessoa com celular junto ao portão, sem tentativa de acesso.</p><div class="cnt"><span id="oc0">0 / 2000</span><span id="oc1" class="h0">60 / 2000</span></div></div>
+      <div class="toast" id="to1" style="top:250px">Observação registrada</div>
+      <div class="toast" id="to2" style="top:312px">Classificada · Possível risco</div>
+      <div class="sec" style="left:528px;top:16px">CLASSIFICAÇÃO</div>
+      <div class="opt" style="top:52px"><s id="hs0"></s><i><u id="hr0"></u></i>Possível risco</div>
+      <div class="opt" style="top:104px"><i></i>Sem risco aparente</div>
+      <div class="opt" style="top:156px"><i></i>Possível falha técnica</div>
+      <div class="opt" style="top:208px"><i></i>Inconclusiva</div>
+      <div class="sec" style="left:528px;top:272px">JUSTIFICATIVA</div>
+      <div class="fld" style="left:528px;top:308px;width:504px"><p id="hj">Permanência junto ao portão</p></div>
+      <div class="btn a" id="bCls" style="right:24px;top:388px">Classificar</div>
+    </div>
+
+    <!-- pane: closing with outcome -->
+    <div class="pane" id="pd">
+      <div class="sec" style="left:24px;top:16px">ENCERRAR · DESFECHO</div>
+      <div class="opt l" style="top:52px"><i></i>Risco confirmado</div>
+      <div class="opt l" style="top:104px"><s id="ds1"></s><i><u id="dr1"></u></i>Atividade sem risco</div>
+      <div class="opt l" style="top:156px"><i></i>Falso positivo analítico</div>
+      <div class="opt l" style="top:208px"><i></i>Falha técnica</div>
+      <div class="opt l" style="top:260px"><i></i>Inconclusivo</div>
+      <div class="note" style="left:24px;top:330px">Exige classificação: Possível risco</div>
+      <div class="note" style="left:24px;top:370px">Depois de encerrada, fica imutável</div>
+      <div class="sec" style="left:528px;top:16px">JUSTIFICATIVA</div>
+      <div class="fld" style="left:528px;top:52px;width:504px"><p id="dj">Verificado no clipe: ronda DEMO.</p></div>
+      <div class="btn o" style="right:200px;top:140px">Cancelar</div>
+      <div class="btn a" id="bEnc" style="right:24px;top:140px">Encerrar</div>
+    </div>
+
+    <!-- pane: audit timeline -->
+    <div class="pane" id="pt">
+      <div class="sec" style="left:24px;top:16px">TIMELINE AUDITÁVEL</div>
+      <div class="tline"></div>
+      <div class="tev" id="tv0" style="top:56px"><i></i><b>Criada pela cena visual</b><span>sistema</span></div>
+      <div class="tev" id="tv1" style="top:122px"><i></i><b>Assumida · posse de 5 min</b><span>Operador A</span></div>
+      <div class="tev" id="tv2" style="top:188px"><i></i><b>Observação registrada</b><span>Operador A</span></div>
+      <div class="tev" id="tv3" style="top:254px"><i></i><b>Classificada · Possível risco</b><span>Operador A</span></div>
+      <div class="tev" id="tv4" style="top:320px"><i></i><b>Encerrada · Atividade sem risco</b><span>Operador A</span></div>
+      <p id="tfoot">Também entram na timeline: posse recuperada, reclassificação e período não reconciliado quando faltam dados do site.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- closing -->
+<div id="fin">
+  <h2 id="fh1" style="top:40px">Do sinal ao desfecho,</h2>
+  <h2 id="fh2" style="top:130px"><em>cada decisão registrada.</em></h2>
+  <svg id="fsv" viewBox="0 0 1680 812"></svg>
+  <div class="frow" style="top:420px"><span>Fila com indicadores e medianas</span><span>Posse por 5 min, sem dois vencedores</span><span>Galeria limpa e anotada</span></div>
+  <div class="frow" style="top:490px"><span>Rastros indicativos</span><span>Apoio do modelo, não fato</span><span>Classificação e desfecho com justificativa</span></div>
+  <div class="frow" style="top:600px"><span class="al">Alpha · laboratório</span><span class="pv">Previsto · priorizar, escalar e reatribuir</span></div>
+  <div class="frow" style="top:670px"><span class="pv">Previsto · copiloto sugere, o operador decide</span></div>
+</div>
+
+<div id="caps"></div>
+<div id="pad"></div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/mon-occurrence-desk; só o registro da timeline virou __pieceParts.film)
+// MONTAGEM DOS ELEMENTOS (posições fixas, sem aleatoriedade)
+  // Brand literals for generated SVG and GSAP tweens (neither interpolates var())
+  var AMBER = WELABS_BRAND.color.amber, AMBER_RGB = WELABS_BRAND.color.amberRgb, AMBER_SOFT = WELABS_BRAND.color.amberSoft;
+  // Synthetic camera scene: silhouette only, no real person or face
+  function person(id) {
+    return '<g' + (id ? ' id="' + id + '"' : '') + '>' +
+      '<circle cx="0" cy="168" r="15" fill="#C7D0DA"/>' +
+      '<rect x="-20" y="186" width="40" height="72" rx="14" fill="#C7D0DA"/>' +
+      '<rect x="-16" y="252" width="13" height="40" rx="5" fill="#AEB8C4"/>' +
+      '<rect x="3" y="252" width="13" height="40" rx="5" fill="#AEB8C4"/>' +
+      '<rect x="18" y="204" width="9" height="15" rx="2" fill="#7DB4FF"/>' +
+      (id ? '<rect x="-34" y="146" width="68" height="152" fill="none" stroke="' + AMBER + '" stroke-width="3"/><rect x="14" y="198" width="18" height="24" fill="none" stroke="#7DB4FF" stroke-width="3"/>' : '') +
+      '</g>';
+  }
+  function backdrop() {
+    var s = '<rect width="640" height="360" fill="#1C2330"/><polygon points="0,232 640,232 640,360 0,360" fill="#262E3A"/>' +
+      '<line x1="0" y1="300" x2="640" y2="300" stroke="#303947" stroke-width="2"/>' +
+      '<line x1="90" y1="40" x2="90" y2="232" stroke="#4A5360" stroke-width="5"/><circle cx="90" cy="40" r="10" fill="' + WELABS_BRAND.color.paper + '" opacity=".6"/>' + // lamp glow: warm paper instead of the retired state yellow
+      '<rect x="400" y="96" width="190" height="140" fill="none" stroke="#5E6876" stroke-width="5"/>';
+    for (var x = 424; x < 590; x += 24) s += '<line x1="' + x + '" y1="96" x2="' + x + '" y2="236" stroke="#4A5360" stroke-width="3"/>';
+    return s;
+  }
+  function scene(px, extra) {
+    return '<svg viewBox="0 0 640 360" preserveAspectRatio="none">' + backdrop() +
+      '<g transform="translate(' + px + ',0)">' + person() + '</g>' + (extra || '') + '</svg>';
+  }
+  function put(id, html) { var el = document.getElementById(id); el.insertAdjacentHTML("afterbegin", html); }
+  put("fimg", scene(330));
+  put("gmain", scene(330));
+  [150, 230, 290, 370].forEach(function (px, i) { put("gt" + i, scene(px)); });
+  // Annotated variant: zone, person box and carried object box (labels are HTML, >=24px)
+  document.getElementById("govl").innerHTML =
+    '<svg viewBox="0 0 640 360" preserveAspectRatio="none" style="width:600px;height:338px">' +
+    '<polygon points="280,250 600,250 640,330 240,330" fill="rgba(' + AMBER_RGB + ',.10)" stroke="' + AMBER + '" stroke-width="3" stroke-dasharray="10 8"/>' +
+    '<rect x="296" y="146" width="68" height="152" fill="none" stroke="' + AMBER + '" stroke-width="3"/>' +
+    '<rect x="344" y="198" width="18" height="24" fill="none" stroke="#7DB4FF" stroke-width="3"/></svg>' +
+    '<div class="lab" style="left:236px;top:90px">pessoa</div>' +
+    '<div class="lab b" style="left:352px;top:166px">celular</div>' +
+    '<div class="lab z" style="left:420px;top:282px">zona entrada</div>';
+  // Clip: the silhouette walks while its box and the indicative track follow
+  put("kimg", '<svg viewBox="0 0 640 360" preserveAspectRatio="none">' + backdrop() +
+    '<path id="trail" d="M110 294 C150 302 190 286 230 294 S300 302 330 294" fill="none" stroke="#FFC75A" stroke-width="5" stroke-linecap="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1"/>' +
+    '<g transform="translate(110,0)">' + person("kp") + '</g></svg>');
+
+  // Closing chain: camera to outcome
+  var CHAIN = ["Câmera", "Analítico", "Evento", "Ocorrência", "Operador", "Evidência", "Desfecho"];
+  var fin = document.getElementById("fin"), fsv = document.getElementById("fsv"), FW = 196, FG = (1680 - 7 * 196) / 6;
+  CHAIN.forEach(function (t, i) {
+    var x = i * (FW + FG), d = document.createElement("div");
+    d.className = "fc" + (i === 3 || i === 6 ? " hi" : ""); d.id = "fc" + i; d.style.left = x + "px"; d.textContent = t; fin.appendChild(d);
+    if (i < 6) {
+      var a = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      var x0 = x + FW + 8, x1 = x + FW + FG - 8;
+      a.setAttribute("d", "M" + x0 + " 324 L" + x1 + " 324 M" + (x1 - 10) + " 316 L" + x1 + " 324 L" + (x1 - 10) + " 332");
+      a.setAttribute("class", "fa"); a.setAttribute("id", "fa" + i); a.style.opacity = 0; fsv.appendChild(a);
+    }
+  });
+
+  var CAPS = [
+    "A fila da central: novas, em atendimento, encerradas e medianas",
+    "A cena vira ocorrência Nova; o operador assume e ganha a posse",
+    "Sem dois vencedores: o segundo operador vê quem está com a posse",
+    "Galeria: principal automática e até 4 quadros, limpo ou anotado",
+    "Clipe com rastros indicativos; o modelo dá apoio, não fato",
+    "Observação e classificação com justificativa, tudo registrado",
+    "Encerrar exige desfecho e justificativa; depois, nada muda",
+    "Timeline auditável: cada passo com autor, na ordem em que aconteceu"
+  ];
+  var capBox = document.getElementById("caps");
+  CAPS.forEach(function (t, i) {
+    var d = document.createElement("div"); d.className = "cap"; d.id = "cap" + i;
+    d.innerHTML = "<small>" + (i + 1) + "/8</small><span>" + t + "</span>"; capBox.appendChild(d);
+  });
+
+  // LINHA DO TEMPO (pausada, termina em 44 s; >= 1,5 s parado após cada estado)
+  var tl = gsap.timeline({ paused: true });
+  function fi(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.4, ease: "power2.out" }, t); }
+  function fo(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power2.in" }, t); }
+  function rise(sel, t, d) { tl.fromTo(sel, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: d || 0.45, ease: "power3.out" }, t); }
+  function press(sel, t) { tl.fromTo(sel, { scale: 1 }, { scale: 0.92, duration: 0.12, yoyo: true, repeat: 1 }, t); }
+  function swap(a, b, t) { fo(a, t, 0.15); fi(b, t + 0.15, 0.3); }
+  function cap(i, a, b) {
+    tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, a);
+    tl.to("#cap" + i, { opacity: 0, duration: 0.3 }, b - 0.3);
+  }
+  var S1 = 0, S2 = 3.8, S3 = 9.9, S4 = 14.5, S5 = 19.45, S6 = 25.05, S7 = 32.25, S8 = 37.45, S9 = 40.75;
+
+  // Beat 1: queue with indicators
+  tl.fromTo("#top", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
+  fi("#win", 0.15, 0.6);
+  cap(0, 0.4, S2);
+  [0, 1, 2, 3, 4].forEach(function (i) { rise("#k" + i, 0.5 + i * 0.1, 0.45); });
+  [0, 1, 2, 3, 4].forEach(function (i) { tl.fromTo("#r" + i, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.9 + i * 0.12); });
+  fi("#empty", 1.4, 0.5);
+
+  // Beat 2: new occurrence blinks, operator takes it with a 5-min lease
+  cap(1, S2, S3);
+  tl.fromTo("#rg0", { opacity: 0 }, { opacity: 1, duration: 0.3, yoyo: true, repeat: 2 }, S2 + 0.2);
+  fo("#empty", S2 + 1.4, 0.25);
+  tl.to("#r0", { borderColor: AMBER, backgroundColor: AMBER_SOFT, duration: 0.3 }, S2 + 1.4);
+  fo("#rg0", S2 + 1.5, 0.3);
+  fi("#dh", S2 + 1.65, 0.4);
+  fi("#pf", S2 + 1.7, 0.4);
+  press("#bAssume", S2 + 3.6);
+  fo("#bAssume", S2 + 3.85, 0.15);
+  swap("#dpn", "#dpr", S2 + 3.85);
+  swap("#r0n", "#r0r", S2 + 3.85);
+  fi("#lease", S2 + 4.0, 0.3);
+  tl.to("#rfg", { strokeDashoffset: 0, duration: 0.6, ease: "power2.out" }, S2 + 4.0);
+  swap("#kn3", "#kn2", S2 + 3.95); swap("#ka1", "#ka2", S2 + 3.95);
+
+  // Beat 3: second operator collides with the lease and sees current state
+  cap(2, S3, S4);
+  fo("#pf", S3, 0.3);
+  tl.fromTo("#pc", { opacity: 0 }, { opacity: 1, duration: 0.01 }, S3 + 0.3);
+  tl.fromTo("#pc .pci", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.07, ease: "power3.out" }, S3 + 0.3);
+  press("#bB", S3 + 2.3);
+  rise("#banner", S3 + 2.6, 0.4);
+  swap("#bpn", "#bpr", S3 + 2.6);
+
+  // Beat 4: evidence gallery, clean frame then annotated variant
+  cap(3, S4, S5);
+  fo("#pc", S4, 0.3);
+  tl.fromTo("#pg", { opacity: 0 }, { opacity: 1, duration: 0.01 }, S4 + 0.3);
+  tl.fromTo("#pg > *:not(.gth):not(#gnB)", { opacity: 0 }, { opacity: 1, duration: 0.4 }, S4 + 0.3);
+  tl.fromTo("#pg .gth", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.12, ease: "power3.out" }, S4 + 0.55);
+  fo("#sgL", S4 + 2.9, 0.2); fi("#sgA", S4 + 2.9, 0.25);
+  fi("#govl", S4 + 2.95, 0.4);
+  swap("#gnA", "#gnB", S4 + 2.9);
+
+  // Beat 5: clip with indicative tracks and model support card
+  cap(4, S5, S6);
+  fo("#pg", S5, 0.3);
+  fi("#pk", S5 + 0.3, 0.4);
+  tl.fromTo("#kp", { x: 0 }, { x: 220, duration: 3.0, ease: "none" }, S5 + 1.0);
+  tl.to("#trail", { strokeDashoffset: 0, duration: 3.0, ease: "none" }, S5 + 1.0);
+  tl.fromTo("#scrFill", { scaleX: 0.04 }, { scaleX: 1, duration: 3.0, ease: "none" }, S5 + 1.0);
+  rise("#apoio", S5 + 2.6, 0.5);
+
+  // Beat 6: observation and classification with justification
+  cap(5, S6, S7);
+  fo("#pk", S6, 0.3);
+  fi("#ph", S6 + 0.3, 0.4);
+  fi("#obs", S6 + 2.2, 0.4);
+  swap("#oc0", "#oc1", S6 + 2.2);
+  rise("#to1", S6 + 2.6, 0.3);
+  fi("#hs0", S6 + 4.4, 0.25); fi("#hr0", S6 + 4.4, 0.25);
+  fi("#hj", S6 + 4.7, 0.3);
+  press("#bCls", S6 + 5.1);
+  rise("#to2", S6 + 5.4, 0.3);
+
+  // Beat 7: outcome with justification, closed occurrence becomes immutable
+  cap(6, S7, S8);
+  fo("#ph", S7, 0.3);
+  fi("#pd", S7 + 0.3, 0.4);
+  fi("#ds1", S7 + 1.9, 0.25); fi("#dr1", S7 + 1.9, 0.25);
+  fi("#dj", S7 + 2.2, 0.3);
+  press("#bEnc", S7 + 2.6);
+  tl.to("#bEnc", { opacity: 0.4, duration: 0.3 }, S7 + 2.9);
+  swap("#dpr", "#dpd", S7 + 3.0);
+  fo("#lease", S7 + 3.0, 0.15); fi("#lock", S7 + 3.15, 0.3);
+  swap("#r0r", "#r0d", S7 + 3.05);
+  swap("#ka2", "#ka1b", S7 + 3.05); swap("#ke12", "#ke13", S7 + 3.05);
+
+  // Beat 8: full audit timeline
+  cap(7, S8, S9);
+  fo("#pd", S8, 0.3);
+  fi("#pt", S8 + 0.3, 0.01);
+  [0, 1, 2, 3, 4].forEach(function (i) { tl.fromTo("#tv" + i, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.4, ease: "power3.out" }, S8 + 0.35 + i * 0.16); });
+  fi("#tfoot", S8 + 1.35, 0.4);
+
+  // Closing: from signal to outcome
+  fo("#win", S9, 0.25);
+  fi("#fin", S9 + 0.25, 0.2);
+  rise("#fh1", S9 + 0.25, 0.45); rise("#fh2", S9 + 0.35, 0.45);
+  CHAIN.forEach(function (t, i) {
+    tl.fromTo("#fc" + i, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 }, S9 + 0.4 + i * 0.05);
+    if (i < 6) tl.fromTo("#fa" + i, { opacity: 0 }, { opacity: 1, duration: 0.25 }, S9 + 0.5 + i * 0.05);
+  });
+  tl.fromTo("#fin .frow span", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.04 }, S9 + 0.7);
+  tl.set("#pad", { opacity: 0 }, 44);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (44 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 44;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["mon-occurrence-desk-intro"] = master;
+})();
+</script>
+</body>
+</html>

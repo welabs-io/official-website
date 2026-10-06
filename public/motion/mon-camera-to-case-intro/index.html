@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ecossistema Monitoramento · da câmera ao caso (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TOKENS DA MARCA WELABS */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --accent keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; --soft is the amber-tinted dark surface; background is brand graphite */
+:root{--bg:#10141C;--ink:#FFFFFF;--accent:var(--wl-amber);--surface:#17181D;--surface2:#1F2127;--muted:#B4B9C3;--line:#3A3D45;--soft:var(--wl-amber-soft);--ok:#3DD68C;--okt:#12301F;--warn:var(--wl-warn);--warnt:var(--wl-warn-soft);--wait:var(--wl-wait);--waitt:var(--wl-wait-soft);--info:#7DB4FF;--infot:#14243A;--bad:#F87171;--badt:#3A1717}
+/* State yellow left the palette (too close to brand amber): --warn/--warnt now carry the red-orange alert tone (Alpha flag, sealed credential, entry zone, duplicate); new --wait/--waitt carry the cool lilac for "Aguardando conexão" and "Previsto" */
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:Inter,sans-serif;color:var(--ink);line-height:1.25}
+.abs{position:absolute}
+p{margin:0}
+.ic{display:inline-flex;align-items:center;justify-content:center;flex:none}
+
+/* CABEÇALHO FIXO */
+#top{position:absolute;left:120px;right:120px;top:30px;height:72px;display:flex;align-items:center;gap:28px;border-bottom:2px solid var(--line);opacity:0}
+/* New wider SVG logo (905x213) at the ~48px seal height */
+#top img{height:48px;display:block;margin-bottom:10px}
+#top .tt{font-size:32px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px;white-space:nowrap}
+#top .tt em{font-style:normal;color:var(--accent)}
+#top .gr{flex:1}
+.chip{font-size:24px;font-weight:700;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:4px 18px;white-space:nowrap;background:var(--bg)}
+.chip.al{color:var(--warn);border-color:var(--warn)}
+#top .chip{margin-bottom:10px}
+
+/* JANELA DA CENTRAL WEB */
+#win{position:absolute;left:120px;top:124px;width:1070px;height:812px;border:2px solid var(--line);border-radius:22px;background:var(--surface);overflow:hidden;opacity:0}
+#wbar{position:absolute;left:0;right:0;top:0;height:60px;background:#101115;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 20px;font-size:26px;font-weight:800}
+#wbar .gr{flex:1}
+.scope{font-size:24px;font-weight:600;color:var(--muted);border:2px solid var(--line);border-radius:999px;padding:2px 14px;white-space:nowrap}
+#conn{position:relative;width:350px;height:36px}
+#conn span{position:absolute;right:0;top:0;height:36px;display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:999px;border:2px solid;font-size:24px;font-weight:700;white-space:nowrap;background:#101115}
+#conn i{width:14px;height:14px;border-radius:50%;display:block}
+#tabs{position:absolute;left:0;right:0;top:60px;height:64px;border-bottom:2px solid var(--line)}
+.tab{position:absolute;top:0;height:62px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+#tabind{position:absolute;left:0;top:58px;width:100px;height:4px;background:var(--accent);transform-origin:0 0}
+.pane{position:absolute;left:0;top:124px;width:1066px;height:686px;opacity:0}
+.ph{position:absolute;left:28px;top:20px;font-size:30px;font-weight:800;white-space:nowrap}
+.ps{position:absolute;left:28px;top:62px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+.pill{height:40px;padding:0 14px;border-radius:999px;border:2px solid;font-size:24px;font-weight:800;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.pill.ok{color:var(--ok);border-color:var(--ok);background:var(--okt)}
+.pill.w{color:var(--wait);border-color:var(--wait);background:var(--waitt)}
+.pill.i{color:var(--info);border-color:var(--info);background:var(--infot)}
+.pill.g{color:var(--muted);border-color:var(--line);background:#16171B}
+.pill.b{color:var(--bad);border-color:var(--bad);background:var(--badt)}
+.pill.pv{color:var(--wait);border-color:var(--wait);border-style:dashed;background:transparent}
+.btn{height:50px;padding:0 20px;border-radius:12px;border:2px solid var(--line);font-size:24px;font-weight:800;display:inline-flex;align-items:center;gap:10px;white-space:nowrap;color:var(--ink);background:#22242B}
+/* Primary button sits on amber: text and currentColor icons use the dark ink-on-amber */
+.btn.pr{background:var(--accent);border-color:var(--accent);color:var(--wl-ink-on-amber)}
+
+/* CÂMERAS: LISTA E DIÁLOGO */
+.crow{position:absolute;left:28px;width:1010px;height:76px;border:2px solid var(--line);border-radius:16px;background:#1B1C21;display:flex;align-items:center;gap:16px;padding:0 18px}
+.crow .ci{width:44px;height:44px;border-radius:12px;background:#2A2C33;color:var(--muted);display:grid;place-items:center;flex:none}
+.crow b{font-size:28px;font-weight:800;white-space:nowrap}
+.crow em{font-style:normal;font-size:24px;color:var(--muted);white-space:nowrap}
+.crow .gr{flex:1}
+#dlg{position:absolute;left:213px;top:36px;width:640px;height:612px;border:2px solid var(--line);border-radius:20px;background:#1C1D23;box-shadow:0 18px 48px rgba(0,0,0,.6);opacity:0}
+#dlg .dt{position:absolute;left:28px;top:22px;font-size:30px;font-weight:800;white-space:nowrap}
+.fld{position:absolute;left:28px;width:584px}
+.fld label{display:block;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.inp{margin-top:8px;height:54px;border:2px solid var(--line);border-radius:12px;background:#121317;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:26px;font-weight:700;white-space:nowrap}
+.inp span{opacity:0}
+.inp .gr{flex:1}
+#lockSrc{color:var(--warn);opacity:0}
+#dfoot{position:absolute;left:28px;right:28px;top:530px;display:flex;justify-content:flex-end;gap:14px}
+
+/* DETALHE DA CÂMERA */
+#dstat{position:absolute;right:28px;top:20px;width:320px;height:44px}
+#dstat span{position:absolute;right:0;top:0}
+.lbl{position:absolute;left:28px;font-size:24px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.step{position:absolute;left:28px;height:50px;display:flex;align-items:center;gap:12px}
+.sc{position:relative;height:50px;padding:0 18px;border-radius:999px;border:2px solid var(--line);font-size:24px;font-weight:700;color:var(--muted);display:flex;align-items:center;white-space:nowrap}
+.sc .on{position:absolute;inset:-2px;border-radius:999px;border:3px solid var(--c);background:var(--ct);color:var(--c);display:flex;align-items:center;justify-content:center;font-weight:800;opacity:0}
+.sar{font-size:26px;font-weight:800;color:var(--muted)}
+.kvg{position:absolute;left:28px;width:1010px;display:grid;grid-template-columns:1fr 1fr;column-gap:30px}
+.kv{height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--line);font-size:26px;white-space:nowrap}
+.kv>span{color:var(--muted);font-weight:600}
+.vv{position:relative;width:230px;height:40px}
+.vv b{position:absolute;right:0;top:0;line-height:40px;font-weight:800;white-space:nowrap}
+.vv b.n{color:var(--muted)}
+.vv b.y{opacity:0}
+
+/* AO VIVO */
+.grp{position:absolute;left:28px;font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:12px}
+.grp em{font-style:normal;font-size:24px;font-weight:600;color:var(--muted)}
+.tile{position:absolute;width:322px;border-radius:14px;overflow:hidden;border:3px solid #2C2F37;background:#15171B}
+.scn{position:absolute;inset:0;background:linear-gradient(180deg,#2A3140 0%,#202632 58%,#2B2A27 58%,#1E1D1B 100%)}
+.door{position:absolute;left:34%;top:12%;width:34%;height:46%;border:3px solid #48505F;background:repeating-linear-gradient(180deg,#363E4C 0 10px,#2E3542 10px 20px)}
+.tn{position:absolute;left:10px;bottom:10px;height:38px;padding:0 12px;border-radius:10px;background:rgba(10,10,12,.82);font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+.live{position:absolute;left:10px;top:10px;height:36px;padding:0 12px;border-radius:10px;background:rgba(10,10,12,.82);font-size:24px;font-weight:800;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.live i{width:12px;height:12px;border-radius:50%;background:var(--accent);display:block}
+.off{position:absolute;inset:0;background:#1A1B1F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted)}
+.off b{font-size:26px;color:var(--ink);white-space:nowrap}
+.off em{font-style:normal;font-size:24px;white-space:nowrap}
+.tile.pv{border:3px dashed var(--wait);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.tile.pv b{font-size:26px;white-space:nowrap}
+#hl{position:absolute;border:4px solid var(--accent);border-radius:16px;box-shadow:0 0 0 8px rgba(var(--wl-amber-rgb),.22);opacity:0}
+
+/* DESTAQUE COM DETECÇÃO */
+#vid{position:absolute;left:28px;top:80px;width:1010px;height:470px;border-radius:16px;overflow:hidden;border:3px solid var(--accent);background:#15171B}
+#vid .door{left:38%;top:10%;width:26%;height:52%}
+#person{position:absolute;left:0;top:176px;width:90px;height:232px;color:#9AA3B5}
+.box{position:absolute;top:160px;width:122px;height:262px;border:3px solid var(--info);border-radius:6px;opacity:0}
+.box span{position:absolute;left:-3px;top:-40px;height:34px;padding:0 10px;border-radius:8px;background:var(--info);color:#0B0B0D;font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+#scene{position:absolute;left:166px;top:146px;width:540px;height:290px;border:4px dashed var(--accent);border-radius:10px;opacity:0}
+#scene span{position:absolute;left:-4px;top:-46px;height:38px;padding:0 12px;border-radius:8px;background:var(--accent);color:var(--wl-ink-on-amber);font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+#zlab{position:absolute;left:830px;top:254px;height:36px;padding:0 12px;border-radius:8px;background:rgba(10,10,12,.82);color:var(--warn);font-size:24px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+#indic{position:absolute;right:12px;top:12px;height:36px;padding:0 12px;border-radius:8px;background:rgba(10,10,12,.82);color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
+.dc{position:absolute;top:574px;width:172px;height:50px;border-radius:12px;border:2px solid var(--info);background:var(--infot);color:var(--info);font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;white-space:nowrap;opacity:0}
+#sarr{position:absolute;left:578px;top:584px;color:var(--muted);opacity:0}
+#scard{position:absolute;left:630px;top:566px;width:408px;height:100px;border-radius:14px;border:3px solid var(--accent);background:var(--soft);padding:12px 18px;opacity:0}
+#scard b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+#scard em{display:block;font-style:normal;font-size:24px;color:var(--muted);margin-top:6px;white-space:nowrap}
+#honest{position:absolute;left:28px;top:640px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap;opacity:0}
+
+/* OCORRÊNCIAS */
+.kpi{position:absolute;top:20px;width:322px;height:92px;border:2px solid var(--line);border-radius:16px;background:#1B1C21;padding:10px 18px}
+.kpi em{display:block;font-style:normal;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap}
+.kpi .kn{position:relative;height:40px;margin-top:4px}
+.kpi .kn b{position:absolute;left:0;top:0;font-size:34px;font-weight:800;line-height:40px}
+#orow{position:absolute;left:28px;top:182px;width:1010px;height:112px;border:3px solid var(--info);border-radius:16px;background:#1B1C21;display:flex;align-items:center;gap:18px;padding:0 16px;opacity:0}
+.thumb{position:relative;width:150px;height:84px;border-radius:10px;overflow:hidden;flex:none}
+.ot b{display:block;font-size:28px;font-weight:800;white-space:nowrap}
+.ot em{display:block;font-style:normal;font-size:24px;color:var(--muted);margin-top:4px;white-space:nowrap}
+#orow .gr{flex:1}
+#tx{position:absolute;left:28px;top:312px;width:1010px;height:140px;border:2px solid var(--line);border-radius:16px;background:#1B1C21;padding:16px 20px;opacity:0}
+#tx b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+.txc{display:flex;gap:12px;margin-top:14px}
+#ghost{position:absolute;left:28px;top:472px;width:1010px;height:84px;border:3px dashed var(--line);border-radius:16px;opacity:0}
+#ghost>span{position:absolute;left:0;top:0;width:1004px;height:78px;display:flex;align-items:center;gap:14px;padding:0 20px;font-size:26px;font-weight:700;white-space:nowrap}
+#human{position:absolute;left:28px;top:584px;font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:12px;opacity:0}
+
+/* REDE: CENTRAL E SITE */
+#net{position:absolute;left:1214px;top:124px;width:586px;height:812px;opacity:0}
+.nbox{position:absolute;left:0;width:586px;border:2px solid var(--line);border-radius:22px;background:var(--surface)}
+.nt{position:absolute;left:24px;top:18px;font-size:28px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:12px}
+.nsub{position:absolute;left:24px;top:62px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+.nr{position:absolute;left:18px;width:546px;height:58px;border-radius:12px;background:#1F2127;border:2px solid #2C2F37;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:24px;font-weight:700;white-space:nowrap}
+.nr>span{color:var(--muted)}
+.nv{position:relative;width:300px;height:36px}
+.nv b{position:absolute;right:0;top:0;line-height:36px;font-weight:800;white-space:nowrap;opacity:0}
+.nv b.z{opacity:1;color:var(--muted)}
+#slot{position:absolute;right:16px;top:9px;width:36px;height:36px;border-radius:10px;border:2px dashed #555A64}
+#vault{position:absolute;right:14px;top:7px;width:40px;height:40px;border-radius:10px;background:var(--warnt);border:2px solid var(--warn);color:var(--warn);display:grid;place-items:center;opacity:0}
+#pipe{position:absolute;left:58px;top:384px;width:6px;height:136px;background:var(--line)}
+#pipeh{position:absolute;left:47px;top:380px;color:var(--line)}
+.pl{position:absolute;left:100px;font-size:24px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:10px}
+#dot{position:absolute;left:61px;top:0;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:var(--accent);border:5px solid #fff;opacity:0}
+#lockFly{position:absolute;left:0;top:0;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:14px;background:var(--warnt);border:3px solid var(--warn);color:var(--warn);display:grid;place-items:center;opacity:0;z-index:30}
+
+/* LEGENDAS DAS BATIDAS */
+#caps{position:absolute;left:120px;top:956px;width:1680px;height:86px}
+.cap{position:absolute;inset:0;display:flex;align-items:center;gap:22px;padding:0 28px;border-radius:16px;background:#1A1B1F;border-left:8px solid var(--accent);font-size:32px;font-weight:700;white-space:nowrap;opacity:0}
+.cap small{font-size:24px;font-weight:800;color:var(--accent)}
+#tagline{justify-content:center;font-size:42px;font-weight:800;letter-spacing:-.5px}
+#tagline span{color:var(--accent)}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* ABERTURA WELABS-INTRO (copiada de pieces/welabs-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+.intro-lbl .intro-soon{font-size:24px;font-weight:500;color:#A9A9B3;margin-left:14px;letter-spacing:.02em}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="mon-camera-to-case-intro" data-width="1920" data-height="1080" data-start="0" data-duration="41">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:176px"><img class="intro-mk" src="./assets/brand/marks/flow-mark-dark.svg" alt=""><span data-wl-name="flow">Flow</span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:300px"><img class="intro-mk" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span data-wl-name="hub">Hub de domínio</span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:424px"><img class="intro-mk" src="./assets/brand/marks/lore-mark-dark.svg" alt=""><span data-wl-name="kb">KB</span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:614px"><img class="intro-mk" src="./assets/brand/marks/kin-mark-dark.svg" alt=""><span data-wl-name="crm">CRM</span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:738px"><img class="intro-mk" src="./assets/brand/marks/vox-mark-dark.svg" alt=""><span data-wl-name="channels">Channels</span></div>
+  <div class="intro-lbl intro-in" id="intro-in5" style="top:862px">Monitoramento<span class="intro-soon">previsto</span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/mon-camera-to-case, sem mudança), transparente durante a abertura -->
+  <div id="top">
+    <img src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+    <div class="tt">Ecossistema Monitoramento · <em>da câmera ao caso</em></div>
+    <div class="gr"></div>
+    <span class="chip al">Alpha · laboratório</span>
+    <span class="chip">DEMO</span>
+  </div>
+
+  <!-- CENTRAL WEB -->
+  <div id="win">
+    <div id="wbar">
+      <span>Central Web</span>
+      <span class="scope">Operadora Demo · Galpão Norte</span>
+      <span class="gr"></span>
+      <div id="conn">
+        <span id="cn0" style="color:var(--muted);border-color:var(--line)"><i style="background:var(--muted)"></i>Instalação · sem reporte</span>
+        <span id="cn1" style="color:var(--ok);border-color:var(--ok);opacity:0"><i style="background:var(--ok)"></i>Instalação · conectada</span>
+      </div>
+    </div>
+    <div id="tabs">
+      <span class="tab" id="tb0" style="left:16px;width:190px">Ocorrências</span>
+      <span class="tab" id="tb1" style="left:214px;width:140px">Ao vivo</span>
+      <span class="tab" id="tb2" style="left:362px;width:150px">Câmeras</span>
+      <span class="tab" id="tb3" style="left:520px;width:180px">Instalações</span>
+      <span class="tab" id="tb4" style="left:708px;width:150px">Pessoas</span>
+      <div id="tabind"></div>
+    </div>
+
+    <!-- Câmeras: lista + cadastro -->
+    <div class="pane" id="pCam">
+      <div id="clist" class="abs" style="inset:0">
+      <div class="ph">Câmeras</div>
+      <div class="ps">Galpão Norte · instalação Edge DEMO</div>
+      <span class="btn pr abs" id="badd" style="right:28px;top:22px"><span class="ic" id="iadd"></span>Cadastrar câmera</span>
+      <div class="crow" style="top:118px"><span class="ci" id="ic1"></span><b>Portão 01</b><em>Galpão Norte</em><span class="gr"></span><span class="pill ok">Online</span></div>
+      <div class="crow" style="top:208px"><span class="ci" id="ic2"></span><b>Doca 03</b><em>Galpão Norte</em><span class="gr"></span><span class="pill g">Offline</span></div>
+      <div class="crow" id="newrow" style="top:298px;opacity:0;border-color:var(--accent)"><span class="ci" id="ic3"></span><b>Doca 02</b><em>Galpão Norte</em><span class="gr"></span><span class="pill w">Aguardando conexão</span></div>
+      <div class="crow" id="credNote" style="top:400px;height:132px;opacity:0;border-color:var(--warn);align-items:flex-start;padding-top:18px">
+        <span class="ci" id="ilk1" style="color:var(--warn);background:var(--warnt)"></span>
+        <div><b style="display:block;font-size:26px">Credencial no cofre central</b><em style="display:block;margin-top:8px">O banco guarda só a referência; o Edge recebe o segredo selado.</em></div>
+      </div>
+      </div>
+      <div id="dlg">
+        <div class="dt">Cadastrar câmera</div>
+        <div class="fld" style="top:84px"><label>Nome</label><div class="inp"><span id="f1">Doca 02</span></div></div>
+        <div class="fld" style="top:194px"><label>Instalação</label><div class="inp"><span id="f2">Edge · Galpão Norte</span></div></div>
+        <div class="fld" style="top:304px"><label>Endereço do stream</label><div class="inp"><span id="f3">DEMO</span></div></div>
+        <div class="fld" style="top:414px"><label>Credencial do stream</label><div class="inp"><span id="f4">usuário DEMO · ••••••</span><span class="gr" style="opacity:1"></span><span class="ic" id="lockSrc"></span></div></div>
+        <div id="dfoot"><span class="btn">Cancelar</span><span class="btn pr" id="bok">Cadastrar</span></div>
+      </div>
+    </div>
+
+    <!-- Câmeras: detalhe da Doca 02 -->
+    <div class="pane" id="pDet">
+      <div class="ph">Câmeras › Doca 02</div>
+      <div class="ps">Galpão Norte · Edge DEMO · metadados editáveis</div>
+      <div id="dstat">
+        <span class="pill w" id="ds0">Aguardando conexão</span>
+        <span class="pill ok" id="ds1" style="opacity:0">Online</span>
+      </div>
+      <div class="lbl" style="top:116px">Ciclo de estado</div>
+      <div class="step" style="top:154px">
+        <span class="sc" style="--c:var(--wait);--ct:var(--waitt)">Aguardando conexão<span class="on" id="sAg">Aguardando conexão</span></span>
+        <span class="sar">→</span>
+        <span class="sc" style="--c:var(--ok);--ct:var(--okt)">Online<span class="on" id="sOn">Online</span></span>
+        <span class="sar">⇄</span>
+        <span class="sc">Offline</span>
+      </div>
+      <div class="step" style="top:216px">
+        <span class="sc">Requer atenção</span><span class="sar">→</span><span class="sc">Desativada</span><span class="sar">→</span><span class="sc">Arquivada</span>
+      </div>
+      <div class="lbl" style="top:296px">Saúde reportada pelo Edge</div>
+      <div class="kvg" style="top:330px">
+        <div class="kv"><span>Último contato</span><div class="vv"><b class="n" id="h1a">—</b><b class="y" id="h1b">agora</b></div></div>
+        <div class="kv"><span>Stream</span><div class="vv"><b class="n" id="h2a">—</b><b class="y" id="h2b" style="color:var(--ok)">ativo</b></div></div>
+        <div class="kv"><span>Codec</span><div class="vv"><b class="n" id="h3a">—</b><b class="y" id="h3b">DEMO</b></div></div>
+        <div class="kv"><span>Resolução</span><div class="vv"><b class="n" id="h4a">—</b><b class="y" id="h4b">DEMO</b></div></div>
+        <div class="kv"><span>FPS</span><div class="vv"><b class="n" id="h5a">—</b><b class="y" id="h5b">DEMO</b></div></div>
+        <div class="kv"><span>Diagnóstico</span><div class="vv"><b class="n" id="h6a">—</b><b class="y" id="h6b">sanitizado</b></div></div>
+      </div>
+      <div class="kv abs" style="left:28px;width:1010px;top:520px"><span>Credencial do stream</span><b style="display:flex;align-items:center;gap:10px"><span class="ic" id="ilk2" style="color:var(--warn)"></span>no cofre central · referência opaca</b></div>
+      <div class="abs" style="left:28px;top:604px;display:flex;gap:12px"><span class="btn">Editar metadados</span><span class="btn">Desativar</span><span class="btn">Arquivar</span></div>
+      <span class="pill ok abs" id="lab" style="right:28px;top:609px;opacity:0">validado em laboratório</span>
+    </div>
+
+    <!-- Ao vivo por site -->
+    <div class="pane" id="pLive">
+      <div class="ph">Ao vivo · por site</div>
+      <span class="pill i abs" id="tkt" style="right:28px;top:20px;opacity:0">WebRTC · ticket de uso único</span>
+      <div class="grp" style="top:82px">Galpão Norte<em>3 câmeras</em></div>
+      <div class="tile" style="left:28px;top:122px;height:224px"><div class="scn"><div class="door"></div></div><div class="live"><i></i>ao vivo</div><div class="tn">Portão 01</div></div>
+      <div class="tile" style="left:366px;top:122px;height:224px"><div class="scn"><div class="door"></div></div><div class="live"><i></i>ao vivo</div><div class="tn">Doca 02</div></div>
+      <div class="tile" style="left:704px;top:122px;height:224px"><div class="off"><span class="ic" id="ioff"></span><b>Doca 03 · Offline</b><em>fica na grade com estado</em></div></div>
+      <div id="hl" style="left:362px;top:118px;width:330px;height:232px"></div>
+      <div class="grp" style="top:372px">Loja Centro<em>2 câmeras</em></div>
+      <div class="tile" style="left:28px;top:412px;height:200px"><div class="scn"><div class="door" style="left:20%;width:26%"></div></div><div class="live"><i></i>ao vivo</div><div class="tn">Entrada</div></div>
+      <div class="tile" style="left:366px;top:412px;height:200px"><div class="scn"><div class="door" style="left:52%;width:30%"></div></div><div class="live"><i></i>ao vivo</div><div class="tn">Caixa</div></div>
+      <div class="tile pv" style="left:704px;top:412px;height:200px"><b>Live remoto por relay</b><span class="pill pv">Previsto</span></div>
+      <div class="abs" style="left:28px;top:634px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap">O vídeo sai do Edge para o navegador; a API não repassa vídeo.</div>
+    </div>
+
+    <!-- Doca 02 em destaque: detecção e cena -->
+    <div class="pane" id="pFocus">
+      <div class="ph">Doca 02 · em destaque</div>
+      <span class="pill g abs" style="right:28px;top:20px">Motor de vídeo local · no appliance</span>
+      <div id="vid">
+        <div class="scn"><div class="door"></div></div>
+        <svg class="abs" style="left:0;top:0" width="1004" height="464" viewBox="0 0 1004 464"><polygon points="300,300 830,300 930,462 200,462" style="fill:rgba(var(--wl-warn-rgb),.10);stroke:var(--warn)" stroke-width="4" stroke-dasharray="14 10"/></svg>
+        <div id="zlab">zona entrada</div>
+        <div id="indic">caixas indicativas</div>
+        <div class="box" id="bx1" style="left:180px"><span>pessoa</span></div>
+        <div class="box" id="bx2" style="left:344px"><span>pessoa</span></div>
+        <div class="box" id="bx3" style="left:497px"><span>pessoa</span></div>
+        <div id="scene"><span>Cena visual · 1</span></div>
+        <div id="person"></div>
+      </div>
+      <div class="dc" id="dc1" style="left:28px">Detecção 1</div>
+      <div class="dc" id="dc2" style="left:212px">Detecção 2</div>
+      <div class="dc" id="dc3" style="left:396px">Detecção 3</div>
+      <span class="ic" id="sarr"></span>
+      <div id="scard"><b>Cena visual · Doca 02</b><em>3 detecções · zona entrada</em></div>
+      <div id="honest">O painel conta detecções, não indivíduos.</div>
+    </div>
+
+    <!-- Ocorrências -->
+    <div class="pane" id="pOcc">
+      <div class="kpi" style="left:28px"><em>Novas</em><div class="kn"><b id="k0">0</b><b id="k1" style="opacity:0;color:var(--info)">1</b></div></div>
+      <div class="kpi" style="left:372px"><em>Em atendimento</em><div class="kn"><b>0</b></div></div>
+      <div class="kpi" style="left:716px"><em>Encerradas</em><div class="kn"><b>0</b></div></div>
+      <div class="abs" style="left:28px;top:134px;font-size:28px;font-weight:800;white-space:nowrap">Fila de ocorrências</div>
+      <div class="abs" style="right:28px;top:130px;display:flex;gap:10px"><span class="pill i">Todas</span><span class="pill g">Novas</span><span class="pill g">Encerradas</span></div>
+      <div id="orow">
+        <div class="thumb"><div class="scn"><div class="door"></div></div><div class="abs" id="tper" style="left:54px;top:14px;width:30px;height:66px;color:#9AA3B5"></div></div>
+        <div class="ot"><b>Doca 02 · Galpão Norte</b><em>pessoa · 3 detecções · 1 cena · agora</em></div>
+        <span class="gr"></span>
+        <span class="pill i">Nova</span>
+        <span class="btn">Assumir</span>
+      </div>
+      <div id="tx">
+        <b>Aberta numa transação só, com a galeria pronta</b>
+        <div class="txc"><span class="pill g">evento</span><span class="pill g">mídia</span><span class="pill g">timeline</span><span class="pill g">auditoria</span><span class="pill g">principal + até 4 quadros</span></div>
+      </div>
+      <div id="ghost">
+        <span id="gh0" style="color:var(--muted)"><span class="ic" id="igh"></span>Mesmo evento reenviado pelo Edge</span>
+        <span id="gh1" style="color:var(--warn);opacity:0"><span class="ic" id="igh2"></span>Duplicata reconhecida · sem segunda ocorrência</span>
+      </div>
+      <div id="human"><span class="ic" id="ihu" style="color:var(--accent)"></span>Quem assume, classifica e encerra é o operador.</div>
+    </div>
+  </div>
+
+  <!-- REDE: CENTRAL NA NUVEM E SITE COM EDGE -->
+  <div id="net">
+    <div class="nbox" id="bC" style="top:0;height:384px">
+      <div class="nt"><span class="ic" id="icl"></span>Central · nuvem</div>
+      <div class="nsub">dona canônica dos dados</div>
+      <div class="nr" id="r1" style="top:100px"><span>Cofre de segredos</span><div id="slot"></div><div id="vault"></div></div>
+      <div class="nr" id="r2" style="top:168px"><span>Banco · credencial</span><div class="nv"><b class="z" id="r2a">—</b><b id="r2b" style="color:var(--warn)">só referência</b></div></div>
+      <div class="nr" id="r3" style="top:236px"><span>Estado desejado</span><div class="nv"><b class="z" id="r3a">—</b><b id="r3b" style="color:var(--info)">Doca 02 · DEMO</b><b id="r3c" style="color:var(--ok)">igual ao reportado</b></div></div>
+      <div class="nr" id="r4" style="top:304px"><span>Ocorrências</span><div class="nv"><b class="z" id="r4a">—</b><b id="r4b" style="color:var(--info)">1 nova</b><b id="r4c" style="color:var(--warn)">ainda 1 · duplicata</b></div></div>
+    </div>
+    <div id="pipe"></div>
+    <span class="ic" id="pipeh"></span>
+    <div class="pl" style="top:408px"><span class="ic" id="iup" style="color:var(--ok)"></span>o Edge abre a conexão · só saída</div>
+    <div class="pl" style="top:456px"><span class="ic" id="ix" style="color:var(--bad)"></span>nenhuma porta aberta no site</div>
+    <div id="dot"></div>
+    <div class="nbox" id="bE" style="top:520px;height:292px">
+      <div class="nt" style="font-size:26px"><span class="ic" id="isv"></span>Site Galpão Norte · Edge</div>
+      <div class="nsub">grava e detecta mesmo sem internet</div>
+      <div class="nr" id="e1" style="top:100px"><span>Estado reportado</span><div class="nv"><b class="z" id="e1a">—</b><b id="e1b" style="color:var(--ok)">aplicado</b></div></div>
+      <div class="nr" id="e2" style="top:164px"><span>Câmera Doca 02</span><div class="nv"><b class="z" id="e2a">—</b><b id="e2b" style="color:var(--wait)">aguardando</b><b id="e2c" style="color:var(--ok)">online</b></div></div>
+      <div class="nr" id="e3" style="top:228px"><span>Motor de vídeo</span><div class="nv"><b class="z" id="e3a">—</b><b id="e3b" style="color:var(--info)">3 detecções</b><b id="e3c" style="color:var(--accent)">1 cena</b></div></div>
+    </div>
+  </div>
+
+  <div id="lockFly"></div>
+
+  <!-- LEGENDAS -->
+  <div id="caps">
+    <div class="cap" id="cap0"><small>1/6</small><span>O admin cadastra a Doca 02: a credencial vai ao cofre e o banco guarda só a referência</span></div>
+    <div class="cap" id="cap1"><small>2/6</small><span>O Edge busca o estado desejado por conexão de saída; a central nunca entra no site</span></div>
+    <div class="cap" id="cap2"><small>3/6</small><span>A câmera sai de “Aguardando conexão” para “Online” e o Edge reporta a saúde</span></div>
+    <div class="cap" id="cap3"><small>4/6</small><span>Ao vivo agrupado por site: a câmera fora do ar fica na grade, com estado</span></div>
+    <div class="cap" id="cap4"><small>5/6</small><span>Uma pessoa cruza a zona entrada: três detecções do motor local viram uma cena</span></div>
+    <div class="cap" id="cap5"><small>6/6</small><span>A cena abre uma ocorrência; o mesmo evento repetido é reconhecido como duplicata</span></div>
+    <div class="cap" id="tagline">Da câmera ao caso.&nbsp;<span>Sem abrir porta no site.</span></div>
+  </div>
+  <div id="pad"></div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/mon-camera-to-case; só o registro da timeline virou __pieceParts.film)
+(function () {
+  // Brand amber literals for GSAP tweens (GSAP cannot interpolate var()); glow() needs the rgb() form
+  var AMBER = WELABS_BRAND.color.amber, AMBER_RGBFN = "rgb(" + WELABS_BRAND.color.amberRgb + ")";
+  // Alert tone replaces the retired state yellow in tweens (credential vault, duplicate)
+  var WARN = WELABS_BRAND.color.warn, WARN_RGBFN = "rgb(" + WELABS_BRAND.color.warnRgb + ")";
+  // ÍCONES
+  var IC = {
+    cam: '<path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+    lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    cloud: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+    srv: '<rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01"/><path d="M6 17h.01"/>',
+    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    up: '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',
+    plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+    right: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    off: '<path d="M1 1l22 22"/><path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34"/>',
+    copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    head: '<path d="M18 6H6l-2 6h16z"/>'
+  };
+  function ico(n, s) { return '<svg viewBox="0 0 24 24" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + IC[n] + '</svg>'; }
+  function put(id, html) { document.getElementById(id).innerHTML = html; }
+  ["ic1", "ic2", "ic3"].forEach(function (i) { put(i, ico("cam", 26)); });
+  put("iadd", ico("plus", 24)); put("lockSrc", ico("lock", 26)); put("vault", ico("lock", 24)); put("lockFly", ico("lock", 28));
+  put("ilk2", ico("lock", 24)); put("ilk1", ico("lock", 26)); put("ioff", ico("off", 40)); put("sarr", ico("right", 34));
+  put("icl", ico("cloud", 30)); put("isv", ico("srv", 28)); put("iup", ico("up", 26)); put("ix", ico("x", 26));
+  put("pipeh", ico("up", 28)); put("igh", ico("copy", 26)); put("igh2", ico("copy", 26)); put("ihu", ico("user", 28));
+  // Synthetic silhouette (no face, no identity)
+  var SIL = '<svg viewBox="0 0 90 232" width="100%" height="100%"><circle cx="45" cy="26" r="22" fill="currentColor"/><path d="M14 62q31-14 62 0l8 82h-14l-4 86H52l-7-70-7 70H24l-4-86H6z" fill="currentColor"/></svg>';
+  put("person", SIL); put("tper", SIL);
+
+  // LINHA DO TEMPO (pausada, termina em 32 s)
+  var tl = gsap.timeline({ paused: true });
+  var E = "power2.out";
+  function fadeIn(sel, t, d) { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: d || 0.4, ease: E, immediateRender: false }, t); }
+  function fadeOut(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.3, ease: "power1.in" }, t); }
+  // Sequential swap: the old text leaves before the new one enters, never overlapping
+  function swap(a, b, t) { fadeOut(a, t, 0.22); fadeIn(b, t + 0.24, 0.3); }
+  function pane(a, b, t) { fadeOut(a, t, 0.3); tl.fromTo(b, { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.45, ease: E, immediateRender: false }, t + 0.32); }
+  function cap(i, a, b) { tl.fromTo("#cap" + i, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: E, immediateRender: false }, a); if (b) fadeOut("#cap" + i, b - 0.3, 0.3); }
+  function glow(sel, color, t) { tl.to(sel, { borderColor: color, boxShadow: "0 0 0 6px " + color.replace("rgb", "rgba").replace(")", ",.22)"), duration: 0.3 }, t); }
+  function calm(sel, t) { tl.to(sel, { borderColor: "#2C2F37", boxShadow: "0 0 0 0px rgba(0,0,0,0)", duration: 0.3 }, t); }
+  // Tab indicator: fixed tab geometry, moved with x + scaleX only
+  var TABS = [[16, 190], [214, 140], [362, 150], [520, 180], [708, 150]];
+  function tab(i, t, prev) {
+    tl.to("#tabind", { x: TABS[i][0], scaleX: TABS[i][1] / 100, duration: 0.45, ease: "power2.inOut" }, t);
+    if (prev !== undefined) tl.to("#tb" + prev, { color: "#B4B9C3", duration: 0.3 }, t);
+    tl.to("#tb" + i, { color: "#FFFFFF", duration: 0.3 }, t);
+  }
+  // Packet on the outbound pipe (y in #net coordinates): Edge at 520, Central at 384
+  function packet(t, up, color) {
+    var a = up ? 516 : 388, b = up ? 388 : 516;
+    tl.fromTo("#dot", { y: a, opacity: 0, backgroundColor: color }, { y: a, opacity: 1, backgroundColor: color, duration: 0.12, immediateRender: false }, t);
+    tl.to("#dot", { y: b, duration: 0.5, ease: "power1.inOut" }, t + 0.12);
+    tl.to("#dot", { opacity: 0, duration: 0.12 }, t + 0.62);
+  }
+
+  tl.set("#tabind", { x: TABS[2][0], scaleX: TABS[2][1] / 100 }, 0);
+  tl.set("#tb2", { color: "#FFFFFF" }, 0);
+  tl.set("#dot", { y: 516 }, 0);
+
+  // ABERTURA
+  fadeIn("#top", 0, 0.6);
+  tl.fromTo("#win", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.1);
+  tl.fromTo("#net", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, ease: E }, 0.2);
+  fadeIn("#pCam", 0.3, 0.4);
+
+  // BATIDA 1 · Cadastro da câmera; credencial no cofre
+  // Calm pace: every beat ends its last change >= 1.5 s before its caption starts to leave
+  cap(0, 0.5, 5.7);
+  // The list steps aside while the dialog is open, so no text sits under the modal
+  fadeOut("#clist", 0.75, 0.3);
+  tl.fromTo("#dlg", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 1.1);
+  fadeIn("#f1", 1.45, 0.2); fadeIn("#f2", 1.65, 0.2); fadeIn("#f3", 1.85, 0.2); fadeIn("#f4", 2.05, 0.2); fadeIn("#lockSrc", 2.05, 0.2);
+  tl.to("#bok", { scale: 0.94, duration: 0.12, yoyo: true, repeat: 1 }, 2.35);
+  fadeOut("#lockSrc", 2.55, 0.12);
+  tl.fromTo("#lockFly", { x: 918, y: 767, opacity: 0, scale: 0.8 }, { x: 918, y: 767, opacity: 1, scale: 1, duration: 0.15, immediateRender: false }, 2.55);
+  tl.to("#lockFly", { x: 1744, y: 255, duration: 0.6, ease: "power2.inOut" }, 2.7);
+  tl.to("#lockFly", { opacity: 0, duration: 0.12 }, 3.3);
+  fadeIn("#vault", 3.28, 0.2);
+  glow("#r1", WARN_RGBFN, 3.28);
+  fadeOut("#dlg", 2.6, 0.3);
+  fadeIn("#clist", 2.95, 0.3);
+  tl.fromTo("#newrow", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 2.95);
+  swap("#r2a", "#r2b", 3.3);
+  glow("#r2", WARN_RGBFN, 3.4);
+  tl.fromTo("#credNote", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: E, immediateRender: false }, 3.4);
+
+  // BATIDA 2 · Estado desejado por conexão de saída
+  cap(1, 5.7, 11.1);
+  calm("#r1,#r2", 5.7);
+  pane("#pCam", "#pDet", 5.75);
+  tl.fromTo("#sAg", { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, 6.1);
+  swap("#r3a", "#r3b", 6.2); glow("#r3", "rgb(125,180,255)", 6.3);
+  packet(6.55, true, "#7DB4FF");
+  packet(7.35, false, AMBER);
+  swap("#e1a", "#e1b", 7.95); swap("#e2a", "#e2b", 7.95); glow("#e1", "rgb(61,214,140)", 8.0);
+  packet(8.15, true, "#3DD68C");
+  swap("#r3b", "#r3c", 8.75); glow("#r3", "rgb(61,214,140)", 8.8);
+  swap("#cn0", "#cn1", 8.75);
+
+  // BATIDA 3 · Aguardando conexão → Online, saúde reportada
+  cap(2, 11.1, 15.1);
+  calm("#r3,#e1", 11.1);
+  swap("#ds0", "#ds1", 11.4);
+  fadeOut("#sAg", 11.4, 0.22); fadeIn("#sOn", 11.64, 0.3);
+  swap("#e2b", "#e2c", 11.4); glow("#e2", "rgb(61,214,140)", 11.5);
+  ["1", "2", "3", "4", "5", "6"].forEach(function (k, j) { swap("#h" + k + "a", "#h" + k + "b", 11.9 + j * 0.15); });
+  tl.fromTo("#lab", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: E, immediateRender: false }, 13.0);
+
+  // BATIDA 4 · Ao vivo por site
+  cap(3, 15.1, 18.9);
+  calm("#e2", 15.1);
+  tab(1, 15.2, 2);
+  pane("#pDet", "#pLive", 15.2);
+  fadeIn("#hl", 16.0, 0.3);
+  tl.fromTo("#tkt", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: E, immediateRender: false }, 16.5);
+  glow("#e2", AMBER_RGBFN, 16.5);
+
+  // BATIDA 5 · Três detecções viram uma cena
+  cap(4, 18.9, 24.4);
+  calm("#e2", 18.9);
+  pane("#pLive", "#pFocus", 18.95);
+  tl.fromTo("#person", { x: 120 }, { x: 600, duration: 2.2, ease: "none", immediateRender: false }, 19.5);
+  tl.set("#person", { x: 120 }, 0);
+  // Box times follow the person's linear path: t0 + 0.35, + 1.1, + 1.8
+  [["#bx1", "#dc1", 19.85], ["#bx2", "#dc2", 20.6], ["#bx3", "#dc3", 21.3]].forEach(function (d) {
+    fadeIn(d[0], d[2], 0.2);
+    tl.fromTo(d[1], { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.25, ease: E, immediateRender: false }, d[2]);
+  });
+  glow("#e3", "rgb(125,180,255)", 19.85); swap("#e3a", "#e3b", 19.85);
+  // Merge: chips are gone before the arrow and the scene card appear, so no text crosses the card
+  tl.fromTo("#dc1,#dc2,#dc3", { x: 0, opacity: 1 }, { x: 160, opacity: 0, duration: 0.4, ease: "power2.in", immediateRender: false }, 21.8);
+  fadeOut("#bx1,#bx2,#bx3", 21.8, 0.3);
+  fadeIn("#scene", 22.05, 0.35); fadeIn("#sarr", 22.2, 0.3);
+  tl.fromTo("#scard", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, 22.2);
+  fadeIn("#honest", 22.25, 0.3);
+  swap("#e3b", "#e3c", 21.85); glow("#e3", AMBER_RGBFN, 21.9);
+
+  // BATIDA 6 · A cena abre uma ocorrência; a duplicata é reconhecida
+  cap(5, 24.4, 30.0);
+  calm("#e3", 24.4);
+  tab(0, 24.45, 1);
+  pane("#pFocus", "#pOcc", 24.45);
+  packet(24.9, true, AMBER);
+  swap("#r4a", "#r4b", 25.4); glow("#r4", "rgb(125,180,255)", 25.45);
+  swap("#k0", "#k1", 25.4);
+  tl.fromTo("#orow", { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 25.45);
+  tl.fromTo("#tx", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: E, immediateRender: false }, 25.75);
+  packet(26.25, true, AMBER);
+  tl.fromTo("#ghost", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: E, immediateRender: false }, 26.4);
+  swap("#gh0", "#gh1", 26.9); tl.to("#ghost", { borderColor: WARN, duration: 0.3 }, 26.9);
+  swap("#r4b", "#r4c", 26.9); glow("#r4", WARN_RGBFN, 26.95);
+  tl.fromTo("#human", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: E, immediateRender: false }, 27.5);
+
+  // FECHO
+  tl.fromTo("#tagline", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: E, immediateRender: false }, 30.0);
+  tl.set("#pad", { opacity: 0 }, 32);
+
+  // The site player may load the page before the runtime creates the registry
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (32 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 32;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["mon-camera-to-case-intro"] = master;
+})();
+</script>
+</body>
+</html>

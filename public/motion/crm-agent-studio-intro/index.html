@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>CRM · estúdio de agentes (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA E TOKENS */
+  @font-face { font-family: "Inter"; src: url("./assets/fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+  /* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite.
+     --amber keeps its name but now carries the wait lilac (indexing, awaiting promotion); the old state yellow read as brand amber */
+  :root { --bg: #10141C; --win: #111115; --panel: #17171B; --panel2: #1F1F25; --line: #3A3A42; --coral: var(--wl-amber); --text: #FFFFFF; --muted: #C9C9D1; --ok: #3DDC84; --amber: var(--wl-wait); }
+  /* Product names come from WELABS_BRAND.names and keep their parent's color */
+  #root [data-wl-name] { color: inherit; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); width: 1920px; height: 1080px; margin: 0; overflow: hidden; }
+  #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; }
+  .abs { position: absolute; }
+
+  /* CABECALHO */
+  #title { position: absolute; left: 60px; top: 36px; font-size: 56px; font-weight: 800; letter-spacing: -1px; white-space: nowrap; }
+  #title span { color: var(--coral); }
+  #demo { position: absolute; right: 300px; top: 46px; padding: 6px 22px; border: 2px solid var(--line); border-radius: 999px; font-size: 24px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  /* New SVG logo (ratio 4.25) at the ~48 px seal height, vertically centred on the title */
+  #seal { position: absolute; right: 60px; top: 42px; height: 48px; width: auto; }
+
+  /* JANELA DO ESTUDIO */
+  #win { position: absolute; left: 60px; top: 130px; width: 1800px; height: 780px; border: 2px solid var(--line); border-radius: 22px; background: var(--win); overflow: hidden; }
+  #topbar { position: absolute; left: 0; top: 0; width: 1800px; height: 76px; border-bottom: 2px solid var(--line); background: var(--panel); }
+  #crumb { position: absolute; left: 28px; top: 20px; font-size: 26px; color: var(--muted); white-space: nowrap; }
+  #crumbName { position: absolute; left: 196px; top: 18px; width: 420px; height: 40px; }
+  #crumbName span { position: absolute; left: 0; top: 0; font-size: 28px; font-weight: 800; white-space: nowrap; }
+  #verChip { position: absolute; left: 860px; top: 16px; width: 330px; height: 44px; border: 2px solid var(--ok); border-radius: 999px; }
+  #verChip span { position: absolute; left: 0; right: 0; top: 4px; text-align: center; font-size: 24px; font-weight: 700; color: var(--ok); white-space: nowrap; }
+  .tbtn { position: absolute; top: 14px; height: 48px; width: 170px; border: 2px solid var(--line); border-radius: 12px; font-size: 24px; font-weight: 700; color: var(--muted); text-align: center; line-height: 44px; background: var(--panel); }
+  #bCompile { left: 1230px; } #bSim { left: 1415px; } #bProm { left: 1600px; width: 176px; }
+
+  /* BARRA LATERAL */
+  #side { position: absolute; left: 0; top: 76px; width: 330px; height: 704px; border-right: 2px solid var(--line); background: #141418; }
+  /* Amber fills carry the brand ink, never white (AA contrast) */
+  #avatar { position: absolute; left: 20px; top: 22px; width: 60px; height: 60px; border-radius: 50%; background: var(--coral); color: var(--wl-ink-on-amber); font-size: 30px; font-weight: 800; text-align: center; line-height: 60px; }
+  #sideName { position: absolute; left: 96px; top: 22px; width: 220px; height: 36px; }
+  #sideName span { position: absolute; left: 0; top: 0; font-size: 24px; font-weight: 800; white-space: nowrap; }
+  #sideSub { position: absolute; left: 96px; top: 56px; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  #tabs { position: absolute; left: 0; top: 116px; width: 328px; }
+  #tabHi { position: absolute; left: 12px; top: 0; width: 304px; height: 50px; border-radius: 10px; background: #26262E; border-left: 6px solid var(--coral); }
+  .tab { position: absolute; left: 34px; height: 50px; line-height: 50px; font-size: 24px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  .tab .plan { display: inline-block; margin-left: 12px; padding: 0 10px; height: 34px; line-height: 30px; border: 2px solid var(--line); border-radius: 999px; font-size: 24px; color: var(--muted); }
+  #sideFoot { position: absolute; left: 24px; top: 560px; width: 290px; }
+  #sideFoot div { font-size: 24px; color: var(--muted); }
+  #sideFoot b { display: block; margin-top: 6px; font-size: 24px; font-weight: 700; color: var(--text); }
+
+  /* PAINEIS */
+  #content { position: absolute; left: 360px; top: 100px; width: 1410px; height: 656px; }
+  .pnl { position: absolute; left: 0; top: 0; width: 1410px; height: 656px; opacity: 0; }
+  .h2 { position: absolute; left: 0; top: 0; font-size: 34px; font-weight: 800; white-space: nowrap; }
+  .sub { position: absolute; left: 0; top: 50px; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .card { position: absolute; border: 2px solid var(--line); border-radius: 16px; background: var(--panel); }
+  .lbl { position: absolute; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .box { position: absolute; height: 58px; border: 2px solid var(--line); border-radius: 12px; background: var(--panel2); padding: 0 18px; font-size: 26px; line-height: 54px; white-space: nowrap; }
+  .seg { position: absolute; display: flex; height: 58px; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel2); }
+  .seg div { padding: 0 22px; font-size: 24px; font-weight: 600; line-height: 54px; color: var(--muted); white-space: nowrap; border-right: 2px solid var(--line); }
+  .seg div:last-child { border-right: 0; }
+  .seg .on { background: var(--coral); color: var(--wl-ink-on-amber); }
+  .pill { position: absolute; height: 40px; padding: 0 16px; border-radius: 999px; font-size: 24px; font-weight: 700; line-height: 36px; white-space: nowrap; border: 2px solid var(--line); color: var(--muted); }
+  .pill.ok { border-color: var(--ok); color: var(--ok); }
+  .pill.amb { border-color: var(--amber); color: var(--amber); }
+  /* Partial maturity is an attention state: brand alert orange */
+  .pill.wrn { border-color: var(--wl-warn); color: var(--wl-warn); }
+  .pill.cor { border-color: var(--coral); color: var(--coral); }
+  .t26 { font-size: 26px; font-weight: 700; white-space: nowrap; }
+  .t24 { font-size: 24px; white-space: nowrap; }
+  .mut { color: var(--muted); }
+
+  /* P1 MODELOS */
+  .tpl { position: absolute; width: 450px; height: 104px; border: 2px solid var(--line); border-radius: 14px; background: var(--panel); }
+  .tpl b { position: absolute; left: 22px; top: 14px; font-size: 26px; font-weight: 800; white-space: nowrap; }
+  .tpl em { position: absolute; left: 22px; top: 56px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .tpl .ck { position: absolute; right: 18px; top: 18px; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); }
+  .tpl .ckf { position: absolute; right: 18px; top: 18px; width: 34px; height: 34px; border-radius: 50%; background: var(--coral); opacity: 0; }
+  .tpl .ckf::after { content: ""; position: absolute; left: 11px; top: 6px; width: 8px; height: 15px; border: solid var(--wl-ink-on-amber); border-width: 0 4px 4px 0; transform: rotate(45deg); }
+  .tpl .sel { position: absolute; left: -2px; top: -2px; width: 450px; height: 104px; border: 3px solid var(--coral); border-radius: 14px; opacity: 0; }
+
+  /* P3 CONHECIMENTO */
+  .src { position: absolute; left: 0; width: 880px; height: 84px; border: 2px solid var(--line); border-radius: 14px; background: var(--panel); }
+  .src .ty { position: absolute; left: 18px; top: 20px; width: 252px; height: 40px; border-radius: 999px; border: 2px solid var(--coral); color: var(--coral); font-size: 24px; font-weight: 700; text-align: center; line-height: 36px; white-space: nowrap; }
+  .src .nm { position: absolute; left: 290px; top: 22px; font-size: 26px; white-space: nowrap; }
+  .src .st { position: absolute; right: 18px; top: 20px; width: 170px; height: 40px; }
+  .src .st .pill { left: 0; top: 0; width: 170px; text-align: center; padding: 0; opacity: 0; }
+  .src .bar { position: absolute; left: 290px; bottom: 8px; width: 380px; height: 6px; border-radius: 3px; background: #2A2A31; overflow: hidden; opacity: 0; }
+  .src .bar i { position: absolute; left: 0; top: 0; width: 380px; height: 6px; background: var(--amber); transform-origin: 0 0; }
+  .step { position: absolute; left: 24px; font-size: 24px; white-space: nowrap; }
+  .step b { display: inline-block; width: 36px; height: 36px; margin-right: 12px; border-radius: 50%; background: #2A2A31; color: var(--coral); text-align: center; line-height: 36px; font-size: 24px; }
+
+  /* P4 FERRAMENTAS */
+  .frow { position: absolute; left: 24px; width: 830px; height: 58px; border-top: 2px solid var(--line); }
+  .frow .c1 { position: absolute; left: 0; top: 12px; font-size: 26px; font-weight: 700; white-space: nowrap; }
+  .frow .c2 { position: absolute; left: 200px; top: 12px; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .frow .c3 { position: absolute; left: 420px; top: 8px; height: 42px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); font-size: 24px; font-weight: 700; line-height: 38px; color: var(--muted); white-space: nowrap; }
+  .frow .c3h { position: absolute; left: 420px; top: 8px; height: 42px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--coral); background: var(--coral); font-size: 24px; font-weight: 700; line-height: 38px; color: var(--wl-ink-on-amber); white-space: nowrap; opacity: 0; }
+  .tool { position: absolute; left: 24px; font-size: 24px; white-space: nowrap; opacity: 0; }
+  .tool i { display: inline-block; width: 44px; height: 24px; margin-right: 14px; border-radius: 12px; background: var(--ok); vertical-align: -3px; position: relative; }
+  .tool i::after { content: ""; position: absolute; right: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; }
+  .chk { position: absolute; left: 24px; font-size: 24px; white-space: nowrap; }
+  .chk::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 14px; border-radius: 50%; background: var(--ok); vertical-align: 3px; }
+
+  /* P5 CANVAS DE COMPILACAO */
+  #canvas { position: absolute; left: 0; top: 100px; width: 1410px; height: 290px; border: 2px solid var(--line); border-radius: 16px; background-color: #0F0F13; background-image: radial-gradient(#34343C 2px, transparent 2.2px); background-size: 22px 22px; overflow: hidden; }
+  .nd { position: absolute; width: 300px; height: 110px; border: 2px solid #4A4A55; border-radius: 14px; background: var(--panel); }
+  .nd b { position: absolute; left: 22px; top: 16px; font-size: 26px; font-weight: 800; white-space: nowrap; }
+  .nd em { position: absolute; left: 22px; top: 58px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .nd .hl, .nd .hr { position: absolute; top: 46px; width: 16px; height: 16px; border-radius: 50%; background: var(--win); border: 3px solid #8A8A96; }
+  .nd .hl { left: -10px; } .nd .hr { right: -10px; }
+  .nd .ring { position: absolute; left: -4px; top: -4px; width: 304px; height: 114px; border: 3px solid var(--ok); border-radius: 15px; opacity: 0; }
+  .badge { position: absolute; height: 36px; padding: 0 14px; border-radius: 999px; background: #123322; border: 2px solid var(--ok); color: var(--ok); font-size: 24px; font-weight: 700; line-height: 32px; white-space: nowrap; opacity: 0; }
+  #ctrls { position: absolute; left: 14px; bottom: 14px; width: 44px; border: 2px solid var(--line); border-radius: 10px; background: var(--panel); }
+  #ctrls div { height: 36px; border-bottom: 2px solid var(--line); color: var(--muted); font-size: 24px; text-align: center; line-height: 34px; }
+  #ctrls div:last-child { border-bottom: 0; }
+  #tok { position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 6px rgba(var(--wl-amber-rgb),0.25); opacity: 0; }
+  .ver { position: absolute; left: 24px; width: 830px; height: 50px; }
+  .ver b { position: absolute; left: 0; top: 8px; font-size: 26px; font-weight: 800; white-space: nowrap; }
+  .ver em { position: absolute; left: 150px; top: 10px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .ver .pill { top: 5px; }
+
+  /* P6 SIMULADOR */
+  .bub { position: absolute; padding: 12px 20px; border-radius: 18px; font-size: 26px; line-height: 36px; opacity: 0; }
+  .bub.user { right: 24px; background: var(--coral); color: var(--wl-ink-on-amber); white-space: nowrap; }
+  .bub.bot { left: 24px; width: 640px; background: var(--panel2); border: 2px solid var(--line); }
+  .bub.bot small { display: block; margin-top: 8px; font-size: 24px; color: var(--ok); font-weight: 600; }
+  .gate { position: absolute; left: 24px; width: 510px; height: 42px; }
+  .gate .dot, .gate .dotg { position: absolute; left: 0; top: 11px; width: 20px; height: 20px; border-radius: 50%; background: #3A3A42; }
+  .gate .dotg { background: var(--ok); opacity: 0; }
+  .gate span { position: absolute; left: 34px; top: 4px; font-size: 24px; white-space: nowrap; }
+  .gate .okp { position: absolute; right: 0; top: 2px; height: 36px; padding: 0 12px; border-radius: 999px; border: 2px solid var(--ok); color: var(--ok); font-size: 24px; font-weight: 700; line-height: 32px; opacity: 0; }
+  .glbl { position: absolute; left: 24px; font-size: 24px; font-weight: 700; color: var(--coral); white-space: nowrap; }
+
+  /* P7 PROMOCAO */
+  .vrow { position: absolute; left: 24px; width: 1360px; height: 92px; border-top: 2px solid var(--line); }
+  .vrow b { position: absolute; left: 0; top: 14px; font-size: 28px; font-weight: 800; white-space: nowrap; }
+  .vrow em { position: absolute; left: 0; top: 54px; font-style: normal; font-size: 24px; color: var(--muted); white-space: nowrap; }
+  .vrow .pill { top: 26px; }
+  #promBtn { position: absolute; left: 1150px; top: 22px; width: 180px; height: 50px; border-radius: 12px; background: var(--coral); color: var(--wl-ink-on-amber); font-size: 24px; font-weight: 800; text-align: center; line-height: 50px; }
+  .after { position: absolute; width: 640px; white-space: nowrap; font-size: 24px; line-height: 32px; }
+  .after::before { content: ""; position: absolute; left: 0; top: 10px; width: 12px; height: 12px; border-radius: 50%; background: var(--ok); }
+  .after span { display: block; padding-left: 26px; }
+
+  /* TRILHO DE BATIDAS */
+  #rail { position: absolute; left: 60px; top: 950px; width: 1800px; height: 64px; }
+  #railLine { position: absolute; left: 20px; right: 20px; top: 31px; height: 2px; background: var(--line); }
+  .rp { position: absolute; top: 0; width: 244px; height: 64px; border: 2px solid var(--line); border-radius: 999px; background: var(--bg); font-size: 24px; font-weight: 700; color: var(--muted); text-align: center; line-height: 60px; white-space: nowrap; }
+  .rp .on { position: absolute; left: -2px; top: -2px; width: 244px; height: 64px; border-radius: 999px; background: var(--coral); color: var(--wl-ink-on-amber); line-height: 64px; opacity: 0; }
+
+  /* FECHO */
+  #close { position: absolute; left: 60px; top: 130px; width: 1800px; height: 780px; opacity: 0; }
+  #closeT { position: absolute; left: 0; top: 150px; width: 1800px; text-align: center; font-size: 72px; font-weight: 800; letter-spacing: -1px; white-space: nowrap; }
+  #closeT span { color: var(--coral); }
+  #closeChips { position: absolute; left: 90px; top: 300px; width: 1620px; display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 18px; }
+  #closeChips div { height: 56px; padding: 0 24px; border: 2px solid var(--line); border-radius: 999px; background: var(--panel); font-size: 26px; font-weight: 600; line-height: 52px; white-space: nowrap; }
+  #closeL { position: absolute; left: 0; top: 560px; width: 1800px; text-align: center; font-size: 32px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+  #closeL b { color: var(--text); }
+
+  #cursor { position: absolute; left: 0; top: 0; width: 40px; height: 48px; opacity: 0; z-index: 20; }
+  #pad { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; }
+/* ABERTURA WELABS-INTRO (copiada de pieces/welabs-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+.intro-lbl .intro-soon{font-size:24px;font-weight:500;color:#A9A9B3;margin-left:14px;letter-spacing:.02em}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="crm-agent-studio-intro" data-width="1920" data-height="1080" data-start="0" data-duration="45">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:176px"><img class="intro-mk" src="./assets/brand/marks/flow-mark-dark.svg" alt=""><span data-wl-name="flow">Flow</span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:300px"><img class="intro-mk" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span data-wl-name="hub">Hub de domínio</span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:424px"><img class="intro-mk" src="./assets/brand/marks/lore-mark-dark.svg" alt=""><span data-wl-name="kb">KB</span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:614px"><img class="intro-mk" src="./assets/brand/marks/kin-mark-dark.svg" alt=""><span data-wl-name="crm">CRM</span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:738px"><img class="intro-mk" src="./assets/brand/marks/vox-mark-dark.svg" alt=""><span data-wl-name="channels">Channels</span></div>
+  <div class="intro-lbl intro-in" id="intro-in5" style="top:862px">Monitoramento<span class="intro-soon">previsto</span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/crm-agent-studio, sem mudança), transparente durante a abertura -->
+  <div id="title">Estúdio de agentes <span>do <span data-wl-name="crm">CRM</span></span></div>
+  <div id="demo">DEMO · reconstrução ilustrativa</div>
+  <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+
+  <div id="win">
+    <div id="topbar">
+      <div id="crumb">‹ Agentes  /</div>
+      <div id="crumbName"><span id="cn0">Novo agente</span><span id="cn1" style="opacity:0">Assistente DEMO</span></div>
+      <div id="verChip"><span id="vc0">Versão ativa: 2</span><span id="vc1" style="opacity:0">Versão ativa: 3</span></div>
+      <div class="tbtn" id="bCompile">Compilar</div>
+      <div class="tbtn" id="bSim">Simular</div>
+      <div class="tbtn" id="bProm">Promover</div>
+    </div>
+
+    <div id="side">
+      <div id="avatar">A</div>
+      <div id="sideName"><span id="sn0">Novo agente</span><span id="sn1" style="opacity:0">Assistente DEMO</span></div>
+      <div id="sideSub"><span id="ss1" style="opacity:0">Finalidade: suporte</span></div>
+      <div id="tabs">
+        <div id="tabHi"></div>
+        <div class="tab" style="top:0">Geral</div>
+        <div class="tab" style="top:54px">Personalidade</div>
+        <div class="tab" style="top:108px">Modelo</div>
+        <div class="tab" style="top:162px">Memória</div>
+        <div class="tab" style="top:216px">Conhecimento</div>
+        <div class="tab" style="top:270px">Ferramentas</div>
+        <div class="tab" style="top:324px">Discord<span class="plan">por plano</span></div>
+      </div>
+      <div id="sideFoot"><div>Modo do canal</div><b>Agente + humano</b></div>
+    </div>
+
+    <div id="content">
+      <!-- P1 -->
+      <div class="pnl" id="p1">
+        <div class="h2">Novo agente a partir de modelos prontos</div>
+        <div class="sub">Combine o núcleo com uma ou mais áreas · catálogo: núcleo, generalista e 15 áreas do direito</div>
+        <div class="tpl" id="tp0" style="left:0;top:100px"><b>Núcleo</b><em>base de todo agente</em><div class="ck"></div><div class="ckf" style="opacity:1"></div><div class="sel" style="opacity:1"></div></div>
+        <div class="tpl" id="tp1" style="left:480px;top:100px"><b>Generalista</b><em>atendimento geral</em><div class="ck"></div><div class="ckf"></div><div class="sel"></div></div>
+        <div class="tpl" id="tp2" style="left:960px;top:100px"><b>Direito do consumidor</b><em>área</em><div class="ck"></div><div class="ckf"></div><div class="sel"></div></div>
+        <div class="tpl" id="tp3" style="left:0;top:224px"><b>Direito trabalhista</b><em>área</em><div class="ck"></div></div>
+        <div class="tpl" id="tp4" style="left:480px;top:224px"><b>Direito imobiliário</b><em>área</em><div class="ck"></div></div>
+        <div class="tpl" id="tp5" style="left:960px;top:224px"><b>+ 12 áreas do direito</b><em>penal, tributário, família…</em></div>
+        <div class="pill cor" id="combo" style="left:0;top:350px;height:52px;line-height:48px;font-size:26px;opacity:0">Combinação: Núcleo + Generalista + Direito do consumidor</div>
+        <div id="form1" style="opacity:0">
+          <div class="lbl" style="left:0;top:430px">Finalidade</div>
+          <div class="seg" style="left:0;top:464px"><div class="on">Suporte</div><div>Vendas</div><div>Pessoal</div></div>
+          <div class="lbl" style="left:0;top:542px">Nome e foto</div>
+          <div class="box" style="left:0;top:576px;width:690px"><span style="display:inline-block;width:36px;height:36px;margin-right:14px;border-radius:50%;background:var(--coral);vertical-align:-6px"></span>Assistente DEMO</div>
+          <div class="lbl" style="left:720px;top:430px">Boas-vindas</div>
+          <div class="box" style="left:720px;top:464px;width:690px">Olá! Sou o assistente da Empresa DEMO.</div>
+          <div class="lbl" style="left:720px;top:542px">Mensagem quando não souber</div>
+          <div class="box" style="left:720px;top:576px;width:690px">Não sei responder; chamo alguém da equipe.</div>
+        </div>
+      </div>
+
+      <!-- P2a -->
+      <div class="pnl" id="p2a">
+        <div class="h2">Personalidade</div>
+        <div class="sub">Tom, instruções da equipe e como citar a fonte</div>
+        <div class="lbl" style="left:0;top:100px">Tom de voz</div>
+        <div class="box" style="left:0;top:134px;width:680px">Cordial e objetivo · DEMO</div>
+        <div class="lbl" style="left:0;top:216px">Instruções do agente</div>
+        <div class="box" style="left:0;top:250px;width:680px;height:170px"></div>
+        <div class="t24" style="position:absolute;left:20px;top:272px;font-size:26px">Responda só sobre pedidos e entregas.</div>
+        <div class="t24" style="position:absolute;left:20px;top:316px;font-size:26px">Cite a fonte quando usar a base.</div>
+        <div class="t24" style="position:absolute;left:20px;top:360px;font-size:26px">Fora do escopo, chame a equipe.</div>
+        <div class="lbl" style="left:0;top:446px">Estilo de citação da fonte</div>
+        <div class="seg" style="left:0;top:480px"><div class="on">Natural</div><div>Sempre</div><div>Nunca</div></div>
+        <div class="card" style="left:730px;top:100px;width:680px;height:220px">
+          <div class="lbl" style="left:24px;top:22px">Combinação de modelos</div>
+          <div class="t26" style="position:absolute;left:24px;top:64px">Núcleo</div>
+          <div class="t26" style="position:absolute;left:24px;top:106px">+ Generalista</div>
+          <div class="t26" style="position:absolute;left:24px;top:148px">+ Direito do consumidor</div>
+        </div>
+        <div class="card" style="left:730px;top:340px;width:680px;height:200px">
+          <div class="lbl" style="left:24px;top:22px">Depois de salvar</div>
+          <div class="t24" style="position:absolute;left:24px;top:66px">O texto da equipe é compilado</div>
+          <div class="t24" style="position:absolute;left:24px;top:104px">e validado antes de virar versão.</div>
+          <div class="pill cor" style="left:24px;top:142px">Etapa 5 · Compilação</div>
+        </div>
+      </div>
+
+      <!-- P2b -->
+      <div class="pnl" id="p2b">
+        <div class="h2">Modelo e memória</div>
+        <div class="sub">IA da plataforma ou chave própria · memória do mesmo contato</div>
+        <div class="card" style="left:0;top:100px;width:690px;height:150px;border-color:var(--coral);border-width:3px">
+          <div class="t26" style="position:absolute;left:24px;top:22px">IA da plataforma</div>
+          <div class="pill ok" style="right:20px;top:20px">selecionada</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:70px">modelo padrão definido pela plataforma</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:104px">credencial guardada pela plataforma</div>
+        </div>
+        <div class="card" style="left:720px;top:100px;width:690px;height:150px">
+          <div class="t26" style="position:absolute;left:24px;top:22px">Chave própria</div>
+          <div class="pill" style="right:20px;top:20px">conforme plano</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:70px">credencial da empresa</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:104px">guardada fora do prompt</div>
+        </div>
+        <div class="lbl" style="left:0;top:276px">6 provedores de IA disponíveis</div>
+        <div class="pill" style="left:420px;top:270px">troca de modelo conforme plano</div>
+        <div class="box" style="left:0;top:322px;width:205px;text-align:center">Provedor 1</div>
+        <div class="box" style="left:241px;top:322px;width:205px;text-align:center">Provedor 2</div>
+        <div class="box" style="left:482px;top:322px;width:205px;text-align:center">Provedor 3</div>
+        <div class="box" style="left:723px;top:322px;width:205px;text-align:center">Provedor 4</div>
+        <div class="box" style="left:964px;top:322px;width:205px;text-align:center">Provedor 5</div>
+        <div class="box" style="left:1205px;top:322px;width:205px;text-align:center">Provedor 6</div>
+        <div class="abs" style="left:0;top:416px;width:80px;height:44px;border-radius:22px;background:#3A3A42"></div>
+        <div class="abs" id="togOn" style="left:0;top:416px;width:80px;height:44px;border-radius:22px;background:var(--ok);opacity:0"></div>
+        <div class="abs" id="togKnob" style="left:4px;top:420px;width:36px;height:36px;border-radius:50%;background:#fff"></div>
+        <div class="t26" style="position:absolute;left:104px;top:420px">Memória entre conversas do mesmo contato</div>
+        <div class="pill" id="memOff" style="left:700px;top:418px">desligada · padrão</div>
+        <div class="pill ok" id="memOn" style="left:700px;top:418px;opacity:0">ligada</div>
+        <div id="memBoxes" style="opacity:0.35">
+          <div class="card" style="left:0;top:486px;width:337px;height:110px"><div class="lbl" style="left:20px;top:16px">Janela em dias</div><div class="t26" style="position:absolute;left:20px;top:58px">DEMO</div></div>
+          <div class="card" style="left:357px;top:486px;width:337px;height:110px"><div class="lbl" style="left:20px;top:16px">Sessões lembradas</div><div class="t26" style="position:absolute;left:20px;top:58px">DEMO</div></div>
+          <div class="card" style="left:714px;top:486px;width:337px;height:110px"><div class="lbl" style="left:20px;top:16px">Mensagens</div><div class="t26" style="position:absolute;left:20px;top:58px">DEMO</div></div>
+          <div class="card" style="left:1071px;top:486px;width:339px;height:110px"><div class="lbl" style="left:20px;top:16px">Orçamento de tokens</div><div class="t26" style="position:absolute;left:20px;top:58px">DEMO</div></div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="pnl" id="p3">
+        <div class="h2">Bases de conhecimento</div>
+        <div class="sub">Base DEMO ligada ao agente · um agente pode usar várias bases</div>
+        <div class="src" id="s0" style="top:100px"><div class="ty">Arquivo</div><div class="nm">manual-entregas-demo.pdf</div><div class="bar"><i></i></div><div class="st"><div class="pill">Pendente</div><div class="pill amb">Indexando</div><div class="pill ok">Pronta</div></div></div>
+        <div class="src" id="s1" style="top:200px"><div class="ty">URL</div><div class="nm">demo.exemplo/ajuda</div><div class="bar"><i></i></div><div class="st"><div class="pill">Pendente</div><div class="pill amb">Indexando</div><div class="pill ok">Pronta</div></div></div>
+        <div class="src" id="s2" style="top:300px"><div class="ty">API indexada</div><div class="nm">catálogo DEMO</div><div class="bar"><i></i></div><div class="st"><div class="pill">Pendente</div><div class="pill amb">Indexando</div><div class="pill ok">Pronta</div></div></div>
+        <div class="src" id="s3" style="top:400px"><div class="ty">API em tempo real</div><div class="nm">status do pedido DEMO</div><div class="bar"><i></i></div><div class="st"><div class="pill">Pendente</div><div class="pill amb">Indexando</div><div class="pill ok">Pronta</div></div></div>
+        <div class="pill" style="left:0;top:510px">+ Adicionar fonte</div>
+        <div class="pill" style="left:250px;top:510px">Reindexar</div>
+        <div class="card" style="left:920px;top:100px;width:490px;height:330px">
+          <div class="t26" style="position:absolute;left:24px;top:20px">Como a resposta acha a fonte</div>
+          <div class="step" style="top:72px"><b>1</b>Reescreve a pergunta</div>
+          <div class="step" style="top:122px"><b>2</b>Busca nas bases</div>
+          <div class="step" style="top:172px"><b>3</b>Reclassifica os trechos</div>
+          <div class="step" style="top:222px"><b>4</b>Filtra o que não é relevante</div>
+          <div class="step" style="top:272px"><b>5</b>Resume e cita a fonte</div>
+        </div>
+        <div class="card" style="left:920px;top:450px;width:490px;height:130px">
+          <div class="t26" style="position:absolute;left:24px;top:20px"><span data-wl-name="kb">KB</span> corporativo via MCP</div>
+          <div class="pill wrn" style="right:20px;top:18px">parcial</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:72px">busca autorizada por organização</div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="pnl" id="p4">
+        <div class="h2">Ferramentas do agente</div>
+        <div class="sub">HTTP com campos tipados e servidores MCP · o agente só usa o que foi concedido</div>
+        <div class="card" style="left:0;top:100px;width:880px;height:540px">
+          <div class="t26" style="position:absolute;left:24px;top:20px">Consultar pedido · HTTP</div>
+          <div class="pill ok" style="left:24px;top:76px;height:54px;line-height:50px;width:96px;text-align:center">GET</div>
+          <div class="box" style="left:134px;top:74px;width:720px">api.demo.exemplo/pedidos/{pedido}</div>
+          <div class="lbl" style="left:24px;top:162px">Autenticação</div>
+          <div class="seg" style="left:200px;top:148px"><div>Nenhuma</div><div class="on">Bearer</div><div>Chave de API</div><div>Básica</div></div>
+          <div class="lbl" style="left:24px;top:232px">Campo</div><div class="lbl" style="left:224px;top:232px">Tipo</div><div class="lbl" style="left:444px;top:232px">Origem do valor</div>
+          <div class="frow" style="top:272px"><div class="c1">pedido</div><div class="c2">texto</div><div class="c3" id="q0">Preenchido pela IA</div><div class="c3h" id="o0">Preenchido pela IA</div></div>
+          <div class="frow" style="top:338px"><div class="c1">loja</div><div class="c2">texto</div><div class="c3" id="q1">Fixo · DEMO</div><div class="c3h" id="o1">Fixo · DEMO</div></div>
+          <div class="frow" style="top:404px"><div class="c1">telefone</div><div class="c2">telefone</div><div class="c3" id="q2">Contexto da conversa</div><div class="c3h" id="o2">Contexto da conversa</div></div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:484px">Credencial guardada fora do prompt · o modelo não a vê</div>
+        </div>
+        <div class="card" style="left:920px;top:100px;width:490px;height:300px">
+          <div class="t26" style="position:absolute;left:24px;top:20px">Servidor MCP · Catálogo DEMO</div>
+          <div class="abs" id="testBtn" style="left:24px;top:70px;width:220px;height:48px;border:2px solid var(--coral);border-radius:12px;color:var(--coral);font-size:24px;font-weight:700;text-align:center;line-height:44px">Testar conexão</div>
+          <div class="pill" id="mcpOff" style="left:262px;top:74px">Não testado</div>
+          <div class="pill ok" id="mcpOn" style="left:262px;top:74px;opacity:0">Conectado</div>
+          <div class="tool" style="top:144px"><i></i>Consultar estoque</div>
+          <div class="tool" style="top:192px"><i></i>Abrir chamado</div>
+          <div class="tool" style="top:240px"><i></i>Agendar retirada</div>
+        </div>
+        <div class="card" style="left:920px;top:420px;width:490px;height:220px">
+          <div class="t26" style="position:absolute;left:24px;top:18px">Segurança das ferramentas</div>
+          <div class="chk" style="top:64px">Só pede o que foi concedido</div>
+          <div class="chk" style="top:100px">Valida os argumentos</div>
+          <div class="chk" style="top:136px">Limite de uso · DEMO</div>
+          <div class="chk" style="top:172px">Domínios HTTP permitidos</div>
+        </div>
+      </div>
+
+      <!-- P5 -->
+      <div class="pnl" id="p5">
+        <div class="h2">Compilação do agente</div>
+        <div class="sub">O texto da equipe vira um artefato validado e versionado</div>
+        <div id="canvas">
+          <svg class="abs" style="left:0;top:0" width="1410" height="290" viewBox="0 0 1410 290">
+            <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8A8A96"/></marker></defs>
+            <path id="e1" d="M322 101 C 345 101, 341 191, 362 191" fill="none" stroke="#8A8A96" stroke-width="3" marker-end="url(#ar)"/>
+            <path id="e2" d="M680 191 C 703 191, 699 101, 720 101" fill="none" stroke="#8A8A96" stroke-width="3" marker-end="url(#ar)"/>
+            <path id="e3" d="M1038 101 C 1061 101, 1057 191, 1078 191" fill="none" stroke="#8A8A96" stroke-width="3" marker-end="url(#ar)"/>
+          </svg>
+          <div class="nd" id="n1" style="left:14px;top:46px"><b>Moderação</b><em>do texto da equipe</em><div class="hr"></div><div class="ring"></div></div>
+          <div class="nd" id="n2" style="left:372px;top:136px"><b>Geração</b><em>do artefato</em><div class="hl"></div><div class="hr"></div><div class="ring"></div></div>
+          <div class="nd" id="n3" style="left:730px;top:46px"><b>Validação</b><em>determinística</em><div class="hl"></div><div class="hr"></div><div class="ring"></div></div>
+          <div class="nd" id="n4" style="left:1088px;top:136px"><b>Juiz de qualidade</b><em>por IA</em><div class="hl"></div><div class="ring"></div></div>
+          <div class="badge" id="b1" style="left:214px;top:6px">ok</div>
+          <div class="badge" id="b2" style="left:572px;top:96px">ok</div>
+          <div class="badge" id="b3" style="left:930px;top:6px">ok</div>
+          <div class="badge" id="b4" style="left:1238px;top:96px">aprovado</div>
+          <div id="ctrls"><div>+</div><div>−</div><div>⤢</div></div>
+          <div id="tok"></div>
+        </div>
+        <div class="card" style="left:0;top:410px;width:880px;height:240px">
+          <div class="t26" style="position:absolute;left:24px;top:18px">Versões do agente</div>
+          <div class="ver" id="v3row" style="top:66px;opacity:0"><b>Versão 3</b><em>compilada agora · juiz aprovou</em><div class="pill amb" style="left:560px">Aguardando promoção</div></div>
+          <div class="ver" style="top:122px"><b>Versão 2</b><em>em uso</em><div class="pill ok" style="left:560px">Ativa</div></div>
+          <div class="ver" style="top:178px"><b>Versão 1</b><em>histórico</em><div class="pill" style="left:560px">Anterior</div></div>
+        </div>
+        <div class="card" style="left:920px;top:410px;width:490px;height:240px">
+          <div class="t26" style="position:absolute;left:24px;top:18px">Artefato compilado</div>
+          <div class="pill" style="left:24px;top:66px">ver detalhes conforme plano</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:128px">Histórico de compilações</div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:164px">por agente</div>
+        </div>
+      </div>
+
+      <!-- P6 -->
+      <div class="pnl" id="p6">
+        <div class="h2">Simulador</div>
+        <div class="sub">Conversa de teste com a versão 3, antes de ligar</div>
+        <div class="card" style="left:0;top:100px;width:820px;height:550px">
+          <div class="bub user" id="mU" style="top:24px">Meu pedido DEMO-0042 já saiu?</div>
+          <div class="pill cor" id="ch1" style="left:24px;top:110px;opacity:0">Base DEMO · manual de entregas</div>
+          <div class="pill cor" id="ch2" style="left:24px;top:162px;opacity:0">Ferramenta · Consultar pedido</div>
+          <div class="bub bot" id="mB" style="top:226px">Seu pedido DEMO-0042 saiu para entrega.<small>Fonte: manual-entregas-demo.pdf</small></div>
+          <div class="abs" style="left:24px;top:420px;width:772px;height:2px;background:var(--line)"></div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:442px">Fora do escopo ou sem resposta:</div>
+          <div class="t24" style="position:absolute;left:24px;top:480px">escala para a equipe, com nota interna e atribuição.</div>
+        </div>
+        <div class="card" style="left:850px;top:100px;width:560px;height:550px">
+          <div class="t26" style="position:absolute;left:24px;top:18px">Portões da resposta</div>
+          <div class="glbl" style="top:66px">Antes da resposta</div>
+          <div class="gate" id="g0" style="top:104px"><div class="dot"></div><div class="dotg"></div><span>Regex de segurança</span><div class="okp">ok</div></div>
+          <div class="gate" id="g1" style="top:150px"><div class="dot"></div><div class="dotg"></div><span>Moderação</span><div class="okp">ok</div></div>
+          <div class="gate" id="g2" style="top:196px"><div class="dot"></div><div class="dotg"></div><span>Política de escopo</span><div class="okp">ok</div></div>
+          <div class="glbl" style="top:256px">Depois da resposta</div>
+          <div class="gate" id="g3" style="top:294px"><div class="dot"></div><div class="dotg"></div><span>Sem vazar instrução interna</span><div class="okp">ok</div></div>
+          <div class="gate" id="g4" style="top:340px"><div class="dot"></div><div class="dotg"></div><span>Resposta não vazia</span><div class="okp">ok</div></div>
+          <div class="gate" id="g5" style="top:386px"><div class="dot"></div><div class="dotg"></div><span>Aderência ao escopo</span><div class="okp">ok</div></div>
+          <div class="gate" id="g6" style="top:432px"><div class="dot"></div><div class="dotg"></div><span>Juiz de qualidade</span><div class="okp">ok</div></div>
+          <div class="t24 mut" style="position:absolute;left:24px;top:490px">Administrados no console da plataforma</div>
+        </div>
+      </div>
+
+      <!-- P7 -->
+      <div class="pnl" id="p7">
+        <div class="h2">Promover a versão</div>
+        <div class="sub">Quem liga a versão nova é a equipe, não a IA</div>
+        <div class="card" style="left:0;top:100px;width:1410px;height:330px">
+          <div class="t26" style="position:absolute;left:24px;top:20px">Versões do agente</div>
+          <div class="vrow" style="top:66px"><b>Versão 3</b><em>compilada · juiz aprovou · testada no simulador</em>
+            <div class="pill amb" id="v3w" style="left:700px">Aguardando promoção</div>
+            <div class="pill ok" id="v3a" style="left:700px;opacity:0">Ativa</div>
+            <div id="promBtn">Promover</div>
+          </div>
+          <div class="vrow" style="top:158px"><b>Versão 2</b><em>em uso até agora</em>
+            <div class="pill ok" id="v2a" style="left:700px">Ativa</div>
+            <div class="pill" id="v2p" style="left:700px;opacity:0">Anterior</div>
+          </div>
+          <div class="vrow" style="top:250px;height:70px"><b>Versão 1</b><div class="pill" style="left:700px;top:16px">Anterior</div></div>
+          <div class="t24" id="promBy" style="position:absolute;left:984px;top:96px;color:var(--ok);font-weight:700;opacity:0">promovida por Gestor DEMO</div>
+        </div>
+        <div class="card" style="left:0;top:450px;width:1410px;height:140px">
+          <div class="after" style="left:24px;top:24px"><span>Canal em agente + humano</span></div>
+          <div class="after" style="left:720px;top:24px"><span>Escala para a equipe com nota interna e atribuição</span></div>
+          <div class="after" style="left:24px;top:84px"><span>Prazo de primeira resposta humana · DEMO</span></div>
+          <div class="after" style="left:720px;top:84px"><span>Observabilidade por execução</span></div>
+          <div class="pill wrn" style="left:1110px;top:78px">parcial</div>
+        </div>
+        <div class="t24 mut" style="position:absolute;left:0;top:612px">A IA responde dentro do que foi concedido; ligar, promover e assumir a conversa é decisão da equipe.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="close">
+    <div id="closeT">Um agente que você <span>testa</span> antes de ligar</div>
+    <div id="closeChips">
+      <div>Modelos prontos combináveis</div><div>Personalidade, modelo e memória</div><div>Bases com fonte citada</div>
+      <div>Ferramentas tipadas e MCP</div><div>Compilação validada e versionada</div><div>Simulador com 7 portões</div><div>Promoção pela equipe</div>
+    </div>
+    <div id="closeL"><b><span data-wl-name="crm">CRM</span></b> · estúdio de agentes · a IA responde, a equipe decide</div>
+  </div>
+
+  <div id="rail">
+    <div id="railLine"></div>
+    <div class="rp" style="left:0"><span class="off" id="f0">1 Modelos</span><div class="on" id="r0">1 Modelos</div></div>
+    <div class="rp" style="left:259px"><span class="off" id="f1">2 Configuração</span><div class="on" id="r1">2 Configuração</div></div>
+    <div class="rp" style="left:518px"><span class="off" id="f2">3 Conhecimento</span><div class="on" id="r2">3 Conhecimento</div></div>
+    <div class="rp" style="left:777px"><span class="off" id="f3">4 Ferramentas</span><div class="on" id="r3">4 Ferramentas</div></div>
+    <div class="rp" style="left:1036px"><span class="off" id="f4">5 Compilação</span><div class="on" id="r4">5 Compilação</div></div>
+    <div class="rp" style="left:1295px"><span class="off" id="f5">6 Simulador</span><div class="on" id="r5">6 Simulador</div></div>
+    <div class="rp" style="left:1554px"><span class="off" id="f6">7 Promoção</span><div class="on" id="r6">7 Promoção</div></div>
+  </div>
+
+  <svg id="cursor" viewBox="0 0 40 48"><path d="M4 2 L4 38 L13 30 L20 45 L26 42 L19 28 L32 28 Z" fill="#fff" stroke="#0B0B0D" stroke-width="2.5" stroke-linejoin="round"/></svg>
+  <div id="pad"></div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/crm-agent-studio; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO (pausada, termina em 36 s)
+  var tl = gsap.timeline({ paused: true });
+  var cur = null;
+  // Panel switch: old panel fades out fully before the new one fades in (no text overlap)
+  function show(id, t) {
+    if (cur) tl.to("#" + cur, { opacity: 0, duration: 0.25, ease: "power1.in" }, t);
+    tl.fromTo("#" + id, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, cur ? t + 0.27 : t);
+    cur = id;
+  }
+  // Sequential swap of two stacked labels
+  function swap(a, b, t) {
+    tl.to(a, { opacity: 0, duration: 0.18 }, t);
+    tl.fromTo(b, { opacity: 0 }, { opacity: 1, duration: 0.25 }, t + 0.2);
+  }
+  var railOn = null;
+  // Lit pill replaces the muted label (label hidden so it never sits under the coral fill)
+  function rail(i, t) {
+    if (railOn !== null) { tl.to("#r" + railOn, { opacity: 0, duration: 0.18 }, t); tl.to("#f" + railOn, { opacity: 1, duration: 0.2 }, t + 0.2); }
+    tl.to("#f" + i, { opacity: 0, duration: 0.15 }, t);
+    tl.fromTo("#r" + i, { opacity: 0 }, { opacity: 1, duration: 0.25 }, t + 0.17);
+    railOn = i;
+  }
+  function tab(i, t) { tl.to("#tabHi", { y: i * 54, opacity: 1, duration: 0.4, ease: "power2.inOut" }, t); }
+  // GSAP cannot tween var(): lit buttons use the literal brand amber with brand ink text
+  var BTN_ON = { backgroundColor: WELABS_BRAND.color.amber, borderColor: WELABS_BRAND.color.amber, color: WELABS_BRAND.color.inkOnAmber, duration: 0.3 };
+  var BTN_OFF = { backgroundColor: "#17171B", borderColor: "#3A3A42", color: "#C9C9D1", duration: 0.3 };
+  function cursorTo(x, y, t, d) { tl.to("#cursor", { x: x, y: y, duration: d || 0.45, ease: "power2.inOut" }, t); }
+  function click(t) { tl.to("#cursor", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1, transformOrigin: "4px 2px" }, t); }
+
+  // Frame build
+  tl.fromTo("#title", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
+  tl.fromTo("#seal", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.1);
+  tl.fromTo("#demo", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.2);
+  tl.fromTo("#win", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.2);
+  tl.fromTo("#rail", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.4);
+  tl.set("#tabHi", { y: 0, opacity: 1 }, 0);
+
+  // Beat 1 (0.8-6.0): templates + general fields
+  rail(0, 0.8);
+  show("p1", 0.8);
+  tl.fromTo(".tpl", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, 0.95);
+  tl.set("#cursor", { x: 1500, y: 760, opacity: 0 }, 0);
+  tl.to("#cursor", { opacity: 1, duration: 0.2 }, 1.15);
+  cursorTo(1127, 384, 1.2, 0.38); click(1.6);
+  tl.to("#tp1 .sel, #tp1 .ckf", { opacity: 1, duration: 0.2 }, 1.64);
+  cursorTo(1607, 384, 1.72, 0.3); click(2.04);
+  tl.to("#tp2 .sel, #tp2 .ckf", { opacity: 1, duration: 0.2 }, 2.08);
+  tl.to("#cursor", { opacity: 0, duration: 0.2 }, 2.2);
+  tl.fromTo("#combo", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35 }, 2.12);
+  tl.fromTo("#form1", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45 }, 4.0);
+  swap("#cn0", "#cn1", 4.0); swap("#sn0", "#sn1", 4.0);
+  tl.fromTo("#ss1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 4.15);
+
+  // Beat 2 (6.0-10.9): personality, then model and memory
+  rail(1, 6.0);
+  show("p2a", 6.0); tab(1, 6.05);
+  show("p2b", 8.2); tab(2, 8.25);
+  tab(3, 8.95);
+  tl.to("#togKnob", { x: 40, duration: 0.3, ease: "power2.inOut" }, 8.95);
+  tl.to("#togOn", { opacity: 1, duration: 0.3 }, 8.95);
+  swap("#memOff", "#memOn", 8.95);
+  tl.to("#memBoxes", { opacity: 1, duration: 0.35 }, 9.05);
+
+  // Beat 3 (10.9-15.9): sources pending -> indexing -> ready
+  rail(2, 10.9);
+  show("p3", 10.9); tab(4, 10.95);
+  tl.fromTo(".src", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.35, stagger: 0.08 }, 11.2);
+  tl.set(".src .st .pill:nth-child(1)", { opacity: 1 }, 11.2);
+  tl.to(".src .st .pill:nth-child(1)", { opacity: 0, duration: 0.15 }, 11.9);
+  tl.to(".src .st .pill:nth-child(2)", { opacity: 1, duration: 0.2 }, 12.07);
+  tl.to(".src .bar", { opacity: 1, duration: 0.2 }, 12.07);
+  tl.fromTo(".src .bar i", { scaleX: 0.05 }, { scaleX: 1, duration: 1.5, ease: "none", stagger: 0.05 }, 12.07);
+  tl.to(".src .st .pill:nth-child(2), .src .bar", { opacity: 0, duration: 0.15 }, 13.8);
+  tl.to(".src .st .pill:nth-child(3)", { opacity: 1, duration: 0.2, stagger: 0.05 }, 13.97);
+
+  // Beat 4 (15.9-20.9): typed HTTP tool + MCP server
+  rail(3, 15.9);
+  show("p4", 15.9); tab(5, 15.95);
+  tl.to("#q0", { opacity: 0, duration: 0.12 }, 16.7); tl.to("#o0", { opacity: 1, duration: 0.2 }, 16.83);
+  tl.to("#q1", { opacity: 0, duration: 0.12 }, 16.85); tl.to("#o1", { opacity: 1, duration: 0.2 }, 16.98);
+  tl.to("#q2", { opacity: 0, duration: 0.12 }, 17); tl.to("#o2", { opacity: 1, duration: 0.2 }, 17.13);
+  tl.set("#cursor", { x: 1560, y: 760 }, 18.1);
+  tl.to("#cursor", { opacity: 1, duration: 0.2 }, 18.2);
+  cursorTo(1478, 428, 18.25, 0.4); click(18.68);
+  tl.to("#testBtn", { backgroundColor: WELABS_BRAND.color.amber, color: WELABS_BRAND.color.inkOnAmber, duration: 0.2 }, 18.72);
+  swap("#mcpOff", "#mcpOn", 18.76);
+  tl.to("#p4 .tool", { opacity: 1, duration: 0.25, stagger: 0.1 }, 18.95);
+  tl.to("#cursor", { opacity: 0, duration: 0.2 }, 19);
+
+  // Beat 5 (20.9-25.1): compilation pipeline on canvas
+  rail(4, 20.9);
+  show("p5", 20.9); tl.to("#tabHi", { opacity: 0, duration: 0.3 }, 20.9);
+  tl.to("#bCompile", BTN_ON, 20.9);
+  // Token rides only on the edges (handle to handle), never across node text
+  var hops = [[[314, 101], [372, 191]], [[672, 191], [730, 101]], [[1030, 101], [1088, 191]]];
+  tl.set("#tok", { x: 303, y: 90, opacity: 0 }, 20.9);
+  tl.to("#n1 .ring", { opacity: 1, duration: 0.2 }, 21.7);
+  tl.fromTo("#b1", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.25 }, 21.75);
+  hops.forEach(function (h, k) {
+    var ts = 21.8 + k * 0.4;
+    tl.set("#tok", { x: h[0][0] - 11, y: h[0][1] - 11, opacity: 1 }, ts);
+    tl.to("#tok", { x: h[1][0] - 11, y: h[1][1] - 11, duration: 0.3, ease: "power1.inOut" }, ts);
+    tl.to("#e" + (k + 1), { stroke: "#3DDC84", duration: 0.2 }, ts);
+    tl.to("#n" + (k + 2) + " .ring", { opacity: 1, duration: 0.2 }, ts + 0.3);
+    tl.fromTo("#b" + (k + 2), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.25 }, ts + 0.35);
+    tl.to("#tok", { opacity: 0, duration: 0.08 }, ts + 0.32);
+  });
+  tl.fromTo("#v3row", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.35 }, 23.2);
+
+  // Beat 6 (25.1-30.65): simulator with response gates
+  rail(5, 25.1);
+  show("p6", 25.1);
+  tl.to("#bCompile", BTN_OFF, 25.1); tl.to("#bSim", BTN_ON, 25.1);
+  tl.fromTo("#mU", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 }, 25.9);
+  tl.to("#g0 .dotg, #g1 .dotg, #g2 .dotg, #g0 .okp, #g1 .okp, #g2 .okp", { opacity: 1, duration: 0.2, stagger: 0.05 }, 26.2);
+  tl.fromTo("#ch1, #ch2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.25, stagger: 0.12 }, 28.05);
+  tl.fromTo("#mB", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 }, 28.4);
+  tl.to("#g3 .dotg, #g4 .dotg, #g5 .dotg, #g6 .dotg, #g3 .okp, #g4 .okp, #g5 .okp, #g6 .okp", { opacity: 1, duration: 0.2, stagger: 0.04 }, 28.75);
+
+  // Beat 7 (30.65-33.5): the team promotes version 3
+  rail(6, 30.65);
+  show("p7", 30.65);
+  tl.to("#bSim", BTN_OFF, 30.65); tl.to("#bProm", BTN_ON, 30.65);
+  tl.set("#cursor", { x: 1760, y: 720 }, 30.65);
+  tl.to("#cursor", { opacity: 1, duration: 0.2 }, 31);
+  cursorTo(1688, 447, 31.05, 0.38); click(31.45);
+  tl.to("#promBtn", { opacity: 0, duration: 0.2 }, 31.53);
+  swap("#v3w", "#v3a", 31.53); swap("#v2a", "#v2p", 31.53);
+  swap("#vc0", "#vc1", 31.53);
+  tl.fromTo("#promBy", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 31.75);
+  tl.to("#cursor", { opacity: 0, duration: 0.2 }, 31.77);
+
+  // Closing (33.5-36): statement, rail fully lit
+  tl.to("#win", { opacity: 0, duration: 0.33 }, 33.5);
+  tl.to("#f0, #f1, #f2, #f3, #f4, #f5", { opacity: 0, duration: 0.15 }, 33.55);
+  tl.to("#r0, #r1, #r2, #r3, #r4, #r5", { opacity: 1, duration: 0.25 }, 33.72);
+  tl.fromTo("#close", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 33.86);
+  tl.fromTo("#pad", { opacity: 0 }, { opacity: 0.001, duration: 1 }, 35);
+
+  // The site Player does not pre-create the registry
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (36 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 36;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["crm-agent-studio-intro"] = master;
+})();
+</script>
+</body>
+</html>

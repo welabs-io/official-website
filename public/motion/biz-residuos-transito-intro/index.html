@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Sistema de Gerenciamento de Resíduos · Trânsito (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0a1a14;--panel:#10261d;--panel2:#173327;--line:#2c4d40;--acc:#34d399;--text:#F2FAF6;--muted:#a9c7ba;--paper:#EEF4EA;--ink:#17301f;--crate:#c08a4a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#12362a 0%,#0a1a14 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:34px;font-weight:800;letter-spacing:-.5px;line-height:72px;white-space:nowrap}
+#wm span,.cap span,#close span{color:var(--acc)}
+#kick{position:absolute;left:760px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--acc);font-size:30px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+
+/* PASSAPORTE DO RESÍDUO E CARIMBOS */
+#pass{position:absolute;left:540px;top:136px;width:840px;height:276px;border-radius:28px;background:var(--paper);color:var(--ink);opacity:0;box-shadow:0 22px 50px rgba(0,0,0,.45)}
+#pass .tt{position:absolute;left:34px;top:24px;font-size:34px;font-weight:800;line-height:44px}
+#pass .lab{position:absolute;left:430px;top:28px;height:38px;padding:0 14px;border:2px solid #9bb7a6;border-radius:10px;font-size:24px;font-weight:700;color:#4d6b5a;line-height:34px;opacity:0}
+#pass .qr{position:absolute;right:30px;top:20px;width:64px;height:64px;opacity:0}
+.slot{position:absolute;top:96px;width:150px;text-align:center}
+.slot .ring{width:112px;height:112px;margin:0 auto;border-radius:50%;border:4px dashed #b5cbbd;position:relative}
+.slot .nm{margin-top:8px;font-size:26px;font-weight:700;color:#4d6b5a}
+.stp{position:absolute;left:-4px;top:-4px;width:112px;height:112px;border-radius:50%;border:6px solid #0f9a6a;background:rgba(52,211,153,.18);display:grid;place-items:center;color:#0f7a54;opacity:0}
+#sl1{left:60px}#sl2{left:250px}#sl3{left:440px}#sl4{left:630px}
+
+/* CENA DA ESTRADA: GERADOR, CAMINHÃO, DESTINO */
+.site{position:absolute;top:462px;width:270px;height:270px;border-radius:34px;background:var(--panel);border:3px solid var(--line);opacity:0}
+.site svg{position:absolute;left:55px;top:30px}
+.site .nm{position:absolute;left:0;top:200px;width:270px;text-align:center;font-size:32px;font-weight:800}
+#gen{left:110px}#dst{left:1540px}
+#dq{position:absolute;left:1770px;top:440px;width:64px;height:64px;border-radius:50%;background:#173327;border:3px solid #3d6153;color:var(--muted);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0}
+#gok{position:absolute;left:340px;top:440px;width:60px;height:60px;border-radius:50%;background:var(--acc);display:grid;place-items:center;opacity:0}
+#roads{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#road{fill:none;stroke:#3d6153;stroke-width:8;stroke-dasharray:18 18;stroke-linecap:round;opacity:0}
+.tr{fill:none;stroke:var(--acc);stroke-width:10;stroke-linecap:round}
+.q{position:absolute;width:64px;height:64px;border-radius:50%;background:#173327;border:3px solid #3d6153;color:var(--muted);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0}
+#crate{position:absolute;left:300px;top:578px;width:96px;height:80px;opacity:0}
+#truck{position:absolute;left:400px;top:512px;width:260px;height:140px;opacity:0}
+#truck .lb{position:absolute;left:8px;top:40px;width:150px;text-align:center;font-size:24px;font-weight:800;color:#06281b}
+.box{position:absolute;top:764px;width:84px;height:72px;opacity:0}
+.tick{position:absolute;right:-16px;top:-16px;width:44px;height:44px;border-radius:50%;background:var(--acc);display:grid;place-items:center;opacity:0}
+#x1{left:1546px}#x2{left:1640px}#x3{left:1734px}
+
+/* CERTIFICADO E CONFERÊNCIA PÚBLICA */
+#cert{position:absolute;left:1615px;top:470px;width:120px;height:150px;opacity:0}
+#cert .lab{position:absolute;left:24px;top:46px;width:72px;text-align:center;font-size:24px;font-weight:800;color:#06281b}
+#qrc{position:absolute;left:700px;top:700px;width:520px;height:96px;border-radius:26px;background:var(--panel);border:3px solid var(--acc);display:flex;align-items:center;gap:22px;padding:0 26px;font-size:30px;font-weight:700;opacity:0;white-space:nowrap}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:270px;width:1920px;text-align:center;font-size:74px;font-weight:800;letter-spacing:-2px;line-height:92px}
+#close .bn{position:absolute;left:0;top:600px;width:1920px;text-align:center;font-size:64px;font-weight:800;letter-spacing:-1px;line-height:80px;white-space:nowrap}
+#close .rule{position:absolute;left:880px;top:706px;width:160px;height:6px;border-radius:3px;background:var(--acc)}
+#close .dm{position:absolute;left:0;top:800px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* ABERTURA RESIDUOS-INTRO (copiada de pieces/residuos-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-roman.var.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#0a1a14;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-ri-k{position:absolute;top:196px;width:600px;text-align:center;font-size:26px;font-weight:800;letter-spacing:.1em;line-height:34px;color:#34d399;opacity:0}
+.intro-ri-l{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2FAF6;opacity:0;white-space:nowrap}
+.intro-ri-s{width:260px;text-align:center;top:556px}
+#intro-ring-c{position:absolute;left:350px;top:502px;width:300px;text-align:center;font-size:26px;font-weight:600;line-height:36px;color:#a9c7ba;opacity:0}
+#intro-name{position:absolute;left:0;top:462px;width:1920px;text-align:center;font-size:72px;font-weight:800;letter-spacing:-.015em;line-height:88px;color:#FFFFFF;opacity:0;white-space:nowrap}
+#intro-name span{color:#34d399}
+#intro-slogan{position:absolute;left:0;top:604px;width:1920px;text-align:center;font-size:36px;font-weight:500;letter-spacing:-.005em;line-height:46px;color:#a9c7ba;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-residuos-transito-intro" data-width="1920" data-height="1080" data-start="0" data-duration="44">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div class="intro-ri-k" id="intro-k-rec" style="left:200px">RECICLAGEM</div>
+  <div class="intro-ri-k" id="intro-k-tr" style="left:1020px">TRÂNSITO</div>
+  <div class="intro-ri-l" id="intro-r0" style="left:350px;top:284px;width:300px;text-align:center">Ecoponto</div>
+  <div class="intro-ri-l" id="intro-r1" style="left:672px;top:612px">Pesagem</div>
+  <div class="intro-ri-l" id="intro-r2" style="right:1592px;top:612px;text-align:right">Recibo</div>
+  <div id="intro-ring-c">ciclo fechado</div>
+  <div class="intro-ri-l intro-ri-s" id="intro-s0" style="left:770px">MTR</div>
+  <div class="intro-ri-l intro-ri-s" id="intro-s1" style="left:1050px">Transporte</div>
+  <div class="intro-ri-l intro-ri-s" id="intro-s2" style="left:1330px">Destino</div>
+  <div class="intro-ri-l intro-ri-s" id="intro-s3" style="left:1610px">CDF</div>
+  <div id="intro-name">Sistema de Gerenciamento de <span>Resíduos</span></div>
+  <div id="intro-slogan">Da reciclagem ao destino final, um ciclo só.</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/biz-residuos-transito, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="wm">Sistema de Gerenciamento de <span>Resíduos</span></div>
+    <div id="kick">Some o resíduo sem rastro</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <div id="pass">
+    <div class="tt">Passaporte do resíduo</div>
+    <div class="lab" id="lab1">MTR</div>
+    <svg class="qr" id="qr1" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="#fff"/><path d="M8 8h18v18H8zM38 8h18v18H38zM8 38h18v18H8z" fill="none" stroke="#17301f" stroke-width="5"/><path d="M38 38h8v8h-8zM48 48h8v8h-8zM48 38h8v4h-8zM38 50h6v6h-6z" fill="#17301f"/></svg>
+    <div class="slot" id="sl1"><div class="ring"><div class="stp" id="st1"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M3 21V11l5 3v-3l5 3V7h4v14z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div></div><div class="nm">Saída</div></div>
+    <div class="slot" id="sl2"><div class="ring"><div class="stp" id="st2"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M2 7h11v9H2zM13 10h5l3 3v3h-8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="6" cy="18" r="2" fill="currentColor"/><circle cx="17" cy="18" r="2" fill="currentColor"/></svg></div></div><div class="nm">Viagem</div></div>
+    <div class="slot" id="sl3"><div class="ring"><div class="stp" id="st3"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.5" fill="currentColor"/></svg></div></div><div class="nm">Chegada</div></div>
+    <div class="slot" id="sl4"><div class="ring"><div class="stp" id="st4"><svg width="52" height="52" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8M9.5 9l2 2 3.5-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg></div></div><div class="nm">Certificado</div></div>
+  </div>
+
+  <svg id="roads" viewBox="0 0 1920 1080">
+    <path id="road" d="M390 652 L1530 652"/>
+    <path class="tr" id="t1" d="M390 652 L960 652"/>
+    <path class="tr" id="t2" d="M960 652 L1530 652"/>
+  </svg>
+  <div class="site" id="gen"><svg width="160" height="160" viewBox="0 0 24 24"><path d="M3 21V11l5 3v-3l5 3V6h5v15zM15 6V3h2v3" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round"/></svg><div class="nm">Gerador</div></div>
+  <div class="site" id="dst"><svg width="160" height="160" viewBox="0 0 24 24"><path d="M3 21V10l9-6 9 6v11z" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 17c0-4 2-6 6-6 0 4-2 6-6 6zM9 17l3-3" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round"/></svg><div class="nm">Destino</div></div>
+  <div id="dq">?</div>
+  <div id="gok"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0a1a14" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+  <div class="q" id="q1" style="left:900px;top:560px">?</div>
+  <div class="q" id="q2" style="left:1120px;top:600px">?</div>
+  <svg id="crate" viewBox="0 0 96 80"><rect x="4" y="8" width="88" height="68" rx="8" fill="#c08a4a" stroke="#7a5428" stroke-width="4"/><path d="M4 30h88M48 8v68" stroke="#7a5428" stroke-width="4"/></svg>
+  <div id="truck"><svg width="260" height="140" viewBox="0 0 260 140"><rect x="4" y="12" width="158" height="96" rx="12" fill="#34d399"/><path d="M168 42h52l30 34v32h-82z" fill="#1f4a3a" stroke="#34d399" stroke-width="5" stroke-linejoin="round"/><path d="M180 52h34l18 22h-52z" fill="#a9c7ba"/><circle cx="54" cy="114" r="20" fill="#0a1a14" stroke="#a9c7ba" stroke-width="6"/><circle cx="206" cy="114" r="20" fill="#0a1a14" stroke="#a9c7ba" stroke-width="6"/></svg><div class="lb">Transporte</div></div>
+  <div class="box" id="x1"><svg width="84" height="72" viewBox="0 0 96 80"><rect x="4" y="8" width="88" height="68" rx="8" fill="#c08a4a" stroke="#7a5428" stroke-width="4"/><path d="M4 30h88M48 8v68" stroke="#7a5428" stroke-width="4"/></svg><div class="tick"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0a1a14" stroke-width="3.6" stroke-linecap="round"/></svg></div></div>
+  <div class="box" id="x2"><svg width="84" height="72" viewBox="0 0 96 80"><rect x="4" y="8" width="88" height="68" rx="8" fill="#c08a4a" stroke="#7a5428" stroke-width="4"/><path d="M4 30h88M48 8v68" stroke="#7a5428" stroke-width="4"/></svg><div class="tick"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0a1a14" stroke-width="3.6" stroke-linecap="round"/></svg></div></div>
+  <div class="box" id="x3"><svg width="84" height="72" viewBox="0 0 96 80"><rect x="4" y="8" width="88" height="68" rx="8" fill="#c08a4a" stroke="#7a5428" stroke-width="4"/><path d="M4 30h88M48 8v68" stroke="#7a5428" stroke-width="4"/></svg><div class="tick"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0a1a14" stroke-width="3.6" stroke-linecap="round"/></svg></div></div>
+  <div id="cert"><svg width="120" height="150" viewBox="0 0 120 150"><path d="M30 100 L18 148 L48 132 L60 150 L72 132 L102 148 L90 100z" fill="#1f8f66"/><circle cx="60" cy="64" r="56" fill="#34d399" stroke="#e9fbf3" stroke-width="6"/></svg><div class="lab">CDF</div></div>
+  <div id="qrc"><svg width="60" height="60" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="#fff"/><path d="M8 8h18v18H8zM38 8h18v18H38zM8 38h18v18H8z" fill="none" stroke="#17301f" stroke-width="5"/><path d="M38 38h8v8h-8zM48 48h8v8h-8zM48 38h8v4h-8zM38 50h6v6h-6z" fill="#17301f"/></svg>Confere pelo QR, sem login</div>
+
+  <div class="cap" id="c1">O resíduo saía da empresa e <span>sumia no caminho</span></div>
+  <div class="sub" id="s1">ninguém sabia quem levou nem onde chegou</div>
+  <div class="cap" id="c2">Antes de sair, ele ganha <span>um passaporte</span></div>
+  <div class="sub" id="s2">o manifesto de transporte, com QR</div>
+  <div class="cap" id="c3">Quem transporta <span>leva o mesmo rastro</span></div>
+  <div class="sub" id="s3">o documento viaja junto com a carga</div>
+  <div class="cap" id="c4">No destino, a carga é <span>conferida item a item</span></div>
+  <div class="cap" id="c5">E a empresa recebe <span>a prova de que chegou</span></div>
+  <div class="sub" id="s5">o certificado de destinação fecha a viagem</div>
+
+  <div id="close">
+    <div class="l1">Nenhum resíduo some no caminho:<br><span>cada etapa deixa seu carimbo.</span></div>
+    <div class="bn">Sistema de Gerenciamento de <span>Resíduos</span></div>
+    <div class="rule"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/gsap.min.js"></script>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos, nome e slogan são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  var OUT = SC.COL_T0 - 0.15;
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  tl.fromTo('#intro-k-rec', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.25);
+  SC.RING_ST_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-r' + i, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, t0 + 0.1);
+  });
+  tl.fromTo('#intro-ring-c', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' }, SC.RING_CLOSED_T0 + 0.2);
+  tl.fromTo('#intro-k-tr', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, SC.ROUTE_T0);
+  SC.ST_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-s' + i, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, t0);
+  });
+  // One selector per string, so the intro merge can prefix each id (a comma-joined string escaped it)
+  tl.to(['#intro-k-rec', '#intro-k-tr', '#intro-r0', '#intro-r1', '#intro-r2', '#intro-ring-c', '#intro-s0', '#intro-s1', '#intro-s2', '#intro-s3'], { opacity: 0, duration: 0.3, ease: 'power2.in' }, OUT);
+  tl.fromTo('#intro-name', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.NAME_T0);
+  tl.fromTo('#intro-slogan', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.SLOGAN_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/biz-residuos-transito; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 35;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); tl.set(p, { strokeDasharray: L + ' ' + L, strokeDashoffset: L, opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.to(p, { strokeDashoffset: 0, duration: d, ease: 'none' }, t); }
+  // A stamp lands hard: big and faint, then pressed in place with a slight tilt
+  function stamp(id, t) { tl.fromTo(id, { opacity: 0, scale: 1.9, rotation: 0 }, { opacity: 1, scale: 1, rotation: -12, duration: 0.35, ease: 'back.out(2.2)' }, t); }
+
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: o resíduo some no caminho (0,6–6,6 s)
+  inn('#gen', 0.6, { y: 30 }, 0.5);
+  tl.fromTo('#dst', { opacity: 0, y: 30 }, { opacity: 0.4, y: 0, duration: 0.5, ease: 'power2.out' }, 0.9);
+  inn('#dq', 1.2, { scale: 0.4 }, 0.4);
+  tl.to('#road', { opacity: 1, duration: 0.5 }, 1.1);
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  tl.fromTo('#crate', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.4 }, 1.7);
+  tl.to('#crate', { x: 560, duration: 1.8, ease: 'power1.inOut' }, 2.2);
+  tl.to('#crate', { opacity: 0, scale: 0.6, duration: 0.5, ease: 'power2.in' }, 3.5);
+  inn('#q1', 3.9, { scale: 0.4 }, 0.4); inn('#q2', 4.2, { scale: 0.4 }, 0.4);
+  out(['#c1', '#s1'], 6.3);
+
+  // Batida 2: antes de sair, um passaporte (6,6–12,6 s)
+  out(['#q1', '#q2'], 6.7);
+  inn('#c2', 6.8, { y: 16 }); inn('#s2', 7.1, { y: 12 });
+  tl.set('#crate', { x: 0, scale: 1 }, 6.9);
+  tl.to('#crate', { opacity: 1, duration: 0.4 }, 7.0);
+  tl.fromTo('#pass', { opacity: 0, y: -30, rotation: -3 }, { opacity: 1, y: 0, rotation: 0, duration: 0.6, ease: 'back.out(1.5)' }, 7.2);
+  inn('#lab1', 7.9, { x: -10 }, 0.4); inn('#qr1', 8.1, { scale: 0.5 }, 0.4);
+  stamp('#st1', 8.8);
+  out(['#c2', '#s2'], 12.3);
+
+  // Batida 3: quem transporta leva o mesmo rastro (12,6–18,6 s)
+  inn('#c3', 12.7, { y: 16 }); inn('#s3', 13.0, { y: 12 });
+  tl.fromTo('#truck', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }, 12.9);
+  tl.to('#crate', { x: 130, y: -40, scale: 0.6, opacity: 0, duration: 0.5, ease: 'power2.in' }, 13.5);
+  tl.to('#truck', { x: 480, duration: 1.6, ease: 'power1.inOut' }, 14.1);
+  draw('t1', 14.1, 1.6);
+  stamp('#st2', 16.0);
+  out(['#c3', '#s3'], 18.3);
+
+  // Batida 4: conferência item a item no destino (18,6–24,6 s)
+  inn('#c4', 18.7, { y: 16 });
+  tl.to('#truck', { x: 780, duration: 1.4, ease: 'power1.inOut' }, 18.8);
+  draw('t2', 18.8, 1.4);
+  tl.to('#dst', { opacity: 1, duration: 0.4 }, 20.0);
+  out('#dq', 20.0, 0.3);
+  ['#x1', '#x2', '#x3'].forEach(function (s, i) { inn(s, 20.5 + i * 0.15, { y: -30 }, 0.4); tl.fromTo(s + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, 21.2 + i * 0.4); });
+  stamp('#st3', 22.7);
+  out(['#c4'], 24.3);
+
+  // Batida 5: o certificado volta para quem gerou (24,6–30,3 s)
+  out(['#truck', '#x1', '#x2', '#x3'], 24.4, 0.4);
+  inn('#c5', 24.7, { y: 16 }); inn('#s5', 25.0, { y: 12 });
+  tl.fromTo('#cert', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' }, 24.9);
+  tl.to('#cert', { x: -1440, duration: 1.4, ease: 'power2.inOut' }, 25.6);
+  tl.to('#cert', { y: -90, duration: 0.7, ease: 'sine.out' }, 25.6).to('#cert', { y: 0, duration: 0.7, ease: 'sine.in' }, 26.3);
+  inn('#gok', 27.1, { scale: 0.3 }, 0.4);
+  stamp('#st4', 27.4);
+  inn('#qrc', 28.0, { y: 16 }, 0.5);
+  out(['#c5', '#s5'], 30.0);
+
+  // Fecho (30,45–35 s, parado de 31,05 s ao fim); starts only after the passport is gone
+  out(['#hd', '#pass', '#roads', '#gen', '#dst', '#gok', '#cert', '#qrc'], 30.0, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 30.45);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (35 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 35;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-residuos-transito-intro"] = master;
+})();
+</script>
+</body>
+</html>

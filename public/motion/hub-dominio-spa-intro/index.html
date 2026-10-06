@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Hub de domínio · telas do modelo (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA E TOKENS DA MARCA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#C9C9D1;--ok:#3DD68C;--bad:#FF6B6B;--wait:var(--wl-wait);--neu:#8A8A99}
+/* --wait keeps its name but is now the brand cool lilac (every use here means open/waiting/planned), so it no longer reads as the brand amber */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+
+/* CABEÇALHO, LEGENDA E SELO */
+/* Header in a row, so a longer product name pushes the captions instead of overlapping them */
+#hd{position:absolute;left:40px;right:40px;top:0;height:100px;display:flex;align-items:flex-start}
+#title{position:relative;flex:none;margin-top:24px;font-size:46px;font-weight:800;letter-spacing:-1px;white-space:nowrap;opacity:0}
+#title span{color:var(--coral)}
+/* Captions take the space between the name and the wider amber seal (48 px tall, about 204 px wide) */
+#caps{position:relative;flex:1 1 auto;min-width:0;margin:24px 240px 0 46px;height:56px}
+.cap{position:absolute;left:0;top:0;height:56px;display:flex;align-items:center;padding:0 0 0 20px;border-left:6px solid var(--coral);font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
+#seal{position:absolute;right:0;top:28px;height:48px;width:auto;opacity:0}
+
+/* JANELA DO HUB (RECONSTRUÇÃO DEMO, TEMA POR VARIÁVEIS) */
+/* --a-hl is now the brand amber-soft surface; --a-acc is accent text on the app surface (amber in dark theme, ink in light theme, for AA) */
+#app{--a-bg:#111115;--a-panel:#17171B;--a-panel2:#1F1F25;--a-line:#3A3A42;--a-text:#FFFFFF;--a-muted:#C9C9D1;--a-hl:var(--wl-amber-soft);--a-link:#6FA4FF;--a-acc:var(--wl-amber);
+  position:absolute;left:40px;top:108px;width:1840px;height:940px;border:2px solid var(--a-line);border-radius:22px;overflow:hidden;background:var(--a-bg);color:var(--a-text);opacity:0}
+#app p{margin:0;white-space:nowrap}
+#top{position:absolute;left:0;top:0;width:1836px;height:76px;border-bottom:2px solid var(--a-line);background:var(--a-panel)}
+#co{position:absolute;left:20px;top:14px;height:48px;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:700;white-space:nowrap}
+#co .lg{width:40px;height:40px;border-radius:10px;background:var(--coral);display:grid;place-items:center;color:var(--wl-ink-on-amber)}
+#srch{position:absolute;left:330px;top:14px;width:560px;height:48px;border:2px solid var(--a-line);border-radius:12px;background:var(--a-panel2);display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;font-size:24px;font-weight:600;color:var(--a-muted);white-space:nowrap}
+#srch .gr{flex:1}
+.kc{height:34px;min-width:34px;border:2px solid var(--a-line);border-radius:8px;display:grid;place-items:center;padding:0 8px;font-size:24px;font-weight:700;color:var(--a-text);background:var(--a-panel)}
+#tr{position:absolute;right:20px;top:14px;height:48px;display:flex;align-items:center;gap:12px;white-space:nowrap}
+.env{height:44px;display:flex;align-items:center;padding:0 14px;border:2px solid var(--coral);border-radius:999px;color:var(--a-acc);font-size:24px;font-weight:800}
+.demo{height:44px;display:flex;align-items:center;padding:0 14px;border:2px solid var(--a-line);border-radius:999px;color:var(--a-muted);font-size:24px;font-weight:700}
+.lang{display:flex;border:2px solid var(--a-line);border-radius:12px;overflow:hidden;height:44px}
+.lang span{padding:0 12px;display:flex;align-items:center;font-size:24px;font-weight:700;color:var(--a-muted)}
+.lang span.on{background:var(--a-panel2);color:var(--a-text)}
+#thm{width:44px;height:44px;border:2px solid var(--a-line);border-radius:12px;position:relative;color:var(--a-text)}
+#thm span{position:absolute;left:7px;top:7px}
+.av{width:44px;height:44px;border-radius:50%;background:#4C8DFF;color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800}
+
+#side{position:absolute;left:0;top:76px;width:300px;height:860px;border-right:2px solid var(--a-line);background:var(--a-panel);padding-top:14px}
+#side h6{font-size:24px;font-weight:700;color:var(--a-muted);padding:0 22px 6px;white-space:nowrap}
+.sb{position:relative;height:56px;margin:0 12px 4px;border-radius:12px;display:flex;align-items:center;gap:14px;padding:0 14px;font-size:26px;font-weight:600;white-space:nowrap}
+.sb .bar{position:absolute;left:0;top:10px;width:5px;height:36px;border-radius:3px;background:var(--coral);opacity:0}
+.sb .si{color:var(--a-muted);display:grid;place-items:center}
+
+#ct{position:absolute;left:300px;top:76px;width:1536px;height:860px;overflow:hidden}
+.vw{position:absolute;left:0;top:0;width:1536px;height:860px;opacity:0}
+.crumb{position:absolute;left:32px;top:16px;height:36px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;color:var(--a-muted);white-space:nowrap}
+.crumb b{color:var(--a-text);font-weight:700}
+.h1{position:absolute;left:32px;top:54px;font-size:40px;font-weight:800;letter-spacing:-.5px;white-space:nowrap;display:flex;align-items:center;gap:16px}
+.pill{height:40px;display:inline-flex;align-items:center;gap:10px;padding:0 16px;border-radius:999px;border:2px solid var(--a-line);font-size:24px;font-weight:700;color:var(--a-text);letter-spacing:0;white-space:nowrap}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;flex:none}
+.d-ok{background:var(--ok)}.d-wait{background:var(--wait)}.d-bad{background:var(--bad)}.d-neu{background:var(--neu)}
+
+/* INÍCIO: GRADE DE MÓDULOS */
+.mc{position:absolute;width:351px;height:220px;border:2px solid var(--a-line);border-radius:18px;background:var(--a-panel);padding:20px}
+.mc .mi{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;color:var(--coral);background:rgba(var(--wl-amber-rgb),.14)}
+.mc .mn{margin-top:14px;font-size:30px;font-weight:800;line-height:36px}
+.mc .ma{font-size:24px;font-weight:600;color:var(--a-muted);line-height:32px}
+.mc .mr{font-size:24px;font-weight:600;color:var(--a-muted);line-height:30px;display:flex;align-items:center;gap:8px}
+.shp{position:absolute;top:620px;width:726px;height:136px;border:2px solid var(--a-line);border-radius:18px;background:var(--a-panel);padding:16px 20px}
+.shp h5,.ar h5{font-size:26px;font-weight:800;white-space:nowrap}
+.chs{display:flex;gap:10px;margin-top:16px;white-space:nowrap}
+.ch{height:48px;display:inline-flex;align-items:center;gap:8px;padding:0 14px;border:2px solid var(--a-line);border-radius:12px;background:var(--a-panel2);font-size:24px;font-weight:600;white-space:nowrap;color:var(--a-text)}
+
+/* MÓDULO FINANCEIRO: ÁREAS */
+.ar{position:absolute;width:476px;height:230px;border:2px solid var(--a-line);border-radius:18px;background:var(--a-panel);padding:18px 22px}
+.ar ul{list-style:none;margin-top:10px}
+.ar li{height:42px;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:600;white-space:nowrap;border-radius:10px;padding:0 8px}
+.ar li .si{color:var(--a-muted);display:grid;place-items:center}
+.tg{font-size:24px;font-weight:700;border-radius:999px;padding:2px 12px;white-space:nowrap;background:var(--a-panel2);color:var(--a-muted);border:2px solid var(--a-line)}
+
+/* LISTA GENÉRICA */
+.tabs{position:absolute;left:32px;top:124px;width:1472px;height:56px;border-bottom:2px solid var(--a-line)}
+.tb{position:absolute;top:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 6px;font-size:26px;font-weight:700;color:var(--a-muted);white-space:nowrap}
+.tb .ul{position:absolute;left:0;right:0;bottom:-2px;height:4px;background:var(--coral);opacity:0}
+.btn{height:48px;display:inline-flex;align-items:center;gap:8px;padding:0 16px;border:2px solid var(--a-line);border-radius:12px;font-size:24px;font-weight:700;white-space:nowrap;color:var(--a-text);background:var(--a-panel)}
+.btn.pri{background:var(--coral);border-color:var(--coral);color:var(--wl-ink-on-amber)}
+.flt{position:absolute;left:32px;top:200px;height:52px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.sx{height:52px;width:300px;border:2px solid var(--a-line);border-radius:12px;background:var(--a-panel2);display:flex;align-items:center;gap:10px;padding:0 14px;font-size:24px;font-weight:600;color:var(--a-muted)}
+.chip{height:44px;display:inline-flex;align-items:center;gap:8px;padding:0 10px 0 14px;border-radius:999px;background:var(--a-hl);border:2px solid var(--coral);font-size:24px;font-weight:700;white-space:nowrap;color:var(--a-text)}
+.tbl{position:absolute;left:32px;top:276px;width:1472px;height:500px;border:2px solid var(--a-line);border-radius:16px;background:var(--a-panel);overflow:hidden}
+.tr{position:absolute;left:0;top:0;width:1468px;height:62px;display:flex;align-items:center;border-top:2px solid var(--a-line);font-size:26px;font-weight:600;white-space:nowrap}
+.tr.th{height:56px;border-top:none;font-size:24px;font-weight:700;color:var(--a-muted);background:var(--a-panel2)}
+.tr span{display:flex;align-items:center;gap:10px;padding:0 0 0 20px;overflow:hidden}
+
+/* REGISTRO: CONEXÕES, AÇÕES E FORMULÁRIO DERIVADO */
+.acts{position:absolute;left:32px;top:116px;display:flex;gap:10px;white-space:nowrap}
+.strip{position:absolute;left:32px;top:184px;height:56px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.cn{height:52px;display:inline-flex;align-items:center;gap:10px;padding:0 8px 0 14px;border:2px solid var(--a-line);border-radius:14px;background:var(--a-panel);font-size:24px;font-weight:700;white-space:nowrap;color:var(--a-text)}
+.cn .n{position:relative;min-width:40px;height:34px;border-radius:999px;background:var(--a-panel2);display:grid;place-items:center;font-size:24px;font-weight:800;padding:0 10px}
+.cn .pl{width:34px;height:34px;border-radius:10px;border:2px solid var(--a-line);display:grid;place-items:center;color:var(--a-text)}
+.sec{position:absolute;left:32px;font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:12px}
+.fl{position:absolute;width:430px}
+.fl label{display:block;font-size:24px;font-weight:600;color:var(--a-muted);margin-bottom:4px;white-space:nowrap}
+.fb{height:50px;border:2px solid var(--a-line);border-radius:12px;background:var(--a-panel2);display:flex;align-items:center;gap:10px;padding:0 14px;font-size:24px;font-weight:600;white-space:nowrap;color:var(--a-text)}
+.fb.lk{color:var(--a-link)}
+.ct2{position:absolute;left:32px;width:888px;border:2px solid var(--a-line);border-radius:14px;overflow:hidden;background:var(--a-panel)}
+.ct2 .r{display:flex;height:52px;align-items:center;border-top:2px solid var(--a-line);font-size:24px;font-weight:600;white-space:nowrap}
+.ct2 .r.h{border-top:none;height:46px;background:var(--a-panel2);color:var(--a-muted);font-weight:700}
+.ct2 .r span{padding-left:16px}
+
+/* PAINEL LATERAL DE CONEXÕES E "CRIAR E LIGAR" */
+.dr{position:absolute;left:1000px;top:16px;width:520px;height:828px;border:2px solid var(--a-line);border-radius:20px;background:var(--a-panel);box-shadow:0 18px 48px rgba(0,0,0,.45);overflow:hidden;z-index:5}
+.dh{height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 20px;border-bottom:2px solid var(--a-line);font-size:26px;font-weight:800;white-space:nowrap}
+.dh .xb{width:40px;height:40px;display:grid;place-items:center;color:var(--a-muted)}
+.gp{position:absolute;left:0;width:516px}
+.gh{height:48px;display:flex;align-items:center;gap:10px;padding:0 16px 0 20px;font-size:24px;font-weight:800;white-space:nowrap}
+.gh .gr{flex:1}
+.gr2{height:56px;margin:0 16px 0 20px;border-top:2px solid var(--a-line);display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;white-space:nowrap}
+.gr2 .mt{margin-left:auto;color:var(--a-muted);display:flex;align-items:center;gap:8px}
+.cf{padding:12px 20px 0}
+.cf label{display:block;font-size:24px;color:var(--a-muted);font-weight:600;margin-bottom:4px;white-space:nowrap}
+.note{border-radius:12px;border-left:6px solid var(--coral);background:var(--a-hl);padding:10px 14px;font-size:24px;font-weight:600;line-height:1.3;white-space:nowrap}
+
+/* PALETA CTRL+K */
+#dim{position:absolute;left:0;top:0;width:1836px;height:936px;background:rgba(5,5,7,.62);opacity:0;z-index:8}
+#pk{position:absolute;left:470px;top:110px;width:900px;height:650px;border:2px solid var(--a-line);border-radius:22px;background:var(--a-panel);box-shadow:0 24px 64px rgba(0,0,0,.6);opacity:0;z-index:9;overflow:hidden}
+#pq{height:80px;display:flex;align-items:center;gap:14px;padding:0 22px;border-bottom:2px solid var(--a-line);font-size:30px;font-weight:700;white-space:nowrap}
+#pq .ph{position:absolute;left:72px;top:21px;color:var(--a-muted);font-weight:600}
+#ptx{position:absolute;left:72px;top:21px;display:flex;align-items:center}
+#ptx i{display:inline-block;font-style:normal;opacity:0}
+#caret{opacity:0;display:inline-block;width:3px;height:34px;background:var(--coral);margin-left:3px}
+#pl{position:absolute;left:12px;top:92px;width:872px;height:490px}
+.pi{position:absolute;left:0;top:0;width:872px;height:60px;border-radius:12px;display:flex;align-items:center;gap:14px;padding:0 14px;font-size:26px;font-weight:700;white-space:nowrap;opacity:0}
+.pi .si{color:var(--a-muted);display:grid;place-items:center}
+.pi .mt{margin-left:auto;font-size:24px;font-weight:600;color:var(--a-muted)}
+.ph2{position:absolute;left:0;top:0;height:44px;display:flex;align-items:flex-end;padding:0 14px 6px;font-size:24px;font-weight:800;color:var(--a-muted);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;opacity:0}
+#psel{position:absolute;left:0;top:0;width:872px;height:60px;border-radius:12px;background:var(--a-hl);border:2px solid var(--coral)}
+#pf{position:absolute;left:0;bottom:0;width:896px;height:62px;border-top:2px solid var(--a-line);display:flex;align-items:center;gap:12px;padding:0 22px;font-size:24px;font-weight:600;color:var(--a-muted);white-space:nowrap}
+
+/* FECHO */
+#closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#cl1{position:absolute;left:0;width:1920px;top:310px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
+#cl1 span{color:var(--coral)}
+#cl2{position:absolute;left:0;width:1920px;top:440px;text-align:center;font-size:30px;font-weight:600;color:var(--text);white-space:nowrap}
+#cl2b{position:absolute;left:0;width:1920px;top:500px;text-align:center;font-size:28px;font-weight:600;color:var(--muted);white-space:nowrap}
+#cl3{position:absolute;left:0;width:1920px;top:590px;display:flex;justify-content:center;gap:16px}
+#cl3 span{font-size:24px;font-weight:800;border:2px solid var(--coral);color:var(--coral);border-radius:999px;padding:4px 16px;white-space:nowrap}
+#cl3 span.pv{border-style:dashed;border-color:var(--wait);color:var(--wait)}
+#pad{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0}
+/* ABERTURA WELABS-INTRO (copiada de pieces/welabs-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+.intro-lbl .intro-soon{font-size:24px;font-weight:500;color:#A9A9B3;margin-left:14px;letter-spacing:.02em}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="hub-dominio-spa-intro" data-width="1920" data-height="1080" data-start="0" data-duration="43">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:176px"><img class="intro-mk" src="./assets/brand/marks/flow-mark-dark.svg" alt=""><span data-wl-name="flow">Flow</span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:300px"><img class="intro-mk" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span data-wl-name="hub">Hub de domínio</span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:424px"><img class="intro-mk" src="./assets/brand/marks/lore-mark-dark.svg" alt=""><span data-wl-name="kb">KB</span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:614px"><img class="intro-mk" src="./assets/brand/marks/kin-mark-dark.svg" alt=""><span data-wl-name="crm">CRM</span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:738px"><img class="intro-mk" src="./assets/brand/marks/vox-mark-dark.svg" alt=""><span data-wl-name="channels">Channels</span></div>
+  <div class="intro-lbl intro-in" id="intro-in5" style="top:862px">Monitoramento<span class="intro-soon">previsto</span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/hub-dominio-spa, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="title"><span data-wl-name="hub">Hub de domínio</span><span>.</span></div>
+    <div id="caps"></div>
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div id="app">
+    <div id="top">
+      <div id="co"><span class="lg" id="ic-co"></span>Demo Serviços Ltda<span id="ic-cod" style="display:grid;place-items:center;color:var(--a-muted)"></span></div>
+      <div id="srch"><span id="ic-srch" style="display:grid;place-items:center"></span>Buscar ou ir para…<span class="gr"></span><span class="kc" id="kc1">Ctrl</span><span class="kc" id="kc2">K</span></div>
+      <div id="tr">
+        <span class="env">sandbox</span><span class="demo">dados DEMO</span>
+        <span class="lang"><span class="on" id="lpt">pt-BR</span><span>en</span><span>es</span></span>
+        <span id="thm"><span id="ic-moon"></span><span id="ic-sun" style="opacity:0"></span></span>
+        <span class="av">OP</span>
+      </div>
+    </div>
+
+    <div id="side">
+      <h6>Módulos</h6>
+      <div class="sb" id="sb-ini"><i class="bar" id="sbb-ini" style="opacity:1"></i><span class="si" data-ic="home"></span>Início</div>
+      <div class="sb" id="sb-fin"><i class="bar" id="sbb-fin"></i><span class="si" data-ic="wallet"></span>Financeiro</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="doc"></span>Contratos</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="layers"></span>Trabalho</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="headset"></span>Atendimento</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="users"></span>Pessoas</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="checks"></span>Aprovações</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="gear"></span>Administração</div>
+      <div class="sb"><i class="bar"></i><span class="si" data-ic="plug"></span>Plataforma</div>
+    </div>
+
+    <div id="ct">
+      <!-- Início: grade de módulos -->
+      <div class="vw" id="vh" style="opacity:1">
+        <div class="crumb"><b>Início</b></div>
+        <div class="h1">Módulos</div>
+        <div id="mcs"></div>
+        <div class="shp" style="left:32px"><h5>Mais usados no Financeiro</h5><div class="chs"><span class="ch">Faturas de venda</span><span class="ch">Pagamentos</span><span class="ch">Extrato bancário</span></div></div>
+        <div class="shp" style="left:778px"><h5>Recentes</h5><div class="chs"><span class="ch">FV-DEMO-0005</span><span class="ch">Demo Comércio Ltda</span><span class="ch">PG-DEMO-02</span></div></div>
+      </div>
+
+      <!-- Módulo Financeiro: áreas e atalhos -->
+      <div class="vw" id="vm">
+        <div class="crumb">Início<span>/</span><b>Financeiro</b></div>
+        <div class="h1">Financeiro<span class="tg">papel · financeiro</span></div>
+        <div class="ar" style="left:32px;top:130px"><h5>Faturamento</h5><ul><li id="a-fv"><span class="si" data-ic="file"></span>Faturas de venda</li><li><span class="si" data-ic="file"></span>Faturas de compra</li><li><span class="si" data-ic="doc"></span>Termos e condições</li></ul></div>
+        <div class="ar" style="left:530px;top:130px"><h5>Banco e pagamentos</h5><ul><li><span class="si" data-ic="cash"></span>Pagamentos</li><li><span class="si" data-ic="bank"></span>Extrato bancário</li><li><span class="si" data-ic="list"></span>Lançamentos</li></ul></div>
+        <div class="ar" style="left:1028px;top:130px"><h5>Fiscal</h5><ul><li><span class="si" data-ic="file"></span>Documentos fiscais</li><li><span class="si" data-ic="shield"></span>Autorizações fiscais</li><li><span class="si" data-ic="list"></span>Trilha do certificado</li></ul></div>
+        <div class="ar" style="left:32px;top:384px"><h5>Contabilidade</h5><ul><li><span class="si" data-ic="tree"></span>Plano de contas<span class="tg">árvore</span></li><li><span class="si" data-ic="tree"></span>Centros de custo<span class="tg">árvore</span></li></ul></div>
+        <div class="ar" style="left:530px;top:384px"><h5>Partes</h5><ul><li><span class="si" data-ic="users"></span>Tomadores de serviço</li><li><span class="si" data-ic="users"></span>Fornecedores</li><li><span class="si" data-ic="tree"></span>Grupos e territórios<span class="tg">árvore</span></li></ul></div>
+        <div class="ar" style="left:1028px;top:384px"><h5>Integrações</h5><ul><li><span class="si" data-ic="bank"></span>Banco<span class="tg">status</span></li><li><span class="si" data-ic="plug"></span>Contabilidade externa</li><li><span class="si" data-ic="file"></span>NFS-e Nacional</li></ul></div>
+        <div class="shp" style="left:32px;top:640px;width:1472px;height:120px"><h5>Mais usados no módulo · do seu histórico</h5><div class="chs" style="margin-top:12px"><span class="ch">Faturas de venda</span><span class="ch">Pagamentos</span><span class="ch">Extrato bancário</span><span class="ch">Documentos fiscais</span><span class="ch">Plano de contas</span></div></div>
+      </div>
+
+      <!-- Lista genérica: Faturas de venda -->
+      <div class="vw" id="vl">
+        <div class="crumb">Início<span>/</span>Financeiro<span>/</span><b>Faturas de venda</b></div>
+        <div class="h1">Faturas de venda<span class="tg" style="position:relative;width:150px;height:40px;display:inline-block"><span id="cnt7" style="position:absolute;left:12px;top:2px">7 registros</span><span id="cnt3" style="position:absolute;left:12px;top:2px;opacity:0">3 registros</span></span></div>
+        <div style="position:absolute;right:32px;top:56px;display:flex;gap:10px"><span class="btn" id="ic-cols"></span><span class="btn pri" id="ic-new"></span></div>
+        <div class="tabs">
+          <div class="tb" style="left:0;color:var(--a-text)" id="tb-all">Todas<i class="ul" id="ul-all" style="opacity:1"></i></div>
+          <div class="tb" style="left:120px;opacity:0" id="tb-pin"><span id="ic-pin" style="display:grid;place-items:center;color:var(--coral)"></span>Em aberto · Demo Serviços<i class="ul" id="ul-pin"></i></div>
+          <div style="position:absolute;right:0;top:4px"><span class="btn" id="b-fix"></span></div>
+        </div>
+        <div class="flt">
+          <div class="sx"><span id="ic-sx" style="display:grid;place-items:center"></span>Buscar nas faturas</div>
+          <span class="btn" id="b-flt"><span id="ic-flt" style="display:grid;place-items:center"></span>Filtros<span class="tg" style="position:relative;width:46px;height:34px;padding:0"><span id="f1" style="position:absolute;left:14px;top:0">1</span><span id="f2" style="position:absolute;left:14px;top:0;opacity:0">2</span></span></span>
+          <span class="chip">Empresa: Demo Serviços Ltda<span class="xi" data-ic="x18"></span></span>
+          <span class="chip" id="ch-st" style="opacity:0">Status: Em aberto<span class="xi" data-ic="x18"></span></span>
+        </div>
+        <div class="tbl" id="tbl"></div>
+        <div style="position:absolute;left:32px;top:790px;display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;color:var(--a-muted);white-space:nowrap"><span data-ic="info" class="si" style="display:grid;place-items:center"></span>Colunas, ordem e cores de status vêm do servidor como dado</div>
+      </div>
+
+      <!-- Registro: fatura com conexões -->
+      <div class="vw" id="vr">
+        <div class="crumb">Início<span>/</span>Financeiro<span>/</span>Faturas de venda<span>/</span><b>FV-DEMO-0007</b></div>
+        <div class="h1">FV-DEMO-0007<span class="pill"><i class="dot d-wait"></i>Em aberto</span><span style="font-size:24px;font-weight:600;color:var(--a-muted);letter-spacing:0">Fatura de venda</span></div>
+        <div class="acts"><span class="btn pri" id="b-nfse"></span><span class="btn" id="b-flx"></span><span class="btn">Cancelar</span></div>
+        <div class="strip">
+          <span class="cn" id="cn-pg">Pagamentos<span class="n"><span id="pgc2">2</span><span id="pgc3" style="position:absolute;left:0;right:0;text-align:center;opacity:0">3</span></span><span class="pl" data-ic="plus20"></span></span>
+          <span class="cn" id="cn-df">Documentos fiscais<span class="n">1</span></span>
+          <span class="cn" id="cn-fx">Fluxos<span class="n">1</span></span>
+          <span class="cn" id="cn-all" style="padding-right:14px">Ver todas<span data-ic="chev" style="display:grid;place-items:center"></span></span>
+        </div>
+        <div class="sec" style="top:262px">Parte e produto</div>
+        <div class="fl" style="left:32px;top:302px"><label>Parte</label><div class="fb lk"><span data-ic="link"></span>Demo Comércio Ltda</div></div>
+        <div class="fl" style="left:490px;top:302px"><label>Empresa</label><div class="fb">Demo Serviços Ltda</div></div>
+        <div class="fl" style="left:32px;top:392px"><label>Produto · centro de custo</label><div class="fb">Produto DEMO A</div></div>
+        <div class="fl" style="left:490px;top:392px"><label>Vencimento</label><div class="fb">DEMO</div></div>
+        <div class="sec" style="top:492px">Itens<span class="tg">tabela-filho</span></div>
+        <div class="ct2" style="top:534px">
+          <div class="r h"><span style="width:420px">Serviço</span><span style="width:250px">Código LC 116</span><span>Valor</span></div>
+          <div class="r"><span style="width:420px">Serviço DEMO de implantação</span><span style="width:250px">DEMO</span><span>R$ —</span></div>
+          <div class="r"><span style="width:420px">Serviço DEMO de suporte</span><span style="width:250px">DEMO</span><span>R$ —</span></div>
+        </div>
+        <div class="sec" style="top:704px">Retenções na fonte</div>
+        <div style="position:absolute;left:32px;top:746px;display:flex;gap:10px;white-space:nowrap"><span class="ch">PIS</span><span class="ch">COFINS</span><span class="ch">CSLL</span><span class="ch">IRRF</span><span class="ch">ISS retido</span><span class="ch" style="color:var(--a-muted)">valores DEMO</span></div>
+      </div>
+
+      <!-- Registro do pagamento com trilha pelas conexões -->
+      <div class="vw" id="vp">
+        <div class="crumb" id="trail" style="font-size:26px;gap:12px">
+          <span class="ts" id="ts1" style="display:flex;align-items:center;gap:8px"><span data-ic="list"></span>Faturas de venda</span>
+          <span class="ts" id="ts2" style="display:flex;align-items:center;gap:12px"><span data-ic="chev"></span><span data-ic="file"></span>FV-DEMO-0007</span>
+          <span class="ts" id="ts3" style="display:flex;align-items:center;gap:12px;color:var(--a-text)"><span data-ic="chev"></span><span data-ic="cash"></span><b>PG-DEMO-03</b></span>
+        </div>
+        <div class="h1">PG-DEMO-03<span class="pill"><i class="dot d-neu"></i>Rascunho</span><span style="font-size:24px;font-weight:600;color:var(--a-muted);letter-spacing:0">Pagamento</span></div>
+        <div class="note" id="tnote" style="position:absolute;left:32px;top:122px;display:flex;align-items:center;gap:12px"><span data-ic="back"></span>Trilha pelas conexões: voltar leva à FV-DEMO-0007, não à lista de pagamentos</div>
+        <div class="strip" style="top:200px">
+          <span class="cn">Fatura<span class="n">1</span></span>
+          <span class="cn">Parte<span class="n">1</span></span>
+        </div>
+        <div class="sec" style="top:282px">Pagamento</div>
+        <div class="fl" style="left:32px;top:322px"><label>Fatura</label><div class="fb lk"><span data-ic="link"></span>FV-DEMO-0007</div></div>
+        <div class="fl" style="left:490px;top:322px"><label>Parte</label><div class="fb lk"><span data-ic="link"></span>Demo Comércio Ltda</div></div>
+        <div class="fl" style="left:948px;top:322px"><label>Empresa</label><div class="fb">Demo Serviços Ltda</div></div>
+        <div class="fl" style="left:32px;top:412px"><label>Valor</label><div class="fb">R$ —</div></div>
+        <div class="fl" style="left:490px;top:412px"><label>Data</label><div class="fb">DEMO</div></div>
+        <div class="fl" style="left:948px;top:412px"><label>Conta</label><div class="fb">Banco · conta DEMO</div></div>
+        <div class="sec" style="top:520px">Toda entidade ganha as mesmas telas</div>
+        <div style="position:absolute;left:32px;top:564px;display:flex;gap:10px;white-space:nowrap"><span class="ch">Lista</span><span class="ch">Registro</span><span class="ch">Novo</span><span class="ch">Árvore</span><span class="ch">Conexões</span><span class="ch">Ações do documento</span></div>
+      </div>
+
+      <!-- Painel lateral de conexões -->
+      <div class="dr" id="spn">
+        <div class="dh"><span>Conexões · FV-DEMO-0007</span><span class="xb" data-ic="x28"></span></div>
+        <div style="position:absolute;left:20px;top:78px;font-size:24px;font-weight:600;color:var(--a-muted);white-space:nowrap">Contadas com a permissão de quem vê</div>
+        <div class="gp" id="g-pg" style="top:124px">
+          <div class="gh"><span data-ic="cash"></span>Pagamentos<span class="tg" style="position:relative;width:46px;height:34px;padding:0"><span id="sgc2" style="position:absolute;left:14px;top:0">2</span><span id="sgc3" style="position:absolute;left:14px;top:0;opacity:0">3</span></span><span class="gr"></span><span class="pl" id="sp-plus" data-ic="plus20" style="width:40px;height:40px;border-radius:10px;border:2px solid var(--a-line);display:grid;place-items:center"></span></div>
+          <div class="gr2"><i class="dot d-ok"></i>PG-DEMO-01<span class="mt">Submetido</span></div>
+          <div class="gr2"><i class="dot d-ok"></i>PG-DEMO-02<span class="mt">Submetido</span></div>
+          <div class="gr2" id="pg3" style="opacity:0;border-radius:10px"><i class="dot d-neu"></i>PG-DEMO-03<span class="mt"><span class="tg" style="color:var(--coral);border-color:var(--coral)">novo · ligado</span></span></div>
+        </div>
+        <div class="gp sh" id="g-df" style="top:300px"><div class="gh"><span data-ic="file"></span>Documentos fiscais<span class="tg">1</span></div><div class="gr2"><i class="dot d-ok"></i>NFS-e DEMO-0007<span class="mt">Autorizada</span></div></div>
+        <div class="gp sh" id="g-fx" style="top:420px"><div class="gh"><span data-ic="flow"></span>Fluxos<span class="tg">1</span></div><div class="gr2"><i class="dot d-wait"></i>Cobrança DEMO<span class="mt">Aguardando</span></div></div>
+        <div class="gp sh" id="g-pt" style="top:540px"><div class="gh"><span data-ic="users"></span>Parte</div><div class="gr2"><span data-ic="link"></span>Demo Comércio Ltda<span class="mt">Tomador</span></div></div>
+      </div>
+
+      <!-- Criar e ligar -->
+      <div class="dr" id="cpn" style="z-index:6">
+        <div class="dh"><span>Novo pagamento</span><span class="xb" data-ic="x28"></span></div>
+        <div class="note" style="margin:14px 20px 0;white-space:normal">Criar e ligar: o vínculo com a fatura já vem preenchido</div>
+        <div class="cf"><label>Fatura · vínculo</label><div class="fb lk"><span data-ic="link"></span>FV-DEMO-0007<span style="margin-left:auto;color:var(--a-muted)" data-ic="lock"></span></div></div>
+        <div class="cf"><label>Parte</label><div class="fb">Demo Comércio Ltda</div></div>
+        <div class="cf"><label>Valor</label><div class="fb">R$ —</div></div>
+        <div class="cf"><label>Data</label><div class="fb">DEMO</div></div>
+        <div style="position:absolute;left:20px;right:20px;bottom:20px;display:flex;gap:10px"><span class="btn" style="flex:1;justify-content:center">Cancelar</span><span class="btn pri" id="b-cl" style="flex:2;justify-content:center"></span></div>
+      </div>
+    </div>
+
+    <div id="dim" data-layout-allow-occlusion></div>
+    <div id="pk">
+      <div id="pq"><span id="ic-pq" style="display:grid;place-items:center;color:var(--a-muted)"></span><span class="ph" id="pph">Ir para módulo, entidade ou registro…</span><span id="ptx"><i>f</i><i>a</i><i>t</i><span id="caret"></span></span></div>
+      <div id="pl"><div id="psel"></div></div>
+      <div id="pf"><span data-ic="shield"></span>Resultados filtrados pela sua permissão<span style="margin-left:auto" class="kc">↑↓</span>navegar<span class="kc">Enter</span>abrir</div>
+    </div>
+  </div>
+
+  <div id="closing">
+    <div id="cl1">Telas que nascem <span>do modelo de dados.</span></div>
+    <div id="cl2">Lista · registro · criação · árvores · facetas · Ctrl+K · conexões · ações do documento</div>
+    <div id="cl2b">Cadastros, regras, contratos, fiscal, financeiro, pessoas, atendimento e integrações num hub só</div>
+    <div id="cl3"><span>sandbox</span><span>dados DEMO</span><span class="pv">Construtor de telas · Previsto</span></div>
+  </div>
+  <div id="pad"></div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/hub-dominio-spa; só o registro da timeline virou __pieceParts.film)
+(function(){
+  // ÍCONES E UTILITÁRIOS
+  const IC={
+    home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
+    wallet:'<rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 13h2"/><path d="M2 10h20"/>',
+    doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/>',
+    file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+    layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+    headset:'<path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/>',
+    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    checks:'<path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/>',
+    gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+    plug:'<path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8z"/>',
+    search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+    cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+    bank:'<path d="M3 21h18"/><path d="M5 21V10M9 21V10M15 21V10M19 21V10"/><path d="m2 10 10-6 10 6z"/>',
+    list:'<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>',
+    shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    tree:'<rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-3h14v3"/>',
+    tag:'<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.5"/>',
+    plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+    x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    chev:'<path d="m9 18 6-6-6-6"/>', chevd:'<path d="m6 9 6 6 6-6"/>',
+    pin:'<path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l3 3.2v2H6v-2z"/>',
+    filter:'<path d="M22 3H2l8 9.5V19l4 2v-8.5z"/>',
+    cols:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/>',
+    link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+    lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    flow:'<rect x="2" y="3" width="7" height="6" rx="1"/><rect x="15" y="15" width="7" height="6" rx="1"/><path d="M5.5 9v4a2 2 0 0 0 2 2H15"/>',
+    back:'<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+    info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+    moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
+    sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+    check:'<path d="M20 6 9 17l-5-5"/>'
+  };
+  const ico=(n,s)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+  const put=(id,h)=>{document.getElementById(id).innerHTML=h;};
+  // data-ic shorthand: name or name+size suffix (x18, plus20, x28)
+  document.querySelectorAll("[data-ic]").forEach(el=>{const m=el.getAttribute("data-ic").match(/^([a-z]+?)(\d+)?$/);el.innerHTML=ico(m[1],m[2]?+m[2]:26);});
+  put("ic-co",ico("layers",24));put("ic-cod",ico("chevd",24));put("ic-srch",ico("search",26));
+  put("ic-moon",ico("moon",26));put("ic-sun",ico("sun",26));put("ic-pq",ico("search",30));
+  put("ic-cols",ico("cols",24)+"Colunas");put("ic-new",ico("plus",24)+"Nova");
+  put("ic-pin",ico("pin",24));put("b-fix",ico("pin",24)+"Fixar visão");put("ic-sx",ico("search",24));put("ic-flt",ico("filter",24));
+  put("b-nfse",ico("lock",24)+"Emitir NFS-e · pede a senha de novo");put("b-flx",ico("flow",24)+"Fluxos");
+  put("b-cl",ico("link",24)+"Criar e ligar");
+
+  // GRADE DOS 8 MÓDULOS (MAPA SERVIDO PELO SERVIDOR)
+  const MODS=[["fin","wallet","Financeiro","Faturas, banco, fiscal","financeiro"],["ctr","doc","Contratos","Contratos, assinaturas","contratos"],
+    ["trb","layers","Trabalho","Itens, sprints, horas","produto"],["atd","headset","Atendimento","Tickets, SLA, base","agentes"],
+    ["pes","users","Pessoas","Quadro, férias","RH"],["apr","checks","Aprovações","Caixa de aprovações","aprovador"],
+    ["adm","gear","Administração","Empresa, usuários","administrador"],["plt","plug","Plataforma","Produtos, concessões","operador"]];
+  let mh="";MODS.forEach((m,i)=>{const x=32+(i%4)*375,y=130+Math.floor(i/4)*244;
+    mh+=`<div class="mc" id="mc-${m[0]}" style="left:${x}px;top:${y}px"><div class="mi">${ico(m[1],30)}</div><p class="mn">${m[2]}</p><p class="ma">${m[3]}</p><p class="mr">${ico("users",20)}papel · ${m[4]}</p></div>`;});
+  put("mcs",mh);
+
+  // TABELA DA LISTA (COLUNAS VINDAS DO SERVIDOR)
+  const COLW=[250,340,260,200,250,170];
+  const ROWS=[["FV-DEMO-0001","Demo Comércio Ltda","Produto DEMO A","DEMO","ok","Paga"],["FV-DEMO-0002","Demo Indústria Ltda","Produto DEMO B","DEMO","wait","Em aberto"],
+    ["FV-DEMO-0003","Demo Varejo Ltda","Produto DEMO A","DEMO","bad","Vencida"],["FV-DEMO-0004","Demo Comércio Ltda","Produto DEMO C","DEMO","neu","Rascunho"],
+    ["FV-DEMO-0005","Demo Indústria Ltda","Produto DEMO B","DEMO","wait","Em aberto"],["FV-DEMO-0006","Demo Varejo Ltda","Produto DEMO C","DEMO","neu","Cancelada"],
+    ["FV-DEMO-0007","Demo Comércio Ltda","Produto DEMO A","DEMO","wait","Em aberto"]];
+  const cell=(t,i)=>`<span style="width:${COLW[i]}px">${t}</span>`;
+  let th=`<div class="tr th">${["Nº","Parte","Produto","Vencimento","Status","Valor"].map(cell).join("")}</div>`;
+  ROWS.forEach((r,i)=>{th+=`<div class="tr" id="row${i}">${cell(r[0],0)}${cell(r[1],1)}${cell(r[2],2)}${cell(r[3],3)}<span style="width:${COLW[4]}px"><i class="dot d-${r[4]}"></i>${r[5]}</span>${cell("R$ —",5)}</div>`;});
+  put("tbl",th);
+
+  // PALETA: ITENS ANTES E DEPOIS DE DIGITAR "fat"
+  const PI={
+    hRec:{h:"Recentes"},r5:{ic:"file",l:"FV-DEMO-0005",m:"Fatura de venda · recente"},rPt:{ic:"users",l:"Demo Comércio Ltda",m:"Parte · recente"},
+    hMod:{h:"Módulos"},mFin:{ic:"wallet",l:"Financeiro",m:"Módulo"},mAt:{ic:"headset",l:"Atendimento",m:"Módulo"},mPe:{ic:"users",l:"Pessoas",m:"Módulo"},
+    hEnt:{h:"Entidades"},eFV:{ic:"file",l:"Fatura de venda",m:"Financeiro · entidade"},eFC:{ic:"file",l:"Fatura de compra",m:"Financeiro · entidade"},
+    hReg:{h:"Registros"},r7:{ic:"file",l:"FV-DEMO-0007",m:"Demo Comércio Ltda"}
+  };
+  const BEFORE=["hRec","r5","rPt","hMod","mFin","mAt","mPe"];
+  const AFTER=["hEnt","eFV","eFC","hMod","mFin","hRec","r5","hReg","r7"];
+  const lay=ord=>{const o={};let y=0;ord.forEach(k=>{o[k]=y;y+=PI[k].h?44:60;});return o;};
+  const YB=lay(BEFORE),YA=lay(AFTER);
+  let ph="";Object.keys(PI).forEach(k=>{const p=PI[k];
+    ph+=p.h?`<div class="ph2" id="p-${k}">${p.h}</div>`:`<div class="pi" id="p-${k}"><span class="si">${ico(p.ic,26)}</span>${p.l}<span class="mt">${p.m}</span></div>`;});
+  document.getElementById("pl").insertAdjacentHTML("beforeend",ph);
+
+  const tl=gsap.timeline({paused:true});
+  const EO="power3.out",EZ="power2.inOut";
+  const fadeIn=(sel,t,d,y)=>tl.fromTo(sel,{opacity:0,y:y||12},{opacity:1,y:0,duration:d||.45,ease:EO,immediateRender:false},t);
+  const fadeOut=(sel,t,d)=>tl.to(sel,{opacity:0,duration:d||.35,ease:"power2.in"},t);
+  const press=(sel,t)=>{tl.to(sel,{scale:.95,duration:.12,ease:"power1.out"},t);tl.to(sel,{scale:1,duration:.2,ease:"power1.out"},t+.12);};
+  // GSAP cannot tween var(): literal brand amber values from WELABS_BRAND
+  const BC=window.WELABS_BRAND.color,AMB=BC.amber,AMBA=a=>`rgba(${BC.amberRgb},${a})`;
+  const hl=(sel,t)=>tl.to(sel,{backgroundColor:AMBA(.22),duration:.2},t);
+
+  // LEGENDAS DAS BATIDAS
+  const caps=[
+    "Ctrl+K: módulos, entidades e recentes, filtrados pela sua permissão",
+    "O menu vem do servidor: 8 módulos com áreas e papéis, nada escrito à mão",
+    "A lista nasce do modelo: facetas em chips, cor de status e visão fixada",
+    "No registro, a faixa de conexões conta os vizinhos que você pode ver",
+    "O painel agrupa os vizinhos; o “+” cria o pagamento já ligado",
+    "A trilha guarda o caminho: lista → fatura → pagamento",
+    "Tema claro ou escuro, selo de ambiente e pt-BR · en · es"
+  ];
+  const capBox=document.getElementById("caps");
+  caps.forEach((c,i)=>{const d=document.createElement("div");d.className="cap";d.id="cap"+i;d.textContent=c;capBox.appendChild(d);});
+  // Beat starts; every state change is followed by at least 1.5 s of stillness
+  const CT=[0.8,5.18,9.55,16.25,19.15,26.05,28.9,31.2];
+  caps.forEach((c,i)=>{tl.fromTo("#cap"+i,{opacity:0,y:10},{opacity:1,y:0,duration:.4,ease:EO,immediateRender:false},CT[i]);tl.to("#cap"+i,{opacity:0,duration:.3},CT[i+1]-.3);});
+
+  // ABERTURA
+  tl.to("#title",{opacity:1,duration:.5},0);tl.to("#seal",{opacity:1,duration:.5},.15);
+  tl.to("#app",{opacity:1,duration:.6},.2);
+
+  // B1 PALETA CTRL+K: digitar "fat" reordena módulos, entidades e recentes
+  BEFORE.forEach(k=>tl.set("#p-"+k,{y:YB[k],opacity:1},0));
+  AFTER.forEach(k=>{if(!(k in YB))tl.set("#p-"+k,{y:YA[k],opacity:0},0);});
+  tl.set("#psel",{y:YB.r5},0);tl.set("#pk",{scale:.96},0);
+  tl.to("#kc1,#kc2",{borderColor:AMB,color:AMB,duration:.2},.8);
+  press("#kc1,#kc2",.8);
+  tl.to("#dim",{opacity:1,duration:.35},1.0);
+  // The home grid steps back while the modal palette is open (no text under text)
+  tl.to("#vh",{opacity:0,duration:.25},.85);
+  tl.to("#pk",{opacity:1,scale:1,duration:.4,ease:EO},1.12);
+  tl.to("#pph",{opacity:0,duration:.08},1.45);
+  [1.55,1.7,1.85].forEach((t,i)=>tl.to(`#ptx i:nth-child(${i+1})`,{opacity:1,duration:.05},t));
+  tl.to("#caret",{opacity:1,duration:.05},1.95);
+  // Reorder without text crossing: the old order fades, the new order settles in its slots
+  BEFORE.forEach(k=>tl.to("#p-"+k,{opacity:0,duration:.2},2.05));
+  AFTER.forEach((k,i)=>{tl.set("#p-"+k,{y:YA[k]},2.27);tl.fromTo("#p-"+k,{opacity:0,x:-10},{opacity:1,x:0,duration:.3,ease:EO,immediateRender:false},2.3+i*.05);});
+  tl.set("#psel",{y:YA.eFV},2.27);
+  // Arrow down to the Financeiro module, then Enter
+  tl.to("#psel",{y:YA.mFin,duration:.25,ease:EZ},4.5);
+  press("#p-mFin",4.75);
+  tl.to("#pk",{opacity:0,scale:.97,duration:.3,ease:"power2.in"},4.85);
+  tl.to("#dim",{opacity:0,duration:.3},4.85);
+  tl.to("#kc1,#kc2",{borderColor:"#3A3A42",color:"#FFFFFF",duration:.2},4.85);
+
+  // B2 GRADE DE MÓDULOS: Financeiro acende, depois abre a página do módulo
+  tl.to("#vh",{opacity:1,duration:.35},5.18);
+  MODS.forEach(m=>{if(m[0]!=="fin")tl.to("#mc-"+m[0],{opacity:.4,duration:.4},5.18);});
+  tl.to("#mc-fin",{borderColor:AMB,boxShadow:`0 0 0 6px ${AMBA(.22)}`,duration:.4},5.18);
+  tl.to("#sbb-ini",{opacity:0,duration:.3},5.18);tl.to("#sbb-fin",{opacity:1,duration:.3},5.18);
+  tl.to("#sb-fin",{backgroundColor:AMBA(.14),duration:.3},5.18);
+  // View changes are sequential: the old view is gone before the new one appears
+  fadeOut("#vh",7.1,.25);fadeIn("#vm",7.38,.45);
+  hl("#a-fv",9.35);press("#a-fv",9.35);
+  fadeOut("#vm",9.55,.25);fadeIn("#vl",9.83,.45);
+
+  // B3 LISTA: faceta "Status" entra em chip, linhas filtram; visão vira aba fixada
+  ROWS.forEach((r,i)=>tl.set("#row"+i,{y:56+i*62},0));
+  fadeIn("#ch-st",11.8,.35,0);
+  tl.to("#f1",{opacity:0,duration:.15},11.8);tl.to("#f2",{opacity:1,duration:.2},11.97);
+  const KEEP={1:0,4:1,6:2};
+  ROWS.forEach((r,i)=>{if(i in KEEP)tl.to("#row"+i,{y:56+KEEP[i]*62,duration:.55,ease:EZ},11.95);else tl.to("#row"+i,{opacity:0,duration:.3},11.8);});
+  tl.to("#cnt7",{opacity:0,duration:.15},11.95);tl.to("#cnt3",{opacity:1,duration:.2},12.1);
+  press("#b-fix",14.0);
+  tl.fromTo("#tb-pin",{opacity:0,x:-14},{opacity:1,x:0,duration:.4,ease:EO,immediateRender:false},14.1);
+  tl.to("#ul-all",{opacity:0,duration:.25},14.2);tl.to("#tb-all",{color:"#C9C9D1",duration:.25},14.2);
+  tl.to("#ul-pin",{opacity:1,duration:.25},14.2);tl.to("#tb-pin",{color:"#FFFFFF",duration:.25},14.2);
+  hl("#row6",16.0);
+  fadeOut("#vl",16.25,.25);fadeIn("#vr",16.53,.45);
+
+  // B4 REGISTRO: faixa de conexões aparece com as contagens
+  tl.fromTo("#vr .cn",{opacity:0,y:10},{opacity:1,y:0,duration:.35,stagger:.1,ease:EO,immediateRender:false},17.0);
+
+  // B5 PAINEL LATERAL: vizinhos agrupados; "+" abre criar e ligar; pagamento entra ligado
+  // Drawers live in place and slide a short distance while fading (never off canvas)
+  tl.set("#spn,#cpn",{x:40,opacity:0},0);
+  press("#cn-all",19.15);
+  tl.to("#spn",{x:0,opacity:1,duration:.5,ease:EO},19.25);
+  press("#sp-plus",21.3);tl.to("#sp-plus",{borderColor:AMB,color:AMB,duration:.15},21.3);
+  // The create panel replaces the connections panel (one drawer visible at a time)
+  tl.to("#spn",{opacity:0,duration:.15},21.4);
+  tl.to("#cpn",{x:0,opacity:1,duration:.45,ease:EO},21.57);
+  press("#b-cl",23.55);
+  tl.to("#cpn",{x:40,opacity:0,duration:.3,ease:"power2.in"},23.7);
+  tl.to("#sp-plus",{borderColor:"#3A3A42",color:"#FFFFFF",duration:.2},23.7);
+  tl.to("#spn",{opacity:1,duration:.25},24.02);
+  tl.to("#g-df,#g-fx,#g-pt",{y:56,duration:.4,ease:EZ},24.1);
+  tl.fromTo("#pg3",{opacity:0,x:16},{opacity:1,x:0,duration:.35,ease:EO,immediateRender:false},24.52);
+  tl.to("#pg3",{backgroundColor:AMBA(.12),duration:.3},24.52);
+  tl.to("#sgc2,#pgc2",{opacity:0,duration:.15},24.25);tl.to("#sgc3,#pgc3",{opacity:1,duration:.2},24.42);
+  tl.to("#cn-pg",{borderColor:AMB,duration:.3},24.3);
+
+  // B6 TRILHA: abre o pagamento; o breadcrumb segue as conexões
+  press("#pg3",26.05);
+  tl.to("#spn",{x:40,opacity:0,duration:.3,ease:"power2.in"},26.15);
+  fadeOut("#vr",26.2,.25);
+  tl.set("#ts1,#ts2,#ts3,#tnote",{opacity:0},0);
+  tl.to("#vp",{opacity:1,duration:.4},26.48);
+  tl.fromTo("#ts1,#ts2,#ts3",{opacity:0,x:-12},{opacity:1,x:0,duration:.3,stagger:.12,ease:EO,immediateRender:false},26.6);
+  fadeIn("#tnote",27.0,.4,8);
+
+  // B7 TEMA E IDIOMA: o mesmo registro em tema claro; selo de ambiente fica
+  press("#thm",28.9);
+  tl.to("#ic-moon",{opacity:0,duration:.2},29.0);tl.to("#ic-sun",{opacity:1,duration:.2},29.1);
+  // Light theme: highlight surface is brand paper, accent text turns to ink so amber never sits as text on white (AA)
+  tl.to("#app",{"--a-bg":"#F4F4F7","--a-panel":"#FFFFFF","--a-panel2":"#EEEEF2","--a-line":"#D2D2DA","--a-text":"#111115","--a-muted":"#4A4A55","--a-hl":BC.paper,"--a-link":"#1F5FD1","--a-acc":BC.inkOnAmber,duration:.7,ease:EZ},29.0);
+  tl.to("#kc1,#kc2",{color:"#111115",borderColor:"#D2D2DA",duration:.7,ease:EZ},29.0);
+  tl.to(".lang .on",{backgroundColor:AMBA(.16),duration:.3},29.3);
+
+  // FECHO
+  tl.to("#app",{opacity:0,duration:.45},31.2);
+  tl.to("#closing",{opacity:1,duration:.6},31.7);
+  tl.fromTo("#cl1",{y:20},{y:0,duration:.6,ease:EO,immediateRender:false},31.7);
+  tl.to("#pad",{opacity:.001,duration:1},33);
+
+  // The site Player may load the page before the runtime creates the registry
+  window.__timelines=window.__timelines||{};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (34 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 34;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["hub-dominio-spa-intro"] = master;
+})();
+</script>
+</body>
+</html>

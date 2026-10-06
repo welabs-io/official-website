@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>IUS · Jornada entre médico e paciente (com abertura)</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--p1:#644CFF;--p2:#3D2BBE;--or:#F79B66;--ort:#FFB98C;--ink:#2B2350;--soft:#6E6890;--lav:#ECEBFF;--muted:#DCD8FF;--ok:#1F8A55;--okb:#DDF5E8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--p2)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(rgba(255,255,255,.14) 1.6px,transparent 1.8px) 0 0/40px 40px,linear-gradient(180deg,var(--p1) 0%,var(--p2) 100%);color:#fff;font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#hd img{position:absolute;left:0;top:6px;height:60px}
+#kick{position:absolute;left:150px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--or);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid rgba(255,255,255,.35);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.cap span,#close span{color:var(--ort)}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+
+/* LUGARES E PESSOAS */
+.av{position:absolute;width:300px;text-align:center;opacity:0}
+.av svg{display:block;margin:0 auto}
+.av .nm{margin-top:10px;font-size:28px;font-weight:700;white-space:nowrap}
+#lab{left:90px;top:340px}
+#cli{left:1450px;top:340px}
+#pat{left:1450px;top:340px}
+#doc{left:730px;top:340px}
+#col{left:490px;top:640px}
+#col .ghost{position:absolute;left:70px;top:0;width:160px;height:160px;border-radius:50%;border:4px dashed rgba(255,255,255,.8)}
+#col .real{opacity:0}
+
+/* IDA E VOLTA DE PAPEL */
+#loops{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;opacity:0}
+#loops path{fill:none;stroke:rgba(255,255,255,.55);stroke-width:4;stroke-dasharray:10 12;stroke-linecap:round}
+.pp{position:absolute;left:840px;top:370px;width:80px;height:104px;border-radius:10px;background:#F7F6FB;padding:12px;opacity:0;box-shadow:0 12px 26px rgba(20,10,80,.45)}
+.pp i{display:block;height:6px;border-radius:3px;background:#C9C6D8;margin-bottom:9px}
+.tag{position:absolute;padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font-size:24px;font-weight:700;opacity:0;white-space:nowrap}
+.q{position:absolute;width:60px;height:60px;border-radius:50%;background:#fff;color:var(--p2);font-size:36px;font-weight:800;display:grid;place-items:center;opacity:0}
+
+/* EXAME QUE VIAJA */
+#lines{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#lines path{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round}
+#lines .dash{stroke-dasharray:12 12}
+.tok{position:absolute;left:125px;top:230px;width:240px;height:68px;border-radius:34px;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:12px;font-size:26px;font-weight:800;opacity:0;white-space:nowrap;box-shadow:0 12px 30px rgba(20,10,80,.45)}
+.tok .mk{width:22px;height:22px;border-radius:5px;background:var(--or);flex:none}
+.chip{position:absolute;height:52px;padding:0 20px;border-radius:26px;font-size:26px;font-weight:700;line-height:52px;opacity:0;white-space:nowrap}
+#wait{left:1020px;top:238px;background:var(--or);color:#3A1A05}
+#okc{left:1020px;top:238px;background:var(--okb);color:var(--ok)}
+#phone{position:absolute;left:1460px;top:600px;width:280px;height:270px;border-radius:34px;background:#1B1640;padding:14px;opacity:0}
+#phone .scr{width:100%;height:100%;border-radius:24px;background:#fff;color:var(--ink);padding:20px 16px}
+#phone b{display:block;font-size:24px;font-weight:800}
+#phone .card{margin-top:16px;border-radius:16px;background:var(--lav);padding:14px 10px;white-space:nowrap;font-size:24px;font-weight:700}
+#phone .card span{display:inline-block;margin-top:10px;padding:2px 12px;border-radius:999px;background:var(--okb);color:var(--ok);font-size:24px}
+#inv{left:290px;top:630px;background:rgba(255,255,255,.16);color:#fff;border:3px dashed rgba(255,255,255,.7)}
+#prev{position:absolute;left:790px;top:640px;width:420px;height:220px;border-radius:26px;background:#fff;color:var(--ink);padding:22px 26px;opacity:0}
+#prev b{display:block;font-size:28px;font-weight:800}
+#prev .ln{display:block;height:10px;border-radius:5px;background:#C9C6D8;margin-top:16px;filter:blur(2px)}
+#prev .lk{position:absolute;left:26px;bottom:20px;font-size:24px;font-weight:700;color:var(--soft)}
+#prev .done{position:absolute;inset:0;border-radius:26px;background:#fff;padding:22px 26px;opacity:0}
+#prev .done span{display:inline-block;margin-top:14px;padding:4px 16px;border-radius:999px;background:var(--okb);color:var(--ok);font-size:26px;font-weight:700}
+#prev .done p{margin-top:16px;font-size:24px;font-weight:600;color:var(--soft)}
+#cmt{position:absolute;left:1030px;top:490px;width:380px;padding:16px 22px;border-radius:22px 22px 22px 4px;background:#fff;color:var(--ink);font-size:26px;font-weight:700;line-height:34px;opacity:0}
+.msg{position:absolute;padding:16px 24px;border-radius:24px;font-size:28px;font-weight:700;opacity:0;white-space:nowrap}
+#m1{left:990px;top:220px;background:#fff;color:var(--ink);border-bottom-left-radius:4px}
+#m2{left:1180px;top:310px;background:var(--or);color:#3A1A05;border-bottom-right-radius:4px}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:240px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close img{position:absolute;left:794px;top:500px;width:331px;height:172px}
+#close .sl{position:absolute;left:0;top:700px;width:1920px;text-align:center;font-size:38px;font-weight:600}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* CAMADAS DA COMPOSIÇÃO COM ABERTURA (o estilo da abertura é injetado por assets/js/ius-intro.js) */
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="ius-jornada-medico-paciente-intro" data-width="1920" data-height="1080" data-start="0" data-duration="53.5">
+<!-- ABERTURA: marca IUS por cima do filme até a passagem -->
+<div id="intro"></div>
+<div id="film"><!-- FILME: copiado sem mudança de pieces/ius-jornada-medico-paciente -->
+  <div id="hd">
+    <img src="./assets/brand/ius-white.svg" alt="IUS">
+    <div id="kick">Some o exame que vai e volta</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <svg id="loops" viewBox="0 0 1920 1080">
+    <path d="M330 390 C480 250 650 250 790 390"/>
+    <path d="M790 490 C650 600 480 600 330 490"/>
+    <path d="M970 390 C1120 250 1370 250 1510 390"/>
+    <path d="M1510 490 C1370 600 1120 600 970 490"/>
+  </svg>
+  <svg id="lines" viewBox="0 0 1920 1080">
+    <path id="l1" d="M335 420 L790 420"/>
+    <path id="l2" d="M970 420 L1510 420"/>
+    <path id="l3" class="dash" d="M840 590 C800 630 720 630 690 646"/>
+  </svg>
+
+  <div class="av" id="lab"><svg width="160" height="160" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#ECEBFF"/><path d="M50 30h20M54 30v24L38 86a6 6 0 0 0 5 8h34a6 6 0 0 0 5-8L66 54V30" fill="none" stroke="#3D2BBE" stroke-width="5" stroke-linejoin="round"/><path d="M44 76h32" stroke="#F79B66" stroke-width="7" stroke-linecap="round"/></svg><div class="nm">Laboratório · DEMO</div></div>
+  <div class="av" id="cli"><svg width="160" height="160" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#ECEBFF"/><rect x="34" y="36" width="52" height="52" rx="6" fill="none" stroke="#3D2BBE" stroke-width="5"/><path d="M60 50v24M48 62h24" stroke="#F79B66" stroke-width="7" stroke-linecap="round"/></svg><div class="nm">Consultório · DEMO</div></div>
+  <div class="av" id="doc"><svg width="160" height="160" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#ECEBFF"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="#FFFFFF" stroke="#644CFF" stroke-width="4"/><path d="M60 72v28" stroke="#644CFF" stroke-width="4"/></svg><div class="nm">Médica · DEMO</div></div>
+  <div class="av" id="pat"><svg width="160" height="160" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#ECEBFF"/><circle cx="60" cy="46" r="22" fill="#E9B48F"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="#F79B66"/></svg><div class="nm">Paciente · DEMO</div></div>
+  <div class="av" id="col"><div class="ghost"></div><svg class="real" width="160" height="160" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#ECEBFF"/><circle cx="60" cy="46" r="22" fill="#D9A27E"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="#FFFFFF" stroke="#3D2BBE" stroke-width="4"/></svg><div class="nm">Colega · DEMO</div></div>
+
+  <div class="pp" id="pp1"><i style="width:90%"></i><i style="width:70%"></i><i style="width:84%"></i><i style="width:60%"></i></div>
+  <div class="pp" id="pp2"><i style="width:90%"></i><i style="width:70%"></i><i style="width:84%"></i><i style="width:60%"></i></div>
+  <div class="tag" id="t1" style="left:470px;top:220px">papel</div>
+  <div class="tag" id="t2" style="left:1150px;top:220px">mensagem</div>
+  <div class="q" id="q1" style="left:1000px;top:320px">?</div>
+
+  <div class="tok" id="tok"><i class="mk"></i>Exame · DEMO</div>
+  <div class="chip" id="wait">aguardando aceite</div>
+  <div class="chip" id="okc">aceito</div>
+  <div class="tok" id="tok2" data-layout-allow-overlap><i class="mk"></i>Exame · DEMO</div>
+  <div id="phone"><div class="scr"><b>Minha carteira</b><div class="card">Exame · DEMO<br><span>liberado</span></div></div></div>
+
+  <div class="chip" id="inv">convite por link</div>
+  <div id="prev"><b>Prévia · Exame · DEMO</b><i class="ln" style="width:86%"></i><i class="ln" style="width:64%"></i><i class="ln" style="width:76%"></i><div class="lk">o resto, depois do cadastro</div>
+    <div class="done"><b>Exame · DEMO</b><span>incorporado à sua conta</span><p>pode comentar</p></div></div>
+  <div id="cmt">Comentário enviado à médica</div>
+  <div class="msg" id="m1">Recebi seu exame.</div>
+  <div class="msg" id="m2">Obrigado, doutora!</div>
+
+  <div class="cap" id="c1">O exame vivia <span>indo e voltando</span></div>
+  <div class="sub" id="s1">entre laboratório, consultório e paciente</div>
+  <div class="cap" id="c2">No IUS, o resultado <span>chega sozinho à médica</span></div>
+  <div class="cap" id="c3">Ela revisa, e o paciente <span>recebe na carteira</span></div>
+  <div class="cap" id="c4">Um colega vê o exame <span>antes do cadastro</span></div>
+  <div class="cap" id="c5">Cadastrou? O exame <span>já está lá</span></div>
+  <div class="cap" id="c6">E médica e paciente <span>seguem conversando</span></div>
+
+  <div id="close">
+    <div class="l1">O exame encontra quem cuida,<br><span>sem ida e volta.</span></div>
+    <img src="./assets/brand/ius-white.svg" alt="IUS">
+    <div class="sl">Conectamos médicos com pacientes.</div>
+    <div class="dm">Exemplo ilustrativo · dados DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/ius-intro.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: o filme monta a sua timeline; a mestra no fim é a única registrada
+window.__pieceParts = {};
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 44;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), dash = p.classList.contains('dash'), L = p.getTotalLength(); if (!dash) p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); if (!dash) tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
+
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: o exame indo e voltando (0,6–7,7 s); the patient stands between lab and clinic
+  inn('#lab', 0.6, { y: 20 }, 0.5);
+  tl.fromTo('#pat', { opacity: 0, x: -720, y: 20 }, { opacity: 1, x: -720, y: 0, duration: 0.5, ease: 'power2.out' }, 0.9);
+  inn('#cli', 1.2, { y: 20 }, 0.5);
+  inn('#c1', 1.3, { y: 16 }); inn('#s1', 1.6, { y: 12 });
+  inn('#loops', 1.8, {}, 0.5);
+  // Paper goes to the clinic and comes back, twice, on fixed arcs
+  function bounce(sel, t0, dx) { tl.to(sel, { x: dx, duration: 0.9, ease: 'sine.inOut' }, t0); tl.to(sel, { y: -110, duration: 0.45, ease: 'sine.out' }, t0); tl.to(sel, { y: 0, duration: 0.45, ease: 'sine.in' }, t0 + 0.45); tl.to(sel, { x: 0, duration: 0.9, ease: 'sine.inOut' }, t0 + 1.0); tl.to(sel, { y: 110, duration: 0.45, ease: 'sine.out' }, t0 + 1.0); tl.to(sel, { y: 0, duration: 0.45, ease: 'sine.in' }, t0 + 1.45); }
+  tl.set(['#pp1', '#pp2'], { opacity: 0, x: 0, y: 0 }, 0);
+  tl.set(['#pp1', '#pp2'], { opacity: 1 }, 2.0);
+  bounce('#pp1', 2.0, -620); bounce('#pp2', 2.4, 680);
+  bounce('#pp1', 4.1, -620); bounce('#pp2', 4.5, 680);
+  inn('#t1', 2.4, { y: 8 }, 0.4); inn('#t2', 2.8, { y: 8 }, 0.4);
+  inn('#q1', 3.4, { scale: 0.4 }, 0.4);
+  out(['#c1', '#s1'], 7.4);
+
+  // Batida 2: o resultado chega à médica (7,7–14,3 s)
+  out(['#loops', '#pp1', '#pp2', '#t1', '#t2', '#q1', '#cli'], 7.5, 0.4);
+  inn('#c2', 7.8, { y: 16 });
+  tl.to('#pat', { x: 0, duration: 0.9, ease: 'power2.inOut' }, 7.9);
+  inn('#doc', 8.7, { y: 20 }, 0.5);
+  draw('l1', 9.4, 0.5);
+  inn('#tok', 9.6, { scale: 0.6 }, 0.4);
+  tl.to('#tok', { x: 640, duration: 1.1, ease: 'power2.inOut' }, 10.2);
+  inn('#wait', 11.4, { x: -16 }, 0.4);
+  out('#c2', 14.0);
+
+  // Batida 3: revisa e o paciente recebe na carteira (14,3–20,9 s)
+  inn('#c3', 14.3, { y: 16 });
+  out('#wait', 14.6, 0.25);
+  inn('#okc', 14.85, { scale: 0.6 }, 0.35);
+  draw('l2', 15.6, 0.5);
+  // A copy leaves the doctor's exam and drops into the patient's wallet
+  tl.set('#tok2', { x: 640, y: 0, scale: 1 }, 0);
+  tl.fromTo('#tok2', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 16.1);
+  tl.to('#tok2', { x: 1355, y: 470, scale: 0.8, duration: 1.0, ease: 'power2.inOut' }, 16.45);
+  tl.to('#tok2', { opacity: 0, duration: 0.2 }, 17.2);
+  inn('#phone', 17.4, { y: 30 }, 0.5);
+  out('#c3', 20.6);
+
+  // Batida 4: o colega vê antes do cadastro (20,9–28,6 s)
+  inn('#c4', 20.9, { y: 16 });
+  inn('#col', 21.2, { y: 20 }, 0.5);
+  draw('l3', 21.8, 0.3);
+  inn('#inv', 22.0, { x: -16 }, 0.4);
+  inn('#prev', 23.2, { y: 20 }, 0.5);
+  out('#c4', 28.3);
+
+  // Batida 5: cadastrou e o exame já está lá (28,6–34,9 s)
+  inn('#c5', 28.6, { y: 16 });
+  out(['#inv', '#col .ghost'], 28.8, 0.3);
+  tl.fromTo('#col .real', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(2)' }, 29.0);
+  // The blurred preview gives way to the full exam, now in the colleague's account
+  tl.to(['#prev > b', '#prev > .ln', '#prev > .lk'], { opacity: 0, duration: 0.25 }, 29.6);
+  tl.fromTo('#prev .done', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 29.9);
+  inn('#cmt', 31.6, { y: 12 }, 0.45);
+  out('#c5', 34.6);
+
+  // Batida 6: médica e paciente conversando (34,9–39 s)
+  inn('#c6', 34.9, { y: 16 });
+  out(['#cmt', '#tok', '#okc'], 34.9, 0.3);
+  inn('#m1', 35.3, { y: 12 }, 0.4);
+  inn('#m2', 36.4, { y: 12 }, 0.4);
+  out('#c6', 38.8);
+
+  // Fecho (39,2–44 s, parado de 39,8 s ao fim)
+  out(['#hd', '#lab', '#doc', '#pat', '#col', '#lines', '#phone', '#prev', '#m1', '#m2'], 38.8, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 39.2);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (9 s) -> passagem (0.5 s) -> filme (44 s), uma só timeline
+(function () {
+  var INTRO = IUS_INTRO.DURATION, HANDOFF = 0.5;
+  var introTl = IUS_INTRO.mount(document.getElementById('intro'), gsap);
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro restores it
+  master.add(introTl.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut', immediateRender: false }, INTRO);
+  master.add(window.__pieceParts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - 53.5) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["ius-jornada-medico-paciente-intro"] = master;
+})();
+</script>
+</body>
+</html>
