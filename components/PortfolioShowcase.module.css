@@ -246,6 +246,11 @@
   height: 100%;
   object-fit: contain;
 }
+/* Welabs product lockups (symbol + welabs + name, about 7:1) bring their own graphite plate and margin */
+.logoPlate.widePlate {
+  width: 196px;
+  padding: 0;
+}
 .lightPlate {
   background: #eef0ef;
 }

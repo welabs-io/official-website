@@ -27,7 +27,7 @@
   },
   {
     "id": "channels-product",
-    "title": "Channels hosted product",
+    "title": "Tuner · Produto hospedado",
     "duration": 16,
     "compositionId": "channels-product",
     "src": "/motion/channels-product/index.html",
@@ -40,7 +40,7 @@
   },
   {
     "id": "channels-sdk",
-    "title": "Channels SDK",
+    "title": "Tuner · SDK",
     "duration": 16,
     "compositionId": "channels-sdk",
     "src": "/motion/channels-sdk/index.html",
@@ -507,7 +507,7 @@
   },
   {
     "id": "flow-canvas-build-intro",
-    "title": "Flow · Montar o fluxo",
+    "title": "Magneto · Montar o fluxo",
     "duration": 40,
     "compositionId": "flow-canvas-build-intro",
     "src": "/motion/flow-canvas-build-intro/index.html",
@@ -522,7 +522,7 @@
   },
   {
     "id": "flow-durable-run-intro",
-    "title": "Flow · Execução durável",
+    "title": "Magneto · Execução durável",
     "duration": 43,
     "compositionId": "flow-durable-run-intro",
     "src": "/motion/flow-durable-run-intro/index.html",
@@ -537,7 +537,7 @@
   },
   {
     "id": "flow-lifecycle-intro",
-    "title": "Flow · Ciclo de vida",
+    "title": "Magneto · Ciclo de vida",
     "duration": 44,
     "compositionId": "flow-lifecycle-intro",
     "src": "/motion/flow-lifecycle-intro/index.html",
@@ -552,7 +552,7 @@
   },
   {
     "id": "flow-copilot-intro",
-    "title": "Flow · Copiloto",
+    "title": "Magneto · Copiloto",
     "duration": 41,
     "compositionId": "flow-copilot-intro",
     "src": "/motion/flow-copilot-intro/index.html",
@@ -567,7 +567,7 @@
   },
   {
     "id": "crm-omnichannel-inbox-intro",
-    "title": "CRM · Caixa omnichannel",
+    "title": "Rello · Caixa omnichannel",
     "duration": 43,
     "compositionId": "crm-omnichannel-inbox-intro",
     "src": "/motion/crm-omnichannel-inbox-intro/index.html",
@@ -580,7 +580,7 @@
   },
   {
     "id": "crm-agent-studio-intro",
-    "title": "CRM · Estúdio de agentes",
+    "title": "Rello · Estúdio de agentes",
     "duration": 45,
     "compositionId": "crm-agent-studio-intro",
     "src": "/motion/crm-agent-studio-intro/index.html",
@@ -593,7 +593,7 @@
   },
   {
     "id": "crm-flow-builder-intro",
-    "title": "CRM · Automações",
+    "title": "Rello · Automações",
     "duration": 41,
     "compositionId": "crm-flow-builder-intro",
     "src": "/motion/crm-flow-builder-intro/index.html",
@@ -606,7 +606,7 @@
   },
   {
     "id": "crm-campaigns-journey-intro",
-    "title": "CRM · Campanhas",
+    "title": "Rello · Campanhas",
     "duration": 53,
     "compositionId": "crm-campaigns-journey-intro",
     "src": "/motion/crm-campaigns-journey-intro/index.html",
@@ -619,7 +619,7 @@
   },
   {
     "id": "hub-dominio-spa-intro",
-    "title": "Hub de domínio · Telas do modelo",
+    "title": "Domus · Telas do modelo",
     "duration": 43,
     "compositionId": "hub-dominio-spa-intro",
     "src": "/motion/hub-dominio-spa-intro/index.html",
@@ -634,7 +634,7 @@
   },
   {
     "id": "hub-fiscal-br-intro",
-    "title": "Hub de domínio · Fiscal",
+    "title": "Domus · Fiscal",
     "duration": 53,
     "compositionId": "hub-fiscal-br-intro",
     "src": "/motion/hub-fiscal-br-intro/index.html",
@@ -649,7 +649,7 @@
   },
   {
     "id": "hub-concessoes-intro",
-    "title": "Hub de domínio · Concessões",
+    "title": "Domus · Concessões",
     "duration": 41,
     "compositionId": "hub-concessoes-intro",
     "src": "/motion/hub-concessoes-intro/index.html",
@@ -664,7 +664,7 @@
   },
   {
     "id": "kb-ask-with-proof-intro",
-    "title": "KB · Resposta com prova",
+    "title": "Knowly · Resposta com prova",
     "duration": 53,
     "compositionId": "kb-ask-with-proof-intro",
     "src": "/motion/kb-ask-with-proof-intro/index.html",
@@ -679,7 +679,7 @@
   },
   {
     "id": "kb-sources-to-knowledge-intro",
-    "title": "KB · Fontes viram conhecimento",
+    "title": "Knowly · Fontes viram conhecimento",
     "duration": 43,
     "compositionId": "kb-sources-to-knowledge-intro",
     "src": "/motion/kb-sources-to-knowledge-intro/index.html",
@@ -694,7 +694,7 @@
   },
   {
     "id": "kb-who-reads-what-intro",
-    "title": "KB · Quem lê o quê",
+    "title": "Knowly · Quem lê o quê",
     "duration": 39,
     "compositionId": "kb-who-reads-what-intro",
     "src": "/motion/kb-who-reads-what-intro/index.html",
@@ -709,7 +709,7 @@
   },
   {
     "id": "channels-one-contract-intro",
-    "title": "Channels · Um contrato, todos os canais",
+    "title": "Tuner · Um contrato, todos os canais",
     "duration": 43,
     "compositionId": "channels-one-contract-intro",
     "src": "/motion/channels-one-contract-intro/index.html",
@@ -724,7 +724,7 @@
   },
   {
     "id": "channels-call-center-intro",
-    "title": "Channels · Central de voz",
+    "title": "Tuner · Central de voz",
     "duration": 53,
     "compositionId": "channels-call-center-intro",
     "src": "/motion/channels-call-center-intro/index.html",
@@ -739,7 +739,7 @@
   },
   {
     "id": "channels-whatsapp-official-intro",
-    "title": "Channels · WhatsApp oficial",
+    "title": "Tuner · WhatsApp oficial",
     "duration": 49,
     "compositionId": "channels-whatsapp-official-intro",
     "src": "/motion/channels-whatsapp-official-intro/index.html",

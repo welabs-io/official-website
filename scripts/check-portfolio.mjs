@@ -12,8 +12,9 @@ const hash = (x) => createHash("sha256").update(x).digest("hex");
 
 const proxySource = fs.readFileSync("proxy.ts", "utf8");
 const slugSource = fs.readFileSync("lib/public-slugs.ts", "utf8");
+// Sources are prettier-formatted (double quotes, wrapped lines); single quotes are accepted too.
 const retired = new Set(
-  proxySource.match(/const packs='([^']+)'/)[1].split("|"),
+  proxySource.match(/const packs\s*=\s*["']([^"']+)["']/)[1].split("|"),
 );
 // Parse a `const NAME: Record<string, string> = {...}` literal from public-slugs.ts.
 const record = (name) =>
@@ -21,11 +22,14 @@ const record = (name) =>
     [
       ...slugSource
         .match(new RegExp(`const ${name}[^=]*=\\s*\\{([\\s\\S]*?)\\};`))[1]
-        .matchAll(/'?([\w-]+)'?\s*:\s*'([^']+)'/g),
+        .matchAll(/["']?([\w-]+)["']?\s*:\s*["']([^"']+)["']/g),
     ].map(([, key, value]) => [key, value]),
   );
 const publicSlug = record("PUBLIC_SLUG");
+const formerSlug = record("FORMER_SLUG");
 const moved = record("MOVED_PRODUCT");
+// Film-only products (no framepack) share the product route; Welabs ones are checked by public slug.
+const motionProducts = JSON.parse(fs.readFileSync("lib/motion-products.json"));
 
 assert.equal(catalog.length, 22);
 assert.equal(catalog.filter((p) => p.publisher === "Welabs").length, 5);
@@ -129,6 +133,23 @@ for (const p of catalog) {
     hash(fs.readFileSync("public" + zipPath)),
   );
   presentations++;
+}
+
+// Former public slugs (e.g. hub-de-dominio) keep a permanent redirect to the current one.
+for (const [from, to] of Object.entries(formerSlug))
+  await expectRedirect("/welabs/produtos/" + from, "/welabs/produtos/" + to);
+for (const p of motionProducts.filter((p) => p.publisher === "Welabs")) {
+  const slug = publicSlug[p.id] ?? p.id;
+  if (slug !== p.id)
+    await expectRedirect(
+      "/welabs/produtos/" + p.id,
+      "/welabs/produtos/" + slug,
+    );
+  for (const q of ["?lang=pt", "?lang=en"]) {
+    const text = await (await get("/welabs/produtos/" + slug + q)).text();
+    assert.equal(titleOf(text), p.title, slug + q + " title");
+    html++;
+  }
 }
 
 for (const url of [

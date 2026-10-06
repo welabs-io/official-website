@@ -694,7 +694,7 @@
   },
   {
     "id": "erp",
-    "productName": "Hub de domínio",
+    "productName": "Domus",
     "publisher": "Welabs",
     "kind": "own-product",
     "maturity": "development",
@@ -715,27 +715,27 @@
     "presentationBase": "/presentations/erp/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "Hub de domínio",
-        "summary": "A camada de domínio e integração da plataforma: cadastros, regras, contratos, fiscal e integrações num barramento que cada produto consome com o que lhe foi concedido.",
+        "title": "Domus",
+        "summary": "Domus, o hub de domínio da plataforma: cadastros, regras, contratos, fiscal e integrações num barramento que cada produto consome com o que lhe foi concedido.",
         "audience": "Organizações e produtos que compartilham cadastros, regras e integrações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png",
-        "posterAlt": "Registros fictícios ilustram o Hub de domínio em desenvolvimento."
+        "posterAlt": "Registros fictícios ilustram o Domus em desenvolvimento."
       },
       "en": {
-        "title": "Domain hub",
-        "summary": "The platform's domain and integration layer: records, rules, contracts, tax and integrations on one bus that each product consumes with what it has been granted.",
+        "title": "Domus",
+        "summary": "Domus, the platform's domain hub: records, rules, contracts, tax and integrations on one bus that each product consumes with what it has been granted.",
         "audience": "Organizations and products that share records, rules and integrations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/erp/1.0.0/posters/en-scene-1.png",
-        "posterAlt": "Fictional records illustrate the domain hub in development."
+        "posterAlt": "Fictional records illustrate Domus in development."
       }
     },
     "status": "reservado"
   },
   {
     "id": "flow",
-    "productName": "Flow",
+    "productName": "Magneto",
     "publisher": "Welabs",
     "kind": "own-product",
     "maturity": "development",
@@ -756,16 +756,16 @@
     "presentationBase": "/presentations/flow/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "Flow",
-        "summary": "Flow em desenvolvimento: uma visão conceitual de automação para organizar tarefas, acompanhar etapas e consultar contexto.",
+        "title": "Magneto",
+        "summary": "Magneto em desenvolvimento: uma visão conceitual de automação para organizar tarefas, acompanhar etapas e consultar contexto.",
         "audience": "Equipes que organizam e acompanham automações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/flow/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Quadro ilustrativo de tarefas DEMO nas etapas genéricas de entrada, execução e revisão."
       },
       "en": {
-        "title": "Flow",
-        "summary": "Flow in development: a concept view of automation to organize tasks, follow stages and consult context.",
+        "title": "Magneto",
+        "summary": "Magneto in development: a concept view of automation to organize tasks, follow stages and consult context.",
         "audience": "Teams that organize and follow automations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/flow/1.0.0/posters/en-scene-1.png",
@@ -776,7 +776,7 @@
   },
   {
     "id": "wekb",
-    "productName": "KB",
+    "productName": "Knowly",
     "publisher": "Welabs",
     "kind": "own-product",
     "maturity": "development",
@@ -797,16 +797,16 @@
     "presentationBase": "/presentations/wekb/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "KB",
-        "summary": "KB em desenvolvimento: fontes DEMO e consulta conceitual de contexto com uma fonte exemplo.",
+        "title": "Knowly",
+        "summary": "Knowly em desenvolvimento: fontes DEMO e consulta conceitual de contexto com uma fonte exemplo.",
         "audience": "Equipes e agentes que consultam conhecimento.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/wekb/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Dois documentos DEMO organizam textos criados para a apresentação, sem corpus ou conteúdo corporativo real."
       },
       "en": {
-        "title": "KB",
-        "summary": "KB in development: DEMO sources and a concept query of context with an example source.",
+        "title": "Knowly",
+        "summary": "Knowly in development: DEMO sources and a concept query of context with an example source.",
         "audience": "Teams and agents consulting knowledge.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/wekb/1.0.0/posters/en-scene-1.png",
@@ -817,7 +817,7 @@
   },
   {
     "id": "welabs-crm",
-    "productName": "CRM",
+    "productName": "Rello",
     "publisher": "Welabs",
     "kind": "own-product",
     "maturity": "development",
@@ -838,16 +838,16 @@
     "presentationBase": "/presentations/welabs-crm/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "CRM",
-        "summary": "Produto Welabs em desenvolvimento para organizar oportunidades e acompanhar o relacionamento comercial.",
+        "title": "Rello",
+        "summary": "Rello, produto Welabs em desenvolvimento para organizar oportunidades e acompanhar o relacionamento comercial.",
         "audience": "Equipes comerciais de organizações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas."
       },
       "en": {
-        "title": "CRM",
-        "summary": "A Welabs product in development for organizing opportunities and following commercial relationships.",
+        "title": "Rello",
+        "summary": "Rello, a Welabs product in development for organizing opportunities and following commercial relationships.",
         "audience": "Commercial teams in organizations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png",

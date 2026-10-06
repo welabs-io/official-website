@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 // FAVICON DA SEÇÃO WELABS
-// Official brand favicon: amber "we" on a graphite tile (brand/welabs-produtos/vector/app-icons/favicon/welabs.*).
+// Official brand favicon: amber "w" alone on a graphite tile (brand/welabs-produtos/vector/app-icons/favicon/welabs.*,
+// operator decision of 2026-10-06). App icons of 192 px and up keep the "we".
 // SVG first for modern browsers; PNG sizes and ICO as fallbacks.
 export const WELABS_ICONS: Metadata["icons"] = {
   icon: [

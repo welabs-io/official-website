@@ -208,9 +208,9 @@ function WelabsProducts({ locale }: { locale: Locale }) {
   const products = ["erp", "wekb", "welabs-crm", "malupe"] as const;
   return (
     <div className={styles.welabsProducts}>
-      {/* Hero graph: Flow orchestrates the other products, so it links to each of them */}
+      {/* Hero graph: Magneto orchestrates the other products, so it links to each of them */}
       <Link
-        href="/welabs/produtos/flow"
+        href={`/welabs/produtos/${publicSlug("flow")}`}
         className={`${styles.product} ${styles.flowProduct}`}
         data-thread="flow"
         data-hero-node="flow"
@@ -218,13 +218,19 @@ function WelabsProducts({ locale }: { locale: Locale }) {
       >
         <div className={styles.productTop}>
           <span className={styles.flowMark} aria-hidden="true">
-            <svg viewBox="0 0 36 36" fill="none">
+            {/* Official Magneto symbol (brand/welabs-produtos/svg/flow-mark-dark.svg), one color on the amber tile */}
+            <svg viewBox="0 0 64 64" fill="none">
               <path
-                d="M6 10h18m-5-5 5 5-5 5M30 26H12m5-5-5 5 5 5"
+                d="M11.7 54V24.85A10.15 10.15 0 0 1 32 24.85V54M32 24.85A10.15 10.15 0 0 1 52.3 24.85V38"
                 stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeWidth="9.4"
+              />
+              <rect
+                x="47.6"
+                y="38"
+                width="9.4"
+                height="16"
+                fill="currentColor"
               />
             </svg>
           </span>
@@ -232,7 +238,7 @@ function WelabsProducts({ locale }: { locale: Locale }) {
           <Arrow />
         </div>
         <div className={styles.productTitle}>
-          <strong>Flow</strong>
+          <strong>Magneto</strong>
           <span>{t.flow}</span>
         </div>
         <div className={styles.flowBoard} aria-hidden="true">
@@ -290,7 +296,7 @@ function WelabsProducts({ locale }: { locale: Locale }) {
 // ABERTURA DAS HOMES
 // Signature moment: the title rises line by line, the product cards settle, then a thread leaves
 // the title and draws the graph (Imagine: integration → the other four capabilities, no product
-// presentation on that home; Welabs: Flow → every product). The heading also starts the page spine drawn by MotionLayer.
+// presentation on that home; Welabs: Magneto → every product). The heading also starts the page spine drawn by MotionLayer.
 export function CompanyHero({
   publisher,
   locale,

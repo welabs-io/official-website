@@ -42,7 +42,13 @@ const categories: Record<string, Sector> = {
 };
 
 // Products whose own logo names them; group or company logos (Report, Welabs) keep the name in text.
+// Welabs products named on 2026-10-06 use their official lockup (symbol + welabs + name); the
+// monitoring ecosystem has no product name yet and keeps the company logo with the name in text.
 export const PRODUCT_LOGO = new Set([
+  "flow",
+  "erp",
+  "wekb",
+  "welabs-crm",
   "tabela",
   "stant",
   "kiosk-brands",
@@ -78,7 +84,8 @@ type CardProps = {
   href: string;
   title: string;
   cover?: string;
-  logo?: { src: string; light: boolean } | null;
+  // `wide`: Welabs product lockup, wider than a product logo and drawn on its own plate
+  logo?: { src: string; light: boolean; wide?: boolean } | null;
   meta: [string, string];
   summary: string;
   accent: string;
@@ -128,7 +135,7 @@ function SystemCard({
           <h2 className={styles.name}>
             {logo ? (
               <span
-                className={`${styles.logoPlate} ${logo.light ? styles.lightPlate : styles.darkPlate}`}
+                className={`${styles.logoPlate} ${logo.light ? styles.lightPlate : styles.darkPlate}${logo.wide ? ` ${styles.widePlate}` : ""}`}
               >
                 <img
                   src={logo.src}
@@ -178,7 +185,11 @@ export function ProductCard({
   const sector = categories[item.id];
   const logo =
     PRODUCT_LOGO.has(item.id) && visual.logo
-      ? { src: visual.logo, light: visual.logoPlate === "light" }
+      ? {
+          src: visual.logo,
+          light: visual.logoPlate === "light",
+          wide: item.publisher === "Welabs",
+        }
       : null;
   const label =
     item.publisher === "Welabs"
@@ -206,7 +217,8 @@ export function ProductCard({
   );
 }
 
-// Products shown only through films (IUS; Channels on Welabs).
+// Products shown only through films (IUS; Tuner on Welabs). Links use the public slug; the logo
+// plate follows `logoPlate` (Tuner's lockup is drawn for a dark plate).
 function FilmProductCard({
   product,
   en,
@@ -217,11 +229,15 @@ function FilmProductCard({
   const film = coverFilm(product.id, product.publisher);
   const href =
     product.publisher === "Welabs"
-      ? `/welabs/produtos/${product.id}`
-      : `/portfolio/${product.id}`;
+      ? `/welabs/produtos/${publicSlug(product.id)}`
+      : `/portfolio/${publicSlug(product.id)}`;
   const logo =
     "logo" in product && typeof product.logo === "string"
-      ? { src: product.logo, light: true }
+      ? {
+          src: product.logo,
+          light: !("logoPlate" in product && product.logoPlate === "dark"),
+          wide: product.publisher === "Welabs",
+        }
       : null;
   return (
     <SystemCard

@@ -10,15 +10,18 @@ import { idFromSlug, publicSlug, retiredSlug } from "@/lib/public-slugs";
 import motionProducts from "@/lib/motion-products.json";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 // Public slugs replace internal ids in URLs; the old id redirects to the public slug.
-// Film-only Welabs products (Channels) share this route with the presentation pages.
+// Film-only Welabs products (Tuner) share this route with the presentation pages; they are found by
+// public slug too, so their internal id only redirects.
 const motionProduct = (slug: string) =>
-  motionProducts.find((p) => p.id === slug && p.publisher === "Welabs");
+  motionProducts.find(
+    (p) => p.id === idFromSlug(slug) && p.publisher === "Welabs",
+  );
 export function generateStaticParams() {
   return [
     ...framepackIds("Welabs").map(({ slug }) => ({ slug: publicSlug(slug) })),
     ...motionProducts
       .filter((p) => p.publisher === "Welabs")
-      .map((p) => ({ slug: p.id })),
+      .map((p) => ({ slug: publicSlug(p.id) })),
   ];
 }
 export async function generateMetadata({

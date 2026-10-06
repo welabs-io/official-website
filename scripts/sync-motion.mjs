@@ -110,7 +110,8 @@ const RESIDUOS = "Sistema de Gerenciamento de Resíduos";
 const KNOWHOW = { also: ["servicos"] };
 // Insertion order is the gallery order; the collection order lives in lib/emphasis.json.
 const ROUND2 = {
-  // Know-how ("servicos") is shown through the Welabs chain and the Flow, domain hub, KB and Channels films.
+  // Know-how ("servicos") is shown through the Welabs chain and the Magneto, Domus, Knowly and Tuner films.
+  // Welabs product names since 2026-10-06: Magneto (flow), Domus (erp), Knowly (wekb), Rello (welabs-crm), Tuner (channels).
   // The svc-* pieces left on 2026-10-04: they cite "ERP" as a node or the word "cliente".
   "welabs-chain-overview-intro": {
     kind: "topology",
@@ -187,82 +188,80 @@ const ROUND2 = {
   "ius-jornada-medico-paciente-intro": reel("ius", "IUS · Jornada", "journey"),
   "flow-canvas-build-intro": reel(
     "flow",
-    "Flow · Montar o fluxo",
+    "Magneto · Montar o fluxo",
     "business",
     KNOWHOW,
   ),
   "flow-durable-run-intro": reel(
     "flow",
-    "Flow · Execução durável",
+    "Magneto · Execução durável",
     "business",
     KNOWHOW,
   ),
   "flow-lifecycle-intro": reel(
     "flow",
-    "Flow · Ciclo de vida",
+    "Magneto · Ciclo de vida",
     "business",
     KNOWHOW,
   ),
-  "flow-copilot-intro": reel("flow", "Flow · Copiloto", "business", KNOWHOW),
-  "crm-omnichannel-inbox-intro": reel("welabs-crm", "CRM · Caixa omnichannel"),
-  "crm-agent-studio-intro": reel("welabs-crm", "CRM · Estúdio de agentes"),
-  "crm-flow-builder-intro": reel("welabs-crm", "CRM · Automações"),
+  "flow-copilot-intro": reel("flow", "Magneto · Copiloto", "business", KNOWHOW),
+  "crm-omnichannel-inbox-intro": reel(
+    "welabs-crm",
+    "Rello · Caixa omnichannel",
+  ),
+  "crm-agent-studio-intro": reel("welabs-crm", "Rello · Estúdio de agentes"),
+  "crm-flow-builder-intro": reel("welabs-crm", "Rello · Automações"),
   "crm-campaigns-journey-intro": reel(
     "welabs-crm",
-    "CRM · Campanhas",
+    "Rello · Campanhas",
     "journey",
   ),
   "hub-dominio-spa-intro": reel(
     "erp",
-    "Hub de domínio · Telas do modelo",
+    "Domus · Telas do modelo",
     "business",
     KNOWHOW,
   ),
-  "hub-fiscal-br-intro": reel(
-    "erp",
-    "Hub de domínio · Fiscal",
-    "business",
-    KNOWHOW,
-  ),
+  "hub-fiscal-br-intro": reel("erp", "Domus · Fiscal", "business", KNOWHOW),
   "hub-concessoes-intro": reel(
     "erp",
-    "Hub de domínio · Concessões",
+    "Domus · Concessões",
     "business",
     KNOWHOW,
   ),
   "kb-ask-with-proof-intro": reel(
     "wekb",
-    "KB · Resposta com prova",
+    "Knowly · Resposta com prova",
     "business",
     KNOWHOW,
   ),
   "kb-sources-to-knowledge-intro": reel(
     "wekb",
-    "KB · Fontes viram conhecimento",
+    "Knowly · Fontes viram conhecimento",
     "business",
     KNOWHOW,
   ),
   "kb-who-reads-what-intro": reel(
     "wekb",
-    "KB · Quem lê o quê",
+    "Knowly · Quem lê o quê",
     "business",
     KNOWHOW,
   ),
   "channels-one-contract-intro": reel(
     "channels",
-    "Channels · Um contrato, todos os canais",
+    "Tuner · Um contrato, todos os canais",
     "business",
     KNOWHOW,
   ),
   "channels-call-center-intro": reel(
     "channels",
-    "Channels · Central de voz",
+    "Tuner · Central de voz",
     "business",
     KNOWHOW,
   ),
   "channels-whatsapp-official-intro": reel(
     "channels",
-    "Channels · WhatsApp oficial",
+    "Tuner · WhatsApp oficial",
     "business",
     KNOWHOW,
   ),
@@ -332,11 +331,13 @@ function findPlayer() {
   throw new Error(`HyperFrames ${PLAYER_VERSION} not found in the npm cache`);
 }
 
-// Welabs products have no product identity yet; the company logo already names Welabs.
+// Welabs products carry their own names since 2026-10-06 (the old We{product} titles map to them).
 const RENAMED = {
-  WeERP: "ERP",
-  WeKB: "KB",
-  WeCRM: "CRM",
+  WeERP: "Domus",
+  WeKB: "Knowly",
+  WeCRM: "Rello",
+  "Channels hosted product": "Tuner · Produto hospedado",
+  "Channels SDK": "Tuner · SDK",
   WeMalupe: "Ecossistema Monitoramento",
   "Get-Go": "Gerador de formulários",
   "IMA Auto de Infração": "Auto Infração",

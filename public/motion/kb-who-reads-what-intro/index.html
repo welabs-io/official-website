@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<title>KB · quem lê o quê (com abertura)</title>
+<title>Knowly ·quem lê o quê (com abertura)</title>
 <meta name="viewport" content="width=1920, height=1080">
 <style>
 /* TIPOGRAFIA E TOKENS DA MARCA */
@@ -91,6 +91,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
 /* FECHO */
 #closing{position:absolute;z-index:40;left:0;top:0;width:1920px;height:1080px;opacity:0}
+/* Product lockup in the free lower band of the closing frame */
+#wlLockup{position:absolute;left:0;width:1920px;top:780px;display:flex;justify-content:center}
+#wlLockup img{height:124px}
 #cl1{position:absolute;left:0;width:1920px;top:360px;text-align:center;font-size:84px;font-weight:800;letter-spacing:-2px;white-space:nowrap}
 #cl1 span{color:var(--coral)}
 #cl2{position:absolute;left:0;width:1920px;top:500px;text-align:center;font-size:32px;font-weight:600;color:var(--muted);white-space:nowrap}
@@ -215,6 +218,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div id="cl1">Cada resposta respeita <span>quem pergunta</span>.</div>
     <div id="cl2">Plataforma ∩ pessoa ∩ conexão · na dúvida, nega · revogação ao vivo · tudo auditado</div>
     <div id="cl3"><span>sandbox · dados DEMO</span><span class="pp">Finalidade do uso · Previsto</span></div>
+    <!-- Official product lockup (symbol + welabs + name) closes the film -->
+    <div id="wlLockup"><img src="./assets/brand/welabs-lockup-on-dark.svg" alt="welabs knowly"></div>
   </div>
   <div id="pad"></div>
 </div><!-- /film -->

@@ -17,12 +17,14 @@
   {
     "id": "channels",
     "publisher": "Welabs",
-    "title": "Channels",
+    "title": "Tuner",
+    "logo": "/brands/welabs/welabs-tuner-dark.svg",
+    "logoPlate": "dark",
     "sector": ["Canais de atendimento", "Service channels"],
     "stage": ["Em desenvolvimento", "In development"],
     "summary": [
-      "Um contrato para todos os canais: WhatsApp oficial com número próprio e templates, central de voz com fila e transferência, e eventos assinados para qualquer produto que se conecte.",
-      "One contract for every channel: official WhatsApp with its own number and templates, a voice centre with queues and transfers, and signed events for any product that connects."
+      "Tuner, um contrato para todos os canais: WhatsApp oficial com número próprio e templates, central de voz com fila e transferência, e eventos assinados para qualquer produto que se conecte.",
+      "Tuner, one contract for every channel: official WhatsApp with its own number and templates, a voice centre with queues and transfers, and signed events for any product that connects."
     ],
     "audience": [
       "Produtos e equipes que atendem por mensagem e voz.",

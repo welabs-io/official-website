@@ -46,11 +46,16 @@ const legacyHidden = new Set([
   "erp",
   "wekb",
   "welabs-crm",
+  // The Flow pack still says "Flow"; the product is Magneto since 2026-10-06
+  "flow",
 ]);
 // Products whose own logo replaces the page title; client-group logos keep a smaller title.
 const productLogo = PRODUCT_LOGO;
-// Imagine products whose films show Welabs products (Tabe.la operation shows Flow Studio and Channels) link to Welabs.
+// Imagine products whose films show Welabs products (Tabe.la operation shows Magneto and Tuner) link to Welabs.
 const citesWelabs = new Set(["tabela"]);
+// Products with their own brand built by Welabs carry the "feito pela Welabs" seal, never the Welabs
+// symbol inside their brand (operator decision of 2026-10-06).
+const madeByWelabs = new Set(["stant", "tabela", "wego"]);
 const href = (p: Item) =>
   p.publisher === "Welabs"
     ? `/welabs/produtos/${publicSlug(p.id)}`
@@ -384,6 +389,11 @@ export function ProductPage({
                 {en ? "WHO IT SERVES" : "PARA QUEM"}
               </span>
               <p>{d.audience}</p>
+              {madeByWelabs.has(item.id) && (
+                <Link className={styles.small} href="/welabs">
+                  {en ? "MADE BY WELABS" : "FEITO PELA WELABS"} ↗
+                </Link>
+              )}
             </aside>
           </div>
         </div>
@@ -450,8 +460,8 @@ export function ProductPage({
               data-thread-to="films"
             >
               {en
-                ? "Flow and Channels: see the Welabs platform"
-                : "Flow e Channels: conheça a plataforma Welabs"}{" "}
+                ? "Magneto and Tuner: see the Welabs platform"
+                : "Magneto e Tuner: conheça a plataforma Welabs"}{" "}
               ↗
             </Link>
           )}
@@ -766,7 +776,7 @@ export function SolutionsPage({
             <div className={styles.solutionList}>
               {solutions.map(([id, title, copy], i) => {
                 const item = catalog.find((p) => p.id === id)!;
-                // The domain hub (first) feeds every other product: one thread reaches each of them.
+                // Domus, the domain hub (first), feeds every other product: one thread reaches each of them.
                 return (
                   <article
                     key={id}
@@ -936,10 +946,12 @@ function ImagineApproach({ en }: { en: boolean }) {
 }
 
 // PRODUTOS APRESENTADOS SÓ POR FILME
-// Products without a legacy framepack (IUS; Channels on Welabs) get a film-only card and page.
+// Products without a legacy framepack (IUS; Tuner on Welabs) get a film-only card and page, linked by public slug.
 type MotionProduct = (typeof motionProducts)[number];
 const motionHref = (p: MotionProduct) =>
-  p.publisher === "Welabs" ? `/welabs/produtos/${p.id}` : `/portfolio/${p.id}`;
+  p.publisher === "Welabs"
+    ? `/welabs/produtos/${publicSlug(p.id)}`
+    : `/portfolio/${publicSlug(p.id)}`;
 function MotionProductGrid({
   en,
   publisher = "Imagine",
@@ -1022,7 +1034,10 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
               </span>
               {"logo" in product && typeof product.logo === "string" ? (
                 <h1 className={styles.logoTitle}>
-                  <span className={`${styles.heroLogo} ${styles.lightLogo}`}>
+                  {/* Plate follows `logoPlate`; Tuner's official lockup is drawn for a dark plate */}
+                  <span
+                    className={`${styles.heroLogo} ${"logoPlate" in product && product.logoPlate === "dark" ? styles.darkLogo : styles.lightLogo}`}
+                  >
                     <img
                       src={product.logo}
                       alt={product.title}

@@ -884,7 +884,7 @@
     }
   },
   "erp": {
-    "logo": "/brands/welabs/welabs-logo-dark.svg",
+    "logo": "/brands/welabs/welabs-domus-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -892,7 +892,7 @@
           "id": "scene-1",
           "title": "Documentos de gestão",
           "summary": "Documentos de demonstração dão contexto a uma visão de gestão que a Welabs está desenvolvendo.",
-          "alt": "Documentos vazios e registros fictícios ilustram o contexto de gestão do ERP em desenvolvimento.",
+          "alt": "Documentos vazios e registros fictícios ilustram o contexto de gestão do Domus em desenvolvimento.",
           "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png"
         },
         {
@@ -915,7 +915,7 @@
           "id": "scene-1",
           "title": "Management files",
           "summary": "Demonstration documents give context to a management view Welabs is developing.",
-          "alt": "Empty documents and fictional records illustrate the management context of ERP in development.",
+          "alt": "Empty documents and fictional records illustrate the management context of Domus in development.",
           "src": "/presentations/erp/1.0.0/posters/en-scene-1.png"
         },
         {
@@ -936,7 +936,7 @@
     }
   },
   "flow": {
-    "logo": "/brands/welabs/welabs-logo-dark.svg",
+    "logo": "/brands/welabs/welabs-magneto-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -988,7 +988,7 @@
     }
   },
   "wekb": {
-    "logo": "/brands/welabs/welabs-logo-dark.svg",
+    "logo": "/brands/welabs/welabs-knowly-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
@@ -1040,7 +1040,7 @@
     }
   },
   "welabs-crm": {
-    "logo": "/brands/welabs/welabs-logo-dark.svg",
+    "logo": "/brands/welabs/welabs-rello-dark.svg",
     "logoPlate": "dark",
     "scenes": {
       "pt-BR": [
