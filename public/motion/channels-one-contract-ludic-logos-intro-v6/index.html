@@ -16,7 +16,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8;display:flex;align-items:center}
 /* Header mark is now the official product logo; height only, name x-height ≈ 1.1 × the 56 px Inter it replaced */
 #wm{position:relative;flex:none;display:flex;align-items:center;height:72px}
-#wm img{display:block;height:76px}
+/* Raised 8 px (negative margin halves in the centered flex box) so the logo baseline sits on the kicker baseline */
+#wm img{display:block;height:76px;margin-top:-16px}
 .cap span,#close span{color:var(--coral)}
 #kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
 #demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
@@ -80,7 +81,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .pd b{display:block;font-size:32px;font-weight:800;white-space:nowrap}
 /* LOGO DE PRODUTO NO CARTÃO */
 /* The product card shows the logo instead of a bold name; height only (name x-height ≈ 23 px) */
-.pd .lg{display:flex;align-items:flex-end;height:44px;margin-top:0}
+/* -5 px top margin: the 44 px logo row takes the same space as the 32 px bold name (≈39 px), so the caption
+   below lines up with the other cards' captions */
+.pd .lg{display:flex;align-items:flex-end;height:44px;margin-top:-5px}
 .pd .lg img{display:block;height:44px}
 .pd span{display:block;margin-top:2px;font-size:24px;color:var(--muted);white-space:nowrap}
 .pd .tick{position:absolute;right:-14px;top:-14px;width:46px;height:46px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
@@ -353,7 +356,8 @@ window.__pieceParts = {};
 
   // Fecho (31,0–36 s, parado de 31,9 s ao fim)
   out(['#hd', '#ch1', '#ch2', '#ch3', '#ch4', '#dial', '#dlab', '#pd1', '#pd2', '#pd3', '#fresh', '#wires'], 31.0, 0.4);
-  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 31.3);
+  // Closing starts once the scene fade-out ends (31.0 + 0.4), so the two never overlap
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 31.4);
   tl.set('#close', { opacity: 1 }, D);
 
   window.__timelines = window.__timelines || {};

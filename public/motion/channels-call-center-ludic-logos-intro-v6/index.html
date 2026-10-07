@@ -16,7 +16,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8;display:flex;align-items:center}
 /* Header mark is now the official product logo; height only, name x-height ≈ 1.1 × the 56 px Inter it replaced */
 #wm{position:relative;flex:none;display:flex;align-items:center;height:72px}
-#wm img{display:block;height:76px}
+/* Raised 8 px (negative margin halves in the centered flex box) so the logo baseline sits on the kicker baseline */
+#wm img{display:block;height:76px;margin-top:-16px}
 .cap span,#close span{color:var(--coral)}
 #kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
 #demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
@@ -33,7 +34,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #call{position:absolute;left:376px;top:426px;width:48px;height:48px;border-radius:50%;background:var(--coral);border:5px solid #FFC75A;box-shadow:0 0 30px rgba(var(--wl-amber-rgb),.9);opacity:0;z-index:7}
 
 /* BOAS-VINDAS FALADA */
-#wel{position:absolute;left:470px;top:300px;width:600px;height:180px;border-radius:28px 28px 28px 8px;background:var(--panel2);border:3px solid var(--line);padding:24px 30px;opacity:0;z-index:3}
+/* Wider bubble (600 -> 740 px): the greeting line overflowed the border; it still ends left of the agents (1240 px) */
+#wel{position:absolute;left:470px;top:300px;width:740px;height:180px;border-radius:28px 28px 28px 8px;background:var(--panel2);border:3px solid var(--line);padding:24px 30px;opacity:0;z-index:3}
 #wel b{display:flex;align-items:center;gap:14px;font-size:30px;font-weight:800;white-space:nowrap}
 #wel b svg{color:var(--coral);flex:none}
 #bars{display:flex;align-items:center;gap:10px;height:70px;margin-top:16px}
