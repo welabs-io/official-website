@@ -42,11 +42,11 @@ const RUNTIME_ENTRIES = [
 const isRootStyle = (name) => name.endsWith(".css");
 
 // JORNADAS DA PRIMEIRA RODADA
-// Round 20261001 journeys this site publishes: only the Tuner SDK piece. The other Welabs journeys were
-// superseded by the per-product reels below (wemalupe also shows an internal codename), and the Imagine
-// journeys belong to the Imagine site since the split of 2026-10-07. channels-product left on 2026-10-07:
-// it still says "Channels" and has no intro (its clean cut was not accepted for the site).
-const SITE_JOURNEYS = new Set(["channels-sdk"]);
+// Round 20261001 journeys this site publishes: none since 2026-10-07. The Welabs journeys were superseded
+// by the per-product reels below (wemalupe also shows an internal codename), and the Imagine journeys
+// belong to the Imagine site since the split of 2026-10-07. channels-product and channels-sdk left on
+// 2026-10-07: both still carry the retired "Channels" name, and Tuner has its own reel films.
+const SITE_JOURNEYS = new Set([]);
 
 // Round 20261002 pieces, bound to the coordinator's accepted hash.
 const round2 = resolve(

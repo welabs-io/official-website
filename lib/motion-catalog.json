@@ -1,18 +1,5 @@
 [
   {
-    "id": "channels-sdk",
-    "title": "Tuner · SDK",
-    "duration": 16,
-    "compositionId": "channels-sdk",
-    "src": "/motion/channels-sdk/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "channels-sdk",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
     "id": "welabs-chain-overview-intro-v6",
     "title": "Plataforma Welabs · Os produtos se encaixam",
     "duration": 43,
