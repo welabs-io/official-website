@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Stant · Some o retrabalho (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E PAPEL DE PROJETO */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0A2E58;--ink:#FFFFFF;--mute:#C3D3E6;--line:rgba(255,255,255,.80);--acc:#FF4025;--acc2:#FF8166;--ok:#34D399;--okd:#0E7A50;--warn:#FFB547;--paper:#FFFFFF;--pink:#13253E;--pmute:#56677E;--pline:#DCE4EE}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;color:var(--ink);font-family:"Inter",sans-serif;background:linear-gradient(rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(90deg,rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,radial-gradient(1300px 800px at 50% 42%,#0F3D72 0%,#0A2E58 58%,#06203F 100%)}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#hlogo{position:absolute;left:0;top:13px;height:46px}
+#kick{position:absolute;left:234px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--acc);font-size:30px;font-weight:600;color:var(--mute);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid rgba(255,255,255,.35);border-radius:999px;font-size:24px;font-weight:700;color:var(--mute);line-height:36px}
+.cap{position:absolute;left:0;top:900px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;color:var(--ink)}
+.cap span,#close span{color:var(--acc2)}
+.sub{position:absolute;left:0;top:974px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--mute);opacity:0;white-space:nowrap}
+
+/* CARTÕES GENÉRICOS E LIGAÇÕES */
+.cd{position:absolute;height:130px;border-radius:26px;background:var(--paper);box-shadow:0 18px 40px rgba(0,0,0,.30);display:flex;align-items:center;gap:20px;padding-left:24px;opacity:0;color:var(--pink);white-space:nowrap}
+.cd .ic{width:72px;height:72px;border-radius:20px;background:#EAF0F7;display:grid;place-items:center;flex:none}
+.cd .a{font-size:30px;font-weight:800;line-height:38px}
+.cd .b{font-size:24px;font-weight:600;color:var(--pmute);line-height:32px}
+.lk{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+.lk path{fill:none;stroke-width:5;stroke-linecap:round}
+#lk1 path{stroke:rgba(255,255,255,.55);stroke-dasharray:6 14}
+#lk4 path{stroke:var(--acc2);stroke-dasharray:4 14}
+
+/* BATIDA 1: A MESMA INFORMAÇÃO DIGITADA DE NOVO */
+#src{left:160px;top:400px;width:420px;height:150px}
+#src .ic{background:#FFE7E1}
+#x1{left:1240px;top:180px;width:480px;height:110px}#x2{left:1240px;top:330px;width:480px;height:110px}#x3{left:1240px;top:480px;width:480px;height:110px}#x4{left:1240px;top:630px;width:480px;height:110px}
+.x .ic{width:60px;height:60px;border-radius:16px;background:#FFF1DA}
+
+/* NÚCLEO STANT */
+#hub{position:absolute;left:820px;top:330px;width:280px;height:280px;border-radius:50%;background:#0F3D72;border:4px solid rgba(255,255,255,.85);box-shadow:0 0 0 18px rgba(255,255,255,.06),0 24px 60px rgba(0,0,0,.35);display:grid;place-items:center;opacity:0}
+#hub img{height:46px}
+
+/* BATIDA 2: A PLANILHA QUE JÁ EXISTE ENTRA */
+#xls{left:160px;top:400px;width:440px;height:150px}
+#xls .ic{background:#DDF6EA}
+#plan{position:absolute;left:1240px;top:240px;width:520px;height:460px;border-radius:30px;background:var(--paper);box-shadow:0 26px 56px rgba(0,0,0,.35);opacity:0;color:var(--pink)}
+#plan .tt{position:absolute;left:34px;top:30px;font-size:32px;font-weight:800;white-space:nowrap}
+#plan .st{position:absolute;left:34px;top:76px;font-size:24px;font-weight:600;color:var(--pmute);white-space:nowrap}
+.pr{position:absolute;left:34px;width:452px;height:64px;opacity:0}
+.pr .n{position:absolute;left:0;top:0;font-size:28px;font-weight:700;line-height:64px;white-space:nowrap}
+.pr i{position:absolute;top:20px;height:24px;border-radius:12px;background:#9FC4EA}
+#p1{top:140px}#p2{top:216px}#p3{top:292px}#p4{top:368px}
+
+/* BATIDA 3: CADASTRO QUE VALE PARA O GRUPO */
+#e1{left:160px;top:250px;width:460px;height:140px}#e2{left:160px;top:560px;width:460px;height:140px}#e3{left:1300px;top:400px;width:460px;height:140px}
+.e{align-items:flex-start;padding-top:24px}
+.e .ic{background:#E3EAF5}
+.cp{position:absolute;left:860px;top:442px;height:56px;padding:0 20px;border-radius:28px;background:var(--acc);color:#fff;font-size:26px;font-weight:800;line-height:56px;opacity:0;white-space:nowrap}
+.okd{position:absolute;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#ok1{left:548px;top:226px}#ok2{left:548px;top:536px}#ok3{left:1688px;top:376px}
+
+/* BATIDA 4: O ANDAMENTO CHEGA A QUEM PRECISA */
+#y1{left:160px;top:250px;width:470px}#y2{left:160px;top:560px;width:470px}#y3{left:1250px;top:250px;width:520px}#y4{left:1250px;top:560px;width:520px}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:250px;width:1920px;text-align:center;font-size:74px;font-weight:800;letter-spacing:-2px;line-height:92px;color:var(--ink)}
+#close img{position:absolute;left:746px;top:560px;height:100px}
+#close .dm{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--mute)}
+/* ABERTURA STANT-INTRO (copiada de pieces/stant-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#0A2E58;font-family:Inter,sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:648px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;color:#EAF1F8;opacity:0;text-shadow:0 2px 18px rgba(2,16,34,.45)}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-stant-plataforma-ludic-intro" data-width="1920" data-height="1080" data-start="0" data-duration="43">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Qualidade de obra, do campo à gestão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/biz-stant-plataforma-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <img id="hlogo" src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div id="kick">Some o retrabalho</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <!-- Batida 1: uma informação, quatro digitações -->
+  <svg class="lk" id="lk1" viewBox="0 0 1920 1080"><path d="M584 475C900 475 940 235 1236 235"/><path d="M584 475C900 475 940 385 1236 385"/><path d="M584 475C900 475 940 535 1236 535"/><path d="M584 475C900 475 940 685 1236 685"/></svg>
+  <div class="cd" id="src"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M4 20V10M10 20V6M16 20v-8M22 20H2" stroke="#FF4025" stroke-width="2.6" stroke-linecap="round"/></svg></span><div><div class="a">Avanço da obra</div><div class="b">Torre DEMO</div></div></div>
+  <div class="cd x" id="x1"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z" fill="none" stroke="#B26B00" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Planilha</div><div class="b">digitado à mão</div></div></div>
+  <div class="cd x" id="x2"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z" fill="none" stroke="#B26B00" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Sistema da construtora</div><div class="b">digitado de novo</div></div></div>
+  <div class="cd x" id="x3"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z" fill="none" stroke="#B26B00" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Relatório da diretoria</div><div class="b">digitado de novo</div></div></div>
+  <div class="cd x" id="x4"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z" fill="none" stroke="#B26B00" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Outra empresa do grupo</div><div class="b">e de novo</div></div></div>
+
+  <!-- Núcleo: o Stant no meio -->
+  <div id="hub"><img src="./assets/brand/stant-logo-dark.svg" alt="stant"></div>
+
+  <!-- Batida 2: a planilha entra e vira planejamento -->
+  <div class="cd" id="xls"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#0E7A50" stroke-width="2.2"/><path d="M3 9h18M3 15h18M9 3v18" stroke="#0E7A50" stroke-width="2"/></svg></span><div><div class="a">Planilha que já existe</div><div class="b">atividades e etapas</div></div></div>
+  <div id="plan">
+    <div class="tt">Planejamento · Torre DEMO</div>
+    <div class="st">importado da planilha, com prévia</div>
+    <div class="pr" id="p1"><div class="n">Fundação</div><i style="left:200px;width:120px;background:#34D399"></i></div>
+    <div class="pr" id="p2"><div class="n">Estrutura</div><i style="left:260px;width:130px;background:#34D399"></i></div>
+    <div class="pr" id="p3"><div class="n">Alvenaria</div><i style="left:320px;width:110px;background:#FFB547"></i></div>
+    <div class="pr" id="p4"><div class="n">Acabamento</div><i style="left:370px;width:82px"></i></div>
+  </div>
+
+  <!-- Batida 3: o cadastro vale para as empresas do grupo -->
+  <div class="cd e" id="e1"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M5 21V5l7-2v18M12 21V8l7 2v11M3 21h18" fill="none" stroke="#24466F" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Empresa A · DEMO</div></div></div>
+  <div class="cd e" id="e2"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M5 21V5l7-2v18M12 21V8l7 2v11M3 21h18" fill="none" stroke="#24466F" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Empresa B · DEMO</div></div></div>
+  <div class="cd e" id="e3"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M5 21V5l7-2v18M12 21V8l7 2v11M3 21h18" fill="none" stroke="#24466F" stroke-width="2.2" stroke-linejoin="round"/></svg></span><div><div class="a">Empresa C · DEMO</div></div></div>
+  <div class="cp" id="cp1">Serviços</div><div class="cp" id="cp2">Serviços</div><div class="cp" id="cp3">Serviços</div>
+  <div class="okd" id="ok1"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="okd" id="ok2"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="okd" id="ok3"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <!-- Batida 4: o andamento sai do núcleo para quem precisa -->
+  <svg class="lk" id="lk4" viewBox="0 0 1920 1080"><path d="M836 400L634 315"/><path d="M836 540L634 625"/><path d="M1084 400L1246 315"/><path d="M1084 540L1246 625"/></svg>
+  <div class="cd" id="y1"><span class="ic"><svg width="38" height="38" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="#24466F" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h6M9 16h4" stroke="#24466F" stroke-width="2.2" stroke-linecap="round"/></svg></span><div><div class="a">Relatórios</div><div class="b">em PDF e planilha</div></div></div>
+  <div class="cd" id="y2"><span class="ic"><svg width="38" height="38" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z" fill="#24466F"/><circle cx="12" cy="21" r="2" fill="#24466F"/></svg></span><div><div class="a">Avisos</div><div class="b">por e-mail e no celular</div></div></div>
+  <div class="cd" id="y3"><span class="ic"><svg width="38" height="38" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2" fill="none" stroke="#24466F" stroke-width="2.2"/><path d="M8 21h8M12 17v4" stroke="#24466F" stroke-width="2.2" stroke-linecap="round"/></svg></span><div><div class="a">Sistemas da construtora</div><div class="b">leem o andamento direto</div></div></div>
+  <div class="cd" id="y4"><span class="ic"><svg width="38" height="38" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="#24466F" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 10h8" stroke="#24466F" stroke-width="2.2" stroke-linecap="round"/></svg></span><div><div class="a">Assistente de IA</div><div class="b">só consulta, não altera</div></div></div>
+
+  <div class="cap" id="c1">A mesma informação <span>era digitada de novo</span></div>
+  <div class="sub" id="s1">em cada planilha, sistema e relatório</div>
+  <div class="cap" id="c2">O que já existe <span>entra direto</span></div>
+  <div class="sub" id="s2">o planejamento chega pela planilha, sem redigitar</div>
+  <div class="cap" id="c3">Cadastrou uma vez, <span>vale para o grupo</span></div>
+  <div class="sub" id="s3">o cadastro de serviços se repete nas empresas do grupo</div>
+  <div class="cap" id="c4">E o andamento <span>chega a quem precisa</span></div>
+  <div class="sub" id="s4">relatórios, avisos, sistemas da construtora e assistentes, sem retrabalho</div>
+
+  <div id="close">
+    <div class="l1">Digitou uma vez, chega a todo lugar.<br><span>Some o retrabalho.</span></div>
+    <img src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null, curT = 0;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_BLUEPRINT]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uT', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    curT = t;
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uT, t); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+  // Canvas text needs the face loaded; redraw the current frame once it is
+  if (document.fonts && document.fonts.load) document.fonts.load('600 24px Inter').then(function () { render(curT); });
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; a frase entra depois do wordmark
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  tl.fromTo('#intro-line', { opacity: 0, y: -22 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/biz-stant-plataforma-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 34;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function pop(sel, t) { tl.fromTo(sel, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, t); }
+
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: uma informação digitada em quatro lugares (0,6–7,6 s)
+  inn('#src', 0.6, { x: -30 }, 0.5);
+  inn('#c1', 1.0, { y: 16 }); inn('#s1', 1.3, { y: 12 });
+  tl.fromTo('#lk1', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.2);
+  ['#x1', '#x2', '#x3', '#x4'].forEach(function (x, i) { tl.fromTo(x, { opacity: 0, x: 30, rotation: 0 }, { opacity: 1, x: 0, rotation: (i % 2 ? 1.5 : -1.5), duration: 0.45, ease: 'back.out(1.6)' }, 1.3 + i * 0.2); });
+  // The pencils keep working: each copy wobbles while it is retyped
+  tl.to(['#x1 .ic', '#x2 .ic', '#x3 .ic', '#x4 .ic'], { rotation: 12, duration: 0.3, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 3.8);
+  out(['#c1', '#s1'], 7.2);
+  out(['#src', '#lk1', '#x1', '#x2', '#x3', '#x4'], 7.2, 0.4);
+
+  // Batida 2: a planilha que já existe entra e vira planejamento (7,6–14,6 s)
+  pop('#hub', 7.7);
+  inn('#c2', 7.8, { y: 16 }); inn('#s2', 8.1, { y: 12 });
+  inn('#xls', 8.0, { x: -30 }, 0.45);
+  tl.to('#xls', { x: 640, scale: 0.3, opacity: 0, duration: 0.7, ease: 'power2.in' }, 8.9);
+  tl.to('#hub', { scale: 1.06, duration: 0.2, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 9.5);
+  inn('#plan', 9.4, { x: -30 }, 0.45);
+  inn(['#p1', '#p2', '#p3', '#p4'], 9.6, { x: -12 }, 0.4);
+  out(['#c2', '#s2'], 14.2);
+  out('#plan', 14.2, 0.4);
+
+  // Batida 3: o cadastro de serviços vale para as empresas do grupo (14,6–21,4 s)
+  inn('#c3', 14.6, { y: 16 }); inn('#s3', 14.9, { y: 12 });
+  inn(['#e1', '#e2', '#e3'], 14.8, { scale: 0.92 }, 0.45);
+  // One copy leaves the hub at a time, so the pills never stack
+  [['#cp1', -596, -126, '#ok1'], ['#cp2', -596, 184, '#ok2'], ['#cp3', 544, 24, '#ok3']].forEach(function (c, i) {
+    var t0 = 15.5 + i * 0.6;
+    inn(c[0], t0, { scale: 0.6 }, 0.2);
+    tl.to(c[0], { x: c[1], y: c[2], duration: 0.5, ease: 'power2.inOut' }, t0 + 0.2);
+    pop(c[3], t0 + 0.7);
+  });
+  out(['#c3', '#s3'], 21.0);
+  out(['#e1', '#e2', '#e3', '#cp1', '#cp2', '#cp3', '#ok1', '#ok2', '#ok3'], 21.0, 0.4);
+
+  // Batida 4: o andamento sai do núcleo para relatórios, avisos, sistemas e assistentes (21,4–28,6 s)
+  inn('#c4', 21.4, { y: 16 }); inn('#s4', 21.7, { y: 12 });
+  tl.fromTo('#lk4', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 21.6);
+  inn('#y1', 21.7, { x: -24 }, 0.45); inn('#y2', 21.85, { x: -24 }, 0.45); inn('#y3', 22.0, { x: 24 }, 0.45); inn('#y4', 22.15, { x: 24 }, 0.45);
+  // Data keeps flowing out along the dashed links
+  tl.fromTo('#lk4 path', { strokeDashoffset: 0 }, { strokeDashoffset: -216, duration: 5.6, ease: 'none' }, 22.6);
+  out(['#c4', '#s4'], 28.2);
+
+  // Fecho (28,6–34 s, parado de 29,4 s ao fim)
+  out(['#hd', '#hub', '#lk4', '#y1', '#y2', '#y3', '#y4'], 28.2, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 28.8);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (34 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 34;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-stant-plataforma-ludic-intro"] = master;
+})();
+</script>
+</body>
+</html>

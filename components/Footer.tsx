@@ -26,7 +26,7 @@ export function Footer() {
               <ul>
                 {[
                   ["flow", "Magneto"],
-                  ["welabs-crm", "Rello"],
+                  ["welabs-crm", "Relloo"],
                   ["erp", "Domus"],
                   ["wekb", "Knowly"],
                   ["channels", "Tuner"],

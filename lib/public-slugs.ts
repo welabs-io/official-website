@@ -6,7 +6,8 @@ const PUBLIC_SLUG: Record<string, string> = {
   flow: "magneto",
   erp: "domus",
   wekb: "knowly",
-  "welabs-crm": "rello",
+  // Renamed Rello -> Relloo on 2026-10-07; the old slug redirects through FORMER_SLUG.
+  "welabs-crm": "relloo",
   channels: "tuner",
   // SGORS is presented by its full name.
   sgors: "gerenciamento-de-residuos",
@@ -18,11 +19,12 @@ const ID_BY_SLUG = Object.fromEntries(
 const FORMER_SLUG: Record<string, string> = {
   "operacao-seguranca": "ecossistema-monitoramento",
   "hub-de-dominio": "domus",
+  rello: "relloo",
 };
-// Retired products redirect to the page that now carries their content (Kiosk Brands became Rello Campaigns).
+// Retired products redirect to the page that now carries their content (Kiosk Brands became Relloo Campaigns).
 // SGICI left the portfolio on 2026-10-05; its old address lands on the portfolio.
 const MOVED_PRODUCT: Record<string, string> = {
-  "kiosk-brands": "/welabs/produtos/rello",
+  "kiosk-brands": "/welabs/produtos/relloo",
   sgici: "/portfolio",
 };
 

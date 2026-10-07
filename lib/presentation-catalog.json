@@ -817,7 +817,7 @@
   },
   {
     "id": "welabs-crm",
-    "productName": "Rello",
+    "productName": "Relloo",
     "publisher": "Welabs",
     "kind": "own-product",
     "maturity": "development",
@@ -838,16 +838,16 @@
     "presentationBase": "/presentations/welabs-crm/1.0.0",
     "locales": {
       "pt-BR": {
-        "title": "Rello",
-        "summary": "Rello, produto Welabs em desenvolvimento para organizar oportunidades e acompanhar o relacionamento comercial.",
+        "title": "Relloo",
+        "summary": "Relloo, produto Welabs em desenvolvimento para organizar oportunidades e acompanhar o relacionamento comercial.",
         "audience": "Equipes comerciais de organizações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas."
       },
       "en": {
-        "title": "Rello",
-        "summary": "Rello, a Welabs product in development for organizing opportunities and following commercial relationships.",
+        "title": "Relloo",
+        "summary": "Relloo, a Welabs product in development for organizing opportunities and following commercial relationships.",
         "audience": "Commercial teams in organizations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png",

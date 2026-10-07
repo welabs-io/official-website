@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Knowly ·resposta com fonte (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Same frame as the approved playful Magneto films; colors come from assets/brand/welabs-brand.js */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--amber:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+#root [data-wl-name]{color:inherit}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;display:flex;align-items:center}
+#wm{position:relative;flex:none;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--amber)}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--amber);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+
+/* A PERGUNTA */
+.av{position:absolute;width:150px;opacity:0;text-align:center}
+.av .nm{margin-top:4px;font-size:26px;font-weight:700;white-space:nowrap}
+#bia{left:150px;top:126px}
+#q{position:absolute;left:360px;top:146px;width:1100px;height:120px;border-radius:34px 34px 34px 8px;background:var(--panel2);border:3px solid var(--line);padding:0 46px;font-size:46px;font-weight:700;line-height:114px;white-space:nowrap;opacity:0}
+.w{opacity:0}
+#qok{position:absolute;left:1420px;top:122px;width:60px;height:60px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+
+/* A PILHA E AS FONTES ACHADAS */
+.dc{position:absolute;width:360px;height:96px;border-radius:22px;background:#1C1F27;border:3px solid #2C303A;padding:24px 28px;opacity:0}
+.dc i{display:block;height:14px;border-radius:7px;background:#343844;margin-bottom:14px}
+.dc i+i{width:60%}
+.src{position:absolute;left:100px;width:540px;height:112px;border-radius:26px;background:var(--panel);border:3px solid #2C303A;display:flex;align-items:center;gap:22px;padding:0 26px;opacity:0}
+.src .ic{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--amber);flex:none}
+.src b{display:block;font-size:34px;font-weight:800;line-height:40px;white-space:nowrap}
+.src small{display:block;font-size:24px;font-weight:600;color:var(--muted);line-height:30px;white-space:nowrap}
+.src .hi{position:absolute;inset:-3px;border-radius:26px;border:4px solid var(--amber);box-shadow:0 0 30px rgba(var(--wl-amber-rgb),.5);opacity:0}
+.src .n{position:absolute;right:-22px;top:-22px;width:52px;height:52px;border-radius:50%;background:var(--amber);color:var(--wl-ink-on-amber);font-size:30px;font-weight:800;display:grid;place-items:center;opacity:0}
+#s1{top:330px}#s2{top:470px}#s3{top:610px}
+#lens{position:absolute;left:0;top:0;width:150px;height:150px;opacity:0}
+
+/* A RESPOSTA COM FONTE */
+#ans{position:absolute;left:760px;top:300px;width:1060px;height:560px;border-radius:34px;background:var(--panel2);border:3px solid var(--line);opacity:0}
+#ans .tag{position:absolute;left:34px;top:-24px;height:46px;padding:0 18px;border-radius:23px;background:var(--amber);color:var(--wl-ink-on-amber);font-size:26px;font-weight:800;line-height:46px}
+.row{position:absolute;left:820px;width:960px;height:84px;display:flex;align-items:center;gap:24px;font-size:36px;font-weight:700;opacity:0;white-space:nowrap}
+.row .n{width:56px;height:56px;border-radius:50%;background:var(--amber);color:var(--wl-ink-on-amber);font-size:30px;font-weight:800;display:grid;place-items:center;flex:none}
+#r1{top:344px}#r2{top:484px}#r3{top:624px}
+#r4{top:752px;left:800px;width:980px;height:84px;border-radius:22px;border:3px dashed var(--wl-wait);background:var(--wl-wait-soft);padding:0 22px;color:#E4DEFF}
+#r4 .n{background:var(--wl-wait);color:#17142E}
+#gap{position:absolute;right:20px;top:18px;height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--wl-wait);color:var(--wl-wait);font-size:24px;font-weight:800;line-height:40px;opacity:0}
+#links{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#links path{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round;stroke-dasharray:2 12}
+
+/* ABRIR A FONTE */
+#ex{position:absolute;left:800px;top:430px;width:980px;height:300px;border-radius:30px;background:#1B1F29;border:4px solid var(--amber);box-shadow:0 30px 80px rgba(0,0,0,.55);padding:34px 40px;opacity:0}
+#ex h4{font-size:30px;font-weight:800;color:var(--amber);display:flex;align-items:center;gap:14px}
+#ex p{margin-top:26px;font-size:38px;font-weight:600;line-height:56px;color:#E9E9EF}
+#ex mark{color:var(--text);background:rgba(var(--wl-amber-rgb),0);border-radius:10px;padding:0 6px}
+#cur{position:absolute;left:1180px;top:820px;width:44px;height:44px;opacity:0}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center}
+/* 06/10/2026: endorsed product logo (symbol + name + "by welabs") replaces the retired lockup; height only, name x-height 68 px */
+#close img{height:180px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* ABERTURA WELABS-INTRO-V4 (copiada de pieces/welabs-intro-v4, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+.intro-lbl .intro-lg{height:40px;width:auto;vertical-align:-10px}
+.intro-lbl .intro-lg.intro-kn{height:35.7px}
+.intro-lbl .intro-lg.intro-ab{height:33.57px;vertical-align:-8.76px}
+.intro-lbl .intro-nm{display:inline-block}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="kb-ask-with-proof-ludic-intro-v4" data-width="1920" data-height="1080" data-start="0" data-duration="43">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <!-- v2: five named products only; rows at y 260/400/540/680/820 (choreography.js IN_Y) -->
+  <!-- v4: ids in<i>m (symbol) and in<i>n (name or whole logo) drive the entrance taken from brand/vector/motion -->
+  <!-- v4: final brand, only Domus keeps symbol + name; Magneto, Knowly, Relloo and Tuner carry the sign inside the
+       name, so their labels are the whole logo, with no symbol beside it -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:206px"><img class="intro-lg intro-ab" id="intro-in0n" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:346px"><img class="intro-mk" id="intro-in1m" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span class="intro-nm" id="intro-in1n" data-wl-name="hub">Hub de domínio</span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:486px"><img class="intro-lg intro-kn" id="intro-in2n" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:692px"><img class="intro-lg intro-ab" id="intro-in3n" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:832px"><img class="intro-lg" id="intro-in4n" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/kb-ask-with-proof-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="wm"><span data-wl-name="kb">Knowly</span><span>.</span></div>
+    <div id="kick">Some a resposta sem prova</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div class="av" id="bia"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--amber)"/></svg><div class="nm">Bia · DEMO</div></div>
+  <div id="q"><span class="w">“Por</span> <span class="w">que</span> <span class="w">a</span> <span class="w">proposta</span> <span class="w">expira</span> <span class="w">em</span> <span class="w">48 h?”</span></div>
+  <div id="qok"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+
+  <div class="dc" id="d1"><i></i><i></i></div>
+  <div class="dc" id="d2"><i></i><i></i></div>
+  <div class="dc" id="d3"><i></i><i></i></div>
+  <div class="dc" id="d4"><i></i><i></i></div>
+  <div class="dc" id="d5"><i></i><i></i></div>
+  <div class="dc" id="d6"><i></i><i></i></div>
+
+  <svg id="links" viewBox="0 0 1920 1080">
+    <path id="l1" d="M640 386 C 700 386, 740 386, 820 386"/>
+    <path id="l2" d="M640 526 C 700 526, 740 526, 820 526"/>
+    <path id="l3" d="M640 666 C 700 666, 740 666, 820 666"/>
+  </svg>
+
+  <div class="src" id="s1"><div class="hi"></div><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div><b>Ticket ATL-142</b><small>proposta vencida · DEMO</small></div><div class="n">1</div></div>
+  <div class="src" id="s2"><div class="hi"></div><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div><div><b>Reunião · 12/09</b><small>revisão de propostas · DEMO</small></div><div class="n">2</div></div>
+  <div class="src" id="s3"><div class="hi"></div><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>Regra no sistema</b><small>prazo da proposta · DEMO</small></div><div class="n">3</div></div>
+
+  <svg id="lens" viewBox="0 0 120 120"><circle cx="50" cy="50" r="34" fill="rgba(255,176,32,.12)" stroke="#FFB020" stroke-width="9"/><path d="M76 76l30 30" stroke="#FFB020" stroke-width="13" stroke-linecap="round"/></svg>
+
+  <div id="ans"><div class="tag"><span data-wl-name="kb">Knowly</span> responde</div></div>
+  <div class="row" id="r1"><div class="n">1</div>Sem resposta em 48 h, a proposta expira.</div>
+  <div class="row" id="r2"><div class="n">2</div>O prazo foi combinado na revisão.</div>
+  <div class="row" id="r3"><div class="n">3</div>O sistema já aplica essa regra.</div>
+  <div class="row" id="r4"><div class="n">?</div>E nos feriados? Não achei nada.<div id="gap">não sei</div></div>
+
+  <div id="ex"><h4><svg width="30" height="30" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>Reunião · 12/09 · trecho · DEMO</h4><p>“…então fica combinado: <mark id="mk">sem resposta em 48&nbsp;h, a proposta sai da fila</mark>.”</p></div>
+  <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.6L9.6 21z" fill="#fff" stroke="#0B0B0D" stroke-width="1.6" stroke-linejoin="round"/></svg>
+
+  <div class="cap" id="c1">A dúvida chega <span>em palavras</span></div>
+  <div class="cap" id="c2">O <span data-wl-name="kb">Knowly</span> acha <span>onde isso já foi dito</span></div>
+  <div class="cap" id="c3">Cada frase vem <span>com a fonte</span></div>
+  <div class="cap" id="c4">E o que não sabe, <span>ele diz</span></div>
+  <div class="cap" id="c5">Quem pergunta <span>confere e confia</span></div>
+
+  <div id="close">
+    <div class="l1">Nenhuma resposta sem fonte.<br><span>E o que falta, dito.</span></div>
+    <div class="brand"><img src="./assets/brand/product-logo-on-dark.svg" alt="Knowly by welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  // v4: label entrance after the official motion (brand/vector/motion, 4.8 s cycle compressed to ~0.7 s):
+  // the symbol label (Domus) grows the symbol with overshoot, then the name opens left to right; wordmark labels
+  // (Magneto, Knowly, Relloo, Tuner) open as one whole logo, so the sign inside the name arrives with its letter
+  var HAS_MARK = [false, true, false, false, false];
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    if (HAS_MARK[i]) tl.fromTo('#intro-in' + i + 'm', { scale: 0.2 }, { scale: 1, duration: 0.45, ease: 'back.out(2.2)' }, t0 + 0.05);
+    tl.fromTo('#intro-in' + i + 'n', { clipPath: 'inset(-20% 100% -20% 0%)' }, { clipPath: 'inset(-20% 0% -20% 0%)', duration: HAS_MARK[i] ? 0.45 : 0.6, ease: 'power2.inOut' }, t0 + (HAS_MARK[i] ? 0.25 : 0.08));
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/kb-ask-with-proof-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 34;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  // Dotted links fade in (a dash array draw would only slide the dots)
+  function draw(id, t, d) { tl.fromTo('#' + id, { opacity: 0 }, { opacity: 1, duration: d, ease: 'power1.out' }, t); }
+
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: a dúvida chega em palavras (0,5–6,3 s)
+  inn('#bia', 0.5, { y: 20 });
+  inn('#q', 0.7, { y: 16, scale: 0.97 }, 0.5);
+  inn('#c1', 1.0, { y: 16 });
+  tl.fromTo('#q .w', { opacity: 0 }, { opacity: 1, duration: 0.06, stagger: 0.2 }, 1.3);
+  out('#c1', 6.0);
+
+  // Batida 2: a pilha do que a equipe já escreveu, e a lupa acha três (6,3–13,2 s)
+  // Found sources sit at their final column; the pile pose is an offset that tweens back to zero
+  var decoys = [['#d1', 160, 340, -7], ['#d2', 1290, 330, 6], ['#d3', 1500, 470, -4], ['#d4', 560, 575, 5], ['#d5', 1010, 760, -5], ['#d6', 150, 520, 4]];
+  decoys.forEach(function (d) { tl.set(d[0], { left: d[1], top: d[2], rotation: d[3] }, 0); });
+  var pile = { '#s1': [600, 100, -6], '#s2': [1050, 130, 5], '#s3': [320, 90, 4] };
+  Object.keys(pile).forEach(function (s) { tl.set(s, { x: pile[s][0], y: pile[s][1], rotation: pile[s][2], scale: 0.9 }, 0); });
+  inn('#c2', 6.3, { y: 16 });
+  tl.fromTo(['#d1', '#s1', '#d2', '#d3', '#s3', '#d4', '#s2', '#d5', '#d6'], { opacity: 0 }, { opacity: 0.55, duration: 0.3, stagger: 0.08 }, 6.5);
+  // Lens visits each found card (pile centers 970,486 · 1420,656 · 690,756)
+  tl.fromTo('#lens', { opacity: 0, x: 1600, y: 200 }, { opacity: 1, x: 1600, y: 200, duration: 0.3 }, 7.5);
+  tl.to('#lens', { x: 905, y: 421, duration: 0.6, ease: 'power2.inOut' }, 7.8);
+  tl.to('#s1', { opacity: 1, duration: 0.25 }, 8.4); tl.fromTo('#s1 .hi', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 8.4);
+  tl.to('#lens', { x: 1355, y: 591, duration: 0.6, ease: 'power2.inOut' }, 8.8);
+  tl.to('#s2', { opacity: 1, duration: 0.25 }, 9.4); tl.fromTo('#s2 .hi', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 9.4);
+  tl.to('#lens', { x: 625, y: 691, duration: 0.6, ease: 'power2.inOut' }, 9.8);
+  tl.to('#s3', { opacity: 1, duration: 0.25 }, 10.4); tl.fromTo('#s3 .hi', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 10.4);
+  out('#lens', 10.9, 0.3);
+  out(['#d1', '#d2', '#d3', '#d4', '#d5', '#d6'], 10.9, 0.4);
+  tl.to(['#s1', '#s2', '#s3'], { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.8, ease: 'power3.inOut', stagger: 0.1 }, 11.1);
+  tl.to(['#s1 .hi', '#s2 .hi', '#s3 .hi'], { opacity: 0, duration: 0.3 }, 12.0);
+  out('#c2', 13.2);
+
+  // Batida 3: cada frase vem com a fonte (13,5–19,4 s)
+  inn('#c3', 13.5, { y: 16 });
+  inn('#ans', 13.7, { y: 14, scale: 0.98 }, 0.5);
+  [['#r1', '#s1', 'l1'], ['#r2', '#s2', 'l2'], ['#r3', '#s3', 'l3']].forEach(function (r, i) {
+    var t = 14.3 + i * 1.1;
+    inn(r[0], t, { x: 20 }, 0.45);
+    draw(r[2], t + 0.4, 0.45);
+    tl.fromTo(r[1] + ' .n', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.8);
+  });
+  out('#c3', 19.4);
+
+  // Batida 4: o que não sabe, ele diz (19,7–23,9 s)
+  inn('#c4', 19.7, { y: 16 });
+  inn('#r4', 20.0, { y: 14 }, 0.5);
+  inn('#gap', 20.7, { scale: 0.7 }, 0.35);
+  out('#c4', 23.9);
+
+  // Batida 5: quem pergunta abre a fonte e confere (24,2–28,6 s)
+  inn('#c5', 24.2, { y: 16 });
+  tl.fromTo('#cur', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.3 }, 24.3);
+  tl.to('#cur', { x: -620, y: -300, duration: 0.5, ease: 'power2.inOut' }, 24.6);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 25.1).to('#cur', { scale: 1, duration: 0.15 }, 25.24);
+  tl.to('#s2 .hi', { opacity: 1, duration: 0.25 }, 25.2);
+  // The opened source takes the answer card's place, so the rows step aside instead of sitting under it
+  out(['#r1', '#r2', '#r3', '#r4'], 25.05, 0.3);
+  out('#cur', 25.4, 0.25);
+  inn('#ex', 25.4, { y: 20, scale: 0.94 }, 0.45);
+  // Highlight uses a literal rgba because GSAP cannot tween var()
+  tl.to('#mk', { backgroundColor: 'rgba(' + WELABS_BRAND.color.amberRgb + ',0.3)', duration: 0.4 }, 26.1);
+  tl.fromTo('#qok', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, 26.6);
+  out('#c5', 28.6);
+
+  // Fecho (29,0–34 s, parado de 29,6 s ao fim)
+  out(['#hd', '#bia', '#q', '#qok', '#s1', '#s2', '#s3', '#links', '#ans', '#r1', '#r2', '#r3', '#r4', '#ex'], 28.6, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.0);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (34 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 34;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["kb-ask-with-proof-ludic-intro-v4"] = master;
+})();
+</script>
+</body>
+</html>

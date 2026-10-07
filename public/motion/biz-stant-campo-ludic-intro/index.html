@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Stant · O que o campo vê não se perde (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E PAPEL DE PROJETO */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0A2E58;--ink:#FFFFFF;--mute:#C3D3E6;--line:rgba(255,255,255,.80);--acc:#FF4025;--acc2:#FF8166;--ok:#34D399;--okd:#0E7A50;--warn:#FFB547;--paper:#FFFFFF;--pink:#13253E;--pmute:#56677E;--pline:#DCE4EE}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;color:var(--ink);font-family:"Inter",sans-serif;background:linear-gradient(rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(90deg,rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,radial-gradient(1300px 800px at 50% 42%,#0F3D72 0%,#0A2E58 58%,#06203F 100%)}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#hlogo{position:absolute;left:0;top:13px;height:46px}
+#kick{position:absolute;left:234px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--acc);font-size:30px;font-weight:600;color:var(--mute);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid rgba(255,255,255,.35);border-radius:999px;font-size:24px;font-weight:700;color:var(--mute);line-height:36px}
+.cap{position:absolute;left:0;top:900px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;color:var(--ink)}
+.cap span,#close span{color:var(--acc2)}
+.sub{position:absolute;left:0;top:974px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--mute);opacity:0;white-space:nowrap}
+
+/* PRÉDIO EM PLANTA (6 andares) E MARCADORES */
+#bld{position:absolute;left:250px;top:196px;width:560px;height:620px;opacity:0}
+.fl{position:absolute;left:0;width:560px;height:88px;border:3px solid var(--line);border-bottom:none;background:rgba(255,255,255,.04)}
+.fl i{position:absolute;top:24px;width:84px;height:40px;border:2px solid rgba(255,255,255,.55)}
+.fl i:nth-of-type(1){left:40px}.fl i:nth-of-type(2){left:168px}.fl i:nth-of-type(3){left:296px}.fl i:nth-of-type(4){left:424px}
+.fl b{position:absolute;left:-74px;top:26px;width:56px;text-align:right;font-size:26px;font-weight:700;color:var(--mute)}
+#fl6{top:0}#fl5{top:88px}#fl4{top:176px}#fl3{top:264px}#fl2{top:352px}#fl1{top:440px}
+#gnd{position:absolute;left:-60px;top:528px;width:680px;height:4px;background:var(--line)}
+#hatch{position:absolute;left:-60px;top:532px;width:680px;height:22px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 3px,transparent 3px 16px)}
+.pin{position:absolute;left:830px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;opacity:0}
+.pin.bad{background:var(--acc);box-shadow:0 0 0 10px rgba(255,64,37,.25)}
+.pin.good{background:var(--ok);box-shadow:0 0 0 10px rgba(52,211,153,.22)}
+#pBad,#pGood{top:472px}
+.ck{position:absolute;left:836px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+
+/* RECADOS QUE SE PERDEM */
+.note{position:absolute;width:400px;padding:26px 30px;border-radius:22px;font-size:32px;font-weight:800;line-height:40px;color:var(--pink);opacity:0;box-shadow:0 18px 40px rgba(0,0,0,.30);white-space:nowrap}
+.note small{display:block;font-size:24px;font-weight:600;color:var(--pmute);line-height:32px;margin-top:6px}
+#n1{left:1120px;top:200px;background:#FFE08A}
+#n2{left:1300px;top:420px;background:var(--paper)}
+#n3{left:1060px;top:620px;background:#F3EBDD}
+.q{position:absolute;width:60px;height:60px;border-radius:50%;background:var(--paper);color:var(--acc);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+#q1{left:1500px;top:170px}#q2{left:1690px;top:400px}#q3{left:1440px;top:600px}
+#trail{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#trail path{fill:none;stroke:rgba(255,255,255,.55);stroke-width:4;stroke-dasharray:6 14;stroke-linecap:round}
+
+/* CELULAR DO INSPETOR */
+#phone{position:absolute;left:1060px;top:150px;width:600px;height:690px;border-radius:56px;background:var(--paper);border:14px solid #061A31;box-shadow:0 30px 60px rgba(0,0,0,.40);opacity:0;color:var(--pink)}
+#phone .hat{position:absolute;left:36px;top:40px;width:72px;height:72px;border-radius:50%;background:#FFE7E1;display:grid;place-items:center}
+#phone .t{position:absolute;left:128px;top:40px;font-size:34px;font-weight:800;line-height:42px;white-space:nowrap}
+#phone .s{position:absolute;left:128px;top:84px;font-size:24px;font-weight:600;color:var(--pmute);white-space:nowrap}
+.rw{position:absolute;left:36px;width:500px;height:76px;border-radius:18px;background:#F2F5F9;display:flex;align-items:center;padding:0 18px 0 24px;font-size:30px;font-weight:700;white-space:nowrap}
+.rw .st{margin-left:auto;height:44px;padding:0 18px;border-radius:22px;font-size:24px;font-weight:800;line-height:44px;opacity:0}
+.st.y{background:#DDF6EA;color:var(--okd)}.st.n{background:#FFE3DC;color:#B42A12}
+#r1{top:152px}#r2{top:244px}#r3{top:336px}
+#photo{position:absolute;left:36px;top:436px;width:500px;height:92px;border-radius:18px;border:3px dashed #B9C6D6;display:flex;align-items:center;gap:18px;padding-left:18px;font-size:28px;font-weight:700;color:var(--pink);opacity:0;white-space:nowrap}
+#photo .th{width:84px;height:60px;border-radius:10px;background:linear-gradient(135deg,#8FB3D9,#3F6E9F);flex:none}
+#offl{position:absolute;left:36px;top:556px;height:60px;padding:0 22px;border-radius:30px;background:#FFF1DA;color:#7A4A00;font-size:26px;font-weight:800;line-height:60px;display:flex;align-items:center;gap:12px;opacity:0;white-space:nowrap}
+
+/* OCORRÊNCIA COM DONO, PLANO E PRAZO */
+#thread{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#thread path{fill:none;stroke:var(--acc2);stroke-width:5;stroke-dasharray:4 12;stroke-linecap:round}
+#occ{position:absolute;left:1060px;top:170px;width:640px;height:650px;border-radius:30px;background:var(--paper);box-shadow:0 26px 56px rgba(0,0,0,.35);opacity:0;color:var(--pink);overflow:hidden}
+#occ .band{position:absolute;left:0;right:0;top:0;height:76px;background:var(--acc);color:#fff;font-size:30px;font-weight:800;line-height:76px;padding-left:32px}
+#occ .tt{position:absolute;left:32px;top:100px;font-size:36px;font-weight:800;white-space:nowrap}
+.orow{position:absolute;left:32px;height:64px;display:flex;align-items:center;gap:18px;font-size:28px;font-weight:700;opacity:0;white-space:nowrap}
+.orow .ic{width:56px;height:56px;border-radius:50%;background:#EAF0F7;display:grid;place-items:center;flex:none}
+#o1{top:168px}#o2{top:244px}#o3{top:320px}
+#bell{position:absolute;left:32px;top:404px;height:56px;padding:0 22px;border-radius:28px;background:#EAF0F7;font-size:26px;font-weight:700;line-height:56px;color:#24466F;display:flex;align-items:center;gap:12px;opacity:0;white-space:nowrap}
+#track{position:absolute;left:32px;top:500px;width:576px;height:110px;opacity:0}
+#track .bar{position:absolute;left:28px;top:26px;width:520px;height:6px;background:#DCE4EE}
+#track .fill{position:absolute;left:28px;top:26px;width:520px;height:6px;background:var(--ok);transform-origin:0 50%}
+.dot{position:absolute;top:10px;width:38px;height:38px;border-radius:50%;background:#fff;border:5px solid #C8D3E0}
+.dot.on{border-color:var(--acc)}
+#d1{left:10px}#d2{left:269px}#d3{left:528px}
+.dl{position:absolute;top:62px;width:220px;font-size:24px;font-weight:700;color:var(--pmute);white-space:nowrap}
+#l1{left:0}#l2{left:186px;text-align:center}#l3{left:356px;text-align:right}
+#reok{position:absolute;left:32px;top:404px;height:56px;padding:0 22px;border-radius:28px;background:#DDF6EA;color:var(--okd);font-size:26px;font-weight:800;line-height:56px;opacity:0;white-space:nowrap}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:250px;width:1920px;text-align:center;font-size:74px;font-weight:800;letter-spacing:-2px;line-height:92px;color:var(--ink)}
+#close img{position:absolute;left:746px;top:560px;height:100px}
+#close .dm{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--mute)}
+/* ABERTURA STANT-INTRO (copiada de pieces/stant-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#0A2E58;font-family:Inter,sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:648px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;color:#EAF1F8;opacity:0;text-shadow:0 2px 18px rgba(2,16,34,.45)}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-stant-campo-ludic-intro"data-width="1920" data-height="1080" data-start="0" data-duration="45">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Qualidade de obra, do campo à gestão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/biz-stant-campo-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <img id="hlogo" src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div id="kick">Some o problema esquecido</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <!-- Prédio em planta: cada andar é um lugar a conferir -->
+  <div id="bld">
+    <div class="fl" id="fl6"><b data-layout-allow-overflow>6º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl5"><b data-layout-allow-overflow>5º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl4"><b data-layout-allow-overflow>4º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl3"><b data-layout-allow-overflow>3º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl2"><b data-layout-allow-overflow>2º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl1"><b data-layout-allow-overflow>1º</b><i></i><i></i><i></i><i></i></div>
+    <div id="gnd"></div><div id="hatch"></div>
+  </div>
+  <div class="pin bad" id="pBad"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 4v10" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="12" cy="19.5" r="2" fill="#fff"/></svg></div>
+  <div class="pin good" id="pGood"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k6" style="top:214px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k5" style="top:302px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k4" style="top:390px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k2" style="top:566px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k1" style="top:654px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <!-- Batida 1: o problema visto vira recado solto -->
+  <svg id="trail" viewBox="0 0 1920 1080"><path d="M900 504C980 380 1040 300 1116 270"/><path d="M900 504C1080 504 1180 490 1296 490"/><path d="M900 504C960 600 1000 680 1056 690"/></svg>
+  <div class="note" id="n1">Recado no corredor<small>"avisa o pessoal do 3º"</small></div>
+  <div class="note" id="n2">Foto no celular<small>de alguém da equipe</small></div>
+  <div class="note" id="n3">Anotado no caderno<small>que ficou no canteiro</small></div>
+  <div class="q" id="q1">?</div><div class="q" id="q2">?</div><div class="q" id="q3">?</div>
+
+  <!-- Batida 2: o inspetor registra no celular -->
+  <div id="phone">
+    <div class="hat"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M3 17h18v2.5H3zM5 17a7 7 0 0 1 14 0" fill="#FF4025"/><path d="M10.5 6.5h3V11h-3z" fill="#FF4025"/></svg></div>
+    <div class="t">Ficha · Revestimento</div>
+    <div class="s">3º andar · Torre DEMO</div>
+    <div class="rw" id="r1">Prumo<span class="st y">aprovado</span></div>
+    <div class="rw" id="r2">Nível<span class="st y">aprovado</span></div>
+    <div class="rw" id="r3">Acabamento<span class="st n">reprovado</span></div>
+    <div id="photo"><span class="th"></span>Foto anexada ao item</div>
+    <div id="offl"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0" fill="none" stroke="#7A4A00" stroke-width="2.4" stroke-linecap="round"/><path d="M3 3l18 18" stroke="#7A4A00" stroke-width="2.4" stroke-linecap="round"/></svg>Sem sinal · salvo no aparelho</div>
+  </div>
+
+  <!-- Batidas 3 e 4: a ocorrência ganha dono e só fecha conferida -->
+  <svg id="thread" viewBox="0 0 1920 1080"><path d="M900 504H1052"/></svg>
+  <div id="occ">
+    <div class="band">Ocorrência · DEMO</div>
+    <div class="tt">Acabamento · 3º andar</div>
+    <div class="orow" id="o1"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2" fill="#24466F"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z" fill="#24466F"/></svg></span>Responsável · Empresa DEMO</div>
+    <div class="orow" id="o2"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M5 5h14M5 12h14M5 19h9" stroke="#24466F" stroke-width="2.6" stroke-linecap="round"/></svg></span>Plano de ação definido</div>
+    <div class="orow" id="o3"><span class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#24466F" stroke-width="2.4"/><path d="M12 7v5l3 2" fill="none" stroke="#24466F" stroke-width="2.4" stroke-linecap="round"/></svg></span>Prazo · DEMO</div>
+    <div id="bell"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z" fill="#24466F"/><circle cx="12" cy="21" r="2" fill="#24466F"/></svg>Aviso enviado ao responsável</div>
+    <div id="reok">Reinspeção aprovada</div>
+    <div id="track">
+      <div class="bar"></div><div class="fill" id="tfill"></div>
+      <div class="dot on" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+      <div class="dl" id="l1">em andamento</div><div class="dl" id="l2">finalizada</div><div class="dl" id="l3">aprovada</div>
+    </div>
+  </div>
+
+  <div class="cap" id="c1">O problema visto <span>ficava pelo caminho</span></div>
+  <div class="sub" id="s1">num recado, numa foto perdida, num caderno esquecido</div>
+  <div class="cap" id="c2">O inspetor <span>registra na hora</span></div>
+  <div class="sub" id="s2">ficha por serviço e andar, com foto, mesmo sem sinal</div>
+  <div class="cap" id="c3">O problema vira ocorrência, <span>com dono</span></div>
+  <div class="sub" id="s3">responsável, plano de ação e prazo; quem precisa é avisado</div>
+  <div class="cap" id="c4">Só fecha quando <span>alguém confere de novo</span></div>
+  <div class="sub" id="s4">a reinspeção aprova e o andar fica verde</div>
+
+  <div id="close">
+    <div class="l1">O que o campo vê, ninguém esquece.<br><span>Fica resolvido até o fim.</span></div>
+    <img src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null, curT = 0;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_BLUEPRINT]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uT', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    curT = t;
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uT, t); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+  // Canvas text needs the face loaded; redraw the current frame once it is
+  if (document.fonts && document.fonts.load) document.fonts.load('600 24px Inter').then(function () { render(curT); });
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; a frase entra depois do wordmark
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  tl.fromTo('#intro-line', { opacity: 0, y: -22 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/biz-stant-campo-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 36;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function pop(sel, t) { tl.fromTo(sel, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2.4)' }, t); }
+
+  // Cabeçalho e prédio
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  inn('#bld', 0.5, { y: 24 }, 0.7);
+
+  // Batida 1: o problema é visto, vira recado solto e se perde (0,6–8,4 s)
+  pop('#pBad', 1.2);
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  tl.fromTo('#trail', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.5);
+  [['#n1', -4], ['#n2', 3], ['#n3', -3]].forEach(function (n, i) { tl.fromTo(n[0], { opacity: 0, y: 30, rotation: 0 }, { opacity: 1, y: 0, rotation: n[1], duration: 0.5, ease: 'back.out(1.6)' }, 1.6 + i * 0.2); });
+  inn(['#q1', '#q2', '#q3'], 2.2, { scale: 0.5 }, 0.4);
+  // Notes drift apart and fade: nobody owns them, the marker dims
+  tl.to('#n1', { x: 120, y: -60, rotation: -12, opacity: 0.3, duration: 1.0, ease: 'power1.inOut' }, 4.6);
+  tl.to('#n2', { x: 160, y: 40, rotation: 10, opacity: 0.3, duration: 1.0, ease: 'power1.inOut' }, 4.7);
+  tl.to('#n3', { x: 100, y: 90, rotation: -9, opacity: 0.3, duration: 1.0, ease: 'power1.inOut' }, 4.8);
+  tl.to(['#q1', '#q2', '#q3'], { opacity: 0, duration: 0.4 }, 4.6);
+  tl.to('#trail', { opacity: 0.25, duration: 0.8 }, 4.8);
+  tl.to('#pBad', { opacity: 0.35, scale: 0.8, duration: 0.6 }, 5.0);
+  out(['#c1', '#s1'], 8.0);
+  out(['#n1', '#n2', '#n3', '#q1', '#q2', '#q3', '#trail'], 8.0, 0.4);
+
+  // Batida 2: o inspetor registra no celular, com foto, sem sinal (8,4–15,6 s)
+  inn('#phone', 8.5, { x: 40, scale: 0.96 }, 0.6);
+  inn('#c2', 8.6, { y: 16 }); inn('#s2', 8.9, { y: 12 });
+  ['#r1 .st', '#r2 .st', '#r3 .st'].forEach(function (s, i) { pop(s, 9.4 + i * 0.4); });
+  tl.to('#pBad', { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 10.2);
+  inn('#photo', 12.2, { y: 14 }, 0.45);
+  inn('#offl', 12.4, { y: 14 }, 0.45);
+  out(['#c2', '#s2'], 15.2);
+  out('#phone', 15.2, 0.4);
+
+  // Batida 3: a ocorrência ganha responsável, plano, prazo e aviso (15,6–22,6 s)
+  inn('#occ', 15.7, { x: 40, scale: 0.96 }, 0.6);
+  tl.fromTo('#thread', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 16.1);
+  inn('#c3', 15.8, { y: 16 }); inn('#s3', 16.1, { y: 12 });
+  inn('#o1', 17.0, { x: -16 }, 0.45);
+  inn('#o2', 17.15, { x: -16 }, 0.45); inn('#o3', 17.3, { x: -16 }, 0.45);
+  inn('#track', 18.8, { y: 10 }, 0.45);
+  inn('#bell', 18.8, { y: 10 }, 0.45);
+  out(['#c3', '#s3'], 22.2);
+
+  // Batida 4: finaliza, a reinspeção aprova, o andar fica verde (22,6–29,6 s)
+  inn('#c4', 22.7, { y: 16 }); inn('#s4', 23.0, { y: 12 });
+  out('#bell', 22.7, 0.3);
+  tl.fromTo('#tfill', { scaleX: 0 }, { scaleX: 0.5, duration: 0.5, ease: 'power2.inOut', immediateRender: true }, 23.0);
+  tl.to('#d2', { borderColor: '#FF4025', duration: 0.3 }, 23.3);
+  tl.to('#d1', { borderColor: '#34D399', backgroundColor: '#34D399', duration: 0.3 }, 23.3);
+  tl.to('#tfill', { scaleX: 1, duration: 0.5, ease: 'power2.inOut' }, 24.6);
+  tl.to(['#d2', '#d3'], { borderColor: '#34D399', backgroundColor: '#34D399', duration: 0.3 }, 24.9);
+  pop('#reok', 24.6);
+  tl.to('#occ .band', { backgroundColor: '#0E7A50', duration: 0.4 }, 24.6);
+  tl.to('#thread path', { stroke: '#34D399', duration: 0.4 }, 24.6);
+  out('#pBad', 24.6, 0.3);
+  pop('#pGood', 24.7);
+  tl.to('#fl3', { backgroundColor: 'rgba(52,211,153,.24)', borderColor: '#34D399', duration: 0.4 }, 24.6);
+  // The rest of the building is checked floor by floor
+  ['#k1', '#k2', '#k4', '#k5', '#k6'].forEach(function (k, i) { pop(k, 26.6 + i * 0.15); });
+  ['#fl1', '#fl2', '#fl4', '#fl5', '#fl6'].forEach(function (f, i) { tl.to(f, { backgroundColor: 'rgba(52,211,153,.18)', borderColor: '#34D399', duration: 0.4 }, 26.6 + i * 0.15); });
+  out(['#c4', '#s4'], 29.3);
+
+  // Fecho (29,6–36 s, parado de 30,5 s ao fim)
+  out(['#hd', '#bld', '#occ', '#thread', '#pGood', '#k1', '#k2', '#k4', '#k5', '#k6'], 29.3, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.9);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (36 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 36;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-stant-campo-ludic-intro"] = master;
+})();
+</script>
+</body>
+</html>

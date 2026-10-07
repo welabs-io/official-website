@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Stant · A obra do início à entrega (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E PAPEL DE PROJETO */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0A2E58;--ink:#FFFFFF;--mute:#C3D3E6;--line:rgba(255,255,255,.80);--acc:#FF4025;--acc2:#FF8166;--ok:#34D399;--okd:#0E7A50;--warn:#FFB547;--paper:#FFFFFF;--pink:#13253E;--pmute:#56677E;--pline:#DCE4EE}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;color:var(--ink);font-family:"Inter",sans-serif;background:linear-gradient(rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(90deg,rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,radial-gradient(1300px 800px at 50% 42%,#0F3D72 0%,#0A2E58 58%,#06203F 100%)}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#hlogo{position:absolute;left:0;top:13px;height:46px}
+#kick{position:absolute;left:234px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--acc);font-size:30px;font-weight:600;color:var(--mute);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid rgba(255,255,255,.35);border-radius:999px;font-size:24px;font-weight:700;color:var(--mute);line-height:36px}
+.cap{position:absolute;left:0;top:900px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;color:var(--ink)}
+.cap span,#close span{color:var(--acc2)}
+.sub{position:absolute;left:0;top:974px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--mute);opacity:0;white-space:nowrap}
+
+/* PRÉDIO QUE CRESCE ANDAR POR ANDAR */
+#site{position:absolute;left:250px;top:196px;width:560px;height:620px;opacity:0}
+.gh{position:absolute;left:0;width:560px;height:88px;border:3px dashed rgba(255,255,255,.35);border-bottom:none}
+.fl{position:absolute;left:0;width:560px;height:88px;border:3px solid var(--line);border-bottom:none;background:rgba(255,255,255,.05);opacity:0}
+.fl i{position:absolute;top:24px;width:84px;height:40px;border:2px solid rgba(255,255,255,.55)}
+.fl i:nth-of-type(1){left:40px}.fl i:nth-of-type(2){left:168px}.fl i:nth-of-type(3){left:296px}.fl i:nth-of-type(4){left:424px}
+.lv{position:absolute;left:-74px;width:56px;text-align:right;font-size:26px;font-weight:700;color:var(--mute)}
+#g6,#fl6{top:0}#g5,#fl5{top:88px}#g4,#fl4{top:176px}#g3,#fl3{top:264px}#g2,#fl2{top:352px}#g1,#fl1{top:440px}
+#gnd{position:absolute;left:-60px;top:528px;width:680px;height:4px;background:var(--line)}
+#hatch{position:absolute;left:-60px;top:532px;width:680px;height:22px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 3px,transparent 3px 16px)}
+#roof{position:absolute;left:-16px;top:-22px;width:592px;height:22px;border:3px solid var(--line);border-bottom:none;opacity:0}
+#flag{position:absolute;left:480px;top:-140px;width:220px;height:120px;opacity:0}
+#flag .pole{position:absolute;left:0;top:0;width:5px;height:120px;background:var(--line)}
+#flag .cloth{position:absolute;left:5px;top:4px;height:52px;padding:0 20px;background:var(--ok);color:#06331F;font-size:26px;font-weight:800;line-height:52px;border-radius:0 12px 12px 0;white-space:nowrap}
+.ck{position:absolute;left:836px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#pin5{position:absolute;left:830px;top:296px;width:64px;height:64px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 10px rgba(255,64,37,.25);display:grid;place-items:center;opacity:0}
+
+/* CARTÕES À DIREITA (UM POR ETAPA) */
+.pn{position:absolute;left:1080px;top:180px;width:640px;border-radius:30px;background:var(--paper);box-shadow:0 26px 56px rgba(0,0,0,.35);opacity:0;color:var(--pink);overflow:hidden}
+.pn .tt{position:absolute;left:34px;top:30px;font-size:32px;font-weight:800;white-space:nowrap}
+.pn .st{position:absolute;left:34px;top:76px;font-size:24px;font-weight:600;color:var(--pmute);white-space:nowrap}
+.row{position:absolute;left:34px;width:572px;height:68px;border-radius:18px;background:#F2F5F9;display:flex;align-items:center;gap:16px;padding:0 18px 0 22px;font-size:28px;font-weight:700;white-space:nowrap;opacity:0}
+.row .tag{margin-left:auto;height:42px;padding:0 16px;border-radius:21px;font-size:24px;font-weight:800;line-height:42px}
+.tag.y{background:#DDF6EA;color:var(--okd)}.tag.w{background:#FFF1DA;color:#7A4A00}.tag.g{background:#E6ECF4;color:#3B4C63}
+.row .ic{width:44px;height:44px;border-radius:50%;background:#DDF6EA;display:grid;place-items:center;flex:none}
+#pPlan{height:520px}#pIns{height:420px}#pOcc{height:470px}#pBoss{height:470px}#pDos{height:470px}
+.r1{top:130px}.r2{top:212px}.r3{top:294px}.r4{top:376px}
+#pOcc .band{position:absolute;left:0;right:0;top:0;height:76px;background:var(--acc);color:#fff;font-size:30px;font-weight:800;line-height:76px;padding-left:34px}
+#pOcc .tt{top:98px}
+#pOcc .r1{top:160px}#pOcc .r2{top:242px}#pOcc .r3{top:324px}
+#prog{position:absolute;left:34px;top:134px;width:572px;height:28px;border-radius:14px;background:#E6ECF4;overflow:hidden}
+#pfill{position:absolute;left:0;top:0;width:572px;height:28px;border-radius:14px;background:linear-gradient(90deg,#34D399,#2BB585);transform-origin:0 50%}
+#pBoss .r2{top:196px}#pBoss .r3{top:278px}#pBoss .r4{top:360px}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:250px;width:1920px;text-align:center;font-size:74px;font-weight:800;letter-spacing:-2px;line-height:92px;color:var(--ink)}
+#close img{position:absolute;left:746px;top:560px;height:100px}
+#close .dm{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--mute)}
+/* ABERTURA STANT-INTRO (copiada de pieces/stant-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#0A2E58;font-family:Inter,sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:648px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;color:#EAF1F8;opacity:0;text-shadow:0 2px 18px rgba(2,16,34,.45)}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="stant-journey-ludic-intro" data-width="1920" data-height="1080" data-start="0" data-duration="55">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Qualidade de obra, do campo à gestão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/stant-journey-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <img id="hlogo" src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div id="kick">Da fundação à entrega</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <!-- Prédio: começa em projeto tracejado e sobe andar por andar -->
+  <div id="site">
+    <div class="gh" id="g6"></div><div class="gh" id="g5"></div><div class="gh" id="g4"></div><div class="gh" id="g3"></div><div class="gh" id="g2"></div><div class="gh" id="g1"></div>
+    <div class="lv" style="top:26px">6º</div><div class="lv" style="top:114px">5º</div><div class="lv" style="top:202px">4º</div><div class="lv" style="top:290px">3º</div><div class="lv" style="top:378px">2º</div><div class="lv" style="top:466px">1º</div>
+    <div class="fl" id="fl6"><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl5"><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl4"><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl3"><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl2"><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl1"><i></i><i></i><i></i><i></i></div>
+    <div id="roof"></div>
+    <div id="flag"><div class="pole"></div><div class="cloth">Entregue · DEMO</div></div>
+    <div id="gnd"></div><div id="hatch"></div>
+  </div>
+  <div class="ck" id="k1" style="top:654px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k2" style="top:566px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k3" style="top:478px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k4" style="top:390px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k5" style="top:302px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="ck" id="k6" style="top:214px"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div id="pin5"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 4v10" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="12" cy="19.5" r="2" fill="#fff"/></svg></div>
+
+  <!-- Batida 1: planejamento -->
+  <div class="pn" id="pPlan">
+    <div class="tt">Planejamento · Torre DEMO</div>
+    <div class="st">etapas, serviços e contratos</div>
+    <div class="row r1">Fundação e estrutura<span class="tag g">etapa 1</span></div>
+    <div class="row r2">Alvenaria<span class="tag g">etapa 2</span></div>
+    <div class="row r3">Instalações e acabamento<span class="tag g">etapa 3</span></div>
+    <div class="row r4">Contratos · Empresa DEMO<span class="tag g">medições</span></div>
+  </div>
+
+  <!-- Batida 2: conferência em campo -->
+  <div class="pn" id="pIns">
+    <div class="tt">Ficha · Estrutura · 3º andar</div>
+    <div class="st">registrada no celular, com foto</div>
+    <div class="row r1">Armação<span class="tag y">aprovado</span></div>
+    <div class="row r2">Fôrmas<span class="tag y">aprovado</span></div>
+    <div class="row r3">Concretagem<span class="tag y">aprovado</span></div>
+  </div>
+
+  <!-- Batida 3: ocorrência resolvida -->
+  <div class="pn" id="pOcc">
+    <div class="band">Ocorrência · DEMO</div>
+    <div class="tt">Alvenaria · 5º andar</div>
+    <div class="row r1">Responsável · Empresa DEMO</div>
+    <div class="row r2">Plano de ação e prazo · DEMO</div>
+    <div class="row r3" id="oFix">Reinspeção<span class="tag y">aprovada</span></div>
+  </div>
+
+  <!-- Batida 4: o gestor acompanha e decide -->
+  <div class="pn" id="pBoss">
+    <div class="tt">Visão da obra · Torre DEMO</div>
+    <div class="st">avanço físico</div>
+    <div id="prog"><div id="pfill"></div></div>
+    <div class="row r2">Medição do contrato<span class="tag y">aprovada</span></div>
+    <div class="row r3">Etapa seguinte<span class="tag w">priorizada</span></div>
+    <div class="row r4">Relatório da semana<span class="tag y">enviado</span></div>
+  </div>
+
+  <!-- Batida 5: entrega com história -->
+  <div class="pn" id="pDos">
+    <div class="tt">Resumo da obra · DEMO</div>
+    <div class="st">tudo o que aconteceu, num lugar só</div>
+    <div class="row r1"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#0E7A50" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Fichas conferidas por andar</div>
+    <div class="row r2"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#0E7A50" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Fotos de cada etapa</div>
+    <div class="row r3"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#0E7A50" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ocorrências resolvidas</div>
+    <div class="row r4"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#0E7A50" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Medições e relatórios</div>
+  </div>
+
+  <div class="cap" id="c1">Tudo começa <span>no planejamento</span></div>
+  <div class="sub" id="s1">etapas, serviços e contratos da obra, num lugar só</div>
+  <div class="cap" id="c2">Cada etapa é <span>conferida em campo</span></div>
+  <div class="sub" id="s2">o inspetor registra no celular, andar por andar</div>
+  <div class="cap" id="c3">O que sai errado é <span>resolvido, não esquecido</span></div>
+  <div class="sub" id="s3">ocorrência com dono, plano de ação e nova conferência</div>
+  <div class="cap" id="c4">O gestor <span>acompanha e decide</span></div>
+  <div class="sub" id="s4">avanço, medições e relatórios a cada passo</div>
+  <div class="cap" id="c5">A obra chega à entrega <span>com tudo registrado</span></div>
+  <div class="sub" id="s5">cada andar com a sua conferência, no resumo da obra</div>
+
+  <div id="close">
+    <div class="l1">Da fundação à entrega,<br><span>nada se perde no caminho.</span></div>
+    <img src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null, curT = 0;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_BLUEPRINT]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uT', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    curT = t;
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uT, t); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+  // Canvas text needs the face loaded; redraw the current frame once it is
+  if (document.fonts && document.fonts.load) document.fonts.load('600 24px Inter').then(function () { render(curT); });
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; a frase entra depois do wordmark
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  tl.fromTo('#intro-line', { opacity: 0, y: -22 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/stant-journey-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 46;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function pop(sel, t) { tl.fromTo(sel, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, t); }
+  function build(sel, t) { tl.fromTo(sel, { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.45, ease: 'bounce.out' }, t); }
+  function green(sel, t) { tl.to(sel, { backgroundColor: 'rgba(52,211,153,.22)', borderColor: '#34D399', duration: 0.4 }, t); }
+
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  inn('#site', 0.5, { y: 20 }, 0.6);
+
+  // Batida 1: o planejamento desenha a obra (0,6–8,6 s)
+  inn('#c1', 1.0, { y: 16 }); inn('#s1', 1.3, { y: 12 });
+  inn('#pPlan', 1.1, { x: 40 }, 0.5);
+  inn('#pPlan .row', 1.6, { x: -12 }, 0.4);
+  out(['#c1', '#s1'], 8.2);
+  out('#pPlan', 8.2, 0.4);
+
+  // Batida 2: sobem os três primeiros andares e o inspetor confere (8,6–16,6 s)
+  inn('#c2', 8.6, { y: 16 }); inn('#s2', 8.9, { y: 12 });
+  build('#fl1', 9.0); build('#fl2', 9.3); build('#fl3', 9.6);
+  inn('#pIns', 10.6, { x: 40 }, 0.5);
+  inn('#pIns .row', 11.0, { x: -12 }, 0.4);
+  pop('#k1', 11.2); pop('#k2', 11.3); pop('#k3', 11.4);
+  green('#fl1', 11.2); green('#fl2', 11.3); green('#fl3', 11.4);
+  out(['#c2', '#s2'], 16.2);
+  out('#pIns', 16.2, 0.4);
+
+  // Batida 3: um problema no 5º andar vira ocorrência e é resolvido (16,6–24,6 s)
+  inn('#c3', 16.6, { y: 16 }); inn('#s3', 16.9, { y: 12 });
+  build('#fl4', 17.0); build('#fl5', 17.3);
+  pop('#k4', 17.9);
+  green('#fl4', 17.9);
+  pop('#pin5', 18.3);
+  tl.to('#fl5', { borderColor: '#FF4025', duration: 0.3 }, 18.3);
+  inn('#pOcc', 18.4, { x: 40 }, 0.5);
+  inn(['#pOcc .r1', '#pOcc .r2'], 18.9, { x: -12 }, 0.4);
+  // Fixed and re-inspected: marker turns into a check, the floor turns green
+  inn('#oFix', 21.0, { x: -12 }, 0.4);
+  tl.to('#pOcc .band', { backgroundColor: '#0E7A50', duration: 0.4 }, 21.0);
+  out('#pin5', 21.0, 0.3);
+  pop('#k5', 21.2);
+  green('#fl5', 21.2);
+  out(['#c3', '#s3'], 24.2);
+  out('#pOcc', 24.2, 0.4);
+
+  // Batida 4: o último andar sobe e o gestor acompanha e decide (24,6–33,0 s)
+  inn('#c4', 24.6, { y: 16 }); inn('#s4', 24.9, { y: 12 });
+  build('#fl6', 25.0);
+  pop('#k6', 25.6); green('#fl6', 25.6);
+  inn('#pBoss', 25.4, { x: 40 }, 0.5);
+  tl.fromTo('#pfill', { scaleX: 0.15 }, { scaleX: 0.9, duration: 1.0, ease: 'power2.out' }, 25.9);
+  inn('#pBoss .row', 27.0, { x: -12 }, 0.4);
+  out(['#c4', '#s4'], 32.6);
+  out('#pBoss', 32.6, 0.4);
+
+  // Batida 5: entrega com o resumo da obra (33,0–39,2 s)
+  inn('#c5', 33.0, { y: 16 }); inn('#s5', 33.3, { y: 12 });
+  inn('#roof', 33.1, { y: -10 }, 0.4);
+  tl.fromTo('#flag', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.6)' }, 33.4);
+  inn('#pDos', 33.5, { x: 40 }, 0.5);
+  inn('#pDos .row', 34.0, { x: -12 }, 0.4);
+  out(['#c5', '#s5'], 38.8);
+
+  // Fecho (39,2–46 s, parado de 40,0 s ao fim)
+  out(['#hd', '#site', '#pDos', '#k1', '#k2', '#k3', '#k4', '#k5', '#k6'], 38.8, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 39.4);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (46 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 46;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["stant-journey-ludic-intro"] = master;
+})();
+</script>
+</body>
+</html>

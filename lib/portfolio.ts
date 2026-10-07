@@ -285,7 +285,7 @@ export const portfolio = [
   },
   {
     slug: "welabs-crm",
-    title: "Rello",
+    title: "Relloo",
     sector: "Relacionamento comercial",
     category: "platform",
     brand: "Welabs",

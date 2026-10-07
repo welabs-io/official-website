@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Auto Infração · Do flagrante ao processo (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0d1210;--panel:#141f1a;--line:#2b3c34;--acc:#4ade80;--acc2:#16a34a;--text:#f3f6f4;--muted:#b4c0ba;--plate:#F6F9F7;--ink:#10201a;--ink2:#4b5e55;--warn:#f87171;--amber:#fbbf24}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#13261e 0%,#0d1210 72%);color:var(--text);font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#wm{position:absolute;left:0;top:0;font-size:34px;font-weight:800;letter-spacing:-.5px;line-height:72px;white-space:nowrap}
+.g{color:var(--acc)}
+#kick{position:absolute;left:270px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--acc);font-size:30px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.cap span,#close span.a{color:var(--acc)}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+.chip{position:absolute;height:48px;padding:0 18px;border-radius:999px;font-size:26px;font-weight:800;line-height:44px;white-space:nowrap;opacity:0}
+.chip.off{background:#1c2a24;border:2px solid #3b4d45;color:var(--muted)}
+.chip.on{background:var(--acc);border:2px solid var(--acc);color:#06281b}
+.tile{position:absolute;width:240px;height:220px;border-radius:30px;background:var(--panel);border:3px solid var(--line);display:grid;place-items:center;opacity:0}
+.tl{position:absolute;width:300px;text-align:center;font-size:30px;font-weight:800;opacity:0;white-space:nowrap}
+.plate{height:96px;border-radius:20px;background:var(--plate);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 44px rgba(0,0,0,.38);font-size:32px;font-weight:700;color:var(--ink);white-space:nowrap}
+.lg{display:block;background-size:contain;background-repeat:no-repeat;background-position:center}
+#roads{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#road{fill:none;stroke:#3d6153;stroke-width:8;stroke-dasharray:18 18;stroke-linecap:round;opacity:0}
+#arc{fill:none;stroke:var(--acc);stroke-width:6;stroke-dasharray:16 14;stroke-linecap:round;opacity:0}
+#pp{position:absolute;left:330px;top:330px;width:80px;height:104px;border-radius:10px;background:#e3e9e5;opacity:0;box-shadow:0 10px 24px rgba(0,0,0,.4)}
+#pp i{position:absolute;left:14px;height:8px;border-radius:4px;background:#b9c6bf}
+.q{position:absolute;width:64px;height:64px;border-radius:50%;background:#173327;border:3px solid #3d6153;color:var(--muted);font-size:38px;font-weight:800;text-align:center;line-height:56px;opacity:0}
+
+/* CELULAR, ITENS E ENVELOPE DO AUTO */
+#ph{position:absolute;left:380px;top:200px;width:260px;height:520px;border-radius:40px;background:#0b0f0d;border:8px solid #3b4d45;opacity:0}
+#ph .scr{position:absolute;left:10px;top:58px;width:224px;height:420px;border-radius:20px;background:#13261e}
+#ph .nt{position:absolute;left:86px;top:12px;width:72px;height:12px;border-radius:6px;background:#2b3c34}
+#ph .tt{position:absolute;left:26px;top:80px;font-size:24px;font-weight:800;white-space:nowrap}
+.it{position:absolute;left:720px;width:150px;text-align:center;opacity:0}
+.it .b{width:96px;height:96px;margin:0 auto;border-radius:50%;background:var(--panel);border:4px solid var(--acc);display:grid;place-items:center}
+.it .n{margin-top:10px;font-size:28px;font-weight:700;color:var(--muted)}
+#env{position:absolute;left:410px;top:400px;width:200px;height:196px;opacity:0}
+#env svg{position:absolute;left:0;top:0;overflow:visible}
+#seal{position:absolute;left:68px;top:44px;width:64px;height:64px;border-radius:50%;background:var(--acc2);border:4px solid #bbf7d0;display:grid;place-items:center;opacity:0}
+#tag{position:absolute;left:0;top:150px;width:200px;height:46px;border-radius:999px;background:#d8f5e2;color:#14532d;font-size:24px;font-weight:800;line-height:46px;text-align:center;opacity:0}
+#via{position:absolute;left:760px;top:360px;width:150px;height:190px;border-radius:6px;background:#f3f6f4;color:var(--ink);opacity:0;box-shadow:0 12px 28px rgba(0,0,0,.4)}
+#via .tt{position:absolute;left:12px;top:12px;font-size:24px;font-weight:800;line-height:28px}
+#via i{position:absolute;left:12px;height:8px;border-radius:4px;background:#c9d4ce}
+
+/* PROCESSO DIGITAL */
+#fold{position:absolute;left:980px;top:170px;width:400px;height:214px;border-radius:8px 22px 22px 22px;background:var(--plate);color:var(--ink);opacity:0;box-shadow:0 20px 46px rgba(0,0,0,.42)}
+#fold .tab{position:absolute;left:0;top:-20px;width:140px;height:24px;border-radius:12px 12px 0 0;background:var(--plate)}
+#fold .tt{position:absolute;left:190px;top:24px;font-size:28px;font-weight:700;color:var(--ink2);white-space:nowrap}
+#fold .row{position:absolute;left:24px;display:flex;gap:10px}
+.fc{height:40px;padding:0 14px;border-radius:999px;background:#d8f5e2;color:#14532d;font-size:24px;font-weight:700;line-height:40px;white-space:nowrap}
+.fs{background:var(--acc2);color:#fff;opacity:0}
+#psg{position:absolute;left:1510px;top:200px;width:300px;opacity:0}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:200px;width:1920px;text-align:center;font-size:64px;font-weight:800;letter-spacing:-1.5px;line-height:82px}
+#close .bn{position:absolute;left:0;top:440px;width:1920px;text-align:center;font-size:96px;font-weight:700;letter-spacing:-3px;line-height:116px}
+#close .rule{position:absolute;left:820px;top:580px;width:280px;height:5px;border-radius:3px;background:var(--acc)}
+#close .tg{position:absolute;left:0;top:620px;width:1920px;text-align:center;font-size:36px;font-weight:500;color:#dfe7e3}
+#close .dm{position:absolute;left:0;top:820px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* ABERTURA WEGO-INTRO-V2 (copiada de pieces/wego-intro-v2, ids e classes com prefixo intro-) */
+#intro{position:relative;width:1920px;height:1080px;overflow:hidden;background:#0d1210}
+@font-face{font-family:"WGI Inter";src:url("./assets/intro/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro-wgi{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000;background:#0d1210;font-family:"WGI Inter",Inter,sans-serif;color:#f3f6f4}
+#intro-wgi-bg,#intro-wgi-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-wgi-title{position:absolute;left:0;top:332px;width:1920px;margin:0;text-align:center;font-size:112px;font-weight:700;letter-spacing:-.03em;line-height:136px;color:#f3f6f4;opacity:0}
+#intro-wgi-title span{font-weight:400;color:#b4c0ba}
+#intro-wgi-line{position:absolute;left:0;top:508px;width:1920px;margin:0;text-align:center;font-size:40px;font-weight:500;letter-spacing:-.01em;line-height:52px;color:#dfe7e3;opacity:0}
+#intro-wgi-key{position:absolute;left:760px;top:588px;width:400px;margin:0;text-align:center;font-size:26px;font-weight:500;line-height:32px;color:#b4c0ba;opacity:0}
+.intro-wgi-mod{position:absolute;top:610px;width:340px;margin:0;padding:0;opacity:0}
+.intro-wgi-plate{box-sizing:border-box;height:112px;margin:0;border-radius:20px;background:#F6F9F7;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 44px rgba(0,0,0,.38);font-size:36px;font-weight:700;letter-spacing:-.015em;line-height:44px;color:#10201a;white-space:nowrap}
+.intro-wgi-plate img{display:block;width:auto;max-width:none}
+.intro-wgi-plate i{font-style:normal;color:#15803d}
+.intro-wgi-cap{margin:18px 0 0;text-align:center;font-size:26px;font-weight:500;line-height:32px;color:#b4c0ba;white-space:nowrap}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="auto-infracao-journey-ludic-intro" data-width="1920" data-height="1080" data-start="0" data-duration="55">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+<!-- ABERTURA WEGO -->
+<div id="intro-wgi">
+  <canvas id="intro-wgi-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-wgi-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-wgi-key">nº do processo</div>
+  <div id="intro-wgi-title"><span>Família</span> WeGO</div>
+  <div id="intro-wgi-line">Do requerimento à licença, do campo ao processo</div>
+  <div class="intro-wgi-mod" id="intro-wgi-m0" style="left:226px"><div class="intro-wgi-plate"><img src="./assets/intro/docgo-color.svg" alt="DocGo" style="height:56px"></div><div class="intro-wgi-cap">processos e documentos</div></div>
+  <div class="intro-wgi-mod" id="intro-wgi-m1" style="left:602px"><div class="intro-wgi-plate">Licenciamento</div><div class="intro-wgi-cap">requerimento e licença</div></div>
+  <div class="intro-wgi-mod" id="intro-wgi-m2" style="left:978px"><div class="intro-wgi-plate">Auto&nbsp;<i>Infração</i></div><div class="intro-wgi-cap">app do fiscal</div></div>
+  <div class="intro-wgi-mod" id="intro-wgi-m3" style="left:1354px"><div class="intro-wgi-plate"><img src="./assets/intro/signgo-color.svg" alt="SignGo" style="height:60px"></div><div class="intro-wgi-cap">assinatura eletrônica</div></div>
+</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/auto-infracao-journey-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="wm">Auto <span class="g">Infração</span></div>
+    <div id="kick">Some o papel entre o campo e o processo</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <svg id="roads" viewBox="0 0 1920 1080"><path id="road" d="M330 490 L1560 490"/><path id="arc" d="M650 380 Q900 90 1170 170"/></svg>
+  <div class="tile" id="fl" style="left:80px;top:380px"><svg width="120" height="120" viewBox="0 0 24 24"><path d="M12 3L2 20h20z" fill="none" stroke="#fbbf24" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v5M12 17v.5" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/></svg></div>
+  <div class="tl" id="fll" style="left:50px;top:620px">Flagrante</div>
+  <div class="tile" id="of" style="left:1560px;top:380px"><svg width="120" height="120" viewBox="0 0 24 24"><path d="M4 21V5h10v16M14 9h6v12M7 8h2M7 12h2M7 16h2M17 13h1M17 17h1" fill="none" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+  <div class="tl" id="ofl" style="left:1530px;top:620px">Escritório</div>
+  <div id="pp"><i style="top:18px;width:52px"></i><i style="top:34px;width:40px"></i><i style="top:50px;width:52px"></i><i style="top:66px;width:30px"></i></div>
+  <div class="q" id="q1" style="left:780px;top:560px">?</div>
+  <div class="q" id="q2" style="left:1080px;top:560px">?</div>
+
+  <div id="ph"><div class="nt"></div><div class="scr"></div><div class="tt">Auto · DEMO</div></div>
+  <div class="chip off" id="nr" style="left:448px;top:740px">sem rede</div>
+  <div class="chip on" id="cr" style="left:445px;top:740px">com rede</div>
+  <div class="it" id="i1" style="top:230px"><div class="b"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z" fill="none" stroke="#4ade80" stroke-width="2"/><circle cx="12" cy="10" r="2.5" fill="#4ade80"/></svg></div><div class="n">local</div></div>
+  <div class="it" id="i2" style="top:420px"><div class="b"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v11H3z" fill="none" stroke="#4ade80" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="#4ade80" stroke-width="2"/></svg></div><div class="n">fotos</div></div>
+  <div class="it" id="i3" style="top:610px"><div class="b"><svg width="52" height="52" viewBox="0 0 24 24"><path d="M3 17c3-6 5-6 6-2s3 4 5-1 4-4 7 0" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round"/></svg></div><div class="n">assinaturas</div></div>
+  <div id="env">
+    <svg width="200" height="140" viewBox="0 0 200 140"><rect x="3" y="6" width="194" height="130" rx="10" fill="#e9dcc0" stroke="#cbb88f" stroke-width="4"/><path d="M3 136 L100 70 L197 136" fill="none" stroke="#cbb88f" stroke-width="4"/><path id="flap" d="M5 8 L100 82 L195 8 Z" fill="#dccca7" stroke="#cbb88f" stroke-width="4" stroke-linejoin="round"/></svg>
+    <div id="seal"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div id="tag">nº DEMO-0123</div>
+  </div>
+
+  <div id="via"><div class="tt">via do<br>autuado</div><i style="top:84px;width:120px"></i><i style="top:104px;width:96px"></i><i style="top:124px;width:110px"></i><i style="top:144px;width:80px"></i></div>
+  <div class="tile" id="au" style="left:1260px;top:360px"><svg width="120" height="120" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="#4ade80" stroke-width="1.6"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7" fill="none" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+  <div class="tl" id="aul" style="left:1230px;top:600px">Autuado</div>
+  <div class="chip on" id="ent" style="left:1293px;top:660px">✓ via entregue</div>
+
+  <div class="tile" id="rt" style="left:1060px;top:380px"><svg width="120" height="120" viewBox="0 0 24 24"><path d="M3 21V9l9-5 9 5v12zM8 21v-6h8v6M7 11h2M11 11h2M15 11h2" fill="none" stroke="#4ade80" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+  <div class="tl" id="rtl" style="left:1030px;top:620px">Retaguarda</div>
+  <div class="chip on" id="int" style="left:1068px;top:680px">✓ chegou íntegro</div>
+  <div class="chip on" id="rev" style="left:1100px;top:680px">✓ revisado</div>
+
+  <div id="fold"><div class="tab" data-layout-allow-overflow></div>
+    <span class="lg" role="img" aria-label="DocGo" style="position:absolute;left:24px;top:22px;width:150px;height:36px;background-image:url(./assets/brand/docgo-color.svg)"></span>
+    <div class="tt">Processo</div>
+    <div class="row" style="top:96px"><div class="fc">auto</div><div class="fc">termos</div><div class="fc">anexos</div></div>
+    <div class="row" style="top:150px"><div class="fc fs" id="sg1">✓ Fiscal 1</div><div class="fc fs" id="sg2">✓ Fiscal 2</div></div>
+  </div>
+  <div id="psg"><div class="plate"><span class="lg" role="img" aria-label="SignGo" style="width:171px;height:52px;background-image:url(./assets/brand/signgo-color.svg)"></span></div></div>
+
+  <div class="cap" id="c1">Do flagrante ao processo, <span>muitas mãos e papel</span></div>
+  <div class="sub" id="s1">digitar de novo, levar, conferir, esperar</div>
+  <div class="cap" id="c2">No flagrante, o fiscal <span>registra ali mesmo</span></div>
+  <div class="sub" id="s2">no próprio aparelho, mesmo sem rede</div>
+  <div class="cap" id="c3">Provas e assinaturas <span>ficam lacradas no auto</span></div>
+  <div class="sub" id="s3">com número gerado ali mesmo</div>
+  <div class="cap" id="c4">O autuado <span>recebe a via na hora</span></div>
+  <div class="sub" id="s4">impressa em campo</div>
+  <div class="cap" id="c5">Com rede, o auto <span>chega íntegro à retaguarda</span></div>
+  <div class="sub" id="s5">o fiscal envia quando o sinal volta</div>
+  <div class="cap" id="c6">Revisado, ele <span>vira processo digital</span></div>
+  <div class="sub" id="s6">no DocGo, com o auto e os termos dentro</div>
+  <div class="cap" id="c7">Os fiscais <span>assinam sem imprimir</span></div>
+  <div class="sub" id="s7">pelo SignGo, dentro do mesmo processo</div>
+
+  <div id="close">
+    <div class="l1">Do flagrante ao processo:<br><span class="a">nenhum papel perdido no caminho.</span></div>
+    <div class="bn">Auto <span class="g">Infração</span></div>
+    <div class="rule"></div>
+    <div class="tg">o app do fiscal da Família WeGO</div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/intro/shaders.js"></script>
+<script src="./assets/intro/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// REGISTRO DA ABERTURA: a timeline montada pela coreografia é a única registrada
+// The root element is passed by id so the intro merge can prefix it; registration uses the `tl` form it expects
+(function () {
+  var tl = WGI.build(document.getElementById('intro-wgi'));
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/auto-infracao-journey-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 46;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function pop(sel, t) { tl.fromTo(sel, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.2)' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); tl.set(p, { strokeDasharray: L + ' ' + L, strokeDashoffset: L, opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.to(p, { strokeDashoffset: 0, duration: d, ease: 'none' }, t); }
+  // Open flap = mirrored above the envelope's top edge
+  tl.set('#flap', { scaleY: -1, svgOrigin: '100 8' }, 0);
+
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: o papel vai e volta entre o campo e o escritório (0,6–6,6 s)
+  inn(['#fl', '#fll'], 0.6, { y: 30 });
+  inn(['#of', '#ofl'], 0.8, { y: 30 });
+  tl.to('#road', { opacity: 1, duration: 0.5 }, 1.0);
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  tl.fromTo('#pp', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.7);
+  [[1150, 2.1], [0, 3.4], [1150, 4.7]].forEach(function (h) { tl.to('#pp', { x: h[0], duration: 1.1, ease: 'power1.inOut' }, h[1]); });
+  pop('#q1', 3.0); pop('#q2', 3.2);
+  out(['#c1', '#s1'], 6.3);
+  out(['#of', '#ofl', '#road', '#pp', '#q1', '#q2'], 6.3, 0.4);
+
+  // Batida 2: no flagrante, registra ali mesmo, sem rede (6,6–12,6 s)
+  inn('#c2', 6.8, { y: 16 }); inn('#s2', 7.1, { y: 12 });
+  inn('#ph', 6.9, { y: 40 }, 0.6);
+  pop('#nr', 7.4);
+  tl.fromTo('#env', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(1.6)' }, 7.9);
+  out(['#c2', '#s2'], 12.3);
+
+  // Batida 3: provas entram e o auto se fecha lacrado e numerado (12,6–18,6 s)
+  inn('#c3', 12.6, { y: 16 }); inn('#s3', 12.9, { y: 12 });
+  ['#i1', '#i2', '#i3'].forEach(function (s, i) { inn(s, 12.9 + i * 0.15, { scale: 0.6 }, 0.4); });
+  [['#i1', -285, 220], ['#i2', -285, 30], ['#i3', -285, -160]].forEach(function (m, i) {
+    tl.to(m[0], { x: m[1], y: m[2], scale: 0.3, opacity: 0, duration: 0.6, ease: 'power2.in' }, 15.1 + i * 0.15);
+  });
+  tl.to('#flap', { scaleY: 1, duration: 0.45, ease: 'power2.inOut' }, 15.9);
+  tl.fromTo('#seal', { opacity: 0, scale: 1.9, rotation: 0 }, { opacity: 1, scale: 1, rotation: -12, duration: 0.35, ease: 'back.out(2.2)' }, 16.4);
+  pop('#tag', 16.5);
+  out(['#c3', '#s3'], 18.3);
+
+  // Batida 4: o autuado recebe a via na hora (18,6–24,6 s)
+  inn('#c4', 18.6, { y: 16 }); inn('#s4', 18.9, { y: 12 });
+  inn(['#au', '#aul'], 18.9, { x: 30 });
+  tl.fromTo('#via', { opacity: 0, x: -140, scale: 0.4 }, { opacity: 1, x: 0, scale: 1, duration: 0.6, ease: 'back.out(1.4)' }, 19.4);
+  tl.to('#via', { x: 330, duration: 0.8, ease: 'power2.inOut' }, 21.0);
+  pop('#ent', 21.9);
+  out(['#c4', '#s4'], 24.3);
+  out(['#via', '#au', '#aul', '#ent'], 24.3, 0.35);
+
+  // Batida 5: com rede, o auto chega íntegro à retaguarda (24,6–30,6 s)
+  inn('#c5', 24.7, { y: 16 }); inn('#s5', 25.0, { y: 12 });
+  out('#nr', 24.9, 0.2); pop('#cr', 25.0);
+  inn(['#rt', '#rtl'], 25.1, { x: 30 });
+  draw('arc', 26.2, 0.9);
+  tl.to('#env', { x: 670, duration: 1.6, ease: 'power2.inOut' }, 26.4);
+  tl.to('#env', { y: -290, duration: 0.79, ease: 'sine.out' }, 26.4).to('#env', { y: -220, duration: 0.79, ease: 'sine.in' }, 27.21);
+  pop('#int', 28.2);
+  out(['#c5', '#s5'], 30.3);
+
+  // Batida 6: revisado, vira processo digital no DocGo (30,6–36,6 s)
+  inn('#c6', 30.6, { y: 16 }); inn('#s6', 30.9, { y: 12 });
+  out('#int', 30.7, 0.2); pop('#rev', 30.8);
+  out('#arc', 32.2, 0.3);
+  tl.to('#env', { scale: 0.5, opacity: 0, duration: 0.35, ease: 'power2.in' }, 32.4);
+  tl.fromTo('#fold', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: 'back.out(1.6)' }, 32.5);
+  tl.to('#fold', { x: 480, y: 210, duration: 0.9, ease: 'power2.inOut' }, 33.1);
+  out(['#c6', '#s6'], 36.3);
+
+  // Batida 7: os fiscais assinam sem imprimir (36,6–41,4 s)
+  inn('#c7', 36.6, { y: 16 }); inn('#s7', 36.9, { y: 12 });
+  inn('#psg', 36.9, { y: -16 });
+  pop('#sg1', 37.5); pop('#sg2', 37.7);
+  out(['#c7', '#s7'], 41.0);
+
+  // Fecho (41,6–46 s, parado de 42,2 s ao fim); starts only after the scene is gone
+  out(['#hd', '#fl', '#fll', '#ph', '#cr', '#rt', '#rtl', '#rev', '#fold', '#psg'], 41.1, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 41.6);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (46 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 46;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["auto-infracao-journey-ludic-intro"] = master;
+})();
+</script>
+</body>
+</html>

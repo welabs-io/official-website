@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Stant · A obra inteira à vista (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E PAPEL DE PROJETO */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+:root{--bg:#0A2E58;--ink:#FFFFFF;--mute:#C3D3E6;--line:rgba(255,255,255,.80);--acc:#FF4025;--acc2:#FF8166;--ok:#34D399;--okd:#0E7A50;--warn:#FFB547;--paper:#FFFFFF;--pink:#13253E;--pmute:#56677E;--pline:#DCE4EE}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;color:var(--ink);font-family:"Inter",sans-serif;background:linear-gradient(rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(90deg,rgba(255,255,255,.06) 2px,transparent 2px) 0 0/200px 200px,linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/40px 40px,radial-gradient(1300px 800px at 50% 42%,#0F3D72 0%,#0A2E58 58%,#06203F 100%)}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#hlogo{position:absolute;left:0;top:13px;height:46px}
+#kick{position:absolute;left:234px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--acc);font-size:30px;font-weight:600;color:var(--mute);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid rgba(255,255,255,.35);border-radius:999px;font-size:24px;font-weight:700;color:var(--mute);line-height:36px}
+.cap{position:absolute;left:0;top:900px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;color:var(--ink)}
+.cap span,#close span{color:var(--acc2)}
+.sub{position:absolute;left:0;top:974px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--mute);opacity:0;white-space:nowrap}
+
+/* PRÉDIO EM PLANTA COM NEBLINA E STATUS POR ANDAR */
+#bld{position:absolute;left:250px;top:196px;width:560px;height:620px;opacity:0}
+.fl{position:absolute;left:0;width:560px;height:88px;border:3px solid var(--line);border-bottom:none;background:rgba(255,255,255,.04)}
+.fl i{position:absolute;top:24px;width:84px;height:40px;border:2px solid rgba(255,255,255,.55)}
+.fl i:nth-of-type(1){left:40px}.fl i:nth-of-type(2){left:168px}.fl i:nth-of-type(3){left:296px}.fl i:nth-of-type(4){left:424px}
+.fl b{position:absolute;left:-74px;top:26px;width:56px;text-align:right;font-size:26px;font-weight:700;color:var(--mute)}
+#fl6{top:0}#fl5{top:88px}#fl4{top:176px}#fl3{top:264px}#fl2{top:352px}#fl1{top:440px}
+#gnd{position:absolute;left:-60px;top:528px;width:680px;height:4px;background:var(--line)}
+#hatch{position:absolute;left:-60px;top:532px;width:680px;height:22px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 3px,transparent 3px 16px)}
+#fog{position:absolute;left:236px;top:180px;width:590px;height:560px;border-radius:40px;background:radial-gradient(closest-side,rgba(9,32,62,.92),rgba(9,32,62,.80) 70%,rgba(9,32,62,0));opacity:0}
+.fq{position:absolute;width:64px;height:64px;border-radius:50%;border:3px dashed rgba(255,255,255,.6);color:var(--mute);font-size:36px;font-weight:800;display:grid;place-items:center;opacity:0}
+#fq1{left:340px;top:250px}#fq2{left:600px;top:400px}#fq3{left:420px;top:560px}
+#pin4{position:absolute;left:830px;top:384px;height:64px;padding:0 24px 0 14px;border-radius:32px;background:var(--acc);display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;color:#fff;opacity:0;white-space:nowrap;box-shadow:0 0 0 10px rgba(255,64,37,.22)}
+#prio{position:absolute;left:830px;top:384px;height:64px;padding:0 24px 0 14px;border-radius:32px;background:var(--paper);display:flex;align-items:center;gap:10px;font-size:26px;font-weight:800;color:var(--pink);opacity:0;white-space:nowrap;box-shadow:0 0 0 10px rgba(255,255,255,.18)}
+
+/* GESTOR E PERGUNTAS SEM RESPOSTA */
+#boss{position:absolute;left:1180px;top:430px;width:340px;height:200px;opacity:0}
+#boss .av{position:absolute;left:120px;top:0;width:100px;height:100px;border-radius:50%;background:#FFE7E1;display:grid;place-items:center}
+#boss .nm{position:absolute;left:0;top:116px;width:340px;text-align:center;font-size:28px;font-weight:700;color:var(--mute)}
+.bub{position:absolute;padding:20px 28px;border-radius:22px;background:var(--paper);color:var(--pink);font-size:32px;font-weight:800;line-height:40px;opacity:0;white-space:nowrap;box-shadow:0 16px 36px rgba(0,0,0,.28)}
+#b1{left:1000px;top:220px}#b2{left:1460px;top:300px}#b3{left:1060px;top:660px;background:#FFE08A}
+
+/* QUADRO DO GESTOR: AVANÇO, ATENÇÃO E DECISÃO */
+#board{position:absolute;left:1180px;top:170px;width:620px;height:236px;overflow:hidden;border-radius:30px;background:var(--paper);box-shadow:0 26px 56px rgba(0,0,0,.35);opacity:0;color:var(--pink)}
+#board .tt{position:absolute;left:36px;top:32px;font-size:34px;font-weight:800;white-space:nowrap}
+#board .st{position:absolute;left:36px;top:80px;font-size:24px;font-weight:600;color:var(--pmute);white-space:nowrap}
+#prog{position:absolute;left:36px;top:132px;width:548px;height:28px;border-radius:14px;background:#E6ECF4;overflow:hidden}
+#pfill{position:absolute;left:0;top:0;width:548px;height:28px;border-radius:14px;background:linear-gradient(90deg,#34D399,#FFB547);transform-origin:0 50%}
+#legend{position:absolute;left:36px;top:180px;display:flex;gap:28px;font-size:24px;font-weight:700;color:var(--pmute);white-space:nowrap;opacity:0}
+#legend span{display:flex;align-items:center;gap:10px}
+#legend i{width:22px;height:22px;border-radius:6px}
+.tile{position:absolute;left:36px;width:548px;height:120px;border-radius:22px;border:3px solid;display:flex;align-items:center;gap:22px;padding-left:22px;opacity:0;white-space:nowrap}
+.tile .ic{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;flex:none}
+.tile .a{font-size:30px;font-weight:800;line-height:38px}
+.tile .b{font-size:24px;font-weight:600;color:var(--pmute);line-height:32px}
+#t1{top:250px;border-color:#FFB3A3;background:#FFF2EE}#t1 .ic{background:var(--acc)}
+#t2{top:384px;border-color:#FFD58A;background:#FFF8EA}#t2 .ic{background:#E59400}
+#t3{top:518px;border-color:#B9CCE6;background:#F1F5FB}#t3 .ic{background:#3A6BAE}
+#t3ok{position:absolute;left:36px;top:518px;width:548px;height:120px;border-radius:22px;border:3px solid #8FDDBD;background:#E8F8F0;display:flex;align-items:center;gap:22px;padding-left:22px;opacity:0;white-space:nowrap}
+#t3ok .ic{width:72px;height:72px;border-radius:20px;background:var(--ok);display:grid;place-items:center;flex:none}
+#t3ok .a{font-size:30px;font-weight:800;line-height:38px;color:var(--okd)}
+#t3ok .b{font-size:24px;font-weight:600;color:var(--pmute);line-height:32px}
+#rep{position:absolute;left:1216px;top:470px;width:548px;height:120px;border-radius:22px;background:#FFF2EE;border:3px solid #FFB3A3;display:flex;align-items:center;gap:18px;padding-left:22px;opacity:0;color:var(--pink);white-space:nowrap}
+#rep .ic{width:64px;height:76px;border-radius:10px;background:#FFE7E1;display:grid;place-items:center;flex:none}
+#rep .a{font-size:28px;font-weight:800;line-height:36px}
+#rep .b{font-size:24px;font-weight:600;color:var(--pmute);line-height:32px}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:250px;width:1920px;text-align:center;font-size:74px;font-weight:800;letter-spacing:-2px;line-height:92px;color:var(--ink)}
+#close img{position:absolute;left:746px;top:560px;height:100px}
+#close .dm{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--mute)}
+/* ABERTURA STANT-INTRO (copiada de pieces/stant-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#0A2E58;font-family:Inter,sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:648px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;color:#EAF1F8;opacity:0;text-shadow:0 2px 18px rgba(2,16,34,.45)}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-stant-gestao-ludic-intro"data-width="1920" data-height="1080" data-start="0" data-duration="44">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Qualidade de obra, do campo à gestão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/biz-stant-gestao-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <img id="hlogo" src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div id="kick">Some a obra às cegas</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <!-- Prédio em planta: cada andar mostra o próprio estado -->
+  <div id="bld">
+    <div class="fl" id="fl6"><b data-layout-allow-overflow>6º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl5"><b data-layout-allow-overflow>5º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl4"><b data-layout-allow-overflow>4º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl3"><b data-layout-allow-overflow>3º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl2"><b data-layout-allow-overflow>2º</b><i></i><i></i><i></i><i></i></div>
+    <div class="fl" id="fl1"><b data-layout-allow-overflow>1º</b><i></i><i></i><i></i><i></i></div>
+    <div id="gnd"></div><div id="hatch"></div>
+  </div>
+  <div id="fog"></div>
+  <div class="fq" id="fq1">?</div><div class="fq" id="fq2">?</div><div class="fq" id="fq3">?</div>
+  <div id="pin4"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 4v10" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="12" cy="19.5" r="2" fill="#fff"/></svg>Ocorrências</div>
+  <div id="prio"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M6 21V4h11l-2 4 2 4H6" fill="#FF4025"/></svg>Prioridade</div>
+
+  <!-- Batida 1: o gestor só tem perguntas -->
+  <div id="boss"><div class="av"><svg width="60" height="60" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2" fill="#FF4025"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z" fill="#FF4025"/></svg></div><div class="nm">Gestor · DEMO</div></div>
+  <div class="bub" id="b1">Como está a torre?</div>
+  <div class="bub" id="b2">Atrasou?</div>
+  <div class="bub" id="b3">Cadê o relatório da semana?</div>
+
+  <!-- Batidas 2 a 4: o quadro do gestor -->
+  <div id="board">
+    <div class="tt">Torre DEMO · visão da obra</div>
+    <div class="st">avanço físico por andar e serviço</div>
+    <div id="prog"><div id="pfill"></div></div>
+    <div id="legend"><span><i style="background:#34D399"></i>concluído</span><span><i style="background:#FFB547"></i>em andamento</span><span><i style="background:#C8D3E0"></i>a iniciar</span></div>
+    <div class="tile" id="t1"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 4v10" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="12" cy="19.5" r="2" fill="#fff"/></svg></span><div><div class="a">Qualidade</div><div class="b">ocorrências abertas no 4º andar</div></div></div>
+    <div class="tile" id="t2"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M12 7v5l3 2" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></span><div><div class="a">Prazo</div><div class="b">etapa vencendo · DEMO</div></div></div>
+    <div class="tile" id="t3"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></span><div><div class="a">Contratos</div><div class="b">medição esperando aprovação</div></div></div>
+    <div id="t3ok"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div class="a">Medição aprovada</div><div class="b">contrato DEMO em dia</div></div></div>
+  </div>
+  <div id="rep"><span class="ic"><svg width="38" height="38" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="#FF4025" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h6M9 16h4" stroke="#FF4025" stroke-width="2.2" stroke-linecap="round"/></svg></span><div><div class="a">Relatório da obra</div><div class="b">PDF compartilhado</div></div></div>
+
+  <div class="cap" id="c1">O gestor via a obra <span>aos pedaços</span></div>
+  <div class="sub" id="s1">uma ligação aqui, uma planilha ali, sempre depois do fato</div>
+  <div class="cap" id="c2">Agora a obra inteira <span>aparece num quadro</span></div>
+  <div class="sub" id="s2">andar por andar, serviço por serviço, com o que já foi feito</div>
+  <div class="cap" id="c3">O que pede atenção <span>salta à vista</span></div>
+  <div class="sub" id="s3">ocorrências abertas, etapas vencendo e medições para aprovar</div>
+  <div class="cap" id="c4">E decide pelo que <span>está acontecendo</span></div>
+  <div class="sub" id="s4">aprova a medição, define a prioridade e compartilha o relatório</div>
+
+  <div id="close">
+    <div class="l1">Quem decide vê a obra inteira.<br><span>Decide pelo que está acontecendo.</span></div>
+    <img src="./assets/brand/stant-logo-dark.svg" alt="stant">
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null, curT = 0;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_BLUEPRINT]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uT', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    curT = t;
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uT, t); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+  // Canvas text needs the face loaded; redraw the current frame once it is
+  if (document.fonts && document.fonts.load) document.fonts.load('600 24px Inter').then(function () { render(curT); });
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; a frase entra depois do wordmark
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  tl.fromTo('#intro-line', { opacity: 0, y: -22 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/biz-stant-gestao-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 35;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function pop(sel, t) { tl.fromTo(sel, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, t); }
+
+  // Cabeçalho e prédio coberto de neblina
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  inn('#bld', 0.5, { y: 24 }, 0.7);
+  inn('#fog', 0.7, {}, 0.6);
+  inn(['#fq1', '#fq2', '#fq3'], 1.1, { scale: 0.5 }, 0.45);
+
+  // Batida 1: o gestor só tem perguntas (0,6–8,0 s)
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  inn('#boss', 1.0, { y: 20 }, 0.5);
+  [['#b1', -3], ['#b2', 4], ['#b3', -2]].forEach(function (b, i) { tl.fromTo(b[0], { opacity: 0, y: 26, rotation: 0 }, { opacity: 1, y: 0, rotation: b[1], duration: 0.5, ease: 'back.out(1.6)' }, 1.5 + i * 0.25); });
+  // Questions wobble: no answer arrives
+  tl.to('#b1', { rotation: 1, duration: 1.0, ease: 'sine.inOut' }, 3.6).to('#b1', { rotation: -3, duration: 1.0, ease: 'sine.inOut' }, 4.6);
+  tl.to('#b2', { rotation: 0, duration: 1.0, ease: 'sine.inOut' }, 3.8).to('#b2', { rotation: 4, duration: 1.0, ease: 'sine.inOut' }, 4.8);
+  out(['#c1', '#s1'], 7.6);
+  out(['#boss', '#b1', '#b2', '#b3'], 7.6, 0.4);
+
+  // Batida 2: a neblina sai e cada andar mostra o próprio estado (8,0–15,2 s)
+  out(['#fog', '#fq1', '#fq2', '#fq3'], 8.1, 0.5);
+  inn('#c2', 8.2, { y: 16 }); inn('#s2', 8.5, { y: 12 });
+  var done = 'rgba(52,211,153,.24)', doing = 'rgba(255,181,71,.26)';
+  [['#fl1', done, '#34D399'], ['#fl2', done, '#34D399'], ['#fl3', done, '#34D399'], ['#fl4', doing, '#FFB547']].forEach(function (f, i) { tl.to(f[0], { backgroundColor: f[1], borderColor: f[2], duration: 0.4 }, 8.6 + i * 0.2); });
+  inn('#board', 8.8, { x: 40, scale: 0.96 }, 0.6);
+  tl.fromTo('#pfill', { scaleX: 0 }, { scaleX: 0.58, duration: 0.9, ease: 'power2.out' }, 9.3);
+  inn('#legend', 9.4, { y: 10 }, 0.4);
+  out(['#c2', '#s2'], 14.8);
+
+  // Batida 3: o que pede atenção aparece no prédio e no quadro (15,2–22,2 s)
+  inn('#c3', 15.2, { y: 16 }); inn('#s3', 15.5, { y: 12 });
+  // The board grows to hold the attention points
+  tl.to('#board', { height: 660, duration: 0.45, ease: 'power2.inOut' }, 15.2);
+  inn('#t1', 15.6, { x: 20 }, 0.4); inn('#t2', 15.75, { x: 20 }, 0.4); inn('#t3', 15.9, { x: 20 }, 0.4);
+  tl.fromTo('#pin4', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.45, ease: 'back.out(1.8)' }, 15.8);
+  tl.to('#fl4', { borderColor: '#FF4025', duration: 0.3 }, 15.8);
+  tl.to('#t1', { scale: 1.03, duration: 0.25, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 17.8);
+  out(['#c3', '#s3'], 21.8);
+
+  // Batida 4: o gestor decide; a medição é aprovada e o relatório segue (22,2–29,2 s)
+  inn('#c4', 22.2, { y: 16 }); inn('#s4', 22.5, { y: 12 });
+  out('#t3', 22.4, 0.25);
+  pop('#t3ok', 22.7);
+  out('#pin4', 22.8, 0.3);
+  tl.fromTo('#prio', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.45, ease: 'back.out(1.8)' }, 22.9);
+  tl.to('#t1', { opacity: 0.45, duration: 0.4 }, 23.0);
+  // The handled alerts leave; the shared report takes their place
+  out(['#t1', '#t2'], 25.5, 0.3);
+  tl.fromTo('#rep', { opacity: 0, y: 20, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.6)' }, 25.8);
+  out(['#c4', '#s4'], 28.8);
+
+  // Fecho (29,2–35 s, parado de 30,0 s ao fim)
+  out(['#hd', '#bld', '#board', '#prio', '#rep'], 28.8, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.4);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (35 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 35;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-stant-gestao-ludic-intro"] = master;
+})();
+</script>
+</body>
+</html>

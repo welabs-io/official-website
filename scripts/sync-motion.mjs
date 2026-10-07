@@ -111,28 +111,32 @@ const KNOWHOW = { also: ["servicos"] };
 // Insertion order is the gallery order; the collection order lives in lib/emphasis.json.
 const ROUND2 = {
   // Know-how ("servicos") is shown through the Welabs chain and the Magneto, Domus, Knowly and Tuner films.
-  // Welabs product names since 2026-10-06: Magneto (flow), Domus (erp), Knowly (wekb), Rello (welabs-crm), Tuner (channels).
+  // Welabs product names since 2026-10-06: Magneto (flow), Domus (erp), Knowly (wekb), Relloo (welabs-crm, Rello
+  // until 2026-10-07), Tuner (channels).
   // The svc-* pieces left on 2026-10-04: they cite "ERP" as a node or the word "cliente".
-  "welabs-chain-overview-intro": {
+  // Operator decision of 2026-10-07: the site publishes only the playful cuts, each with its brand intro (the
+  // selection of the Projection Room, publish/index.html); feature cuts stay off the site. Welabs films open
+  // with welabs-intro-v4, the final brand (only Domus keeps a symbol beside its name).
+  "welabs-chain-overview-intro-v4": {
     kind: "topology",
     page: "welabs",
     // Retitled on 2026-10-05: the playful cut shows the products fitting together, not an integration map
     title: "Plataforma Welabs · Os produtos se encaixam",
     ...KNOWHOW,
   },
-  "welabs-chain-journey-intro": {
+  "welabs-chain-journey-intro-v4": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Jornada",
     ...KNOWHOW,
   },
-  "welabs-chain-plug-intro": {
+  "welabs-chain-plug-intro-v4": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Encaixe",
     ...KNOWHOW,
   },
-  "welabs-chain-horizon-intro": {
+  "welabs-chain-horizon-intro-v4": {
     kind: "topology",
     page: "welabs",
     // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap;
@@ -141,39 +145,67 @@ const ROUND2 = {
     ...KNOWHOW,
   },
   "tabela-intro": reel("tabela", "Tabe.la · Introdução de marca", "intro"),
-  "biz-tabela-comercializacao-intro": reel(
+  "biz-tabela-comercializacao-ludic-intro": reel(
     "tabela",
-    "Tabe.la · Comercialização",
+    "Tabe.la · Todos no mesmo estoque",
   ),
-  "biz-tabela-operacao-intro": reel("tabela", "Tabe.la · Operação"),
-  "tabela-journey-intro": reel("tabela", "Tabe.la · Jornada", "journey"),
+  "biz-tabela-operacao-ludic-intro": reel(
+    "tabela",
+    "Tabe.la · O depois da venda anda sozinho",
+  ),
+  "tabela-journey-ludic-intro": reel(
+    "tabela",
+    "Tabe.la · Do incorporador ao comprador",
+    "journey",
+  ),
   "stant-intro": reel("stant", "Stant · Introdução de marca", "intro"),
-  "biz-stant-campo-intro": reel("stant", "Stant · Campo"),
-  "biz-stant-gestao-intro": reel("stant", "Stant · Gestão"),
-  "biz-stant-plataforma-intro": reel("stant", "Stant · Plataforma"),
-  "stant-journey-intro": reel("stant", "Stant · Jornada", "journey"),
+  "biz-stant-campo-ludic-intro": reel(
+    "stant",
+    "Stant · Some o problema esquecido",
+  ),
+  "biz-stant-gestao-ludic-intro": reel("stant", "Stant · Some a obra às cegas"),
+  "biz-stant-plataforma-ludic-intro": reel(
+    "stant",
+    "Stant · Some o retrabalho",
+  ),
+  "stant-journey-ludic-intro": reel(
+    "stant",
+    "Stant · Da fundação à entrega",
+    "journey",
+  ),
   // Since 2026-10-06 every brand opens its films with its own intro, as Tabe.la and Stant did.
   "wego-intro": reel("wego", "Família WeGO · Introdução de marca", "intro"),
-  "wego-topology-v2-intro": reel(
+  "wego-topology-v2-ludic-intro": reel(
     "wego",
-    "Família WeGO · Como os módulos conversam",
+    "Família WeGO · Um número só",
     "topology",
   ),
-  "biz-wego-docgo-signgo-intro": reel("wego", "Família WeGO · DocGo e SignGo"),
-  "biz-wego-licenciamento-intro": reel("wego", "Família WeGO · Licenciamento"),
-  "biz-auto-infracao-campo-intro": reel(
+  "biz-wego-docgo-signgo-ludic-intro": reel(
     "wego",
-    "Auto Infração · Campo",
+    "Família WeGO · Sem papel que vai e volta",
+  ),
+  "biz-wego-licenciamento-ludic-intro": reel(
+    "wego",
+    "Família WeGO · Um fio só",
+  ),
+  "biz-auto-infracao-campo-ludic-intro": reel(
+    "wego",
+    "Auto Infração · O auto lacrado",
     "business",
     { also: ["autoinfracao"] },
   ),
-  "auto-infracao-journey-intro": reel(
+  "auto-infracao-journey-ludic-intro": reel(
     "wego",
-    "Auto Infração · Jornada",
+    "Auto Infração · Do flagrante ao processo",
     "journey",
     { also: ["autoinfracao"] },
   ),
-  "wego-journey-intro": reel("wego", "Família WeGO · Jornada", "journey"),
+  "wego-journey-ludic-intro": reel(
+    "wego",
+    "Família WeGO · Uma história só",
+    "journey",
+  ),
+  // Resíduos and IUS: their films with intro are already the playful cuts (same ids as before).
   "residuos-intro": reel("sgors", `${RESIDUOS} · Introdução de marca`, "intro"),
   "residuos-journey-v2-intro": reel(
     "sgors",
@@ -186,107 +218,118 @@ const ROUND2 = {
   "ius-do-laudo-ao-dado-intro": reel("ius", "IUS · Do laudo ao dado"),
   "ius-aceite-e-leitura-intro": reel("ius", "IUS · Aceite e leitura"),
   "ius-jornada-medico-paciente-intro": reel("ius", "IUS · Jornada", "journey"),
-  "flow-canvas-build-intro": reel(
+  "flow-canvas-build-intro-v4": reel(
     "flow",
     "Magneto · Montar o fluxo",
     "business",
     KNOWHOW,
   ),
-  "flow-durable-run-intro": reel(
+  "flow-durable-run-intro-v4": reel(
     "flow",
     "Magneto · Execução durável",
     "business",
     KNOWHOW,
   ),
-  "flow-lifecycle-intro": reel(
+  "flow-lifecycle-intro-v4": reel(
     "flow",
     "Magneto · Ciclo de vida",
     "business",
     KNOWHOW,
   ),
-  "flow-copilot-intro": reel("flow", "Magneto · Copiloto", "business", KNOWHOW),
-  "crm-omnichannel-inbox-intro": reel(
-    "welabs-crm",
-    "Rello · Caixa omnichannel",
+  "flow-copilot-intro-v4": reel(
+    "flow",
+    "Magneto · Copiloto",
+    "business",
+    KNOWHOW,
   ),
-  "crm-agent-studio-intro": reel("welabs-crm", "Rello · Estúdio de agentes"),
-  "crm-flow-builder-intro": reel("welabs-crm", "Rello · Automações"),
-  "crm-campaigns-journey-intro": reel(
+  "crm-omnichannel-inbox-ludic2-intro-v4": reel(
     "welabs-crm",
-    "Rello · Campanhas",
+    "Relloo · Atendimento",
+  ),
+  "crm-agent-studio-ludic2-intro-v4": reel("welabs-crm", "Relloo · Agentes"),
+  "crm-flow-builder-ludic2-intro-v4": reel("welabs-crm", "Relloo · Automações"),
+  "crm-campaigns-journey-ludic2-intro-v4": reel(
+    "welabs-crm",
+    "Relloo · Campanhas e fidelização",
     "journey",
   ),
-  "hub-dominio-spa-intro": reel(
+  "hub-dominio-spa-ludic-intro-v4": reel(
     "erp",
-    "Domus · Telas do modelo",
+    "Domus · Tudo numa casa só",
     "business",
     KNOWHOW,
   ),
-  "hub-fiscal-br-intro": reel("erp", "Domus · Fiscal", "business", KNOWHOW),
-  "hub-concessoes-intro": reel(
+  "hub-fiscal-br-ludic-intro-v4": reel(
     "erp",
-    "Domus · Concessões",
+    "Domus · Fiscal sem retrabalho",
     "business",
     KNOWHOW,
   ),
-  "kb-ask-with-proof-intro": reel(
+  "hub-concessoes-ludic-intro-v4": reel(
+    "erp",
+    "Domus · Só o que foi liberado",
+    "business",
+    KNOWHOW,
+  ),
+  "kb-ask-with-proof-ludic-intro-v4": reel(
     "wekb",
-    "Knowly · Resposta com prova",
+    "Knowly · Some a resposta sem prova",
     "business",
     KNOWHOW,
   ),
-  "kb-sources-to-knowledge-intro": reel(
+  "kb-sources-to-knowledge-ludic-intro-v4": reel(
     "wekb",
-    "Knowly · Fontes viram conhecimento",
+    "Knowly · Some o conhecimento espalhado",
     "business",
     KNOWHOW,
   ),
-  "kb-who-reads-what-intro": reel(
+  "kb-who-reads-what-ludic-intro-v4": reel(
     "wekb",
-    "Knowly · Quem lê o quê",
+    "Knowly · Some o medo de mostrar demais",
     "business",
     KNOWHOW,
   ),
-  "channels-one-contract-intro": reel(
+  "channels-one-contract-ludic-intro-v4": reel(
     "channels",
-    "Tuner · Um contrato, todos os canais",
+    "Tuner · Some o canal espalhado",
     "business",
     KNOWHOW,
   ),
-  "channels-call-center-intro": reel(
+  "channels-call-center-ludic-intro-v4": reel(
     "channels",
-    "Tuner · Central de voz",
+    "Tuner · Some o “pode repetir?”",
     "business",
     KNOWHOW,
   ),
-  "channels-whatsapp-official-intro": reel(
+  "channels-whatsapp-official-ludic-intro-v4": reel(
     "channels",
-    "Tuner · WhatsApp oficial",
+    "Tuner · Some a conversa perdida",
     "business",
     KNOWHOW,
   ),
-  "mon-occurrence-desk-intro": reel(
+  "mon-occurrence-desk-intro-v4": reel(
     "malupe",
     "Ecossistema Monitoramento · Mesa de ocorrências",
   ),
-  "mon-edge-survives-intro": reel(
+  "mon-edge-survives-intro-v4": reel(
     "malupe",
     "Ecossistema Monitoramento · O site não para",
   ),
-  "mon-camera-to-case-intro": reel(
+  "mon-camera-to-case-intro-v4": reel(
     "malupe",
     "Ecossistema Monitoramento · Da câmera ao caso",
   ),
-  // Products outside the 2026-10-04 round keep the film the site already showed.
+  // Central ESG: brand intro and the playful cycle film with intro (biz-central-esg left on 2026-10-07).
+  // Maceió Digital stays off: the site has no page or card for it yet (noted for the operator).
   "central-esg-intro": {
     kind: "intro",
     product: "central-esg",
     title: "Central ESG · Introdução de marca",
   },
-  "biz-central-esg": {
+  "central-esg-ciclo-intro": {
     kind: "business",
     product: "central-esg",
-    title: "Central ESG",
+    title: "Central ESG · Some o dado ESG espalhado",
   },
   // Report CRM, Netsafety and SGICI left the portfolio on 2026-10-05.
 };
@@ -335,7 +378,7 @@ function findPlayer() {
 const RENAMED = {
   WeERP: "Domus",
   WeKB: "Knowly",
-  WeCRM: "Rello",
+  WeCRM: "Relloo",
   "Channels hosted product": "Tuner · Produto hospedado",
   "Channels SDK": "Tuner · SDK",
   WeMalupe: "Ecossistema Monitoramento",

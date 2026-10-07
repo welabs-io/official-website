@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Welabs · Abertura</title>
+<style>
+/* BASE DA ABERTURA (marca âmbar: fundo grafite, texto Inter; cores em assets/brand/welabs-brand.js) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:#10141C}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#bg,#fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.lbl.in{left:150px}
+.lbl.out{right:150px;text-align:right;font-weight:600}
+/* Official product symbol (brand/svg/<key>-mark-dark.svg) before the product name */
+.lbl .mk{width:36px;height:36px;vertical-align:-7px;margin-right:12px}
+/* v3: plain product logo as label (assets/brand/<slug>-logo-on-dark.svg); sized by height so the name's x-height
+   matches the 32 px Inter labels, and lowered so the logo baseline (75% of its box) sits on the text baseline */
+.lbl .lg{height:40px;width:auto;vertical-align:-10px}
+/* v4: Knowly logo box is shorter (no waves above the cap line); 35.7 px keeps its x-height equal to Tuner's
+   (150 of 302.1 units vs 150 of 338.53) and the same 10 px below the text baseline */
+.lbl .lg.kn{height:35.7px}
+/* v4: Magneto and Relloo boxes end at the ascender (284.1 units, baseline at 210); same 0.11816 px/unit scale,
+   so 33.57 px high with the baseline 8.76 px above the box bottom */
+.lbl .lg.ab{height:33.57px;vertical-align:-8.76px}
+/* v4: the name opens left to right (clip-path tween); inline-block so the clip box is the name's own box */
+.lbl .nm{display:inline-block}
+#line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-intro-v4" data-width="1920" data-height="1080" data-duration="8.5">
+  <canvas id="bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- Product names are filled from WELABS_BRAND.names (assets/brand/welabs-brand.js); the text here is the fallback -->
+  <!-- v2: five named products only; rows at y 260/400/540/680/820 (choreography.js IN_Y) -->
+  <!-- v4: ids in<i>m (symbol) and in<i>n (name or whole logo) drive the entrance taken from brand/vector/motion -->
+  <!-- v4: final brand, only Domus keeps symbol + name; Magneto, Knowly, Relloo and Tuner carry the sign inside the
+       name, so their labels are the whole logo, with no symbol beside it -->
+  <div class="lbl in" id="in0" style="top:206px"><img class="lg ab" id="in0n" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></div>
+  <div class="lbl in" id="in1" style="top:346px"><img class="mk" id="in1m" src="./assets/brand/marks/hub-mark-dark.svg" alt=""><span class="nm" id="in1n" data-wl-name="hub">Hub de domínio</span></div>
+  <div class="lbl in" id="in2" style="top:486px"><img class="lg kn" id="in2n" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="lbl in" id="in3" style="top:692px"><img class="lg ab" id="in3n" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></div>
+  <div class="lbl in" id="in4" style="top:832px"><img class="lg" id="in4n" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"></div>
+  <div class="lbl out" id="out0" style="top:276px">SaaS</div>
+  <div class="lbl out" id="out1" style="top:486px">Apps</div>
+  <div class="lbl out" id="out2" style="top:696px">Portais</div>
+  <div id="line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('bg');
+  var ctx = document.getElementById('fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  // v4: label entrance after the official motion (brand/vector/motion, 4.8 s cycle compressed to ~0.7 s):
+  // the symbol label (Domus) grows the symbol with overshoot, then the name opens left to right; wordmark labels
+  // (Magneto, Knowly, Relloo, Tuner) open as one whole logo, so the sign inside the name arrives with its letter
+  var HAS_MARK = [false, true, false, false, false];
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#in' + i, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.05);
+    if (HAS_MARK[i]) tl.fromTo('#in' + i + 'm', { scale: 0.2 }, { scale: 1, duration: 0.45, ease: 'back.out(2.2)' }, t0 + 0.05);
+    tl.fromTo('#in' + i + 'n', { clipPath: 'inset(-20% 100% -20% 0%)' }, { clipPath: 'inset(-20% 0% -20% 0%)', duration: HAS_MARK[i] ? 0.45 : 0.6, ease: 'power2.inOut' }, t0 + (HAS_MARK[i] ? 0.25 : 0.08));
+    tl.to('#in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  tl.fromTo('#line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  window.__timelines = window.__timelines || {};
+  window.__timelines['welabs-intro-v4'] = tl;
+})();
+</script>
+</body>
+</html>

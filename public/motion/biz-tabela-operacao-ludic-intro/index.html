@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Tabe.la · O depois da venda anda sozinho (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA (cores da abertura tabela-intro) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+:root{--hero:#6E70BF;--deep:#4E50A0;--ink:#1F2152;--soft:#5A5D8F;--paper:#FFFFFF;--lav:#EEEFFF;--line:#D9DBF5;--hi:#FFD166;--muted:#E4E5FF;--ok:#23885A;--okb:#DDF3E7;--wait:#B87400;--waitb:#FFF0CC;--late:#C9305C;--lateb:#FFE1EA}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--hero)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px) 0 0/120px 120px,linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px) 0 0/120px 120px,radial-gradient(1300px 760px at 50% 44%,#6E70BF 0%,#6668B6 60%,#5A5CA9 100%);color:#fff;font-family:"Inter",sans-serif}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+#hd img{position:absolute;left:0;top:12px;height:48px}
+#kick{position:absolute;left:206px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--hi);font-size:32px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:0;top:16px;height:40px;padding:0 16px;border:2px solid rgba(255,255,255,.4);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;text-shadow:0 2px 14px rgba(30,32,90,.25)}
+.cap span,#close span{color:var(--hi)}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+.card{position:absolute;background:#fff;color:var(--ink);opacity:0;box-shadow:0 26px 54px rgba(30,32,90,.35)}
+
+/* BATIDA 1: TUDO DEPENDIA DE LEMBRAR */
+#n1{left:200px;top:210px;width:380px;height:300px;border-radius:6px;background:#FFE08A;color:#4A3A08;padding:34px 30px;font-size:38px;font-weight:800;line-height:48px}
+#n1 small{display:block;margin-top:14px;font-size:28px;font-weight:600;line-height:36px}
+#n2{left:740px;top:220px;width:440px;height:330px;border-radius:26px;padding:24px 26px}
+#n2 b{display:block;font-size:26px;font-weight:800;color:var(--soft);margin-bottom:18px}
+.bub{display:block;width:max-content;max-width:380px;padding:14px 20px;border-radius:20px;font-size:28px;font-weight:700;line-height:34px;margin-bottom:16px;background:var(--lav)}
+.bub small{display:block;font-size:24px;font-weight:600;color:var(--soft);line-height:30px}
+#n3{left:1340px;top:220px;width:360px;height:300px;border-radius:26px;overflow:hidden}
+#n3 .top{height:76px;background:var(--late);color:#fff;font-size:30px;font-weight:800;line-height:76px;padding-left:30px}
+#n3 .big{position:absolute;left:0;right:0;top:100px;text-align:center;font-size:110px;font-weight:900;color:var(--ink);line-height:120px}
+#n3 .lb{position:absolute;left:0;right:0;top:232px;text-align:center;font-size:28px;font-weight:700;color:var(--soft)}
+.q{position:absolute;width:72px;height:72px;border-radius:50%;background:#fff;color:var(--deep);font-size:42px;font-weight:800;display:grid;place-items:center;opacity:0;box-shadow:0 10px 24px rgba(30,32,90,.35)}
+#q1{left:640px;top:600px}#q2{left:1220px;top:610px}#q3{left:930px;top:660px}
+
+/* BATIDA 2: O EVENTO DISPARA OS AVISOS */
+#ev{left:160px;top:350px;width:480px;height:170px;border-radius:28px;display:flex;align-items:center;gap:22px;padding:0 30px}
+#ev .ic,.rx .ic{width:78px;height:78px;border-radius:22px;display:grid;place-items:center;flex:none}
+#ev .ic{background:var(--ok)}
+#ev .a,.rx .a{font-size:34px;font-weight:800;line-height:42px;white-space:nowrap}
+#ev .b,.rx .b{font-size:26px;font-weight:600;color:var(--soft);line-height:34px;white-space:nowrap}
+#wires{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#wires path{fill:none;stroke:#fff;stroke-width:6;stroke-dasharray:6 14;stroke-linecap:round}
+.dot{position:absolute;width:40px;height:40px;border-radius:50%;background:var(--hi);border:5px solid #fff;opacity:0;box-shadow:0 6px 16px rgba(30,32,90,.35)}
+#d1,#d2{left:620px;top:415px}
+.rx{width:600px;height:150px;border-radius:28px;display:flex;align-items:center;gap:22px;padding:0 30px}
+.rx .ic{background:var(--hi)}
+#rx1{left:1100px;top:200px}#rx2{left:1100px;top:460px}
+.rx .tick{position:absolute;right:26px;top:26px;width:44px;height:44px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+
+/* BATIDA 3: PEDE O SIM PELO WHATSAPP E SEGUE */
+#trk{left:200px;top:200px;width:620px;height:560px;border-radius:30px}
+#trk .tt{position:absolute;left:40px;top:32px;font-size:32px;font-weight:800}
+.stp{position:absolute;left:40px;width:540px;height:110px;border-radius:22px;background:var(--lav);display:flex;align-items:center;gap:20px;padding:0 24px;opacity:0}
+.stp .n{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:28px;font-weight:800;color:#fff}
+.stp .t{font-size:30px;font-weight:700;white-space:nowrap}
+.stp .t small{display:block;font-size:24px;font-weight:600;color:var(--soft)}
+#sp1{top:110px}#sp2{top:250px}#sp3{top:390px}
+#sp1 .n,#sp3 .n{background:var(--ok)}
+#sp2 .n{background:var(--wait)}
+#sp2 .n2{position:absolute;left:24px;top:27px;width:56px;height:56px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#sp2 .hold{position:absolute;right:24px;height:44px;padding:0 16px;border-radius:22px;background:var(--waitb);color:var(--wait);font-size:24px;font-weight:800;line-height:44px;white-space:nowrap}
+#sp2 .go{position:absolute;right:24px;height:44px;padding:0 16px;border-radius:22px;background:var(--okb);color:var(--ok);font-size:24px;font-weight:800;line-height:44px;opacity:0;white-space:nowrap}
+#wa{left:1080px;top:160px;width:560px;height:640px;border-radius:44px;border:10px solid #2B2D63;overflow:hidden;background:#EFEAE2}
+#wa .bar{height:96px;background:#1F7A55;color:#fff;display:flex;align-items:center;gap:18px;padding:0 26px}
+#wa .bar i{width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+#wa .bar b{font-size:30px;font-weight:800;line-height:36px}
+#wa .bar small{display:block;font-size:24px;font-weight:600;opacity:.85}
+#msg{position:absolute;left:26px;top:130px;width:420px;padding:20px 24px;border-radius:6px 22px 22px 22px;background:#fff;opacity:0}
+#msg b{display:block;font-size:26px;font-weight:800;color:var(--soft);margin-bottom:8px}
+#msg p{font-size:30px;font-weight:700;line-height:38px}
+.btn{position:absolute;top:340px;width:200px;height:72px;border-radius:18px;background:#fff;color:#1F7A55;font-size:32px;font-weight:800;display:grid;place-items:center;opacity:0;border:3px solid #CFE5DA}
+#bYes{left:26px}#bNo{left:246px}
+#reply{position:absolute;right:26px;top:460px;padding:16px 26px;border-radius:22px 6px 22px 22px;background:#D6F5C8;font-size:32px;font-weight:800;opacity:0}
+#tap{position:absolute;left:1184px;top:514px;width:64px;height:64px;border-radius:50%;background:rgba(255,201,77,.55);border:5px solid var(--hi);opacity:0}
+
+/* BATIDA 4: O PRAZO AVISA ANTES */
+#dl{left:610px;top:170px;width:700px;height:420px;border-radius:30px}
+#dl .tt{position:absolute;left:300px;top:70px;font-size:36px;font-weight:800;white-space:nowrap}
+#dl .st{position:absolute;left:300px;top:126px;height:48px;padding:0 18px;border-radius:24px;background:var(--lav);color:var(--deep);font-size:26px;font-weight:700;line-height:48px;white-space:nowrap}
+#dl .pz{position:absolute;left:300px;top:206px;font-size:30px;font-weight:700;color:var(--soft);white-space:nowrap}
+#dl svg{position:absolute;left:50px;top:90px}
+#arc{fill:none;stroke:var(--ok);stroke-width:22;stroke-linecap:round;stroke-dasharray:597;stroke-dashoffset:0}
+#dl .al{position:absolute;left:300px;top:270px;height:56px;padding:0 20px;border-radius:28px;background:var(--lateb);color:var(--late);font-size:28px;font-weight:800;line-height:56px;opacity:0;white-space:nowrap}
+.nt{position:absolute;top:640px;width:560px;height:120px;border-radius:28px;background:#fff;color:var(--ink);display:flex;align-items:center;gap:20px;padding:0 26px;opacity:0;box-shadow:0 20px 44px rgba(30,32,90,.35)}
+.nt .bi{width:66px;height:66px;border-radius:50%;background:var(--hi);display:grid;place-items:center;flex:none}
+.nt .a{font-size:30px;font-weight:800;line-height:38px;white-space:nowrap}
+.nt .b{font-size:24px;font-weight:600;color:var(--soft);line-height:32px;white-space:nowrap}
+#nt1{left:330px}#nt2{left:1030px}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:250px;width:1920px;text-align:center;font-size:72px;font-weight:800;letter-spacing:-2px;line-height:92px;color:#fff}
+#close img{position:absolute;left:660px;top:540px;width:600px;height:168px}
+#close .dm{position:absolute;left:0;top:800px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* ABERTURA TABELA-INTRO (copiada de pieces/tabela-intro, ids e classes com prefixo intro-) */
+@font-face{font-family:Inter;src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:1920px;height:1080px;overflow:hidden;background:#6E70BF;font-family:Inter,sans-serif;color:#fff}
+#intro-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+#intro-line{position:absolute;left:0;top:760px;width:1920px;text-align:center;font-size:48px;font-weight:600;letter-spacing:-.015em;line-height:1.2;opacity:0;text-shadow:0 2px 18px rgba(30,32,90,.28)}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="biz-tabela-operacao-ludic-intro" data-width="1920" data-height="1080" data-start="0" data-duration="44">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-stage" width="1920" height="1080" aria-hidden="true"></canvas>
+  <div id="intro-line">Comercialização imobiliária, da tabela à decisão</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/biz-tabela-operacao-ludic, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <img src="./assets/tabela-logo-light.svg" alt="tabe.la">
+    <div id="kick">O depois da venda anda sozinho</div>
+    <div id="demo">DEMO</div>
+  </div>
+
+  <!-- Batida 1: o que dependia de memória -->
+  <div class="card" id="n1">Avisar o corretor!<small>e pedir o ok do gestor… amanhã?</small></div>
+  <div class="card" id="n2"><b>Mensagens · DEMO</b><span class="bub"><small>Corretor</small>E a minha proposta, saiu?</span><span class="bub"><small>Imobiliária</small>Alguém avisou o cliente?</span></div>
+  <div class="card" id="n3"><div class="top">Prazo · DEMO</div><div class="big">?</div><div class="lb">vence quando?</div></div>
+  <div class="q" id="q1">?</div><div class="q" id="q2">?</div><div class="q" id="q3">?</div>
+
+  <!-- Batida 2: um evento, os avisos saem sozinhos -->
+  <svg id="wires" viewBox="0 0 1920 1080"><path d="M640 435L1100 275"/><path d="M640 435L1100 535"/></svg>
+  <div class="card" id="ev"><span class="ic"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><div class="a">Proposta aprovada</div><div class="b">unidade 304 · DEMO</div></div></div>
+  <div class="dot" id="d1"></div><div class="dot" id="d2"></div>
+  <div class="card rx" id="rx1"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3" fill="none" stroke="#3A2A00" stroke-width="2.2"/><circle cx="12" cy="18" r="1.3" fill="#3A2A00"/></svg></span><div><div class="a">Corretor</div><div class="b">“Sua proposta foi aprovada”</div></div><span class="tick" id="tk1"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+  <div class="card rx" id="rx2"><span class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M3 21V9l9-6 9 6v12z" fill="none" stroke="#3A2A00" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 21v-6h6v6" fill="none" stroke="#3A2A00" stroke-width="2.2"/></svg></span><div><div class="a">Imobiliária</div><div class="b">fica sabendo na mesma hora</div></div><span class="tick" id="tk2"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+
+  <!-- Batida 3: a pergunta e a retomada -->
+  <div class="card" id="trk">
+    <div class="tt">Processo · DEMO</div>
+    <div class="stp" id="sp1"><span class="n">1</span><div class="t">Proposta aprovada<small>avisos enviados</small></div></div>
+    <div class="stp" id="sp2"><span class="n">2</span><span class="n2" data-layout-allow-occlusion><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12.5 10 17 19 7.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="t">Ok do gestor<small>pergunta enviada</small></div><span class="hold" id="hold">esperando</span><span class="go" id="go">respondido</span></div>
+    <div class="stp" id="sp3"><span class="n">3</span><div class="t">Segue o processo<small>de onde parou</small></div></div>
+  </div>
+  <div class="card" id="wa">
+    <div class="bar"><i><svg width="34" height="34" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2" fill="#1F7A55"/><path d="M3.5 21a8.5 8.5 0 0 1 17 0z" fill="#1F7A55"/></svg></i><div><b>Gestor · DEMO</b><small>WhatsApp</small></div></div>
+    <div id="msg"><b>Pedido de aprovação · DEMO</b><p>A proposta da 304 pode seguir?</p></div>
+    <div class="btn" id="bYes">Sim</div><div class="btn" id="bNo">Não</div>
+    <div id="reply">Sim</div>
+  </div>
+  <div id="tap" data-layout-allow-overlap></div>
+
+  <!-- Batida 4: prazo com aviso antes do fim -->
+  <div class="card" id="dl">
+    <svg width="220" height="220" viewBox="0 0 220 220"><circle cx="110" cy="110" r="95" fill="none" stroke="#EEEFFF" stroke-width="22"/><circle id="arc" cx="110" cy="110" r="95" transform="rotate(-90 110 110)"/></svg>
+    <div class="tt">Proposta 102 · DEMO</div>
+    <div class="st">na fila da incorporadora</div>
+    <div class="pz">Prazo · DEMO</div>
+    <div class="al" id="al">perto do fim</div>
+  </div>
+  <div class="nt" id="nt1"><span class="bi"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z" fill="#3A2A00"/><circle cx="12" cy="21" r="2" fill="#3A2A00"/></svg></span><div><div class="a">Gestor é avisado</div><div class="b">antes de o prazo acabar</div></div></div>
+  <div class="nt" id="nt2"><span class="bi"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z" fill="#3A2A00"/><circle cx="12" cy="21" r="2" fill="#3A2A00"/></svg></span><div><div class="a">Corretor também</div><div class="b">e acompanha pelo app</div></div></div>
+
+  <div class="cap" id="c1">Depois da venda, tudo dependia <span>de alguém lembrar</span></div>
+  <div class="sub" id="s1">quem avisa o corretor, quem pede o ok, quando vence o prazo</div>
+  <div class="cap" id="c2">Aprovou? <span>O aviso sai sozinho</span></div>
+  <div class="sub" id="s2">o corretor recebe no celular e a imobiliária fica sabendo, sem ninguém digitar</div>
+  <div class="cap" id="c3">Precisa de um sim? <span>A pergunta vai pelo WhatsApp</span></div>
+  <div class="sub" id="s3">o gestor responde no celular e o processo segue de onde parou</div>
+  <div class="cap" id="c4">E nenhum prazo <span>vence em silêncio</span></div>
+  <div class="sub" id="s4">antes de acabar, quem precisa recebe o aviso</div>
+
+  <div id="close">
+    <div class="l1">O depois da venda anda sozinho.<br><span>E avisa quem precisa.</span></div>
+    <img src="./assets/tabela-logo-light.svg" alt="tabe.la">
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/js/logo-data.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 dirigido pela timeline, sem relógio próprio)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  // Scene runs at 1/SLOW of the login speed (calm pace); LEAD is a bare-grid beat before the crane enters
+  var SLOW = 1.7, LEAD = 0.3;
+  // Visual scale versus the login panel (logo 340 css px there, 760 px here); also scales stroke widths
+  var LOGO_W = 760, SCALE = LOGO_W / 340;
+  var HERO = [110 / 255, 112 / 255, 191 / 255]; // --brand-hero = oklch(0.58 ...) of series-indigo-200, resolved to sRGB
+  var VB = { w: 218, h: 61 };
+  var LOGO_H = LOGO_W * VB.h / VB.w;
+  var logoRect = [(W - LOGO_W) / 2, (H - LOGO_H) / 2 + 40, LOGO_W, LOGO_H];
+  var layout = { width: W, height: H, dpr: SCALE, logo: logoRect, dot: LOGO_DOT, bounds: LOGO_BOUNDS };
+  var TEX_W = 1140, lod0 = Math.log2(TEX_W / LOGO_W);
+
+  var canvas = document.getElementById('intro-stage');
+  var gl = canvas.getContext('webgl2', { premultipliedAlpha: true, antialias: true, alpha: false, preserveDrawingBuffer: true });
+  var programs = {}, textures = {}, loaded = 0, quadVao = null, curT = 0;
+
+  function compile(fs) {
+    var program = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, fs]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(program, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+    var uniforms = {}, n = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (var i = 0; i < n; i++) { var info = gl.getActiveUniform(program, i); if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name); }
+    return { program: program, uniforms: uniforms };
+  }
+  function setU(p, extra, base) {
+    gl.useProgram(p.program);
+    var all = Object.assign({}, base, extra);
+    Object.keys(all).forEach(function (name) {
+      var loc = p.uniforms[name]; if (!loc) return; var v = all[name];
+      if (v.length === 1) gl.uniform1f(loc, v[0]); else if (v.length === 2) gl.uniform2f(loc, v[0], v[1]);
+      else if (v.length === 3) gl.uniform3f(loc, v[0], v[1], v[2]); else gl.uniform4f(loc, v[0], v[1], v[2], v[3]);
+    });
+    if (p.uniforms.uPart) gl.uniform1i(p.uniforms.uPart, 3);
+  }
+  function draw(p, extra, base) { setU(p, extra, base); gl.bindVertexArray(quadVao); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+
+  // Deterministic stand-in for Math.random (drill vibration): a pure hash of the time and call index
+  function makeJitter(t) { var n = 0; return function () { var x = Math.sin(t * 1000.7 + (n++) * 12.9898) * 43758.5453; return x - Math.floor(x); }; }
+
+  function render(t) {
+    curT = t;
+    if (!gl || loaded < PART_IDS.length) return;
+    var st = Math.max(0, (t - LEAD) / SLOW);              // scene time, login seconds
+    st = Math.min(st, introTimeline().dur);
+    // Scripted stand-in for the pointer that lights the grid in the login (no real pointer in a film)
+    var mouse = [W * (0.5 + 0.34 * Math.sin(t * 0.42)), H * (0.5 + 0.3 * Math.sin(t * 0.29 + 1.0))];
+    var base = { uRes: [W, H], uRect: logoRect, uLod0: [lod0], uMouse: mouse, uHero: HERO, uDpr: [SCALE] };
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+    gl.disable(gl.BLEND);
+    draw(programs.bg, { uBgT: [t] }, base);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    var pose = sceneAt(st, layout, makeJitter(st));
+    pose.pieces.forEach(function (pc) {
+      gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, textures[pc.id]); gl.activeTexture(gl.TEXTURE0);
+      draw(programs.piece, { uXf: [pc.dx, pc.dy, pc.angle, pc.alpha], uPivot: pc.pivot }, base);
+    });
+    draw(programs.crane, { uCrane: pose.crane }, base);
+    draw(programs.drill, { uDot: pose.dot, uDrill: pose.drill, uScrew: pose.screw, uFx: pose.fx }, base);
+  }
+
+  function init() {
+    programs = { bg: compile(FS_BG), crane: compile(FS_CRANE), piece: compile(FS_PIECE), drill: compile(FS_DRILL) };
+    quadVao = gl.createVertexArray(); gl.bindVertexArray(quadVao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    PART_IDS.forEach(function (id) {
+      var img = new Image();
+      img.onload = function () {
+        var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img); gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        textures[id] = tex; loaded++;
+        if (loaded === PART_IDS.length) render(curT);
+      };
+      img.src = './assets/parts/' + id + '.png';
+    });
+  }
+  init();
+
+  // TIMELINE (a única fonte de tempo): um tween linear sobre um proxy dirige o render; a frase entra por cima como os slogans do login
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  var seatAt = LEAD + introTimeline().seat * SLOW;      // dot seated -> line enters (as slogans start at seat in the login)
+  tl.fromTo('#intro-line', { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, seatAt + 0.1);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/biz-tabela-operacao-ludic; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 35;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function pop(sel, t) { tl.fromTo(sel, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.4)' }, t); }
+
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: lembrete, mensagem cobrando e prazo sem dono (0,6–7,0 s)
+  tl.fromTo('#n1', { opacity: 0, y: 40, rotation: -12 }, { opacity: 1, y: 0, rotation: -5, duration: 0.6, ease: 'back.out(1.6)' }, 0.6);
+  tl.fromTo('#n2', { opacity: 0, y: 40, rotation: 6 }, { opacity: 1, y: 0, rotation: 2, duration: 0.6, ease: 'back.out(1.6)' }, 0.85);
+  tl.fromTo('#n3', { opacity: 0, y: 40, rotation: 10 }, { opacity: 1, y: 0, rotation: 4, duration: 0.6, ease: 'back.out(1.6)' }, 1.1);
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  ['#q1', '#q2', '#q3'].forEach(function (s, i) { pop(s, 2.0 + i * 0.25); });
+  tl.to('#n1', { rotation: -2, y: -8, duration: 1.2, ease: 'sine.inOut' }, 3.2).to('#n1', { rotation: -5, y: 0, duration: 1.2, ease: 'sine.inOut' }, 4.4);
+  tl.to('#n3', { rotation: 7, y: 8, duration: 1.2, ease: 'sine.inOut' }, 3.4).to('#n3', { rotation: 4, y: 0, duration: 1.2, ease: 'sine.inOut' }, 4.6);
+  out(['#c1', '#s1'], 6.6);
+  out(['#n1', '#n2', '#n3', '#q1', '#q2', '#q3'], 6.8, 0.4);
+
+  // Batida 2: a aprovação dispara os avisos, sem ninguém digitar (7,0–14,8 s)
+  inn('#ev', 7.2, { x: -30 }, 0.5);
+  inn('#c2', 7.3, { y: 16 }); inn('#s2', 7.6, { y: 12 });
+  inn(['#rx1', '#rx2'], 8.0, { x: 30 }, 0.5);
+  tl.fromTo('#wires', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 8.6);
+  // Two notices leave the event at the same time and land on each receiver
+  tl.fromTo(['#d1', '#d2'], { opacity: 0, x: 0, y: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.25 }, 9.2);
+  tl.to('#d1', { x: 460, y: -160, duration: 0.9, ease: 'power2.inOut' }, 9.45);
+  tl.to('#d2', { x: 460, y: 100, duration: 0.9, ease: 'power2.inOut' }, 9.45);
+  out(['#d1', '#d2'], 10.35, 0.2);
+  pop('#tk1', 10.4); pop('#tk2', 10.55);
+  tl.to(['#rx1 .ic', '#rx2 .ic'], { rotation: 12, duration: 0.12, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 10.5);
+  tl.set(['#rx1 .ic', '#rx2 .ic'], { rotation: 0 }, 11.0);
+  out(['#c2', '#s2'], 14.4);
+
+  // Batida 3: o processo pergunta ao gestor e retoma com a resposta (14,8–22,6 s)
+  out(['#ev', '#rx1', '#rx2', '#wires'], 14.6, 0.35);
+  inn('#trk', 15.0, { x: -30 }, 0.5);
+  inn('#c3', 15.1, { y: 16 }); inn('#s3', 15.4, { y: 12 });
+  inn('#sp1', 15.4, { x: 16 }, 0.35); inn('#sp2', 15.7, { x: 16 }, 0.35); inn('#sp3', 16.0, { x: 16 }, 0.35);
+  tl.to('#sp3', { opacity: 0.6, duration: 0.2 }, 16.4);
+  inn('#wa', 15.6, { y: 30 }, 0.5);
+  inn('#msg', 16.3, { y: 14 }, 0.4);
+  inn(['#bYes', '#bNo'], 16.7, { y: 10 }, 0.35);
+  // The gestor taps "Sim"; the reply resumes the paused step
+  tl.fromTo('#tap', { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'power2.out' }, 18.3);
+  tl.to('#bYes', { backgroundColor: '#1F7A55', color: '#fff', duration: 0.2 }, 18.6);
+  out('#tap', 18.9, 0.25);
+  inn('#reply', 19.0, { y: 12 }, 0.35);
+  tl.to('#hold', { opacity: 0, duration: 0.2 }, 19.5);
+  inn('#go', 19.6, { scale: 0.8 }, 0.3);
+  pop('#sp2 .n2', 19.6);
+  tl.to('#sp3', { opacity: 1, duration: 0.3 }, 20.0);
+  tl.fromTo('#sp3', { x: 0 }, { x: 10, duration: 0.15, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 20.2);
+  out(['#c3', '#s3'], 22.2);
+
+  // Batida 4: o prazo corre e o aviso chega antes do fim (22,6–29,4 s)
+  out(['#trk', '#wa', '#reply'], 22.4, 0.35);
+  inn('#dl', 22.7, { scale: 0.94 }, 0.5);
+  inn('#c4', 22.8, { y: 16 }); inn('#s4', 23.1, { y: 12 });
+  tl.fromTo('#arc', { strokeDashoffset: 0, stroke: '#23885A' }, { strokeDashoffset: 480, duration: 2.6, ease: 'none' }, 23.2);
+  tl.to('#arc', { stroke: '#B87400', duration: 0.4 }, 24.4);
+  tl.to('#arc', { stroke: '#C9305C', duration: 0.4 }, 25.4);
+  inn('#al', 25.7, { scale: 0.8 }, 0.35);
+  tl.fromTo('#nt1', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: 'back.out(1.8)' }, 26.1);
+  tl.fromTo('#nt2', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: 'back.out(1.8)' }, 26.4);
+  tl.to(['#nt1 .bi', '#nt2 .bi'], { rotation: 14, duration: 0.12, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 26.9);
+  tl.set(['#nt1 .bi', '#nt2 .bi'], { rotation: 0 }, 27.4);
+  out(['#c4', '#s4'], 29.0);
+
+  // Fecho (29,4–35 s, parado de 30,1 s ao fim)
+  out(['#hd', '#dl', '#nt1', '#nt2'], 29.0, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.5);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (35 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 35;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["biz-tabela-operacao-ludic-intro"] = master;
+})();
+</script>
+</body>
+</html>
