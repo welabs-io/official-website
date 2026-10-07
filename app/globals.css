@@ -2105,13 +2105,22 @@ body.lang-switching .footer span {
 }
 
 /* Welabs owns its institutional context across the collection and product pages. */
-/* Amber brand: muted fills and focus ring follow the Welabs accent token */
+/* Amber brand: muted fills and focus ring follow the scoped --wl-amber token (redesign.css) */
 [data-site-brand="Welabs"] {
-  --accent-muted: color-mix(in srgb, var(--welabs) 12%, transparent);
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--welabs) 35%, transparent);
+  --accent-muted: color-mix(in srgb, var(--wl-amber) 12%, transparent);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--wl-amber) 35%, transparent);
 }
 [data-site-brand="Welabs"] .cursor-follower.hover {
-  background-color: color-mix(in srgb, var(--welabs) 12%, transparent);
+  background-color: color-mix(in srgb, var(--wl-amber) 12%, transparent);
+}
+/* Imagine blue must not appear as an accent in the Welabs section: CTA texture and form focus fills */
+[data-site-brand="Welabs"] .cta-bg-texture {
+  background: none;
+}
+[data-site-brand="Welabs"]
+  :is(.inline-form, .form-group)
+  :is(input, textarea):focus {
+  background: color-mix(in srgb, var(--wl-amber) 5%, transparent);
 }
 [data-site-brand="Welabs"] :where(a, button):focus-visible {
   outline-color: var(--accent);

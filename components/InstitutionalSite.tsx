@@ -54,7 +54,7 @@ const productLogo = PRODUCT_LOGO;
 // Imagine products whose films show Welabs products (Tabe.la operation shows Magneto and Tuner) link to Welabs.
 const citesWelabs = new Set(["tabela"]);
 // Products with their own brand built by Welabs carry the "feito pela Welabs" seal, never the Welabs
-// symbol inside their brand (operator decision of 2026-10-06).
+// symbol inside their brand (operator decision of 2026-10-06). The seal is the official SVG, not text.
 const madeByWelabs = new Set(["stant", "tabela", "wego"]);
 const href = (p: Item) =>
   p.publisher === "Welabs"
@@ -391,8 +391,18 @@ export function ProductPage({
               </span>
               <p>{d.audience}</p>
               {madeByWelabs.has(item.id) && (
-                <Link className={styles.small} href="/welabs">
-                  {en ? "MADE BY WELABS" : "FEITO PELA WELABS"} ↗
+                // Official seal SVG (brand package vector/seal), dark variant for the dark hero; sized by height
+                <Link
+                  className={styles.welabsSeal}
+                  href="/welabs"
+                  aria-label={en ? "Made by Welabs" : "Feito pela Welabs"}
+                >
+                  <img
+                    src={`/brands/welabs/seal/${en ? "made-by-welabs" : "feito-pela-welabs"}-dark.svg`}
+                    alt=""
+                    width="148"
+                    height="28"
+                  />
                 </Link>
               )}
             </aside>

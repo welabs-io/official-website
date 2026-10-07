@@ -15,11 +15,6 @@
   --text-3: #808a8d;
   --imagine: #0098da;
   --imagine-soft: #5bbde9;
-  /* Welabs amber brand: amber #FFB020, graphite #10141C, paper #FAF5EA (brand tokens.json, "ambar") */
-  --welabs: #ffb020;
-  --welabs-soft: #ffc65c;
-  --welabs-graphite: #10141c;
-  --welabs-paper: #faf5ea;
   --accent: var(--imagine);
   --accent-soft: var(--imagine-soft);
   /* Text placed on an accent-filled area */
@@ -44,20 +39,38 @@
   --gutter: 48px;
   --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
 }
-/* MARCA WELABS (ÂMBAR, GRAFITE E PAPEL) */
-/* Graphite surfaces and paper text; amber is a signal and an area, and text on amber is graphite (AA). */
+/* MARCA WELABS (TOKENS --wl-* DO PACOTE FINAL, ESCOPO DA SEÇÃO) */
+/* Brand tokens copied from brand/welabs-produtos/tokens/welabs.css, scoped here so they never leak to
+   the Imagine site. The section is always graphite, so the dark-theme values of the package apply.
+   Amber is a signal and an area, never text on cream; text on amber is ink (AA). */
 [data-site-brand="Welabs"] {
-  --ink: var(--welabs-graphite);
-  --ink-2: #161b25;
+  --wl-amber: #ffb020;
+  --wl-graphite: #10141c;
+  --wl-cream: #faf5ea;
+  --wl-ink: #1c1a16;
+  --wl-bg: var(--wl-graphite);
+  --wl-surface: #161b25;
+  --wl-fg: #ffffff;
+  --wl-mute: #9da3ae;
+  --wl-line: #262d3a;
+  --wl-on-amber: var(--wl-ink);
+  --wl-font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --wl-weight-text: 400;
+  --wl-weight-secondary: 500;
+  --wl-weight-title: 600;
+  /* Site-only derivations without a package token: soft amber for threads, warm muted text tones */
+  --wl-amber-soft: #ffc65c;
+  --ink: var(--wl-bg);
+  --ink-2: var(--wl-surface);
   --ink-3: #1c2230;
-  --line: #283040;
+  --line: var(--wl-line);
   --line-2: #384154;
-  --text: var(--welabs-paper);
+  --text: var(--wl-cream);
   --text-2: #b9b2a3;
   --text-3: #979182;
-  --accent: var(--welabs);
-  --accent-soft: var(--welabs-soft);
-  --on-accent: var(--welabs-graphite);
+  --accent: var(--wl-amber);
+  --accent-soft: var(--wl-amber-soft);
+  --on-accent: var(--wl-on-amber);
   /* Derived tokens resolve where they are declared, so they are re-declared for the brand scope */
   --accent-muted: color-mix(in srgb, var(--accent) 12%, transparent);
   --thread: color-mix(in srgb, var(--accent-soft) 62%, transparent);

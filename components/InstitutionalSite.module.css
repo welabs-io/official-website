@@ -364,6 +364,16 @@
   line-height: 1.65;
   color: var(--text);
 }
+/* Selo "feito pela Welabs" */
+/* Whole official SVG sized by height only; the width follows the artwork ratio */
+.welabsSeal {
+  display: inline-flex;
+  line-height: 0;
+}
+.welabsSeal img {
+  height: 28px;
+  width: auto;
+}
 .detailLogo {
   display: flex;
   align-items: center;

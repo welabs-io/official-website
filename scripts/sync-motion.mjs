@@ -116,27 +116,28 @@ const ROUND2 = {
   // The svc-* pieces left on 2026-10-04: they cite "ERP" as a node or the word "cliente".
   // Operator decision of 2026-10-07: the site publishes only the playful cuts, each with its brand intro (the
   // selection of the Projection Room, publish/index.html); feature cuts stay off the site. Welabs films open
-  // with welabs-intro-v4, the final brand (only Domus keeps a symbol beside its name).
-  "welabs-chain-overview-intro-v4": {
+  // with welabs-intro-v5 (final brand pack of 2026-10-07: every product label and the closing Welabs logo play
+  // the official motion of the brand package; only Domus keeps a symbol beside its name).
+  "welabs-chain-overview-intro-v5": {
     kind: "topology",
     page: "welabs",
     // Retitled on 2026-10-05: the playful cut shows the products fitting together, not an integration map
     title: "Plataforma Welabs · Os produtos se encaixam",
     ...KNOWHOW,
   },
-  "welabs-chain-journey-intro-v4": {
+  "welabs-chain-journey-intro-v5": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Jornada",
     ...KNOWHOW,
   },
-  "welabs-chain-plug-intro-v4": {
+  "welabs-chain-plug-intro-v5": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Encaixe",
     ...KNOWHOW,
   },
-  "welabs-chain-horizon-intro-v4": {
+  "welabs-chain-horizon-intro-v5": {
     kind: "topology",
     page: "welabs",
     // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap;
@@ -218,104 +219,104 @@ const ROUND2 = {
   "ius-do-laudo-ao-dado-intro": reel("ius", "IUS · Do laudo ao dado"),
   "ius-aceite-e-leitura-intro": reel("ius", "IUS · Aceite e leitura"),
   "ius-jornada-medico-paciente-intro": reel("ius", "IUS · Jornada", "journey"),
-  "flow-canvas-build-intro-v4": reel(
+  "flow-canvas-build-intro-v5": reel(
     "flow",
     "Magneto · Montar o fluxo",
     "business",
     KNOWHOW,
   ),
-  "flow-durable-run-intro-v4": reel(
+  "flow-durable-run-intro-v5": reel(
     "flow",
     "Magneto · Execução durável",
     "business",
     KNOWHOW,
   ),
-  "flow-lifecycle-intro-v4": reel(
+  "flow-lifecycle-intro-v5": reel(
     "flow",
     "Magneto · Ciclo de vida",
     "business",
     KNOWHOW,
   ),
-  "flow-copilot-intro-v4": reel(
+  "flow-copilot-intro-v5": reel(
     "flow",
     "Magneto · Copiloto",
     "business",
     KNOWHOW,
   ),
-  "crm-omnichannel-inbox-ludic2-intro-v4": reel(
+  "crm-omnichannel-inbox-ludic2-intro-v5": reel(
     "welabs-crm",
     "Relloo · Atendimento",
   ),
-  "crm-agent-studio-ludic2-intro-v4": reel("welabs-crm", "Relloo · Agentes"),
-  "crm-flow-builder-ludic2-intro-v4": reel("welabs-crm", "Relloo · Automações"),
-  "crm-campaigns-journey-ludic2-intro-v4": reel(
+  "crm-agent-studio-ludic2-intro-v5": reel("welabs-crm", "Relloo · Agentes"),
+  "crm-flow-builder-ludic2-intro-v5": reel("welabs-crm", "Relloo · Automações"),
+  "crm-campaigns-journey-ludic2-intro-v5": reel(
     "welabs-crm",
     "Relloo · Campanhas e fidelização",
     "journey",
   ),
-  "hub-dominio-spa-ludic-intro-v4": reel(
+  "hub-dominio-spa-ludic-intro-v5": reel(
     "erp",
     "Domus · Tudo numa casa só",
     "business",
     KNOWHOW,
   ),
-  "hub-fiscal-br-ludic-intro-v4": reel(
+  "hub-fiscal-br-ludic-intro-v5": reel(
     "erp",
     "Domus · Fiscal sem retrabalho",
     "business",
     KNOWHOW,
   ),
-  "hub-concessoes-ludic-intro-v4": reel(
+  "hub-concessoes-ludic-intro-v5": reel(
     "erp",
     "Domus · Só o que foi liberado",
     "business",
     KNOWHOW,
   ),
-  "kb-ask-with-proof-ludic-intro-v4": reel(
+  "kb-ask-with-proof-ludic-intro-v5": reel(
     "wekb",
     "Knowly · Some a resposta sem prova",
     "business",
     KNOWHOW,
   ),
-  "kb-sources-to-knowledge-ludic-intro-v4": reel(
+  "kb-sources-to-knowledge-ludic-intro-v5": reel(
     "wekb",
     "Knowly · Some o conhecimento espalhado",
     "business",
     KNOWHOW,
   ),
-  "kb-who-reads-what-ludic-intro-v4": reel(
+  "kb-who-reads-what-ludic-intro-v5": reel(
     "wekb",
     "Knowly · Some o medo de mostrar demais",
     "business",
     KNOWHOW,
   ),
-  "channels-one-contract-ludic-intro-v4": reel(
+  "channels-one-contract-ludic-intro-v5": reel(
     "channels",
     "Tuner · Some o canal espalhado",
     "business",
     KNOWHOW,
   ),
-  "channels-call-center-ludic-intro-v4": reel(
+  "channels-call-center-ludic-intro-v5": reel(
     "channels",
     "Tuner · Some o “pode repetir?”",
     "business",
     KNOWHOW,
   ),
-  "channels-whatsapp-official-ludic-intro-v4": reel(
+  "channels-whatsapp-official-ludic-intro-v5": reel(
     "channels",
     "Tuner · Some a conversa perdida",
     "business",
     KNOWHOW,
   ),
-  "mon-occurrence-desk-intro-v4": reel(
+  "mon-occurrence-desk-intro-v5": reel(
     "malupe",
     "Ecossistema Monitoramento · Mesa de ocorrências",
   ),
-  "mon-edge-survives-intro-v4": reel(
+  "mon-edge-survives-intro-v5": reel(
     "malupe",
     "Ecossistema Monitoramento · O site não para",
   ),
-  "mon-camera-to-case-intro-v4": reel(
+  "mon-camera-to-case-intro-v5": reel(
     "malupe",
     "Ecossistema Monitoramento · Da câmera ao caso",
   ),
