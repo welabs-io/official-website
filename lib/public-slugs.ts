@@ -9,8 +9,6 @@ const PUBLIC_SLUG: Record<string, string> = {
   // Renamed Rello -> Relloo on 2026-10-07; the old slug redirects through FORMER_SLUG.
   "welabs-crm": "relloo",
   channels: "tuner",
-  // SGORS is presented by its full name.
-  sgors: "gerenciamento-de-residuos",
 };
 const ID_BY_SLUG = Object.fromEntries(
   Object.entries(PUBLIC_SLUG).map(([id, slug]) => [slug, id]),
@@ -21,15 +19,8 @@ const FORMER_SLUG: Record<string, string> = {
   "hub-de-dominio": "domus",
   rello: "relloo",
 };
-// Retired products redirect to the page that now carries their content (Kiosk Brands became Relloo Campaigns).
-// SGICI left the portfolio on 2026-10-05; its old address lands on the portfolio.
-const MOVED_PRODUCT: Record<string, string> = {
-  "kiosk-brands": "/welabs/produtos/relloo",
-  sgici: "/portfolio",
-};
 
 export const publicSlug = (id: string) => PUBLIC_SLUG[id] ?? id;
 export const idFromSlug = (slug: string) => ID_BY_SLUG[slug] ?? slug;
 export const retiredSlug = (slug: string) =>
   slug in PUBLIC_SLUG ? PUBLIC_SLUG[slug] : (FORMER_SLUG[slug] ?? null);
-export const movedProduct = (slug: string) => MOVED_PRODUCT[slug] ?? null;

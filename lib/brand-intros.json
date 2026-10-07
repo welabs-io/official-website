@@ -1,35 +1,13 @@
 {
-  "_note": "Brand → intro piece (round 20261002). The card cover of every product is the closing frame of its brand intro once the intro is accepted; until then the product falls back to its first overview film. Welabs products share the company intro.",
+  "_note": "Brand → intro piece (round 20261002). The card cover of every product is the closing frame of its brand intro once the intro is accepted; until then the product falls back to its first overview film. Welabs products share the company intro; the Imagine brand intros left with the Imagine site on 2026-10-07.",
   "brands": {
-    "tabela": "tabela-intro",
-    "stant": "stant-intro",
-    "wego": "wego-intro",
-    "sgors": "residuos-intro",
-    "ius": "ius-intro",
-    "central-esg": "central-esg-intro",
     "welabs": "welabs-intro-v5"
   },
-  "products": {
-    "tabela": "tabela",
-    "stant": "stant",
-    "wego": "wego",
-    "autoinfracao": "wego",
-    "docgo": "wego",
-    "signgo": "wego",
-    "sgors": "sgors",
-    "ius": "ius",
-    "central-esg": "central-esg"
-  },
+  "products": {},
   "publishers": {
     "Welabs": "welabs"
   },
   "names": {
-    "tabela": "Tabe.la",
-    "stant": "Stant",
-    "wego": "Família WeGO",
-    "sgors": "Sistema de Gerenciamento de Resíduos",
-    "ius": "IUS",
-    "central-esg": "Central ESG",
     "welabs": "Welabs"
   }
 }

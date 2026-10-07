@@ -1,20 +1,5 @@
 [
   {
-    "id": "ius",
-    "publisher": "Imagine",
-    "title": "IUS",
-    "sector": ["Saúde", "Health"],
-    "stage": ["Em desenvolvimento", "In development"],
-    "summary": [
-      "Proposta de saúde para profissionais e pacientes: o exame compartilhado chega ao profissional antes do cadastro e é incorporado depois.",
-      "A health proposition for professionals and patients: a shared exam reaches the professional before sign-up and is incorporated afterwards."
-    ],
-    "audience": [
-      "Profissionais de saúde e pacientes.",
-      "Health professionals and patients."
-    ]
-  },
-  {
     "id": "channels",
     "publisher": "Welabs",
     "title": "Tuner",

@@ -1,21 +1,15 @@
 import fs from "node:fs";
-import path from "node:path";
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 
-// VERIFICAÇÃO DO PORTFÓLIO CONTRA O PREVIEW
-// Checks only what the site serves today: retired packs, moved products and public slugs are read
-// from the same sources the site uses (proxy.ts, lib/public-slugs.ts), so the check follows them.
+// VERIFICAÇÃO DO SITE CONTRA O PREVIEW
+// Checks what the Welabs site serves today against a running server: product pages by public slug,
+// redirects from internal ids, former slugs and the old /welabs addresses of the shared site.
+// Public slugs are read from lib/public-slugs.ts, so the check follows them.
 const catalog = JSON.parse(fs.readFileSync("lib/presentation-catalog.json"));
+const motionProducts = JSON.parse(fs.readFileSync("lib/motion-products.json"));
 const base = process.env.PORTFOLIO_PREVIEW_URL || "http://127.0.0.1:3000";
-const hash = (x) => createHash("sha256").update(x).digest("hex");
 
-const proxySource = fs.readFileSync("proxy.ts", "utf8");
 const slugSource = fs.readFileSync("lib/public-slugs.ts", "utf8");
-// Sources are prettier-formatted (double quotes, wrapped lines); single quotes are accepted too.
-const retired = new Set(
-  proxySource.match(/const packs\s*=\s*["']([^"']+)["']/)[1].split("|"),
-);
 // Parse a `const NAME: Record<string, string> = {...}` literal from public-slugs.ts.
 const record = (name) =>
   Object.fromEntries(
@@ -27,22 +21,12 @@ const record = (name) =>
   );
 const publicSlug = record("PUBLIC_SLUG");
 const formerSlug = record("FORMER_SLUG");
-const moved = record("MOVED_PRODUCT");
-// Film-only products (no framepack) share the product route; Welabs ones are checked by public slug.
-const motionProducts = JSON.parse(fs.readFileSync("lib/motion-products.json"));
 
-assert.equal(catalog.length, 22);
-assert.equal(catalog.filter((p) => p.publisher === "Welabs").length, 5);
-assert.equal(
-  catalog.filter((p) => p.publisher === "Imagine" && p.status === "selecionado")
-    .length,
-  5,
-);
-assert(!catalog.some((p) => ["factory", "nfe-flow"].includes(p.id)));
+assert.equal(catalog.length, 5);
+assert(catalog.every((p) => p.publisher === "Welabs"));
+assert(motionProducts.every((p) => p.publisher === "Welabs"));
 
-let assets = 0,
-  html = 0,
-  presentations = 0,
+let html = 0,
   redirects = 0;
 const get = async (url, status = 200) => {
   const r = await fetch(base + url);
@@ -61,131 +45,61 @@ const titleOf = (text) => {
   return h1.replace(/<[^>]+>/g, "") || h1.match(/<img[^>]*alt="([^"]*)"/)?.[1];
 };
 
-for (const p of catalog) {
-  const route = p.publisher === "Welabs" ? "/welabs/produtos/" : "/portfolio/";
-  // Moved products only redirect to the page that carries them now.
-  if (moved[p.id]) {
-    await expectRedirect(route + p.id, moved[p.id]);
-    await get("/apresentacoes/" + p.id, 404);
-    continue;
-  }
+const products = [
+  ...catalog.map((p) => ({ id: p.id, title: (l) => p.locales[l].title })),
+  ...motionProducts.map((p) => ({ id: p.id, title: () => p.title })),
+];
+for (const p of products) {
   const slug = publicSlug[p.id] ?? p.id;
-  if (slug !== p.id) await expectRedirect(route + p.id, route + slug);
-  const isRetired = retired.has(p.id);
-  const dir = path.join("public", p.presentationBase);
-  const manifestPath = path.join(dir, "manifest.json");
-  const m = fs.existsSync(manifestPath)
-    ? JSON.parse(fs.readFileSync(manifestPath))
-    : null;
-  if (!isRetired) {
-    assert(m, `${p.id} manifest`);
-    assert.equal(m.id, p.id);
-    assert.equal(m.publisher, p.publisher);
-  }
+  if (slug !== p.id)
+    await expectRedirect("/produtos/" + p.id, "/produtos/" + slug);
+  // The old address of the shared site lands on the same page.
+  await expectRedirect("/welabs/produtos/" + slug, "/produtos/" + slug);
   for (const locale of ["pt-BR", "en"]) {
     const q = locale === "en" ? "?lang=en" : "?lang=pt";
-    // Retired packs keep a product page under its current name, but no presentation.
-    const urls = isRetired
-      ? [route + slug + q]
-      : [route + slug + q, "/apresentacoes/" + p.id + q];
-    for (const url of urls) {
-      const text = await (await get(url)).text();
-      assert(text.includes("noindex"), url);
-      assert(
-        new RegExp(`<html[^>]+lang="${locale === "en" ? "en" : "pt-BR"}"`).test(
-          text,
-        ),
-        url + " SSR language",
-      );
-      if (!isRetired) {
-        // The catalog carries the current product name; the hashed pack keeps its original one.
-        assert(text.includes(p.productName), url);
-        assert.equal(
-          titleOf(text),
-          p.locales[locale].title,
-          url + " localized title",
-        );
-      }
-      html++;
-    }
-    if (isRetired) continue;
-    assert.equal(m.locales[locale].scenes.length, 3);
-    const a = m.assets.find((a) => a.id === m.locales[locale].player.assetId);
-    const text = await (await get(p.presentationBase + "/" + a.path)).text();
-    assert(text.includes("Content-Security-Policy"));
-    assert(text.includes("<noscript>"));
+    const text = await (await get("/produtos/" + slug + q)).text();
+    assert(text.includes("noindex"), slug + q);
+    assert(
+      new RegExp(`<html[^>]+lang="${locale === "en" ? "en" : "pt-BR"}"`).test(
+        text,
+      ),
+      slug + q + " SSR language",
+    );
+    assert.equal(titleOf(text), p.title(locale), slug + q + " title");
+    html++;
   }
-  if (isRetired) {
-    await get("/apresentacoes/" + p.id, 404);
-    if (m) await get(`/presentation-downloads/${p.id}-${m.version}.zip`, 404);
-    continue;
-  }
-  for (const a of m.assets) {
-    const bytes = fs.readFileSync(path.join(dir, a.path));
-    assert.equal(bytes.length, a.bytes);
-    assert.equal(hash(bytes), a.sha256);
-    assets++;
-  }
-  const zipPath = `/presentation-downloads/${p.id}-${m.version}.zip`;
-  const zip = await (await get(zipPath)).arrayBuffer();
-  assert.equal(
-    hash(Buffer.from(zip)),
-    hash(fs.readFileSync("public" + zipPath)),
-  );
-  presentations++;
 }
 
 // Former public slugs (e.g. hub-de-dominio) keep a permanent redirect to the current one.
 for (const [from, to] of Object.entries(formerSlug))
-  await expectRedirect("/welabs/produtos/" + from, "/welabs/produtos/" + to);
-for (const p of motionProducts.filter((p) => p.publisher === "Welabs")) {
-  const slug = publicSlug[p.id] ?? p.id;
-  if (slug !== p.id)
-    await expectRedirect(
-      "/welabs/produtos/" + p.id,
-      "/welabs/produtos/" + slug,
-    );
-  for (const q of ["?lang=pt", "?lang=en"]) {
-    const text = await (await get("/welabs/produtos/" + slug + q)).text();
-    assert.equal(titleOf(text), p.title, slug + q + " title");
-    html++;
-  }
-}
+  await expectRedirect("/produtos/" + from, "/produtos/" + to);
 
-for (const url of [
-  "/",
-  "/sobre",
-  "/servicos",
-  "/portfolio",
-  "/welabs",
-  "/welabs/sobre",
-  "/welabs/solucoes",
-  "/welabs/produtos",
-])
+for (const url of ["/", "/sobre", "/solucoes", "/produtos"])
   for (const q of ["?lang=pt", "?lang=en"]) {
     await get(url + q);
     html++;
   }
+// The Imagine pages and the legacy presentation routes are not part of this site.
 for (const url of [
-  "/portfolio/erp",
-  "/welabs/produtos/tabela",
-  "/apresentacoes/does-not-exist",
+  "/portfolio",
+  "/servicos",
+  "/produtos/tabela",
+  "/apresentacoes/flow",
 ])
   await get(url, 404);
 for (const [from, to] of [
-  ["/portfolio-preview", "/portfolio"],
-  ["/portfolio-preview/welabs", "/welabs"],
-  ["/portfolio-preview/erp", "/welabs/produtos/erp"],
-  ["/portfolio/filmes", "/portfolio"],
+  ["/welabs", "/"],
+  ["/welabs/sobre", "/sobre"],
+  ["/welabs/solucoes", "/solucoes"],
+  ["/welabs/produtos", "/produtos"],
+  ["/portfolio-preview/welabs", "/"],
+  ["/portfolio-preview/erp", "/produtos/erp"],
 ])
   await expectRedirect(from, to);
 
 console.log(
   JSON.stringify({
-    packages: catalog.length,
-    presentations,
-    retired: catalog.filter((p) => retired.has(p.id)).length,
-    assets,
+    products: products.length,
     htmlRoutes: html,
     redirects,
     status: "PASS",

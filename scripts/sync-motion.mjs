@@ -41,55 +41,11 @@ const RUNTIME_ENTRIES = [
 // Product-specific stylesheet at the root (e.g. flow-graph.css); tooling scripts stay out.
 const isRootStyle = (name) => name.endsWith(".css");
 
-// Operator cut of 2026-10-02: internal tooling and unconfirmed cases stay out of the site.
-const EXCLUDED = new Set([
-  "artifact-server",
-  "database-access-hub",
-  "welabs-sso",
-  "worktree-runtime",
-  "youtrack-integration",
-  "flow-graph",
-  "wekb-core-independent-line",
-  "imagine-marketplace",
-  "project-manager",
-  "imagine-observability-user-journey",
-  "opentag",
-  "relay-project",
-  "internal-rh",
-  "shopcontrol",
-  "mandato-participativo",
-  "tetrapak-prospecting-app",
-  "helper-project-management",
-  // Operator cut of 2026-10-05: both left the portfolio.
-  "netsafety",
-  "report-crm",
-  "sgici",
-]);
-
-// Client programmes shown as clients only: their journey films stay off the product pages.
-// infraction-management names the agency, and Auto Infração must not cite it.
-// wemalupe shows the internal codename, which must not be cited.
-const CLIENT_ONLY = new Set([
-  "light-recicla",
-  "ecoenel",
-  "avsi-program-case",
-  "infraction-management",
-  "wemalupe",
-]);
-
-// Journeys of round 20261001 replaced by the per-product reels below (or retired with their product).
-const SUPERSEDED = new Set([
-  "tabela",
-  "stant",
-  "wego",
-  "sgors",
-  "ius",
-  "kiosk-brands",
-  "erp",
-  "flow",
-  "wekb",
-  "wecrm",
-]);
+// JORNADAS DA PRIMEIRA RODADA
+// Round 20261001 journeys this site publishes: only the Tuner pieces. The other Welabs journeys were
+// superseded by the per-product reels below (wemalupe also shows an internal codename), and the Imagine
+// journeys belong to the Imagine site since the split of 2026-10-07.
+const SITE_JOURNEYS = new Set(["channels-product", "channels-sdk"]);
 
 // Round 20261002 pieces, bound to the coordinator's accepted hash.
 const round2 = resolve(
@@ -105,8 +61,8 @@ const reel = (product, title, kind = "business", extra = {}) => ({
   reel: true,
   ...extra,
 });
-const RESIDUOS = "Sistema de Gerenciamento de Resíduos";
-// Films that also appear in the know-how section (page "servicos").
+// Films that also appeared in the Imagine know-how section (page "servicos") of the shared site; kept so
+// the catalog stays comparable with the Imagine site.
 const KNOWHOW = { also: ["servicos"] };
 // Insertion order is the gallery order; the collection order lives in lib/emphasis.json.
 const ROUND2 = {
@@ -145,80 +101,6 @@ const ROUND2 = {
     title: "Plataforma Welabs · Pontes",
     ...KNOWHOW,
   },
-  "tabela-intro": reel("tabela", "Tabe.la · Introdução de marca", "intro"),
-  "biz-tabela-comercializacao-ludic-intro": reel(
-    "tabela",
-    "Tabe.la · Todos no mesmo estoque",
-  ),
-  "biz-tabela-operacao-ludic-intro": reel(
-    "tabela",
-    "Tabe.la · O depois da venda anda sozinho",
-  ),
-  "tabela-journey-ludic-intro": reel(
-    "tabela",
-    "Tabe.la · Do incorporador ao comprador",
-    "journey",
-  ),
-  "stant-intro": reel("stant", "Stant · Introdução de marca", "intro"),
-  "biz-stant-campo-ludic-intro": reel(
-    "stant",
-    "Stant · Some o problema esquecido",
-  ),
-  "biz-stant-gestao-ludic-intro": reel("stant", "Stant · Some a obra às cegas"),
-  "biz-stant-plataforma-ludic-intro": reel(
-    "stant",
-    "Stant · Some o retrabalho",
-  ),
-  "stant-journey-ludic-intro": reel(
-    "stant",
-    "Stant · Da fundação à entrega",
-    "journey",
-  ),
-  // Since 2026-10-06 every brand opens its films with its own intro, as Tabe.la and Stant did.
-  "wego-intro": reel("wego", "Família WeGO · Introdução de marca", "intro"),
-  "wego-topology-v2-ludic-intro": reel(
-    "wego",
-    "Família WeGO · Um número só",
-    "topology",
-  ),
-  "biz-wego-docgo-signgo-ludic-intro": reel(
-    "wego",
-    "Família WeGO · Sem papel que vai e volta",
-  ),
-  "biz-wego-licenciamento-ludic-intro": reel(
-    "wego",
-    "Família WeGO · Um fio só",
-  ),
-  "biz-auto-infracao-campo-ludic-intro": reel(
-    "wego",
-    "Auto Infração · O auto lacrado",
-    "business",
-    { also: ["autoinfracao"] },
-  ),
-  "auto-infracao-journey-ludic-intro": reel(
-    "wego",
-    "Auto Infração · Do flagrante ao processo",
-    "journey",
-    { also: ["autoinfracao"] },
-  ),
-  "wego-journey-ludic-intro": reel(
-    "wego",
-    "Família WeGO · Uma história só",
-    "journey",
-  ),
-  // Resíduos and IUS: their films with intro are already the playful cuts (same ids as before).
-  "residuos-intro": reel("sgors", `${RESIDUOS} · Introdução de marca`, "intro"),
-  "residuos-journey-v2-intro": reel(
-    "sgors",
-    `${RESIDUOS} · Um ciclo`,
-    "journey",
-  ),
-  "biz-residuos-reciclagem-intro": reel("sgors", `${RESIDUOS} · Reciclagem`),
-  "biz-residuos-transito-intro": reel("sgors", `${RESIDUOS} · Trânsito`),
-  "ius-intro": reel("ius", "IUS · Introdução de marca", "intro"),
-  "ius-do-laudo-ao-dado-intro": reel("ius", "IUS · Do laudo ao dado"),
-  "ius-aceite-e-leitura-intro": reel("ius", "IUS · Aceite e leitura"),
-  "ius-jornada-medico-paciente-intro": reel("ius", "IUS · Jornada", "journey"),
   "flow-canvas-build-intro-v5": reel(
     "flow",
     "Magneto · Montar o fluxo",
@@ -320,19 +202,7 @@ const ROUND2 = {
     "malupe",
     "Ecossistema Monitoramento · Da câmera ao caso",
   ),
-  // Central ESG: brand intro and the playful cycle film with intro (biz-central-esg left on 2026-10-07).
-  // Maceió Digital stays off: the site has no page or card for it yet (noted for the operator).
-  "central-esg-intro": {
-    kind: "intro",
-    product: "central-esg",
-    title: "Central ESG · Introdução de marca",
-  },
-  "central-esg-ciclo-intro": {
-    kind: "business",
-    product: "central-esg",
-    title: "Central ESG · Some o dado ESG espalhado",
-  },
-  // Report CRM, Netsafety and SGICI left the portfolio on 2026-10-05.
+  // The Imagine reels (Tabe.la, Stant, WeGO, Resíduos, IUS, Central ESG) moved to the Imagine site on 2026-10-07.
 };
 
 // Every brand intro of lib/brand-intros.json is synced once accepted: its closing frame is the card
@@ -348,15 +218,8 @@ for (const [brand, id] of Object.entries(brandIntros.brands)) {
   };
 }
 
-// Existing presentation slug for compositions that overlap the 22 framepacks.
-const PRESENTATION_SLUG = {
-  "avsi-program-case": "neoenergia",
-  "infraction-management": "autoinfracao",
-  "environmental-licensing": "licenciamento",
-  "ima-system": "sistema-ima",
-  wecrm: "welabs-crm",
-  wemalupe: "malupe",
-};
+// Existing catalog slug for round 1 compositions that overlap a catalog product (none of the Tuner pieces).
+const PRESENTATION_SLUG = {};
 
 function findPlayer() {
   const cacheRoot = join(homedir(), ".npm/_npx");
@@ -375,17 +238,10 @@ function findPlayer() {
   throw new Error(`HyperFrames ${PLAYER_VERSION} not found in the npm cache`);
 }
 
-// Welabs products carry their own names since 2026-10-06 (the old We{product} titles map to them).
+// Welabs products carry their own names since 2026-10-06 (the old titles of the delivery index map to them).
 const RENAMED = {
-  WeERP: "Domus",
-  WeKB: "Knowly",
-  WeCRM: "Relloo",
   "Channels hosted product": "Tuner · Produto hospedado",
   "Channels SDK": "Tuner · SDK",
-  WeMalupe: "Ecossistema Monitoramento",
-  "Get-Go": "Gerador de formulários",
-  "IMA Auto de Infração": "Auto Infração",
-  "Ecossistema WeGO": "Família WeGO",
 };
 
 function readTitles() {
@@ -438,10 +294,9 @@ cpSync(findPlayer(), join(publicRoot, "player.js"));
 const catalog = [];
 for (const id of readdirSync(productsRoot).sort()) {
   const source = join(productsRoot, id);
+  // Allowlist: only this site's round 1 journeys are copied.
   if (
-    EXCLUDED.has(id) ||
-    CLIENT_ONLY.has(id) ||
-    SUPERSEDED.has(id) ||
+    !SITE_JOURNEYS.has(id) ||
     !titles.has(id) ||
     !existsSync(join(source, "index.html"))
   )
@@ -519,8 +374,10 @@ for (const [id, meta] of Object.entries(ROUND2)) {
   });
 }
 
-// presentationSlug links a film to an existing framepack page, when there is one.
-const framepacks = new Set(readdirSync(join(siteRoot, "public/presentations")));
+// presentationSlug links a film to an existing framepack page, when there is one; this site has no
+// framepacks since the legacy packs left with the split of 2026-10-07, so every slug is null.
+const packsRoot = join(siteRoot, "public/presentations");
+const framepacks = new Set(existsSync(packsRoot) ? readdirSync(packsRoot) : []);
 for (const item of catalog)
   item.presentationSlug =
     item.product && framepacks.has(item.product) ? item.product : null;
@@ -529,7 +386,7 @@ writeFileSync(
   `${JSON.stringify(catalog, null, 2)}\n`,
 );
 process.stdout.write(
-  `motion: ${catalog.length} films synced (${titles.size} accepted journeys, ${EXCLUDED.size} excluded; round 2 pending: ${pending.join(", ") || "none"})\n`,
+  `motion: ${catalog.length} films synced (${titles.size} accepted journeys, ${SITE_JOURNEYS.size} published here; round 2 pending: ${pending.join(", ") || "none"})\n`,
 );
 
 // Posters come from the synced pieces, so they are regenerated on every sync.

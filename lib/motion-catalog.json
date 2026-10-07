@@ -1,31 +1,5 @@
 [
   {
-    "id": "apetitivo",
-    "title": "Apetitivo",
-    "duration": 12,
-    "compositionId": "apetitivo-historical-menu",
-    "src": "/motion/apetitivo/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "apetitivo",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "apetitivo"
-  },
-  {
-    "id": "central-esg",
-    "title": "Central ESG e Report Conecta",
-    "duration": 10,
-    "compositionId": "central-esg-collection-demo",
-    "src": "/motion/central-esg/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "central-esg",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "central-esg"
-  },
-  {
     "id": "channels-product",
     "title": "Tuner · Produto hospedado",
     "duration": 16,
@@ -50,84 +24,6 @@
     "reel": false,
     "also": [],
     "presentationSlug": null
-  },
-  {
-    "id": "docgo",
-    "title": "DocGo",
-    "duration": 21,
-    "compositionId": "docgo-folder-to-blank-editor",
-    "src": "/motion/docgo/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "docgo",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "docgo"
-  },
-  {
-    "id": "environmental-licensing",
-    "title": "Licenciamento ambiental",
-    "duration": 14,
-    "compositionId": "licenciamento-request-documents-demo",
-    "src": "/motion/environmental-licensing/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "licenciamento",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "licenciamento"
-  },
-  {
-    "id": "get-go",
-    "title": "Gerador de formulários",
-    "duration": 16,
-    "compositionId": "get-go-form-source-demo",
-    "src": "/motion/get-go/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "get-go",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "ima-mais",
-    "title": "IMA+",
-    "duration": 12,
-    "compositionId": "ima-mais-history-demo",
-    "src": "/motion/ima-mais/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "ima-mais",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "ima-mais"
-  },
-  {
-    "id": "ima-system",
-    "title": "Sistema IMA e cobranças",
-    "duration": 12,
-    "compositionId": "sistema-ima-cadastro-demo",
-    "src": "/motion/ima-system/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "sistema-ima",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "sistema-ima"
-  },
-  {
-    "id": "signgo",
-    "title": "SignGo",
-    "duration": 12,
-    "compositionId": "signgo-preparation",
-    "src": "/motion/signgo/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "signgo",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "signgo"
   },
   {
     "id": "welabs-chain-overview-intro-v5",
@@ -182,318 +78,6 @@
     "presentationSlug": null
   },
   {
-    "id": "tabela-intro",
-    "title": "Tabe.la · Introdução de marca",
-    "duration": 8.5,
-    "compositionId": "tabela-intro",
-    "src": "/motion/tabela-intro/index.html",
-    "kind": "intro",
-    "page": null,
-    "product": "tabela",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "tabela"
-  },
-  {
-    "id": "biz-tabela-comercializacao-ludic-intro",
-    "title": "Tabe.la · Todos no mesmo estoque",
-    "duration": 44,
-    "compositionId": "biz-tabela-comercializacao-ludic-intro",
-    "src": "/motion/biz-tabela-comercializacao-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "tabela",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "tabela"
-  },
-  {
-    "id": "biz-tabela-operacao-ludic-intro",
-    "title": "Tabe.la · O depois da venda anda sozinho",
-    "duration": 44,
-    "compositionId": "biz-tabela-operacao-ludic-intro",
-    "src": "/motion/biz-tabela-operacao-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "tabela",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "tabela"
-  },
-  {
-    "id": "tabela-journey-ludic-intro",
-    "title": "Tabe.la · Do incorporador ao comprador",
-    "duration": 53,
-    "compositionId": "tabela-journey-ludic-intro",
-    "src": "/motion/tabela-journey-ludic-intro/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "tabela",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "tabela"
-  },
-  {
-    "id": "stant-intro",
-    "title": "Stant · Introdução de marca",
-    "duration": 8.5,
-    "compositionId": "stant-intro",
-    "src": "/motion/stant-intro/index.html",
-    "kind": "intro",
-    "page": null,
-    "product": "stant",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "stant"
-  },
-  {
-    "id": "biz-stant-campo-ludic-intro",
-    "title": "Stant · Some o problema esquecido",
-    "duration": 45,
-    "compositionId": "biz-stant-campo-ludic-intro",
-    "src": "/motion/biz-stant-campo-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "stant",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "stant"
-  },
-  {
-    "id": "biz-stant-gestao-ludic-intro",
-    "title": "Stant · Some a obra às cegas",
-    "duration": 44,
-    "compositionId": "biz-stant-gestao-ludic-intro",
-    "src": "/motion/biz-stant-gestao-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "stant",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "stant"
-  },
-  {
-    "id": "biz-stant-plataforma-ludic-intro",
-    "title": "Stant · Some o retrabalho",
-    "duration": 43,
-    "compositionId": "biz-stant-plataforma-ludic-intro",
-    "src": "/motion/biz-stant-plataforma-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "stant",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "stant"
-  },
-  {
-    "id": "stant-journey-ludic-intro",
-    "title": "Stant · Da fundação à entrega",
-    "duration": 55,
-    "compositionId": "stant-journey-ludic-intro",
-    "src": "/motion/stant-journey-ludic-intro/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "stant",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "stant"
-  },
-  {
-    "id": "wego-intro",
-    "title": "Família WeGO · Introdução de marca",
-    "duration": 8.5,
-    "compositionId": "wego-intro",
-    "src": "/motion/wego-intro/index.html",
-    "kind": "intro",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "wego-topology-v2-ludic-intro",
-    "title": "Família WeGO · Um número só",
-    "duration": 44,
-    "compositionId": "wego-topology-v2-ludic-intro",
-    "src": "/motion/wego-topology-v2-ludic-intro/index.html",
-    "kind": "topology",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "biz-wego-docgo-signgo-ludic-intro",
-    "title": "Família WeGO · Sem papel que vai e volta",
-    "duration": 45,
-    "compositionId": "biz-wego-docgo-signgo-ludic-intro",
-    "src": "/motion/biz-wego-docgo-signgo-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "biz-wego-licenciamento-ludic-intro",
-    "title": "Família WeGO · Um fio só",
-    "duration": 45,
-    "compositionId": "biz-wego-licenciamento-ludic-intro",
-    "src": "/motion/biz-wego-licenciamento-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "biz-auto-infracao-campo-ludic-intro",
-    "title": "Auto Infração · O auto lacrado",
-    "duration": 45,
-    "compositionId": "biz-auto-infracao-campo-ludic-intro",
-    "src": "/motion/biz-auto-infracao-campo-ludic-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": ["autoinfracao"],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "auto-infracao-journey-ludic-intro",
-    "title": "Auto Infração · Do flagrante ao processo",
-    "duration": 55,
-    "compositionId": "auto-infracao-journey-ludic-intro",
-    "src": "/motion/auto-infracao-journey-ludic-intro/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": ["autoinfracao"],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "wego-journey-ludic-intro",
-    "title": "Família WeGO · Uma história só",
-    "duration": 55,
-    "compositionId": "wego-journey-ludic-intro",
-    "src": "/motion/wego-journey-ludic-intro/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "wego",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "wego"
-  },
-  {
-    "id": "residuos-intro",
-    "title": "Sistema de Gerenciamento de Resíduos · Introdução de marca",
-    "duration": 8.5,
-    "compositionId": "residuos-intro",
-    "src": "/motion/residuos-intro/index.html",
-    "kind": "intro",
-    "page": null,
-    "product": "sgors",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "sgors"
-  },
-  {
-    "id": "residuos-journey-v2-intro",
-    "title": "Sistema de Gerenciamento de Resíduos · Um ciclo",
-    "duration": 53,
-    "compositionId": "residuos-journey-v2-intro",
-    "src": "/motion/residuos-journey-v2-intro/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "sgors",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "sgors"
-  },
-  {
-    "id": "biz-residuos-reciclagem-intro",
-    "title": "Sistema de Gerenciamento de Resíduos · Reciclagem",
-    "duration": 44,
-    "compositionId": "biz-residuos-reciclagem-intro",
-    "src": "/motion/biz-residuos-reciclagem-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "sgors",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "sgors"
-  },
-  {
-    "id": "biz-residuos-transito-intro",
-    "title": "Sistema de Gerenciamento de Resíduos · Trânsito",
-    "duration": 44,
-    "compositionId": "biz-residuos-transito-intro",
-    "src": "/motion/biz-residuos-transito-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "sgors",
-    "reel": true,
-    "also": [],
-    "presentationSlug": "sgors"
-  },
-  {
-    "id": "ius-intro",
-    "title": "IUS · Introdução de marca",
-    "duration": 9,
-    "compositionId": "ius-intro",
-    "src": "/motion/ius-intro/index.html",
-    "kind": "intro",
-    "page": null,
-    "product": "ius",
-    "reel": true,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "ius-do-laudo-ao-dado-intro",
-    "title": "IUS · Do laudo ao dado",
-    "duration": 43.5,
-    "compositionId": "ius-do-laudo-ao-dado-intro",
-    "src": "/motion/ius-do-laudo-ao-dado-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "ius",
-    "reel": true,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "ius-aceite-e-leitura-intro",
-    "title": "IUS · Aceite e leitura",
-    "duration": 41.5,
-    "compositionId": "ius-aceite-e-leitura-intro",
-    "src": "/motion/ius-aceite-e-leitura-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "ius",
-    "reel": true,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
-    "id": "ius-jornada-medico-paciente-intro",
-    "title": "IUS · Jornada",
-    "duration": 53.5,
-    "compositionId": "ius-jornada-medico-paciente-intro",
-    "src": "/motion/ius-jornada-medico-paciente-intro/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "ius",
-    "reel": true,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
     "id": "flow-canvas-build-intro-v5",
     "title": "Magneto · Montar o fluxo",
     "duration": 40,
@@ -504,7 +88,7 @@
     "product": "flow",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "flow"
+    "presentationSlug": null
   },
   {
     "id": "flow-durable-run-intro-v5",
@@ -517,7 +101,7 @@
     "product": "flow",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "flow"
+    "presentationSlug": null
   },
   {
     "id": "flow-lifecycle-intro-v5",
@@ -530,7 +114,7 @@
     "product": "flow",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "flow"
+    "presentationSlug": null
   },
   {
     "id": "flow-copilot-intro-v5",
@@ -543,7 +127,7 @@
     "product": "flow",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "flow"
+    "presentationSlug": null
   },
   {
     "id": "crm-omnichannel-inbox-ludic2-intro-v5",
@@ -556,7 +140,7 @@
     "product": "welabs-crm",
     "reel": true,
     "also": [],
-    "presentationSlug": "welabs-crm"
+    "presentationSlug": null
   },
   {
     "id": "crm-agent-studio-ludic2-intro-v5",
@@ -569,7 +153,7 @@
     "product": "welabs-crm",
     "reel": true,
     "also": [],
-    "presentationSlug": "welabs-crm"
+    "presentationSlug": null
   },
   {
     "id": "crm-flow-builder-ludic2-intro-v5",
@@ -582,7 +166,7 @@
     "product": "welabs-crm",
     "reel": true,
     "also": [],
-    "presentationSlug": "welabs-crm"
+    "presentationSlug": null
   },
   {
     "id": "crm-campaigns-journey-ludic2-intro-v5",
@@ -595,7 +179,7 @@
     "product": "welabs-crm",
     "reel": true,
     "also": [],
-    "presentationSlug": "welabs-crm"
+    "presentationSlug": null
   },
   {
     "id": "hub-dominio-spa-ludic-intro-v5",
@@ -608,7 +192,7 @@
     "product": "erp",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "erp"
+    "presentationSlug": null
   },
   {
     "id": "hub-fiscal-br-ludic-intro-v5",
@@ -621,7 +205,7 @@
     "product": "erp",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "erp"
+    "presentationSlug": null
   },
   {
     "id": "hub-concessoes-ludic-intro-v5",
@@ -634,7 +218,7 @@
     "product": "erp",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "erp"
+    "presentationSlug": null
   },
   {
     "id": "kb-ask-with-proof-ludic-intro-v5",
@@ -647,7 +231,7 @@
     "product": "wekb",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "wekb"
+    "presentationSlug": null
   },
   {
     "id": "kb-sources-to-knowledge-ludic-intro-v5",
@@ -660,7 +244,7 @@
     "product": "wekb",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "wekb"
+    "presentationSlug": null
   },
   {
     "id": "kb-who-reads-what-ludic-intro-v5",
@@ -673,7 +257,7 @@
     "product": "wekb",
     "reel": true,
     "also": ["servicos"],
-    "presentationSlug": "wekb"
+    "presentationSlug": null
   },
   {
     "id": "channels-one-contract-ludic-intro-v5",
@@ -752,32 +336,6 @@
     "reel": true,
     "also": [],
     "presentationSlug": null
-  },
-  {
-    "id": "central-esg-intro",
-    "title": "Central ESG · Introdução de marca",
-    "duration": 8.5,
-    "compositionId": "central-esg-intro",
-    "src": "/motion/central-esg-intro/index.html",
-    "kind": "intro",
-    "page": null,
-    "product": "central-esg",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "central-esg"
-  },
-  {
-    "id": "central-esg-ciclo-intro",
-    "title": "Central ESG · Some o dado ESG espalhado",
-    "duration": 44,
-    "compositionId": "central-esg-ciclo-intro",
-    "src": "/motion/central-esg-ciclo-intro/index.html",
-    "kind": "business",
-    "page": null,
-    "product": "central-esg",
-    "reel": false,
-    "also": [],
-    "presentationSlug": "central-esg"
   },
   {
     "id": "welabs-intro-v5",

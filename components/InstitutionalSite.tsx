@@ -2,9 +2,6 @@
 import Link from "./LangLink";
 import { useT } from "@/components/LangProvider";
 import catalog from "@/lib/presentation-catalog.json";
-import contextCopy from "@/lib/product-context.json";
-import { Presentation, type Manifest } from "./Presentation";
-import { CtaSection } from "./CtaSection";
 import styles from "./InstitutionalSite.module.css";
 import { CompanyHero } from "./CompanyHero";
 import {
@@ -23,238 +20,18 @@ import {
   posterSrc,
   reelFilms,
 } from "./MotionFilm";
-import {
-  ClientCarousel,
-  FactCounters,
-  KnowHowLink,
-  KnowHowList,
-  WorkSteps,
-} from "./KnowHow";
 import motionProducts from "@/lib/motion-products.json";
 import emphasis from "@/lib/emphasis.json";
 import { publicSlug } from "@/lib/public-slugs";
+import { imagineHref } from "@/lib/sister-site";
 type Item = (typeof catalog)[number];
-type Publisher = "Imagine" | "Welabs";
 type Locale = "pt-BR" | "en";
 const localeFor = (lang: string): Locale => (lang === "en" ? "en" : "pt-BR");
-// Legacy framepacks that name a client agency, an internal codename or a retired product name stay off the product page.
-const legacyHidden = new Set([
-  "autoinfracao",
-  "malupe",
-  "sgors",
-  "kiosk-brands",
-  "erp",
-  "wekb",
-  "welabs-crm",
-  // The Flow pack still says "Flow"; the product is Magneto since 2026-10-06
-  "flow",
-]);
-// Products whose own logo replaces the page title; client-group logos keep a smaller title.
+// Products whose own logo replaces the page title; the monitoring ecosystem keeps its name in text.
 const productLogo = PRODUCT_LOGO;
-// Imagine products whose films show Welabs products (Tabe.la operation shows Magneto and Tuner) link to Welabs.
-const citesWelabs = new Set(["tabela"]);
-// Products with their own brand built by Welabs carry the "feito pela Welabs" seal, never the Welabs
-// symbol inside their brand (operator decision of 2026-10-06). The seal is the official SVG, not text.
-const madeByWelabs = new Set(["stant", "tabela", "wego"]);
-const href = (p: Item) =>
-  p.publisher === "Welabs"
-    ? `/welabs/produtos/${publicSlug(p.id)}`
-    : `/portfolio/${publicSlug(p.id)}`;
-// HOME IMAGINE
-// Know-how and clients only: no film, player or presentation showcase. The platform know-how is
-// described as Imagine capability, without naming the company or products behind it.
-export function ImagineHome() {
-  const { lang } = useT();
-  const en = lang === "en",
-    locale = localeFor(lang);
-  return (
-    <div className={styles.site}>
-      <CompanyHero publisher="Imagine" locale={locale} />
-      <section id="knowhow" className={`${styles.section} ${styles.band}`}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader} data-reveal="">
-            <div>
-              <span className={styles.eyebrow}>
-                {en ? "OUR KNOW-HOW" : "NOSSO KNOW-HOW"}
-              </span>
-              <h2>
-                {en ? "From the challenge" : "Do desafio"}
-                <br />
-                {en
-                  ? "to an operation that keeps running."
-                  : "à operação que não para."}
-              </h2>
-            </div>
-          </div>
-          <KnowHowList en={en} />
-          <KnowHowLink en={en} />
-        </div>
-      </section>
-      <section id="clientes" className={styles.section}>
-        <div className={styles.container}>
-          <div data-reveal="">
-            <span className={styles.eyebrow}>
-              {en ? "CLIENTS" : "CLIENTES"}
-            </span>
-            <h2>
-              {en ? "Different industries." : "Setores diferentes."}
-              <br />
-              {en
-                ? "The same care for the operation."
-                : "A mesma atenção à operação."}
-            </h2>
-          </div>
-          <ClientCarousel en={en} />
-        </div>
-      </section>
-      <section id="processo" className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader} data-reveal="">
-            <div>
-              <span className={styles.eyebrow}>
-                {en ? "OUR APPROACH" : "NOSSA FORMA DE TRABALHAR"}
-              </span>
-              <h2>
-                {en ? "Context comes first." : "O contexto vem primeiro."}
-              </h2>
-            </div>
-          </div>
-          <div className={styles.process} data-reveal-stagger="" data-reveal="">
-            {(en
-              ? [
-                  [
-                    "Understand",
-                    "Listen to the people and understand the work.",
-                  ],
-                  [
-                    "Shape",
-                    "Organize journeys, priorities and the experience.",
-                  ],
-                  ["Build", "Develop, validate and refine the product."],
-                  ["Evolve", "Follow changing needs and the next steps."],
-                ]
-              : [
-                  ["Entender", "Ouvir as pessoas e compreender o trabalho."],
-                  [
-                    "Desenhar",
-                    "Organizar jornadas, prioridades e experiência.",
-                  ],
-                  ["Construir", "Desenvolver, validar e refinar o produto."],
-                  [
-                    "Evoluir",
-                    "Acompanhar as necessidades e os próximos passos.",
-                  ],
-                ]
-            ).map(([a, b], i) => (
-              <article key={a}>
-                <span>0{i + 1}</span>
-                <h3>{a}</h3>
-                <p>{b}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className={`${styles.section} ${styles.company}`}>
-        <div className={styles.container} data-reveal="">
-          <span className={styles.eyebrow}>IMAGINE APPS</span>
-          <h2>
-            {en ? "People, processes" : "Pessoas, processos"}
-            <br />
-            {en ? "and technology." : "e tecnologia."}
-          </h2>
-          <p>
-            {en
-              ? "Our approach starts with the operation: who works, what they need to do and which experience helps that work."
-              : "Nossa atuação começa pela operação: quem trabalha, o que precisa fazer e qual experiência ajuda esse trabalho."}
-          </p>
-          <Link className={styles.textLink} href="/sobre">
-            {en ? "About Imagine" : "Sobre a Imagine"} ↗
-          </Link>
-        </div>
-      </section>
-      <CtaSection formId="home-contact" />
-    </div>
-  );
-}
-export function PortfolioIndex({
-  publisher = "Imagine",
-}: {
-  publisher?: Publisher;
-}) {
-  const { lang } = useT();
-  const en = lang === "en",
-    we = publisher === "Welabs";
-  return (
-    <div className={styles.site}>
-      <section className={`${styles.hero} ${styles.collectionHero}`}>
-        <div className={styles.container}>
-          <span className={styles.eyebrow}>
-            {we ? "WELABS" : en ? "IMAGINE / PORTFOLIO" : "IMAGINE / PORTFÓLIO"}
-          </span>
-          <h1>
-            {we
-              ? en
-                ? "Our products."
-                : "Nossos produtos."
-              : en
-                ? "Product experiences."
-                : "Experiências de produto."}
-            <br />
-            <span>
-              {we
-                ? en
-                  ? "Each context matters."
-                  : "Cada contexto importa."
-                : en
-                  ? "Different operations."
-                  : "Operações diferentes."}
-            </span>
-          </h1>
-          <div className={styles.indexIntro}>
-            <p>
-              {we
-                ? en
-                  ? "Management, knowledge, relationships and automation in our own product ecosystem."
-                  : "Gestão, conhecimento, relacionamento e automação em nosso ecossistema de produtos próprios."
-                : en
-                  ? "Some of the products in our portfolio, through their brands, challenges and illustrative journeys."
-                  : "Alguns dos produtos do nosso portfólio, por suas marcas, desafios e jornadas ilustrativas."}
-            </p>
-            <nav
-              className={styles.brandLinks}
-              aria-label={en ? "Company portfolios" : "Portfólios das empresas"}
-            >
-              <Link aria-current={!we ? "page" : undefined} href="/portfolio">
-                Imagine ↗
-              </Link>
-              <Link
-                aria-current={we ? "page" : undefined}
-                href="/welabs/produtos"
-              >
-                Welabs ↗
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </section>
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <PortfolioCollection publisher={publisher} />
-          {!we && (
-            <div className={styles.related}>
-              <span className={styles.eyebrow}>
-                {en ? "CLIENTS" : "CLIENTES"}
-              </span>
-              <ClientCarousel en={en} />
-            </div>
-          )}
-        </div>
-      </section>
-      {!we && <CtaSection formId="portfolio-contact" />}
-    </div>
-  );
-}
+const productHref = (id: string) => `/produtos/${publicSlug(id)}`;
+// O DESAFIO DE CADA PRODUTO
+// One sentence per product: it opens the product page and feeds the solutions list.
 const ownChallenge: Record<string, [string, string]> = {
   erp: [
     "Manter cadastros, regras, contratos, fiscal e integrações num só lugar, consumido por todos os produtos.",
@@ -277,24 +54,59 @@ const ownChallenge: Record<string, [string, string]> = {
     "Bring events and records together to give context to security operations follow-up.",
   ],
 };
-export function ProductPage({
-  manifest,
-  item,
-}: {
-  manifest: Manifest;
-  item: Item;
-}) {
+// COLEÇÃO DE PRODUTOS
+// The company switch keeps both portfolios one click apart: Imagine opens its own site
+// (NEXT_PUBLIC_IMAGINE_URL) and is hidden while that site is not configured.
+export function PortfolioIndex() {
+  const { lang } = useT();
+  const en = lang === "en";
+  const imaginePortfolio = imagineHref("/portfolio", lang);
+  return (
+    <div className={styles.site}>
+      <section className={`${styles.hero} ${styles.collectionHero}`}>
+        <div className={styles.container}>
+          <span className={styles.eyebrow}>WELABS</span>
+          <h1>
+            {en ? "Our products." : "Nossos produtos."}
+            <br />
+            <span>
+              {en ? "Each context matters." : "Cada contexto importa."}
+            </span>
+          </h1>
+          <div className={styles.indexIntro}>
+            <p>
+              {en
+                ? "Management, knowledge, relationships and automation in our own product ecosystem."
+                : "Gestão, conhecimento, relacionamento e automação em nosso ecossistema de produtos próprios."}
+            </p>
+            <nav
+              className={styles.brandLinks}
+              aria-label={en ? "Company portfolios" : "Portfólios das empresas"}
+            >
+              {imaginePortfolio && <a href={imaginePortfolio}>Imagine ↗</a>}
+              <Link aria-current="page" href="/produtos">
+                Welabs ↗
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </section>
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <PortfolioCollection />
+        </div>
+      </section>
+    </div>
+  );
+}
+// PÁGINA DE PRODUTO
+// The product is told through its films (approved reel, or overview plus journey); the legacy
+// presentation packs were never shown for Welabs products and left with the split of 2026-10-07.
+export function ProductPage({ item }: { item: Item }) {
   const { lang } = useT();
   const en = lang === "en",
     locale = localeFor(lang),
     d = item.locales[locale];
-  const children = catalog.filter((p) => p.parentId === item.id);
-  const context = (
-    contextCopy as Record<
-      string,
-      Record<string, { problem: string; participation: string }>
-    >
-  )[item.id]?.[locale];
   const visual = (
     visuals as Record<string, (typeof visuals)[keyof typeof visuals]>
   )[item.id];
@@ -305,15 +117,10 @@ export function ProductPage({
         ? en
           ? "In development"
           : "Em desenvolvimento"
-        : item.maturity === "historical-pending"
-          ? en
-            ? "Historical context"
-            : "Contexto histórico"
-          : en
-            ? "Concept presentation"
-            : "Apresentação conceitual";
-  const problem =
-    context?.problem || ownChallenge[item.id]?.[en ? 1 : 0] || d.summary;
+        : en
+          ? "Concept presentation"
+          : "Apresentação conceitual";
+  const problem = ownChallenge[item.id]?.[en ? 1 : 0] || d.summary;
   // An approved reel replaces overview + journey with one ordered gallery; otherwise the business
   // overview opens the page and the journey film follows as "see it working".
   const reel = reelFilms(item.id);
@@ -331,20 +138,8 @@ export function ProductPage({
       <section className={`${styles.hero} ${styles.productHero}`}>
         <div className={styles.container}>
           <div className={styles.productCrumb}>
-            <Link
-              className={styles.small}
-              href={
-                item.publisher === "Welabs" ? "/welabs/produtos" : "/portfolio"
-              }
-            >
-              ←{" "}
-              {item.publisher === "Welabs"
-                ? en
-                  ? "Welabs products"
-                  : "Produtos Welabs"
-                : en
-                  ? "Portfolio"
-                  : "Portfólio"}
+            <Link className={styles.small} href="/produtos">
+              ← {en ? "Welabs products" : "Produtos Welabs"}
             </Link>
             <span className={styles.stageBadge}>{stage}</span>
           </div>
@@ -357,9 +152,7 @@ export function ProductPage({
               {productLogo.has(item.id) && visual.logo ? (
                 <h1 className={styles.logoTitle}>
                   {/* Welabs product logos carry their own plate and clear zone: no extra plate, sized by height */}
-                  <span
-                    className={`${styles.heroLogo} ${item.publisher === "Welabs" ? styles.ownPlateLogo : visual.logoPlate === "light" ? styles.lightLogo : styles.darkLogo}`}
-                  >
+                  <span className={`${styles.heroLogo} ${styles.ownPlateLogo}`}>
                     <img
                       src={visual.logo}
                       alt={d.title}
@@ -374,37 +167,10 @@ export function ProductPage({
               <p className={styles.productSummary}>{d.summary}</p>
             </div>
             <aside className={styles.productIdentity}>
-              {visual.logo && !productLogo.has(item.id) && (
-                <span
-                  className={`${styles.detailLogo} ${styles.clientLogoSmall} ${visual.logoPlate === "light" ? styles.lightLogo : styles.darkLogo}`}
-                >
-                  <img
-                    src={visual.logo}
-                    alt={item.brand.name}
-                    width="160"
-                    height="56"
-                  />
-                </span>
-              )}
               <span className={styles.small}>
                 {en ? "WHO IT SERVES" : "PARA QUEM"}
               </span>
               <p>{d.audience}</p>
-              {madeByWelabs.has(item.id) && (
-                // Official seal SVG (brand package vector/seal), dark variant for the dark hero; sized by height
-                <Link
-                  className={styles.welabsSeal}
-                  href="/welabs"
-                  aria-label={en ? "Made by Welabs" : "Feito pela Welabs"}
-                >
-                  <img
-                    src={`/brands/welabs/seal/${en ? "made-by-welabs" : "feito-pela-welabs"}-dark.svg`}
-                    alt=""
-                    width="148"
-                    height="28"
-                  />
-                </Link>
-              )}
             </aside>
           </div>
         </div>
@@ -431,12 +197,9 @@ export function ProductPage({
                 {en ? "See it working" : "Veja funcionando"}
               </a>
             )}
-            {!legacyHidden.has(item.id) && (
-              <a href="#experiencia">{en ? "Experience" : "Experiência"}</a>
-            )}
             <a href="#relacionados">{en ? "Related" : "Relacionados"}</a>
           </nav>
-          {/* Threads: the challenge flows into the films, the films into the readable experience (or the Welabs link) */}
+          {/* Threads: the challenge flows into the films */}
           <div className={styles.storyIntro} data-reveal="" data-thread="story">
             <span className={styles.eyebrow}>
               {en ? "THE CHALLENGE" : "O DESAFIO"}
@@ -464,18 +227,6 @@ export function ProductPage({
               />
             )}
           </div>
-          {item.publisher === "Imagine" && citesWelabs.has(item.id) && (
-            <Link
-              className={styles.textLink}
-              href="/welabs"
-              data-thread-to="films"
-            >
-              {en
-                ? "Magneto and Tuner: see the Welabs platform"
-                : "Magneto e Tuner: conheça a plataforma Welabs"}{" "}
-              ↗
-            </Link>
-          )}
           {journey && (
             <div id="funcionando" className={styles.anchor}>
               <MotionFilm
@@ -484,60 +235,6 @@ export function ProductPage({
                 label={en ? "SEE IT WORKING" : "VEJA FUNCIONANDO"}
               />
             </div>
-          )}
-          {!legacyHidden.has(item.id) && (
-            <>
-              <span id="experiencia" className={styles.anchor} />
-              <div
-                data-thread-to={citesWelabs.has(item.id) ? undefined : "films"}
-              >
-                <span className={styles.eyebrow}>
-                  {en ? "READ THE EXPERIENCE" : "LEIA A EXPERIÊNCIA"}
-                </span>
-                <Presentation
-                  key={item.id}
-                  manifest={manifest}
-                  baseUrl={item.presentationBase}
-                />
-              </div>
-              <div className={styles.presentationLinks}>
-                <Link
-                  className={styles.textLink}
-                  href={`/apresentacoes/${item.id}`}
-                >
-                  {en
-                    ? "Open the complete presentation"
-                    : "Abrir apresentação completa"}{" "}
-                  ↗
-                </Link>
-                <span>
-                  {en
-                    ? "Illustrative journey with fictional data."
-                    : "Jornada ilustrativa com dados fictícios."}
-                </span>
-              </div>
-            </>
-          )}
-          {context && (
-            <div className={styles.participation} data-reveal="">
-              <span className={styles.eyebrow}>
-                {en ? "PRESENTED PARTICIPATION" : "PARTICIPAÇÃO APRESENTADA"}
-              </span>
-              <p>{context.participation}</p>
-            </div>
-          )}
-          {children.length > 0 && (
-            <section className={styles.related}>
-              <span className={styles.eyebrow}>
-                {en ? "WITHIN THIS CONTEXT" : "NESTE CONTEXTO"}
-              </span>
-              <h2>{en ? "Explore each journey." : "Conheça cada jornada."}</h2>
-              <div className={styles.grid}>
-                {children.map((p) => (
-                  <ProductCard key={p.id} item={p} locale={locale} />
-                ))}
-              </div>
-            </section>
           )}
           <section
             id="relacionados"
@@ -551,12 +248,7 @@ export function ProductPage({
             </h2>
             <div className={styles.grid}>
               {catalog
-                .filter(
-                  (p) =>
-                    p.publisher === item.publisher &&
-                    p.id !== item.id &&
-                    (item.publisher === "Welabs" || p.status === "selecionado"),
-                )
+                .filter((p) => p.id !== item.id)
                 .slice(0, 2)
                 .map((p) => (
                   <ProductCard key={p.id} item={p} locale={locale} />
@@ -565,88 +257,34 @@ export function ProductPage({
           </section>
         </div>
       </section>
-      {item.publisher === "Imagine" ? (
-        <CtaSection formId={`case-${item.id}`} />
-      ) : (
-        <div className={`${styles.container} ${styles.closing}`}>
-          <Link className={styles.textLink} href="/welabs/produtos">
-            {en
-              ? "Explore the Welabs ecosystem"
-              : "Explorar o ecossistema Welabs"}{" "}
-            ↗
-          </Link>
-        </div>
-      )}
-    </div>
-  );
-}
-export function StandalonePresentation({
-  manifest,
-  item,
-}: {
-  manifest: Manifest;
-  item: Item;
-}) {
-  const { lang } = useT();
-  const d = item.locales[localeFor(lang)];
-  return (
-    <div className={`${styles.site} ${styles.standalone}`}>
-      <div className={styles.container}>
-        <Link href={href(item)} className={styles.textLink}>
-          ← {lang === "en" ? "Back to the product" : "Voltar ao produto"}
+      <div className={`${styles.container} ${styles.closing}`}>
+        <Link className={styles.textLink} href="/produtos">
+          {en
+            ? "Explore the Welabs ecosystem"
+            : "Explorar o ecossistema Welabs"}{" "}
+          ↗
         </Link>
-        <h1>{d.title}</h1>
-        <Presentation
-          key={item.id}
-          manifest={manifest}
-          baseUrl={item.presentationBase}
-        />
       </div>
     </div>
   );
 }
-export function CompanyAbout({
-  publisher = "Imagine",
-}: {
-  publisher?: Publisher;
-}) {
+export function CompanyAbout() {
   const { lang } = useT();
-  const en = lang === "en",
-    we = publisher === "Welabs";
+  const en = lang === "en";
   return (
     <div className={styles.site}>
       <section className={`${styles.hero} ${styles.editorialHero}`}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>
-            {we ? "WELABS" : "IMAGINE APPS"}
-          </span>
+          <span className={styles.eyebrow}>WELABS</span>
           <h1>
-            {we
-              ? en
-                ? "We are Welabs."
-                : "Somos a Welabs."
-              : en
-                ? "Context, people"
-                : "Contexto, pessoas"}
+            {en ? "We are Welabs." : "Somos a Welabs."}
             <br />
-            <span>
-              {we
-                ? en
-                  ? "We build products."
-                  : "Criamos produtos."
-                : en
-                  ? "and the next step."
-                  : "e o próximo passo."}
-            </span>
+            <span>{en ? "We build products." : "Criamos produtos."}</span>
           </h1>
           <p className={styles.deck}>
-            {we
-              ? en
-                ? "Our company builds its own products to connect management, knowledge, relationships and automation."
-                : "Nossa empresa desenvolve produtos próprios para conectar gestão, conhecimento, relacionamento e automação."
-              : en
-                ? "We work on digital experiences shaped around the operation and the people using them."
-                : "Trabalhamos em experiências digitais pensadas a partir da operação e das pessoas que as utilizam."}
+            {en
+              ? "Our company builds its own products to connect management, knowledge, relationships and automation."
+              : "Nossa empresa desenvolve produtos próprios para conectar gestão, conhecimento, relacionamento e automação."}
           </p>
         </div>
       </section>
@@ -678,10 +316,7 @@ export function CompanyAbout({
               </p>
             </div>
           </div>
-          <Link
-            className={styles.textLink}
-            href={we ? "/welabs/produtos" : "/portfolio"}
-          >
+          <Link className={styles.textLink} href="/produtos">
             {en ? "Explore product contexts" : "Conhecer contextos de produto"}{" "}
             ↗
           </Link>
@@ -690,7 +325,7 @@ export function CompanyAbout({
               {en ? "PRODUCT CONTEXTS" : "CONTEXTOS DE PRODUTO"}
             </span>
             <div className={styles.grid}>
-              {(we ? ["wekb", "welabs-crm"] : ["stant", "sgors"]).map((id) => (
+              {["wekb", "welabs-crm"].map((id) => (
                 <ProductCard
                   key={id}
                   item={catalog.find((p) => p.id === id)!}
@@ -701,18 +336,12 @@ export function CompanyAbout({
           </div>
         </div>
       </section>
-      {!we && <CtaSection formId="about-contact" />}
     </div>
   );
 }
-export function SolutionsPage({
-  publisher = "Imagine",
-}: {
-  publisher?: Publisher;
-}) {
+export function SolutionsPage() {
   const { lang } = useT();
-  const en = lang === "en",
-    we = publisher === "Welabs";
+  const en = lang === "en";
   const solutions = [
     [
       "erp",
@@ -744,96 +373,68 @@ export function SolutionsPage({
     <div className={styles.site}>
       <section className={`${styles.hero} ${styles.editorialHero}`}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>
-            {we
-              ? "WELABS"
-              : en
-                ? "IMAGINE / OUR APPROACH"
-                : "IMAGINE / ATUAÇÃO"}
-          </span>
+          <span className={styles.eyebrow}>WELABS</span>
           <h1>
-            {we
-              ? en
-                ? "Different needs."
-                : "Necessidades diferentes."
-              : en
-                ? "What we do."
-                : "O que fazemos."}
+            {en ? "Different needs." : "Necessidades diferentes."}
             <br />
             <span>
-              {we
-                ? en
-                  ? "Products with context."
-                  : "Produtos com contexto."
-                : en
-                  ? "And how we work."
-                  : "E como atuamos."}
+              {en ? "Products with context." : "Produtos com contexto."}
             </span>
           </h1>
           <p className={styles.deck}>
-            {we
-              ? en
-                ? "Find the product context that matches your team’s work."
-                : "Encontre o contexto de produto que se aproxima do trabalho da sua equipe."
-              : en
-                ? "Integration, applied AI, custom software, service channels and infrastructure: five fronts that meet in the same operation, from the first conversation to the product in use."
-                : "Integração, IA aplicada, software sob medida, canais de atendimento e infraestrutura: cinco frentes que se encontram na mesma operação, da primeira conversa ao produto em uso."}
+            {en
+              ? "Find the product context that matches your team’s work."
+              : "Encontre o contexto de produto que se aproxima do trabalho da sua equipe."}
           </p>
         </div>
       </section>
       <section className={styles.section}>
         <div className={styles.container}>
-          {we ? (
-            <div className={styles.solutionList}>
-              {solutions.map(([id, title, copy], i) => {
-                const item = catalog.find((p) => p.id === id)!;
-                // Domus, the domain hub (first), feeds every other product: one thread reaches each of them.
-                return (
-                  <article
-                    key={id}
-                    data-reveal=""
-                    data-thread={i === 0 ? "hub" : undefined}
-                    data-thread-to={i === 0 ? undefined : "hub"}
-                  >
-                    <span className={styles.solutionNumber}>0{i + 1}</span>
-                    <div>
-                      <span className={styles.small}>
-                        {item.productName} /{" "}
-                        {item.maturity === "alpha"
-                          ? "Alpha"
-                          : en
-                            ? "In development"
-                            : "Em desenvolvimento"}
-                      </span>
-                      <h2>{title}</h2>
-                      <p>{copy}</p>
-                    </div>
-                    <Link
-                      className={styles.textLink}
-                      href={`/welabs/produtos/${publicSlug(id)}`}
-                    >
-                      {en ? "Explore" : "Conhecer"} {item.productName} ↗
-                    </Link>
-                  </article>
-                );
-              })}
-            </div>
-          ) : (
-            <ImagineApproach en={en} />
-          )}
+          <div className={styles.solutionList}>
+            {solutions.map(([id, title, copy], i) => {
+              const item = catalog.find((p) => p.id === id)!;
+              // Domus, the domain hub (first), feeds every other product: one thread reaches each of them.
+              return (
+                <article
+                  key={id}
+                  data-reveal=""
+                  data-thread={i === 0 ? "hub" : undefined}
+                  data-thread-to={i === 0 ? undefined : "hub"}
+                >
+                  <span className={styles.solutionNumber}>0{i + 1}</span>
+                  <div>
+                    <span className={styles.small}>
+                      {item.productName} /{" "}
+                      {item.maturity === "alpha"
+                        ? "Alpha"
+                        : en
+                          ? "In development"
+                          : "Em desenvolvimento"}
+                    </span>
+                    <h2>{title}</h2>
+                    <p>{copy}</p>
+                  </div>
+                  <Link className={styles.textLink} href={productHref(id)}>
+                    {en ? "Explore" : "Conhecer"} {item.productName} ↗
+                  </Link>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </section>
-      {!we && <CtaSection formId="services-contact" />}
     </div>
   );
 }
+// HOME DA WELABS
+// The company opening, the product ecosystem (catalog and film-only products) and the platform films.
 export function WelabsHome() {
   const { lang } = useT();
   const en = lang === "en",
     locale = localeFor(lang);
   return (
     <div className={styles.site}>
-      <CompanyHero publisher="Welabs" locale={locale} />
+      <CompanyHero locale={locale} />
       <section className={styles.section}>
         <div className={styles.container}>
           <span className={styles.eyebrow}>
@@ -845,8 +446,7 @@ export function WelabsHome() {
             {en ? "The same company." : "A mesma empresa."}
           </h2>
           <div className={styles.grid}>
-            {catalog
-              .filter((p) => p.publisher === "Welabs")
+            {[...catalog]
               .sort(
                 (a, b) =>
                   emphasis.welabs.indexOf(a.id) - emphasis.welabs.indexOf(b.id),
@@ -860,7 +460,7 @@ export function WelabsHome() {
                 />
               ))}
           </div>
-          <MotionProductGrid en={en} publisher="Welabs" />
+          <MotionProductGrid en={en} />
           <p className={styles.note}>
             {en
               ? "Stages and illustrative data are identified for each product."
@@ -891,7 +491,7 @@ export function WelabsHome() {
               ? "We develop our own products for management, knowledge, relationships and automation, preserving the context of each operation."
               : "Desenvolvemos nossos próprios produtos para gestão, conhecimento, relacionamento e automação, preservando o contexto de cada operação."}
           </p>
-          <Link className={styles.textLink} href="/welabs/solucoes">
+          <Link className={styles.textLink} href="/solucoes">
             {en ? "Explore solutions" : "Explorar soluções"} ↗
           </Link>
         </div>
@@ -900,79 +500,11 @@ export function WelabsHome() {
   );
 }
 
-// ATUAÇÃO DA IMAGINE
-// What we do and how we work, told with reveals, threads, counters and steps; no film here
-// (films live only in the portfolio). Figures are counted from the site's own data.
-function ImagineApproach({ en }: { en: boolean }) {
-  const systems =
-    catalog.filter(
-      (p) => p.publisher === "Imagine" && p.status === "selecionado",
-    ).length +
-    motionProducts.filter((p) => p.publisher === "Imagine" && coverFilm(p.id))
-      .length;
-  return (
-    <>
-      <FactCounters en={en} systems={systems} />
-      <div className={styles.related}>
-        <div data-reveal="">
-          <span className={styles.eyebrow}>
-            {en ? "WHAT WE DO" : "O QUE FAZEMOS"}
-          </span>
-          <h2>
-            {en ? "Five fronts," : "Cinco frentes,"}
-            <br />
-            {en ? "one operation." : "uma operação."}
-          </h2>
-        </div>
-        <KnowHowList en={en} detailed />
-      </div>
-      <div className={styles.related}>
-        <div data-reveal="">
-          <span className={styles.eyebrow}>
-            {en ? "HOW WE WORK" : "COMO ATUAMOS"}
-          </span>
-          <h2>
-            {en ? "Context comes first." : "O contexto vem primeiro."}
-            <br />
-            {en ? "Then, short steps." : "Depois, passos curtos."}
-          </h2>
-        </div>
-        <WorkSteps en={en} />
-      </div>
-      <div className={styles.servicesClosing} data-reveal="">
-        <span className={styles.eyebrow}>
-          {en ? "SEE IT APPLIED" : "VEJA APLICADO"}
-        </span>
-        <p>
-          {en
-            ? "The portfolio shows these fronts at work in real product contexts, with films and illustrative data."
-            : "O portfólio mostra essas frentes trabalhando em contextos de produto, com filmes e dados ilustrativos."}
-        </p>
-        <Link className={styles.textLink} href="/portfolio">
-          {en ? "Explore the portfolio" : "Explorar o portfólio"} ↗
-        </Link>
-      </div>
-    </>
-  );
-}
-
 // PRODUTOS APRESENTADOS SÓ POR FILME
-// Products without a legacy framepack (IUS; Tuner on Welabs) get a film-only card and page, linked by public slug.
+// Products without a catalog entry (Tuner) get a film-only card and page, linked by public slug.
 type MotionProduct = (typeof motionProducts)[number];
-const motionHref = (p: MotionProduct) =>
-  p.publisher === "Welabs"
-    ? `/welabs/produtos/${publicSlug(p.id)}`
-    : `/portfolio/${publicSlug(p.id)}`;
-function MotionProductGrid({
-  en,
-  publisher = "Imagine",
-}: {
-  en: boolean;
-  publisher?: Publisher;
-}) {
-  const items = motionProducts.filter(
-    (p) => p.publisher === publisher && coverFilm(p.id),
-  );
+function MotionProductGrid({ en }: { en: boolean }) {
+  const items = motionProducts.filter((p) => coverFilm(p.id));
   if (!items.length) return null;
   return (
     <section className={styles.related}>
@@ -982,7 +514,7 @@ function MotionProductGrid({
       <div className={styles.grid}>
         {items.map((p) => (
           <article key={p.id} className={styles.card} data-reveal="">
-            <Link className={styles.visual} href={motionHref(p)}>
+            <Link className={styles.visual} href={productHref(p.id)}>
               <img
                 src={posterSrc(coverFilm(p.id, p.publisher)!)}
                 alt=""
@@ -998,7 +530,7 @@ function MotionProductGrid({
                 {en ? p.stage[1] : p.stage[0]}
               </span>
               <h2>
-                <Link href={motionHref(p)}>{p.title}</Link>
+                <Link href={productHref(p.id)}>{p.title}</Link>
               </h2>
               <p>{en ? p.summary[1] : p.summary[0]}</p>
             </div>
@@ -1011,7 +543,6 @@ function MotionProductGrid({
 export function MotionProductPage({ product }: { product: MotionProduct }) {
   const { lang } = useT();
   const en = lang === "en";
-  const we = product.publisher === "Welabs";
   // An approved reel shows as one ordered gallery; otherwise overview and journey films stack.
   const reel = reelFilms(product.id);
   const overview = filmFor(product.id, "business");
@@ -1021,18 +552,8 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
       <section className={`${styles.hero} ${styles.productHero}`}>
         <div className={styles.container}>
           <div className={styles.productCrumb}>
-            <Link
-              className={styles.small}
-              href={we ? "/welabs/produtos" : "/portfolio"}
-            >
-              ←{" "}
-              {we
-                ? en
-                  ? "Welabs products"
-                  : "Produtos Welabs"
-                : en
-                  ? "Portfolio"
-                  : "Portfólio"}
+            <Link className={styles.small} href="/produtos">
+              ← {en ? "Welabs products" : "Produtos Welabs"}
             </Link>
             <span className={styles.stageBadge}>
               {en ? product.stage[1] : product.stage[0]}
@@ -1043,32 +564,25 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
               <span className={styles.eyebrow}>
                 {product.publisher} / {en ? "PRODUCT" : "PRODUTO"}
               </span>
-              {"logo" in product && typeof product.logo === "string" ? (
-                <h1 className={styles.logoTitle}>
-                  {/* Plate follows `logoPlate`; a Welabs product logo (Tuner) carries its own plate, sized by height */}
-                  <span
-                    className={`${styles.heroLogo} ${product.publisher === "Welabs" ? styles.ownPlateLogo : "logoPlate" in product && product.logoPlate === "dark" ? styles.darkLogo : styles.lightLogo}`}
-                    // Tuner's wordmark has its own clear zone (no symbol), so it overrides the shared ratio
-                    style={
-                      "logoClearZone" in product &&
-                      typeof product.logoClearZone === "number"
-                        ? ({
-                            "--logo-clear-zone": product.logoClearZone,
-                          } as React.CSSProperties)
-                        : undefined
-                    }
-                  >
-                    <img
-                      src={product.logo}
-                      alt={product.title}
-                      width="360"
-                      height="120"
-                    />
-                  </span>
-                </h1>
-              ) : (
-                <h1 className={styles.compactTitle}>{product.title}</h1>
-              )}
+              <h1 className={styles.logoTitle}>
+                {/* A Welabs product logo (Tuner) carries its own plate, sized by height */}
+                <span
+                  className={`${styles.heroLogo} ${styles.ownPlateLogo}`}
+                  // Tuner's wordmark has its own clear zone (no symbol), so it overrides the shared ratio
+                  style={
+                    {
+                      "--logo-clear-zone": product.logoClearZone,
+                    } as React.CSSProperties
+                  }
+                >
+                  <img
+                    src={product.logo}
+                    alt={product.title}
+                    width="360"
+                    height="120"
+                  />
+                </span>
+              </h1>
               <p className={styles.productSummary}>
                 {en ? product.summary[1] : product.summary[0]}
               </p>
@@ -1110,18 +624,14 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
           )}
         </div>
       </section>
-      {we ? (
-        <div className={`${styles.container} ${styles.closing}`}>
-          <Link className={styles.textLink} href="/welabs/produtos">
-            {en
-              ? "Explore the Welabs ecosystem"
-              : "Explorar o ecossistema Welabs"}{" "}
-            ↗
-          </Link>
-        </div>
-      ) : (
-        <CtaSection formId={`case-${product.id}`} />
-      )}
+      <div className={`${styles.container} ${styles.closing}`}>
+        <Link className={styles.textLink} href="/produtos">
+          {en
+            ? "Explore the Welabs ecosystem"
+            : "Explorar o ecossistema Welabs"}{" "}
+          ↗
+        </Link>
+      </div>
     </div>
   );
 }

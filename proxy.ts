@@ -1,16 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
-// RETIRADA DE PACOTES LEGADOS
-// Legacy packs that cite a client agency, an internal codename, a retired product name or a retired
-// product are not served over HTTP; product pages still read their manifest from disk on the server.
-// flow joined on 2026-10-06: its pack names the product "Flow", now Magneto.
-const packs =
-  "malupe|autoinfracao|sgors|kiosk-brands|sgici|erp|wekb|welabs-crm|flow";
-const retired = new RegExp(
-  `^/(presentations/(${packs})/|presentation-downloads/(${packs})-\\d|apresentacoes/(${packs})(/|$))`,
-);
+// IDIOMA NA RENDERIZAÇÃO DO SERVIDOR
+// Passes ?lang=en to the root layout so the first paint already has the right <html lang>.
+// The legacy presentation packs it used to block left the repository with the split of 2026-10-07.
 export function proxy(request: NextRequest) {
-  if (retired.test(request.nextUrl.pathname))
-    return new NextResponse(null, { status: 404 });
   const headers = new Headers(request.headers);
   headers.set(
     "x-portfolio-language",
@@ -19,15 +11,5 @@ export function proxy(request: NextRequest) {
   return NextResponse.next({ request: { headers } });
 }
 export const config = {
-  matcher: [
-    "/",
-    "/sobre",
-    "/servicos",
-    "/portfolio/:path*",
-    "/welabs/:path*",
-    "/apresentacoes/:path*",
-    "/portfolio-preview/:path*",
-    "/presentations/:path*",
-    "/presentation-downloads/:path*",
-  ],
+  matcher: ["/", "/sobre", "/solucoes", "/produtos/:path*"],
 };
