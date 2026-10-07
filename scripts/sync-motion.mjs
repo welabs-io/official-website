@@ -42,10 +42,11 @@ const RUNTIME_ENTRIES = [
 const isRootStyle = (name) => name.endsWith(".css");
 
 // JORNADAS DA PRIMEIRA RODADA
-// Round 20261001 journeys this site publishes: only the Tuner pieces. The other Welabs journeys were
+// Round 20261001 journeys this site publishes: only the Tuner SDK piece. The other Welabs journeys were
 // superseded by the per-product reels below (wemalupe also shows an internal codename), and the Imagine
-// journeys belong to the Imagine site since the split of 2026-10-07.
-const SITE_JOURNEYS = new Set(["channels-product", "channels-sdk"]);
+// journeys belong to the Imagine site since the split of 2026-10-07. channels-product left on 2026-10-07:
+// it still says "Channels" and has no intro (its clean cut was not accepted for the site).
+const SITE_JOURNEYS = new Set(["channels-sdk"]);
 
 // Round 20261002 pieces, bound to the coordinator's accepted hash.
 const round2 = resolve(
@@ -72,28 +73,28 @@ const ROUND2 = {
   // The svc-* pieces left on 2026-10-04: they cite "ERP" as a node or the word "cliente".
   // Operator decision of 2026-10-07: the site publishes only the playful cuts, each with its brand intro (the
   // selection of the Projection Room, publish/index.html); feature cuts stay off the site. Welabs films open
-  // with welabs-intro-v5 (final brand pack of 2026-10-07: every product label and the closing Welabs logo play
-  // the official motion of the brand package; only Domus keeps a symbol beside its name).
-  "welabs-chain-overview-intro-v5": {
+  // with welabs-intro-v6, the Room's current intro (it replaced welabs-intro-v5 on 2026-10-07). Monitoramento
+  // shows the playful mon-*-ludic cuts; the mon-*-clean cuts belong to the feature line and stay off the site.
+  "welabs-chain-overview-intro-v6": {
     kind: "topology",
     page: "welabs",
     // Retitled on 2026-10-05: the playful cut shows the products fitting together, not an integration map
     title: "Plataforma Welabs · Os produtos se encaixam",
     ...KNOWHOW,
   },
-  "welabs-chain-journey-intro-v5": {
+  "welabs-chain-journey-intro-v6": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Jornada",
     ...KNOWHOW,
   },
-  "welabs-chain-plug-intro-v5": {
+  "welabs-chain-plug-intro-v6": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Encaixe",
     ...KNOWHOW,
   },
-  "welabs-chain-horizon-intro-v5": {
+  "welabs-chain-horizon-intro-v6": {
     kind: "topology",
     page: "welabs",
     // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap;
@@ -101,106 +102,107 @@ const ROUND2 = {
     title: "Plataforma Welabs · Pontes",
     ...KNOWHOW,
   },
-  "flow-canvas-build-intro-v5": reel(
+  "flow-canvas-build-intro-v6": reel(
     "flow",
     "Magneto · Montar o fluxo",
     "business",
     KNOWHOW,
   ),
-  "flow-durable-run-intro-v5": reel(
+  "flow-durable-run-intro-v6": reel(
     "flow",
     "Magneto · Execução durável",
     "business",
     KNOWHOW,
   ),
-  "flow-lifecycle-intro-v5": reel(
+  "flow-lifecycle-intro-v6": reel(
     "flow",
     "Magneto · Ciclo de vida",
     "business",
     KNOWHOW,
   ),
-  "flow-copilot-intro-v5": reel(
+  "flow-copilot-intro-v6": reel(
     "flow",
     "Magneto · Copiloto",
     "business",
     KNOWHOW,
   ),
-  "crm-omnichannel-inbox-ludic2-intro-v5": reel(
+  "crm-omnichannel-inbox-ludic2-intro-v6": reel(
     "welabs-crm",
     "Relloo · Atendimento",
   ),
-  "crm-agent-studio-ludic2-intro-v5": reel("welabs-crm", "Relloo · Agentes"),
-  "crm-flow-builder-ludic2-intro-v5": reel("welabs-crm", "Relloo · Automações"),
-  "crm-campaigns-journey-ludic2-intro-v5": reel(
+  "crm-agent-studio-ludic2-intro-v6": reel("welabs-crm", "Relloo · Agentes"),
+  "crm-flow-builder-ludic2-intro-v6": reel("welabs-crm", "Relloo · Automações"),
+  "crm-campaigns-journey-ludic2-intro-v6": reel(
     "welabs-crm",
     "Relloo · Campanhas e fidelização",
     "journey",
   ),
-  "hub-dominio-spa-ludic-intro-v5": reel(
+  "hub-dominio-spa-ludic-intro-v6": reel(
     "erp",
     "Domus · Tudo numa casa só",
     "business",
     KNOWHOW,
   ),
-  "hub-fiscal-br-ludic-intro-v5": reel(
+  "hub-fiscal-br-ludic-intro-v6": reel(
     "erp",
     "Domus · Fiscal sem retrabalho",
     "business",
     KNOWHOW,
   ),
-  "hub-concessoes-ludic-intro-v5": reel(
+  "hub-concessoes-ludic-intro-v6": reel(
     "erp",
     "Domus · Só o que foi liberado",
     "business",
     KNOWHOW,
   ),
-  "kb-ask-with-proof-ludic-intro-v5": reel(
+  "kb-ask-with-proof-ludic-intro-v6": reel(
     "wekb",
     "Knowly · Some a resposta sem prova",
     "business",
     KNOWHOW,
   ),
-  "kb-sources-to-knowledge-ludic-intro-v5": reel(
+  "kb-sources-to-knowledge-ludic-intro-v6": reel(
     "wekb",
     "Knowly · Some o conhecimento espalhado",
     "business",
     KNOWHOW,
   ),
-  "kb-who-reads-what-ludic-intro-v5": reel(
+  "kb-who-reads-what-ludic-intro-v6": reel(
     "wekb",
     "Knowly · Some o medo de mostrar demais",
     "business",
     KNOWHOW,
   ),
-  "channels-one-contract-ludic-intro-v5": reel(
+  "channels-one-contract-ludic-intro-v6": reel(
     "channels",
     "Tuner · Some o canal espalhado",
     "business",
     KNOWHOW,
   ),
-  "channels-call-center-ludic-intro-v5": reel(
+  "channels-call-center-ludic-intro-v6": reel(
     "channels",
     "Tuner · Some o “pode repetir?”",
     "business",
     KNOWHOW,
   ),
-  "channels-whatsapp-official-ludic-intro-v5": reel(
+  "channels-whatsapp-official-ludic-intro-v6": reel(
     "channels",
     "Tuner · Some a conversa perdida",
     "business",
     KNOWHOW,
   ),
-  "mon-occurrence-desk-intro-v5": reel(
+  // Playful Monitoramento cuts since 2026-10-07, titled as in the Projection Room
+  "mon-occurrence-desk-ludic-intro-v6": reel(
     "malupe",
-    "Ecossistema Monitoramento · Mesa de ocorrências",
+    "Ecossistema Monitoramento · Some o alerta sem dono",
   ),
-  "mon-edge-survives-intro-v5": reel(
+  "mon-edge-survives-ludic-intro-v6": reel(
     "malupe",
-    "Ecossistema Monitoramento · O site não para",
+    "Ecossistema Monitoramento · Some o ponto cego quando a internet cai",
   ),
-  "mon-camera-to-case-intro-v5": reel(
+  "mon-camera-to-case-ludic-intro-v6": reel(
     "malupe",
-    "Ecossistema Monitoramento · Da câmera ao caso",
+    "Ecossistema Monitoramento · Some a câmera que só grava",
   ),
   // The Imagine reels (Tabe.la, Stant, WeGO, Resíduos, IUS, Central ESG) moved to the Imagine site on 2026-10-07.
 };

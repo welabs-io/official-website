@@ -1,18 +1,5 @@
 [
   {
-    "id": "channels-product",
-    "title": "Tuner · Produto hospedado",
-    "duration": 16,
-    "compositionId": "channels-product",
-    "src": "/motion/channels-product/index.html",
-    "kind": "journey",
-    "page": null,
-    "product": "channels-product",
-    "reel": false,
-    "also": [],
-    "presentationSlug": null
-  },
-  {
     "id": "channels-sdk",
     "title": "Tuner · SDK",
     "duration": 16,
@@ -26,11 +13,11 @@
     "presentationSlug": null
   },
   {
-    "id": "welabs-chain-overview-intro-v5",
+    "id": "welabs-chain-overview-intro-v6",
     "title": "Plataforma Welabs · Os produtos se encaixam",
     "duration": 43,
-    "compositionId": "welabs-chain-overview-intro-v5",
-    "src": "/motion/welabs-chain-overview-intro-v5/index.html",
+    "compositionId": "welabs-chain-overview-intro-v6",
+    "src": "/motion/welabs-chain-overview-intro-v6/index.html",
     "kind": "topology",
     "page": "welabs",
     "product": null,
@@ -39,11 +26,11 @@
     "presentationSlug": null
   },
   {
-    "id": "welabs-chain-journey-intro-v5",
+    "id": "welabs-chain-journey-intro-v6",
     "title": "Plataforma Welabs · Jornada",
     "duration": 53,
-    "compositionId": "welabs-chain-journey-intro-v5",
-    "src": "/motion/welabs-chain-journey-intro-v5/index.html",
+    "compositionId": "welabs-chain-journey-intro-v6",
+    "src": "/motion/welabs-chain-journey-intro-v6/index.html",
     "kind": "topology",
     "page": "welabs",
     "product": null,
@@ -52,11 +39,11 @@
     "presentationSlug": null
   },
   {
-    "id": "welabs-chain-plug-intro-v5",
+    "id": "welabs-chain-plug-intro-v6",
     "title": "Plataforma Welabs · Encaixe",
     "duration": 45,
-    "compositionId": "welabs-chain-plug-intro-v5",
-    "src": "/motion/welabs-chain-plug-intro-v5/index.html",
+    "compositionId": "welabs-chain-plug-intro-v6",
+    "src": "/motion/welabs-chain-plug-intro-v6/index.html",
     "kind": "topology",
     "page": "welabs",
     "product": null,
@@ -65,11 +52,11 @@
     "presentationSlug": null
   },
   {
-    "id": "welabs-chain-horizon-intro-v5",
+    "id": "welabs-chain-horizon-intro-v6",
     "title": "Plataforma Welabs · Pontes",
     "duration": 45,
-    "compositionId": "welabs-chain-horizon-intro-v5",
-    "src": "/motion/welabs-chain-horizon-intro-v5/index.html",
+    "compositionId": "welabs-chain-horizon-intro-v6",
+    "src": "/motion/welabs-chain-horizon-intro-v6/index.html",
     "kind": "topology",
     "page": "welabs",
     "product": null,
@@ -78,11 +65,11 @@
     "presentationSlug": null
   },
   {
-    "id": "flow-canvas-build-intro-v5",
+    "id": "flow-canvas-build-intro-v6",
     "title": "Magneto · Montar o fluxo",
     "duration": 40,
-    "compositionId": "flow-canvas-build-intro-v5",
-    "src": "/motion/flow-canvas-build-intro-v5/index.html",
+    "compositionId": "flow-canvas-build-intro-v6",
+    "src": "/motion/flow-canvas-build-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "flow",
@@ -91,11 +78,11 @@
     "presentationSlug": null
   },
   {
-    "id": "flow-durable-run-intro-v5",
+    "id": "flow-durable-run-intro-v6",
     "title": "Magneto · Execução durável",
     "duration": 43,
-    "compositionId": "flow-durable-run-intro-v5",
-    "src": "/motion/flow-durable-run-intro-v5/index.html",
+    "compositionId": "flow-durable-run-intro-v6",
+    "src": "/motion/flow-durable-run-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "flow",
@@ -104,11 +91,11 @@
     "presentationSlug": null
   },
   {
-    "id": "flow-lifecycle-intro-v5",
+    "id": "flow-lifecycle-intro-v6",
     "title": "Magneto · Ciclo de vida",
     "duration": 44,
-    "compositionId": "flow-lifecycle-intro-v5",
-    "src": "/motion/flow-lifecycle-intro-v5/index.html",
+    "compositionId": "flow-lifecycle-intro-v6",
+    "src": "/motion/flow-lifecycle-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "flow",
@@ -117,11 +104,11 @@
     "presentationSlug": null
   },
   {
-    "id": "flow-copilot-intro-v5",
+    "id": "flow-copilot-intro-v6",
     "title": "Magneto · Copiloto",
     "duration": 41,
-    "compositionId": "flow-copilot-intro-v5",
-    "src": "/motion/flow-copilot-intro-v5/index.html",
+    "compositionId": "flow-copilot-intro-v6",
+    "src": "/motion/flow-copilot-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "flow",
@@ -130,11 +117,11 @@
     "presentationSlug": null
   },
   {
-    "id": "crm-omnichannel-inbox-ludic2-intro-v5",
+    "id": "crm-omnichannel-inbox-ludic2-intro-v6",
     "title": "Relloo · Atendimento",
     "duration": 54,
-    "compositionId": "crm-omnichannel-inbox-ludic2-intro-v5",
-    "src": "/motion/crm-omnichannel-inbox-ludic2-intro-v5/index.html",
+    "compositionId": "crm-omnichannel-inbox-ludic2-intro-v6",
+    "src": "/motion/crm-omnichannel-inbox-ludic2-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "welabs-crm",
@@ -143,11 +130,11 @@
     "presentationSlug": null
   },
   {
-    "id": "crm-agent-studio-ludic2-intro-v5",
+    "id": "crm-agent-studio-ludic2-intro-v6",
     "title": "Relloo · Agentes",
     "duration": 55,
-    "compositionId": "crm-agent-studio-ludic2-intro-v5",
-    "src": "/motion/crm-agent-studio-ludic2-intro-v5/index.html",
+    "compositionId": "crm-agent-studio-ludic2-intro-v6",
+    "src": "/motion/crm-agent-studio-ludic2-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "welabs-crm",
@@ -156,11 +143,11 @@
     "presentationSlug": null
   },
   {
-    "id": "crm-flow-builder-ludic2-intro-v5",
+    "id": "crm-flow-builder-ludic2-intro-v6",
     "title": "Relloo · Automações",
     "duration": 48,
-    "compositionId": "crm-flow-builder-ludic2-intro-v5",
-    "src": "/motion/crm-flow-builder-ludic2-intro-v5/index.html",
+    "compositionId": "crm-flow-builder-ludic2-intro-v6",
+    "src": "/motion/crm-flow-builder-ludic2-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "welabs-crm",
@@ -169,11 +156,11 @@
     "presentationSlug": null
   },
   {
-    "id": "crm-campaigns-journey-ludic2-intro-v5",
+    "id": "crm-campaigns-journey-ludic2-intro-v6",
     "title": "Relloo · Campanhas e fidelização",
     "duration": 55,
-    "compositionId": "crm-campaigns-journey-ludic2-intro-v5",
-    "src": "/motion/crm-campaigns-journey-ludic2-intro-v5/index.html",
+    "compositionId": "crm-campaigns-journey-ludic2-intro-v6",
+    "src": "/motion/crm-campaigns-journey-ludic2-intro-v6/index.html",
     "kind": "journey",
     "page": null,
     "product": "welabs-crm",
@@ -182,11 +169,11 @@
     "presentationSlug": null
   },
   {
-    "id": "hub-dominio-spa-ludic-intro-v5",
+    "id": "hub-dominio-spa-ludic-intro-v6",
     "title": "Domus · Tudo numa casa só",
     "duration": 43,
-    "compositionId": "hub-dominio-spa-ludic-intro-v5",
-    "src": "/motion/hub-dominio-spa-ludic-intro-v5/index.html",
+    "compositionId": "hub-dominio-spa-ludic-intro-v6",
+    "src": "/motion/hub-dominio-spa-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "erp",
@@ -195,11 +182,11 @@
     "presentationSlug": null
   },
   {
-    "id": "hub-fiscal-br-ludic-intro-v5",
+    "id": "hub-fiscal-br-ludic-intro-v6",
     "title": "Domus · Fiscal sem retrabalho",
     "duration": 53,
-    "compositionId": "hub-fiscal-br-ludic-intro-v5",
-    "src": "/motion/hub-fiscal-br-ludic-intro-v5/index.html",
+    "compositionId": "hub-fiscal-br-ludic-intro-v6",
+    "src": "/motion/hub-fiscal-br-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "erp",
@@ -208,11 +195,11 @@
     "presentationSlug": null
   },
   {
-    "id": "hub-concessoes-ludic-intro-v5",
+    "id": "hub-concessoes-ludic-intro-v6",
     "title": "Domus · Só o que foi liberado",
     "duration": 45,
-    "compositionId": "hub-concessoes-ludic-intro-v5",
-    "src": "/motion/hub-concessoes-ludic-intro-v5/index.html",
+    "compositionId": "hub-concessoes-ludic-intro-v6",
+    "src": "/motion/hub-concessoes-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "erp",
@@ -221,11 +208,11 @@
     "presentationSlug": null
   },
   {
-    "id": "kb-ask-with-proof-ludic-intro-v5",
+    "id": "kb-ask-with-proof-ludic-intro-v6",
     "title": "Knowly · Some a resposta sem prova",
     "duration": 43,
-    "compositionId": "kb-ask-with-proof-ludic-intro-v5",
-    "src": "/motion/kb-ask-with-proof-ludic-intro-v5/index.html",
+    "compositionId": "kb-ask-with-proof-ludic-intro-v6",
+    "src": "/motion/kb-ask-with-proof-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "wekb",
@@ -234,11 +221,11 @@
     "presentationSlug": null
   },
   {
-    "id": "kb-sources-to-knowledge-ludic-intro-v5",
+    "id": "kb-sources-to-knowledge-ludic-intro-v6",
     "title": "Knowly · Some o conhecimento espalhado",
     "duration": 43,
-    "compositionId": "kb-sources-to-knowledge-ludic-intro-v5",
-    "src": "/motion/kb-sources-to-knowledge-ludic-intro-v5/index.html",
+    "compositionId": "kb-sources-to-knowledge-ludic-intro-v6",
+    "src": "/motion/kb-sources-to-knowledge-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "wekb",
@@ -247,11 +234,11 @@
     "presentationSlug": null
   },
   {
-    "id": "kb-who-reads-what-ludic-intro-v5",
+    "id": "kb-who-reads-what-ludic-intro-v6",
     "title": "Knowly · Some o medo de mostrar demais",
     "duration": 43,
-    "compositionId": "kb-who-reads-what-ludic-intro-v5",
-    "src": "/motion/kb-who-reads-what-ludic-intro-v5/index.html",
+    "compositionId": "kb-who-reads-what-ludic-intro-v6",
+    "src": "/motion/kb-who-reads-what-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "wekb",
@@ -260,11 +247,11 @@
     "presentationSlug": null
   },
   {
-    "id": "channels-one-contract-ludic-intro-v5",
+    "id": "channels-one-contract-ludic-intro-v6",
     "title": "Tuner · Some o canal espalhado",
     "duration": 45,
-    "compositionId": "channels-one-contract-ludic-intro-v5",
-    "src": "/motion/channels-one-contract-ludic-intro-v5/index.html",
+    "compositionId": "channels-one-contract-ludic-intro-v6",
+    "src": "/motion/channels-one-contract-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "channels",
@@ -273,11 +260,11 @@
     "presentationSlug": null
   },
   {
-    "id": "channels-call-center-ludic-intro-v5",
+    "id": "channels-call-center-ludic-intro-v6",
     "title": "Tuner · Some o “pode repetir?”",
     "duration": 45,
-    "compositionId": "channels-call-center-ludic-intro-v5",
-    "src": "/motion/channels-call-center-ludic-intro-v5/index.html",
+    "compositionId": "channels-call-center-ludic-intro-v6",
+    "src": "/motion/channels-call-center-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "channels",
@@ -286,11 +273,11 @@
     "presentationSlug": null
   },
   {
-    "id": "channels-whatsapp-official-ludic-intro-v5",
+    "id": "channels-whatsapp-official-ludic-intro-v6",
     "title": "Tuner · Some a conversa perdida",
     "duration": 43,
-    "compositionId": "channels-whatsapp-official-ludic-intro-v5",
-    "src": "/motion/channels-whatsapp-official-ludic-intro-v5/index.html",
+    "compositionId": "channels-whatsapp-official-ludic-intro-v6",
+    "src": "/motion/channels-whatsapp-official-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "channels",
@@ -299,11 +286,11 @@
     "presentationSlug": null
   },
   {
-    "id": "mon-occurrence-desk-intro-v5",
-    "title": "Ecossistema Monitoramento · Mesa de ocorrências",
-    "duration": 53,
-    "compositionId": "mon-occurrence-desk-intro-v5",
-    "src": "/motion/mon-occurrence-desk-intro-v5/index.html",
+    "id": "mon-occurrence-desk-ludic-intro-v6",
+    "title": "Ecossistema Monitoramento · Some o alerta sem dono",
+    "duration": 45,
+    "compositionId": "mon-occurrence-desk-ludic-intro-v6",
+    "src": "/motion/mon-occurrence-desk-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "malupe",
@@ -312,11 +299,11 @@
     "presentationSlug": null
   },
   {
-    "id": "mon-edge-survives-intro-v5",
-    "title": "Ecossistema Monitoramento · O site não para",
-    "duration": 43,
-    "compositionId": "mon-edge-survives-intro-v5",
-    "src": "/motion/mon-edge-survives-intro-v5/index.html",
+    "id": "mon-edge-survives-ludic-intro-v6",
+    "title": "Ecossistema Monitoramento · Some o ponto cego quando a internet cai",
+    "duration": 45,
+    "compositionId": "mon-edge-survives-ludic-intro-v6",
+    "src": "/motion/mon-edge-survives-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "malupe",
@@ -325,11 +312,11 @@
     "presentationSlug": null
   },
   {
-    "id": "mon-camera-to-case-intro-v5",
-    "title": "Ecossistema Monitoramento · Da câmera ao caso",
-    "duration": 41,
-    "compositionId": "mon-camera-to-case-intro-v5",
-    "src": "/motion/mon-camera-to-case-intro-v5/index.html",
+    "id": "mon-camera-to-case-ludic-intro-v6",
+    "title": "Ecossistema Monitoramento · Some a câmera que só grava",
+    "duration": 45,
+    "compositionId": "mon-camera-to-case-ludic-intro-v6",
+    "src": "/motion/mon-camera-to-case-ludic-intro-v6/index.html",
     "kind": "business",
     "page": null,
     "product": "malupe",
@@ -338,11 +325,11 @@
     "presentationSlug": null
   },
   {
-    "id": "welabs-intro-v5",
+    "id": "welabs-intro-v6",
     "title": "Welabs · Introdução de marca",
     "duration": 8.5,
-    "compositionId": "welabs-intro-v5",
-    "src": "/motion/welabs-intro-v5/index.html",
+    "compositionId": "welabs-intro-v6",
+    "src": "/motion/welabs-intro-v6/index.html",
     "kind": "intro",
     "page": null,
     "product": null,
