@@ -24,18 +24,10 @@ function productHref(item: Item) {
   return `/produtos/${publicSlug(item.id)}`;
 }
 
-function stage(item: Item, en: boolean) {
-  if (item.maturity === "alpha") return "Alpha";
-  if (item.maturity === "development")
-    return en ? "In development" : "Em desenvolvimento";
-  if (item.status === "reservado")
-    return en ? "Reserved concept" : "Conceito reservado";
-  return en ? "Concept presentation" : "Apresentação conceitual";
-}
-
 // CARTÃO DE SISTEMA
 // Cover = closing brand frame of the film (slogan and brand). Nothing sits on the frame; below it the
 // product logo (or its name, when it has no own logo) identifies the system.
+// `meta` is a single category line: maturity and stage are never rendered.
 type CardProps = {
   href: string;
   title: string;
@@ -48,7 +40,7 @@ type CardProps = {
     wide?: boolean;
     clearZone?: number;
   } | null;
-  meta: [string, string];
+  meta: string;
   summary: string;
   accent: string;
   en: boolean;
@@ -119,8 +111,7 @@ function SystemCard({
             )}
           </h2>
           <div className={styles.metadata}>
-            <span>{meta[0]}</span>
-            <span className={styles.stage}>{meta[1]}</span>
+            <span>{meta}</span>
           </div>
           <p className={styles.summary}>{summary}</p>
           <span className={styles.explore}>
@@ -166,9 +157,10 @@ export function ProductCard({
       title={copy.title}
       cover={film ? posterSrc(film) : visual.scenes[locale][0]?.src}
       logo={logo}
-      meta={[en ? "Welabs product" : "Produto Welabs", stage(item, en)]}
+      meta={en ? "Welabs product" : "Produto Welabs"}
       summary={copy.summary}
-      accent={item.brand.palette.accent}
+      // Every catalog product is Welabs: the amber comes from the brand token, not the catalog hex
+      accent="var(--accent)"
       en={en}
       threadTo={threadTo}
     />
@@ -199,7 +191,7 @@ function FilmProductCard({
       title={product.title}
       cover={film ? posterSrc(film) : undefined}
       logo={logo}
-      meta={[product.sector[en ? 1 : 0], product.stage[en ? 1 : 0]]}
+      meta={product.sector[en ? 1 : 0]}
       summary={product.summary[en ? 1 : 0]}
       accent="var(--accent)"
       en={en}
@@ -251,8 +243,8 @@ export function PortfolioCollection() {
       </div>
       <p className={styles.collectionNote}>
         {en
-          ? "Illustrative recreations with fictional data. The stage of each system is identified on its card."
-          : "Recriações ilustrativas com dados fictícios. O estágio de cada sistema está identificado no cartão."}
+          ? "The films use fictional data."
+          : "Os filmes usam dados fictícios."}
       </p>
     </div>
   );

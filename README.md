@@ -9,7 +9,7 @@ Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, bilíng
 | Rota               | Conteúdo                                                   |
 | ------------------ | ---------------------------------------------------------- |
 | `/`                | Abertura, ecossistema de produtos e filmes da plataforma   |
-| `/produtos`        | Coleção dos produtos, com o estágio de cada um             |
+| `/produtos`        | Coleção dos produtos                                       |
 | `/produtos/[slug]` | Página do produto: desafio, filmes e produtos relacionados |
 | `/solucoes`        | Os produtos pelo problema que resolvem                     |
 | `/sobre`           | A empresa                                                  |
@@ -93,4 +93,4 @@ Separado do imagine-website-v2 em 07/10/2026, mantendo o histórico. Neste repos
 
 ## Limites atuais
 
-O site é uma prévia: páginas `noindex`, `robots.txt` bloqueando tudo e sitemap vazio. Os filmes usam dados fictícios e os produtos estão identificados pelo estágio (em desenvolvimento ou Alpha).
+O site é uma prévia: páginas `noindex`, `robots.txt` bloqueando tudo e sitemap vazio. Os filmes usam dados fictícios, identificados pela legenda DEMO. Regra comercial: nenhum produto aparece com estágio, versão ou marcador de maturidade; os campos `maturity` e `stage` dos catálogos ficam como dado e não são renderizados.

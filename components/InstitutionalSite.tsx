@@ -102,6 +102,7 @@ export function PortfolioIndex() {
 // PÁGINA DE PRODUTO
 // The product is told through its films (approved reel, or overview plus journey); the legacy
 // presentation packs were never shown for Welabs products and left with the split of 2026-10-07.
+// Maturity data stays in the catalog but is never rendered: every product is shown as in use.
 export function ProductPage({ item }: { item: Item }) {
   const { lang } = useT();
   const en = lang === "en",
@@ -110,16 +111,6 @@ export function ProductPage({ item }: { item: Item }) {
   const visual = (
     visuals as Record<string, (typeof visuals)[keyof typeof visuals]>
   )[item.id];
-  const stage =
-    item.maturity === "alpha"
-      ? "Alpha"
-      : item.maturity === "development"
-        ? en
-          ? "In development"
-          : "Em desenvolvimento"
-        : en
-          ? "Concept presentation"
-          : "Apresentação conceitual";
   const problem = ownChallenge[item.id]?.[en ? 1 : 0] || d.summary;
   // An approved reel replaces overview + journey with one ordered gallery; otherwise the business
   // overview opens the page and the journey film follows as "see it working".
@@ -141,7 +132,6 @@ export function ProductPage({ item }: { item: Item }) {
             <Link className={styles.small} href="/produtos">
               ← {en ? "Welabs products" : "Produtos Welabs"}
             </Link>
-            <span className={styles.stageBadge}>{stage}</span>
           </div>
           <div className={styles.productIntro}>
             <div>
@@ -403,14 +393,7 @@ export function SolutionsPage() {
                 >
                   <span className={styles.solutionNumber}>0{i + 1}</span>
                   <div>
-                    <span className={styles.small}>
-                      {item.productName} /{" "}
-                      {item.maturity === "alpha"
-                        ? "Alpha"
-                        : en
-                          ? "In development"
-                          : "Em desenvolvimento"}
-                    </span>
+                    <span className={styles.small}>{item.productName}</span>
                     <h2>{title}</h2>
                     <p>{copy}</p>
                   </div>
@@ -463,8 +446,8 @@ export function WelabsHome() {
           <MotionProductGrid en={en} />
           <p className={styles.note}>
             {en
-              ? "Stages and illustrative data are identified for each product."
-              : "Os estágios e os dados ilustrativos são identificados em cada produto."}
+              ? "The data shown in the films is fictional."
+              : "Os dados exibidos nos filmes são fictícios."}
           </p>
           <div className={styles.related}>
             <MotionGallery
@@ -526,8 +509,7 @@ function MotionProductGrid({ en }: { en: boolean }) {
             </Link>
             <div className={styles.cardBody}>
               <span className={styles.small}>
-                {en ? p.sector[1] : p.sector[0]} ·{" "}
-                {en ? p.stage[1] : p.stage[0]}
+                {en ? p.sector[1] : p.sector[0]}
               </span>
               <h2>
                 <Link href={productHref(p.id)}>{p.title}</Link>
@@ -555,9 +537,6 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
             <Link className={styles.small} href="/produtos">
               ← {en ? "Welabs products" : "Produtos Welabs"}
             </Link>
-            <span className={styles.stageBadge}>
-              {en ? product.stage[1] : product.stage[0]}
-            </span>
           </div>
           <div className={styles.productIntro}>
             <div>

@@ -1,14 +1,15 @@
+/* Base values follow the Welabs 1.2.1 tokens (app/brand/welabs.css); redesign.css maps the rest */
 :root {
-  --bg: #0a0a0a;
-  --fg: #ffffff;
-  --fg-muted: #a0a0a0;
-  --accent: #0098da;
-  --accent-muted: rgba(0, 152, 218, 0.1);
-  --border: rgba(255, 255, 255, 0.1);
+  --bg: var(--wl-bg);
+  --fg: var(--wl-fg);
+  --fg-muted: var(--wl-mute);
+  --accent: var(--wl-amber);
+  --accent-muted: color-mix(in srgb, var(--wl-amber) 10%, transparent);
+  --border: var(--wl-line);
   --section-light: #f4f4f4;
   --font: var(--font-inter), Inter, system-ui, sans-serif;
   --section-pad: 120px;
-  --focus-ring: 0 0 0 3px rgba(0, 152, 218, 0.3);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--wl-amber) 30%, transparent);
 }
 
 /* Custom Scrollbar */
@@ -126,7 +127,7 @@ textarea {
 .cursor-follower.hover {
   width: 50px;
   height: 50px;
-  background-color: rgba(0, 152, 218, 0.1);
+  background-color: color-mix(in srgb, var(--accent) 10%, transparent);
   opacity: 0.5;
   border-color: transparent;
 }
@@ -856,7 +857,11 @@ body.lang-switching .footer span {
 .metrics {
   padding: 80px 0;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(to right, rgba(0, 152, 218, 0.05), transparent);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--accent) 5%, transparent),
+    transparent
+  );
 }
 
 .metrics-grid {
@@ -1329,7 +1334,7 @@ body.lang-switching .footer span {
 .inline-form textarea:focus {
   outline: none;
   border-color: var(--accent);
-  background: rgba(0, 152, 218, 0.05);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
 }
 
 .w-100 {
@@ -1387,7 +1392,7 @@ body.lang-switching .footer span {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
-  background: rgba(0, 152, 218, 0.05);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
 }
 
 /* Submit Button Animation */
@@ -1693,7 +1698,7 @@ body.lang-switching .footer span {
   height: 50vw;
   background: radial-gradient(
     circle,
-    rgba(0, 152, 218, 0.1) 0%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
     transparent 70%
   );
   top: 50%;
@@ -1815,7 +1820,7 @@ body.lang-switching .footer span {
 
 .stat-box:hover {
   border-color: var(--accent);
-  background: rgba(0, 152, 218, 0.03);
+  background: color-mix(in srgb, var(--accent) 3%, transparent);
 }
 
 .stat-num {
@@ -1875,7 +1880,11 @@ body.lang-switching .footer span {
 }
 
 .philosophy-box {
-  background: linear-gradient(to right, rgba(0, 152, 218, 0.05), transparent);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--accent) 5%, transparent),
+    transparent
+  );
   border: 1px solid var(--border);
   border-radius: 40px;
   padding: 100px 80px;
@@ -1890,7 +1899,7 @@ body.lang-switching .footer span {
   bottom: -50px;
   font-size: 20vw;
   font-weight: 900;
-  color: rgba(0, 152, 218, 0.03);
+  color: color-mix(in srgb, var(--accent) 3%, transparent);
   pointer-events: none;
 }
 

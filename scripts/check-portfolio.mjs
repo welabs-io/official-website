@@ -45,6 +45,20 @@ const titleOf = (text) => {
   return h1.replace(/<[^>]+>/g, "") || h1.match(/<img[^>]*alt="([^"]*)"/)?.[1];
 };
 
+// SEM MARCADOR DE ESTÁGIO
+// Commercial rule: no product shows a stage, maturity or version. Only visible text is checked;
+// scripts (the RSC payload carries catalog data such as `maturity`) are stripped first.
+const STAGE_MARKER =
+  /em desenvolvimento|in development|apresenta[çc][ãa]o conceitual|concept presentation|conceito reservado|reserved concept|\balpha\b|\bbeta\b|\bsandbox\b|em breve|coming soon|\bprevist[oa]s?\b/i;
+const assertNoStage = (text, url) => {
+  const visible = text
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<[^>]+>/g, " ");
+  const hit = visible.match(STAGE_MARKER);
+  assert(!hit, `${url} shows a stage marker: ${hit?.[0]}`);
+};
+
 const products = [
   ...catalog.map((p) => ({ id: p.id, title: (l) => p.locales[l].title })),
   ...motionProducts.map((p) => ({ id: p.id, title: () => p.title })),
@@ -66,6 +80,7 @@ for (const p of products) {
       slug + q + " SSR language",
     );
     assert.equal(titleOf(text), p.title(locale), slug + q + " title");
+    assertNoStage(text, slug + q);
     html++;
   }
 }
@@ -76,7 +91,7 @@ for (const [from, to] of Object.entries(formerSlug))
 
 for (const url of ["/", "/sobre", "/solucoes", "/produtos"])
   for (const q of ["?lang=pt", "?lang=en"]) {
-    await get(url + q);
+    assertNoStage(await (await get(url + q)).text(), url + q);
     html++;
   }
 // The Imagine pages and the legacy presentation routes are not part of this site.

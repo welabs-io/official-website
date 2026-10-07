@@ -7,21 +7,21 @@
         {
           "id": "scene-1",
           "title": "Documentos de gestão",
-          "summary": "Documentos de demonstração dão contexto a uma visão de gestão que a Welabs está desenvolvendo.",
-          "alt": "Documentos vazios e registros fictícios ilustram o contexto de gestão do Domus em desenvolvimento.",
+          "summary": "Documentos de demonstração dão contexto à visão de gestão do Domus.",
+          "alt": "Documentos vazios e registros fictícios ilustram o contexto de gestão do Domus.",
           "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png"
         },
         {
           "id": "scene-2",
           "title": "Visão de gestão",
-          "summary": "Uma organização por grupos reúne registros fictícios para explorar uma leitura de gestão.",
-          "alt": "Quadro de registros fictícios em grupos genéricos, com marca Welabs e estágio de desenvolvimento.",
+          "summary": "Uma organização por grupos reúne registros fictícios numa leitura de gestão.",
+          "alt": "Quadro de registros fictícios em grupos genéricos, com a marca Welabs.",
           "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-2.png"
         },
         {
           "id": "scene-3",
           "title": "Contexto de integração",
-          "summary": "Uma jornada abstrata explora como documentos e contexto podem compor a visão da plataforma em desenvolvimento.",
+          "summary": "Documentos e contexto compõem a visão da plataforma.",
           "alt": "Jornada abstrata de documento, gestão e contexto, sem representar conexão com sistemas reais.",
           "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-3.png"
         }
@@ -30,21 +30,21 @@
         {
           "id": "scene-1",
           "title": "Management files",
-          "summary": "Demonstration documents give context to a management view Welabs is developing.",
-          "alt": "Empty documents and fictional records illustrate the management context of Domus in development.",
+          "summary": "Demonstration documents give context to Domus's management view.",
+          "alt": "Empty documents and fictional records illustrate the management context of Domus.",
           "src": "/presentations/erp/1.0.0/posters/en-scene-1.png"
         },
         {
           "id": "scene-2",
           "title": "Management view",
-          "summary": "An organization by groups brings fictional records together to explore a management view.",
-          "alt": "Board of fictional records in generic groups, with Welabs branding and development status.",
+          "summary": "An organization by groups brings fictional records together into a management view.",
+          "alt": "Board of fictional records in generic groups, with Welabs branding.",
           "src": "/presentations/erp/1.0.0/posters/en-scene-2.png"
         },
         {
           "id": "scene-3",
           "title": "Integration view",
-          "summary": "An abstract journey explores how documents and context could shape the platform's view as development continues.",
+          "summary": "Documents and context shape the platform's view.",
           "alt": "Abstract journey of a document, management and context, without a connection to real systems.",
           "src": "/presentations/erp/1.0.0/posters/en-scene-3.png"
         }
@@ -66,7 +66,7 @@
         {
           "id": "scene-2",
           "title": "Siga a execução",
-          "summary": "Na jornada conceitual de automação, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.",
+          "summary": "Na jornada de automação, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.",
           "alt": "Jornada ilustrativa de tarefa com etapas de iniciar, executar e acompanhar.",
           "src": "/presentations/flow/1.0.0/posters/pt-BR-scene-2.png"
         },
@@ -89,7 +89,7 @@
         {
           "id": "scene-2",
           "title": "Follow execution",
-          "summary": "In the concept automation journey, starting, executing and following up make a task's stages visible.",
+          "summary": "In the automation journey, starting, executing and following up make a task's steps visible.",
           "alt": "An illustrative task journey with steps to start, execute and follow up.",
           "src": "/presentations/flow/1.0.0/posters/en-scene-2.png"
         },
@@ -126,7 +126,7 @@
           "id": "scene-3",
           "title": "Consulta DEMO",
           "summary": "Uma consulta ilustrativa leva a uma fonte exemplo. A jornada demonstra recuperação de contexto com conteúdo criado para DEMO.",
-          "alt": "Jornada conceitual de consulta a contexto e fonte DEMO, sem ranking, pesos ou URLs de fontes internas.",
+          "alt": "Jornada de consulta a contexto e fonte DEMO, sem ranking, pesos ou URLs de fontes internas.",
           "src": "/presentations/wekb/1.0.0/posters/pt-BR-scene-3.png"
         }
       ],
@@ -149,7 +149,7 @@
           "id": "scene-3",
           "title": "DEMO query",
           "summary": "An illustrative query leads to an example source. The journey demonstrates context retrieval using content created for DEMO.",
-          "alt": "A concept journey querying context and a DEMO source, without ranking, weights or internal source URLs.",
+          "alt": "A journey querying context and a DEMO source, without ranking, weights or internal source URLs.",
           "src": "/presentations/wekb/1.0.0/posters/en-scene-3.png"
         }
       ]
@@ -163,7 +163,7 @@
         {
           "id": "scene-1",
           "title": "Visão de oportunidades",
-          "summary": "Uma visão em desenvolvimento organiza oportunidades fictícias por etapas comerciais genéricas.",
+          "summary": "O Relloo organiza oportunidades fictícias por etapas comerciais genéricas.",
           "alt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas.",
           "src": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png"
         },
@@ -186,7 +186,7 @@
         {
           "id": "scene-1",
           "title": "Opportunity view",
-          "summary": "A view in development organizes fictional opportunities into generic commercial stages.",
+          "summary": "Relloo organizes fictional opportunities into generic commercial stages.",
           "alt": "Illustrative board of fictional opportunities in three generic commercial stages.",
           "src": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png"
         },
@@ -229,8 +229,8 @@
         {
           "id": "scene-3",
           "title": "Siga cada etapa",
-          "summary": "Receber, consultar e acompanhar formam uma jornada conceitual de trabalho em uma apresentação do estágio Alpha.",
-          "alt": "Jornada ilustrativa de ocorrência com receber, consultar e acompanhar, em contexto Alpha.",
+          "summary": "Receber, consultar e acompanhar formam a jornada de trabalho da operação de segurança.",
+          "alt": "Jornada ilustrativa de ocorrência com receber, consultar e acompanhar.",
           "src": "/presentations/malupe/1.0.0/posters/pt-BR-scene-3.png"
         }
       ],
@@ -252,8 +252,8 @@
         {
           "id": "scene-3",
           "title": "Follow each step",
-          "summary": "Receiving, consulting and following up form a concept work journey in a presentation of the Alpha stage.",
-          "alt": "An illustrative occurrence journey with receive, consult and follow up in an Alpha context.",
+          "summary": "Receiving, consulting and following up form the work journey of security operations.",
+          "alt": "An illustrative occurrence journey with receive, consult and follow up.",
           "src": "/presentations/malupe/1.0.0/posters/en-scene-3.png"
         }
       ]

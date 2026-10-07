@@ -15,7 +15,7 @@ const words = {
     welabsSecondary: "A Welabs",
     ecosystem: "Produtos Welabs",
     disclaimer: "Recriação ilustrativa · dados fictícios",
-    development: "Em desenvolvimento",
+    flowPurpose: "Automação",
     flow: "O próximo passo, em contexto.",
     intake: "Entrada",
     work: "Execução",
@@ -27,7 +27,7 @@ const words = {
       "welabs-crm": "Relacionamento",
       malupe: "Eventos",
     },
-    illustration: "Composição conceitual de produtos, com exemplos fictícios",
+    illustration: "Produtos da Welabs, com exemplos fictícios",
   },
   en: {
     welabsLabel: "Our company. Our products.",
@@ -38,7 +38,7 @@ const words = {
     welabsSecondary: "About Welabs",
     ecosystem: "Welabs products",
     disclaimer: "Illustrative recreation · fictional data",
-    development: "In development",
+    flowPurpose: "Automation",
     flow: "The next step, in context.",
     intake: "Intake",
     work: "Execution",
@@ -50,7 +50,7 @@ const words = {
       "welabs-crm": "Relationships",
       malupe: "Events",
     },
-    illustration: "Concept product composition with fictional examples",
+    illustration: "Welabs products, with fictional examples",
   },
 };
 
@@ -64,6 +64,7 @@ function Arrow() {
 
 // PRODUTOS DA WELABS NA ABERTURA
 // Magneto orchestrates the other products, so the hero thread goes title → Magneto → each product.
+// Cards name each product's purpose; maturity is never shown, every product appears in use.
 function WelabsProducts({ locale }: { locale: Locale }) {
   const t = words[locale];
   const products = ["erp", "wekb", "welabs-crm", "malupe"] as const;
@@ -78,7 +79,7 @@ function WelabsProducts({ locale }: { locale: Locale }) {
         data-hero-links={products.join(" ")}
       >
         <div className={styles.productTop}>
-          <span className={styles.stage}>{t.development}</span>
+          <span className={styles.purpose}>{t.flowPurpose}</span>
           <Arrow />
         </div>
         <div className={styles.productTitle}>
@@ -134,9 +135,6 @@ function WelabsProducts({ locale }: { locale: Locale }) {
               <i />
               <i />
             </div>
-            <span className={styles.stage}>
-              {product.maturity === "alpha" ? "Alpha" : t.development}
-            </span>
           </Link>
         );
       })}

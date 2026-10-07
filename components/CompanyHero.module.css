@@ -246,8 +246,8 @@
   height: 100%;
 }
 .lightPlate {
-  background: #eef0ef;
-  border-color: #eef0ef;
+  background: var(--wl-cream);
+  border-color: var(--wl-cream);
 }
 .productTitle {
   margin: 16px 0;
@@ -439,12 +439,6 @@
   height: 100%;
   display: block;
 }
-.stage {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 1.6;
-  color: var(--text-3);
-}
 .flowProduct .productTitle {
   margin: 14px 0 18px;
 }
@@ -530,10 +524,6 @@
 }
 .ecosystemProduct .productTitle strong {
   font-size: 19px;
-}
-.ecosystemProduct > .stage {
-  display: block;
-  margin-top: 12px;
 }
 .motif {
   height: 28px;

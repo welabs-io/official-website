@@ -267,7 +267,7 @@
   height: 100%;
 }
 .lightPlate {
-  background: #eef0ef;
+  background: var(--wl-cream);
 }
 .darkPlate {
   background: var(--ink-2);
@@ -287,10 +287,6 @@
   text-transform: uppercase;
   line-height: 1.5;
   text-align: right;
-}
-.stage {
-  padding-left: 10px;
-  border-left: 1px solid var(--line-2);
 }
 .summary {
   grid-column: 1 / -1;

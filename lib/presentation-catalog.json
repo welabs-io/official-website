@@ -27,7 +27,7 @@
         "audience": "Organizações e produtos que compartilham cadastros, regras e integrações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png",
-        "posterAlt": "Registros fictícios ilustram o Domus em desenvolvimento."
+        "posterAlt": "Registros fictícios ilustram o Domus."
       },
       "en": {
         "title": "Domus",
@@ -35,7 +35,7 @@
         "audience": "Organizations and products that share records, rules and integrations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/erp/1.0.0/posters/en-scene-1.png",
-        "posterAlt": "Fictional records illustrate Domus in development."
+        "posterAlt": "Fictional records illustrate Domus."
       }
     },
     "status": "reservado"
@@ -64,7 +64,7 @@
     "locales": {
       "pt-BR": {
         "title": "Magneto",
-        "summary": "Magneto em desenvolvimento: uma visão conceitual de automação para organizar tarefas, acompanhar etapas e consultar contexto.",
+        "summary": "Magneto, execução que não se perde: organiza as tarefas, acompanha cada etapa da automação e consulta o contexto quando precisa.",
         "audience": "Equipes que organizam e acompanham automações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/flow/1.0.0/posters/pt-BR-scene-1.png",
@@ -72,7 +72,7 @@
       },
       "en": {
         "title": "Magneto",
-        "summary": "Magneto in development: a concept view of automation to organize tasks, follow stages and consult context.",
+        "summary": "Magneto, execution that never gets lost: it organizes tasks, follows every automation step and consults context when it needs to.",
         "audience": "Teams that organize and follow automations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/flow/1.0.0/posters/en-scene-1.png",
@@ -105,19 +105,19 @@
     "locales": {
       "pt-BR": {
         "title": "Knowly",
-        "summary": "Knowly em desenvolvimento: fontes DEMO e consulta conceitual de contexto com uma fonte exemplo.",
+        "summary": "Knowly, resposta com prova: consulta o conhecimento da organização e responde com contexto e referência à fonte.",
         "audience": "Equipes e agentes que consultam conhecimento.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/wekb/1.0.0/posters/pt-BR-scene-1.png",
-        "posterAlt": "Dois documentos DEMO organizam textos criados para a apresentação, sem corpus ou conteúdo corporativo real."
+        "posterAlt": "Dois documentos DEMO, com textos fictícios, ilustram o Knowly."
       },
       "en": {
         "title": "Knowly",
-        "summary": "Knowly in development: DEMO sources and a concept query of context with an example source.",
+        "summary": "Knowly, answers with proof: it queries the organization's knowledge and answers with context and a reference to the source.",
         "audience": "Teams and agents consulting knowledge.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/wekb/1.0.0/posters/en-scene-1.png",
-        "posterAlt": "Two DEMO documents organize texts created for this presentation, without an actual corpus or corporate content."
+        "posterAlt": "Two DEMO documents with fictional texts illustrate Knowly."
       }
     },
     "status": "reservado"
@@ -146,7 +146,7 @@
     "locales": {
       "pt-BR": {
         "title": "Relloo",
-        "summary": "Relloo, produto Welabs em desenvolvimento para organizar oportunidades e acompanhar o relacionamento comercial.",
+        "summary": "Relloo, atender e vender na mesma conversa: organiza as oportunidades e acompanha o relacionamento comercial.",
         "audience": "Equipes comerciais de organizações.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png",
@@ -154,7 +154,7 @@
       },
       "en": {
         "title": "Relloo",
-        "summary": "Relloo, a Welabs product in development for organizing opportunities and following commercial relationships.",
+        "summary": "Relloo, serve and sell in the same conversation: it organizes opportunities and follows commercial relationships.",
         "audience": "Commercial teams in organizations.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png",
@@ -187,7 +187,7 @@
     "locales": {
       "pt-BR": {
         "title": "Ecossistema Monitoramento",
-        "summary": "Em Alpha: uma visão conceitual de eventos de segurança, fila operacional e acompanhamento de ocorrências.",
+        "summary": "Eventos de segurança, fila operacional e acompanhamento de ocorrências num só lugar.",
         "audience": "Equipes de operação de segurança.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/malupe/1.0.0/posters/pt-BR-scene-1.png",
@@ -195,7 +195,7 @@
       },
       "en": {
         "title": "Monitoring Ecosystem",
-        "summary": "In Alpha: a concept view of security events, an operational queue and occurrence follow-up.",
+        "summary": "Security events, an operational queue and occurrence follow-up in one place.",
         "audience": "Security operations teams.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/malupe/1.0.0/posters/en-scene-1.png",

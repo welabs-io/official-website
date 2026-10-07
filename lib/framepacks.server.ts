@@ -14,9 +14,10 @@ export function framepackIds() {
 }
 
 // Share image: the accepted film poster (brand intro first, as on the product card), the company logo otherwise.
+// The fallback is the 1200×630 share image built from the 1.2.1 dark logo on graphite.
 export function publicPoster(id: string) {
   const film = coverFilmOf(id, catalog.find((p) => p.id === id)?.publisher);
   return film
     ? `/motion/${film.id}/poster.jpg`
-    : "/company-brands/welabs-logo.png";
+    : "/brands/welabs/welabs-share.png";
 }

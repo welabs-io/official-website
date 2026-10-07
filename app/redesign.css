@@ -3,22 +3,25 @@
    Tokens, chrome (header, footer, contact), threads, reveals and page transitions.
    ========================================================================== */
 
-/* TOKENS */
+/* TOKENS DA MARCA WELABS 1.2.1 */
+/* The --wl-* values come from app/brand/welabs.css (package tokens, copied unedited). The site is
+   always graphite: <html data-theme="dark"> selects the package's dark values, the only place where
+   the dark theme applies. Amber is a signal and an area, never text on cream; text on amber is ink. */
 :root {
-  --ink: #0b0d0e;
-  --ink-2: #101315;
-  --ink-3: #15191b;
-  --line: #22292c;
-  --line-2: #323b3f;
-  --text: #e8ebea;
-  --text-2: #a9b1b3;
-  --text-3: #808a8d;
-  --imagine: #0098da;
-  --imagine-soft: #5bbde9;
-  --accent: var(--imagine);
-  --accent-soft: var(--imagine-soft);
+  /* Site-only derivations without a package token: soft amber for threads, warm muted text tones */
+  --wl-amber-soft: #ffc65c;
+  --ink: var(--wl-bg);
+  --ink-2: var(--wl-surface);
+  --ink-3: #1c2230;
+  --line: var(--wl-line);
+  --line-2: #384154;
+  --text: var(--wl-cream);
+  --text-2: #b9b2a3;
+  --text-3: #979182;
+  --accent: var(--wl-amber);
+  --accent-soft: var(--wl-amber-soft);
   /* Text placed on an accent-filled area */
-  --on-accent: #fff;
+  --on-accent: var(--wl-on-amber);
   --accent-muted: color-mix(in srgb, var(--accent) 12%, transparent);
   --thread: color-mix(in srgb, var(--accent-soft) 62%, transparent);
   --thread-quiet: color-mix(in srgb, var(--text) 15%, transparent);
@@ -38,48 +41,6 @@
   --radius: 3px;
   --gutter: 48px;
   --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
-}
-/* MARCA WELABS (TOKENS --wl-* DO PACOTE FINAL, ESCOPO DA SEÇÃO) */
-/* Brand tokens copied from brand/welabs-produtos/tokens/welabs.css, scoped here so they never leak to
-   the Imagine site. The section is always graphite, so the dark-theme values of the package apply.
-   Amber is a signal and an area, never text on cream; text on amber is ink (AA). */
-[data-site-brand="Welabs"] {
-  --wl-amber: #ffb020;
-  --wl-graphite: #10141c;
-  --wl-cream: #faf5ea;
-  --wl-ink: #1c1a16;
-  --wl-bg: var(--wl-graphite);
-  --wl-surface: #161b25;
-  --wl-fg: #ffffff;
-  --wl-mute: #9da3ae;
-  --wl-line: #262d3a;
-  --wl-on-amber: var(--wl-ink);
-  --wl-font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --wl-weight-text: 400;
-  --wl-weight-secondary: 500;
-  --wl-weight-title: 600;
-  /* Site-only derivations without a package token: soft amber for threads, warm muted text tones */
-  --wl-amber-soft: #ffc65c;
-  --ink: var(--wl-bg);
-  --ink-2: var(--wl-surface);
-  --ink-3: #1c2230;
-  --line: var(--wl-line);
-  --line-2: #384154;
-  --text: var(--wl-cream);
-  --text-2: #b9b2a3;
-  --text-3: #979182;
-  --accent: var(--wl-amber);
-  --accent-soft: var(--wl-amber-soft);
-  --on-accent: var(--wl-on-amber);
-  /* Derived tokens resolve where they are declared, so they are re-declared for the brand scope */
-  --accent-muted: color-mix(in srgb, var(--accent) 12%, transparent);
-  --thread: color-mix(in srgb, var(--accent-soft) 62%, transparent);
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
-  --thread-quiet: color-mix(in srgb, var(--text) 15%, transparent);
-  --bg: var(--ink);
-  --fg: var(--text);
-  --fg-muted: var(--text-2);
-  --border: var(--line);
 }
 @media (max-width: 600px) {
   :root {
