@@ -5,6 +5,7 @@ import catalog from "@/lib/presentation-catalog.json";
 import styles from "./InstitutionalSite.module.css";
 import { CompanyHero } from "./CompanyHero";
 import {
+  FilmProductCard,
   ProductCard,
   PortfolioCollection,
   PRODUCT_LOGO,
@@ -17,7 +18,6 @@ import {
   filmFor,
   filmsForPage,
   overviewFilms,
-  posterSrc,
   reelFilms,
 } from "./MotionFilm";
 import motionProducts from "@/lib/motion-products.json";
@@ -485,6 +485,7 @@ export function WelabsHome() {
 
 // PRODUTOS APRESENTADOS SÓ POR FILME
 // Products without a catalog entry (Tuner) get a film-only card and page, linked by public slug.
+// The card is the shared product card, so its cover carries the product logo like the catalog ones.
 type MotionProduct = (typeof motionProducts)[number];
 function MotionProductGrid({ en }: { en: boolean }) {
   const items = motionProducts.filter((p) => coverFilm(p.id));
@@ -496,27 +497,7 @@ function MotionProductGrid({ en }: { en: boolean }) {
       </span>
       <div className={styles.grid}>
         {items.map((p) => (
-          <article key={p.id} className={styles.card} data-reveal="">
-            <Link className={styles.visual} href={productHref(p.id)}>
-              <img
-                src={posterSrc(coverFilm(p.id, p.publisher)!)}
-                alt=""
-                width="1200"
-                height="675"
-                loading="lazy"
-              />
-              <span aria-hidden="true">↗</span>
-            </Link>
-            <div className={styles.cardBody}>
-              <span className={styles.small}>
-                {en ? p.sector[1] : p.sector[0]}
-              </span>
-              <h2>
-                <Link href={productHref(p.id)}>{p.title}</Link>
-              </h2>
-              <p>{en ? p.summary[1] : p.summary[0]}</p>
-            </div>
-          </article>
+          <FilmProductCard key={p.id} product={p} en={en} />
         ))}
       </div>
     </section>

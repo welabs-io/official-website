@@ -146,22 +146,55 @@
   color: var(--text);
 }
 
-/* The cover is the film's closing frame alone: no logo, label or caption on top of it */
+/* CAPA DO PRODUTO */
+/* Graphite plate with a soft central glow and a faint dot grid; the official dark logo sits centred and
+   is sized by height only, relative to the card width (the card is an inline-size container). The
+   endorsed SVGs already carry their clear zone, so the height includes it. Widest logo (Magneto
+   endorsed, 2.34:1) at 28cqw stays within ~66% of the cover width. */
 .cover {
+  --cover-logo-h: 28cqw;
   position: relative;
   overflow: hidden;
   aspect-ratio: 16 / 9;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  background: var(--ink-2);
+  background:
+    radial-gradient(70% 80% at 50% 50%, var(--ink-3) 0%, transparent 75%),
+    radial-gradient(
+        circle at 1px 1px,
+        color-mix(in srgb, var(--text) 7%, transparent) 1px,
+        transparent 1.4px
+      )
+      0 0 / 16px 16px,
+    var(--ink);
   transition: border-color 0.6s var(--ease);
+}
+.coverBrand {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1.4s var(--ease);
 }
 .cover img {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1.4s var(--ease);
+  width: auto;
+  height: var(--cover-logo-h);
+}
+/* Company logo (no product logo of its own): smaller mark, product name below it in Inter */
+.companyCover {
+  --cover-logo-h: 19cqw;
+}
+.coverCaption {
+  margin-top: -1.2cqw;
+  font-family: var(--font);
+  font-size: clamp(14px, 3.4cqw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--text);
 }
 .cover::after {
   content: "";
@@ -176,20 +209,13 @@
   transform-origin: left;
   transition: transform 0.8s var(--ease);
 }
-.coverFallback {
-  display: grid;
-  place-items: center;
-  height: 100%;
-  font-size: 20px;
-  color: var(--text-2);
-}
 .cardLink:hover .cover {
   border-color: var(--line-2);
 }
 .cardLink:hover .cover::after {
   transform: scaleX(1);
 }
-.cardLink:hover .cover img {
+.cardLink:hover .coverBrand {
   transform: scale(1.03);
 }
 .openArrow {
@@ -217,87 +243,20 @@
   transform: translate(2px, -2px);
 }
 
+/* Body under the cover: summary and link only (the logo lives in the cover, the name is a hidden heading) */
 .cardBody {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 8px 16px;
-  padding: 14px 0 0;
-}
-.cardBody .name {
-  margin: 0;
-  font-size: 19px;
-  letter-spacing: -0.016em;
-  font-weight: 500;
-  line-height: 1.2;
-}
-.logoPlate {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 112px;
-  height: 36px;
-  padding: 6px 10px;
-  border-radius: 2px;
-}
-.logoPlate img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-/* Welabs product logos (symbol + name + "by welabs") bring their own graphite plate and clear zone, so the
-   wrapper adds no plate, border or padding and the logo is sized by height only: 60px keeps the name
-   x-height at 16px (brand minimum for the endorsed version: 14px). The plate matches the page graphite, so
-   the clear zone (75 of the 549.6 units of height) moves into the gutter and the ink lines up with the text.
-   A logo with another clear-zone ratio (Tuner wordmark: 65.70 of 585.43) sets --logo-clear-zone inline. */
-.logoPlate.widePlate {
-  --logo-h: 60px;
-  width: fit-content;
-  height: var(--logo-h);
-  margin-left: calc(
-    var(--logo-h) * -1 * var(--logo-clear-zone, calc(75 / 549.6))
-  );
-  padding: 0;
-  background: none;
-  border: 0;
-}
-.logoPlate.widePlate img {
-  width: auto;
-  height: 100%;
-}
-.lightPlate {
-  background: var(--wl-cream);
-}
-.darkPlate {
-  background: var(--ink-2);
-  border: 1px solid var(--line-2);
-}
-.metadata {
-  justify-self: end;
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 4px 10px;
-  color: var(--text-3);
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1.5;
-  text-align: right;
+  gap: 10px;
+  padding: 16px 0 0;
 }
 .summary {
-  grid-column: 1 / -1;
   font-size: 14px;
   line-height: 1.6;
   max-width: 60ch;
-  margin: 2px 0 0;
+  margin: 0;
   color: var(--text-2);
 }
 .explore {
-  grid-column: 1 / -1;
   justify-self: start;
   display: inline-flex;
   align-items: center;
@@ -326,7 +285,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cardLink:hover .cover img {
+  .cardLink:hover .coverBrand {
     transform: none;
   }
   .grid > .card::before,
@@ -365,17 +324,5 @@
   }
   .grid > .card[data-in]:nth-child(n)::before {
     transform: scaleX(1);
-  }
-  .cardBody {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .metadata {
-    justify-self: start;
-    justify-content: flex-start;
-    text-align: left;
-  }
-  .logoPlate {
-    width: 100px;
-    height: 32px;
   }
 }

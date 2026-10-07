@@ -7,7 +7,7 @@ import catalog from "@/lib/presentation-catalog.json";
 import visuals from "@/lib/presentation-visuals.json";
 import emphasis from "@/lib/emphasis.json";
 import motionProducts from "@/lib/motion-products.json";
-import { coverFilm, posterSrc } from "./MotionFilm";
+import { coverFilm } from "./MotionFilm";
 import { publicSlug } from "@/lib/public-slugs";
 import styles from "./PortfolioShowcase.module.css";
 
@@ -25,22 +25,15 @@ function productHref(item: Item) {
 }
 
 // CARTÃO DE SISTEMA
-// Cover = closing brand frame of the film (slogan and brand). Nothing sits on the frame; below it the
-// product logo (or its name, when it has no own logo) identifies the system.
-// `meta` is a single category line: maturity and stage are never rendered.
+// Cover = the product logo on a graphite plate (official dark endorsed SVG, sized by height only).
+// A product without its own logo (monitoring ecosystem) shows the Welabs logo with its name in Inter.
+// The logo is not repeated below the cover: the name stays as a visually hidden heading and the
+// summary (which opens with the product name) carries the text. No category label is rendered.
 type CardProps = {
   href: string;
   title: string;
-  cover?: string;
-  // `wide`: Welabs product logo, drawn on its own plate and sized by height only
-  // `clearZone`: plate margin as a fraction of the logo height, when it differs from the shared 75/549.6
-  logo?: {
-    src: string;
-    light: boolean;
-    wide?: boolean;
-    clearZone?: number;
-  } | null;
-  meta: string;
+  // `caption`: name set in Inter under a company logo, when the product has no logo of its own
+  brand: { src: string; caption?: string };
   summary: string;
   accent: string;
   en: boolean;
@@ -50,9 +43,7 @@ type CardProps = {
 function SystemCard({
   href,
   title,
-  cover,
-  logo,
-  meta,
+  brand,
   summary,
   accent,
   en,
@@ -68,51 +59,20 @@ function SystemCard({
       style={{ "--cover-accent": accent } as CSSProperties}
     >
       <Link href={href} className={styles.cardLink}>
-        <div className={styles.cover}>
-          {cover ? (
-            <img
-              src={cover}
-              alt=""
-              aria-hidden="true"
-              width="1280"
-              height="720"
-              loading="lazy"
-            />
-          ) : (
-            <span className={styles.coverFallback}>{title}</span>
-          )}
-          <span className={styles.openArrow} aria-hidden="true">
-            ↗
+        <div
+          className={`${styles.cover} ${brand.caption ? styles.companyCover : styles.productCover}`}
+          aria-hidden="true"
+        >
+          <span className={styles.coverBrand}>
+            <img src={brand.src} alt="" width="1005" height="550" />
+            {brand.caption && (
+              <span className={styles.coverCaption}>{brand.caption}</span>
+            )}
           </span>
+          <span className={styles.openArrow}>↗</span>
         </div>
         <div className={styles.cardBody}>
-          <h2 className={styles.name}>
-            {logo ? (
-              <span
-                className={`${styles.logoPlate} ${logo.light ? styles.lightPlate : styles.darkPlate}${logo.wide ? ` ${styles.widePlate}` : ""}`}
-                style={
-                  logo.clearZone === undefined
-                    ? undefined
-                    : ({
-                        "--logo-clear-zone": logo.clearZone,
-                      } as React.CSSProperties)
-                }
-              >
-                <img
-                  src={logo.src}
-                  alt={title}
-                  width="150"
-                  height="44"
-                  loading="lazy"
-                />
-              </span>
-            ) : (
-              title
-            )}
-          </h2>
-          <div className={styles.metadata}>
-            <span>{meta}</span>
-          </div>
+          <h2 className="sr-only">{title}</h2>
           <p className={styles.summary}>{summary}</p>
           <span className={styles.explore}>
             {en ? "Explore" : "Conhecer"} <span aria-hidden="true">↗</span>
@@ -141,23 +101,16 @@ export function ProductCard({
   const visual = (
     visuals as Record<string, (typeof visuals)[keyof typeof visuals]>
   )[item.id];
-  const film = coverFilm(item.id, item.publisher);
-  const logo =
-    PRODUCT_LOGO.has(item.id) && visual.logo
-      ? {
-          src: visual.logo,
-          light: visual.logoPlate === "light",
-          wide: true,
-        }
-      : null;
+  // Own product logo when it exists; otherwise the company logo with the product name in text
+  const brand = PRODUCT_LOGO.has(item.id)
+    ? { src: visual.logo }
+    : { src: visual.logo, caption: copy.title };
   return (
     <SystemCard
       id={item.id}
       href={productHref(item)}
       title={copy.title}
-      cover={film ? posterSrc(film) : visual.scenes[locale][0]?.src}
-      logo={logo}
-      meta={en ? "Welabs product" : "Produto Welabs"}
+      brand={brand}
       summary={copy.summary}
       // Every catalog product is Welabs: the amber comes from the brand token, not the catalog hex
       accent="var(--accent)"
@@ -167,31 +120,21 @@ export function ProductCard({
   );
 }
 
-// Products shown only through films (Tuner). Links use the public slug; the logo plate follows
-// `logoPlate` (Tuner's logo is drawn for a dark plate).
-function FilmProductCard({
+// Products shown only through films (Tuner). Links use the public slug; the cover carries the
+// product's dark endorsed logo like every other Welabs product.
+export function FilmProductCard({
   product,
   en,
 }: {
   product: MotionProduct;
   en: boolean;
 }) {
-  const film = coverFilm(product.id, product.publisher);
-  const logo = {
-    src: product.logo,
-    light: product.logoPlate !== "dark",
-    wide: true,
-    // Tuner's wordmark has its own clear zone (no symbol), so it overrides the shared ratio
-    clearZone: product.logoClearZone,
-  };
   return (
     <SystemCard
       id={product.id}
       href={`/produtos/${publicSlug(product.id)}`}
       title={product.title}
-      cover={film ? posterSrc(film) : undefined}
-      logo={logo}
-      meta={product.sector[en ? 1 : 0]}
+      brand={{ src: product.logo }}
       summary={product.summary[en ? 1 : 0]}
       accent="var(--accent)"
       en={en}
