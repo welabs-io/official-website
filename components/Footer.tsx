@@ -3,6 +3,7 @@ import { useT } from "./LangProvider";
 import { useSiteBrand } from "./useSiteBrand";
 import Link from "./LangLink";
 import { publicSlug } from "@/lib/public-slugs";
+import { isHiddenProduct } from "@/lib/catalog";
 import { imagineHref } from "@/lib/sister-site";
 
 export function Footer() {
@@ -38,11 +39,14 @@ export function Footer() {
                     ? "Monitoring Ecosystem"
                     : "Ecossistema Monitoramento",
                 ],
-              ].map(([slug, name]) => (
-                <li key={slug}>
-                  <Link href={`/produtos/${publicSlug(slug)}`}>{name}</Link>
-                </li>
-              ))}
+              ]
+                // Hidden products (lib/catalog.ts) leave the navigation
+                .filter(([slug]) => !isHiddenProduct(slug))
+                .map(([slug, name]) => (
+                  <li key={slug}>
+                    <Link href={`/produtos/${publicSlug(slug)}`}>{name}</Link>
+                  </li>
+                ))}
             </ul>
           </div>
           <div className="footer-nav-col">

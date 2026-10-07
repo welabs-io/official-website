@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Magneto ·Copiloto (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from assets/brand/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header in a row, so a longer product name pushes the kicker instead of overlapping it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;display:flex;align-items:center}
+/* Header mark is the official product logo (assets/brand/*-logo-on-dark.svg), sized by height only:
+   62 px gives a 31 px x-height, like the 56 px Inter it replaced; the 2 px lift sets its baseline on the kicker's */
+#wm{position:relative;flex:none;height:72px;display:flex;align-items:center}
+#wm img{display:block;height:62px;margin-top:-2px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+
+/* A FRASE DA PESSOA */
+.av{position:absolute;width:150px;opacity:0;text-align:center}
+.av .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
+#ana{left:150px;top:196px}
+#say{position:absolute;left:360px;top:180px;width:1360px;height:220px;border-radius:34px 34px 34px 8px;background:var(--panel2);border:3px solid var(--line);padding:38px 46px;font-size:44px;font-weight:700;line-height:64px;opacity:0}
+.w{opacity:0}
+.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(var(--wl-amber-rgb),0)}
+
+/* BLOCOS SUGERIDOS E REVISADOS */
+.blk{position:absolute;top:560px;width:400px;height:150px;border-radius:30px;background:var(--panel);display:flex;align-items:center;gap:22px;padding:0 30px;font-size:34px;font-weight:700;line-height:40px;opacity:0}
+.blk .ic{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral);flex:none}
+.dash{position:absolute;inset:0;border-radius:30px;border:3px dashed #8A8A99}
+.solid{position:absolute;inset:0;border-radius:30px;border:3px solid var(--ok);opacity:0}
+.glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(var(--wl-amber-rgb),.55);opacity:0}
+.sg{position:absolute;left:24px;top:-22px;height:40px;padding:0 14px;border-radius:20px;background:#2A2A33;border:2px dashed #8A8A99;color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
+.tick{position:absolute;right:-20px;top:-20px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#b1{left:260px}#b2{left:760px}#b3{left:1260px}
+#wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#wires path{fill:none;stroke:var(--coral);stroke-width:6;stroke-linecap:round}
+#wires .hd{fill:var(--coral);opacity:0}
+/* Deadline chip is the reviewer's accent, not an alert: reddish surface and light coral text became the brand amber surface and light amber */
+#due{position:absolute;left:820px;top:730px;width:280px;height:52px;border-radius:26px;border:2px solid var(--coral);background:var(--wl-amber-soft);color:#FFC75A;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;white-space:nowrap}
+#cur{position:absolute;left:1000px;top:640px;width:44px;height:44px;opacity:0}
+#dot{position:absolute;left:640px;top:617px;width:36px;height:36px;border-radius:50%;background:var(--coral);border:4px solid #FFC75A;box-shadow:0 0 24px rgba(var(--wl-amber-rgb),.9);opacity:0}
+
+/* ATIVAR */
+#tg{position:absolute;left:770px;top:440px;width:380px;height:84px;border-radius:42px;background:var(--panel2);border:3px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 14px 0 36px;font-size:34px;font-weight:800;opacity:0}
+#tgl{position:relative;width:150px;height:44px;flex:none}
+#tgl em{position:absolute;left:0;top:0;font-style:normal;white-space:nowrap}
+#tgon{opacity:0;color:var(--ok)}
+#sw{position:relative;width:120px;height:62px;border-radius:31px;background:#3A3A44;flex:none;margin-left:auto}
+#swon{position:absolute;inset:0;border-radius:31px;background:var(--ok);opacity:0}
+#knob{position:absolute;left:6px;top:6px;width:50px;height:50px;border-radius:50%;background:#fff}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+/* Endorsed product logo (symbol + name + "by welabs", assets/brand/product-logo-on-dark.svg), sized by height only;
+   06/10/2026: replaces the retired "welabs <product>" lockup, name x-height 68 px */
+#close img{height:180px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* ABERTURA WELABS-INTRO-V6 (copiada de pieces/welabs-intro-v6, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-lg{display:inline-block}
+#intro-wl{position:absolute;left:417px;top:372px}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="flow-copilot-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="41">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- v2: five named products only; rows at y 260/400/540/680/820 (choreography.js IN_Y) -->
+  <!-- v5: final pack; every label is the product's official motion logo (brand/vector/motion/<slug>-dark.svg), all at
+       the same 0.11816 px per logo unit, so the x-height matches across logos -->
+  <!-- v6 (brand 1.2.1): the motion logos come from the 1.2.1 package (motion/<slug>-dark.svg); all five products carry
+       the sign inside the name (Domus: encaixe in place of the "o"; Magneto: Ibrand "m" with an amber pole) -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:206px"><span class="intro-lg" id="intro-in0n" role="img" aria-label="magneto" data-wl-motion="magneto" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:346px"><span class="intro-lg" id="intro-in1n" role="img" aria-label="domus" data-wl-motion="domus" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:486px"><span class="intro-lg" id="intro-in2n" role="img" aria-label="knowly" data-wl-motion="knowly" data-wl-scale="0.11816"></span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:692px"><span class="intro-lg" id="intro-in3n" role="img" aria-label="relloo" data-wl-motion="relloo" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:832px"><span class="intro-lg" id="intro-in4n" role="img" aria-label="tuner" data-wl-motion="tuner" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <!-- v5: the closing logo is the official Welabs motion SVG ("we" grows with overshoot, "labs" opens) -->
+  <div id="intro-wl" role="img" aria-label="welabs" data-wl-motion="welabs" data-wl-scale="1.2"></div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/flow-copilot-logos, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="wm"><img src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></div>
+    <div id="kick">Some a página em branco</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div class="av" id="ana"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Ana · DEMO</div></div>
+  <div id="say"><span class="w">“Quando</span> <span class="k" id="k1"><span class="w">chegar</span> <span class="w">um</span> <span class="w">pedido</span> <span class="w">de</span> <span class="w">compra,</span></span> <span class="w">peça</span> <span class="w">a</span> <span class="k" id="k2"><span class="w">aprovação</span> <span class="w">da</span> <span class="w">Ana</span></span> <span class="w">e</span> <span class="k" id="k3"><span class="w">avise</span> <span class="w">o</span> <span class="w">financeiro.”</span></span></div>
+
+  <div id="tg"><div id="tgl"><em id="tgoff">Ativar</em><em id="tgon">Ativo</em></div><div id="sw"><div id="swon"></div><div id="knob"></div></div></div>
+
+  <svg id="wires" viewBox="0 0 1920 1080">
+    <path id="w1" d="M664 635 L748 635"/>
+    <path id="w2" d="M1164 635 L1248 635"/>
+    <path class="hd" id="h1" d="M760 635 L742 623 L742 647 Z"/>
+    <path class="hd" id="h2" d="M1260 635 L1242 623 L1242 647 Z"/>
+  </svg>
+  <div class="blk" id="b1"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>Pedido chega<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b2"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Ana aprova<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b3"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>Financeiro é avisado<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div id="due"><svg width="28" height="28" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>prazo · DEMO</div>
+  <div id="dot"></div>
+  <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.6L9.6 21z" fill="#fff" stroke="#0B0B0D" stroke-width="1.6" stroke-linejoin="round"/></svg>
+
+  <div class="cap" id="c1">Descreva o processo <span>em palavras</span></div>
+  <div class="cap" id="c2">As frases <span>viram blocos</span></div>
+  <div class="cap" id="c3">Você <span>revisa e ajusta</span></div>
+  <div class="cap" id="c4">Ativa, e o processo <span>já está rodando</span></div>
+
+  <div id="close">
+    <div class="l1">Você descreve, revisa e ativa.<br><span>Do texto ao processo rodando.</span></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img src="./assets/brand/product-logo-on-dark.svg" alt="Magneto by welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/brand/welabs-motion.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; logos, rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  // v5: each label plays its official motion (brand/vector/motion keyframes, 4.8 s cycle at half speed, so a logo
+  // is whole 1.4 s after its stream starts) and holds on the still logo until the streams collapse
+  var LABEL_SPEED = 0.5;
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: 'none' }, t0 + 0.05);
+    WELABS_MOTION.play(tl, '#intro-in' + i + 'n', t0 + 0.05, LABEL_SPEED);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  // v5: the knot glides into the "we" and the official Welabs motion takes over there (cycle at 0.75 speed)
+  WELABS_MOTION.play(tl, '#intro-wl', SC.LOGO_T0, SC.LOGO_SPEED);
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/flow-copilot-logos; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 32;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
+
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: descrever em palavras (0,5–6,4 s)
+  inn('#ana', 0.5, { y: 20 });
+  inn('#say', 0.7, { y: 16, scale: 0.97 }, 0.5);
+  inn('#c1', 1.0, { y: 16 });
+  // Words appear one by one, as if typed
+  tl.fromTo('#say .w', { opacity: 0 }, { opacity: 1, duration: 0.06, stagger: 0.16 }, 1.3);
+  out('#c1', 6.2);
+
+  // Batida 2: as frases viram blocos (6,5–12,4 s)
+  inn('#c2', 6.5, { y: 16 });
+  // Phrase highlight uses the brand amber as a literal rgba: GSAP cannot tween var()
+  ['#k1', '#k2', '#k3'].forEach(function (k, i) { tl.to(k, { backgroundColor: 'rgba(' + WELABS_BRAND.color.amberRgb + ',0.28)', duration: 0.3 }, 6.8 + 0.3 * i); });
+  tl.fromTo('#b1', { opacity: 0, x: 300, y: -310, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 7.8);
+  tl.fromTo('#b2', { opacity: 0, x: -120, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.3);
+  tl.fromTo('#b3', { opacity: 0, x: -60, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.8);
+  draw('w1', 9.9, 0.4); tl.fromTo('#h1', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.25);
+  draw('w2', 10.4, 0.4); tl.fromTo('#h2', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.75);
+  out('#c2', 12.3);
+
+  // Batida 3: revisar e ajustar (12,6–18,6 s)
+  inn('#c3', 12.6, { y: 16 });
+  tl.fromTo('#cur', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.3 }, 12.9);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 13.6).to('#cur', { scale: 1, duration: 0.15 }, 13.72);
+  inn('#due', 13.8, { y: -10, scale: 0.8 }, 0.4);
+  function approve(b, t) {
+    tl.to(b + ' .dash', { opacity: 0, duration: 0.3 }, t);
+    tl.to(b + ' .sg', { opacity: 0, duration: 0.25 }, t);
+    tl.fromTo(b + ' .solid', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t);
+    tl.fromTo(b + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.15);
+  }
+  approve('#b1', 14.9); approve('#b2', 15.5); approve('#b3', 16.1);
+  out('#c3', 18.5);
+
+  // Batida 4: ativar e rodar (18,8–25,4 s)
+  inn('#c4', 18.8, { y: 16 });
+  out(['#say', '#ana'], 18.8, 0.4);
+  inn('#tg', 19.0, { y: 14 }, 0.45);
+  tl.to('#cur', { x: 110, y: -180, duration: 0.6, ease: 'power2.inOut' }, 19.1);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 19.8).to('#cur', { scale: 1, duration: 0.15 }, 19.92);
+  tl.to('#knob', { x: 58, duration: 0.3, ease: 'power2.out' }, 19.9);
+  tl.fromTo('#swon', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 19.9);
+  tl.to('#tg', { borderColor: '#3DD68C', duration: 0.3 }, 20.0);
+  out('#tgoff', 20.0, 0.2); tl.fromTo('#tgon', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 20.15);
+  out('#cur', 20.5, 0.3);
+  function lit(b, t) { tl.fromTo(b + ' .glow', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t); tl.to(b + ' .glow', { opacity: 0, duration: 0.4 }, t + 0.9); }
+  lit('#b1', 20.9);
+  tl.fromTo('#dot', { opacity: 0, x: 0 }, { opacity: 1, x: 0, duration: 0.2 }, 21.4);
+  tl.to('#dot', { x: 100, duration: 0.6, ease: 'power1.inOut' }, 21.6);
+  lit('#b2', 22.2);
+  // The dot hides while the block works, then reappears on the next arrow
+  tl.to('#dot', { opacity: 0, duration: 0.15 }, 22.2);
+  tl.set('#dot', { x: 500 }, 22.5);
+  tl.to('#dot', { opacity: 1, duration: 0.15 }, 22.6);
+  tl.to('#dot', { x: 600, duration: 0.6, ease: 'power1.inOut' }, 22.75);
+  lit('#b3', 23.4);
+  out('#dot', 23.45, 0.3);
+  out('#c4', 25.3);
+
+  // Fecho (25,9–32 s, parado de 26,5 s ao fim)
+  out(['#hd', '#b1', '#b2', '#b3', '#wires', '#due', '#tg'], 25.5, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 25.9);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (32 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 32;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["flow-copilot-logos-intro-v6"] = master;
+})();
+</script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 "use client";
 import Link from "./LangLink";
 import { useT } from "@/components/LangProvider";
-import catalog from "@/lib/presentation-catalog.json";
+// Visible catalog only: hidden products get no card, page or solution entry (lib/catalog.ts)
+import catalog, { isHiddenProduct } from "@/lib/catalog";
 import styles from "./InstitutionalSite.module.css";
 import { CompanyHero } from "./CompanyHero";
 import {
@@ -358,7 +359,8 @@ export function SolutionsPage() {
       en ? "Put events in context" : "Dar contexto aos eventos",
       ownChallenge.malupe[en ? 1 : 0],
     ],
-  ];
+    // Hidden products (lib/catalog.ts) leave the list
+  ].filter(([id]) => !isHiddenProduct(id));
   return (
     <div className={styles.site}>
       <section className={`${styles.hero} ${styles.editorialHero}`}>

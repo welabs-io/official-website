@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
+import { isHiddenProduct } from "@/lib/catalog";
 import { ProductPage, MotionProductPage } from "@/components/InstitutionalSite";
 import {
   getFramepack,
@@ -67,6 +68,8 @@ export default async function Page({
   const { slug } = await params;
   const moved = retiredSlug(slug);
   if (moved) permanentRedirect(`/produtos/${moved}`);
+  // A product hidden for now (lib/catalog.ts) sends its address to the collection; temporary, it may return
+  if (isHiddenProduct(idFromSlug(slug))) redirect("/produtos");
   const m = motionProduct(slug);
   if (m) return <MotionProductPage product={m} />;
   const p = getFramepack(idFromSlug(slug));

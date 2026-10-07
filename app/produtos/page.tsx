@@ -3,11 +3,11 @@ import { PortfolioIndex } from "@/components/InstitutionalSite";
 const copy = {
   pt: [
     "Nossos produtos | Welabs",
-    "Domus, Magneto, Knowly, Relloo, Tuner e Ecossistema Monitoramento: gestão, automação, conhecimento, relacionamento, canais e segurança.",
+    "Domus, Magneto, Knowly, Relloo e Tuner: gestão, automação, conhecimento, relacionamento e canais.",
   ],
   en: [
     "Our products | Welabs",
-    "Domus, Magneto, Knowly, Relloo, Tuner and Monitoring Ecosystem: management, automation, knowledge, relationships, channels and security.",
+    "Domus, Magneto, Knowly, Relloo and Tuner: management, automation, knowledge, relationships and channels.",
   ],
 };
 export async function generateMetadata({

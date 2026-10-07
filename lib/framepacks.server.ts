@@ -1,4 +1,5 @@
-import catalog from "./presentation-catalog.json";
+// Visible catalog only: a hidden product has no page (lib/catalog.ts)
+import catalog from "./catalog";
 import { coverFilmOf } from "./brand-cover";
 
 // CATÁLOGO DE PRODUTOS

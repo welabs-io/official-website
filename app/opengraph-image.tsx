@@ -40,7 +40,7 @@ export default function OpenGraphImage() {
         <span style={{ color: "#FFB020" }}>CONECTAMOS OPERAÇÕES.</span>
       </div>
       <div style={{ display: "flex", color: "#B9B2A3", fontSize: 26 }}>
-        Domus • Magneto • Knowly • Relloo • Tuner • Monitoramento
+        Domus • Magneto • Knowly • Relloo • Tuner
       </div>
     </div>,
     size,

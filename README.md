@@ -1,6 +1,6 @@
 # Welabs — site da empresa e dos produtos
 
-Site da Welabs, empresa que desenvolve produtos próprios para gestão, conhecimento, relacionamento e automação. Apresenta a empresa e o seu ecossistema de produtos — Domus, Magneto, Knowly, Relloo, Tuner e Ecossistema Monitoramento —, cada um com página própria e filmes em motion (HyperFrames) que mostram o produto em uso, com dados fictícios.
+Site da Welabs, empresa que desenvolve produtos próprios para gestão, conhecimento, relacionamento e automação. Apresenta a empresa e o seu ecossistema de produtos — Domus, Magneto, Knowly, Relloo e Tuner —, cada um com página própria e filmes em motion (HyperFrames) que mostram o produto em uso, com dados fictícios.
 
 Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, bilíngue (português e inglês) e sem banco de dados: o conteúdo vem de catálogos JSON versionados em `lib/` e de arquivos estáticos em `public/`. A identidade visual é a da marca Welabs (âmbar sobre grafite).
 
@@ -14,7 +14,7 @@ Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, bilíng
 | `/solucoes`        | Os produtos pelo problema que resolvem                     |
 | `/sobre`           | A empresa                                                  |
 
-Slugs públicos: `domus`, `magneto`, `knowly`, `relloo`, `tuner` e `ecossistema-monitoramento`. Ids internos (`/produtos/erp`, `/produtos/flow`…) e slugs anteriores (`rello`, `hub-de-dominio`, `operacao-seguranca`) redirecionam para o atual. `?lang=pt` e `?lang=en` escolhem o idioma, inclusive no HTML renderizado pelo servidor.
+Slugs públicos: `domus`, `magneto`, `knowly`, `relloo` e `tuner`. O Ecossistema Monitoramento está oculto por enquanto (`lib/catalog.ts`): os dados continuam no catálogo, mas o produto não tem cartão, página nem filme, e `/produtos/ecossistema-monitoramento` redireciona para `/produtos`. Ids internos (`/produtos/erp`, `/produtos/flow`…) e slugs anteriores (`rello`, `hub-de-dominio`, `operacao-seguranca`) redirecionam para o atual. `?lang=pt` e `?lang=en` escolhem o idioma, inclusive no HTML renderizado pelo servidor.
 
 ### Endereços antigos
 

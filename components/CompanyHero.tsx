@@ -1,5 +1,6 @@
 import Link from "./LangLink";
-import catalog from "@/lib/presentation-catalog.json";
+// Visible catalog only: hidden products leave the hero graph (lib/catalog.ts)
+import catalog, { isHiddenProduct } from "@/lib/catalog";
 import styles from "./CompanyHero.module.css";
 import { publicSlug } from "@/lib/public-slugs";
 
@@ -67,7 +68,10 @@ function Arrow() {
 // Cards name each product's purpose; maturity is never shown, every product appears in use.
 function WelabsProducts({ locale }: { locale: Locale }) {
   const t = words[locale];
-  const products = ["erp", "wekb", "welabs-crm", "malupe"] as const;
+  // Hidden products (lib/catalog.ts) leave the graph and its links
+  const products = (["erp", "wekb", "welabs-crm", "malupe"] as const).filter(
+    (id) => !isHiddenProduct(id),
+  );
   return (
     <div className={styles.welabsProducts}>
       {/* Hero graph: Magneto orchestrates the other products, so it links to each of them */}

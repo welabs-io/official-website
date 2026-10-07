@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Domus · fiscal sem retrabalho (com abertura)</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Same frame as the approved playful Magneto films: graphite background, amber signal, one caption per beat */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--amber:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--wait:var(--wl-wait);--warn:var(--wl-warn)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+#root [data-wl-name]{color:inherit}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8;display:flex;align-items:center}
+/* Header mark is now the official product logo; height only, name x-height ≈ 1.1 × the 56 px Inter it replaced */
+#wm{position:relative;flex:none;display:flex;align-items:center;height:72px}
+#wm img{display:block;height:66px}
+.cap span,#close span{color:var(--amber)}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--amber);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;z-index:8}
+
+/* ESTAÇÕES DO CAMINHO E A FATURA QUE ANDA */
+.st{position:absolute;top:340px;width:150px;height:150px;border-radius:50%;background:var(--panel);border:4px solid var(--line);display:grid;place-items:center;color:var(--amber);opacity:0;z-index:2}
+.st .tick{position:absolute;right:-6px;top:-6px;width:50px;height:50px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+.sl{position:absolute;top:530px;width:320px;text-align:center;font-size:30px;font-weight:700;opacity:0;white-space:nowrap;z-index:2}
+#st1{left:185px}#st2{left:535px}#st3{left:885px}#st4{left:1235px}#st5{left:1585px}
+#sl1{left:100px}#sl2{left:450px}#sl3{left:800px}#sl4{left:1150px}#sl5{left:1500px}
+.seg{position:absolute;top:410px;width:200px;height:10px;border-radius:5px;background:var(--amber);box-shadow:0 0 18px rgba(var(--wl-amber-rgb),.7);transform-origin:0 50%;transform:scaleX(0);z-index:6}
+#g1{left:335px}#g2{left:685px}#g3{left:1035px}#g4{left:1385px}
+#rail{position:absolute;left:335px;top:413px;width:1250px;height:4px;background:repeating-linear-gradient(90deg,#3A3A44 0 14px,transparent 14px 26px);opacity:0;z-index:1}
+#bead{position:absolute;left:238px;top:393px;width:44px;height:44px;border-radius:50%;background:var(--amber);border:5px solid #FFC75A;box-shadow:0 0 30px rgba(var(--wl-amber-rgb),.9);opacity:0;z-index:7}
+#ring{position:absolute;left:160px;top:315px;width:200px;height:200px;border-radius:50%;border:6px solid var(--amber);box-shadow:0 0 40px rgba(var(--wl-amber-rgb),.6),inset 0 0 30px rgba(var(--wl-amber-rgb),.35);opacity:0;z-index:6}
+
+/* CENAS DE CADA ESTAÇÃO */
+.vc{position:absolute;left:560px;top:620px;width:800px;height:230px;border-radius:26px;background:var(--panel2);border:3px solid var(--line);padding:24px 30px;opacity:0;z-index:3}
+.vt{display:flex;align-items:center;gap:16px;font-size:34px;font-weight:800;white-space:nowrap}
+.vt svg{color:var(--amber);flex:none}
+.row{position:absolute;left:30px;right:30px;height:56px;display:flex;align-items:center;gap:18px;font-size:30px;font-weight:700;white-space:nowrap}
+.row .lb{width:130px;font-size:26px;font-weight:600;color:var(--muted)}
+.chip{height:52px;padding:0 20px;border-radius:26px;font-size:26px;font-weight:700;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.ok{border:2px solid var(--ok);color:var(--ok);background:#0F2A1D}
+.bad{border:2px solid var(--warn);color:var(--warn);background:var(--wl-warn-soft)}
+.wt{border:2px solid var(--wait);color:var(--wait);background:var(--wl-wait-soft)}
+.mut{border:2px solid var(--line);color:var(--muted);background:var(--panel)}
+.abs{position:absolute}
+/* Empresa */
+#cnpjA,#cnpjB,#cA,#cB{position:absolute;opacity:0}
+/* Fatura: impostos */
+#taxes{position:absolute;left:30px;top:150px;display:flex;gap:14px}
+#taxes .chip{opacity:0}
+/* Cobrança: dois cartões */
+/* Two cards of 410 px centered on the frame: "Conta a receber lançada" needs the width */
+#v3a,#v3b{width:410px}
+#v3a{left:540px}
+#v3b{left:970px}
+/* Nota fiscal */
+#emit{position:absolute;left:30px;top:130px;height:64px;padding:0 28px;border-radius:32px;background:var(--amber);color:var(--wl-ink-on-amber);font-size:30px;font-weight:800;display:flex;align-items:center;white-space:nowrap}
+#ask{position:absolute;left:330px;top:96px;width:440px;height:118px;border-radius:22px 22px 22px 6px;background:var(--panel);border:3px solid var(--line);padding:14px 20px;opacity:0}
+#ask b{display:block;font-size:28px;font-weight:800;white-space:nowrap}
+#ask .btns{display:flex;gap:14px;margin-top:10px}
+#ask .bt{height:44px;padding:0 20px;border-radius:22px;border:2px solid var(--line);font-size:24px;font-weight:700;display:flex;align-items:center;color:var(--muted);position:relative}
+#yes{border-color:var(--ok)!important;color:var(--ok)!important}
+#yesf{position:absolute;inset:-2px;border-radius:22px;background:var(--ok);opacity:0}
+#yes em{position:relative;font-style:normal}
+#emitting,#auth{position:absolute;left:400px;top:136px;opacity:0}
+#auth{height:64px;padding:0 28px;border-radius:32px;font-size:32px}
+/* Recebido */
+#pix{position:absolute;left:1840px;top:395px;height:52px;padding:0 20px;border-radius:26px;background:#0F2A1D;border:3px solid var(--ok);color:var(--ok);font-size:26px;font-weight:800;display:flex;align-items:center;opacity:0;white-space:nowrap;z-index:7}
+/* Notas recebidas */
+.mini{position:absolute;top:100px;width:230px;height:100px;border-radius:16px;background:var(--panel);border:3px solid var(--line);padding:12px 16px;opacity:0}
+.mini b{display:block;font-size:26px;font-weight:800;color:var(--amber)}
+.mini span{display:block;margin-top:4px;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+#cnt{position:absolute;right:30px;top:22px}
+#cnt .chip{position:absolute;right:0;top:0}
+#k1,#k2,#k3{opacity:0}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;z-index:9}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center}
+/* 06/10/2026: endorsed product logo (symbol + name + "by welabs") replaces the retired lockup; height only, name x-height 68 px */
+#close img{height:180px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* ABERTURA WELABS-INTRO-V6 (copiada de pieces/welabs-intro-v6, ids e classes com prefixo intro-) */
+@font-face{font-family:"Inter";src:url("./assets/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+#intro{position:relative;width:100%;height:100%;overflow:hidden;background:#10141C;font-family:"Inter",sans-serif;color:#fff}
+#intro-bg,#intro-fg{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.intro-lbl{position:absolute;font-size:32px;font-weight:600;letter-spacing:-.005em;line-height:40px;color:#F2F2F5;opacity:0;white-space:nowrap}
+.intro-lbl.intro-in{left:150px}
+.intro-lbl.intro-out{right:150px;text-align:right;font-weight:600}
+.intro-lbl .intro-lg{display:inline-block}
+#intro-wl{position:absolute;left:417px;top:372px}
+#intro-line{position:absolute;left:0;top:688px;width:1920px;text-align:center;font-size:42px;font-weight:500;letter-spacing:-.015em;line-height:1.2;color:#E6E6EC;opacity:0}
+#intro{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;z-index:1000}
+#film{position:absolute;left:0;top:0;width:1920px;height:1080px}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="hub-fiscal-br-ludic-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="53">
+<!-- ABERTURA: marca por cima do filme até a passagem -->
+<div id="intro">
+  <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <canvas id="intro-fg" width="1920" height="1080" aria-hidden="true"></canvas>
+  <!-- v2: five named products only; rows at y 260/400/540/680/820 (choreography.js IN_Y) -->
+  <!-- v5: final pack; every label is the product's official motion logo (brand/vector/motion/<slug>-dark.svg), all at
+       the same 0.11816 px per logo unit, so the x-height matches across logos -->
+  <!-- v6 (brand 1.2.1): the motion logos come from the 1.2.1 package (motion/<slug>-dark.svg); all five products carry
+       the sign inside the name (Domus: encaixe in place of the "o"; Magneto: Ibrand "m" with an amber pole) -->
+  <div class="intro-lbl intro-in" id="intro-in0" style="top:206px"><span class="intro-lg" id="intro-in0n" role="img" aria-label="magneto" data-wl-motion="magneto" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-in" id="intro-in1" style="top:346px"><span class="intro-lg" id="intro-in1n" role="img" aria-label="domus" data-wl-motion="domus" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-in" id="intro-in2" style="top:486px"><span class="intro-lg" id="intro-in2n" role="img" aria-label="knowly" data-wl-motion="knowly" data-wl-scale="0.11816"></span></div>
+  <!-- Lower streams rise toward the knot, so their labels sit below the line -->
+  <div class="intro-lbl intro-in" id="intro-in3" style="top:692px"><span class="intro-lg" id="intro-in3n" role="img" aria-label="relloo" data-wl-motion="relloo" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-in" id="intro-in4" style="top:832px"><span class="intro-lg" id="intro-in4n" role="img" aria-label="tuner" data-wl-motion="tuner" data-wl-scale="0.11816"></span></div>
+  <div class="intro-lbl intro-out" id="intro-out0" style="top:276px">SaaS</div>
+  <div class="intro-lbl intro-out" id="intro-out1" style="top:486px">Apps</div>
+  <div class="intro-lbl intro-out" id="intro-out2" style="top:696px">Portais</div>
+  <!-- v5: the closing logo is the official Welabs motion SVG ("we" grows with overshoot, "labs" opens) -->
+  <div id="intro-wl" role="img" aria-label="welabs" data-wl-motion="welabs" data-wl-scale="1.2"></div>
+  <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
+</div>
+<div id="film"><!-- FILME: camada do filme (pieces/hub-fiscal-br-ludic-logos, sem mudança), transparente durante a abertura -->
+  <div id="hd">
+    <div id="wm"><img src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></div>
+    <div id="kick">Some o retrabalho do fiscal</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" src="./assets/brand/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div id="rail"></div>
+  <div class="st" id="st1"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M4 21V5l8-3v19M12 8h8v13M2 21h20M7 9h2M7 13h2M7 17h2M15 12h2M15 16h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st2"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st3"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M3 5v14M6 5v14M9 5v14M13 5v14M15 5v14M18 5v14M21 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st4"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8h6M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="st" id="st5"><svg width="64" height="64" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v8M9 7l3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="sl" id="sl1">Empresa</div>
+  <div class="sl" id="sl2">Fatura</div>
+  <div class="sl" id="sl3">Cobrança</div>
+  <div class="sl" id="sl4">Nota fiscal</div>
+  <div class="sl" id="sl5">Dinheiro entra</div>
+  <div class="seg" id="g1"></div><div class="seg" id="g2"></div><div class="seg" id="g3"></div><div class="seg" id="g4"></div>
+  <div id="ring"></div>
+  <div id="bead"></div>
+  <div id="pix">+ PIX</div>
+
+  <!-- Empresa: o cadastro só entra certo -->
+  <div class="vc" id="v1">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M4 21V5l8-3v19M12 8h8v13M2 21h20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Demo Serviços Ltda</div>
+    <div class="row" style="top:88px"><span class="lb">CNPJ</span><span style="position:relative;width:330px;height:56px"><span id="cnpjA" style="top:10px">DE.MO1.234/0001-0X</span><span id="cnpjB" style="top:10px">DE.MO1.234/0001-00</span></span><span style="position:relative;flex:1;height:52px"><span class="chip bad" id="cA" style="right:0">✕ não entra</span><span class="chip ok" id="cB" style="right:0">✓ válido</span></span></div>
+    <div class="row" style="top:152px;opacity:0" id="reg"><span class="lb">Regime</span>Simples Nacional<span class="chip ok" style="margin-left:auto">vigente desde 01/2026</span></div>
+  </div>
+
+  <!-- Fatura: impostos já na conta -->
+  <div class="vc" id="v2">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2"/></svg>Fatura FAT-DEMO-0001</div>
+    <div class="row" style="top:84px;color:var(--muted);font-weight:600">Serviço DEMO · Tomador DEMO S.A.</div>
+    <div id="taxes"><span class="chip ok">PIS</span><span class="chip ok">COFINS</span><span class="chip ok">CSLL</span><span class="chip ok">IRRF</span><span class="chip ok">ISS retido</span></div>
+  </div>
+
+  <!-- Cobrança: banco e contabilidade juntos -->
+  <div class="vc" id="v3a">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Banco</div>
+    <div class="row" style="top:96px">Boleto e PIX prontos</div>
+    <div class="row" style="top:152px;opacity:0" id="ok3a"><span class="chip ok">✓ criado ao enviar</span></div>
+  </div>
+  <div class="vc" id="v3b">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Contabilidade</div>
+    <div class="row" style="top:96px">Conta a receber lançada</div>
+    <div class="row" style="top:152px;opacity:0" id="ok3b"><span class="chip ok">✓ sem digitar de novo</span></div>
+  </div>
+
+  <!-- Nota fiscal: sai certa, quando alguém confirma -->
+  <div class="vc" id="v4">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8h6M9 12h6" stroke="currentColor" stroke-width="2"/></svg>Nota fiscal de serviço</div>
+    <div id="emit">Emitir nota</div>
+    <div id="ask"><b>Confirmar a emissão?</b><div class="btns"><div class="bt" id="yes"><div id="yesf"></div><em>Confirmar</em></div><div class="bt">Cancelar</div></div></div>
+    <span class="chip wt" id="emitting">emitindo…</span>
+    <span class="chip ok" id="auth">✓ Autorizada</span>
+  </div>
+
+  <!-- Dinheiro entra: o extrato reconhece quem pagou -->
+  <div class="vc" id="v5">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 4v13M6 11l6 6 6-6M4 21h16" fill="none" stroke="#3DD68C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>PIX recebido · Tomador DEMO S.A.</div>
+    <div class="row" style="top:92px;opacity:0" id="r5a"><span class="chip ok">✓ reconhecido pelo CNPJ</span><span class="chip ok">✓ fatura paga</span></div>
+    <div class="row" style="top:156px;opacity:0" id="r5b"><span class="chip ok">✓ baixa na contabilidade</span></div>
+  </div>
+
+  <!-- Notas recebidas: chegam sozinhas -->
+  <div class="vc" id="v6">
+    <div class="vt"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M3 13l3-9h12l3 9v7H3zM3 13h5l1 3h6l1-3h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Notas recebidas</div>
+    <div id="cnt"><span class="chip mut" id="cn0">0</span><span class="chip ok" id="cn3" style="opacity:0">3 novas</span></div>
+    <div class="mini" id="k1" style="left:30px"><b>NF-e</b><span>Fornecedor A</span></div>
+    <div class="mini" id="k2" style="left:285px"><b>NF-e</b><span>Fornecedor B</span></div>
+    <div class="mini" id="k3" style="left:540px"><b>NFS-e tomada</b><span>Fornecedor C</span></div>
+  </div>
+
+  <div class="cap" id="c1">Começa certo <span>já no cadastro</span></div>
+  <div class="cap" id="c2">A fatura já sai <span>com os impostos certos</span></div>
+  <div class="cap" id="c3">Cobrança e contabilidade <span>nascem juntas</span></div>
+  <div class="cap" id="c4">A nota sai certa, <span>só quando você confirma</span></div>
+  <div class="cap" id="c5">O dinheiro entra <span>e se reconhece sozinho</span></div>
+  <div class="cap" id="c6">Notas de fornecedores <span>chegam sozinhas</span></div>
+
+  <div id="close">
+    <div class="l1">A nota sai certa.<br><span>O financeiro fecha sem retrabalho.</span></div>
+    <div class="brand"><img src="./assets/brand/product-logo-on-dark.svg" alt="Domus by welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div><!-- /film -->
+</div>
+<script src="./assets/js/gsap.min.js"></script>
+<script src="./assets/brand/welabs-brand.js"></script>
+<script src="./assets/js/shaders.js"></script>
+<script src="./assets/brand/welabs-motion.js"></script>
+<script src="./assets/js/choreography.js"></script>
+<script>
+// PEÇAS DA COMPOSIÇÃO: abertura e filme montam suas timelines; a mestra no último script é a única registrada
+window.__pieceParts = {};
+// RENDER DETERMINÍSTICO DA ABERTURA (WebGL2 no fundo + Canvas 2D por cima, dirigidos pela timeline)
+(function () {
+  var W = 1920, H = 1080, DURATION = 8.5;
+  var bg = document.getElementById('intro-bg');
+  var ctx = document.getElementById('intro-fg').getContext('2d');
+  var gl = bg.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  var prog = null, uni = {}, vao = null;
+
+  function compile() {
+    var p = gl.createProgram();
+    [[gl.VERTEX_SHADER, VS_QUAD], [gl.FRAGMENT_SHADER, FS_FIELD]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+      gl.attachShader(p, sh); gl.deleteShader(sh);
+    });
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    ['uRes', 'uFade', 'uFocus', 'uFocusAmt', 'uSettle'].forEach(function (n) { uni[n] = gl.getUniformLocation(p, n); });
+    vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0); gl.bindVertexArray(null);
+    return p;
+  }
+  if (gl) prog = compile();
+
+  function render(t) {
+    var f = SC.focusAt(t);
+    if (gl && prog) {
+      gl.viewport(0, 0, W, H); gl.useProgram(prog);
+      gl.uniform2f(uni.uRes, W, H); gl.uniform1f(uni.uFade, SC.fadeAt(t));
+      gl.uniform2f(uni.uFocus, f.p[0], f.p[1]); gl.uniform1f(uni.uFocusAmt, f.amt); gl.uniform1f(uni.uSettle, SC.settleAt(t));
+      gl.bindVertexArray(vao); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    SC.drawScene(ctx, t);
+  }
+
+  // TIMELINE (a única fonte de tempo): tween linear sobre um proxy dirige o render; logos, rótulos e frase são DOM
+  var proxy = { t: 0 };
+  var tl = gsap.timeline({ paused: true });
+  tl.to(proxy, { t: DURATION, duration: DURATION, ease: 'none', onUpdate: function () { render(proxy.t); } }, 0);
+  // v5: each label plays its official motion (brand/vector/motion keyframes, 4.8 s cycle at half speed, so a logo
+  // is whole 1.4 s after its stream starts) and holds on the still logo until the streams collapse
+  var LABEL_SPEED = 0.5;
+  SC.IN_T0.forEach(function (t0, i) {
+    tl.fromTo('#intro-in' + i, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: 'none' }, t0 + 0.05);
+    WELABS_MOTION.play(tl, '#intro-in' + i + 'n', t0 + 0.05, LABEL_SPEED);
+    tl.to('#intro-in' + i, { opacity: 0, x: 24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.02 * i);
+  });
+  SC.OUT_T0.forEach(function (t0, j) {
+    tl.fromTo('#intro-out' + j, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, t0 + 0.4);
+    tl.to('#intro-out' + j, { opacity: 0, x: -24, duration: 0.3, ease: 'power2.in' }, SC.COL_T0 + 0.06 + 0.02 * j);
+  });
+  // v5: the knot glides into the "we" and the official Welabs motion takes over there (cycle at 0.75 speed)
+  WELABS_MOTION.play(tl, '#intro-wl', SC.LOGO_T0, SC.LOGO_SPEED);
+  tl.fromTo('#intro-line', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, SC.TAGLINE_T0);
+  render(0);
+  // Registered as a part; only the master timeline at the end is published to the runtime
+  window.__pieceParts.intro = tl;
+})();
+
+// FILME (copiado sem mudança de pieces/hub-fiscal-br-ludic-logos; só o registro da timeline virou __pieceParts.film)
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 44;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function tick(id, t) { tl.fromTo(id + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t); tl.to(id, { borderColor: '#3DD68C', duration: 0.3 }, t); }
+  // The invoice bead and the focus ring walk one station (350 px) at a time
+  function walk(seg, toX, t) { tl.fromTo(seg, { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: 'none' }, t); tl.to('#bead', { x: toX, duration: 1.0, ease: 'none' }, t); tl.to('#ring', { x: toX, duration: 1.0, ease: 'power1.inOut' }, t); }
+
+  // Cabeçalho e estações
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  ['#st1', '#st2', '#st3', '#st4', '#st5'].forEach(function (s, i) { inn(s, 0.6 + 0.18 * i, { scale: 0.5 }, 0.45); inn('#sl' + (i + 1), 0.75 + 0.18 * i, { y: 10 }, 0.4); });
+  inn('#rail', 1.2, {}, 0.5);
+  inn('#bead', 1.6, { scale: 0.3 }, 0.4);
+  inn('#ring', 1.7, { scale: 0.7 }, 0.45);
+
+  // Batida 1: começa certo no cadastro (1,0–7,4 s)
+  inn('#c1', 1.0, { y: 16 });
+  inn('#v1', 1.8, { y: 16 }, 0.45);
+  inn('#cnpjA', 2.3, {}, 0.3); inn('#cA', 2.5, { scale: 0.8 }, 0.3);
+  tl.to('#v1', { x: -10, duration: 0.07 }, 2.6).to('#v1', { x: 10, duration: 0.07 }, 2.67).to('#v1', { x: 0, duration: 0.07 }, 2.74);
+  out(['#cnpjA', '#cA'], 4.2, 0.25);
+  inn('#cnpjB', 4.4, {}, 0.3); inn('#cB', 4.6, { scale: 0.8 }, 0.3);
+  inn('#reg', 4.9, { y: 10 }, 0.4);
+  tick('#st1', 5.2);
+  out('#c1', 7.2); out('#v1', 7.2, 0.3);
+
+  // Batida 2: a fatura sai com os impostos certos (7,5–14,0 s)
+  walk('#g1', 350, 7.5);
+  inn('#c2', 7.6, { y: 16 });
+  inn('#v2', 8.5, { y: 16 }, 0.45);
+  for (var i = 1; i <= 5; i++) inn('#taxes .chip:nth-child(' + i + ')', 9.2 + 0.25 * i, { scale: 0.6 }, 0.3);
+  tick('#st2', 11.0);
+  out('#c2', 13.8); out('#v2', 13.8, 0.3);
+
+  // Batida 3: cobrança e contabilidade nascem juntas (14,1–20,4 s)
+  walk('#g2', 700, 14.1);
+  inn('#c3', 14.2, { y: 16 });
+  inn('#v3a', 15.1, { x: -20 }, 0.45); inn('#v3b', 15.3, { x: 20 }, 0.45);
+  inn('#ok3a', 16.1, { y: 8 }, 0.35); inn('#ok3b', 16.3, { y: 8 }, 0.35);
+  tick('#st3', 16.6);
+  out('#c3', 20.2); out(['#v3a', '#v3b'], 20.2, 0.3);
+
+  // Batida 4: a nota sai certa, quando alguém confirma (20,5–27,6 s)
+  walk('#g3', 1050, 20.5);
+  inn('#c4', 20.6, { y: 16 });
+  inn('#v4', 21.5, { y: 16 }, 0.45);
+  tl.to('#emit', { scale: 0.92, duration: 0.15 }, 22.2).to('#emit', { scale: 1, duration: 0.2 }, 22.35);
+  inn('#ask', 22.5, { y: 10, scale: 0.9 }, 0.4);
+  tl.to('#yes', { scale: 0.92, duration: 0.15 }, 24.2).to('#yes', { scale: 1, duration: 0.2 }, 24.35);
+  tl.fromTo('#yesf', { opacity: 0 }, { opacity: 0.35, duration: 0.2 }, 24.2);
+  out('#ask', 24.6, 0.3);
+  inn('#emitting', 24.95, { scale: 0.8 }, 0.3);
+  out('#emitting', 26.4, 0.2);
+  inn('#auth', 26.5, { scale: 1.4 }, 0.35);
+  tick('#st4', 26.6);
+  out('#c4', 28.6); out('#v4', 28.6, 0.3);
+
+  // Batida 5: o dinheiro entra e se reconhece (28,9–34,8 s)
+  inn('#pix', 28.9, { x: 20 }, 0.3);
+  tl.to('#pix', { x: -190, duration: 0.8, ease: 'power2.out' }, 29.1);
+  walk('#g4', 1400, 28.9);
+  inn('#c5', 29.0, { y: 16 });
+  out('#pix', 30.0, 0.3);
+  inn('#v5', 30.0, { y: 16 }, 0.45);
+  inn('#r5a', 30.7, { y: 8 }, 0.35);
+  inn('#r5b', 31.1, { y: 8 }, 0.35);
+  tick('#st5', 31.2);
+  tl.to('#ring', { opacity: 0, duration: 0.4 }, 32.0);
+  out('#c5', 34.6); out('#v5', 34.6, 0.3);
+
+  // Batida 6: notas de fornecedores chegam sozinhas (34,9–39,6 s)
+  inn('#c6', 34.9, { y: 16 });
+  inn('#v6', 35.0, { y: 16 }, 0.45);
+  ['#k1', '#k2', '#k3'].forEach(function (k, j) { inn(k, 35.6 + 0.3 * j, { y: -60 }, 0.45); });
+  out('#cn0', 36.4, 0.2); inn('#cn3', 36.5, { scale: 0.7 }, 0.3);
+  out('#c6', 39.4);
+
+  // Fecho (39,6–44 s, parado de 40,4 s ao fim)
+  out(['#hd', '#st1', '#st2', '#st3', '#st4', '#st5', '#sl1', '#sl2', '#sl3', '#sl4', '#sl5', '#g1', '#g2', '#g3', '#g4', '#rail', '#bead', '#v6'], 39.5, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 39.8);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__pieceParts.film = tl; // film timeline, nested by the master below
+})();
+
+// LINHA DO TEMPO MESTRA: abertura (8.5 s) -> passagem (0.5 s) -> filme (44 s), uma só timeline
+(function () {
+  var INTRO = 8.5, HANDOFF = 0.5, FILM = 44;
+  var parts = window.__pieceParts;
+  var master = gsap.timeline({ paused: true });
+  // Child timelines are unpaused so the master playhead drives them; seeking back into the intro re-renders it
+  master.add(parts.intro.paused(false), 0);
+  // Film layer stays transparent under the intro (nothing of it is drawn or audited there)
+  master.fromTo('#film', { opacity: 0 }, { opacity: 1, duration: 0.001, ease: 'none', immediateRender: true }, INTRO - 0.001);
+  // Handoff: the intro layer fades out over the film's first frame (film still at its own t=0)
+  master.fromTo('#intro', { opacity: 1 }, { opacity: 0, duration: HANDOFF, ease: 'power1.inOut' }, INTRO);
+  master.add(parts.film.paused(false), INTRO + HANDOFF);
+  if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
+  window.__timelines = window.__timelines || {};
+  window.__timelines["hub-fiscal-br-ludic-logos-intro-v6"] = master;
+})();
+</script>
+</body>
+</html>

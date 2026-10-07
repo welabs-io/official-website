@@ -21,8 +21,19 @@ const record = (name) =>
   );
 const publicSlug = record("PUBLIC_SLUG");
 const formerSlug = record("FORMER_SLUG");
+// Products hidden for now are read from lib/catalog.ts: their data stays in the catalog, but the site
+// serves no page for them, so they are checked as redirects to the collection instead of as pages.
+const hidden = new Set(
+  [
+    ...fs
+      .readFileSync("lib/catalog.ts", "utf8")
+      .match(/HIDDEN_PRODUCTS[^=]*=\s*new Set\(\[([^\]]*)\]\)/)[1]
+      .matchAll(/["']([\w-]+)["']/g),
+  ].map(([, id]) => id),
+);
 
 assert.equal(catalog.length, 5);
+assert.deepEqual([...hidden], ["malupe"]);
 assert(catalog.every((p) => p.publisher === "Welabs"));
 assert(motionProducts.every((p) => p.publisher === "Welabs"));
 
@@ -62,7 +73,16 @@ const assertNoStage = (text, url) => {
 const products = [
   ...catalog.map((p) => ({ id: p.id, title: (l) => p.locales[l].title })),
   ...motionProducts.map((p) => ({ id: p.id, title: () => p.title })),
-];
+].filter((p) => !hidden.has(p.id));
+// Five visible Welabs products: Domus, Magneto, Knowly, Relloo and Tuner
+assert.equal(products.length, 5);
+// A hidden product's public address (and its internal id) lands on the collection.
+for (const id of hidden) {
+  const slug = publicSlug[id] ?? id;
+  await expectRedirect("/produtos/" + slug, "/produtos");
+  const r = await fetch(base + "/produtos/" + id, { redirect: "follow" });
+  assert.equal(new URL(r.url).pathname, "/produtos", id + " ends on /produtos");
+}
 for (const p of products) {
   const slug = publicSlug[p.id] ?? p.id;
   if (slug !== p.id)

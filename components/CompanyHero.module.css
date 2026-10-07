@@ -511,6 +511,10 @@
 .ecosystemProduct {
   padding: 16px 18px;
 }
+/* An odd number of ecosystem cards (a product hidden for now) leaves no lone half-row card */
+.ecosystemProduct:last-child:nth-child(even) {
+  grid-column: 1/-1;
+}
 .purpose {
   font-family: var(--font-mono);
   font-size: 10px;

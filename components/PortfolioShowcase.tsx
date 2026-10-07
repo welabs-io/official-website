@@ -3,7 +3,8 @@
 import type { CSSProperties } from "react";
 import Link from "./LangLink";
 import { useT } from "./LangProvider";
-import catalog from "@/lib/presentation-catalog.json";
+// Visible catalog only: hidden products get no card (lib/catalog.ts)
+import catalog from "@/lib/catalog";
 import visuals from "@/lib/presentation-visuals.json";
 import emphasis from "@/lib/emphasis.json";
 import motionProducts from "@/lib/motion-products.json";
