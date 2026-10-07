@@ -20,6 +20,7 @@
     "title": "Tuner",
     "logo": "/brands/welabs/products/tuner-dark-endorsed.svg",
     "logoPlate": "dark",
+    "logoClearZone": 0.11223,
     "sector": ["Canais de atendimento", "Service channels"],
     "stage": ["Em desenvolvimento", "In development"],
     "summary": [

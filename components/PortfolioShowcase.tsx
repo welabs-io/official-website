@@ -86,7 +86,13 @@ type CardProps = {
   title: string;
   cover?: string;
   // `wide`: Welabs product logo, drawn on its own plate and sized by height only
-  logo?: { src: string; light: boolean; wide?: boolean } | null;
+  // `clearZone`: plate margin as a fraction of the logo height, when it differs from the shared 75/549.6
+  logo?: {
+    src: string;
+    light: boolean;
+    wide?: boolean;
+    clearZone?: number;
+  } | null;
   meta: [string, string];
   summary: string;
   accent: string;
@@ -137,6 +143,13 @@ function SystemCard({
             {logo ? (
               <span
                 className={`${styles.logoPlate} ${logo.light ? styles.lightPlate : styles.darkPlate}${logo.wide ? ` ${styles.widePlate}` : ""}`}
+                style={
+                  logo.clearZone === undefined
+                    ? undefined
+                    : ({
+                        "--logo-clear-zone": logo.clearZone,
+                      } as React.CSSProperties)
+                }
               >
                 <img
                   src={logo.src}
@@ -238,6 +251,12 @@ function FilmProductCard({
           src: product.logo,
           light: !("logoPlate" in product && product.logoPlate === "dark"),
           wide: product.publisher === "Welabs",
+          // Tuner's wordmark has its own clear zone (no symbol), so it overrides the shared ratio
+          clearZone:
+            "logoClearZone" in product &&
+            typeof product.logoClearZone === "number"
+              ? product.logoClearZone
+              : undefined,
         }
       : null;
   return (

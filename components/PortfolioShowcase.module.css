@@ -249,12 +249,15 @@
 /* Welabs product logos (symbol + name + "by welabs") bring their own graphite plate and clear zone, so the
    wrapper adds no plate, border or padding and the logo is sized by height only: 60px keeps the name
    x-height at 16px (brand minimum for the endorsed version: 14px). The plate matches the page graphite, so
-   the clear zone (75 of the 549.6 units of height) moves into the gutter and the ink lines up with the text. */
+   the clear zone (75 of the 549.6 units of height) moves into the gutter and the ink lines up with the text.
+   A logo with another clear-zone ratio (Tuner wordmark: 65.70 of 585.43) sets --logo-clear-zone inline. */
 .logoPlate.widePlate {
   --logo-h: 60px;
   width: fit-content;
   height: var(--logo-h);
-  margin-left: calc(var(--logo-h) * -75 / 549.6);
+  margin-left: calc(
+    var(--logo-h) * -1 * var(--logo-clear-zone, calc(75 / 549.6))
+  );
   padding: 0;
   background: none;
   border: 0;

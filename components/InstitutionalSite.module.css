@@ -406,11 +406,14 @@
   object-fit: contain;
 }
 /* Welabs product logo (symbol + name + "by welabs"): own plate and clear zone, sized by height only (name x-height 30px);
-   the plate matches the page graphite, so the clear zone (75 of 549.6 units) moves into the gutter and the ink lines up with the text */
+   the plate matches the page graphite, so the clear zone (75 of 549.6 units) moves into the gutter and the ink lines up with the text.
+   A logo with another clear-zone ratio (Tuner wordmark: 65.70 of 585.43) sets --logo-clear-zone inline. */
 .heroLogo.ownPlateLogo {
   --logo-h: 112px;
   height: var(--logo-h);
-  margin-left: calc(var(--logo-h) * -75 / 549.6);
+  margin-left: calc(
+    var(--logo-h) * -1 * var(--logo-clear-zone, calc(75 / 549.6))
+  );
   max-width: none;
   padding: 0;
   background: none;

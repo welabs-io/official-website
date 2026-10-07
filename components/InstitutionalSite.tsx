@@ -1038,6 +1038,15 @@ export function MotionProductPage({ product }: { product: MotionProduct }) {
                   {/* Plate follows `logoPlate`; a Welabs product logo (Tuner) carries its own plate, sized by height */}
                   <span
                     className={`${styles.heroLogo} ${product.publisher === "Welabs" ? styles.ownPlateLogo : "logoPlate" in product && product.logoPlate === "dark" ? styles.darkLogo : styles.lightLogo}`}
+                    // Tuner's wordmark has its own clear zone (no symbol), so it overrides the shared ratio
+                    style={
+                      "logoClearZone" in product &&
+                      typeof product.logoClearZone === "number"
+                        ? ({
+                            "--logo-clear-zone": product.logoClearZone,
+                          } as React.CSSProperties)
+                        : undefined
+                    }
                   >
                     <img
                       src={product.logo}
