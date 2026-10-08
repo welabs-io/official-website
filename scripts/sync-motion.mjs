@@ -93,8 +93,8 @@ const ROUND2 = {
   // film already running (no empty frames) and the logos sit on the baseline measured by the round's gate.
   // Same films, titles and descriptions; each montage is 0.5 s shorter.
   // Since 2026-10-08 (night) the films with a DEMO pill beside the Welabs seal are their "-r3" revision: the
-  // pill is centred on the seal, which stays on the text baseline. flow-durable-run stays on "-r2" until its
-  // r3 film is accepted.
+  // pill is centred on the seal, which stays on the text baseline. flow-durable-run moved to "-r3" on
+  // 2026-10-08, once its r3 film was accepted under the operator's recorded exception.
   "welabs-chain-overview-define-logos-r3-intro-v6": {
     kind: "topology",
     page: "welabs",
@@ -177,7 +177,7 @@ const ROUND2 = {
     "business",
     KNOWHOW,
   ),
-  "flow-durable-run-logos-r2-intro-v6": reel(
+  "flow-durable-run-logos-r3-intro-v6": reel(
     "flow",
     "Magneto · Nenhum processo fica pela metade",
     "O fluxo espera a pessoa o tempo que for, sobrevive à queda do sistema e segue do mesmo ponto, sem repetir nenhum passo.",
