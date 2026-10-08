@@ -40,6 +40,46 @@
     "status": "reservado"
   },
   {
+    "id": "welabs-crm",
+    "productName": "Relloo",
+    "publisher": "Welabs",
+    "kind": "own-product",
+    "parentId": null,
+    "brand": {
+      "name": "Welabs",
+      "status": "verified",
+      "palette": {
+        "surface": "#10141C",
+        "ink": "#FFFFFF",
+        "accent": "#FFB020"
+      },
+      "typography": {
+        "family": "system-ui"
+      },
+      "logoAssetId": "brand-logo"
+    },
+    "presentationBase": "/presentations/welabs-crm/1.0.0",
+    "locales": {
+      "pt-BR": {
+        "title": "Relloo",
+        "summary": "Relloo, atender e vender na mesma conversa: organiza as oportunidades e acompanha o relacionamento comercial.",
+        "audience": "Equipes comerciais de organizações.",
+        "disclaimer": "Recriação ilustrativa · dados fictícios",
+        "poster": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png",
+        "posterAlt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas."
+      },
+      "en": {
+        "title": "Relloo",
+        "summary": "Relloo, serve and sell in the same conversation: it organizes opportunities and follows commercial relationships.",
+        "audience": "Commercial teams in organizations.",
+        "disclaimer": "Illustrative recreation · fictional data",
+        "poster": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png",
+        "posterAlt": "Illustrative board of fictional opportunities in three generic commercial stages."
+      }
+    },
+    "status": "reservado"
+  },
+  {
     "id": "flow",
     "productName": "Magneto",
     "publisher": "Welabs",
@@ -115,46 +155,6 @@
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/wekb/1.0.0/posters/en-scene-1.png",
         "posterAlt": "Two DEMO documents with fictional texts illustrate Knowly."
-      }
-    },
-    "status": "reservado"
-  },
-  {
-    "id": "welabs-crm",
-    "productName": "Relloo",
-    "publisher": "Welabs",
-    "kind": "own-product",
-    "parentId": null,
-    "brand": {
-      "name": "Welabs",
-      "status": "verified",
-      "palette": {
-        "surface": "#10141C",
-        "ink": "#FFFFFF",
-        "accent": "#FFB020"
-      },
-      "typography": {
-        "family": "system-ui"
-      },
-      "logoAssetId": "brand-logo"
-    },
-    "presentationBase": "/presentations/welabs-crm/1.0.0",
-    "locales": {
-      "pt-BR": {
-        "title": "Relloo",
-        "summary": "Relloo, atender e vender na mesma conversa: organiza as oportunidades e acompanha o relacionamento comercial.",
-        "audience": "Equipes comerciais de organizações.",
-        "disclaimer": "Recriação ilustrativa · dados fictícios",
-        "poster": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png",
-        "posterAlt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas."
-      },
-      "en": {
-        "title": "Relloo",
-        "summary": "Relloo, serve and sell in the same conversation: it organizes opportunities and follows commercial relationships.",
-        "audience": "Commercial teams in organizations.",
-        "disclaimer": "Illustrative recreation · fictional data",
-        "poster": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png",
-        "posterAlt": "Illustrative board of fictional opportunities in three generic commercial stages."
       }
     },
     "status": "reservado"

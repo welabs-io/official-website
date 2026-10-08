@@ -20,19 +20,20 @@ export function Footer() {
             <img src={brand.logo} alt="Welabs" className="logo-img" />
             <p className="footer-desc">
               {lang === "en"
-                ? "We develop products connecting management, knowledge and automation."
-                : "Desenvolvemos produtos que conectam gestão, conhecimento e automação."}
+                ? "We develop products connecting management, automation and knowledge."
+                : "Desenvolvemos produtos que conectam gestão, automação e conhecimento."}
             </p>
           </div>
           <div className="footer-nav-col">
             <h4>{lang === "en" ? "Our products" : "Nossos produtos"}</h4>
             <ul>
+              {/* Weight order of the Welabs products (operator, 2026-10-08) */}
               {[
-                ["flow", "Magneto"],
-                ["welabs-crm", "Relloo"],
                 ["erp", "Domus"],
-                ["wekb", "Knowly"],
+                ["welabs-crm", "Relloo"],
+                ["flow", "Magneto"],
                 ["channels", "Tuner"],
+                ["wekb", "Knowly"],
                 [
                   "malupe",
                   lang === "en"

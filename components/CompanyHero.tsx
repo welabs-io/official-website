@@ -11,7 +11,7 @@ const words = {
     welabsLabel: "Nossa empresa. Nossos produtos.",
     welabsTitle: ["Ideias que viram", "ferramentas de trabalho."],
     welabsCopy:
-      "Somos a Welabs. Criamos produtos próprios para gestão, conhecimento, relacionamento e automação, com espaço para cada contexto.",
+      "Somos a Welabs. Criamos produtos próprios para gestão, relacionamento, automação e conhecimento, com espaço para cada contexto.",
     welabsCta: "Conhecer os produtos",
     welabsSecondary: "A Welabs",
     ecosystem: "Produtos Welabs",
@@ -34,7 +34,7 @@ const words = {
     welabsLabel: "Our company. Our products.",
     welabsTitle: ["Ideas that become", "tools for work."],
     welabsCopy:
-      "We are Welabs. We build our own products for management, knowledge, relationships and automation, with room for each context.",
+      "We are Welabs. We build our own products for management, relationships, automation and knowledge, with room for each context.",
     welabsCta: "Explore the products",
     welabsSecondary: "About Welabs",
     ecosystem: "Welabs products",
@@ -68,8 +68,9 @@ function Arrow() {
 // Cards name each product's purpose; maturity is never shown, every product appears in use.
 function WelabsProducts({ locale }: { locale: Locale }) {
   const t = words[locale];
-  // Hidden products (lib/catalog.ts) leave the graph and its links
-  const products = (["erp", "wekb", "welabs-crm", "malupe"] as const).filter(
+  // Hidden products (lib/catalog.ts) leave the graph and its links; the others follow the weight
+  // order of 2026-10-08 (Domus, Relloo, Knowly; Magneto is the orchestrating card above them)
+  const products = (["erp", "welabs-crm", "wekb", "malupe"] as const).filter(
     (id) => !isHiddenProduct(id),
   );
   return (

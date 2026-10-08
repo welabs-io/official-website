@@ -34,6 +34,30 @@ const hidden = new Set(
 
 assert.equal(catalog.length, 5);
 assert.deepEqual([...hidden], ["malupe"]);
+
+// ORDEM DE PESO DOS PRODUTOS WELABS
+// Operator decision (2026-10-08): Domus, Relloo, Magneto, Tuner, Knowly. The emphasis ranking, the
+// catalog array and the rendered hub's DOM order (the mobile stack) keep it; desktop corners are pinned.
+const WEIGHT_ORDER = ["erp", "welabs-crm", "flow", "channels", "wekb"];
+const emphasis = JSON.parse(fs.readFileSync("lib/emphasis.json"));
+assert.deepEqual(
+  emphasis.welabs.filter((id) => !hidden.has(id)),
+  WEIGHT_ORDER,
+  "emphasis.welabs follows the weight order",
+);
+assert.deepEqual(
+  catalog.map((p) => p.id).filter((id) => !hidden.has(id)),
+  WEIGHT_ORDER.filter((id) => catalog.some((p) => p.id === id)),
+  "catalog array follows the weight order",
+);
+// Product cards in the order the page renders them (data-product on each card)
+const renderedOrder = (text) => [
+  ...new Set(
+    [...text.matchAll(/<article[^>]*data-product="([\w-]+)"/g)].map(
+      ([, id]) => id,
+    ),
+  ),
+];
 assert(catalog.every((p) => p.publisher === "Welabs"));
 assert(motionProducts.every((p) => p.publisher === "Welabs"));
 
@@ -98,7 +122,7 @@ const products = [
   ...catalog.map((p) => ({ id: p.id, title: (l) => p.locales[l].title })),
   ...motionProducts.map((p) => ({ id: p.id, title: () => p.title })),
 ].filter((p) => !hidden.has(p.id));
-// Five visible Welabs products: Domus, Magneto, Knowly, Relloo and Tuner
+// Five visible Welabs products: Domus, Relloo, Magneto, Tuner and Knowly
 assert.equal(products.length, 5);
 // A hidden product's public address (and its internal id) lands on the collection.
 for (const id of hidden) {
@@ -136,7 +160,11 @@ for (const [from, to] of Object.entries(formerSlug))
 
 for (const url of ["/", "/sobre", "/solucoes", "/produtos"])
   for (const q of ["?lang=pt", "?lang=en"]) {
-    assertNoStage(await (await get(url + q)).text(), url + q);
+    const text = await (await get(url + q)).text();
+    assertNoStage(text, url + q);
+    // The home and the collection render the hub: its cards follow the weight order
+    if (url === "/" || url === "/produtos")
+      assert.deepEqual(renderedOrder(text), WEIGHT_ORDER, url + q + " order");
     html++;
   }
 // The Imagine pages and the legacy presentation routes are not part of this site.

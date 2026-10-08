@@ -3,11 +3,11 @@ import { WelabsHome } from "@/components/InstitutionalSite";
 const copy = {
   pt: [
     "Empresa e produtos | Welabs",
-    "Criamos produtos próprios para gestão, conhecimento, relacionamento e automação.",
+    "Criamos produtos próprios para gestão, relacionamento, automação e conhecimento.",
   ],
   en: [
     "Company and products | Welabs",
-    "We build our own products for management, knowledge, relationships and automation.",
+    "We build our own products for management, relationships, automation and knowledge.",
   ],
 };
 export async function generateMetadata({

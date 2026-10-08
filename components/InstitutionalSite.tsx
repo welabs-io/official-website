@@ -77,8 +77,8 @@ export function PortfolioIndex() {
           <div className={styles.indexIntro}>
             <p>
               {en
-                ? "Management, knowledge, relationships and automation in our own product ecosystem."
-                : "Gestão, conhecimento, relacionamento e automação em nosso ecossistema de produtos próprios."}
+                ? "Management, relationships, automation and knowledge in our own product ecosystem."
+                : "Gestão, relacionamento, automação e conhecimento em nosso ecossistema de produtos próprios."}
             </p>
             <nav
               className={styles.brandLinks}
@@ -298,8 +298,8 @@ export function CompanyAbout() {
           </h1>
           <p className={styles.deck}>
             {en
-              ? "Our company builds its own products to connect management, knowledge, relationships and automation."
-              : "Nossa empresa desenvolve produtos próprios para conectar gestão, conhecimento, relacionamento e automação."}
+              ? "Our company builds its own products to connect management, relationships, automation and knowledge."
+              : "Nossa empresa desenvolve produtos próprios para conectar gestão, relacionamento, automação e conhecimento."}
           </p>
         </div>
       </section>
@@ -340,7 +340,8 @@ export function CompanyAbout() {
               {en ? "PRODUCT CONTEXTS" : "CONTEXTOS DE PRODUTO"}
             </span>
             <div className={styles.grid}>
-              {["wekb", "welabs-crm"].map((id) => (
+              {/* Weight order: Relloo before Knowly */}
+              {["welabs-crm", "wekb"].map((id) => (
                 <ProductCard
                   key={id}
                   item={catalog.find((p) => p.id === id)!}
@@ -363,11 +364,7 @@ export function SolutionsPage() {
       en ? "Define the business" : "Definir o negócio",
       ownChallenge.erp[en ? 1 : 0],
     ],
-    [
-      "wekb",
-      en ? "Consult knowledge" : "Consultar conhecimento",
-      ownChallenge.wekb[en ? 1 : 0],
-    ],
+    // Weight order of the Welabs products (operator, 2026-10-08)
     [
       "welabs-crm",
       en ? "Follow relationships" : "Acompanhar relacionamentos",
@@ -377,6 +374,11 @@ export function SolutionsPage() {
       "flow",
       en ? "Follow automation" : "Acompanhar automações",
       ownChallenge.flow[en ? 1 : 0],
+    ],
+    [
+      "wekb",
+      en ? "Consult knowledge" : "Consultar conhecimento",
+      ownChallenge.wekb[en ? 1 : 0],
     ],
     [
       "malupe",
@@ -483,8 +485,8 @@ export function WelabsHome() {
           </h2>
           <p>
             {en
-              ? "We develop our own products for management, knowledge, relationships and automation, preserving the context of each operation."
-              : "Desenvolvemos nossos próprios produtos para gestão, conhecimento, relacionamento e automação, preservando o contexto de cada operação."}
+              ? "We develop our own products for management, relationships, automation and knowledge, preserving the context of each operation."
+              : "Desenvolvemos nossos próprios produtos para gestão, relacionamento, automação e conhecimento, preservando o contexto de cada operação."}
           </p>
           <Link className={styles.textLink} href="/solucoes">
             {en ? "Explore solutions" : "Explorar soluções"} ↗

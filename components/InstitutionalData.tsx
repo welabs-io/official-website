@@ -6,7 +6,7 @@ export function InstitutionalData() {
     "@type": "Organization",
     name: "Welabs",
     description:
-      "Produtos próprios para gestão, conhecimento, relacionamento e automação.",
+      "Produtos próprios para gestão, relacionamento, automação e conhecimento.",
   };
   return (
     <script

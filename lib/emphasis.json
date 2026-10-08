@@ -1,4 +1,4 @@
 {
-  "_note": "Emphasis ranking revised on 2026-10-04: Welabs per product (Magneto, Relloo, Domus, Knowly, Tuner, Monitoring). The Imagine ranking, services and client segments left with the Imagine site on 2026-10-07.",
-  "welabs": ["flow", "welabs-crm", "erp", "wekb", "channels", "malupe"]
+  "_note": "Emphasis ranking revised on 2026-10-08 (operator's product weight order): Welabs per product (Domus, Relloo, Magneto, Tuner, Knowly, Monitoring). The Imagine ranking, services and client segments left with the Imagine site on 2026-10-07.",
+  "welabs": ["erp", "welabs-crm", "flow", "channels", "wekb", "malupe"]
 }

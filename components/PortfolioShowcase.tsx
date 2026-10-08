@@ -151,27 +151,35 @@ export function FilmProductCard({
 // larger, the other four in the corners (3x3 grid), the label sitting on the connector's vertical
 // run. Mobile: Domus first and the others hanging from a vertical line; each label sits on that line,
 // in the gap above its product. Catalog and film-only products are mixed, ranked by
-// emphasis.welabs; hidden products never get a node.
+// emphasis.welabs; hidden products never get a node. Weight order of 2026-10-08 (Domus, Relloo,
+// Magneto, Tuner, Knowly) sets the DOM order, so the mobile stack follows it. The desktop corners
+// stay pinned per product while the hub concept awaits an operator decision.
 const HUB_ID = "erp";
-const CORNERS = ["tl", "tr", "bl", "br"] as const;
+// Desktop corner of each product, independent of the ranking (pinned on 2026-10-08)
+const HUB_CORNER: Record<string, "tl" | "tr" | "bl" | "br"> = {
+  flow: "tl",
+  "welabs-crm": "tr",
+  wekb: "bl",
+  channels: "br",
+};
 type Pair = [pt: string, en: string];
-// Verb of each product in the chain (shown as "<product> <verb>")
+// Verb of each product in the chain (shown as "<product> <verb>"), in weight order
 const HUB_VERB: Record<string, Pair> = {
   erp: ["define", "defines"],
-  flow: ["executa", "runs"],
   "welabs-crm": ["atende", "serves"],
-  wekb: ["explica", "explains"],
+  flow: ["executa", "runs"],
   channels: ["entrega", "delivers"],
+  wekb: ["explica", "explains"],
 };
 // What travels between Domus and each product; parts stack on desktop and line up on mobile
 const HUB_WIRE: Record<string, Pair[]> = {
+  "welabs-crm": [["contatos e pedidos", "contacts and orders"]],
   flow: [
     ["regra →", "rule →"],
     ["← recibo", "← receipt"],
   ],
-  "welabs-crm": [["contatos e pedidos", "contacts and orders"]],
-  wekb: [["dados e quem pode ver", "data and who can see it"]],
   channels: [["avisos e conversas", "notices and conversations"]],
+  wekb: [["dados e quem pode ver", "data and who can see it"]],
 };
 type Entry =
   | { id: string; item: Item; product?: undefined }
@@ -247,11 +255,11 @@ export function ProductHub({
             />
           </div>
         )}
-        {spokes.map((e, n) => (
+        {spokes.map((e) => (
           <div
             key={e.id}
             className={styles.node}
-            data-corner={CORNERS[n]}
+            data-corner={HUB_CORNER[e.id]}
             data-current={e.id === currentId ? "" : undefined}
           >
             {verb(e)}
