@@ -267,7 +267,7 @@ export function ProductPage({ item }: { item: Item }) {
             <h2 className={styles.relatedTitle}>
               {en ? "Other product contexts." : "Outros contextos de produto."}
             </h2>
-            {/* The whole ecosystem as the Domus hub; the current product stays in place, dimmed */}
+            {/* The whole ecosystem as core and rails; the current product is highlighted in place */}
             <ProductHub currentId={item.id} />
           </section>
         </div>

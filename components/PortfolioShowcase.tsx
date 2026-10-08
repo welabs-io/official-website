@@ -143,25 +143,17 @@ export function FilmProductCard({
   );
 }
 
-// ECOSSISTEMA EM HUB, COM CONECTORES QUE FALAM
-// Domus (catalog id "erp") is the hub: it defines the business and every other product brings it to
-// life, so each one is tied to it by an amber connector, never to each other. Operator decision of
-// 2026-10-08: a central line ("O Domus define. Os outros dão vida."), one verb per product and a
-// label on each connector saying what travels on it. Desktop: Domus in the centre column, a little
-// larger, the other four in the corners (3x3 grid), the label sitting on the connector's vertical
-// run. Mobile: Domus first and the others hanging from a vertical line; each label sits on that line,
-// in the gap above its product. Catalog and film-only products are mixed, ranked by
-// emphasis.welabs; hidden products never get a node. Weight order of 2026-10-08 (Domus, Relloo,
-// Magneto, Tuner, Knowly) sets the DOM order, so the mobile stack follows it. The desktop corners
-// stay pinned per product while the hub concept awaits an operator decision.
+// ECOSSISTEMA COMO NÚCLEO E TRILHOS
+// Operator decision of 2026-10-08 (option A). The core is Domus (catalog id "erp", larger) with
+// Relloo fitted against it as one block: no connector between them, only a discreet label on the
+// seam. Magneto, Tuner and Knowly are cross-cutting rails: three thin horizontal bands, top to bottom
+// in that order, that cross the core end to end behind it, with the product logo and its verb at one
+// end and what travels on the rail at the other; a small pulse runs along each band (still under
+// prefers-reduced-motion). Mobile: the core on top and the rails stacked as full-width bands. Catalog
+// and film-only products are mixed and ranked by emphasis.welabs, so the DOM follows the weight order
+// (Domus, Relloo, Magneto, Tuner, Knowly); hidden products never get a node.
 const HUB_ID = "erp";
-// Desktop corner of each product, independent of the ranking (pinned on 2026-10-08)
-const HUB_CORNER: Record<string, "tl" | "tr" | "bl" | "br"> = {
-  flow: "tl",
-  "welabs-crm": "tr",
-  wekb: "bl",
-  channels: "br",
-};
+const CORE_IDS = new Set([HUB_ID, "welabs-crm"]);
 type Pair = [pt: string, en: string];
 // Verb of each product in the chain (shown as "<product> <verb>"), in weight order
 const HUB_VERB: Record<string, Pair> = {
@@ -171,7 +163,7 @@ const HUB_VERB: Record<string, Pair> = {
   channels: ["entrega", "delivers"],
   wekb: ["explica", "explains"],
 };
-// What travels between Domus and each product; parts stack on desktop and line up on mobile
+// What travels on each tie: the core seam (Relloo) and each rail; parts line up on one row
 const HUB_WIRE: Record<string, Pair[]> = {
   "welabs-crm": [["contatos e pedidos", "contacts and orders"]],
   flow: [
@@ -200,14 +192,19 @@ function ecosystemEntries(): Entry[] {
 
 const entryName = (e: Entry, locale: Locale) =>
   e.item ? e.item.locales[locale].title : e.product.title;
+// Dark endorsed logo of a product, for a rail end
+const entryLogo = (e: Entry) =>
+  e.item
+    ? (visuals as Record<string, { logo: string }>)[e.id]?.logo
+    : e.product.logo;
 
 export function ProductHub({
   currentId,
   threadTo = {},
 }: {
-  // Product whose page holds the hub: its node stays in place, dimmed
+  // Product whose page holds the hub: its core card or rail is highlighted
   currentId?: string;
-  // Card id -> thread key, for cards that end a thread drawn by the motion layer
+  // Product id -> thread key, for nodes that end a thread drawn by the motion layer
   threadTo?: Record<string, string>;
 }) {
   const { lang } = useT();
@@ -215,20 +212,11 @@ export function ProductHub({
   const locale: Locale = en ? "en" : "pt-BR";
   const i = en ? 1 : 0;
   const entries = ecosystemEntries();
-  const hub = entries.find((e) => e.id === HUB_ID);
-  const spokes = entries.filter((e) => e.id !== HUB_ID).slice(0, 4);
-  const card = (e: Entry) =>
-    e.item ? (
-      <ProductCard item={e.item} locale={locale} threadTo={threadTo[e.id]} />
-    ) : (
-      <FilmProductCard product={e.product} en={en} />
-    );
-  // "<product> <verb>" above each card; its fixed height is part of --cover-mid in the CSS
-  const verb = (e: Entry) => (
-    <p className={styles.verb}>
-      <strong>{entryName(e, locale)}</strong> {HUB_VERB[e.id]?.[i]}
-    </p>
-  );
+  const core = entries.filter((e) => CORE_IDS.has(e.id));
+  const rails = entries.filter((e) => !CORE_IDS.has(e.id)).slice(0, 3);
+  const wire = (id: string) =>
+    HUB_WIRE[id]?.map((part) => <span key={part[0]}>{part[i]}</span>);
+  const current = (id: string) => (id === currentId ? "" : undefined);
   return (
     <div className={styles.hubFrame}>
       <p className={styles.hubLead}>
@@ -237,44 +225,73 @@ export function ProductHub({
           {en ? "The others bring it to life." : "Os outros dão vida."}
         </span>
       </p>
-      <div className={styles.hub}>
-        {hub && (
-          <div
-            className={`${styles.node} ${styles.hubNode}`}
-            data-current={hub.id === currentId ? "" : undefined}
-          >
-            {verb(hub)}
-            {card(hub)}
-            <span
-              className={`${styles.hubLink} ${styles.hubLinkL}`}
-              aria-hidden="true"
-            />
-            <span
-              className={`${styles.hubLink} ${styles.hubLinkR}`}
-              aria-hidden="true"
-            />
-          </div>
-        )}
-        {spokes.map((e) => (
-          <div
-            key={e.id}
-            className={styles.node}
-            data-corner={HUB_CORNER[e.id]}
-            data-current={e.id === currentId ? "" : undefined}
-          >
-            {verb(e)}
-            {card(e)}
-            {/* The connector carries its label; the line itself is drawn by borders */}
-            <span className={styles.link}>
-              {HUB_WIRE[e.id] && (
-                <span className={styles.wire}>
-                  {HUB_WIRE[e.id].map((part) => (
-                    <span key={part[0]}>{part[i]}</span>
-                  ))}
-                </span>
-              )}
+      {/* Verb chain in weight order: Domus define · Relloo atende · ... */}
+      <p className={styles.hubChain}>
+        {entries
+          .filter((e) => HUB_VERB[e.id])
+          .map((e, n, all) => (
+            // The separator closes each item, so a wrapped line never starts with it
+            <span key={e.id}>
+              <strong>{entryName(e, locale)}</strong> {HUB_VERB[e.id][i]}
+              {n < all.length - 1 && <i aria-hidden="true">·</i>}
             </span>
-          </div>
+          ))}
+      </p>
+      <div className={styles.hub}>
+        {/* Core: Domus and Relloo fitted as one block, the seam carries its label */}
+        <div className={styles.core}>
+          {core.map((e, n) => (
+            <div
+              key={e.id}
+              className={styles.coreNode}
+              data-core={e.id === HUB_ID ? "hub" : "pair"}
+              data-current={current(e.id)}
+              style={{ order: n * 2 }}
+            >
+              <p className={styles.verb}>
+                <strong>{entryName(e, locale)}</strong> {HUB_VERB[e.id]?.[i]}
+              </p>
+              {e.item ? (
+                <ProductCard
+                  item={e.item}
+                  locale={locale}
+                  threadTo={threadTo[e.id]}
+                />
+              ) : (
+                <FilmProductCard product={e.product} en={en} />
+              )}
+            </div>
+          ))}
+          {core.length > 1 && HUB_WIRE[core[1].id] && (
+            <p className={styles.seam} style={{ order: 1 }}>
+              {wire(core[1].id)}
+            </p>
+          )}
+        </div>
+        {/* Rails: thin bands crossing the core, logo and verb at one end, what travels at the other */}
+        {rails.map((e, n) => (
+          <Link
+            key={e.id}
+            href={`/produtos/${publicSlug(e.id)}`}
+            className={styles.rail}
+            data-product={e.id}
+            data-current={current(e.id)}
+            data-thread-to={threadTo[e.id]}
+            style={{ gridRow: n + 1 } as CSSProperties}
+          >
+            <span className={styles.railHead}>
+              <img
+                src={entryLogo(e)}
+                alt={entryName(e, locale)}
+                width="1005"
+                height="550"
+              />
+              <span className={styles.railVerb}>{HUB_VERB[e.id]?.[i]}</span>
+            </span>
+            {HUB_WIRE[e.id] && (
+              <span className={styles.railWire}>{wire(e.id)}</span>
+            )}
+          </Link>
         ))}
       </div>
     </div>

@@ -37,7 +37,7 @@ assert.deepEqual([...hidden], ["malupe"]);
 
 // ORDEM DE PESO DOS PRODUTOS WELABS
 // Operator decision (2026-10-08): Domus, Relloo, Magneto, Tuner, Knowly. The emphasis ranking, the
-// catalog array and the rendered hub's DOM order (the mobile stack) keep it; desktop corners are pinned.
+// catalog array and the rendered hub keep it: core (Domus, Relloo), then the rails top to bottom.
 const WEIGHT_ORDER = ["erp", "welabs-crm", "flow", "channels", "wekb"];
 const emphasis = JSON.parse(fs.readFileSync("lib/emphasis.json"));
 assert.deepEqual(
@@ -50,10 +50,10 @@ assert.deepEqual(
   WEIGHT_ORDER.filter((id) => catalog.some((p) => p.id === id)),
   "catalog array follows the weight order",
 );
-// Product cards in the order the page renders them (data-product on each card)
+// Hub nodes in the order the page renders them (data-product on each core card and rail link)
 const renderedOrder = (text) => [
   ...new Set(
-    [...text.matchAll(/<article[^>]*data-product="([\w-]+)"/g)].map(
+    [...text.matchAll(/<(?:article|a)\s[^>]*data-product="([\w-]+)"/g)].map(
       ([, id]) => id,
     ),
   ),

@@ -139,18 +139,17 @@
   opacity: 1;
   transform: none;
 }
-/* HUB DO ECOSSISTEMA COM CONECTORES QUE FALAM */
-/* Desktop: Domus spans the centre column (a little wider) across both rows and sits on the grid's
-   vertical middle, the other four take the corners. Each corner draws an elbow from the middle of
-   its cover (16:9, so 9/32 of the node width, below the verb row) into the gutter and down/up to
-   the grid's middle, where a stub reaches Domus. Every connector ends on the card edge with an amber
-   dot and carries a label on its vertical run; the gutter is wide enough for that label. Rows are
-   1fr so the grid's middle is the gap between them, which is also Domus's middle. */
+/* NÚCLEO E TRILHOS DO ECOSSISTEMA */
+/* Desktop: a three-column grid. The core (Domus wider, Relloo fitted against it, one seam between
+   them) takes the middle column across the three rows. Each rail spans the whole width on its own
+   row, behind the core, so its band crosses the core end to end: the logo and verb sit on the left
+   end, what travels on the rail on the right end. Rows share the core's height, so the bands cross
+   it at 1/6, 1/2 and 5/6. The band is the brand 1.2.1 amber thread; an amber dot travels it. */
 .hubFrame {
   width: 100%;
 }
 .hubLead {
-  margin: 0 0 40px;
+  margin: 0 0 14px;
   font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 500;
   line-height: 1.25;
@@ -160,132 +159,97 @@
 .hubLead span {
   color: var(--text-2);
 }
+/* Verb chain in weight order */
+.hubChain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  margin: 0 0 40px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.hubChain > span {
+  white-space: nowrap;
+}
+.hubChain i {
+  margin: 0 0.8em;
+  font-style: normal;
+  color: var(--text-3);
+}
+.hubChain strong {
+  font-weight: 500;
+  color: var(--text);
+}
 .hub {
-  --gap-x: 136px;
-  --gap-y: 48px;
-  /* Verb row above each card (fixed, so the connectors can find the cover's middle) */
   --verb-h: 30px;
-  --cover-mid: calc(var(--verb-h) + 100cqw * 9 / 32);
-  --rail: 1px solid var(--thread);
+  --band: 1px;
+  --dot: 6px;
+  --core-pad: 18px;
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr) minmax(0, 1fr);
-  grid-template-rows: 1fr 1fr;
-  grid-template-areas:
-    "tl hub tr"
-    "bl hub br";
-  gap: var(--gap-y) var(--gap-x);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr) minmax(0, 1fr);
+  grid-template-rows: repeat(3, minmax(88px, 1fr));
+  /* Room for the seam label, which hangs half below the core */
+  padding-bottom: 14px;
 }
-.node {
+/* Core: one block, so Domus and Relloo read as a pair; the bands pass behind it */
+.core {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: start;
+  margin: 0 20px;
+  padding: var(--core-pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--ink-2);
+}
+.coreNode {
   position: relative;
   min-width: 0;
-  container-type: inline-size;
+  padding: 0 var(--core-pad);
 }
-.node[data-corner="tl"] {
-  grid-area: tl;
+.coreNode[data-core="hub"] {
+  padding-left: 0;
 }
-.node[data-corner="tr"] {
-  grid-area: tr;
+.coreNode[data-core="pair"] {
+  align-self: stretch;
+  padding-right: 0;
+  border-left: 1px solid var(--line);
 }
-.node[data-corner="bl"] {
-  grid-area: bl;
+/* The product whose page holds the hub is highlighted */
+.coreNode[data-current] .cover {
+  border-color: var(--accent);
 }
-.node[data-corner="br"] {
-  grid-area: br;
-}
-.hubNode {
-  grid-area: hub;
-  align-self: center;
-}
-/* The product whose page holds the hub stays in place, quieter */
-/* (on the link: the card's own opacity belongs to the reveal animation) */
-.node[data-current] .cardLink {
-  opacity: 0.45;
-}
-.link,
-.hubLink {
+/* Seam label: discreet, on the core's bottom edge, centred on the seam */
+.seam {
   position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.9s var(--ease) 0.25s;
+  z-index: 3;
+  bottom: 0;
+  left: calc(
+    var(--core-pad) + (100% - 2 * var(--core-pad) - 2px) * 1.4 / 2.4 + 1px
+  );
+  display: flex;
+  gap: 0.6em;
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--ink-2);
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-2);
+  white-space: nowrap;
+  transform: translate(-50%, 50%);
 }
-.link::after,
-.hubLink::after {
-  content: "";
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.node:has(.card[data-in]) .link,
-.node:has(.card[data-in]) .hubLink {
-  opacity: 1;
-}
-/* Corner elbows: left column runs right, right column runs left; top row runs down, bottom row up */
-.node[data-corner="tl"] .link,
-.node[data-corner="bl"] .link {
-  left: 100%;
-  width: calc(var(--gap-x) / 2);
-  border-right: var(--rail);
-}
-.node[data-corner="tr"] .link,
-.node[data-corner="br"] .link {
-  right: 100%;
-  width: calc(var(--gap-x) / 2);
-  border-left: var(--rail);
-}
-.node[data-corner="tl"] .link,
-.node[data-corner="tr"] .link {
-  top: var(--cover-mid);
-  height: calc(100% - var(--cover-mid) + var(--gap-y) / 2);
-  border-top: var(--rail);
-}
-.node[data-corner="bl"] .link,
-.node[data-corner="br"] .link {
-  top: calc(var(--gap-y) / -2);
-  height: calc(var(--cover-mid) + var(--gap-y) / 2);
-  border-bottom: var(--rail);
-}
-.node[data-corner="tl"] .link::after,
-.node[data-corner="bl"] .link::after {
-  left: -3.5px;
-}
-.node[data-corner="tr"] .link::after,
-.node[data-corner="br"] .link::after {
-  right: -3.5px;
-}
-.node[data-corner="tl"] .link::after,
-.node[data-corner="tr"] .link::after {
-  top: -4px;
-}
-.node[data-corner="bl"] .link::after,
-.node[data-corner="br"] .link::after {
-  bottom: -4px;
-}
-/* Domus stubs: from each side of the hub card to the gutter, at its vertical middle */
-.hubLink {
-  top: 50%;
-  width: calc(var(--gap-x) / 2);
-  border-top: var(--rail);
-}
-.hubLinkL {
-  right: 100%;
-}
-.hubLinkR {
-  left: 100%;
-}
-.hubLink::after {
-  top: -4px;
-}
-.hubLinkL::after {
-  right: -3.5px;
-}
-.hubLinkR::after {
-  left: -3.5px;
-}
-/* "<product> <verb>" over each card */
+/* "<product> <verb>" over each core card */
 .verb {
   height: var(--verb-h);
   margin: 0;
@@ -301,16 +265,97 @@
   font-weight: 500;
   color: var(--text);
 }
-/* Connector label: a plate centred on the vertical run (right edge of the left column's elbows,
-   left edge of the right column's); its parts stack */
-.wire {
-  position: absolute;
+/* Rails: a link across the whole row; the band and its travelling dot are pseudo-elements */
+.rail {
+  grid-column: 1 / -1;
+  position: relative;
   z-index: 1;
-  top: 50%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: subgrid;
   align-items: center;
-  max-width: calc(var(--gap-x) - 12px);
+  container-type: inline-size;
+  color: var(--text);
+  text-decoration: none;
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--band);
+  background: var(--thread);
+  transition: background 0.4s var(--ease);
+}
+.rail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(50% + var(--band) / 2 - var(--dot) / 2);
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--accent);
+  animation: railPulse 7s linear infinite;
+}
+/* Staggered pulses; Magneto's goes and comes back (rule out, receipt back) */
+.rail:nth-child(3)::after {
+  animation-delay: -2.4s;
+}
+.rail:nth-child(4)::after {
+  animation-delay: -4.8s;
+}
+.rail[data-product="flow"]::after {
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+@keyframes railPulse {
+  from {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(100cqw - var(--dot)));
+  }
+}
+/* Rail ends sit on the graphite so the band starts and stops at them */
+.railHead {
+  grid-column: 1;
+  justify-self: start;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+  background: var(--ink);
+}
+.railHead img {
+  display: block;
+  width: auto;
+  height: 44px;
+}
+.railVerb {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  transition: color 0.4s var(--ease);
+}
+.railWire {
+  grid-column: 3;
+  justify-self: end;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  gap: 0.6em;
   padding: 5px 9px;
   border: 1px solid var(--thread);
   border-radius: var(--radius);
@@ -318,19 +363,28 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  text-align: center;
   color: var(--text);
-  width: max-content;
+  white-space: nowrap;
 }
-.node[data-corner="tl"] .wire,
-.node[data-corner="bl"] .wire {
-  left: 100%;
-  transform: translate(-50%, -50%);
+.rail:hover::before,
+.rail[data-current]::before {
+  background: var(--accent);
 }
-.node[data-corner="tr"] .wire,
-.node[data-corner="br"] .wire {
-  left: 0;
-  transform: translate(-50%, -50%);
+.rail:hover .railVerb,
+.rail[data-current] .railVerb {
+  color: var(--text);
+}
+.rail[data-current] .railWire {
+  border-color: var(--accent);
+}
+/* The current product's band is drawn thicker, so it reads as highlighted */
+.rail[data-current]::before {
+  height: 3px;
+  margin-top: -1px;
+}
+.rail:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 .cardLink {
   display: block;
@@ -477,79 +531,68 @@
   outline-offset: 6px;
 }
 
-/* Mobile hub: Domus first, the other four in one column hanging from a vertical line that leaves
-   the middle of Domus's cover; each card is reached by a branch that ends in an amber dot. */
+/* Mobile: the core on top (Domus, the seam, Relloo), then the three rails stacked as full-width
+   bands, logo and verb on the left end and what travels on the right. */
 @media (max-width: 900px) {
-  .hub {
-    --rail-x: 16px;
-    --gap-y: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-y);
-    padding-left: var(--rail-x);
-  }
-  /* Domus takes the full column width like the others (desktop centres it vertically) */
-  .hubNode {
-    align-self: stretch;
-  }
-  /* The rail continues from each node's branch to its bottom; the next node covers the gap */
-  .node:not(:last-child)::before {
-    content: "";
-    position: absolute;
-    left: calc(var(--rail-x) * -1);
-    top: var(--cover-mid);
-    bottom: 0;
-    border-left: var(--rail);
-    pointer-events: none;
-  }
-  .node[data-corner] .link {
-    left: calc(var(--rail-x) * -1);
-    right: auto;
-    top: calc(var(--gap-y) * -1);
-    width: var(--rail-x);
-    height: calc(var(--cover-mid) + var(--gap-y));
-    border: 0;
-    border-left: var(--rail);
-    border-bottom: var(--rail);
-  }
-  .node[data-corner] .link::after {
-    left: auto;
-    right: -3.5px;
-    top: auto;
-    bottom: -4px;
-  }
-  .hubLinkL {
-    right: 100%;
-    top: var(--cover-mid);
-    width: var(--rail-x);
-  }
-  .hubLinkL::after {
-    right: -3.5px;
-  }
-  .hubLinkR {
-    display: none;
-  }
-  /* The label sits on the rail, in the gap above its product, on one line */
-  .hub {
-    --gap-y: 52px;
-  }
-  .hubLead {
+  .hubChain {
     margin-bottom: 28px;
   }
-  .node[data-corner] .wire {
-    top: calc(var(--gap-y) / 2);
-    /* starts on the rail: the rail sits close to the viewport edge on phones */
-    left: -1px;
-    flex-direction: row;
-    gap: 0.6em;
-    max-width: calc(100cqw - 8px);
-    transform: translateY(-50%);
+  .hub {
+    --core-pad: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .core {
+    grid-template-columns: minmax(0, 1fr);
+    margin: 0 0 18px;
+  }
+  .coreNode,
+  .coreNode[data-core="pair"] {
+    padding: 0;
+    border-left: 0;
+  }
+  /* The seam is a hairline across the core with its label in the middle */
+  .seam {
+    position: static;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    transform: none;
+  }
+  .seam::before,
+  .seam::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .rail {
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: 10px;
+    min-height: 60px;
+  }
+  .railHead img {
+    height: 34px;
+  }
+  .railWire {
+    grid-column: 2;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    white-space: normal;
+    text-align: right;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .link,
-  .hubLink {
+  .rail::after {
+    display: none;
+  }
+  .rail::before,
+  .railVerb {
     transition: none;
   }
   .cardLink:hover .coverBrand {
