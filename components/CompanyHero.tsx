@@ -23,7 +23,7 @@ const words = {
     review: "Revisão",
     task: "Tarefa DEMO",
     purposes: {
-      erp: "Gestão",
+      erp: "A empresa inteira",
       wekb: "Conhecimento",
       "welabs-crm": "Relacionamento",
       malupe: "Eventos",
@@ -46,7 +46,7 @@ const words = {
     review: "Review",
     task: "DEMO task",
     purposes: {
-      erp: "Management",
+      erp: "The whole company",
       wekb: "Knowledge",
       "welabs-crm": "Relationships",
       malupe: "Events",

@@ -23,6 +23,7 @@ import {
 import motionProducts from "@/lib/motion-products.json";
 import { publicSlug } from "@/lib/public-slugs";
 import { imagineHref } from "@/lib/sister-site";
+import { PRODUCT_HIGHLIGHTS } from "@/lib/product-highlights";
 type Item = (typeof catalog)[number];
 type Locale = "pt-BR" | "en";
 const localeFor = (lang: string): Locale => (lang === "en" ? "en" : "pt-BR");
@@ -32,9 +33,10 @@ const productHref = (id: string) => `/produtos/${publicSlug(id)}`;
 // O DESAFIO DE CADA PRODUTO
 // One sentence per product: it opens the product page and feeds the solutions list.
 const ownChallenge: Record<string, [string, string]> = {
+  // Domus defines the business and gives rise to the systems (operator decision, 2026-10-08)
   erp: [
-    "Manter cadastros, regras, contratos, fiscal e integrações num só lugar, consumido por todos os produtos.",
-    "Keep records, rules, contracts, tax and integrations in one place that every product consumes.",
+    "Definir a empresa inteira num lugar só e fazer dele nascer os sistemas que cada equipe usa.",
+    "Define the whole company in one place and let the systems every team uses grow from it.",
   ],
   flow: [
     "Dar clareza ao acompanhamento de tarefas e etapas de automação.",
@@ -101,7 +103,8 @@ export function PortfolioIndex() {
 // PÁGINA DE PRODUTO
 // The product is told through its films (approved reel, or overview plus journey); the legacy
 // presentation packs were never shown for Welabs products and left with the split of 2026-10-07.
-// Maturity data stays in the catalog but is never rendered: every product is shown as in use.
+// The catalog carries no maturity data: every product is shown as existing. Optional highlight
+// blocks (lib/product-highlights.ts) follow the challenge.
 export function ProductPage({ item }: { item: Item }) {
   const { lang } = useT();
   const en = lang === "en",
@@ -111,6 +114,7 @@ export function ProductPage({ item }: { item: Item }) {
     visuals as Record<string, (typeof visuals)[keyof typeof visuals]>
   )[item.id];
   const problem = ownChallenge[item.id]?.[en ? 1 : 0] || d.summary;
+  const highlights = PRODUCT_HIGHLIGHTS[item.id];
   // An approved reel replaces overview + journey with one ordered gallery; otherwise the business
   // overview opens the page and the journey film follows as "see it working".
   const reel = reelFilms(item.id);
@@ -194,6 +198,34 @@ export function ProductPage({ item }: { item: Item }) {
               {en ? "THE CHALLENGE" : "O DESAFIO"}
             </span>
             <p>{problem}</p>
+            {highlights && (
+              <div className={styles.highlights}>
+                {highlights.map((g) => (
+                  // article keeps these headings out of the motion layer's spine
+                  <article key={g.label[0]} className={styles.highlightGroup}>
+                    <h2 className={styles.small}>{g.label[en ? 1 : 0]}</h2>
+                    <h3>{g.lead[en ? 1 : 0]}</h3>
+                    {g.tags && (
+                      <ul className={styles.highlightTags}>
+                        {g.tags.map((t) => (
+                          <li key={t[0]}>{t[en ? 1 : 0]}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {g.points && (
+                      <ol className={styles.highlightPoints}>
+                        {g.points.map((pt) => (
+                          <li key={pt.title[0]}>
+                            <strong>{pt.title[en ? 1 : 0]}</strong>
+                            <span>{pt.text[en ? 1 : 0]}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
           </div>
           <div
             id="visao"
@@ -328,7 +360,7 @@ export function SolutionsPage() {
   const solutions = [
     [
       "erp",
-      en ? "Organize management" : "Organizar a gestão",
+      en ? "Define the business" : "Definir o negócio",
       ownChallenge.erp[en ? 1 : 0],
     ],
     [
@@ -377,7 +409,7 @@ export function SolutionsPage() {
           <div className={styles.solutionList}>
             {solutions.map(([id, title, copy], i) => {
               const item = catalog.find((p) => p.id === id)!;
-              // Domus, the domain hub (first), feeds every other product: one thread reaches each of them.
+              // Domus (first) defines the business and the others bring it to life: one thread reaches each of them.
               return (
                 <article
                   key={id}

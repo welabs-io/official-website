@@ -10,6 +10,7 @@ import {
 import { idFromSlug, publicSlug, retiredSlug } from "@/lib/public-slugs";
 import motionProducts from "@/lib/motion-products.json";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
+import { categoryMetadata, productJsonLd } from "@/lib/product-categories";
 // PÁGINA DE PRODUTO
 // Public slugs replace internal ids in URLs; the old id redirects to the public slug.
 // Film-only products (Tuner) share this route with the catalog products; they are found by
@@ -34,8 +35,8 @@ export async function generateMetadata({
   if (m) {
     const en = (await searchParams).lang === "en";
     return {
-      title: `${m.title} | Welabs`,
-      description: m.summary[en ? 1 : 0],
+      // Category term only in metadata (lib/product-categories.ts)
+      ...categoryMetadata(m.id, m.title, m.summary[en ? 1 : 0], en),
       robots: { index: false, follow: false },
       icons: WELABS_ICONS,
     };
@@ -45,8 +46,8 @@ export async function generateMetadata({
   const en = (await searchParams).lang === "en";
   const d = p.item.locales[en ? "en" : "pt-BR"];
   return {
-    title: `${d.title} | ${p.item.publisher}`,
-    description: d.summary,
+    // Category term only in metadata (lib/product-categories.ts)
+    ...categoryMetadata(p.item.id, d.title, d.summary, en),
     robots: { index: false, follow: false },
     icons: WELABS_ICONS,
     openGraph: {
@@ -60,19 +61,48 @@ export async function generateMetadata({
     authors: [{ name: p.item.publisher }],
   };
 }
+// JSON-LD SoftwareApplication of the product, rendered by the server next to the page
+function JsonLd({ data }: { data: object }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(data).replaceAll("<", "\\u003c"),
+      }}
+    />
+  );
+}
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ lang?: string }>;
 }) {
   const { slug } = await params;
   const moved = retiredSlug(slug);
   if (moved) permanentRedirect(`/produtos/${moved}`);
   // A product hidden for now (lib/catalog.ts) sends its address to the collection; temporary, it may return
   if (isHiddenProduct(idFromSlug(slug))) redirect("/produtos");
+  const en = (await searchParams).lang === "en";
+  const url = `/produtos/${slug}`;
   const m = motionProduct(slug);
-  if (m) return <MotionProductPage product={m} />;
+  if (m)
+    return (
+      <>
+        <JsonLd
+          data={productJsonLd(m.id, m.title, m.summary[en ? 1 : 0], url, en)}
+        />
+        <MotionProductPage product={m} />
+      </>
+    );
   const p = getFramepack(idFromSlug(slug));
   if (!p) notFound();
-  return <ProductPage item={p.item} />;
+  const d = p.item.locales[en ? "en" : "pt-BR"];
+  return (
+    <>
+      <JsonLd data={productJsonLd(p.item.id, d.title, d.summary, url, en)} />
+      <ProductPage item={p.item} />
+    </>
+  );
 }

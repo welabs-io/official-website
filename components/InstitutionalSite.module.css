@@ -477,6 +477,97 @@
   max-width: 48ch;
   letter-spacing: -0.01em;
 }
+/* DESTAQUES DO PRODUTO */
+/* Under the challenge, in its text column: fronts as tags, builder points as a numbered list */
+.highlights {
+  grid-column: 2;
+  display: grid;
+  gap: 40px;
+  margin-top: 8px;
+}
+.highlightGroup {
+  display: grid;
+  gap: 14px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+/* Group label: same look as .small, restated because the site's h2 rules outweigh it */
+.highlightGroup h2 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.highlightGroup h3 {
+  margin: 0;
+  max-width: 52ch;
+  font-size: clamp(17px, 1.4vw, 19px);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.highlightTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.highlightTags li {
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--text);
+}
+.highlightPoints {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: point;
+}
+.highlightPoints li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  counter-increment: point;
+}
+.highlightPoints li::before {
+  content: "0" counter(point);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.highlightPoints strong {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+.highlightPoints span {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+@media (max-width: 900px) {
+  .highlights {
+    grid-column: auto;
+  }
+  .highlightPoints {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .presentationLinks {
   display: flex;
   justify-content: space-between;

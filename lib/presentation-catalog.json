@@ -4,7 +4,6 @@
     "productName": "Domus",
     "publisher": "Welabs",
     "kind": "own-product",
-    "maturity": "development",
     "parentId": null,
     "brand": {
       "name": "Welabs",
@@ -23,16 +22,16 @@
     "locales": {
       "pt-BR": {
         "title": "Domus",
-        "summary": "Domus, o hub de domínio da plataforma: cadastros, regras, contratos, fiscal e integrações num barramento que cada produto consome com o que lhe foi concedido.",
-        "audience": "Organizações e produtos que compartilham cadastros, regras e integrações.",
+        "summary": "Domus, a casa onde o negócio é definido: reúne a empresa inteira num modelo só e dá origem às telas, às regras e aos fluxos de todos os produtos.",
+        "audience": "Organizações que querem a operação inteira numa casa só e sistemas que crescem junto com o negócio.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Registros fictícios ilustram o Domus."
       },
       "en": {
         "title": "Domus",
-        "summary": "Domus, the platform's domain hub: records, rules, contracts, tax and integrations on one bus that each product consumes with what it has been granted.",
-        "audience": "Organizations and products that share records, rules and integrations.",
+        "summary": "Domus, the house where the business is defined: it brings the whole company into one model and gives rise to the screens, rules and flows of every product.",
+        "audience": "Organizations that want the whole operation under one roof and systems that grow with the business.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/erp/1.0.0/posters/en-scene-1.png",
         "posterAlt": "Fictional records illustrate Domus."
@@ -45,7 +44,6 @@
     "productName": "Magneto",
     "publisher": "Welabs",
     "kind": "own-product",
-    "maturity": "development",
     "parentId": null,
     "brand": {
       "name": "Welabs",
@@ -86,7 +84,6 @@
     "productName": "Knowly",
     "publisher": "Welabs",
     "kind": "own-product",
-    "maturity": "development",
     "parentId": null,
     "brand": {
       "name": "Welabs",
@@ -127,7 +124,6 @@
     "productName": "Relloo",
     "publisher": "Welabs",
     "kind": "own-product",
-    "maturity": "development",
     "parentId": null,
     "brand": {
       "name": "Welabs",
@@ -168,7 +164,6 @@
     "productName": "Ecossistema Monitoramento",
     "publisher": "Welabs",
     "kind": "own-product",
-    "maturity": "alpha",
     "parentId": null,
     "brand": {
       "name": "Welabs",

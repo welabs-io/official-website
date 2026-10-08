@@ -143,14 +143,36 @@ export function FilmProductCard({
   );
 }
 
-// ECOSSISTEMA EM HUB
-// Domus (the Welabs ERP, catalog id "erp") is the hub: every other product reads the records it
-// keeps, so each one is tied to it by an amber connector, never to each other. Desktop: Domus in
-// the centre column, a little larger, the other four in the corners (3x3 grid). Mobile: Domus
-// first and the others hanging from a vertical line that leaves it. Catalog and film-only
-// products are mixed, ranked by emphasis.welabs; hidden products never get a node.
+// ECOSSISTEMA EM HUB, COM CONECTORES QUE FALAM
+// Domus (catalog id "erp") is the hub: it defines the business and every other product brings it to
+// life, so each one is tied to it by an amber connector, never to each other. Operator decision of
+// 2026-10-08: a central line ("O Domus define. Os outros dão vida."), one verb per product and a
+// label on each connector saying what travels on it. Desktop: Domus in the centre column, a little
+// larger, the other four in the corners (3x3 grid), the label sitting on the connector's vertical
+// run. Mobile: Domus first and the others hanging from a vertical line; each label sits on that line,
+// in the gap above its product. Catalog and film-only products are mixed, ranked by
+// emphasis.welabs; hidden products never get a node.
 const HUB_ID = "erp";
 const CORNERS = ["tl", "tr", "bl", "br"] as const;
+type Pair = [pt: string, en: string];
+// Verb of each product in the chain (shown as "<product> <verb>")
+const HUB_VERB: Record<string, Pair> = {
+  erp: ["define", "defines"],
+  flow: ["executa", "runs"],
+  "welabs-crm": ["atende", "serves"],
+  wekb: ["explica", "explains"],
+  channels: ["entrega", "delivers"],
+};
+// What travels between Domus and each product; parts stack on desktop and line up on mobile
+const HUB_WIRE: Record<string, Pair[]> = {
+  flow: [
+    ["regra →", "rule →"],
+    ["← recibo", "← receipt"],
+  ],
+  "welabs-crm": [["contatos e pedidos", "contacts and orders"]],
+  wekb: [["dados e quem pode ver", "data and who can see it"]],
+  channels: [["avisos e conversas", "notices and conversations"]],
+};
 type Entry =
   | { id: string; item: Item; product?: undefined }
   | { id: string; product: MotionProduct; item?: undefined };
@@ -168,6 +190,9 @@ function ecosystemEntries(): Entry[] {
   ].sort((a, b) => rank(a.id) - rank(b.id));
 }
 
+const entryName = (e: Entry, locale: Locale) =>
+  e.item ? e.item.locales[locale].title : e.product.title;
+
 export function ProductHub({
   currentId,
   threadTo = {},
@@ -180,6 +205,7 @@ export function ProductHub({
   const { lang } = useT();
   const en = lang === "en";
   const locale: Locale = en ? "en" : "pt-BR";
+  const i = en ? 1 : 0;
   const entries = ecosystemEntries();
   const hub = entries.find((e) => e.id === HUB_ID);
   const spokes = entries.filter((e) => e.id !== HUB_ID).slice(0, 4);
@@ -189,35 +215,60 @@ export function ProductHub({
     ) : (
       <FilmProductCard product={e.product} en={en} />
     );
+  // "<product> <verb>" above each card; its fixed height is part of --cover-mid in the CSS
+  const verb = (e: Entry) => (
+    <p className={styles.verb}>
+      <strong>{entryName(e, locale)}</strong> {HUB_VERB[e.id]?.[i]}
+    </p>
+  );
   return (
-    <div className={styles.hub}>
-      {hub && (
-        <div
-          className={`${styles.node} ${styles.hubNode}`}
-          data-current={hub.id === currentId ? "" : undefined}
-        >
-          {card(hub)}
-          <span
-            className={`${styles.hubLink} ${styles.hubLinkL}`}
-            aria-hidden="true"
-          />
-          <span
-            className={`${styles.hubLink} ${styles.hubLinkR}`}
-            aria-hidden="true"
-          />
-        </div>
-      )}
-      {spokes.map((e, i) => (
-        <div
-          key={e.id}
-          className={styles.node}
-          data-corner={CORNERS[i]}
-          data-current={e.id === currentId ? "" : undefined}
-        >
-          {card(e)}
-          <span className={styles.link} aria-hidden="true" />
-        </div>
-      ))}
+    <div className={styles.hubFrame}>
+      <p className={styles.hubLead}>
+        {en ? "Domus defines." : "O Domus define."}{" "}
+        <span>
+          {en ? "The others bring it to life." : "Os outros dão vida."}
+        </span>
+      </p>
+      <div className={styles.hub}>
+        {hub && (
+          <div
+            className={`${styles.node} ${styles.hubNode}`}
+            data-current={hub.id === currentId ? "" : undefined}
+          >
+            {verb(hub)}
+            {card(hub)}
+            <span
+              className={`${styles.hubLink} ${styles.hubLinkL}`}
+              aria-hidden="true"
+            />
+            <span
+              className={`${styles.hubLink} ${styles.hubLinkR}`}
+              aria-hidden="true"
+            />
+          </div>
+        )}
+        {spokes.map((e, n) => (
+          <div
+            key={e.id}
+            className={styles.node}
+            data-corner={CORNERS[n]}
+            data-current={e.id === currentId ? "" : undefined}
+          >
+            {verb(e)}
+            {card(e)}
+            {/* The connector carries its label; the line itself is drawn by borders */}
+            <span className={styles.link}>
+              {HUB_WIRE[e.id] && (
+                <span className={styles.wire}>
+                  {HUB_WIRE[e.id].map((part) => (
+                    <span key={part[0]}>{part[i]}</span>
+                  ))}
+                </span>
+              )}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

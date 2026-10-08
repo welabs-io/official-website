@@ -139,16 +139,33 @@
   opacity: 1;
   transform: none;
 }
-/* HUB DO ECOSSISTEMA */
+/* HUB DO ECOSSISTEMA COM CONECTORES QUE FALAM */
 /* Desktop: Domus spans the centre column (a little wider) across both rows and sits on the grid's
    vertical middle, the other four take the corners. Each corner draws an elbow from the middle of
-   its cover (16:9, so 9/32 of the node width) into the gutter and down/up to the grid's middle,
-   where a stub reaches Domus. Every connector ends on the card edge with an amber dot. Rows are
+   its cover (16:9, so 9/32 of the node width, below the verb row) into the gutter and down/up to
+   the grid's middle, where a stub reaches Domus. Every connector ends on the card edge with an amber
+   dot and carries a label on its vertical run; the gutter is wide enough for that label. Rows are
    1fr so the grid's middle is the gap between them, which is also Domus's middle. */
+.hubFrame {
+  width: 100%;
+}
+.hubLead {
+  margin: 0 0 40px;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.hubLead span {
+  color: var(--text-2);
+}
 .hub {
-  --gap-x: 64px;
+  --gap-x: 136px;
   --gap-y: 48px;
-  --cover-mid: calc(100cqw * 9 / 32);
+  /* Verb row above each card (fixed, so the connectors can find the cover's middle) */
+  --verb-h: 30px;
+  --cover-mid: calc(var(--verb-h) + 100cqw * 9 / 32);
   --rail: 1px solid var(--thread);
   position: relative;
   display: grid;
@@ -267,6 +284,53 @@
 }
 .hubLinkR::after {
   left: -3.5px;
+}
+/* "<product> <verb>" over each card */
+.verb {
+  height: var(--verb-h);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.verb strong {
+  font-weight: 500;
+  color: var(--text);
+}
+/* Connector label: a plate centred on the vertical run (right edge of the left column's elbows,
+   left edge of the right column's); its parts stack */
+.wire {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: calc(var(--gap-x) - 12px);
+  padding: 5px 9px;
+  border: 1px solid var(--thread);
+  border-radius: var(--radius);
+  background: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-align: center;
+  color: var(--text);
+  width: max-content;
+}
+.node[data-corner="tl"] .wire,
+.node[data-corner="bl"] .wire {
+  left: 100%;
+  transform: translate(-50%, -50%);
+}
+.node[data-corner="tr"] .wire,
+.node[data-corner="br"] .wire {
+  left: 0;
+  transform: translate(-50%, -50%);
 }
 .cardLink {
   display: block;
@@ -464,6 +528,22 @@
   }
   .hubLinkR {
     display: none;
+  }
+  /* The label sits on the rail, in the gap above its product, on one line */
+  .hub {
+    --gap-y: 52px;
+  }
+  .hubLead {
+    margin-bottom: 28px;
+  }
+  .node[data-corner] .wire {
+    top: calc(var(--gap-y) / 2);
+    /* starts on the rail: the rail sits close to the viewport edge on phones */
+    left: -1px;
+    flex-direction: row;
+    gap: 0.6em;
+    max-width: calc(100cqw - 8px);
+    transform: translateY(-50%);
   }
 }
 

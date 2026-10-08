@@ -58,16 +58,40 @@ const titleOf = (text) => {
 
 // SEM MARCADOR DE ESTÁGIO
 // Commercial rule: no product shows a stage, maturity or version. Only visible text is checked;
-// scripts (the RSC payload carries catalog data such as `maturity`) are stripped first.
+// the head and scripts (the RSC payload carries catalog data) are stripped first.
+// Category rule (2026-10-08): "ERP" and "Cliente" never show; the category term lives in metadata.
 const STAGE_MARKER =
   /em desenvolvimento|in development|apresenta[çc][ãa]o conceitual|concept presentation|conceito reservado|reserved concept|\balpha\b|\bbeta\b|\bsandbox\b|em breve|coming soon|\bprevist[oa]s?\b/i;
-const assertNoStage = (text, url) => {
-  const visible = text
+const HIDDEN_CATEGORY = /\bERP\b|\bclientes?\b/i;
+const visibleText = (text) =>
+  text
+    .replace(/<head[\s\S]*?<\/head>/gi, "")
     .replace(/<script[\s\S]*?<\/script>/gi, "")
     .replace(/<style[\s\S]*?<\/style>/gi, "")
     .replace(/<[^>]+>/g, " ");
+const assertNoStage = (text, url) => {
+  const visible = visibleText(text);
   const hit = visible.match(STAGE_MARKER);
   assert(!hit, `${url} shows a stage marker: ${hit?.[0]}`);
+  const category = visible.match(HIDDEN_CATEGORY);
+  assert(!category, `${url} shows a category term: ${category?.[0]}`);
+};
+// Product pages carry their category in metadata: title, keywords and a SoftwareApplication JSON-LD.
+const assertCategoryMetadata = (text, url) => {
+  assert(/<meta name="keywords" content="[^"]+"/.test(text), url + " keywords");
+  const ld = [
+    ...text.matchAll(
+      /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,
+    ),
+  ]
+    .map(([, json]) => JSON.parse(json))
+    .find((d) => d["@type"] === "SoftwareApplication");
+  assert(
+    ld?.applicationCategory && ld.applicationSubCategory,
+    url + " JSON-LD",
+  );
+  const title = text.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
+  assert(title.includes(ld.applicationSubCategory), url + " title category");
 };
 
 const products = [
@@ -101,6 +125,7 @@ for (const p of products) {
     );
     assert.equal(titleOf(text), p.title(locale), slug + q + " title");
     assertNoStage(text, slug + q);
+    assertCategoryMetadata(text, slug + q);
     html++;
   }
 }
