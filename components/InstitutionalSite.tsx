@@ -39,8 +39,9 @@ const ownChallenge: Record<string, [string, string]> = {
     "Define the whole company in one place and let the systems every team uses grow from it.",
   ],
   flow: [
-    "Dar clareza ao acompanhamento de tarefas e etapas de automação.",
-    "Bring clarity to following automation tasks and stages.",
+    // Magneto is named by its function, workflow (operator, 2026-10-08)
+    "Dar clareza ao workflow: cada tarefa e cada etapa acompanhadas.",
+    "Bring clarity to the workflow: every task and every stage followed.",
   ],
   wekb: [
     "Encontrar informações com contexto e referência à fonte.",
@@ -139,8 +140,8 @@ export function ProductPage({ item }: { item: Item }) {
           <div className={styles.productIntro}>
             <div>
               <span className={styles.eyebrow}>
-                {item.publisher} /{" "}
-                {en ? "PRODUCT EXPERIENCE" : "EXPERIÊNCIA DE PRODUTO"}
+                {/* The screenshot "product experience" was retired: the films present the product */}
+                {item.publisher} / {en ? "PRODUCT" : "PRODUTO"}
               </span>
               {productLogo.has(item.id) && visual.logo ? (
                 <h1 className={styles.logoTitle}>
@@ -372,7 +373,7 @@ export function SolutionsPage() {
     ],
     [
       "flow",
-      en ? "Follow automation" : "Acompanhar automações",
+      en ? "Run the workflow" : "Conduzir o workflow",
       ownChallenge.flow[en ? 1 : 0],
     ],
     [

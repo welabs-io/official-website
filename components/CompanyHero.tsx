@@ -1,10 +1,11 @@
 import Link from "./LangLink";
-// Visible catalog only: hidden products leave the hero graph (lib/catalog.ts)
-import catalog, { isHiddenProduct } from "@/lib/catalog";
+// Hidden products leave the hero composition (lib/catalog.ts)
+import { isHiddenProduct } from "@/lib/catalog";
 import styles from "./CompanyHero.module.css";
 import { publicSlug } from "@/lib/public-slugs";
 
 type Locale = "pt-BR" | "en";
+type Pair = [pt: string, en: string];
 
 const words = {
   "pt-BR": {
@@ -16,18 +17,6 @@ const words = {
     welabsSecondary: "A Welabs",
     ecosystem: "Produtos Welabs",
     disclaimer: "Recriação ilustrativa · dados fictícios",
-    flowPurpose: "Automação",
-    flow: "O próximo passo, em contexto.",
-    intake: "Entrada",
-    work: "Execução",
-    review: "Revisão",
-    task: "Tarefa DEMO",
-    purposes: {
-      erp: "A empresa inteira",
-      wekb: "Conhecimento",
-      "welabs-crm": "Relacionamento",
-      malupe: "Eventos",
-    },
     illustration: "Produtos da Welabs, com exemplos fictícios",
   },
   en: {
@@ -39,21 +28,55 @@ const words = {
     welabsSecondary: "About Welabs",
     ecosystem: "Welabs products",
     disclaimer: "Illustrative recreation · fictional data",
-    flowPurpose: "Automation",
-    flow: "The next step, in context.",
-    intake: "Intake",
-    work: "Execution",
-    review: "Review",
-    task: "DEMO task",
-    purposes: {
-      erp: "The whole company",
-      wekb: "Knowledge",
-      "welabs-crm": "Relationships",
-      malupe: "Events",
-    },
     illustration: "Welabs products, with fictional examples",
   },
 };
+
+type HeroProduct = {
+  id: string;
+  name: string;
+  // Official dark endorsed logo (public/brands/welabs/products/), sized by height only
+  logo: string;
+  // Core cards: what the product covers; rails: its role in the chain
+  label: Pair;
+};
+
+// Weight order of 2026-10-08: Domus, Relloo (core), then Magneto, Tuner, Knowly (rails)
+const CORE: HeroProduct[] = [
+  {
+    id: "erp",
+    name: "Domus",
+    logo: "/brands/welabs/products/domus-dark-endorsed.svg",
+    label: ["Define a empresa inteira", "Defines the whole company"],
+  },
+  {
+    id: "welabs-crm",
+    name: "Relloo",
+    logo: "/brands/welabs/products/relloo-dark-endorsed.svg",
+    label: ["Atende", "Serves"],
+  },
+];
+const RAILS: HeroProduct[] = [
+  {
+    id: "flow",
+    name: "Magneto",
+    logo: "/brands/welabs/products/magneto-dark-endorsed.svg",
+    // Magneto is named by its function, workflow (operator, 2026-10-08)
+    label: ["Workflow", "Workflow"],
+  },
+  {
+    id: "channels",
+    name: "Tuner",
+    logo: "/brands/welabs/products/tuner-dark-endorsed.svg",
+    label: ["Entrega", "Delivers"],
+  },
+  {
+    id: "wekb",
+    name: "Knowly",
+    logo: "/brands/welabs/products/knowly-dark-endorsed.svg",
+    label: ["Explica", "Explains"],
+  },
+];
 
 function Arrow() {
   return (
@@ -64,93 +87,70 @@ function Arrow() {
 }
 
 // PRODUTOS DA WELABS NA ABERTURA
-// Magneto orchestrates the other products, so the hero thread goes title → Magneto → each product.
-// Cards name each product's purpose; maturity is never shown, every product appears in use.
+// Compact version of the core-and-rails hub (operator decision of 2026-10-08, option A). The core
+// holds Domus (larger, first) with Relloo fitted against it; Magneto (workflow), Tuner and Knowly are
+// thin bands that cross the core end to end, logo on one end and role on the other. Mobile: the core
+// on top and the rails stacked. No thread leaves the title anymore. Maturity is never shown.
 function WelabsProducts({ locale }: { locale: Locale }) {
-  const t = words[locale];
-  // Hidden products (lib/catalog.ts) leave the graph and its links; the others follow the weight
-  // order of 2026-10-08 (Domus, Relloo, Knowly; Magneto is the orchestrating card above them)
-  const products = (["erp", "welabs-crm", "wekb", "malupe"] as const).filter(
-    (id) => !isHiddenProduct(id),
-  );
+  const i = locale === "en" ? 1 : 0;
+  const core = CORE.filter((p) => !isHiddenProduct(p.id));
+  const rails = RAILS.filter((p) => !isHiddenProduct(p.id));
   return (
     <div className={styles.welabsProducts}>
-      {/* Hero graph: Magneto orchestrates the other products, so it links to each of them */}
-      <Link
-        href={`/produtos/${publicSlug("flow")}`}
-        className={`${styles.product} ${styles.flowProduct}`}
-        data-thread="flow"
-        data-hero-node="flow"
-        data-hero-links={products.join(" ")}
-      >
-        <div className={styles.productTop}>
-          <span className={styles.purpose}>{t.flowPurpose}</span>
-          <Arrow />
-        </div>
-        <div className={styles.productTitle}>
-          {/* Whole endorsed Magneto logo (symbol + name + "by welabs") replaces the symbol tile + name text */}
-          <img
-            className={styles.productLogo}
-            src="/brands/welabs/products/magneto-dark-endorsed.svg"
-            alt="Magneto"
-            width="160"
-            height="56"
-          />
-          <span>{t.flow}</span>
-        </div>
-        <div className={styles.flowBoard} aria-hidden="true">
-          {[t.intake, t.work, t.review].map((stage, i) => (
-            <div key={stage}>
-              <span className={styles.boardHeading}>
-                <i />
-                {stage}
-              </span>
-              <div className={styles.boardTask}>
-                <span>{t.task}</span>
-                <b />
-                <b />
-                {i === 1 && <em>↗</em>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Link>
-      {products.map((id) => {
-        const product = catalog.find((item) => item.id === id)!;
-        return (
+      <div className={styles.core}>
+        {core.map((p) => (
           <Link
-            key={id}
-            href={`/produtos/${publicSlug(id)}`}
-            className={`${styles.product} ${styles.ecosystemProduct}`}
-            data-hero-node={id}
+            key={p.id}
+            href={`/produtos/${publicSlug(p.id)}`}
+            className={styles.coreProduct}
+            data-core={p.id === "erp" ? "hub" : "pair"}
+            data-product={p.id}
           >
-            <div className={styles.productTop}>
-              <span className={styles.purpose}>{t.purposes[id]}</span>
+            <span className={styles.productTop}>
+              <span className={styles.purpose}>{p.label[i]}</span>
               <Arrow />
-            </div>
-            <div className={styles.productTitle}>
-              <strong>{product.productName}</strong>
-            </div>
-            <div
-              className={`${styles.motif} ${styles[id === "erp" ? "managementMotif" : id === "wekb" ? "knowledgeMotif" : id === "welabs-crm" ? "relationshipMotif" : "eventMotif"]}`}
-              aria-hidden="true"
-            >
+            </span>
+            <img
+              className={styles.coreLogo}
+              src={p.logo}
+              alt={p.name}
+              width="1005"
+              height="550"
+            />
+            <span className={styles.motif} aria-hidden="true">
               <i />
               <i />
               <i />
-              <i />
-            </div>
+            </span>
           </Link>
-        );
-      })}
+        ))}
+      </div>
+      {/* Rails follow the core in the DOM; their rows are set in CSS (behind it on desktop, below it on mobile) */}
+      {rails.map((p) => (
+        <Link
+          key={p.id}
+          href={`/produtos/${publicSlug(p.id)}`}
+          className={styles.rail}
+          data-product={p.id}
+        >
+          <img
+            className={styles.railLogo}
+            src={p.logo}
+            alt={p.name}
+            width="1005"
+            height="550"
+          />
+          <span className={styles.railRole}>{p.label[i]}</span>
+        </Link>
+      ))}
     </div>
   );
 }
 
 // ABERTURA DA HOME
-// Signature moment: the title rises line by line, the product cards settle, then a thread leaves
-// the title and draws the graph (Magneto → every product). The heading also starts the page spine
-// drawn by MotionLayer. The Imagine opening left with the Imagine site on 2026-10-07.
+// Signature moment: the title rises line by line and the core-and-rails composition settles. The
+// Welabs logo lives only in the header (no second logo here). The Imagine opening left with the
+// Imagine site on 2026-10-07.
 export function CompanyHero({ locale }: { locale: Locale }) {
   const t = words[locale];
   const title = t.welabsTitle;
@@ -159,16 +159,8 @@ export function CompanyHero({ locale }: { locale: Locale }) {
       <div className={styles.field} data-depth="0.08" aria-hidden="true" />
       <div className={styles.layout}>
         <div className={styles.copy}>
-          <img
-            className={`${styles.companyLogo} ${styles.welabsLogo}`}
-            src="/brands/welabs/welabs-logo-dark.svg"
-            alt="Welabs"
-            width={153}
-            height={36}
-          />
           <p className={styles.eyebrow}>{t.welabsLabel}</p>
-          {/* The title is the origin of the hero graph: the thread crosses the empty gutter, never the copy */}
-          <h1 data-hero-node="title" data-hero-links="flow">
+          <h1>
             <span className={styles.line}>
               <span>{title[0]}</span>
             </span>{" "}

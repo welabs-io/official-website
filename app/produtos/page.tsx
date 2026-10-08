@@ -3,11 +3,11 @@ import { PortfolioIndex } from "@/components/InstitutionalSite";
 const copy = {
   pt: [
     "Nossos produtos | Welabs",
-    "O Domus define o negócio. O Relloo atende, o Magneto executa, o Tuner entrega e o Knowly explica.",
+    "O Domus define o negócio. O Relloo atende, o Magneto é o workflow, o Tuner entrega e o Knowly explica.",
   ],
   en: [
     "Our products | Welabs",
-    "Domus defines the business. Relloo serves, Magneto runs it, Tuner delivers and Knowly explains.",
+    "Domus defines the business. Relloo serves, Magneto is the workflow, Tuner delivers and Knowly explains.",
   ],
 };
 export async function generateMetadata({

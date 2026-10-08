@@ -147,8 +147,8 @@ export function FilmProductCard({
 // Operator decision of 2026-10-08 (option A). The core is Domus (catalog id "erp", larger) with
 // Relloo fitted against it as one block: no connector between them, only a discreet label on the
 // seam. Magneto, Tuner and Knowly are cross-cutting rails: three thin horizontal bands, top to bottom
-// in that order, that cross the core end to end behind it, with the product logo and its verb at one
-// end and what travels on the rail at the other; a small pulse runs along each band (still under
+// in that order, that cross the core end to end behind it, with the product logo and its verb (for
+// Magneto, its function: workflow) at one end and what travels on the rail at the other; a small pulse runs along each band (still under
 // prefers-reduced-motion). Mobile: the core on top and the rails stacked as full-width bands. Catalog
 // and film-only products are mixed and ranked by emphasis.welabs, so the DOM follows the weight order
 // (Domus, Relloo, Magneto, Tuner, Knowly); hidden products never get a node.
@@ -159,10 +159,17 @@ type Pair = [pt: string, en: string];
 const HUB_VERB: Record<string, Pair> = {
   erp: ["define", "defines"],
   "welabs-crm": ["atende", "serves"],
-  flow: ["executa", "runs"],
+  // Magneto is named by its function, workflow, not by a verb (operator, 2026-10-08)
+  flow: ["workflow", "workflow"],
   channels: ["entrega", "delivers"],
   wekb: ["explica", "explains"],
 };
+// Products named by a function instead of a verb read as an apposition in the chain
+// ("Magneto, o workflow"); every other product reads "<product> <verb>"
+const HUB_APPOSITION: Record<string, Pair> = {
+  flow: [", o ", ", the "],
+};
+const chainJoin = (id: string, i: number) => HUB_APPOSITION[id]?.[i] ?? " ";
 // What travels on each tie: the core seam (Relloo) and each rail; parts line up on one row
 const HUB_WIRE: Record<string, Pair[]> = {
   "welabs-crm": [["contatos e pedidos", "contacts and orders"]],
@@ -232,7 +239,9 @@ export function ProductHub({
           .map((e, n, all) => (
             // The separator closes each item, so a wrapped line never starts with it
             <span key={e.id}>
-              <strong>{entryName(e, locale)}</strong> {HUB_VERB[e.id][i]}
+              <strong>{entryName(e, locale)}</strong>
+              {chainJoin(e.id, i)}
+              {HUB_VERB[e.id][i]}
               {n < all.length - 1 && <i aria-hidden="true">·</i>}
             </span>
           ))}

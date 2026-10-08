@@ -65,8 +65,8 @@
         },
         {
           "id": "scene-2",
-          "title": "Siga a execução",
-          "summary": "Na jornada de automação, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.",
+          "title": "Siga o workflow",
+          "summary": "Na jornada do workflow, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.",
           "alt": "Jornada ilustrativa de tarefa com etapas de iniciar, executar e acompanhar.",
           "src": "/presentations/flow/1.0.0/posters/pt-BR-scene-2.png"
         },
@@ -88,8 +88,8 @@
         },
         {
           "id": "scene-2",
-          "title": "Follow execution",
-          "summary": "In the automation journey, starting, executing and following up make a task's steps visible.",
+          "title": "Follow the workflow",
+          "summary": "In the workflow journey, starting, executing and following up make a task's steps visible.",
           "alt": "An illustrative task journey with steps to start, execute and follow up.",
           "src": "/presentations/flow/1.0.0/posters/en-scene-2.png"
         },

@@ -251,8 +251,10 @@ html[data-scrolled] .header {
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
+/* Official logo sized by height only, in proportion to the 72px bar (operator, 2026-10-08) */
 .logo-img {
-  height: 26px;
+  height: 32px;
+  width: auto;
 }
 .nav-list {
   gap: 30px;
@@ -356,7 +358,7 @@ html[data-scrolled] .header {
     height: 64px;
   }
   .logo-img {
-    height: 22px;
+    height: 28px;
   }
 }
 

@@ -102,16 +102,16 @@
     "locales": {
       "pt-BR": {
         "title": "Magneto",
-        "summary": "Magneto, execução que não se perde: organiza as tarefas, acompanha cada etapa da automação e consulta o contexto quando precisa.",
-        "audience": "Equipes que organizam e acompanham automações.",
+        "summary": "Magneto, o workflow que não se perde: organiza as tarefas, acompanha cada etapa do fluxo e consulta o contexto quando precisa.",
+        "audience": "Equipes que organizam e acompanham seus workflows.",
         "disclaimer": "Recriação ilustrativa · dados fictícios",
         "poster": "/presentations/flow/1.0.0/posters/pt-BR-scene-1.png",
         "posterAlt": "Quadro ilustrativo de tarefas DEMO nas etapas genéricas de entrada, execução e revisão."
       },
       "en": {
         "title": "Magneto",
-        "summary": "Magneto, execution that never gets lost: it organizes tasks, follows every automation step and consults context when it needs to.",
-        "audience": "Teams that organize and follow automations.",
+        "summary": "Magneto, the workflow that never gets lost: it organizes tasks, follows every step of the flow and consults context when it needs to.",
+        "audience": "Teams that organize and follow their workflows.",
         "disclaimer": "Illustrative recreation · fictional data",
         "poster": "/presentations/flow/1.0.0/posters/en-scene-1.png",
         "posterAlt": "An illustrative board of DEMO tasks in generic intake, execution and review stages."
