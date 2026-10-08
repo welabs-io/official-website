@@ -55,10 +55,12 @@ const round2 = resolve(
 );
 // Reel pieces follow the operator-approved selection and order per product (publish/index.html, PRODUCTS
 // of 2026-10-04); `reel` marks them for the product page gallery and `also` lists other pages that show them.
-const reel = (product, title, kind = "business", extra = {}) => ({
+// Since 2026-10-07 every piece also carries `description`: one commercial line shown under the film.
+const reel = (product, title, description, kind = "business", extra = {}) => ({
   kind,
   product,
   title,
+  description,
   reel: true,
   ...extra,
 });
@@ -78,125 +80,153 @@ const ROUND2 = {
   // earlier ones, whose product names were text; same films, durations and titles.
   // Ecossistema Monitoramento is hidden for now (operator, 2026-10-07): its mon-*-ludic cuts stay accepted in the
   // round but leave this catalog, together with the product card and page (lib/catalog.ts).
+  // Titles and descriptions rewritten on 2026-10-07 (commercial tone, partner products by name, only what
+  // the film shows, no "cliente" nor "ERP"); the before/after table is in
+  // control/portfolio/site-redesign/titulos-v2.md.
   "welabs-chain-overview-logos-intro-v6": {
     kind: "topology",
     page: "welabs",
-    // Retitled on 2026-10-05: the playful cut shows the products fitting together, not an integration map
-    title: "Plataforma Welabs · Os produtos se encaixam",
+    // The playful cut shows the products fitting together, not an integration map
+    title:
+      "Plataforma Welabs · Tuner, Relloo, Knowly, Domus e Magneto se encaixam",
+    description:
+      "Cada produto tira um problema do caminho e, encaixados, um termina o que o outro começa, sem ninguém copiando dado de um sistema para o outro.",
     ...KNOWHOW,
   },
   "welabs-chain-journey-logos-intro-v6": {
     kind: "topology",
     page: "welabs",
-    title: "Plataforma Welabs · Jornada",
+    title: "Plataforma Welabs · Do WhatsApp à aprovação, sem repetir nada",
+    description:
+      "A mensagem chega pelo Tuner, o Relloo reconhece a pessoa, o Knowly responde com a fonte, o Domus guarda a regra e o Magneto leva a aprovação até quem decide.",
     ...KNOWHOW,
   },
   "welabs-chain-plug-logos-intro-v6": {
     kind: "topology",
     page: "welabs",
-    title: "Plataforma Welabs · Encaixe",
+    title: "Plataforma Welabs · O app novo já nasce com tudo pronto",
+    description:
+      "Encaixado na plataforma, ele já atende pelo WhatsApp com Tuner e Relloo, responde com o Knowly, roda processos no Magneto e usa os cadastros do Domus.",
     ...KNOWHOW,
   },
   "welabs-chain-horizon-logos-intro-v6": {
     kind: "topology",
     page: "welabs",
-    // Retitled on 2026-10-05: the film now tours existing connections, not the roadmap;
-    // the playful cut of the same day shows them as bridges between islands
-    title: "Plataforma Welabs · Pontes",
+    // The film tours existing connections, not the roadmap, shown as bridges between islands
+    title: "Plataforma Welabs · Cada ponte poupa um trabalho feito à mão",
+    description:
+      "Tuner, Relloo, Knowly, Magneto e Domus deixam de ser ilhas: juntos, fazem o que nenhum faz sozinho.",
     ...KNOWHOW,
   },
   "flow-canvas-build-logos-intro-v6": reel(
     "flow",
-    "Magneto · Montar o fluxo",
+    "Magneto · Quem conhece o processo monta o fluxo",
+    "Planilha, e-mail e lembrete viram um caminho em blocos, sem programar, e o desenho já é o processo andando.",
     "business",
     KNOWHOW,
   ),
   "flow-durable-run-logos-intro-v6": reel(
     "flow",
-    "Magneto · Execução durável",
+    "Magneto · Nenhum processo fica pela metade",
+    "O fluxo espera a pessoa o tempo que for, sobrevive à queda do sistema e segue do mesmo ponto, sem repetir nenhum passo.",
     "business",
     KNOWHOW,
   ),
   "flow-lifecycle-logos-intro-v6": reel(
     "flow",
-    "Magneto · Ciclo de vida",
+    "Magneto · Mude a regra sem medo",
+    "A versão nova nasce ao lado, é testada com um pedido de teste, entra no ar quando estiver pronta e volta num toque, com o registro de quem mudou.",
     "business",
     KNOWHOW,
   ),
   "flow-copilot-logos-intro-v6": reel(
     "flow",
-    "Magneto · Copiloto",
+    "Magneto · Do texto ao processo rodando",
+    "Você descreve o processo numa frase, o Magneto monta os blocos, você revisa e ativa.",
     "business",
     KNOWHOW,
   ),
   "crm-omnichannel-inbox-ludic2-logos-intro-v6": reel(
     "welabs-crm",
-    "Relloo · Atendimento",
+    "Relloo · Cada pessoa com a história inteira, em qualquer canal",
+    "Os canais chegam pelo Tuner, e o Relloo reconhece a pessoa, guarda a história, leva a conversa a quem atende e junta a ligação na mesma ficha.",
   ),
   "crm-agent-studio-ludic2-logos-intro-v6": reel(
     "welabs-crm",
-    "Relloo · Agentes",
+    "Relloo · Agentes de IA que respondem com o Knowly",
+    "O agente nasce de peças prontas, responde com as fontes da empresa pelo Knowly, usa só o que foi liberado e é testado antes de entrar no ar.",
   ),
   "crm-flow-builder-ludic2-logos-intro-v6": reel(
     "welabs-crm",
-    "Relloo · Automações",
+    "Relloo · Automações que conversam e decidem",
+    "Você desenha o atendimento em blocos: o menu espera a resposta, a condição escolhe o caminho e cada execução deixa o rastro.",
   ),
   "crm-campaigns-journey-ludic2-logos-intro-v6": reel(
     "welabs-crm",
-    "Relloo · Campanhas e fidelização",
+    "Relloo · Campanhas que viram venda e voltam como cashback",
+    "Formulário que recomenda, roleta, cupom no WhatsApp, venda no caixa e cashback, numa jornada só de fidelização.",
     "journey",
   ),
   "hub-dominio-spa-ludic-logos-intro-v6": reel(
     "erp",
-    "Domus · Tudo numa casa só",
+    "Domus · Tudo da empresa numa casa só",
+    "O que vivia em planilha, e-mail e caderno ganha o seu cômodo, e cada registro mostra com quem se liga.",
     "business",
     KNOWHOW,
   ),
   "hub-fiscal-br-ludic-logos-intro-v6": reel(
     "erp",
-    "Domus · Fiscal sem retrabalho",
+    "Domus · Nota certa e financeiro fechado, sem retrabalho",
+    "A fatura já sai com os impostos certos, a nota é emitida quando você confirma e o PIX recebido dá baixa sozinho.",
     "business",
     KNOWHOW,
   ),
   "hub-concessoes-ludic-logos-intro-v6": reel(
     "erp",
-    "Domus · Só o que foi liberado",
+    "Domus · O centro que libera Relloo, Magneto e Tuner na medida certa",
+    "Cada produto recebe do Domus só o que foi liberado para ele, a mudança vale na hora e tudo fica registrado.",
     "business",
     KNOWHOW,
   ),
   "kb-ask-with-proof-ludic-logos-intro-v6": reel(
     "wekb",
-    "Knowly · Some a resposta sem prova",
+    "Knowly · Respostas com prova, frase por frase",
+    "A dúvida chega em palavras, o Knowly acha onde aquilo já foi dito e mostra a fonte de cada frase; o que não sabe, ele diz.",
     "business",
     KNOWHOW,
   ),
   "kb-sources-to-knowledge-ludic-logos-intro-v6": reel(
     "wekb",
-    "Knowly · Some o conhecimento espalhado",
+    "Knowly · Tudo o que a equipe sabe, num lugar só",
+    "Documentos, reuniões, tickets e código se juntam num lugar só, sempre atualizados e sem dado pessoal.",
     "business",
     KNOWHOW,
   ),
   "kb-who-reads-what-ludic-logos-intro-v6": reel(
     "wekb",
-    "Knowly · Some o medo de mostrar demais",
+    "Knowly · Cada pessoa vê só o que pode ver",
+    "Cada área guarda o que é seu, a porta errada não abre e, quem muda de time, muda de chave junto.",
     "business",
     KNOWHOW,
   ),
   "channels-one-contract-ludic-logos-intro-v6": reel(
     "channels",
-    "Tuner · Some o canal espalhado",
+    "Tuner · Todo canal num lugar só, pronto para o Relloo",
+    "WhatsApp, voz, chat do site e Discord chegam do mesmo jeito, o Relloo atende e vende, e um produto novo só conecta.",
     "business",
     KNOWHOW,
   ),
   "channels-call-center-ludic-logos-intro-v6": reel(
     "channels",
-    "Tuner · Some o “pode repetir?”",
+    "Tuner · Ninguém repete a história ao telefone",
+    "A ligação é bem recebida, cai na fila certa e passa adiante com a história junto.",
     "business",
     KNOWHOW,
   ),
   "channels-whatsapp-official-ludic-logos-intro-v6": reel(
     "channels",
-    "Tuner · Some a conversa perdida",
+    "Tuner · Seu número no WhatsApp oficial, nenhuma conversa perdida",
+    "Foto e localização chegam inteiras e, um dia depois, a mensagem aprovada retoma a conversa no mesmo lugar.",
     "business",
     KNOWHOW,
   ),
@@ -326,6 +356,8 @@ for (const id of readdirSync(productsRoot).sort()) {
     duration,
     compositionId,
     src: `/motion/${id}/index.html`,
+    // Round 1 journeys carry no commercial line
+    description: null,
     kind: "journey",
     page: null,
     product: PRESENTATION_SLUG[id] ?? id,
@@ -364,6 +396,7 @@ for (const [id, meta] of Object.entries(ROUND2)) {
     duration: Number(html.match(/data-duration="([0-9.]+)"/)?.[1]),
     compositionId: html.match(/data-composition-id="([^"]+)"/)?.[1],
     src: `/motion/${id}/index.html`,
+    description: meta.description ?? null,
     kind: meta.kind,
     page: meta.page ?? null,
     product: meta.product ?? null,

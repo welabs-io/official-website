@@ -143,22 +143,91 @@ export function FilmProductCard({
   );
 }
 
-// COLEÇÃO DE PRODUTOS
-// One ranked list (catalog and film-only products), two products per row tied by the thread.
-export function PortfolioCollection() {
-  const { lang } = useT();
-  const en = lang === "en";
-  const locale: Locale = en ? "en" : "pt-BR";
+// ECOSSISTEMA EM HUB
+// Domus (the Welabs ERP, catalog id "erp") is the hub: every other product reads the records it
+// keeps, so each one is tied to it by an amber connector, never to each other. Desktop: Domus in
+// the centre column, a little larger, the other four in the corners (3x3 grid). Mobile: Domus
+// first and the others hanging from a vertical line that leaves it. Catalog and film-only
+// products are mixed, ranked by emphasis.welabs; hidden products never get a node.
+const HUB_ID = "erp";
+const CORNERS = ["tl", "tr", "bl", "br"] as const;
+type Entry =
+  | { id: string; item: Item; product?: undefined }
+  | { id: string; product: MotionProduct; item?: undefined };
+
+function ecosystemEntries(): Entry[] {
   const order = emphasis.welabs;
   const rank = (id: string) => {
     const i = order.indexOf(id);
     return i < 0 ? order.length : i;
   };
   const films = motionProducts.filter((p) => coverFilm(p.id, p.publisher));
-  const entries = [
+  return [
     ...catalog.map((item) => ({ id: item.id, item })),
     ...films.map((product) => ({ id: product.id, product })),
   ].sort((a, b) => rank(a.id) - rank(b.id));
+}
+
+export function ProductHub({
+  currentId,
+  threadTo = {},
+}: {
+  // Product whose page holds the hub: its node stays in place, dimmed
+  currentId?: string;
+  // Card id -> thread key, for cards that end a thread drawn by the motion layer
+  threadTo?: Record<string, string>;
+}) {
+  const { lang } = useT();
+  const en = lang === "en";
+  const locale: Locale = en ? "en" : "pt-BR";
+  const entries = ecosystemEntries();
+  const hub = entries.find((e) => e.id === HUB_ID);
+  const spokes = entries.filter((e) => e.id !== HUB_ID).slice(0, 4);
+  const card = (e: Entry) =>
+    e.item ? (
+      <ProductCard item={e.item} locale={locale} threadTo={threadTo[e.id]} />
+    ) : (
+      <FilmProductCard product={e.product} en={en} />
+    );
+  return (
+    <div className={styles.hub}>
+      {hub && (
+        <div
+          className={`${styles.node} ${styles.hubNode}`}
+          data-current={hub.id === currentId ? "" : undefined}
+        >
+          {card(hub)}
+          <span
+            className={`${styles.hubLink} ${styles.hubLinkL}`}
+            aria-hidden="true"
+          />
+          <span
+            className={`${styles.hubLink} ${styles.hubLinkR}`}
+            aria-hidden="true"
+          />
+        </div>
+      )}
+      {spokes.map((e, i) => (
+        <div
+          key={e.id}
+          className={styles.node}
+          data-corner={CORNERS[i]}
+          data-current={e.id === currentId ? "" : undefined}
+        >
+          {card(e)}
+          <span className={styles.link} aria-hidden="true" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// COLEÇÃO DE PRODUTOS
+// One ranked list (catalog and film-only products) laid out as the Domus hub.
+export function PortfolioCollection() {
+  const { lang } = useT();
+  const en = lang === "en";
+  const entries = ecosystemEntries();
   return (
     <div className={styles.collection}>
       <div className={styles.collectionToolbar}>
@@ -176,15 +245,7 @@ export function PortfolioCollection() {
               : "sistemas"}
         </p>
       </div>
-      <div className={styles.grid}>
-        {entries.map((entry) =>
-          "item" in entry ? (
-            <ProductCard key={entry.id} item={entry.item} locale={locale} />
-          ) : (
-            <FilmProductCard key={entry.id} product={entry.product} en={en} />
-          ),
-        )}
-      </div>
+      <ProductHub />
       <p className={styles.collectionNote}>
         {en
           ? "The films use fictional data."

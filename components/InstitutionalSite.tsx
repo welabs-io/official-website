@@ -6,23 +6,21 @@ import catalog, { isHiddenProduct } from "@/lib/catalog";
 import styles from "./InstitutionalSite.module.css";
 import { CompanyHero } from "./CompanyHero";
 import {
-  FilmProductCard,
   ProductCard,
   PortfolioCollection,
+  ProductHub,
   PRODUCT_LOGO,
 } from "./PortfolioShowcase";
 import visuals from "@/lib/presentation-visuals.json";
 import {
   MotionFilm,
   MotionGallery,
-  coverFilm,
   filmFor,
   filmsForPage,
   overviewFilms,
   reelFilms,
 } from "./MotionFilm";
 import motionProducts from "@/lib/motion-products.json";
-import emphasis from "@/lib/emphasis.json";
 import { publicSlug } from "@/lib/public-slugs";
 import { imagineHref } from "@/lib/sister-site";
 type Item = (typeof catalog)[number];
@@ -237,14 +235,8 @@ export function ProductPage({ item }: { item: Item }) {
             <h2 className={styles.relatedTitle}>
               {en ? "Other product contexts." : "Outros contextos de produto."}
             </h2>
-            <div className={styles.grid}>
-              {catalog
-                .filter((p) => p.id !== item.id)
-                .slice(0, 2)
-                .map((p) => (
-                  <ProductCard key={p.id} item={p} locale={locale} />
-                ))}
-            </div>
+            {/* The whole ecosystem as the Domus hub; the current product stays in place, dimmed */}
+            <ProductHub currentId={item.id} />
           </section>
         </div>
       </section>
@@ -430,22 +422,8 @@ export function WelabsHome() {
             <br />
             {en ? "The same company." : "A mesma empresa."}
           </h2>
-          <div className={styles.grid}>
-            {[...catalog]
-              .sort(
-                (a, b) =>
-                  emphasis.welabs.indexOf(a.id) - emphasis.welabs.indexOf(b.id),
-              )
-              .map((p) => (
-                <ProductCard
-                  key={p.id}
-                  item={p}
-                  locale={locale}
-                  threadTo={p.id === "flow" ? "flow" : undefined}
-                />
-              ))}
-          </div>
-          <MotionProductGrid en={en} />
+          {/* Catalog and film-only products together, as the Domus hub */}
+          <ProductHub threadTo={{ flow: "flow" }} />
           <p className={styles.note}>
             {en
               ? "The data shown in the films is fictional."
@@ -486,25 +464,9 @@ export function WelabsHome() {
 }
 
 // PRODUTOS APRESENTADOS SÓ POR FILME
-// Products without a catalog entry (Tuner) get a film-only card and page, linked by public slug.
-// The card is the shared product card, so its cover carries the product logo like the catalog ones.
+// Products without a catalog entry (Tuner) get a film-only page, linked by public slug; their card
+// joins the catalog ones inside the Domus hub (ProductHub).
 type MotionProduct = (typeof motionProducts)[number];
-function MotionProductGrid({ en }: { en: boolean }) {
-  const items = motionProducts.filter((p) => coverFilm(p.id));
-  if (!items.length) return null;
-  return (
-    <section className={styles.related}>
-      <span className={styles.eyebrow}>
-        {en ? "MORE PRODUCTS" : "MAIS PRODUTOS"}
-      </span>
-      <div className={styles.grid}>
-        {items.map((p) => (
-          <FilmProductCard key={p.id} product={p} en={en} />
-        ))}
-      </div>
-    </section>
-  );
-}
 export function MotionProductPage({ product }: { product: MotionProduct }) {
   const { lang } = useT();
   const en = lang === "en";

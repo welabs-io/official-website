@@ -139,6 +139,135 @@
   opacity: 1;
   transform: none;
 }
+/* HUB DO ECOSSISTEMA */
+/* Desktop: Domus spans the centre column (a little wider) across both rows and sits on the grid's
+   vertical middle, the other four take the corners. Each corner draws an elbow from the middle of
+   its cover (16:9, so 9/32 of the node width) into the gutter and down/up to the grid's middle,
+   where a stub reaches Domus. Every connector ends on the card edge with an amber dot. Rows are
+   1fr so the grid's middle is the gap between them, which is also Domus's middle. */
+.hub {
+  --gap-x: 64px;
+  --gap-y: 48px;
+  --cover-mid: calc(100cqw * 9 / 32);
+  --rail: 1px solid var(--thread);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr) minmax(0, 1fr);
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "tl hub tr"
+    "bl hub br";
+  gap: var(--gap-y) var(--gap-x);
+}
+.node {
+  position: relative;
+  min-width: 0;
+  container-type: inline-size;
+}
+.node[data-corner="tl"] {
+  grid-area: tl;
+}
+.node[data-corner="tr"] {
+  grid-area: tr;
+}
+.node[data-corner="bl"] {
+  grid-area: bl;
+}
+.node[data-corner="br"] {
+  grid-area: br;
+}
+.hubNode {
+  grid-area: hub;
+  align-self: center;
+}
+/* The product whose page holds the hub stays in place, quieter */
+/* (on the link: the card's own opacity belongs to the reveal animation) */
+.node[data-current] .cardLink {
+  opacity: 0.45;
+}
+.link,
+.hubLink {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease) 0.25s;
+}
+.link::after,
+.hubLink::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.node:has(.card[data-in]) .link,
+.node:has(.card[data-in]) .hubLink {
+  opacity: 1;
+}
+/* Corner elbows: left column runs right, right column runs left; top row runs down, bottom row up */
+.node[data-corner="tl"] .link,
+.node[data-corner="bl"] .link {
+  left: 100%;
+  width: calc(var(--gap-x) / 2);
+  border-right: var(--rail);
+}
+.node[data-corner="tr"] .link,
+.node[data-corner="br"] .link {
+  right: 100%;
+  width: calc(var(--gap-x) / 2);
+  border-left: var(--rail);
+}
+.node[data-corner="tl"] .link,
+.node[data-corner="tr"] .link {
+  top: var(--cover-mid);
+  height: calc(100% - var(--cover-mid) + var(--gap-y) / 2);
+  border-top: var(--rail);
+}
+.node[data-corner="bl"] .link,
+.node[data-corner="br"] .link {
+  top: calc(var(--gap-y) / -2);
+  height: calc(var(--cover-mid) + var(--gap-y) / 2);
+  border-bottom: var(--rail);
+}
+.node[data-corner="tl"] .link::after,
+.node[data-corner="bl"] .link::after {
+  left: -3.5px;
+}
+.node[data-corner="tr"] .link::after,
+.node[data-corner="br"] .link::after {
+  right: -3.5px;
+}
+.node[data-corner="tl"] .link::after,
+.node[data-corner="tr"] .link::after {
+  top: -4px;
+}
+.node[data-corner="bl"] .link::after,
+.node[data-corner="br"] .link::after {
+  bottom: -4px;
+}
+/* Domus stubs: from each side of the hub card to the gutter, at its vertical middle */
+.hubLink {
+  top: 50%;
+  width: calc(var(--gap-x) / 2);
+  border-top: var(--rail);
+}
+.hubLinkL {
+  right: 100%;
+}
+.hubLinkR {
+  left: 100%;
+}
+.hubLink::after {
+  top: -4px;
+}
+.hubLinkL::after {
+  right: -3.5px;
+}
+.hubLinkR::after {
+  left: -3.5px;
+}
 .cardLink {
   display: block;
   height: 100%;
@@ -284,7 +413,65 @@
   outline-offset: 6px;
 }
 
+/* Mobile hub: Domus first, the other four in one column hanging from a vertical line that leaves
+   the middle of Domus's cover; each card is reached by a branch that ends in an amber dot. */
+@media (max-width: 900px) {
+  .hub {
+    --rail-x: 16px;
+    --gap-y: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-y);
+    padding-left: var(--rail-x);
+  }
+  /* Domus takes the full column width like the others (desktop centres it vertically) */
+  .hubNode {
+    align-self: stretch;
+  }
+  /* The rail continues from each node's branch to its bottom; the next node covers the gap */
+  .node:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--rail-x) * -1);
+    top: var(--cover-mid);
+    bottom: 0;
+    border-left: var(--rail);
+    pointer-events: none;
+  }
+  .node[data-corner] .link {
+    left: calc(var(--rail-x) * -1);
+    right: auto;
+    top: calc(var(--gap-y) * -1);
+    width: var(--rail-x);
+    height: calc(var(--cover-mid) + var(--gap-y));
+    border: 0;
+    border-left: var(--rail);
+    border-bottom: var(--rail);
+  }
+  .node[data-corner] .link::after {
+    left: auto;
+    right: -3.5px;
+    top: auto;
+    bottom: -4px;
+  }
+  .hubLinkL {
+    right: 100%;
+    top: var(--cover-mid);
+    width: var(--rail-x);
+  }
+  .hubLinkL::after {
+    right: -3.5px;
+  }
+  .hubLinkR {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .link,
+  .hubLink {
+    transition: none;
+  }
   .cardLink:hover .coverBrand {
     transform: none;
   }

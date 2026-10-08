@@ -171,6 +171,10 @@ export function MotionFilm({
         <span>{title ?? item.title}</span>
         <span>{Math.round(item.duration)} s · dados DEMO</span>
       </figcaption>
+      {/* Commercial line of the film (sync-motion ROUND2 `description`); the brand intro has none */}
+      {item.description && (
+        <p className={styles.description}>{item.description}</p>
+      )}
     </figure>
   );
 }
