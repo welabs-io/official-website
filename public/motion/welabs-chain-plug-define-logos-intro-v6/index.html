@@ -14,7 +14,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
 /* Product names come from WELABS_BRAND.names and keep their parent's color */
 #root [data-wl-name]{color:inherit}
-#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+/* Header is visible in the resting state: the intro handoff (before the film timeline starts) already shows it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:1}
 #wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
@@ -55,6 +56,10 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .sock .lg{--lx:24px}
 .sock .lg.pair{--lx:20px}
 .sock .plus{margin:0 14px;color:var(--muted)}
+/* Core socket: amber-tinted, it is where the business is defined */
+.sock.core{background:rgba(var(--wl-amber-rgb),.12)}
+/* Transversal rail: runs under all four sockets, through the core */
+#pipes .rail{stroke:var(--coral);stroke-width:6;opacity:0}
 #pipes{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;pointer-events:none}
 #pipes line{stroke:#4A4A56;stroke-width:10;stroke-linecap:round;opacity:0}
 #pipes circle{fill:var(--coral);opacity:0;filter:drop-shadow(0 0 10px rgba(var(--wl-amber-rgb),.9))}
@@ -82,7 +87,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="welabs-chain-plug-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="45">
+<div id="root" data-composition-id="welabs-chain-plug-define-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="45">
 <!-- ABERTURA: marca por cima do filme até a passagem -->
 <div id="intro">
   <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
@@ -105,7 +110,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   <div id="intro-wl" role="img" aria-label="welabs" data-wl-motion="welabs" data-wl-scale="1.2"></div>
   <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
 </div>
-<div id="film"><!-- FILME: camada do filme (pieces/welabs-chain-plug-logos, sem mudança), transparente durante a abertura -->
+<div id="film"><!-- FILME: camada do filme (pieces/welabs-chain-plug-define-logos, sem mudança), transparente durante a abertura -->
   <div id="hd">
     <div id="wm">Plataforma<span>.</span></div>
     <div id="kick">Some o começar do zero</div>
@@ -114,40 +119,47 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   </div>
 
   <div id="plate">
-    <div class="sock" id="k0" style="left:24px"><span><img class="lg tuner pair" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"><span class="plus">+</span><img class="lg relloo pair" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></span></div>
-    <div class="sock" id="k1" style="left:368px"><span><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"></span></div>
-    <div class="sock" id="k2" style="left:712px"><span><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></span></div>
-    <div class="sock" id="k3" style="left:1056px"><span><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></span></div>
+    <!-- Weight order (08/10/2026): the core socket (Domus + Relloo) plugs first; Magneto (the workflow), Tuner and Knowly are layers
+         whose current runs along the whole plate, under the core, before rising to their own socket -->
+    <div class="sock core" id="k0" style="left:24px"><span><img class="lg domus pair" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"><span class="plus">+</span><img class="lg relloo pair" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></span></div>
+    <div class="sock" id="k1" style="left:368px"><span><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></span></div>
+    <div class="sock" id="k2" style="left:712px"><span><img class="lg tuner" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"></span></div>
+    <div class="sock" id="k3" style="left:1056px"><span><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"></span></div>
   </div>
   <svg id="pipes" viewBox="0 0 1920 1080">
     <line x1="444" y1="662" x2="444" y2="746"/><line x1="788" y1="662" x2="788" y2="746"/><line x1="1132" y1="662" x2="1132" y2="746"/><line x1="1476" y1="662" x2="1476" y2="746"/>
+    <!-- Dim rail that stays once drawn, plus a bright sweep drawn over it at each layer (no full-width blink, video-qa 08/10) -->
+    <line class="rail" id="rail" x1="284" y1="855" x2="1636" y2="855"/>
+    <line class="rail" id="railS" x1="284" y1="855" x2="1636" y2="855"/>
     <circle id="e0" cx="444" cy="746" r="14"/><circle id="e1" cx="788" cy="746" r="14"/><circle id="e2" cx="1132" cy="746" r="14"/><circle id="e3" cx="1476" cy="746" r="14"/>
   </svg>
 
   <div class="app" id="a1">
     <div class="bar"><i></i><i></i><i></i><span>Portal novo · DEMO</span></div>
-    <div class="slot s0"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Atendimento</div><div class="ln">WhatsApp e histórico de cada pessoa</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
-    <div class="slot s1"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">respostas que dizem a fonte</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
-    <div class="slot s2"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Automação</div><div class="ln">processos que vão até o fim</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
-    <div class="slot s3"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Cadastros e regras</div><div class="ln">os mesmos da operação inteira</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s0"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Núcleo do negócio</div><div class="ln">telas, regras, contatos e pedidos</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s1"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Workflow</div><div class="ln">a regra vira fluxo, e o recibo volta</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s2"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Canais</div><div class="ln">entrega avisos e conversas</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s3"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">explica com a fonte junto</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
   </div>
 
   <div class="app" id="a2">
     <div class="bar"><i></i><i></i><i></i><span>Portal de parceiros · DEMO</span></div>
-    <div class="slot s0"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Atendimento</div><div class="ln">WhatsApp e histórico de cada pessoa</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
-    <div class="slot s1"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">respostas que dizem a fonte</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
-    <div class="slot s2"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Automação</div><div class="ln">processos que vão até o fim</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
-    <div class="slot s3"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Cadastros e regras</div><div class="ln">os mesmos da operação inteira</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s0"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Núcleo do negócio</div><div class="ln">telas, regras, contatos e pedidos</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s1"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Workflow</div><div class="ln">a regra vira fluxo, e o recibo volta</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s2"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Canais</div><div class="ln">entrega avisos e conversas</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s3"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">explica com a fonte junto</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
   </div>
 
   <div class="cap" id="c1">Um app novo <span>começaria do zero</span></div>
-  <div class="sub" id="s1">atendimento, base de respostas, automação e cadastros: tudo por fazer</div>
+  <div class="sub" id="s1">telas, regras, atendimento, workflow e respostas: tudo por fazer</div>
   <div class="cap" id="c2">Ele encaixa <span>na plataforma</span></div>
   <div class="sub" id="s2">que já tem tudo isso de pé</div>
-  <div class="cap" id="h0">Já nasce <span>atendendo pelo WhatsApp</span></div>
-  <div class="cap" id="h1">Já responde <span>com base</span></div>
-  <div class="cap" id="h2">Já tem <span>processo andando</span></div>
-  <div class="cap" id="h3">Já usa <span>os mesmos cadastros e regras</span></div>
+  <!-- Core first (defined by the Domus, served by the Relloo), then the three layers that run through everything -->
+  <div class="cap" id="h0">Já nasce <span>com o negócio definido</span></div>
+  <div class="sub" id="hs0">telas, regras, contatos e pedidos vêm prontos do centro</div>
+  <div class="cap" id="h1">Já tem <span>workflow passando por tudo</span></div>
+  <div class="cap" id="h2">Já fala <span>em todo canal</span></div>
+  <div class="cap" id="h3">Já responde <span>com base</span></div>
   <div class="cap" id="c7">O próximo app <span>encaixa igual</span></div>
   <div class="sub" id="s7">e herda tudo de uma vez, sem refazer nada</div>
 
@@ -228,7 +240,7 @@ window.__pieceParts = {};
   window.__pieceParts.intro = tl;
 })();
 
-// FILME (copiado sem mudança de pieces/welabs-chain-plug-logos; só o registro da timeline virou __pieceParts.film)
+// FILME (copiado sem mudança de pieces/welabs-chain-plug-define-logos; só o registro da timeline virou __pieceParts.film)
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
   var D = 36;
@@ -239,7 +251,8 @@ window.__pieceParts = {};
   function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
 
   // Cabeçalho
-  inn('#hd', 0.2, { y: -12 }, 0.6);
+  // Header is on from frame 0, so the intro handoff fades onto it instead of onto an empty frame (video-qa 08/10)
+  tl.set('#hd', { opacity: 1 }, 0);
 
   // Batida 1: o app novo está vazio (0,6–5,6 s)
   inn('#a1', 0.6, { y: 30 }, 0.6);
@@ -249,32 +262,44 @@ window.__pieceParts = {};
 
   // Batida 2: a plataforma aparece e o app encaixa (5,9–10,9 s)
   inn('#c2', 5.9, { y: 16 }); inn('#s2', 6.2, { y: 12 });
-  inn('#plate', 6.1, { y: 80 }, 0.7);
+  // Rises 30 px (was 80): the plate bottom no longer crosses the caption top while it fades in (video-qa 08/10)
+  inn('#plate', 6.1, { y: 30 }, 0.7);
   out('#a1 .q', 7.6, 0.3);
   tl.to('#a1', { y: 70, duration: 0.6, ease: 'back.out(1.6)' }, 8.2);
   tl.to('#a1', { borderColor: AMBER, duration: 0.15 }, 8.75).to('#a1', { borderColor: '#3A3A44', duration: 0.5 }, 8.9);
-  tl.to('#pipes line', { opacity: 1, duration: 0.4, stagger: 0.12 }, 8.8);
+  tl.to('#pipes line:not(.rail)', { opacity: 1, duration: 0.4, stagger: 0.12 }, 8.8);
   // Leaves by 10.95 s, before the first plug caption enters at 11.0 s (they shared the same place for ~6 frames)
   out(['#c2', '#s2'], 10.6);
 
-  // Batidas 3 a 6: cada encaixe recebe o que a plataforma já tem (11,0–23,2 s)
+  // Batidas 3 a 6: o núcleo encaixa primeiro; Magneto, Tuner e Knowly correm a placa inteira, passando pelo núcleo (11,0–23,2 s)
+  var RAIL = 1352;
   [0, 1, 2, 3].forEach(function (i) {
     var t = 11.0 + i * 3.1;
+    // Layers (i > 0) first sweep the rail under all sockets, then rise to their own socket
+    var d = i > 0 ? 0.6 : 0;
     inn('#h' + i, t, { y: 16 });
-    tl.to('#k' + i, { borderColor: AMBER, duration: 0.25 }, t);
-    tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.1 }, t + 0.05);
-    tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.4, ease: 'power1.in' }, t + 0.1);
-    tl.to('#e' + i, { opacity: 0, duration: 0.1 }, t + 0.5);
-    tl.to('#pipes line:nth-of-type(' + (i + 1) + ')', { stroke: AMBER, duration: 0.3 }, t + 0.1);
-    inn('#a1 .s' + i + ' .fill', t + 0.5, { scale: 0.92 }, 0.35);
-    tl.fromTo('#a1 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.7);
+    if (i > 0) {
+      // Bright sweep over the dim rail; the dim rail appears once, under the first sweep, and then stays
+      tl.fromTo('#railS', { opacity: 1, strokeDasharray: RAIL + ' ' + RAIL, strokeDashoffset: RAIL }, { opacity: 1, strokeDasharray: RAIL + ' ' + RAIL, strokeDashoffset: 0, duration: 0.6, ease: 'power1.inOut', immediateRender: false }, t + 0.05);
+      tl.to('#railS', { opacity: 0, duration: 0.4 }, t + 1.2);
+      if (i === 1) tl.to('#rail', { opacity: 0.45, duration: 0.4 }, t + 1.2);
+    }
+    tl.to('#k' + i, { borderColor: AMBER, duration: 0.25 }, t + d);
+    tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.1 }, t + d + 0.05);
+    tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.4, ease: 'power1.in' }, t + d + 0.1);
+    tl.to('#e' + i, { opacity: 0, duration: 0.1 }, t + d + 0.5);
+    tl.to('#pipes line:nth-of-type(' + (i + 1) + ')', { stroke: AMBER, duration: 0.3 }, t + d + 0.1);
+    inn('#a1 .s' + i + ' .fill', t + d + 0.5, { scale: 0.92 }, 0.35);
+    tl.fromTo('#a1 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + d + 0.7);
     out('#h' + i, t + 2.8);
   });
+  inn('#hs0', 11.3, { y: 12 }); out('#hs0', 13.8);
 
   // Batida 7: o próximo app encaixa igual (23,4–29,0 s)
   inn('#c7', 23.4, { y: 16 }); inn('#s7', 23.7, { y: 12 });
   tl.to('#a1', { x: -300, opacity: 0, duration: 0.5, ease: 'power2.in' }, 23.4);
-  tl.fromTo('#a2', { opacity: 0, x: 300, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.5, ease: 'power2.out' }, 23.7);
+  // Enters 0.2 s later than before, once the outgoing app is nearly gone (video-qa 08/10)
+  tl.fromTo('#a2', { opacity: 0, x: 300, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.4, ease: 'power2.out' }, 23.8);
   tl.to('#a2', { y: 70, duration: 0.5, ease: 'back.out(1.6)' }, 24.2);
   [0, 1, 2, 3].forEach(function (i) {
     tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.05 }, 24.6);
@@ -308,7 +333,7 @@ window.__pieceParts = {};
   master.add(parts.film.paused(false), INTRO + HANDOFF);
   if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
   window.__timelines = window.__timelines || {};
-  window.__timelines["welabs-chain-plug-logos-intro-v6"] = master;
+  window.__timelines["welabs-chain-plug-define-logos-intro-v6"] = master;
 })();
 </script>
 </body>

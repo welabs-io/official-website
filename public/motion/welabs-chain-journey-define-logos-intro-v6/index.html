@@ -15,7 +15,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
 /* Product names come from WELABS_BRAND.names and keep their parent's color */
 #root [data-wl-name]{color:inherit}
-#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+/* Header is visible in the resting state: the intro handoff (before the film timeline starts) already shows it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:1}
 #wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
@@ -43,6 +44,11 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 /* Relloo and Domus have no descender, so the box space kept below their baseline left them ~7 px above the tag's
    centre; a 7 px relative drop centres their ink (Knowly, with its "y", stays as is) */
 .tag.lt .lg.relloo,.tag.lt .lg.domus{position:relative;top:7px}
+/* Core tag and core trail stop: Relloo + Domus side by side */
+.tag.lt .plus,.st2 .plus{margin:0 12px;color:var(--muted);font-weight:700}
+.tag.lt .plus{position:relative;top:4px}
+/* On the trail the "+" sat on the baseline, ~3 px under the logos' x-height centre (video-qa 08/10) */
+.st2 .plus{position:relative;top:-3px}
 /* Trail stops and the moving token carry the logo; the trail logo stays dim until its step lands */
 .st2 .lg{--lx:17px;opacity:.45}
 #tok .lg{--lx:20px}
@@ -88,6 +94,11 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #rule{left:760px;top:550px;width:400px;height:200px;padding:36px 30px 20px;border-color:#5A5A66}
 #rule b{display:block;font-size:30px;font-weight:800;line-height:38px}
 #rule small{display:block;margin-top:10px;font-size:24px;font-weight:600;color:var(--muted)}
+/* Receipt line sits exactly over the rule line and replaces it when the receipt lands */
+#rule #ruleRcp{position:absolute;left:30px;bottom:20px;margin:0;color:var(--ok);opacity:0}
+#rule #ruleDef{position:absolute;left:30px;bottom:20px;margin:0}
+/* Receipt chip: travels back from the manager to the Domus card (regra → · ← recibo) */
+#rcp{position:absolute;left:1186px;top:620px;height:52px;padding:0 20px;border-radius:26px;background:var(--bg);border:3px solid var(--ok);color:var(--ok);font-size:24px;font-weight:800;line-height:46px;white-space:nowrap;opacity:0;z-index:3}
 /* Above the moving token (z-index 2): the token now carries a logo and is wider, so it stops behind the avatar
    instead of covering the manager's face */
 #boss{position:absolute;left:1430px;top:540px;width:220px;text-align:center;opacity:0;z-index:2}
@@ -126,7 +137,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="welabs-chain-journey-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="53">
+<div id="root" data-composition-id="welabs-chain-journey-define-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="53">
 <!-- ABERTURA: marca por cima do filme até a passagem -->
 <div id="intro">
   <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
@@ -149,7 +160,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   <div id="intro-wl" role="img" aria-label="welabs" data-wl-motion="welabs" data-wl-scale="1.2"></div>
   <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
 </div>
-<div id="film"><!-- FILME: camada do filme (pieces/welabs-chain-journey-logos, sem mudança), transparente durante a abertura -->
+<div id="film"><!-- FILME: camada do filme (pieces/welabs-chain-journey-define-logos, sem mudança), transparente durante a abertura -->
   <div id="hd">
     <div id="wm">Plataforma<span>.</span></div>
     <div id="kick">Some a informação repetida</div>
@@ -163,7 +174,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div class="bub" id="m2">Dá sim. Já abri o pedido de mudança para você.<i>com base na política de entregas</i></div>
   </div>
 
-  <div class="card" id="crm"><div class="tag lt"><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></div>
+  <!-- Core card: the Relloo works glued to the Domus, so the tag carries both logos -->
+  <div class="card" id="crm"><div class="tag lt"><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"><span class="plus">+</span><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></div>
     <div class="row1"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Marina · DEMO<small>reconhecida pelo número</small></div></div>
     <div class="fact" id="f1"><b><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></b>Pedido 1234 · DEMO</div>
     <div class="fact" id="f2"><b><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></b>Endereço já cadastrado</div>
@@ -184,16 +196,18 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
     <div class="arow" id="newrow">Pedido 1234 · entrega no sábado<div class="st" id="stWait">aguardando aprovação</div><div class="st" id="stOk">aprovada ✓</div></div>
   </div>
 
-  <div class="card" id="rule"><div class="tag lt"><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></div><b>Mudança de entrega passa pela gestora</b><small>regra guardada uma vez só · DEMO</small></div>
+  <!-- The Domus defines the rule; when the Magneto's receipt comes back, the second line swaps to it -->
+  <div class="card" id="rule"><div class="tag lt"><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></div><b>Mudança de entrega passa pela gestora</b><small id="ruleDef">regra definida aqui · DEMO</small><small id="ruleRcp">recibo de volta ✓</small></div>
+  <div id="rcp">← recibo</div>
   <div id="boss"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#C99A7A"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="#4C8DFF"/></svg><div class="nm">Gestora · DEMO</div><div class="ok"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
   <div id="tok"><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"><i class="rule"></i>aprovação</div>
 
   <div id="trail">
     <div class="st2" id="t0"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span><img class="lg tuner" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"></div><div class="arr"></div>
-    <div class="st2" id="t1"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></div><div class="arr"></div>
+    <div class="st2" id="t1"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"><span class="plus">+</span><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></div><div class="arr"></div>
     <div class="st2" id="t2"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"></div><div class="arr"></div>
     <div class="st2" id="t3"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span>app</div><div class="arr"></div>
-    <div class="st2" id="t4"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></div><div class="arr"></div>
+    <!-- No separate Domus stop: the Domus sits in the core stop with the Relloo, which lights again when its rule is used -->
     <div class="st2" id="t5"><span class="k"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.8" stroke-linecap="round"/></svg></span><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></div>
   </div>
 
@@ -201,15 +215,16 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   <div class="sub" id="s1">a Marina quer mudar a entrega do pedido · DEMO</div>
   <!-- Product captions open with the logo as a seal; the sentence drops the product name -->
   <div class="cap" id="c2"><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"><i class="rule"></i><span>reconhece a Marina</span></div>
-  <div class="sub" id="s2">ninguém pede nome nem número do pedido de novo</div>
+  <div class="sub" id="s2">contatos e pedidos já estão no centro: ninguém pede nada de novo</div>
   <div class="cap" id="c3"><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"><i class="rule"></i>responde <span>com base</span></div>
   <div class="sub" id="s3">a resposta diz de onde veio</div>
   <div class="cap" id="c4">O pedido entra <span>direto no app</span></div>
   <div class="sub" id="s4">sem ninguém digitar tudo de novo</div>
-  <div class="cap" id="c5"><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"><i class="rule"></i>leva a aprovação <span>até quem decide</span></div>
+  <div class="cap" id="c5"><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"><i class="rule"></i>o workflow <span>leva até quem decide</span></div>
   <!-- The rule card on screen carries the Domus logo, so the line no longer names it -->
-  <div class="sub" id="s5">pela regra que já estava guardada</div>
-  <div class="cap" id="c6">Uma conversa, <span>do começo ao fim</span></div>
+  <div class="sub" id="s5">a regra definida vira workflow, e o recibo volta</div>
+  <!-- Central sentence of the chain: the Domus logo stands for its name -->
+  <div class="cap" id="c6"><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"><i class="rule"></i>define. <span>Os outros dão vida.</span></div>
   <div class="sub" id="s6">ninguém repetiu nada, nada se perdeu no caminho</div>
 
   <div id="close">
@@ -289,11 +304,13 @@ window.__pieceParts = {};
   window.__pieceParts.intro = tl;
 })();
 
-// FILME (copiado sem mudança de pieces/welabs-chain-journey-logos; só o registro da timeline virou __pieceParts.film)
+// FILME (copiado sem mudança de pieces/welabs-chain-journey-define-logos; só o registro da timeline virou __pieceParts.film)
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
   var D = 44;
   var tl = gsap.timeline({ paused: true });
+  // Brand amber as a literal hex: GSAP cannot tween var()
+  var AMBER = WELABS_BRAND.color.amber;
   function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale' || k === 'scaleX') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
   function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
   function step(i, t) {
@@ -304,7 +321,8 @@ window.__pieceParts = {};
   }
 
   // Cabeçalho e trilha vazia
-  inn('#hd', 0.2, { y: -12 }, 0.6);
+  // Header is on from frame 0, so the intro handoff fades onto it instead of onto an empty frame (video-qa 08/10)
+  tl.set('#hd', { opacity: 1 }, 0);
   inn('#trail', 0.6, { y: 12 }, 0.5);
 
   // Batida 1: a mensagem chega pelo WhatsApp (0,6–6,2 s)
@@ -337,10 +355,11 @@ window.__pieceParts = {};
   step(3, 21.0);
   out(['#c4', '#s4'], 24.5);
 
-  // Batida 5: a aprovação anda pela regra do Hub (24,9–32,2 s)
+  // Batida 5: a regra sai do Domus, vira workflow no Magneto e o recibo volta (24,9–32,2 s)
   inn('#c5', 24.9, { y: 16 }); inn('#s5', 25.2, { y: 12 });
   inn('#rule', 25.3, { y: -40 }, 0.6);
-  step(4, 25.9);
+  // The core stop (Relloo + Domus) flashes amber: the rule comes from the centre
+  tl.to('#t1', { borderColor: AMBER, duration: 0.25 }, 25.9).to('#t1', { borderColor: '#3DD68C', duration: 0.5 }, 27.4);
   inn('#boss', 26.2, { y: 20 }, 0.5);
   tl.fromTo('#tok', { opacity: 0, x: 0, y: 0, scale: 0.6 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 26.6);
   step(5, 26.9);
@@ -348,15 +367,22 @@ window.__pieceParts = {};
   // (starts at ~1468): the token with the logo is wider and used to cover her face
   tl.to('#tok', { x: 32, y: 170, scale: 0.82, duration: 1.0, ease: 'power2.inOut' }, 27.1);
   tl.fromTo('#boss .ok', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, 28.4);
-  tl.to('#tok', { x: 0, y: 0, duration: 1.0, ease: 'power2.inOut' }, 29.0);
-  out('#tok', 30.0, 0.3);
+  // The token no longer rides back: it ends at the manager and the receipt chip returns to the Domus card instead,
+  // stopping 26 px right of the card edge (1160) so it never touches it
+  out('#tok', 28.8, 0.3);
+  // Starts beside the avatar (1306-1456), clear of the manager's name and of the fading token
+  tl.fromTo('#rcp', { opacity: 0, x: 120 }, { opacity: 1, x: 120, duration: 0.25 }, 29.15);
+  tl.to('#rcp', { x: 0, duration: 0.9, ease: 'power2.inOut' }, 29.35);
+  out('#ruleDef', 30.2, 0.25);
+  tl.fromTo('#ruleRcp', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 30.4);
+  tl.to('#rule', { borderColor: '#3DD68C', duration: 0.3 }, 30.4);
   out('#stWait', 29.9, 0.25);
   tl.fromTo('#stOk', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2)' }, 30.1);
   tl.to('#newrow', { borderColor: '#3DD68C', duration: 0.3 }, 30.1);
   out(['#c5', '#s5'], 32.2);
 
   // Batida 6: a conversa inteira, de ponta a ponta (32,5–38,0 s)
-  out(['#phone', '#app', '#rule', '#boss'], 32.3, 0.45);
+  out(['#phone', '#app', '#rule', '#boss', '#rcp'], 32.3, 0.45);
   tl.to('#trail', { x: -280, y: -340, scale: 1.3, duration: 0.9, ease: 'power2.inOut' }, 32.6);
   tl.to('.arr', { backgroundColor: '#3DD68C', duration: 0.3, stagger: 0.15 }, 33.4);
   inn('#c6', 33.0, { y: 16 }); inn('#s6', 33.3, { y: 12 });
@@ -385,7 +411,7 @@ window.__pieceParts = {};
   master.add(parts.film.paused(false), INTRO + HANDOFF);
   if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
   window.__timelines = window.__timelines || {};
-  window.__timelines["welabs-chain-journey-logos-intro-v6"] = master;
+  window.__timelines["welabs-chain-journey-define-logos-intro-v6"] = master;
 })();
 </script>
 </body>

@@ -14,7 +14,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
 /* Product names come from WELABS_BRAND.names and keep their parent's color */
 #root [data-wl-name]{color:inherit}
-#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0}
+/* Header is visible in the resting state: the intro handoff (before the film timeline starts) already shows it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:1}
 #wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
@@ -24,23 +25,6 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
 .sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
 
-/* MAR, PONTES E VIAJANTE */
-#sea{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
-#sea path{fill:none;stroke:#23232B;stroke-width:4;stroke-linecap:round}
-#br{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
-/* Bridge deck was a dark reddish surface; now the dark amber surface of the brand */
-#br .deck{fill:none;stroke:var(--wl-amber-soft);stroke-width:26;stroke-linecap:round;opacity:0}
-#br .rope{fill:none;stroke:var(--coral);stroke-width:10;stroke-linecap:round;opacity:0}
-#br .walker{fill:#fff;opacity:0;filter:drop-shadow(0 0 10px rgba(var(--wl-amber-rgb),.95))}
-
-/* ILHAS (PRODUTOS) E PLACAS DAS PONTES */
-.isl{position:absolute;width:320px;height:100px;margin-left:-160px;margin-top:-50px;border-radius:50px;background:var(--panel);border:3px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 26px;font-size:32px;font-weight:800;white-space:nowrap;box-shadow:0 14px 0 #121216,0 22px 40px rgba(0,0,0,.5);opacity:0}
-.isl .ic{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral);flex:none}
-#iApp{width:420px;margin-left:-210px}
-#iHub{width:380px;margin-left:-190px}
-/* Magneto is the widest logo: its island grows from 320 to 360 px to keep clear space */
-#iFlow{width:360px;margin-left:-180px}
-
 /* LOGO DE PRODUTO NO TEXTO */
 /* Official product logos, sized by height only. --lx is the rendered x-height (150 viewBox units);
    height = viewBox height / 150 * lx and vertical-align drops the box bottom so the logo baseline (y=210) sits on the text baseline. */
@@ -49,9 +33,44 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .lg.magneto,.lg.knowly{height:calc(var(--lx)*2.014);vertical-align:calc(var(--lx)*-0.554)}
 .lg.relloo{height:calc(var(--lx)*1.894);vertical-align:calc(var(--lx)*-0.494)}
 .lg.tuner{height:calc(var(--lx)*2.2569);vertical-align:calc(var(--lx)*-0.556)}
-/* Island label is the product logo, wrapped in a span so it sits on the text baseline inside the flex island */
-.isl .lg{--lx:26px}
-.sign{position:absolute;height:48px;padding:0 18px;border-radius:12px;background:#F4EFE4;color:#1E1B14;font-size:24px;font-weight:800;line-height:48px;white-space:nowrap;transform:translate(-50%,-50%);box-shadow:0 6px 0 #B8AE98;opacity:0}
+.lg.tuner{margin-top:calc(var(--lx)*-0.241)}
+/* Caption seal: logo, thin vertical rule, then the sentence without the product name */
+.cap .lg{--lx:32px}
+.cap .rule{display:inline-block;width:3px;height:56px;margin:0 30px;background:#5A5A66;vertical-align:-10px}
+
+/* MAR, PONTES E VIAJANTES */
+#sea{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#sea path{fill:none;stroke:#23232B;stroke-width:4;stroke-linecap:round}
+/* Bridges are drawn before the islands: they run from the app island to the team island and pass under the core */
+#br{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#br .deck{fill:none;stroke:var(--wl-amber-soft);stroke-width:26;stroke-linecap:round;opacity:0}
+#br .rope{fill:none;stroke:var(--coral);stroke-width:10;stroke-linecap:round;opacity:0}
+#br .walker{fill:#fff;opacity:0;filter:drop-shadow(0 0 10px rgba(var(--wl-amber-rgb),.95))}
+
+/* ILHAS: O NÚCLEO (DOMUS + RELLOO) E AS DUAS PONTAS */
+.isl{position:absolute;background:var(--panel);border:3px solid var(--line);box-shadow:0 14px 0 #121216,0 22px 40px rgba(0,0,0,.5);opacity:0}
+.isl .ic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral);flex:none}
+/* Core: the Domus block on top and the Relloo block glued under it, one island of 640 x 420 */
+.core{left:640px;width:640px;height:210px;display:flex;align-items:center;justify-content:center;gap:28px;font-size:34px;font-weight:700;color:var(--muted);white-space:nowrap}
+.core .lg{--lx:34px}
+/* Apart, both blocks are whole islands (all corners round); when the Relloo docks, the shared edge squares off and
+   the Relloo top border goes, so the two read as one island (video-qa 08/10) */
+#iDom{top:290px;border-radius:44px}
+#iRel{top:500px;border-radius:44px}
+/* End islands: where work starts (the app) and where it lands (the team) */
+.end{top:290px;width:240px;height:420px;border-radius:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:0 20px;text-align:center;font-size:30px;font-weight:800;line-height:38px}
+#iApp{left:60px}#iTeam{left:1620px}
+/* Signs: on the left gap the product logo and its verb (dark plank, the logos are on-dark), on the right gap the
+   connection label (cream plank) */
+.sign{position:absolute;height:52px;padding:0 18px;border-radius:12px;font-size:24px;font-weight:800;line-height:52px;white-space:nowrap;opacity:0}
+/* Both planks are 300 wide and centred in their gap (300-640 and 1280-1620): 20 px clear on each side (video-qa 08/10) */
+.sign.lgs{left:320px;width:300px;background:var(--bg);border:3px solid var(--coral);line-height:46px;text-align:center;color:var(--muted)}
+.sign.lgs .lg{--lx:18px;margin-right:12px}
+.sign.lbl{left:1300px;width:300px;padding:0 10px;background:#F4EFE4;color:#1E1B14;text-align:center;box-shadow:0 6px 0 #B8AE98}
+/* Signs float above their bridge (deck edge minus 8 px), so the deck itself stays visible across the gap */
+#sL0,#sR0{top:267px}#sL1,#sR1{top:427px}#sL2,#sR2{top:587px}
+/* Seam chip between Domus and Relloo (Relloo connection label) */
+#seam{position:absolute;left:810px;top:476px;width:300px;height:48px;border-radius:24px;background:var(--bg);border:3px solid var(--coral);font-size:24px;font-weight:700;line-height:42px;text-align:center;white-space:nowrap;opacity:0;z-index:2}
 
 /* FECHO */
 #close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
@@ -76,7 +95,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="welabs-chain-horizon-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="45">
+<div id="root" data-composition-id="welabs-chain-horizon-define-logos-intro-v6" data-width="1920" data-height="1080" data-start="0" data-duration="45">
 <!-- ABERTURA: marca por cima do filme até a passagem -->
 <div id="intro">
   <canvas id="intro-bg" width="1920" height="1080" aria-hidden="true"></canvas>
@@ -99,7 +118,7 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
   <div id="intro-wl" role="img" aria-label="welabs" data-wl-motion="welabs" data-wl-scale="1.2"></div>
   <div id="intro-line">Produtos que se encaixam, num só fluxo</div>
 </div>
-<div id="film"><!-- FILME: camada do filme (pieces/welabs-chain-horizon-logos, sem mudança), transparente durante a abertura -->
+<div id="film"><!-- FILME: camada do filme (pieces/welabs-chain-horizon-define-logos, sem mudança), transparente durante a abertura -->
   <div id="hd">
     <div id="wm">Plataforma<span>.</span></div>
     <div id="kick">Some o trabalho de ponte</div>
@@ -109,52 +128,46 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <svg id="sea" viewBox="0 0 1920 1080">
     <path d="M120 180 q20 -12 40 0 t40 0"/><path d="M980 170 q20 -12 40 0 t40 0"/><path d="M1680 220 q20 -12 40 0 t40 0"/>
-    <path d="M560 860 q20 -12 40 0 t40 0"/><path d="M1080 640 q20 -12 40 0 t40 0"/><path d="M1240 820 q20 -12 40 0 t40 0"/>
-    <path d="M110 620 q20 -12 40 0 t40 0"/><path d="M1780 640 q20 -12 40 0 t40 0"/>
+    <path d="M560 860 q20 -12 40 0 t40 0"/><path d="M1080 800 q20 -12 40 0 t40 0"/><path d="M1240 840 q20 -12 40 0 t40 0"/>
+    <path d="M410 240 q20 -12 40 0 t40 0"/><path d="M1400 780 q20 -12 40 0 t40 0"/>
   </svg>
 
+  <!-- Three layers, one bridge each: Magneto (340), Tuner (500), Knowly (660); all cross the whole archipelago -->
   <svg id="br" viewBox="0 0 1920 1080">
-    <path class="deck" id="d0" d="M330 280 L760 520"/><path class="rope" id="b0" d="M330 280 L760 520"/>
-    <path class="deck" id="d1" d="M760 520 L330 760"/><path class="rope" id="b1" d="M760 520 L330 760"/>
-    <path class="deck" id="d2" d="M330 280 L330 760"/><path class="rope" id="b2" d="M330 280 L330 760"/>
-    <path class="deck" id="d3" d="M760 520 L1200 260"/><path class="rope" id="b3" d="M760 520 L1200 260"/>
-    <path class="deck" id="d4" d="M1200 260 L330 280"/><path class="rope" id="b4" d="M1200 260 L330 280"/>
-    <path class="deck" id="d5" d="M1600 790 L1600 470"/><path class="rope" id="b5" d="M1600 790 L1600 470"/>
-    <path class="deck" id="d6" d="M1600 470 L1200 260"/><path class="rope" id="b6" d="M1600 470 L1200 260"/>
-    <circle class="walker" id="wk" cx="0" cy="0" r="14"/>
+    <path class="deck" id="d0" d="M300,340 L1620,340"/><path class="rope" id="b0" d="M300,340 L1620,340"/>
+    <path class="deck" id="d1" d="M300,500 L1620,500"/><path class="rope" id="b1" d="M300,500 L1620,500"/>
+    <path class="deck" id="d2" d="M300,660 L1620,660"/><path class="rope" id="b2" d="M300,660 L1620,660"/>
+    <circle class="walker" id="w0" cx="300" cy="340" r="14"/><circle class="walker" id="w1" cx="300" cy="500" r="14"/><circle class="walker" id="w2" cx="300" cy="660" r="14"/>
   </svg>
 
-  <div class="isl" id="iCh" style="left:330px;top:280px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><span><img class="lg tuner" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"></span></div>
-  <div class="isl" id="iKB" style="left:330px;top:760px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><span><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"></span></div>
-  <div class="isl" id="iCRM" style="left:760px;top:520px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><span><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"></span></div>
-  <div class="isl" id="iApp" style="left:1200px;top:260px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 9h18" stroke="currentColor" stroke-width="2.2"/></svg></div>SaaS · app · portal</div>
-  <div class="isl" id="iFlow" style="left:1600px;top:470px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><span><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"></span></div>
-  <div class="isl" id="iHub" style="left:1600px;top:790px"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><span><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"></span></div>
+  <div class="isl end" id="iApp"><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 9h18" stroke="currentColor" stroke-width="2.2"/></svg></div>Seu app</div>
+  <div class="isl end" id="iTeam"><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="17" cy="9" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 20c0-3.4 2.7-6 6-6s6 2.6 6 6M15 14.4c3 .2 5 2.4 5 5.6" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Sua equipe</div>
+  <!-- Core: Domus (defines) with the Relloo (serves) glued under it -->
+  <div class="isl core" id="iDom"><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus">define</div>
+  <div class="isl core" id="iRel"><div class="ic"><svg width="36" height="36" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo">atende</div>
+  <div id="seam">contatos e pedidos</div>
 
-  <div class="sign" id="g0" style="left:545px;top:395px">conversa com histórico</div>
-  <div class="sign" id="g1" style="left:545px;top:645px">resposta com base</div>
-  <div class="sign" id="g2" style="left:330px;top:520px">base certa no canal</div>
-  <div class="sign" id="g3" style="left:980px;top:395px">resolve dentro do app</div>
-  <div class="sign" id="g4" style="left:765px;top:268px">pergunta sem dado exposto</div>
-  <div class="sign" id="g5" style="left:1600px;top:630px">regra vira processo</div>
-  <div class="sign" id="g6" style="left:1400px;top:365px">resultado chega ao app</div>
+  <div class="sign lgs" id="sL0"><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto">workflow</div>
+  <div class="sign lbl" id="sR0">regra →  ← recibo</div>
+  <div class="sign lgs" id="sL1"><img class="lg tuner" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner">entrega</div>
+  <div class="sign lbl" id="sR1">avisos e conversas</div>
+  <div class="sign lgs" id="sL2"><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly">explica</div>
+  <div class="sign lbl" id="sR2">dados e quem pode ver</div>
 
-  <div class="cap" id="c1">Cada produto, <span>uma ilha</span></div>
+  <div class="cap" id="c1">Cada sistema, <span>uma ilha</span></div>
   <div class="sub" id="s1">e alguém atravessando a nado entre elas</div>
-  <div class="cap" id="k0">Some a conversa <span>sem histórico</span></div>
-  <!-- Product names left the lines below: the lit islands on screen show the logos of the products they cite -->
-  <div class="sub" id="u0">toda conversa que chega vira relacionamento com a pessoa</div>
-  <div class="cap" id="k1">Some a resposta <span>de memória</span></div>
-  <div class="sub" id="u1">a mesma base de conhecimento atende os dois</div>
-  <div class="cap" id="k2">Some o <span>“vou verificar e retorno”</span></div>
-  <div class="sub" id="u2">o atendimento resolve dentro do app</div>
-  <div class="cap" id="k3">Some o <span>dado pessoal à mostra</span></div>
-  <div class="sub" id="u3">a pergunta sai do app já protegida</div>
-  <div class="cap" id="k4">Some a regra <span>que só existe no papel</span></div>
-  <div class="sub" id="u4">a regra cadastrada vira processo andando</div>
-  <div class="cap" id="k5">Some a <span>baixa feita à mão</span></div>
-  <div class="sub" id="u5">o que o processo resolve chega direto ao app</div>
-  <div class="cap" id="c8">A soma faz <span>o que nenhum faz sozinho</span></div>
+  <div class="cap" id="k0"><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"><i class="rule"></i>define <span>a empresa inteira</span></div>
+  <div class="sub" id="u0">dele nascem as telas, as regras e os fluxos dos outros produtos</div>
+  <div class="cap" id="k1"><img class="lg relloo" src="./assets/brand/relloo-logo-on-dark.svg" alt="Relloo"><i class="rule"></i>atende <span>colado ao centro</span></div>
+  <div class="sub" id="u1">contatos e pedidos nascem junto com o resto da empresa</div>
+  <div class="cap" id="k2"><img class="lg magneto" src="./assets/brand/magneto-logo-on-dark.svg" alt="Magneto"><i class="rule"></i>o workflow <span>que passa por tudo</span></div>
+  <div class="sub" id="u2">a regra do centro vira workflow, e o recibo volta</div>
+  <div class="cap" id="k3"><img class="lg tuner" src="./assets/brand/tuner-logo-on-dark.svg" alt="Tuner"><i class="rule"></i>entrega <span>em todo canal</span></div>
+  <div class="sub" id="u3">avisos e conversas atravessam a operação inteira</div>
+  <div class="cap" id="k4"><img class="lg knowly" src="./assets/brand/knowly-logo-on-dark.svg" alt="Knowly"><i class="rule"></i>explica <span>com a fonte junto</span></div>
+  <div class="sub" id="u4">cada resposta respeita os dados e quem pode ver</div>
+  <!-- Central sentence of the chain: the Domus logo stands for its name -->
+  <div class="cap" id="c8"><img class="lg domus" src="./assets/brand/domus-logo-on-dark.svg" alt="Domus"><i class="rule"></i>define. <span>Os outros dão vida.</span></div>
   <div class="sub" id="s8">cada ponte é um trabalho que ninguém mais faz na mão</div>
 
   <div id="close">
@@ -234,76 +247,92 @@ window.__pieceParts = {};
   window.__pieceParts.intro = tl;
 })();
 
-// FILME (copiado sem mudança de pieces/welabs-chain-horizon-logos; só o registro da timeline virou __pieceParts.film)
+// FILME (copiado sem mudança de pieces/welabs-chain-horizon-define-logos; só o registro da timeline virou __pieceParts.film)
 // LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
 (function () {
   var D = 36;
   var tl = gsap.timeline({ paused: true });
   // Brand colors as literals: GSAP cannot tween var()
   var C = WELABS_BRAND.color;
+  var L = 1320;
   function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
   function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
-  // Bridge i gets drawn while the walker crosses it; both ends light up when it lands
-  var P = { iCh: [330, 280], iKB: [330, 760], iCRM: [760, 520], iApp: [1200, 260], iFlow: [1600, 470], iHub: [1600, 790] };
-  function bridge(i, a, b, t) {
-    var rope = document.getElementById('b' + i), L = rope.getTotalLength();
-    // Hidden by CSS until its beat; the dash setup happens at the beat itself
-    tl.set(rope, { strokeDasharray: L + ' ' + L, strokeDashoffset: L, opacity: 1 }, t);
-    tl.to(rope, { strokeDashoffset: 0, duration: 0.8, ease: 'power1.inOut' }, t);
-    tl.set(rope, { strokeDasharray: '18 12', strokeDashoffset: 0 }, t + 0.8);
-    tl.to('#d' + i, { opacity: 1, duration: 0.3 }, t + 0.6);
-    tl.set('#wk', { attr: { cx: P[a][0], cy: P[a][1] }, opacity: 1 }, t);
-    tl.to('#wk', { attr: { cx: P[b][0], cy: P[b][1] }, duration: 0.8, ease: 'power1.inOut' }, t);
-    tl.set('#wk', { opacity: 0 }, t + 0.8);
-    [a, b].forEach(function (id) {
-      tl.to('#' + id, { opacity: 1, filter: 'brightness(1)', borderColor: C.amber, duration: 0.25 }, t + 0.8);
-      tl.fromTo('#' + id, { y: 0 }, { y: -12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, t + 0.8);
-    });
-    inn('#g' + i, t + 0.9, { scale: 0.6 }, 0.35);
+  function lit(sel, t) { tl.to(sel, { filter: 'brightness(1)', borderColor: C.amber, duration: 0.25 }, t); }
+  // Bridge i is drawn from the app island to the team island; the walker crosses it and passes under the core
+  function bridge(i, t) {
+    tl.fromTo('#b' + i, { opacity: 1, strokeDasharray: L + ' ' + L, strokeDashoffset: L }, { opacity: 1, strokeDasharray: L + ' ' + L, strokeDashoffset: 0, duration: 1.0, ease: 'power1.inOut' }, t);
+    tl.set('#b' + i, { strokeDasharray: '18 12', strokeDashoffset: 0 }, t + 1.0);
+    tl.to('#d' + i, { opacity: 1, duration: 0.3 }, t + 0.8);
+    walk(i, t, 1.0);
+    lit(['#iApp', '#iTeam'], t + 1.0);
+    inn('#sL' + i, t + 1.0, { scale: 0.6 }, 0.35); inn('#sR' + i, t + 1.15, { scale: 0.6 }, 0.35);
+  }
+  function walk(i, t, d) {
+    tl.fromTo('#w' + i, { opacity: 0, attr: { cx: 300 } }, { opacity: 1, attr: { cx: 300 }, duration: 0.05 }, t);
+    tl.to('#w' + i, { attr: { cx: 1620 }, duration: d, ease: 'power1.inOut' }, t);
+    tl.set('#w' + i, { opacity: 0 }, t + d);
   }
 
   // Cabeçalho
-  inn('#hd', 0.2, { y: -12 }, 0.6);
+  // Header is on from frame 0, so the intro handoff fades onto it instead of onto an empty frame (video-qa 08/10)
+  tl.set('#hd', { opacity: 1 }, 0);
 
-  // Batida 1: cada produto é uma ilha (0,6–5,4 s)
+  // Batida 1: cada sistema é uma ilha; o Relloo ainda longe do Domus (0,6–5,4 s)
   inn('#sea', 0.4, {}, 0.8);
-  ['iCh', 'iCRM', 'iKB', 'iApp', 'iFlow', 'iHub'].forEach(function (id, i) {
-    // Unlit islands are dimmed by brightness, not opacity: they stay opaque, so a bridge being drawn and its walker
-    // pass under the island (and its product logo) instead of showing through it
-    tl.fromTo('#' + id, { opacity: 0, scale: 0.6, filter: 'brightness(0.6)' }, { opacity: 1, scale: 1, filter: 'brightness(0.6)', duration: 0.45, ease: 'back.out(2)' }, 0.7 + i * 0.18);
+  // Unlit islands are dimmed by brightness, not opacity: they stay opaque, so the bridges pass under them
+  tl.fromTo('#iDom', { opacity: 0, scale: 0.7, filter: 'brightness(0.6)' }, { opacity: 1, scale: 1, filter: 'brightness(0.6)', duration: 0.45, ease: 'back.out(2)' }, 0.7);
+  tl.fromTo('#iRel', { opacity: 0, y: 140, scale: 0.7, filter: 'brightness(0.6)' }, { opacity: 1, y: 140, scale: 1, filter: 'brightness(0.6)', duration: 0.45, ease: 'back.out(2)' }, 0.9);
+  ['#iApp', '#iTeam'].forEach(function (id, i) {
+    tl.fromTo(id, { opacity: 0, scale: 0.7, filter: 'brightness(0.6)' }, { opacity: 1, scale: 1, filter: 'brightness(0.6)', duration: 0.45, ease: 'back.out(2)' }, 1.1 + i * 0.2);
   });
+  // The far island bobs on the water: nothing holds it to the centre yet
+  tl.to('#iRel', { y: 128, duration: 1.0, ease: 'sine.inOut' }, 2.6).to('#iRel', { y: 140, duration: 1.0, ease: 'sine.inOut' }, 3.6);
   inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
   out(['#c1', '#s1'], 5.2);
 
-  // Batidas 2 a 7: uma ponte por vez, cada uma com o problema que some (5,6–25,6 s)
-  var t0 = 5.6, S = 3.2;
-  inn('#k0', t0, { y: 16 }); inn('#u0', t0 + 0.3, { y: 12 }); bridge(0, 'iCh', 'iCRM', t0 + 0.1); out(['#k0', '#u0'], t0 + 2.9);
-  var t1 = t0 + S;
-  inn('#k1', t1, { y: 16 }); inn('#u1', t1 + 0.3, { y: 12 }); bridge(1, 'iCRM', 'iKB', t1 + 0.1); bridge(2, 'iKB', 'iCh', t1 + 1.0); out(['#k1', '#u1'], t1 + 3.7);
-  var t2 = t1 + S + 0.8;
-  inn('#k2', t2, { y: 16 }); inn('#u2', t2 + 0.3, { y: 12 }); bridge(3, 'iCRM', 'iApp', t2 + 0.1); out(['#k2', '#u2'], t2 + 2.9);
-  var t3 = t2 + S;
-  inn('#k3', t3, { y: 16 }); inn('#u3', t3 + 0.3, { y: 12 }); bridge(4, 'iApp', 'iCh', t3 + 0.1); out(['#k3', '#u3'], t3 + 2.9);
-  var t4 = t3 + S;
-  inn('#k4', t4, { y: 16 }); inn('#u4', t4 + 0.3, { y: 12 }); bridge(5, 'iHub', 'iFlow', t4 + 0.1); out(['#k4', '#u4'], t4 + 2.9);
-  var t5 = t4 + S;
-  inn('#k5', t5, { y: 16 }); inn('#u5', t5 + 0.3, { y: 12 }); bridge(6, 'iFlow', 'iApp', t5 + 0.1); out(['#k5', '#u5'], t5 + 2.9);
+  // Batida 2: o Domus define a empresa inteira (5,6–9,0 s)
+  inn('#k0', 5.6, { y: 16 }); inn('#u0', 5.9, { y: 12 });
+  lit('#iDom', 5.9);
+  tl.to('#iDom', { y: -12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, 5.9);
+  out(['#k0', '#u0'], 8.7);
 
-  // Batida 8: todas as pontes juntas (25,6–30,3 s)
-  var t8 = t5 + S;
-  inn('#c8', t8, { y: 16 }); inn('#s8', t8 + 0.3, { y: 12 });
-  [0, 1, 2, 3, 4, 5, 6].forEach(function (i) {
-    // Deck pulse: was red #7A2A1C over #3A1A14; now translucent brand amber over the dark amber surface
-    tl.to('#d' + i, { stroke: 'rgba(' + C.amberRgb + ',0.45)', duration: 0.3 }, t8 + 0.4 + i * 0.2);
-    tl.to('#d' + i, { stroke: C.amberSoft, duration: 0.5 }, t8 + 0.8 + i * 0.2);
+  // Batida 3: o Relloo encosta e fica colado ao Domus (9,0–12,4 s)
+  inn('#k1', 9.0, { y: 16 }); inn('#u1', 9.3, { y: 12 });
+  tl.to('#iRel', { y: 0, duration: 0.8, ease: 'back.out(1.3)' }, 9.2);
+  tl.to('#iDom', { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, duration: 0.3 }, 9.6);
+  tl.to('#iRel', { borderTopLeftRadius: 0, borderTopRightRadius: 0, borderTopWidth: 0, duration: 0.3 }, 9.6);
+  lit('#iRel', 10.0);
+  inn('#seam', 10.2, { scale: 0.7 }, 0.35);
+  out(['#k1', '#u1'], 12.1);
+
+  // Batidas 4 a 6: Magneto, Tuner e Knowly atravessam tudo, cada um numa ponte (12,4–22,6 s)
+  [0, 1, 2].forEach(function (i) {
+    var t = 12.4 + i * 3.4;
+    inn('#k' + (i + 2), t, { y: 16 }); inn('#u' + (i + 2), t + 0.3, { y: 12 });
+    bridge(i, t + 0.1);
+    out(['#k' + (i + 2), '#u' + (i + 2)], t + 3.1);
   });
-  tl.to(['#sea'], { opacity: 0.5, duration: 0.6 }, t8 + 0.4);
-  out(['#c8', '#s8'], t8 + 4.7);
+  // Magneto: the receipt walks back to the start once the rule has crossed (regra → · ← recibo)
+  // Turns around right away at the team island (no 0.2 s pause, video-qa 08/10)
+  tl.fromTo('#w0', { opacity: 0, attr: { cx: 1620 } }, { opacity: 1, attr: { cx: 1620 }, duration: 0.02 }, 13.5);
+  tl.to('#w0', { attr: { cx: 300 }, duration: 1.0, ease: 'power1.inOut' }, 13.52);
+  tl.set('#w0', { opacity: 0 }, 14.52);
 
-  // Fecho (parado da entrada ao fim)
-  var tc = t8 + 5.0;
-  out(['#hd', '#sea', '#br', '.isl', '.sign'], tc - 0.3, 0.4);
-  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, tc);
+  // Batida 7: o Domus define, os outros dão vida (22,8–29,4 s)
+  var t8 = 22.8;
+  inn('#c8', t8, { y: 16 }); inn('#s8', t8 + 0.3, { y: 12 });
+  [0, 1, 2].forEach(function (i) {
+    tl.to('#d' + i, { stroke: 'rgba(' + C.amberRgb + ',0.45)', duration: 0.3 }, t8 + 0.4 + i * 0.25);
+    tl.to('#d' + i, { stroke: C.amberSoft, duration: 0.5 }, t8 + 0.8 + i * 0.25);
+    walk(i, t8 + 0.4 + i * 0.25, 1.2);
+  });
+  tl.to('#sea', { opacity: 0.5, duration: 0.6 }, t8 + 0.4);
+  out(['#c8', '#s8'], t8 + 6.3);
+
+  // Fecho (29,8–36 s, parado de 30,4 s ao fim)
+  out(['#hd', '#sea', '#br', '.isl', '.sign', '#seam'], 29.4, 0.4);
+  // Starts at 29.7 s so it overlaps the film's exit by one frame instead of leaving an empty one (video-qa 08/10)
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.7);
   tl.set('#close', { opacity: 1 }, D);
 
   window.__timelines = window.__timelines || {};
@@ -324,7 +353,7 @@ window.__pieceParts = {};
   master.add(parts.film.paused(false), INTRO + HANDOFF);
   if (Math.abs(master.duration() - (INTRO + HANDOFF + FILM)) > 1e-6) throw new Error('master timeline ' + master.duration() + 's');
   window.__timelines = window.__timelines || {};
-  window.__timelines["welabs-chain-horizon-logos-intro-v6"] = master;
+  window.__timelines["welabs-chain-horizon-define-logos-intro-v6"] = master;
 })();
 </script>
 </body>
