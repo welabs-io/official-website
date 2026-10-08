@@ -35,7 +35,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #ana{left:150px;top:196px}
 #say{position:absolute;left:360px;top:180px;width:1360px;height:220px;border-radius:34px 34px 34px 8px;background:var(--panel2);border:3px solid var(--line);padding:38px 46px;font-size:44px;font-weight:700;line-height:64px;opacity:0}
 .w{opacity:0}
-.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(var(--wl-amber-rgb),0)}
+/* clone keeps the rounded corners and side padding on every line when a highlighted phrase wraps */
+.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(var(--wl-amber-rgb),0);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 
 /* BLOCOS SUGERIDOS E REVISADOS */
 .blk{position:absolute;top:560px;width:400px;height:150px;border-radius:30px;background:var(--panel);display:flex;align-items:center;gap:22px;padding:0 30px;font-size:34px;font-weight:700;line-height:40px;opacity:0}

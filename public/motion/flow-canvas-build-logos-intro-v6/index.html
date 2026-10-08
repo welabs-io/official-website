@@ -52,6 +52,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(var(--wl-amber-rgb),.55);opacity:0}
 .tick{position:absolute;right:-20px;top:-20px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
 #b1{left:230px;top:300px}#b2{left:770px;top:300px}#b3{left:1310px;top:300px}#b4{left:1050px;top:600px}
+/* The moving token stays above the wires but passes under the blocks, so it never covers their names */
+.blk{z-index:3}
+#tok{z-index:2}
 #wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
 #wires path{fill:none;stroke:var(--coral);stroke-width:6;stroke-linecap:round}
 #wires .hd{fill:var(--coral);opacity:0}
@@ -302,9 +305,17 @@ window.__pieceParts = {};
   lit('#b1', 19.6);
   tl.to('#tok', { x: 540, duration: 0.9, ease: 'power2.inOut' }, 20.4);
   lit('#b2', 21.3);
-  tl.to('#tok', { x: 820, y: 300, duration: 0.9, ease: 'power2.inOut' }, 22.0);
+  // The token follows the wire (down, then right) instead of cutting diagonally across the blocks' text, and it
+  // travels under the blocks (z-index in CSS)
+  tl.to('#tok', { y: 300, duration: 0.45, ease: 'power2.inOut' }, 22.0);
+  // Hidden while it is under the block, so no half-covered pill shows
+  tl.to('#tok', { opacity: 0, duration: 0.1 }, 22.0).to('#tok', { opacity: 1, duration: 0.1 }, 22.35);
+  tl.to('#tok', { x: 820, duration: 0.45, ease: 'power2.inOut' }, 22.45);
   lit('#b4', 22.9);
-  tl.to('#tok', { x: 1080, y: 0, duration: 0.9, ease: 'power2.inOut' }, 23.5);
+  // Along the wire again: right, then up
+  tl.to('#tok', { x: 1080, duration: 0.45, ease: 'power2.inOut' }, 23.5);
+  tl.to('#tok', { y: 0, duration: 0.45, ease: 'power2.inOut' }, 23.95);
+  tl.to('#tok', { opacity: 0, duration: 0.1 }, 23.95).to('#tok', { opacity: 1, duration: 0.1 }, 24.3);
   lit('#b3', 24.4);
   out('#c4', 25.3);
 
