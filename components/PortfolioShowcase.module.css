@@ -1,0 +1,638 @@
+/* COLEÇÃO E CARTÕES DE SISTEMA */
+.collection {
+  width: 100%;
+}
+.collectionToolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+}
+.filters button {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--text-2);
+  padding: 6px 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  transition:
+    color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.filters button span {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.filters button[aria-pressed="true"] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+.filters button:hover {
+  color: var(--text);
+}
+.count {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.collectionLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+/* Two systems per row. A thread runs down the gutter between the columns and branches into every
+   cover; each branch draws in when its card is revealed. */
+.grid {
+  --gap-x: 48px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px var(--gap-x);
+}
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-0.5px);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--thread-quiet) 6%,
+    var(--thread-quiet) 94%,
+    transparent
+  );
+  pointer-events: none;
+}
+.card {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+  container-type: inline-size;
+}
+/* Branch from the gutter thread to the middle of the cover (16:9, so its middle is 9/32 of the width) */
+.grid > .card::before {
+  content: "";
+  position: absolute;
+  top: calc(100cqw * 9 / 32);
+  width: calc(var(--gap-x) / 2);
+  height: 1px;
+  background: var(--thread);
+  transform: scaleX(0);
+  transition: transform 0.9s var(--ease) 0.25s;
+  pointer-events: none;
+}
+.grid > .card::after {
+  content: "";
+  position: absolute;
+  top: calc(100cqw * 9 / 32 - 3px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transform: scale(0.2);
+  transition:
+    opacity 0.4s var(--ease) 0.9s,
+    transform 0.6s var(--ease) 0.9s;
+  pointer-events: none;
+}
+.grid > .card:nth-child(odd)::before {
+  left: 100%;
+  transform-origin: left;
+}
+.grid > .card:nth-child(even)::before {
+  right: 100%;
+  transform-origin: right;
+}
+.grid > .card:nth-child(odd)::after {
+  left: calc(100% + var(--gap-x) / 2 - 3.5px);
+}
+.grid > .card:nth-child(even)::after {
+  right: calc(100% + var(--gap-x) / 2 - 3.5px);
+}
+.grid > .card[data-in]::before {
+  transform: scaleX(1);
+}
+.grid > .card[data-in]::after {
+  opacity: 1;
+  transform: none;
+}
+/* NÚCLEO E TRILHOS DO ECOSSISTEMA */
+/* Desktop: a three-column grid. The core (Domus wider, Relloo fitted against it, one seam between
+   them) takes the middle column across the three rows. Each rail spans the whole width on its own
+   row, behind the core, so its band crosses the core end to end: the logo and verb sit on the left
+   end, what travels on the rail on the right end. Rows share the core's height, so the bands cross
+   it at 1/6, 1/2 and 5/6. The band is the brand 1.2.1 amber thread; an amber dot travels it. */
+.hubFrame {
+  width: 100%;
+}
+.hubLead {
+  margin: 0 0 14px;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.hubLead span {
+  color: var(--text-2);
+}
+/* Verb chain in weight order */
+.hubChain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  margin: 0 0 40px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.hubChain > span {
+  white-space: nowrap;
+}
+.hubChain i {
+  margin: 0 0.8em;
+  font-style: normal;
+  color: var(--text-3);
+}
+.hubChain strong {
+  font-weight: 500;
+  color: var(--text);
+}
+.hub {
+  --verb-h: 30px;
+  --band: 1px;
+  --dot: 6px;
+  --core-pad: 18px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr) minmax(0, 1fr);
+  grid-template-rows: repeat(3, minmax(88px, 1fr));
+  /* Room for the seam label, which hangs half below the core */
+  padding-bottom: 14px;
+}
+/* Core: one block, so Domus and Relloo read as a pair; the bands pass behind it */
+.core {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: start;
+  margin: 0 20px;
+  padding: var(--core-pad);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--ink-2);
+}
+.coreNode {
+  position: relative;
+  min-width: 0;
+  padding: 0 var(--core-pad);
+}
+.coreNode[data-core="hub"] {
+  padding-left: 0;
+}
+.coreNode[data-core="pair"] {
+  align-self: stretch;
+  padding-right: 0;
+  border-left: 1px solid var(--line);
+}
+/* The product whose page holds the hub is highlighted */
+.coreNode[data-current] .cover {
+  border-color: var(--accent);
+}
+/* Seam label: discreet, on the core's bottom edge, centred on the seam */
+.seam {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: calc(
+    var(--core-pad) + (100% - 2 * var(--core-pad) - 2px) * 1.4 / 2.4 + 1px
+  );
+  display: flex;
+  gap: 0.6em;
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--ink-2);
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-2);
+  white-space: nowrap;
+  transform: translate(-50%, 50%);
+}
+/* "<product> <verb>" over each core card */
+.verb {
+  height: var(--verb-h);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.verb strong {
+  font-weight: 500;
+  color: var(--text);
+}
+/* Rails: a link across the whole row; the band and its travelling dot are pseudo-elements */
+.rail {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  container-type: inline-size;
+  color: var(--text);
+  text-decoration: none;
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--band);
+  background: var(--thread);
+  transition: background 0.4s var(--ease);
+}
+.rail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(50% + var(--band) / 2 - var(--dot) / 2);
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--accent);
+  animation: railPulse 7s linear infinite;
+}
+/* Staggered pulses; Magneto's goes and comes back (rule out, receipt back) */
+.rail:nth-child(3)::after {
+  animation-delay: -2.4s;
+}
+.rail:nth-child(4)::after {
+  animation-delay: -4.8s;
+}
+.rail[data-product="flow"]::after {
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+@keyframes railPulse {
+  from {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(100cqw - var(--dot)));
+  }
+}
+/* Rail ends sit on the graphite so the band starts and stops at them */
+.railHead {
+  grid-column: 1;
+  justify-self: start;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 12px;
+  background: var(--ink);
+}
+.railHead img {
+  display: block;
+  width: auto;
+  height: 44px;
+}
+.railVerb {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  transition: color 0.4s var(--ease);
+}
+.railWire {
+  grid-column: 3;
+  justify-self: end;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  gap: 0.6em;
+  padding: 5px 9px;
+  border: 1px solid var(--thread);
+  border-radius: var(--radius);
+  background: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.rail:hover::before,
+.rail[data-current]::before {
+  background: var(--accent);
+}
+.rail:hover .railVerb,
+.rail[data-current] .railVerb {
+  color: var(--text);
+}
+.rail[data-current] .railWire {
+  border-color: var(--accent);
+}
+/* The current product's band is drawn thicker, so it reads as highlighted */
+.rail[data-current]::before {
+  height: 3px;
+  margin-top: -1px;
+}
+.rail:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.cardLink {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: var(--text);
+}
+
+/* CAPA DO PRODUTO */
+/* Graphite plate with a soft central glow and a faint dot grid; the official dark logo sits centred and
+   is sized by height only, relative to the card width (the card is an inline-size container). The
+   endorsed SVGs already carry their clear zone, so the height includes it. Widest logo (Magneto
+   endorsed, 2.34:1) at 28cqw stays within ~66% of the cover width. */
+.cover {
+  --cover-logo-h: 28cqw;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(70% 80% at 50% 50%, var(--ink-3) 0%, transparent 75%),
+    radial-gradient(
+        circle at 1px 1px,
+        color-mix(in srgb, var(--text) 7%, transparent) 1px,
+        transparent 1.4px
+      )
+      0 0 / 16px 16px,
+    var(--ink);
+  transition: border-color 0.6s var(--ease);
+}
+.coverBrand {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1.4s var(--ease);
+}
+.cover img {
+  display: block;
+  width: auto;
+  height: var(--cover-logo-h);
+}
+/* Company logo (no product logo of its own): smaller mark, product name below it in Inter */
+.companyCover {
+  --cover-logo-h: 19cqw;
+}
+.coverCaption {
+  margin-top: -1.2cqw;
+  font-family: var(--font);
+  font-size: clamp(14px, 3.4cqw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--text);
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--cover-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.cardLink:hover .cover {
+  border-color: var(--line-2);
+}
+.cardLink:hover .cover::after {
+  transform: scaleX(1);
+}
+.cardLink:hover .coverBrand {
+  transform: scale(1.03);
+}
+.openArrow {
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text);
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  opacity: 0;
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.5s var(--ease);
+}
+.cardLink:hover .openArrow,
+.cardLink:focus-visible .openArrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+/* Body under the cover: summary and link only (the logo lives in the cover, the name is a hidden heading) */
+.cardBody {
+  display: grid;
+  gap: 10px;
+  padding: 16px 0 0;
+}
+.summary {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 60ch;
+  margin: 0;
+  color: var(--text-2);
+}
+.explore {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--line-2);
+  transition: border-color 0.4s var(--ease);
+}
+.cardLink:hover .explore {
+  border-color: var(--accent);
+}
+.collectionNote {
+  margin: 40px 0 0;
+  max-width: 72ch;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-3);
+}
+.cardLink:focus-visible,
+.filters button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+/* Mobile: the core on top (Domus, the seam, Relloo), then the three rails stacked as full-width
+   bands, logo and verb on the left end and what travels on the right. */
+@media (max-width: 900px) {
+  .hubChain {
+    margin-bottom: 28px;
+  }
+  .hub {
+    --core-pad: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .core {
+    grid-template-columns: minmax(0, 1fr);
+    margin: 0 0 18px;
+  }
+  .coreNode,
+  .coreNode[data-core="pair"] {
+    padding: 0;
+    border-left: 0;
+  }
+  /* The seam is a hairline across the core with its label in the middle */
+  .seam {
+    position: static;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    transform: none;
+  }
+  .seam::before,
+  .seam::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .rail {
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: 10px;
+    min-height: 60px;
+  }
+  .railHead img {
+    height: 34px;
+  }
+  .railWire {
+    grid-column: 2;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    white-space: normal;
+    text-align: right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail::after {
+    display: none;
+  }
+  .rail::before,
+  .railVerb {
+    transition: none;
+  }
+  .cardLink:hover .coverBrand {
+    transform: none;
+  }
+  .grid > .card::before,
+  .grid > .card::after {
+    transition: none;
+  }
+}
+/* One system per row: the thread moves to the left gutter and branches into each cover */
+@media (max-width: 700px) {
+  .collectionToolbar {
+    display: block;
+    margin-bottom: 24px;
+  }
+  .count {
+    margin-top: 12px;
+  }
+  .grid {
+    --gap-x: 24px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding-left: 14px;
+  }
+  .grid::before {
+    left: 0;
+    transform: none;
+  }
+  .grid > .card:nth-child(n)::before {
+    left: auto;
+    right: 100%;
+    width: 14px;
+    transform-origin: right;
+  }
+  .grid > .card:nth-child(n)::after {
+    left: auto;
+    right: calc(100% + 14px - 3.5px);
+  }
+  .grid > .card[data-in]:nth-child(n)::before {
+    transform: scaleX(1);
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "erp": {
+    "logo": "/brands/welabs/products/domus-dark-endorsed.svg",
+    "logoPlate": "dark",
+    "scenes": {
+      "pt-BR": [
+        {
+          "id": "scene-1",
+          "title": "Documentos de gestão",
+          "summary": "Documentos de demonstração dão contexto à visão de gestão do Domus.",
+          "alt": "Documentos vazios e registros fictícios ilustram o contexto de gestão do Domus.",
+          "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Visão de gestão",
+          "summary": "Uma organização por grupos reúne registros fictícios numa leitura de gestão.",
+          "alt": "Quadro de registros fictícios em grupos genéricos, com a marca Welabs.",
+          "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Contexto de integração",
+          "summary": "Documentos e contexto compõem a visão da plataforma.",
+          "alt": "Jornada abstrata de documento, gestão e contexto, sem representar conexão com sistemas reais.",
+          "src": "/presentations/erp/1.0.0/posters/pt-BR-scene-3.png"
+        }
+      ],
+      "en": [
+        {
+          "id": "scene-1",
+          "title": "Management files",
+          "summary": "Demonstration documents give context to Domus's management view.",
+          "alt": "Empty documents and fictional records illustrate the management context of Domus.",
+          "src": "/presentations/erp/1.0.0/posters/en-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Management view",
+          "summary": "An organization by groups brings fictional records together into a management view.",
+          "alt": "Board of fictional records in generic groups, with Welabs branding.",
+          "src": "/presentations/erp/1.0.0/posters/en-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Integration view",
+          "summary": "Documents and context shape the platform's view.",
+          "alt": "Abstract journey of a document, management and context, without a connection to real systems.",
+          "src": "/presentations/erp/1.0.0/posters/en-scene-3.png"
+        }
+      ]
+    }
+  },
+  "flow": {
+    "logo": "/brands/welabs/products/magneto-dark-endorsed.svg",
+    "logoPlate": "dark",
+    "scenes": {
+      "pt-BR": [
+        {
+          "id": "scene-1",
+          "title": "Organize tarefas",
+          "summary": "Uma tarefa DEMO entra em uma visão organizada para que a equipe enxergue o próximo passo do trabalho.",
+          "alt": "Quadro ilustrativo de tarefas DEMO nas etapas genéricas de entrada, execução e revisão.",
+          "src": "/presentations/flow/1.0.0/posters/pt-BR-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Siga o workflow",
+          "summary": "Na jornada do workflow, iniciar, executar e acompanhar tornam visíveis as etapas de uma tarefa.",
+          "alt": "Jornada ilustrativa de tarefa com etapas de iniciar, executar e acompanhar.",
+          "src": "/presentations/flow/1.0.0/posters/pt-BR-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Veja o contexto",
+          "summary": "Registros e contexto ilustrativos ajudam a equipe a retomar o trabalho e compreender o que acompanha uma tarefa.",
+          "alt": "Esquema ilustrativo relaciona tarefa, contexto, registro e consulta DEMO.",
+          "src": "/presentations/flow/1.0.0/posters/pt-BR-scene-3.png"
+        }
+      ],
+      "en": [
+        {
+          "id": "scene-1",
+          "title": "Organize tasks",
+          "summary": "A DEMO task enters an organized view so the team can see the next step of the work.",
+          "alt": "An illustrative board of DEMO tasks in generic intake, execution and review stages.",
+          "src": "/presentations/flow/1.0.0/posters/en-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Follow the workflow",
+          "summary": "In the workflow journey, starting, executing and following up make a task's steps visible.",
+          "alt": "An illustrative task journey with steps to start, execute and follow up.",
+          "src": "/presentations/flow/1.0.0/posters/en-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "View the context",
+          "summary": "Illustrative records and context help the team resume the work and understand what accompanies a task.",
+          "alt": "An illustrative diagram relates a DEMO task, context, record and consultation.",
+          "src": "/presentations/flow/1.0.0/posters/en-scene-3.png"
+        }
+      ]
+    }
+  },
+  "wekb": {
+    "logo": "/brands/welabs/products/knowly-dark-endorsed.svg",
+    "logoPlate": "dark",
+    "scenes": {
+      "pt-BR": [
+        {
+          "id": "scene-1",
+          "title": "Fontes DEMO",
+          "summary": "“Pesquisar o contexto” e “Consultar a fonte” são textos criados para a demonstração, organizados aqui como fontes exemplo.",
+          "alt": "Dois documentos DEMO organizam textos criados para a apresentação, sem corpus ou conteúdo corporativo real.",
+          "src": "/presentations/wekb/1.0.0/posters/pt-BR-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Contexto relacionado",
+          "summary": "Relações abstratas conectam apenas as fontes DEMO. Os vínculos ilustram contexto, sem reproduzir um grafo interno.",
+          "alt": "Diagrama abstrato de fontes criadas para DEMO, com relações fictícias e sem representar um grafo interno.",
+          "src": "/presentations/wekb/1.0.0/posters/pt-BR-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Consulta DEMO",
+          "summary": "Uma consulta ilustrativa leva a uma fonte exemplo. A jornada demonstra recuperação de contexto com conteúdo criado para DEMO.",
+          "alt": "Jornada de consulta a contexto e fonte DEMO, sem ranking, pesos ou URLs de fontes internas.",
+          "src": "/presentations/wekb/1.0.0/posters/pt-BR-scene-3.png"
+        }
+      ],
+      "en": [
+        {
+          "id": "scene-1",
+          "title": "DEMO sources",
+          "summary": "“Find the context” and “Consult the source” are texts created for this demonstration and organized as example sources.",
+          "alt": "Two DEMO documents organize texts created for this presentation, without an actual corpus or corporate content.",
+          "src": "/presentations/wekb/1.0.0/posters/en-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Related context",
+          "summary": "Abstract relationships connect only DEMO sources. The links illustrate context without reproducing an internal graph.",
+          "alt": "An abstract diagram of sources created for DEMO with fictional relationships, without representing an internal graph.",
+          "src": "/presentations/wekb/1.0.0/posters/en-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "DEMO query",
+          "summary": "An illustrative query leads to an example source. The journey demonstrates context retrieval using content created for DEMO.",
+          "alt": "A journey querying context and a DEMO source, without ranking, weights or internal source URLs.",
+          "src": "/presentations/wekb/1.0.0/posters/en-scene-3.png"
+        }
+      ]
+    }
+  },
+  "welabs-crm": {
+    "logo": "/brands/welabs/products/relloo-dark-endorsed.svg",
+    "logoPlate": "dark",
+    "scenes": {
+      "pt-BR": [
+        {
+          "id": "scene-1",
+          "title": "Visão de oportunidades",
+          "summary": "O Relloo organiza oportunidades fictícias por etapas comerciais genéricas.",
+          "alt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas.",
+          "src": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Contexto da oportunidade",
+          "summary": "Um registro exemplo reúne o contexto de uma oportunidade para apoiar a continuidade do relacionamento.",
+          "alt": "Registros vazios de demonstração ilustram o contexto de uma oportunidade sem dados de pessoas.",
+          "src": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Etapas da relação",
+          "summary": "Uma jornada ilustrativa relaciona o contexto da oportunidade ao acompanhamento de seu andamento.",
+          "alt": "Jornada fictícia de contexto, conversa e acompanhamento de uma oportunidade de demonstração.",
+          "src": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-3.png"
+        }
+      ],
+      "en": [
+        {
+          "id": "scene-1",
+          "title": "Opportunity view",
+          "summary": "Relloo organizes fictional opportunities into generic commercial stages.",
+          "alt": "Illustrative board of fictional opportunities in three generic commercial stages.",
+          "src": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Deal context",
+          "summary": "An example record brings opportunity context together to support continuity in the relationship.",
+          "alt": "Empty demonstration records illustrate opportunity context without personal data.",
+          "src": "/presentations/welabs-crm/1.0.0/posters/en-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Stages of a deal",
+          "summary": "An illustrative journey links opportunity context to follow-up on its progress.",
+          "alt": "Fictional journey of context, discussion and follow-up for a demonstration opportunity.",
+          "src": "/presentations/welabs-crm/1.0.0/posters/en-scene-3.png"
+        }
+      ]
+    }
+  },
+  "malupe": {
+    "logo": "/brands/welabs/welabs-logo-dark.svg",
+    "logoPlate": "dark",
+    "scenes": {
+      "pt-BR": [
+        {
+          "id": "scene-1",
+          "title": "Organize eventos",
+          "summary": "Eventos DEMO entram em uma fila ilustrativa para ajudar a equipe a visualizar o contexto de cada ocorrência.",
+          "alt": "Fila ilustrativa de eventos DEMO nas etapas genéricas de entrada, consulta e acompanhamento.",
+          "src": "/presentations/malupe/1.0.0/posters/pt-BR-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Leia o contexto",
+          "summary": "Um registro DEMO reúne o contexto de uma ocorrência para apoiar a consulta e a continuidade do acompanhamento.",
+          "alt": "Documentos ilustrativos de evento DEMO e registro DEMO representam o contexto de uma ocorrência.",
+          "src": "/presentations/malupe/1.0.0/posters/pt-BR-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Siga cada etapa",
+          "summary": "Receber, consultar e acompanhar formam a jornada de trabalho da operação de segurança.",
+          "alt": "Jornada ilustrativa de ocorrência com receber, consultar e acompanhar.",
+          "src": "/presentations/malupe/1.0.0/posters/pt-BR-scene-3.png"
+        }
+      ],
+      "en": [
+        {
+          "id": "scene-1",
+          "title": "Organize events",
+          "summary": "DEMO events enter an illustrative queue to help the team see the context of each occurrence.",
+          "alt": "An illustrative queue of DEMO events in generic intake, consultation and follow-up stages.",
+          "src": "/presentations/malupe/1.0.0/posters/en-scene-1.png"
+        },
+        {
+          "id": "scene-2",
+          "title": "Read the context",
+          "summary": "A DEMO record brings an occurrence's context together to support consultation and continued follow-up.",
+          "alt": "Illustrative DEMO event and record documents represent the context of an occurrence.",
+          "src": "/presentations/malupe/1.0.0/posters/en-scene-2.png"
+        },
+        {
+          "id": "scene-3",
+          "title": "Follow each step",
+          "summary": "Receiving, consulting and following up form the work journey of security operations.",
+          "alt": "An illustrative occurrence journey with receive, consult and follow up.",
+          "src": "/presentations/malupe/1.0.0/posters/en-scene-3.png"
+        }
+      ]
+    }
+  }
+}

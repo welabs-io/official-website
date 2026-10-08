@@ -1,0 +1,202 @@
+[
+  {
+    "id": "erp",
+    "productName": "Domus",
+    "publisher": "Welabs",
+    "kind": "own-product",
+    "parentId": null,
+    "brand": {
+      "name": "Welabs",
+      "status": "verified",
+      "palette": {
+        "surface": "#10141C",
+        "ink": "#FFFFFF",
+        "accent": "#FFB020"
+      },
+      "typography": {
+        "family": "system-ui"
+      },
+      "logoAssetId": "brand-logo"
+    },
+    "presentationBase": "/presentations/erp/1.0.0",
+    "locales": {
+      "pt-BR": {
+        "title": "Domus",
+        "summary": "Domus, a casa onde o negócio é definido: reúne a empresa inteira num modelo só e dá origem às telas, às regras e aos fluxos de todos os produtos.",
+        "audience": "Organizações que querem a operação inteira numa casa só e sistemas que crescem junto com o negócio.",
+        "disclaimer": "Recriação ilustrativa · dados fictícios",
+        "poster": "/presentations/erp/1.0.0/posters/pt-BR-scene-1.png",
+        "posterAlt": "Registros fictícios ilustram o Domus."
+      },
+      "en": {
+        "title": "Domus",
+        "summary": "Domus, the house where the business is defined: it brings the whole company into one model and gives rise to the screens, rules and flows of every product.",
+        "audience": "Organizations that want the whole operation under one roof and systems that grow with the business.",
+        "disclaimer": "Illustrative recreation · fictional data",
+        "poster": "/presentations/erp/1.0.0/posters/en-scene-1.png",
+        "posterAlt": "Fictional records illustrate Domus."
+      }
+    },
+    "status": "reservado"
+  },
+  {
+    "id": "welabs-crm",
+    "productName": "Relloo",
+    "publisher": "Welabs",
+    "kind": "own-product",
+    "parentId": null,
+    "brand": {
+      "name": "Welabs",
+      "status": "verified",
+      "palette": {
+        "surface": "#10141C",
+        "ink": "#FFFFFF",
+        "accent": "#FFB020"
+      },
+      "typography": {
+        "family": "system-ui"
+      },
+      "logoAssetId": "brand-logo"
+    },
+    "presentationBase": "/presentations/welabs-crm/1.0.0",
+    "locales": {
+      "pt-BR": {
+        "title": "Relloo",
+        "summary": "Relloo, atender e vender na mesma conversa: organiza as oportunidades e acompanha o relacionamento comercial.",
+        "audience": "Equipes comerciais de organizações.",
+        "disclaimer": "Recriação ilustrativa · dados fictícios",
+        "poster": "/presentations/welabs-crm/1.0.0/posters/pt-BR-scene-1.png",
+        "posterAlt": "Quadro ilustrativo de oportunidades fictícias em três etapas comerciais genéricas."
+      },
+      "en": {
+        "title": "Relloo",
+        "summary": "Relloo, serve and sell in the same conversation: it organizes opportunities and follows commercial relationships.",
+        "audience": "Commercial teams in organizations.",
+        "disclaimer": "Illustrative recreation · fictional data",
+        "poster": "/presentations/welabs-crm/1.0.0/posters/en-scene-1.png",
+        "posterAlt": "Illustrative board of fictional opportunities in three generic commercial stages."
+      }
+    },
+    "status": "reservado"
+  },
+  {
+    "id": "flow",
+    "productName": "Magneto",
+    "publisher": "Welabs",
+    "kind": "own-product",
+    "parentId": null,
+    "brand": {
+      "name": "Welabs",
+      "status": "verified",
+      "palette": {
+        "surface": "#10141C",
+        "ink": "#FFFFFF",
+        "accent": "#FFB020"
+      },
+      "typography": {
+        "family": "system-ui"
+      },
+      "logoAssetId": "brand-logo"
+    },
+    "presentationBase": "/presentations/flow/1.0.0",
+    "locales": {
+      "pt-BR": {
+        "title": "Magneto",
+        "summary": "Magneto, o workflow que não se perde: organiza as tarefas, acompanha cada etapa do fluxo e consulta o contexto quando precisa.",
+        "audience": "Equipes que organizam e acompanham seus workflows.",
+        "disclaimer": "Recriação ilustrativa · dados fictícios",
+        "poster": "/presentations/flow/1.0.0/posters/pt-BR-scene-1.png",
+        "posterAlt": "Quadro ilustrativo de tarefas DEMO nas etapas genéricas de entrada, execução e revisão."
+      },
+      "en": {
+        "title": "Magneto",
+        "summary": "Magneto, the workflow that never gets lost: it organizes tasks, follows every step of the flow and consults context when it needs to.",
+        "audience": "Teams that organize and follow their workflows.",
+        "disclaimer": "Illustrative recreation · fictional data",
+        "poster": "/presentations/flow/1.0.0/posters/en-scene-1.png",
+        "posterAlt": "An illustrative board of DEMO tasks in generic intake, execution and review stages."
+      }
+    },
+    "status": "reservado"
+  },
+  {
+    "id": "wekb",
+    "productName": "Knowly",
+    "publisher": "Welabs",
+    "kind": "own-product",
+    "parentId": null,
+    "brand": {
+      "name": "Welabs",
+      "status": "verified",
+      "palette": {
+        "surface": "#10141C",
+        "ink": "#FFFFFF",
+        "accent": "#FFB020"
+      },
+      "typography": {
+        "family": "system-ui"
+      },
+      "logoAssetId": "brand-logo"
+    },
+    "presentationBase": "/presentations/wekb/1.0.0",
+    "locales": {
+      "pt-BR": {
+        "title": "Knowly",
+        "summary": "Knowly, resposta com prova: consulta o conhecimento da organização e responde com contexto e referência à fonte.",
+        "audience": "Equipes e agentes que consultam conhecimento.",
+        "disclaimer": "Recriação ilustrativa · dados fictícios",
+        "poster": "/presentations/wekb/1.0.0/posters/pt-BR-scene-1.png",
+        "posterAlt": "Dois documentos DEMO, com textos fictícios, ilustram o Knowly."
+      },
+      "en": {
+        "title": "Knowly",
+        "summary": "Knowly, answers with proof: it queries the organization's knowledge and answers with context and a reference to the source.",
+        "audience": "Teams and agents consulting knowledge.",
+        "disclaimer": "Illustrative recreation · fictional data",
+        "poster": "/presentations/wekb/1.0.0/posters/en-scene-1.png",
+        "posterAlt": "Two DEMO documents with fictional texts illustrate Knowly."
+      }
+    },
+    "status": "reservado"
+  },
+  {
+    "id": "malupe",
+    "productName": "Ecossistema Monitoramento",
+    "publisher": "Welabs",
+    "kind": "own-product",
+    "parentId": null,
+    "brand": {
+      "name": "Welabs",
+      "status": "verified",
+      "palette": {
+        "surface": "#10141C",
+        "ink": "#FFFFFF",
+        "accent": "#FFB020"
+      },
+      "typography": {
+        "family": "system-ui"
+      },
+      "logoAssetId": "brand-logo"
+    },
+    "presentationBase": "/presentations/malupe/1.0.0",
+    "locales": {
+      "pt-BR": {
+        "title": "Ecossistema Monitoramento",
+        "summary": "Eventos de segurança, fila operacional e acompanhamento de ocorrências num só lugar.",
+        "audience": "Equipes de operação de segurança.",
+        "disclaimer": "Recriação ilustrativa · dados fictícios",
+        "poster": "/presentations/malupe/1.0.0/posters/pt-BR-scene-1.png",
+        "posterAlt": "Fila ilustrativa de eventos DEMO nas etapas genéricas de entrada, consulta e acompanhamento."
+      },
+      "en": {
+        "title": "Monitoring Ecosystem",
+        "summary": "Security events, an operational queue and occurrence follow-up in one place.",
+        "audience": "Security operations teams.",
+        "disclaimer": "Illustrative recreation · fictional data",
+        "poster": "/presentations/malupe/1.0.0/posters/en-scene-1.png",
+        "posterAlt": "An illustrative queue of DEMO events in generic intake, consultation and follow-up stages."
+      }
+    },
+    "status": "reservado"
+  }
+]

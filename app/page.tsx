@@ -1,36 +1,35 @@
-import type { Metadata } from 'next';
-import HomeClient from './HomeClient';
-
-export const metadata: Metadata = {
-  title: 'Desenvolvimento de Software Sob Medida | Imagine Apps',
-  description:
-    'Criamos soluções digitais que entregam resultados reais. Desenvolvimento de software sob medida, cloud, DevOps e design de produto para escalar seu negócio.',
-  alternates: {
-    canonical: 'https://imagineapps.com.br/',
-    languages: {
-      'pt-BR': 'https://imagineapps.com.br/',
-      en: 'https://imagineapps.com.br/?lang=en',
-      'x-default': 'https://imagineapps.com.br/',
-    },
-  },
-  openGraph: {
-    type: 'website',
-    siteName: 'Imagine Apps',
-    url: 'https://imagineapps.com.br/',
-    title: 'Desenvolvimento de Software Sob Medida | Imagine Apps',
-    description:
-      'Criamos soluções digitais que entregam resultados reais. Software sob medida, cloud, DevOps e design de produto para escalar seu negócio.',
-    locale: 'pt_BR',
-    alternateLocale: ['en_US'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Desenvolvimento de Software Sob Medida | Imagine Apps',
-    description:
-      'Criamos soluções digitais que entregam resultados reais. Software sob medida, cloud, DevOps e design de produto para escalar seu negócio.',
-  },
+import type { Metadata } from "next";
+import { WelabsHome } from "@/components/InstitutionalSite";
+const copy = {
+  pt: [
+    "Empresa e produtos | Welabs",
+    "Criamos produtos próprios para gestão, relacionamento, automação e conhecimento.",
+  ],
+  en: [
+    "Company and products | Welabs",
+    "We build our own products for management, relationships, automation and knowledge.",
+  ],
 };
-
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ lang?: string }>;
+}): Promise<Metadata> {
+  const en = (await searchParams).lang === "en";
+  const [title, description] = copy[en ? "en" : "pt"];
+  return {
+    title,
+    description,
+    robots: { index: false, follow: false },
+    openGraph: {
+      type: "website",
+      siteName: "Welabs",
+      title,
+      description,
+      locale: en ? "en_US" : "pt_BR",
+    },
+  };
+}
 export default function Page() {
-  return <HomeClient />;
+  return <WelabsHome />;
 }
