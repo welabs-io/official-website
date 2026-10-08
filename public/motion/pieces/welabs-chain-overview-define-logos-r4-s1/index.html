@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Plataforma · Os produtos se encaixam</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from _shared/brand/welabs/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header is visible in the resting state: the intro handoff (before the film timeline starts) already shows it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:1}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+
+/* LOGO DE PRODUTO NO TEXTO */
+/* Official product logos, sized by height only. --lx is the rendered x-height (150 viewBox units);
+   height = viewBox height / 150 * lx and vertical-align drops the box bottom so the logo baseline (y=210) sits on the text baseline. */
+.lg{display:inline-block}
+.lg.domus{height:calc(var(--lx)*1.958);vertical-align:calc(var(--lx)*-0.526)}
+.lg.magneto,.lg.knowly{height:calc(var(--lx)*2.014);vertical-align:calc(var(--lx)*-0.554)}
+.lg.relloo{height:calc(var(--lx)*1.894);vertical-align:calc(var(--lx)*-0.494)}
+.lg.tuner{height:calc(var(--lx)*2.2569);vertical-align:calc(var(--lx)*-0.556)}
+/* The Tuner waves rise 0.241 lx above the other logos; a matching negative top margin keeps them from growing the
+   line box, so the Tuner label and caption share the baseline of the other four */
+.lg.tuner{margin-top:calc(var(--lx)*-0.241)}
+/* Caption seal: logo, thin vertical rule, then the sentence without the product name */
+.cap .lg{--lx:32px}
+.cap .rule{display:inline-block;width:3px;height:56px;margin:0 30px;background:#5A5A66;vertical-align:-10px}
+
+/* CAMADAS TRANSVERSAIS (MAGNETO, TUNER, KNOWLY) */
+/* Each layer is a long band that runs across the whole frame and passes behind the core pieces: the left end names
+   the product and its verb, the right end carries its connection label */
+.band{position:absolute;left:120px;width:1680px;height:72px;border-radius:36px;background:var(--panel2);border:3px solid var(--line);opacity:0}
+#b0{top:340px}#b1{top:430px}#b2{top:520px}
+.band .lf{position:absolute;left:30px;top:0;height:66px;display:flex;align-items:center;gap:18px;font-size:28px;font-weight:700;color:var(--muted);white-space:nowrap}
+.band .lf .lg{--lx:22px}
+.band .rt{position:absolute;right:30px;top:0;height:66px;display:flex;align-items:center;font-size:26px;font-weight:700;color:var(--text);white-space:nowrap}
+.run{position:absolute;left:0;width:24px;height:24px;margin-top:-12px;border-radius:50%;background:var(--coral);box-shadow:0 0 18px rgba(var(--wl-amber-rgb),.95);opacity:0}
+#r0{top:376px}#r1{top:466px}#r2{top:556px}
+
+/* PEÇAS DO QUEBRA-CABEÇA */
+.pz{position:absolute;top:330px;width:320px;height:330px;opacity:0}
+.pz>svg{position:absolute;left:-60px;top:0;width:440px;height:330px;overflow:visible}
+.pz .body{fill:var(--panel);stroke:var(--line);stroke-width:3;stroke-linejoin:round}
+.pz .lit{fill:rgba(var(--wl-amber-rgb),.10);stroke:var(--coral);stroke-width:5;stroke-linejoin:round;opacity:0;filter:drop-shadow(0 0 16px rgba(var(--wl-amber-rgb),.6))}
+.pz .ic{position:absolute;left:118px;top:40px;width:84px;height:84px;border-radius:24px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral)}
+/* Piece label is now the product logo (x-height 28 px), baseline-aligned on the label strut */
+/* Label raised 10 px and line moved down 8 px so logo descenders keep the 0.5X clear space */
+.pz .nm{position:absolute;left:0;top:140px;width:320px;text-align:center;font-size:34px;font-weight:800;letter-spacing:-.5px;white-space:nowrap}
+.pz .nm .lg{--lx:28px}
+.pz .ln{position:absolute;left:30px;top:214px;width:260px;text-align:center;font-size:26px;font-weight:600;line-height:34px;color:var(--muted);opacity:0}
+.pz .tick{position:absolute;left:134px;top:-26px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+/* Core: Domus and Relloo lock together at the centre (640-1280) and sit above the layers; the three layer pieces
+   only show while loose, then come back as bands */
+#p0{left:640px;top:300px}#p1{left:960px;top:300px}
+#p2{left:800px}#p3{left:1120px}#p4{left:1440px}
+/* Connection label of the core seam (Relloo: contacts and orders) */
+#seam{position:absolute;left:810px;top:654px;width:300px;height:48px;border-radius:24px;background:var(--bg);border:3px solid var(--coral);font-size:24px;font-weight:700;line-height:42px;text-align:center;white-space:nowrap;opacity:0}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* PASSE DE MARCA R2 (tools/brand-pass.mjs sobre pieces/welabs-chain-overview-define-logos, sha256 8fffca2f75a0; medido pelo gate, nada à mão) */
+/* logo +11.3 vs #kick; moved -11.3 px (top 12px) */
+#seal{top:0.7px !important}
+/* logo -4.2 vs #close > div.brand:nth-of-type(2) > div.bw:nth-of-type(2); moved +4.2 px */
+#close > div.brand:nth-of-type(2) > img{position:relative !important;top:4.2px !important}
+/* PASSE DE MARCA R3 (tools/brand-pass.mjs sobre pieces/welabs-chain-overview-define-logos-r2, sha256 0d15b3db82a9; medido pelo gate, nada à mão) */
+/* pill centre +11.3 px vs #seal; moved -11.3 px (top 16px) */
+#demo{top:4.7px !important}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-chain-overview-define-logos-r4-s1" data-brand="welabs" data-brand-scripts="welabs/welabs-brand.js" data-width="1920" data-height="1080" data-start="0" data-duration="34">
+  <div id="hd">
+    <div id="wm">Plataforma<span>.</span></div>
+    <div id="kick">Some o sistema solto</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" data-brand-src="welabs/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <!-- Layers first in the DOM: they run behind the core pieces -->
+  <div class="band" id="b0"><div class="lf"><img class="lg magneto" data-brand-src="welabs/magneto-logo-on-dark.svg" alt="Magneto">workflow</div><div class="rt">regra →  ← recibo</div></div>
+  <div class="band" id="b1"><div class="lf"><img class="lg tuner" data-brand-src="welabs/tuner-logo-on-dark.svg" alt="Tuner">entrega</div><div class="rt">avisos e conversas</div></div>
+  <div class="band" id="b2"><div class="lf"><img class="lg knowly" data-brand-src="welabs/knowly-logo-on-dark.svg" alt="Knowly">explica</div><div class="rt">dados e quem pode ver</div></div>
+  <div class="run" id="r0"></div><div class="run" id="r1"></div><div class="run" id="r2"></div>
+
+  <!-- Weight order (08/10/2026): Domus, Relloo, Magneto, Tuner, Knowly; each line is the product verb (the Magneto is
+       presented as the workflow, operator 08/10) -->
+  <div class="pz" id="p0">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 Z"/><path class="lit" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm"><img class="lg domus" data-brand-src="welabs/domus-logo-on-dark.svg" alt="Domus"></div>
+    <div class="ln">Define a empresa inteira</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+  </div>
+  <!-- Relloo: its left socket takes the Domus knob, its right edge is flat (the core ends here) -->
+  <div class="pz" id="p1">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/><path class="lit" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm"><img class="lg relloo" data-brand-src="welabs/relloo-logo-on-dark.svg" alt="Relloo"></div>
+    <div class="ln">Atende cada pessoa pela história</div>
+    <div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+  </div>
+  <div class="pz" id="p2">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 1 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm"><img class="lg magneto" data-brand-src="welabs/magneto-logo-on-dark.svg" alt="Magneto"></div>
+  </div>
+  <div class="pz" id="p3">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 63.3 A32 32 0 1 0 320 100.7 L320 330 L0 330 L0 100.7 A32 32 0 1 0 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 10h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+    <div class="nm"><img class="lg tuner" data-brand-src="welabs/tuner-logo-on-dark.svg" alt="Tuner"></div>
+  </div>
+  <div class="pz" id="p4">
+    <svg viewBox="-60 0 440 330"><path class="body" d="M0 0 L320 0 L320 330 L0 330 L0 100.7 A32 32 0 1 1 0 63.3 Z"/></svg>
+    <div class="ic"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="nm"><img class="lg knowly" data-brand-src="welabs/knowly-logo-on-dark.svg" alt="Knowly"></div>
+  </div>
+  <div id="seam">contatos e pedidos</div>
+
+  <div class="cap" id="c1">Cada sistema resolvia <span>um pedaço, sozinho</span></div>
+  <div class="sub" id="s1">e alguém fazia a ponte entre eles na mão</div>
+  <!-- Each beat caption opens with the product logo as a seal, then a rule, then the sentence with its verb -->
+  <div class="cap" id="k0"><img class="lg domus" data-brand-src="welabs/domus-logo-on-dark.svg" alt="Domus"><i class="rule"></i>define <span>a empresa inteira</span></div>
+  <div class="sub" id="u0">dele nascem as telas, as regras e os fluxos dos outros produtos</div>
+  <div class="cap" id="k1"><img class="lg relloo" data-brand-src="welabs/relloo-logo-on-dark.svg" alt="Relloo"><i class="rule"></i>atende <span>colado ao centro</span></div>
+  <div class="sub" id="u1">contatos e pedidos nascem junto com o resto da empresa</div>
+  <div class="cap" id="k2"><img class="lg magneto" data-brand-src="welabs/magneto-logo-on-dark.svg" alt="Magneto"><i class="rule"></i>o workflow <span>que passa por tudo</span></div>
+  <div class="sub" id="u2">a regra do centro vira workflow, e o recibo volta</div>
+  <div class="cap" id="k3"><img class="lg tuner" data-brand-src="welabs/tuner-logo-on-dark.svg" alt="Tuner"><i class="rule"></i>entrega <span>em todo canal</span></div>
+  <div class="sub" id="u3">avisos e conversas saem de qualquer ponto e chegam a quem precisa</div>
+  <div class="cap" id="k4"><img class="lg knowly" data-brand-src="welabs/knowly-logo-on-dark.svg" alt="Knowly"><i class="rule"></i>explica <span>com a fonte junto</span></div>
+  <div class="sub" id="u4">cada resposta respeita os dados e quem pode ver</div>
+  <!-- Central sentence of the chain: the Domus logo stands for its name -->
+  <div class="cap" id="c5"><img class="lg domus" data-brand-src="welabs/domus-logo-on-dark.svg" alt="Domus"><i class="rule"></i>define. <span>Os outros dão vida.</span></div>
+  <div class="sub" id="s5">sem ninguém copiando dado de um sistema para o outro</div>
+
+  <div id="close">
+    <div class="l1">Cada peça tira um problema do caminho.<br><span>Juntas, a operação inteira anda.</span></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img data-brand-src="welabs/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw">Plataforma<span>.</span></div></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 34;
+  var tl = gsap.timeline({ paused: true });
+  // Brand amber as a literal hex: GSAP cannot tween var()
+  var AMBER = WELABS_BRAND.color.amber;
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+
+  // Cabeçalho
+  // Header is on from frame 0, so the intro handoff fades onto it instead of onto an empty frame (video-qa 08/10)
+  tl.set('#hd', { opacity: 1 }, 0);
+
+  // Batida 1: peças soltas, cada uma no seu canto (0,6–5,8 s)
+  // Loose spots 160/480/800/1120/1440 at top 330, in weight order; the two core pieces start offset from their seats.
+  // Relloo waits further left (200, 540) so it never overlaps the Domus once the Domus is seated
+  var loose = [
+    { x: -480 - 110, y: 30 - 150, r: -12 }, { x: -760, y: 30 + 210, r: 9 }, { x: 0, y: -170, r: 7 }, { x: 40, y: 200, r: -8 }, { x: 110, y: -130, r: 12 }
+  ];
+  loose.forEach(function (p, i) {
+    tl.fromTo('#p' + i, { opacity: 0, x: p.x, y: p.y + 40, rotation: p.r * 1.6 }, { opacity: 0.7, x: p.x, y: p.y, rotation: p.r, duration: 0.6, ease: 'back.out(1.6)' }, 0.6 + i * 0.22);
+    // Loose pieces drift a little: they never settle on their own
+    tl.to('#p' + i, { rotation: p.r * 0.6, y: p.y - 10, duration: 1.0, ease: 'sine.inOut' }, 2.6 + i * 0.1).to('#p' + i, { rotation: p.r, y: p.y, duration: 1.0, ease: 'sine.inOut' }, 3.6 + i * 0.1);
+  });
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  out(['#c1', '#s1'], 5.6);
+  // The three layer pieces leave the board: they come back as bands that cross everything
+  [2, 3, 4].forEach(function (i) { tl.to('#p' + i, { opacity: 0, scale: 0.85, duration: 0.45, ease: 'power2.in' }, 5.5 + (i - 2) * 0.1); });
+
+  // Batida 2: o núcleo se forma, Domus primeiro e Relloo colado nele (6,0–12,4 s)
+  function seat(i, t) {
+    tl.to('#p' + i, { opacity: 1, x: 0, y: 0, rotation: 0, duration: 0.7, ease: 'back.out(1.4)' }, t + 0.1);
+    tl.fromTo('#p' + i + ' .lit', { opacity: 0 }, { opacity: 1, duration: 0.25 }, t + 0.8);
+    tl.fromTo('#p' + i + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.85);
+    inn('#p' + i + ' .ln', t + 0.9, { y: 10 }, 0.4);
+    // The core keeps a soft glow: it is where the business is defined
+    tl.to('#p' + i + ' .lit', { opacity: 0.4, duration: 0.5 }, t + 2.0);
+  }
+  inn('#k0', 6.0, { y: 16 }); inn('#u0', 6.3, { y: 12 }); seat(0, 6.0); out(['#k0', '#u0'], 8.9);
+  inn('#k1', 9.2, { y: 16 }); inn('#u1', 9.5, { y: 12 }); seat(1, 9.2);
+  inn('#seam', 10.2, { y: 10, scale: 0.8 }, 0.4);
+  out(['#k1', '#u1'], 12.1);
+
+  // Batidas 3 a 5: Magneto, Tuner e Knowly atravessam tudo como camadas (12,4–21,7 s)
+  [0, 1, 2].forEach(function (i) {
+    var t = 12.4 + i * 3.2;
+    inn('#k' + (i + 2), t, { y: 16 }); inn('#u' + (i + 2), t + 0.3, { y: 12 });
+    // The band unrolls left to right, behind the core
+    tl.fromTo('#b' + i, { opacity: 1, clipPath: 'inset(0px 100% 0px 0px)' }, { opacity: 1, clipPath: 'inset(0px 0% 0px 0px)', duration: 1.0, ease: 'power2.inOut' }, t + 0.1);
+    tl.to('#b' + i, { borderColor: AMBER, duration: 0.25 }, t + 1.1).to('#b' + i, { borderColor: '#3A3A44', duration: 0.5 }, t + 2.4);
+    // A runner crosses the band between its two labels (520-1430, clear of the widest right label) and passes under the core
+    tl.fromTo('#r' + i, { opacity: 0, x: 520 }, { opacity: 1, x: 520, duration: 0.15 }, t + 1.1);
+    tl.to('#r' + i, { x: 1430, duration: 1.3, ease: 'power1.inOut' }, t + 1.2);
+    tl.to('#r' + i, { opacity: 0, duration: 0.15 }, t + 2.5);
+    out(['#k' + (i + 2), '#u' + (i + 2)], t + 2.9);
+  });
+
+  // Batida 6: o Domus define, os outros dão vida (22,0–27,6 s)
+  inn('#c5', 22.1, { y: 16 }); inn('#s5', 22.4, { y: 12 });
+  [0, 1].forEach(function (i) { tl.to('#p' + i + ' .lit', { opacity: 1, duration: 0.25 }, 22.6 + i * 0.2); });
+  [0, 1, 2].forEach(function (i) {
+    tl.to('#b' + i, { borderColor: AMBER, duration: 0.25 }, 23.0 + i * 0.3);
+    tl.fromTo('#r' + i, { opacity: 0, x: 520 }, { opacity: 1, x: 520, duration: 0.15 }, 23.0 + i * 0.3);
+    tl.to('#r' + i, { x: 1430, duration: 1.4, ease: 'power1.inOut' }, 23.1 + i * 0.3);
+    tl.to('#r' + i, { opacity: 0, duration: 0.15 }, 24.5 + i * 0.3);
+  });
+  out(['#c5', '#s5'], 27.4);
+
+  // Fecho (27,9–34 s, parado de 28,5 s ao fim)
+  // Film leaves by 27.8 s, before the close enters at 27.9 s (they used to cross for ~3 frames, video-qa 08/10)
+  out(['#hd', '#p0', '#p1', '#b0', '#b1', '#b2', '#seam'], 27.4, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 27.9);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-chain-overview-define-logos-r4-s1"] = tl;
+})();
+</script>
+</body>
+</html>

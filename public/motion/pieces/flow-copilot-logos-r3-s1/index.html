@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Magneto ·Copiloto</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from _shared/brand/welabs/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header in a row, so a longer product name pushes the kicker instead of overlapping it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;display:flex;align-items:center}
+/* Header mark is the official product logo (_shared/brand/welabs/*-logo-on-dark.svg), sized by height only:
+   62 px gives a 31 px x-height, like the 56 px Inter it replaced; the 2 px lift sets its baseline on the kicker's */
+#wm{position:relative;flex:none;height:72px;display:flex;align-items:center}
+/* Raised 3 px with a relative offset (a negative margin only moves half inside the centered flex box) so the
+   logo baseline sits on the kicker baseline */
+#wm img{display:block;height:62px;position:relative;top:-3px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+
+/* A FRASE DA PESSOA */
+.av{position:absolute;width:150px;opacity:0;text-align:center}
+.av .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
+#ana{left:150px;top:196px}
+#say{position:absolute;left:360px;top:180px;width:1360px;height:220px;border-radius:34px 34px 34px 8px;background:var(--panel2);border:3px solid var(--line);padding:38px 46px;font-size:44px;font-weight:700;line-height:64px;opacity:0}
+.w{opacity:0}
+/* clone keeps the rounded corners and side padding on every line when a highlighted phrase wraps */
+.k{border-radius:12px;padding:0 4px;margin:0 -4px;background:rgba(var(--wl-amber-rgb),0);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* BLOCOS SUGERIDOS E REVISADOS */
+.blk{position:absolute;top:560px;width:400px;height:150px;border-radius:30px;background:var(--panel);display:flex;align-items:center;gap:22px;padding:0 30px;font-size:34px;font-weight:700;line-height:40px;opacity:0}
+.blk .ic{width:76px;height:76px;border-radius:22px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--coral);flex:none}
+.dash{position:absolute;inset:0;border-radius:30px;border:3px dashed #8A8A99}
+.solid{position:absolute;inset:0;border-radius:30px;border:3px solid var(--ok);opacity:0}
+.glow{position:absolute;inset:-3px;border-radius:30px;border:4px solid var(--coral);box-shadow:0 0 34px rgba(var(--wl-amber-rgb),.55);opacity:0}
+.sg{position:absolute;left:24px;top:-22px;height:40px;padding:0 14px;border-radius:20px;background:#2A2A33;border:2px dashed #8A8A99;color:var(--muted);font-size:24px;font-weight:700;display:flex;align-items:center;white-space:nowrap}
+.tick{position:absolute;right:-20px;top:-20px;width:52px;height:52px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#b1{left:260px}#b2{left:760px}#b3{left:1260px}
+#wires{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#wires path{fill:none;stroke:var(--coral);stroke-width:6;stroke-linecap:round}
+#wires .hd{fill:var(--coral);opacity:0}
+/* Deadline chip is the reviewer's accent, not an alert: reddish surface and light coral text became the brand amber surface and light amber */
+#due{position:absolute;left:820px;top:730px;width:280px;height:52px;border-radius:26px;border:2px solid var(--coral);background:var(--wl-amber-soft);color:#FFC75A;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;white-space:nowrap}
+#cur{position:absolute;left:1000px;top:640px;width:44px;height:44px;opacity:0}
+#dot{position:absolute;left:640px;top:617px;width:36px;height:36px;border-radius:50%;background:var(--coral);border:4px solid #FFC75A;box-shadow:0 0 24px rgba(var(--wl-amber-rgb),.9);opacity:0}
+
+/* ATIVAR */
+#tg{position:absolute;left:770px;top:440px;width:380px;height:84px;border-radius:42px;background:var(--panel2);border:3px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 14px 0 36px;font-size:34px;font-weight:800;opacity:0}
+#tgl{position:relative;width:150px;height:44px;flex:none}
+#tgl em{position:absolute;left:0;top:0;font-style:normal;white-space:nowrap}
+#tgon{opacity:0;color:var(--ok)}
+#sw{position:relative;width:120px;height:62px;border-radius:31px;background:#3A3A44;flex:none;margin-left:auto}
+#swon{position:absolute;inset:0;border-radius:31px;background:var(--ok);opacity:0}
+#knob{position:absolute;left:6px;top:6px;width:50px;height:50px;border-radius:50%;background:#fff}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+/* Endorsed product logo (symbol + name + "by welabs", _shared/brand/welabs/product-logo-on-dark.svg), sized by height only;
+   06/10/2026: replaces the retired "welabs <product>" lockup, name x-height 68 px */
+#close img{height:180px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* PASSE DE MARCA R2 (tools/brand-pass.mjs sobre pieces/flow-copilot-logos, sha256 ef1a195fd7a6; medido pelo gate, nada à mão) */
+/* logo -1.1 vs #kick; moved +1.1 px (top -3px) */
+#wm > img{top:-1.9px !important}
+/* logo +11.3 vs #kick; moved -11.3 px (top 12px) */
+#seal{top:0.7px !important}
+/* PASSE DE MARCA R3 (tools/brand-pass.mjs sobre pieces/flow-copilot-logos-r2, sha256 afb22c4aee14; medido pelo gate, nada à mão) */
+/* pill centre +11.3 px vs #seal; moved -11.3 px (top 16px) */
+#demo{top:4.7px !important}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="flow-copilot-logos-r3-s1" data-brand="welabs" data-brand-scripts="welabs/welabs-brand.js" data-width="1920" data-height="1080" data-start="0" data-duration="32">
+  <div id="hd">
+    <div id="wm"><img data-brand-src="welabs/magneto-logo-on-dark.svg" alt="Magneto"></div>
+    <div id="kick">Some a página em branco</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" data-brand-src="welabs/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div class="av" id="ana"><svg width="150" height="150" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#202027"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--coral)"/></svg><div class="nm">Ana · DEMO</div></div>
+  <div id="say"><span class="w">“Quando</span> <span class="k" id="k1"><span class="w">chegar</span> <span class="w">um</span> <span class="w">pedido</span> <span class="w">de</span> <span class="w">compra,</span></span> <span class="w">peça</span> <span class="w">a</span> <span class="k" id="k2"><span class="w">aprovação</span> <span class="w">da</span> <span class="w">Ana</span></span> <span class="w">e</span> <span class="k" id="k3"><span class="w">avise</span> <span class="w">o</span> <span class="w">financeiro.”</span></span></div>
+
+  <div id="tg"><div id="tgl"><em id="tgoff">Ativar</em><em id="tgon">Ativo</em></div><div id="sw"><div id="swon"></div><div id="knob"></div></div></div>
+
+  <svg id="wires" viewBox="0 0 1920 1080">
+    <path id="w1" d="M664 635 L748 635"/>
+    <path id="w2" d="M1164 635 L1248 635"/>
+    <path class="hd" id="h1" d="M760 635 L742 623 L742 647 Z"/>
+    <path class="hd" id="h2" d="M1260 635 L1242 623 L1242 647 Z"/>
+  </svg>
+  <div class="blk" id="b1"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>Pedido chega<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b2"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Ana aprova<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div class="blk" id="b3"><div class="dash"></div><div class="solid"></div><div class="glow"></div><div class="ic"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>Financeiro é avisado<div class="sg">sugestão</div><div class="tick"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  <div id="due"><svg width="28" height="28" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>prazo · DEMO</div>
+  <div id="dot"></div>
+  <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.6L9.6 21z" fill="#fff" stroke="#0B0B0D" stroke-width="1.6" stroke-linejoin="round"/></svg>
+
+  <div class="cap" id="c1">Descreva o processo <span>em palavras</span></div>
+  <div class="cap" id="c2">As frases <span>viram blocos</span></div>
+  <div class="cap" id="c3">Você <span>revisa e ajusta</span></div>
+  <div class="cap" id="c4">Ativa, e o processo <span>já está rodando</span></div>
+
+  <div id="close">
+    <div class="l1">Você descreve, revisa e ativa.<br><span>Do texto ao processo rodando.</span></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img data-brand-src="welabs/magneto-endorsed-on-dark.svg" alt="Magneto by welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 32;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
+
+  // Cabeçalho
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+
+  // Batida 1: descrever em palavras (0,5–6,4 s)
+  inn('#ana', 0.5, { y: 20 });
+  inn('#say', 0.7, { y: 16, scale: 0.97 }, 0.5);
+  inn('#c1', 1.0, { y: 16 });
+  // Words appear one by one, as if typed
+  tl.fromTo('#say .w', { opacity: 0 }, { opacity: 1, duration: 0.06, stagger: 0.16 }, 1.3);
+  out('#c1', 6.2);
+
+  // Batida 2: as frases viram blocos (6,5–12,4 s)
+  inn('#c2', 6.5, { y: 16 });
+  // Phrase highlight uses the brand amber as a literal rgba: GSAP cannot tween var()
+  ['#k1', '#k2', '#k3'].forEach(function (k, i) { tl.to(k, { backgroundColor: 'rgba(' + WELABS_BRAND.color.amberRgb + ',0.28)', duration: 0.3 }, 6.8 + 0.3 * i); });
+  tl.fromTo('#b1', { opacity: 0, x: 300, y: -310, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 7.8);
+  tl.fromTo('#b2', { opacity: 0, x: -120, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.3);
+  tl.fromTo('#b3', { opacity: 0, x: -60, y: -240, scale: 0.4 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' }, 8.8);
+  draw('w1', 9.9, 0.4); tl.fromTo('#h1', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.25);
+  draw('w2', 10.4, 0.4); tl.fromTo('#h2', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 10.75);
+  out('#c2', 12.3);
+
+  // Batida 3: revisar e ajustar (12,6–18,6 s)
+  inn('#c3', 12.6, { y: 16 });
+  tl.fromTo('#cur', { opacity: 0, x: 0, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.3 }, 12.9);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 13.6).to('#cur', { scale: 1, duration: 0.15 }, 13.72);
+  inn('#due', 13.8, { y: -10, scale: 0.8 }, 0.4);
+  function approve(b, t) {
+    tl.to(b + ' .dash', { opacity: 0, duration: 0.3 }, t);
+    tl.to(b + ' .sg', { opacity: 0, duration: 0.25 }, t);
+    tl.fromTo(b + ' .solid', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t);
+    tl.fromTo(b + ' .tick', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + 0.15);
+  }
+  approve('#b1', 14.9); approve('#b2', 15.5); approve('#b3', 16.1);
+  out('#c3', 18.5);
+
+  // Batida 4: ativar e rodar (18,8–25,4 s)
+  inn('#c4', 18.8, { y: 16 });
+  out(['#say', '#ana'], 18.8, 0.4);
+  inn('#tg', 19.0, { y: 14 }, 0.45);
+  tl.to('#cur', { x: 110, y: -180, duration: 0.6, ease: 'power2.inOut' }, 19.1);
+  tl.to('#cur', { scale: 0.85, duration: 0.12 }, 19.8).to('#cur', { scale: 1, duration: 0.15 }, 19.92);
+  tl.to('#knob', { x: 58, duration: 0.3, ease: 'power2.out' }, 19.9);
+  tl.fromTo('#swon', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 19.9);
+  tl.to('#tg', { borderColor: '#3DD68C', duration: 0.3 }, 20.0);
+  out('#tgoff', 20.0, 0.2); tl.fromTo('#tgon', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 20.15);
+  out('#cur', 20.5, 0.3);
+  function lit(b, t) { tl.fromTo(b + ' .glow', { opacity: 0 }, { opacity: 1, duration: 0.3 }, t); tl.to(b + ' .glow', { opacity: 0, duration: 0.4 }, t + 0.9); }
+  lit('#b1', 20.9);
+  tl.fromTo('#dot', { opacity: 0, x: 0 }, { opacity: 1, x: 0, duration: 0.2 }, 21.4);
+  tl.to('#dot', { x: 100, duration: 0.6, ease: 'power1.inOut' }, 21.6);
+  lit('#b2', 22.2);
+  // The dot hides while the block works, then reappears on the next arrow
+  tl.to('#dot', { opacity: 0, duration: 0.15 }, 22.2);
+  tl.set('#dot', { x: 500 }, 22.5);
+  tl.to('#dot', { opacity: 1, duration: 0.15 }, 22.6);
+  tl.to('#dot', { x: 600, duration: 0.6, ease: 'power1.inOut' }, 22.75);
+  lit('#b3', 23.4);
+  out('#dot', 23.45, 0.3);
+  out('#c4', 25.3);
+
+  // Fecho (25,9–32 s, parado de 26,5 s ao fim)
+  out(['#hd', '#b1', '#b2', '#b3', '#wires', '#due', '#tg'], 25.5, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 25.9);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["flow-copilot-logos-r3-s1"] = tl;
+})();
+</script>
+</body>
+</html>

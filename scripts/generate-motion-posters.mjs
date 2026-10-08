@@ -1,7 +1,7 @@
 // GERAÇÃO DOS POSTERS DOS FILMES
 // Renders the closing frame of every film in lib/motion-catalog.json (slogan and brand) through the
-// pinned HyperFrames Player and writes public/motion/<id>/poster.jpg. Films that open with a brand
-// intro use the last frame of that intro instead, so every card cover is a brand frame.
+// pinned HyperFrames Player and writes the file named by the item's `poster`. Films that open with a brand
+// intro use the last frame of that intro instead (their `poster` is the intro's), so every card cover is a brand frame.
 // Usage: node scripts/generate-motion-posters.mjs [film-id ...]
 import { createServer } from "node:http";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
@@ -18,24 +18,10 @@ const only = new Set(process.argv.slice(2));
 
 // Seek slightly before the end: the last instant can already be past the final tween.
 const END_MARGIN = 0.04;
-// Pieces assembled as "<brand intro> + passage + film" (`<film>-intro`) close the intro on its brand
-// frame at the end of the brand intro's own timeline, looked up through lib/brand-intros.json.
-// Fallback when the brand intro is not synced: RECEIPT "abertura 8,5 s + passagem 0,5 s".
-const INTRO_END = 8.5;
-const brandIntros = JSON.parse(
-  readFileSync(join(siteRoot, "lib/brand-intros.json"), "utf8"),
-);
-const introLength = (item) => {
-  const brand = brandIntros.products[item.product];
-  const intro = catalog.find((f) => f.id === brandIntros.brands[brand]);
-  return intro?.duration ?? INTRO_END;
-};
-const posterTime = (item) =>
-  item.kind !== "intro" &&
-  item.id.endsWith("-intro") &&
-  item.duration > introLength(item) + 1
-    ? introLength(item) - END_MARGIN
-    : item.duration - END_MARGIN;
+// A film that has a brand intro (`introSrc`) uses the closing frame of that intro as its cover, so the poster is
+// rendered once per intro (the catalog `poster` of the film points at the intro's file). Intros and films without an
+// intro close on their own last frame.
+const posterTime = (item) => item.duration - END_MARGIN;
 
 // Playwright is not a site dependency; reuse the copy in the npx cache, as the motion tooling does.
 const npx = join(homedir(), ".npm/_npx");
@@ -98,6 +84,7 @@ try {
   });
   for (const item of catalog) {
     if (only.size && !only.has(item.id)) continue;
+    if (item.introSrc) continue;
     const t = posterTime(item);
     await page.goto(`${base}/__poster?src=${encodeURIComponent(item.src)}`, {
       waitUntil: "networkidle",
@@ -125,7 +112,7 @@ try {
       continue;
     }
     await page.screenshot({
-      path: join(publicRoot, "motion", item.id, "poster.jpg"),
+      path: join(publicRoot, item.poster),
       type: "jpeg",
       quality: 84,
     });

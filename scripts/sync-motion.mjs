@@ -1,6 +1,8 @@
 // SINCRONIZAÇÃO DOS FILMES HYPERFRAMES PARA O SITE
-// Copies only the runtime files of each accepted composition into public/motion/<id>/,
-// copies the pinned HyperFrames Player and writes lib/motion-catalog.json.
+// Copies only the runtime files of each accepted composition into public/motion/<id>/ (round 1) or
+// public/motion/pieces/<id>/ (round 2, shared pieces), copies _shared once (manifest, loader, sequence player, vendor,
+// the manifest version of each brand), copies the pinned HyperFrames Player and writes lib/motion-catalog.json.
+// A film and its brand intro stay separate pieces: the catalog item carries `introSrc` and MotionFilm plays them in sequence.
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -100,7 +102,7 @@ const ROUND2 = {
   // second amber underneath). Every Welabs montage opens with welabs-intro-v7, which shows the new Relloo; the
   // films that cite Relloo by logo are their brand revision (chain "-r4", Relloo "-r3", Tuner one-contract "-r4").
   // Same films, titles, descriptions and durations.
-  "welabs-chain-overview-define-logos-r4-intro-v7": {
+  "welabs-chain-overview-define-logos-r4-s1": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · O Domus define, os outros dão vida",
@@ -108,7 +110,7 @@ const ROUND2 = {
       "O Domus define a empresa inteira e o Relloo atende colado a ele; o workflow do Magneto, os canais do Tuner e as respostas do Knowly passam por tudo, sem ninguém copiando dado de um sistema para o outro.",
     ...KNOWHOW,
   },
-  "welabs-chain-journey-define-logos-r4-intro-v7": {
+  "welabs-chain-journey-define-logos-r4-s1": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · Do WhatsApp à aprovação, sem repetir nada",
@@ -116,7 +118,7 @@ const ROUND2 = {
       "A mensagem chega pelo Tuner, o Relloo reconhece a pessoa com o que já está no Domus, o Knowly responde com a fonte e a regra do Domus vira workflow no Magneto, que leva até quem decide e devolve o recibo.",
     ...KNOWHOW,
   },
-  "welabs-chain-plug-define-logos-r4-intro-v7": {
+  "welabs-chain-plug-define-logos-r4-s1": {
     kind: "topology",
     page: "welabs",
     title: "Plataforma Welabs · O app novo já nasce com o negócio definido",
@@ -124,7 +126,7 @@ const ROUND2 = {
       "Encaixado no núcleo de Domus e Relloo, ele já nasce com telas, regras, contatos e pedidos, e ganha o workflow do Magneto, os canais do Tuner e as respostas do Knowly.",
     ...KNOWHOW,
   },
-  "welabs-chain-horizon-define-logos-r4-intro-v7": {
+  "welabs-chain-horizon-define-logos-r4-s1": {
     kind: "topology",
     page: "welabs",
     title:
@@ -133,112 +135,112 @@ const ROUND2 = {
       "No centro, o Domus define e o Relloo atende; o workflow do Magneto, os avisos do Tuner e as respostas do Knowly atravessam do seu app até a sua equipe.",
     ...KNOWHOW,
   },
-  "hub-whole-house-ludic-logos-r3-intro-v7": reel(
+  "hub-whole-house-ludic-logos-r3-s1": reel(
     "erp",
     "Domus · A empresa inteira numa casa só",
     "Financeiro, fiscal, contratos, pessoas, compras, estoque, vendas, produção, projetos, ativos e qualidade ganham cada um o seu cômodo, e uma frente passa a vez à outra sob o mesmo teto.",
     "business",
     KNOWHOW,
   ),
-  "hub-defines-runs-ludic-v3-logos-r3-intro-v7": reel(
+  "hub-defines-runs-ludic-v3-logos-r3-s1": reel(
     "erp",
     "Domus · O Domus define, o workflow do Magneto anda e o recibo volta",
     "A regra nasce no Domus e vira workflow no Magneto: cobrança, nota de serviço e aviso por e-mail passo a passo, com o recibo de volta para casa.",
     "business",
     KNOWHOW,
   ),
-  "hub-draw-born-ludic-v2-logos-r3-intro-v7": reel(
+  "hub-draw-born-ludic-v2-logos-r3-s1": reel(
     "erp",
     "Domus · Desenhou, nasceu: tela e fluxo sem programar",
     "Desenhe um cadastro novo e a tela aparece pronta; desenhe o caminho e ele vira workflow no Magneto. O próprio Domus funciona assim, com a cobrança e a nota rodando no Magneto.",
     "business",
     KNOWHOW,
   ),
-  "crm-omnichannel-inbox-ludic2-logos-r3-intro-v7": reel(
+  "crm-omnichannel-inbox-ludic2-logos-r3-s1": reel(
     "welabs-crm",
     "Relloo · Cada pessoa com a história inteira, em qualquer canal",
     "Os canais chegam pelo Tuner, e o Relloo reconhece a pessoa, guarda a história, leva a conversa a quem atende e junta a ligação na mesma ficha.",
   ),
-  "crm-agent-studio-ludic2-logos-r3-intro-v7": reel(
+  "crm-agent-studio-ludic2-logos-r3-s1": reel(
     "welabs-crm",
     "Relloo · Agentes de IA que respondem com o Knowly",
     "O agente nasce de peças prontas, responde com as fontes da empresa pelo Knowly, usa só o que foi liberado e é testado antes de entrar no ar.",
   ),
-  "crm-flow-builder-ludic2-logos-r3-intro-v7": reel(
+  "crm-flow-builder-ludic2-logos-r3-s1": reel(
     "welabs-crm",
     "Relloo · Automações que conversam e decidem",
     "Você desenha o atendimento em blocos: o menu espera a resposta, a condição escolhe o caminho e cada execução deixa o rastro.",
   ),
-  "crm-campaigns-journey-ludic2-logos-r3-intro-v7": reel(
+  "crm-campaigns-journey-ludic2-logos-r3-s1": reel(
     "welabs-crm",
     "Relloo · Campanhas que viram venda e voltam como cashback",
     "Formulário que recomenda, roleta, cupom no WhatsApp, venda no caixa e cashback, numa jornada só de fidelização.",
     "journey",
   ),
-  "flow-canvas-build-logos-r3-intro-v7": reel(
+  "flow-canvas-build-logos-r3-s1": reel(
     "flow",
     "Magneto · Quem conhece o processo monta o fluxo",
     "Planilha, e-mail e lembrete viram um caminho em blocos, sem programar, e o desenho já é o processo andando.",
     "business",
     KNOWHOW,
   ),
-  "flow-durable-run-logos-r3-intro-v7": reel(
+  "flow-durable-run-logos-r3-s1": reel(
     "flow",
     "Magneto · Nenhum processo fica pela metade",
     "O fluxo espera a pessoa o tempo que for, sobrevive à queda do sistema e segue do mesmo ponto, sem repetir nenhum passo.",
     "business",
     KNOWHOW,
   ),
-  "flow-lifecycle-logos-r3-intro-v7": reel(
+  "flow-lifecycle-logos-r3-s1": reel(
     "flow",
     "Magneto · Mude a regra sem medo",
     "A versão nova nasce ao lado, é testada com um pedido de teste, entra no ar quando estiver pronta e volta num toque, com o registro de quem mudou.",
     "business",
     KNOWHOW,
   ),
-  "flow-copilot-logos-r3-intro-v7": reel(
+  "flow-copilot-logos-r3-s1": reel(
     "flow",
     "Magneto · Do texto ao processo rodando",
     "Você descreve o processo numa frase, o Magneto monta os blocos, você revisa e ativa.",
     "business",
     KNOWHOW,
   ),
-  "channels-one-contract-ludic-logos-r4-intro-v7": reel(
+  "channels-one-contract-ludic-logos-r4-s1": reel(
     "channels",
     "Tuner · Todo canal num lugar só, pronto para o Relloo",
     "WhatsApp, voz, chat do site e Discord chegam do mesmo jeito, o Relloo atende e vende, e um produto novo só conecta.",
     "business",
     KNOWHOW,
   ),
-  "channels-call-center-ludic-logos-r3-intro-v7": reel(
+  "channels-call-center-ludic-logos-r3-s1": reel(
     "channels",
     "Tuner · Ninguém repete a história ao telefone",
     "A ligação é bem recebida, cai na fila certa e passa adiante com a história junto.",
     "business",
     KNOWHOW,
   ),
-  "channels-whatsapp-official-ludic-logos-r3-intro-v7": reel(
+  "channels-whatsapp-official-ludic-logos-r3-s1": reel(
     "channels",
     "Tuner · Seu número no WhatsApp oficial, nenhuma conversa perdida",
     "Foto e localização chegam inteiras e, um dia depois, a mensagem aprovada retoma a conversa no mesmo lugar.",
     "business",
     KNOWHOW,
   ),
-  "kb-ask-with-proof-ludic-logos-r3-intro-v7": reel(
+  "kb-ask-with-proof-ludic-logos-r3-s1": reel(
     "wekb",
     "Knowly · Respostas com prova, frase por frase",
     "A dúvida chega em palavras, o Knowly acha onde aquilo já foi dito e mostra a fonte de cada frase; o que não sabe, ele diz.",
     "business",
     KNOWHOW,
   ),
-  "kb-sources-to-knowledge-ludic-logos-r3-intro-v7": reel(
+  "kb-sources-to-knowledge-ludic-logos-r3-s1": reel(
     "wekb",
     "Knowly · Tudo o que a equipe sabe, num lugar só",
     "Documentos, reuniões, tickets e código se juntam num lugar só, sempre atualizados e sem dado pessoal.",
     "business",
     KNOWHOW,
   ),
-  "kb-who-reads-what-ludic-logos-r3-intro-v7": reel(
+  "kb-who-reads-what-ludic-logos-r3-s1": reel(
     "wekb",
     "Knowly · Cada pessoa vê só o que pode ver",
     "Cada área guarda o que é seu, a porta errada não abre e, quem muda de time, muda de chave junto.",
@@ -251,15 +253,28 @@ const ROUND2 = {
 // Every brand intro of lib/brand-intros.json is synced once accepted: its closing frame is the card
 // cover of the brand's products. Intros outside a product reel carry no product, so they never
 // show up in a gallery; the cover lookup goes by id through the same map.
+// The intro of each brand is the one the round's manifest names (_shared/brand/manifest.json): changing a brand's
+// intro or version is an edit there and the next sync follows it. lib/brand-intros.json keeps this site's brand keys
+// (`manifest`: site brand -> manifest brand), the product map and the names; its `brands` field is rewritten here.
+const roundManifest = JSON.parse(
+  readFileSync(join(round2, "_shared/brand/manifest.json"), "utf8"),
+);
 const brandIntros = JSON.parse(
   readFileSync(join(siteRoot, "lib/brand-intros.json"), "utf8"),
 );
-for (const [brand, id] of Object.entries(brandIntros.brands)) {
+for (const [brand, manifestBrand] of Object.entries(brandIntros.manifest)) {
+  const id = roundManifest.brands[manifestBrand]?.intro;
+  if (!id) throw new Error(`manifest has no intro for ${manifestBrand}`);
+  brandIntros.brands[brand] = id;
   ROUND2[id] ??= {
     kind: "intro",
     title: `${brandIntros.names[brand] ?? brand} · Introdução de marca`,
   };
 }
+writeFileSync(
+  join(siteRoot, "lib/brand-intros.json"),
+  `${JSON.stringify(brandIntros, null, 2)}\n`,
+);
 
 // Existing catalog slug for round 1 compositions that overlap a catalog product (none of the Tuner pieces).
 const PRESENTATION_SLUG = {};
@@ -371,6 +386,8 @@ for (const id of readdirSync(productsRoot).sort()) {
     duration,
     compositionId,
     src: `/motion/${id}/index.html`,
+    introSrc: null,
+    poster: `/motion/${id}/poster.jpg`,
     // Round 1 journeys carry no commercial line
     description: null,
     kind: "journey",
@@ -386,31 +403,53 @@ const accepted = JSON.parse(
   readFileSync(join(round2, "accepted.json"), "utf8"),
 );
 const pending = [];
+const acceptedAtHash = (id) => {
+  const file = join(round2, "pieces", id, "index.html");
+  const hash = existsSync(file)
+    ? createHash("sha256").update(readFileSync(file)).digest("hex")
+    : null;
+  return Boolean(accepted[id]) && accepted[id].sha256 === hash;
+};
+const durationOf = (id) =>
+  Number(
+    readFileSync(join(round2, "pieces", id, "index.html"), "utf8").match(
+      /data-duration="([0-9.]+)"/,
+    )?.[1],
+  );
+const brandsInUse = new Set();
+// PEÇAS SHARED DA RODADA
+// A film and its brand intro are separate pieces under public/motion/pieces/<id>/ (the pieces reach ../../_shared/,
+// which is public/motion/_shared/). MotionFilm plays the intro and then the film; `duration` is the sum.
 for (const [id, meta] of Object.entries(ROUND2)) {
   const source = join(round2, "pieces", id);
   const htmlPath = join(source, "index.html");
-  const hash = existsSync(htmlPath)
-    ? createHash("sha256").update(readFileSync(htmlPath)).digest("hex")
-    : null;
-  if (!accepted[id] || accepted[id].sha256 !== hash) {
+  const html = existsSync(htmlPath) ? readFileSync(htmlPath, "utf8") : "";
+  const brand = html.match(/data-brand="([^"]+)"/)?.[1];
+  const intro =
+    meta.kind === "intro" ? null : roundManifest.brands[brand]?.intro;
+  if (!acceptedAtHash(id) || (intro && !acceptedAtHash(intro))) {
     pending.push(id);
     continue;
   }
-  const target = join(publicRoot, id);
+  const target = join(publicRoot, "pieces", id);
+  mkdirSync(target, { recursive: true });
   cpSync(htmlPath, join(target, "index.html"));
   if (existsSync(join(source, "assets")))
     cpSync(join(source, "assets"), join(target, "assets"), {
       recursive: true,
       dereference: true,
     });
-  // Card posters are rendered from the closing brand frame by generate-motion-posters.mjs (run below).
-  const html = readFileSync(htmlPath, "utf8");
+  brandsInUse.add(brand);
+  // A film's cover is the closing frame of its brand intro; intros and films without one own their poster.
+  const posterOwner = intro ?? id;
   catalog.push({
     id,
     title: meta.title,
-    duration: Number(html.match(/data-duration="([0-9.]+)"/)?.[1]),
+    duration: durationOf(id) + (intro ? durationOf(intro) : 0),
     compositionId: html.match(/data-composition-id="([^"]+)"/)?.[1],
-    src: `/motion/${id}/index.html`,
+    src: `/motion/pieces/${id}/index.html`,
+    introSrc: intro ? `/motion/pieces/${intro}/index.html` : null,
+    poster: `/motion/pieces/${posterOwner}/poster.jpg`,
     description: meta.description ?? null,
     kind: meta.kind,
     page: meta.page ?? null,
@@ -419,6 +458,32 @@ for (const [id, meta] of Object.entries(ROUND2)) {
     also: meta.also ?? [],
   });
 }
+
+// _SHARED UMA VEZ
+// Manifest, loader, sequence player, vendor files and the manifest version of each brand in use; the manifest is copied
+// whole, so a brand switch in the round reaches the site by the next sync.
+const sharedRoot = join(round2, "_shared");
+const sharedTarget = join(publicRoot, "_shared");
+mkdirSync(sharedTarget, { recursive: true });
+for (const rel of [
+  "brand/manifest.json",
+  "brand/loader.js",
+  "player/sequence-player.js",
+]) {
+  mkdirSync(dirname(join(sharedTarget, rel)), { recursive: true });
+  cpSync(join(sharedRoot, rel), join(sharedTarget, rel));
+}
+for (const brand of brandsInUse) {
+  const version = roundManifest.brands[brand].version;
+  cpSync(
+    join(sharedRoot, "brand", brand, version),
+    join(sharedTarget, "brand", brand, version),
+    { recursive: true },
+  );
+}
+cpSync(join(sharedRoot, "vendor"), join(sharedTarget, "vendor"), {
+  recursive: true,
+});
 
 // presentationSlug links a film to an existing framepack page, when there is one; this site has no
 // framepacks since the legacy packs left with the split of 2026-10-07, so every slug is null.
