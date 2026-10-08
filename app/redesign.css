@@ -532,9 +532,101 @@ html[data-scrolled] .header {
 .footer-nav-col a:hover {
   color: var(--text);
 }
+/* Amber hairline that fades out at both ends, on top of the footer */
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 55%, transparent) 30%,
+    color-mix(in srgb, var(--accent) 55%, transparent) 70%,
+    transparent
+  );
+}
+.footer-grid-main {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.3fr) minmax(
+      0,
+      0.8fr
+    ) minmax(0, 0.8fr);
+}
+.footer-motto {
+  margin-top: 28px;
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text);
+  max-width: 28ch;
+}
+.footer-products li {
+  margin-bottom: 0;
+}
+.footer-product {
+  display: grid;
+  grid-template-columns: 112px auto;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  text-decoration: none;
+}
+.footer-products li:last-child .footer-product {
+  border-bottom: 0;
+}
+.footer-product-logo {
+  height: 18px;
+  width: auto;
+  justify-self: start;
+  opacity: 0.82;
+  transition: opacity 0.25s var(--ease);
+}
+.footer-product-name {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.footer-product-verb {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  transition: color 0.25s var(--ease);
+}
+.footer-product:hover .footer-product-logo,
+.footer-product:focus-visible .footer-product-logo {
+  opacity: 1;
+}
+.footer-product:hover .footer-product-verb,
+.footer-product:focus-visible .footer-product-verb {
+  color: var(--accent);
+}
 .footer-bottom {
   border-top: 1px solid var(--line);
   padding-top: 24px;
+}
+.footer-top {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color 0.25s var(--ease);
+}
+.footer-top:hover {
+  color: var(--accent);
+}
+@media (max-width: 1024px) {
+  .footer-grid-main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .footer-grid-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .footer-bottom p {
   font-family: var(--font-mono);

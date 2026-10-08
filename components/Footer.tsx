@@ -6,6 +6,52 @@ import { publicSlug } from "@/lib/public-slugs";
 import { isHiddenProduct } from "@/lib/catalog";
 import { imagineHref } from "@/lib/sister-site";
 
+// PRODUTOS DO RODAPÉ
+// Official dark logos (sized by height only) with the verb each product plays in the chain
+const FOOTER_PRODUCTS: {
+  slug: string;
+  name: string;
+  logo?: string;
+  verb: { pt: string; en: string };
+}[] = [
+  {
+    slug: "erp",
+    name: "Domus",
+    logo: "/brands/welabs/products/domus-dark.svg",
+    verb: { pt: "define", en: "defines" },
+  },
+  {
+    slug: "welabs-crm",
+    name: "Relloo",
+    logo: "/brands/welabs/products/relloo-dark.svg",
+    verb: { pt: "atende", en: "engages" },
+  },
+  {
+    slug: "flow",
+    name: "Magneto",
+    logo: "/brands/welabs/products/magneto-dark.svg",
+    // Magneto is named by its function, workflow (operator, 2026-10-08)
+    verb: { pt: "workflow", en: "workflow" },
+  },
+  {
+    slug: "channels",
+    name: "Tuner",
+    logo: "/brands/welabs/products/tuner-dark.svg",
+    verb: { pt: "entrega", en: "delivers" },
+  },
+  {
+    slug: "wekb",
+    name: "Knowly",
+    logo: "/brands/welabs/products/knowly-dark.svg",
+    verb: { pt: "explica", en: "explains" },
+  },
+  {
+    slug: "malupe",
+    name: "Ecossistema Monitoramento",
+    verb: { pt: "monitora", en: "monitors" },
+  },
+];
+
 export function Footer() {
   const { t, lang } = useT();
   const brand = useSiteBrand();
@@ -20,32 +66,41 @@ export function Footer() {
             <img src={brand.logo} alt="Welabs" className="logo-img" />
             <p className="footer-desc">
               {lang === "en"
-                ? "We develop products connecting management, automation and knowledge."
-                : "Desenvolvemos produtos que conectam gestão, automação e conhecimento."}
+                ? "We develop products connecting management, relationships, automation, channels and knowledge."
+                : "Desenvolvemos produtos que conectam gestão, relacionamento, automação, canais e conhecimento."}
+            </p>
+            <p className="footer-motto">
+              {lang === "en"
+                ? "Domus defines. The others bring it to life."
+                : "O Domus define. Os outros dão vida."}
             </p>
           </div>
-          <div className="footer-nav-col">
+          <div className="footer-nav-col footer-products">
             <h4>{lang === "en" ? "Our products" : "Nossos produtos"}</h4>
             <ul>
-              {/* Weight order of the Welabs products (operator, 2026-10-08) */}
-              {[
-                ["erp", "Domus"],
-                ["welabs-crm", "Relloo"],
-                ["flow", "Magneto"],
-                ["channels", "Tuner"],
-                ["wekb", "Knowly"],
-                [
-                  "malupe",
-                  lang === "en"
-                    ? "Monitoring Ecosystem"
-                    : "Ecossistema Monitoramento",
-                ],
-              ]
+              {/* Weight order of the Welabs products (operator, 2026-10-08); each one by its logo and verb */}
+              {FOOTER_PRODUCTS
                 // Hidden products (lib/catalog.ts) leave the navigation
-                .filter(([slug]) => !isHiddenProduct(slug))
-                .map(([slug, name]) => (
-                  <li key={slug}>
-                    <Link href={`/produtos/${publicSlug(slug)}`}>{name}</Link>
+                .filter((p) => !isHiddenProduct(p.slug))
+                .map((p) => (
+                  <li key={p.slug}>
+                    <Link
+                      href={`/produtos/${publicSlug(p.slug)}`}
+                      className="footer-product"
+                    >
+                      {p.logo ? (
+                        <img
+                          src={p.logo}
+                          alt={p.name}
+                          className="footer-product-logo"
+                        />
+                      ) : (
+                        <span className="footer-product-name">{p.name}</span>
+                      )}
+                      <span className="footer-product-verb">
+                        {lang === "en" ? p.verb.en : p.verb.pt}
+                      </span>
+                    </Link>
                   </li>
                 ))}
             </ul>
@@ -88,6 +143,10 @@ export function Footer() {
           <p>
             © 2026 Welabs. <span>{t("footer-rights")}</span>
           </p>
+          <a href="#top" className="footer-top">
+            {lang === "en" ? "Back to top" : "Voltar ao topo"}{" "}
+            <span aria-hidden="true">↑</span>
+          </a>
         </div>
       </div>
     </footer>
