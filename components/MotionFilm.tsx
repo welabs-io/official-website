@@ -1,5 +1,11 @@
 "use client";
-import { createElement, useEffect, useRef, useState } from "react";
+import {
+  createElement,
+  useEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import motionCatalog from "@/lib/motion-catalog.json";
 import { coverFilmOf } from "@/lib/brand-cover";
 import styles from "./MotionFilm.module.css";
@@ -8,21 +14,36 @@ export type MotionItem = (typeof motionCatalog)[number];
 type Kind = "business" | "topology" | "journey" | "intro";
 
 // CARREGAMENTO DO PLAYER HYPERFRAMES
-// The pinned player registers the <hyperframes-player> custom element once per page.
+// The pinned player registers the <hyperframes-player> custom element once per page; the sequence player of the
+// round (_shared/player/sequence-player.js, copied by sync-motion) plays a film's brand intro and then the film.
 let playerLoad: Promise<void> | null = null;
-function loadPlayer(): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-  if (customElements.get("hyperframes-player")) return Promise.resolve();
-  playerLoad ??= new Promise((resolve, reject) => {
+function loadScript(src: string): Promise<void> {
+  return new Promise((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = "/motion/player.js";
+    script.src = src;
     script.onload = () => resolve();
-    script.onerror = () => {
-      playerLoad = null;
-      reject(new Error("player"));
-    };
+    script.onerror = () => reject(new Error(src));
     document.head.appendChild(script);
   });
+}
+function loadPlayer(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if (customElements.get("hyperframes-player") && window.SequencePlayer)
+    return Promise.resolve();
+  playerLoad ??= (
+    customElements.get("hyperframes-player")
+      ? Promise.resolve()
+      : loadScript("/motion/player.js")
+  )
+    .then(() =>
+      window.SequencePlayer
+        ? undefined
+        : loadScript("/motion/_shared/player/sequence-player.js"),
+    )
+    .catch((error) => {
+      playerLoad = null;
+      throw error;
+    });
   return playerLoad;
 }
 
@@ -63,9 +84,10 @@ export function coverFilm(
   return coverFilmOf(product, publisher);
 }
 
-// Poster rendered from the film's closing brand frame (scripts/generate-motion-posters.mjs).
-export function posterSrc(item: Pick<MotionItem, "id">): string {
-  return `/motion/${item.id}/poster.jpg`;
+// Poster rendered from the closing brand frame (scripts/generate-motion-posters.mjs): a film that has a brand intro
+// shares the intro's poster, so the catalog names the file.
+export function posterSrc(item: Pick<MotionItem, "poster">): string {
+  return item.poster;
 }
 
 // A film belongs to its own page and to any page listed in `also` (know-how reuses Welabs films).
@@ -87,6 +109,43 @@ type PlayerElement = HTMLElement & {
   ready?: boolean;
 };
 
+// SEQUÊNCIA ABERTURA E FILME (player de referência da rodada, _shared/player/sequence-player.js)
+type SequenceHandle = {
+  state: "loading" | "cover" | "intro" | "film" | "ended";
+  introPlayer: PlayerElement;
+  filmPlayer: PlayerElement;
+  play: () => void;
+  destroy: () => void;
+};
+declare global {
+  interface Window {
+    SequencePlayer?: {
+      mount: (
+        container: HTMLElement,
+        options: { intro: string; film: string; cover?: boolean },
+      ) => SequenceHandle;
+    };
+  }
+}
+
+// A film without a brand intro plays in a single player; the ref lets MotionFilm read its play state.
+function SinglePlayer({
+  src,
+  playerRef,
+}: {
+  src: string;
+  playerRef: RefObject<PlayerElement | null>;
+}) {
+  return createElement("hyperframes-player", {
+    ref: playerRef,
+    src,
+    width: 1920,
+    height: 1080,
+    controls: true,
+    class: styles.player,
+  });
+}
+
 export function MotionFilm({
   item,
   title,
@@ -100,17 +159,51 @@ export function MotionFilm({
   const [failed, setFailed] = useState(false);
   const [paused, setPaused] = useState(true);
   const player = useRef<PlayerElement | null>(null);
+  const stage = useRef<HTMLDivElement | null>(null);
+  const sequence = useRef<SequenceHandle | null>(null);
   useEffect(() => {
     loadPlayer().then(
       () => setReady(true),
       () => setFailed(true),
     );
   }, []);
+  // A film with a brand intro: the sequence player owns the stage (intro on top of the film, closing frame of the intro
+  // as the cover) and starts the film the moment the intro ends.
+  useEffect(() => {
+    if (!ready || !item.introSrc || !stage.current) return;
+    const handle = window.SequencePlayer?.mount(stage.current, {
+      intro: item.introSrc,
+      film: item.src,
+      cover: true,
+    });
+    if (!handle) {
+      setFailed(true);
+      return;
+    }
+    sequence.current = handle;
+    return () => {
+      handle.destroy();
+      sequence.current = null;
+    };
+  }, [ready, item.id, item.introSrc, item.src]);
   // The player exposes no reliable play/pause event here, so its state is sampled while mounted.
   useEffect(() => {
     if (!ready) return;
     let posterSet = false;
     const timer = window.setInterval(() => {
+      const seq = sequence.current;
+      if (seq) {
+        const active =
+          seq.state === "film" || seq.state === "ended"
+            ? seq.filmPlayer
+            : seq.introPlayer;
+        setPaused(
+          seq.state === "cover" ||
+            seq.state === "ended" ||
+            active.paused !== false,
+        );
+        return;
+      }
       const el = player.current;
       if (!el) return;
       // Frame 0 is often an empty opening; show a mid-film frame as the cover until play.
@@ -125,6 +218,10 @@ export function MotionFilm({
   // First play starts from the beginning; later plays resume where the viewer paused.
   const started = useRef(false);
   const start = () => {
+    if (sequence.current) {
+      sequence.current.play();
+      return;
+    }
     const el = player.current;
     if (!el) return;
     if (!started.current) {
@@ -142,15 +239,12 @@ export function MotionFilm({
           <p className={styles.fallback}>Não foi possível carregar o filme.</p>
         ) : ready ? (
           <div className={styles.stage}>
-            {createElement("hyperframes-player", {
-              key: item.id,
-              ref: player,
-              src: item.src,
-              width: 1920,
-              height: 1080,
-              controls: true,
-              class: styles.player,
-            })}
+            {item.introSrc && (
+              <div key={item.id} ref={stage} className={styles.player} />
+            )}
+            {!item.introSrc && (
+              <SinglePlayer key={item.id} src={item.src} playerRef={player} />
+            )}
             {paused && (
               <button
                 type="button"

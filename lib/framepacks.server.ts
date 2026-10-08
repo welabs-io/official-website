@@ -18,7 +18,5 @@ export function framepackIds() {
 // The fallback is the 1200×630 share image built from the 1.2.1 dark logo on graphite.
 export function publicPoster(id: string) {
   const film = coverFilmOf(id, catalog.find((p) => p.id === id)?.publisher);
-  return film
-    ? `/motion/${film.id}/poster.jpg`
-    : "/brands/welabs/welabs-share.png";
+  return film ? film.poster : "/brands/welabs/welabs-share.png";
 }

@@ -34,6 +34,8 @@
   border-radius: var(--radius);
   overflow: hidden;
   background: #08090a;
+  /* The sequence player stacks the intro over the film with z-index; keep that inside the player so the play button stays on top */
+  isolation: isolate;
 }
 .stage {
   position: relative;
