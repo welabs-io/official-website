@@ -327,7 +327,9 @@ window.__pieceParts = {};
   function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
 
   // Abertura: posicionamento e módulo; o logo voa para o cabeçalho (0–4,6 s, parado de 1,9 a 3,9 s)
-  tl.set('#lg', { x: 671.5, y: 156, scale: 3.235 }, 0);
+  // Lockup centred on the frame axis by its box (x 671.5 -> 729: the endorsed logo box is now 421.83 units tall, so
+  // it is narrower at the same height) and raised (y 156 -> 120) to clear the opening line below it
+  tl.set('#lg', { x: 729, y: 120, scale: 3.235 }, 0);
   tl.fromTo('#lg', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
   inn('#op', 0.2, {}, 0.01);
   inn('#op .l1', 0.6, { y: 16 });
@@ -371,7 +373,8 @@ window.__pieceParts = {};
   // Batida 3: a conversa ganha protocolo, prazo e quem atende (19,4–25,8 s)
   inn('#c3', 19.4, { y: 16 });
   out(['#dock', '#wires'], 19.4, 0.4);
-  inn('#cv', 19.6, { y: 20 }, 0.5);
+  // Enters after 19.8 s, once the scene before it has cleared
+  inn('#cv', 19.85, { y: 20 }, 0.5);
   inn('#msIn', 19.8, { x: -16 }, 0.4);
   inn('#due', 19.9, { y: -8 }, 0.4);
   tl.fromTo('#ring', { strokeDashoffset: 69.1 }, { strokeDashoffset: 18, duration: 9.0, ease: 'none' }, 20.1);
@@ -420,7 +423,7 @@ window.__pieceParts = {};
   // Fecho (42,1–45 s, parado de 42,7 s ao fim)
   out(['#hd', '#demo', '#pc', '#cv', '#call'], 41.7, 0.4);
   // The header logo flies back to the centre and becomes the closing signature (one logo node)
-  tl.to('#lg', { x: 671.5, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 41.9);
+  tl.to('#lg', { x: 729, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 41.9);
   tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 42.1);
   tl.set('#close', { opacity: 1 }, D);
 

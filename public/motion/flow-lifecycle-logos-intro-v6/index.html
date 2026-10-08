@@ -19,7 +19,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 /* Header mark is the official product logo (assets/brand/*-logo-on-dark.svg), sized by height only:
    62 px gives a 31 px x-height, like the 56 px Inter it replaced; the 2 px lift sets its baseline on the kicker's */
 #wm{position:relative;flex:none;height:72px;display:flex;align-items:center}
-#wm img{display:block;height:62px;margin-top:-2px}
+/* Raised 3 px with a relative offset (a negative margin only moves half inside the centered flex box) so the
+   logo baseline sits on the kicker baseline */
+#wm img{display:block;height:62px;position:relative;top:-3px}
 #wm span,.cap span,#close span{color:var(--coral)}
 #kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
 /* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
@@ -51,7 +53,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .av{position:absolute;width:150px;opacity:0;text-align:center}
 .av .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
 #ana{left:150px;top:660px}#bruno{left:1640px;top:660px}
-#tok{position:absolute;left:1580px;top:350px;width:300px;height:56px;border-radius:28px;background:var(--blue);color:#0B1430;font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center;opacity:0;white-space:nowrap}
+/* Pill sized by its content with side padding (the fixed 300 px left the text touching the edges); 24 px text and
+   left 1570 px keep it centred in the 380 px gap between the card (ends at 1540) and the frame edge */
+#tok{position:absolute;left:1570px;top:350px;width:auto;padding:0 22px;height:56px;border-radius:28px;background:var(--blue);color:#0B1430;font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;opacity:0;white-space:nowrap}
 #undo{position:absolute;left:1120px;top:700px;width:480px;height:84px;border-radius:42px;background:var(--panel2);border:3px solid var(--coral);color:var(--text);font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:14px;opacity:0;white-space:nowrap}
 #undo svg{color:var(--coral)}
 

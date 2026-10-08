@@ -290,7 +290,9 @@ window.__pieceParts = {};
   function unglow(ids, t) { tl.to(ids.map(function (i) { return '#' + i + ' .gl'; }), { opacity: 0, duration: 0.3 }, t); }
 
   // Abertura: posicionamento e módulo; o logo voa para o cabeçalho (0–4,6 s, parado de 1,9 a 3,9 s)
-  tl.set('#lg', { x: 671.5, y: 156, scale: 3.235 }, 0);
+  // Lockup centred on the frame axis by its box (x 671.5 -> 729: the endorsed logo box is now 421.83 units tall, so
+  // it is narrower at the same height) and raised (y 156 -> 120) to clear the opening line below it
+  tl.set('#lg', { x: 729, y: 120, scale: 3.235 }, 0);
   tl.fromTo('#lg', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
   inn('#op', 0.2, {}, 0.01);
   inn('#op .l1', 0.6, { y: 16 });
@@ -378,7 +380,7 @@ window.__pieceParts = {};
   // Fecho (36,4–39 s, parado de 37,0 s ao fim)
   out(['#hd', '#demo', '#runs'], 36.0, 0.4);
   // The header logo flies back to the centre and becomes the closing signature (one logo node)
-  tl.to('#lg', { x: 671.5, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 36.2);
+  tl.to('#lg', { x: 729, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 36.2);
   tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 36.4);
   tl.set('#close', { opacity: 1 }, D);
 

@@ -256,7 +256,7 @@ window.__pieceParts = {};
     tl.to('#wk', { attr: { cx: P[b][0], cy: P[b][1] }, duration: 0.8, ease: 'power1.inOut' }, t);
     tl.set('#wk', { opacity: 0 }, t + 0.8);
     [a, b].forEach(function (id) {
-      tl.to('#' + id, { opacity: 1, borderColor: C.amber, duration: 0.25 }, t + 0.8);
+      tl.to('#' + id, { opacity: 1, filter: 'brightness(1)', borderColor: C.amber, duration: 0.25 }, t + 0.8);
       tl.fromTo('#' + id, { y: 0 }, { y: -12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, t + 0.8);
     });
     inn('#g' + i, t + 0.9, { scale: 0.6 }, 0.35);
@@ -268,7 +268,9 @@ window.__pieceParts = {};
   // Batida 1: cada produto é uma ilha (0,6–5,4 s)
   inn('#sea', 0.4, {}, 0.8);
   ['iCh', 'iCRM', 'iKB', 'iApp', 'iFlow', 'iHub'].forEach(function (id, i) {
-    tl.fromTo('#' + id, { opacity: 0, scale: 0.6 }, { opacity: 0.6, scale: 1, duration: 0.45, ease: 'back.out(2)' }, 0.7 + i * 0.18);
+    // Unlit islands are dimmed by brightness, not opacity: they stay opaque, so a bridge being drawn and its walker
+    // pass under the island (and its product logo) instead of showing through it
+    tl.fromTo('#' + id, { opacity: 0, scale: 0.6, filter: 'brightness(0.6)' }, { opacity: 1, scale: 1, filter: 'brightness(0.6)', duration: 0.45, ease: 'back.out(2)' }, 0.7 + i * 0.18);
   });
   inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
   out(['#c1', '#s1'], 5.2);

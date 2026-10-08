@@ -185,7 +185,8 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 
   <div class="pz" id="pz0" data-layout-allow-overlap style="left:680px"><b>Núcleo</b><em>modelo pronto</em></div>
   <div class="pz" id="pz1" data-layout-allow-overlap style="left:1060px"><b>Generalista</b><em>modelo pronto</em></div>
-  <div class="pz" id="pz2" data-layout-allow-overlap style="left:1440px"><b>Direito do consumidor</b><em>modelo de área</em></div>
+  <!-- Wider card (340 -> 400 px): "Direito do consumidor" ran 53 px past the border -->
+  <div class="pz" id="pz2" data-layout-allow-overlap style="left:1440px;width:400px"><b>Direito do consumidor</b><em>modelo de área</em></div>
   <div id="more">e outras áreas para combinar</div>
   <div id="hello"><div class="h">Boas-vindas do agente</div><div class="b">Olá! Sou a Lia. Posso ajudar com a sua compra?</div><div class="h" style="margin-top:28px">Se não souber responder</div><div class="b f">Vou chamar alguém da equipe para você.</div></div>
 
@@ -346,7 +347,9 @@ window.__pieceParts = {};
   function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
 
   // Abertura: posicionamento e módulo; o logo voa para o cabeçalho (0–4,6 s, parado de 1,9 a 3,9 s)
-  tl.set('#lg', { x: 671.5, y: 156, scale: 3.235 }, 0);
+  // Lockup centred on the frame axis by its box (x 671.5 -> 729: the endorsed logo box is now 421.83 units tall, so
+  // it is narrower at the same height) and raised (y 156 -> 120) to clear the opening line below it
+  tl.set('#lg', { x: 729, y: 120, scale: 3.235 }, 0);
   tl.fromTo('#lg', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
   inn('#op', 0.2, {}, 0.01);
   inn('#op .l1', 0.6, { y: 16 });
@@ -435,7 +438,7 @@ window.__pieceParts = {};
   // Fecho (43,8–46 s, parado de 44,4 s ao fim)
   out(['#hd', '#demo', '#ag', '#sim', '#cur'], 43.4, 0.4);
   // The header logo flies back to the centre and becomes the closing signature (one logo node)
-  tl.to('#lg', { x: 671.5, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 43.6);
+  tl.to('#lg', { x: 729, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 43.6);
   tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 43.8);
   tl.set('#close', { opacity: 1 }, D);
 

@@ -40,6 +40,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 /* Logo tag: the on-dark logo cannot sit on amber, so the tag turns graphite with an amber outline */
 .tag.lt{top:-40px;height:64px;padding:0 24px;background:var(--bg);border:3px solid var(--coral);line-height:58px}
 .tag.lt .lg{--lx:22px}
+/* Relloo and Domus have no descender, so the box space kept below their baseline left them ~7 px above the tag's
+   centre; a 7 px relative drop centres their ink (Knowly, with its "y", stays as is) */
+.tag.lt .lg.relloo,.tag.lt .lg.domus{position:relative;top:7px}
 /* Trail stops and the moving token carry the logo; the trail logo stays dim until its step lands */
 .st2 .lg{--lx:17px;opacity:.45}
 #tok .lg{--lx:20px}
@@ -85,7 +88,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 #rule{left:760px;top:550px;width:400px;height:200px;padding:36px 30px 20px;border-color:#5A5A66}
 #rule b{display:block;font-size:30px;font-weight:800;line-height:38px}
 #rule small{display:block;margin-top:10px;font-size:24px;font-weight:600;color:var(--muted)}
-#boss{position:absolute;left:1430px;top:540px;width:220px;text-align:center;opacity:0}
+/* Above the moving token (z-index 2): the token now carries a logo and is wider, so it stops behind the avatar
+   instead of covering the manager's face */
+#boss{position:absolute;left:1430px;top:540px;width:220px;text-align:center;opacity:0;z-index:2}
 #boss .nm{margin-top:8px;font-size:26px;font-weight:700;white-space:nowrap}
 #boss .ok{position:absolute;left:150px;top:0;width:56px;height:56px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
 /* Token now holds the Magneto logo: graphite fill with amber outline, 64 px tall for clear space */
@@ -339,7 +344,9 @@ window.__pieceParts = {};
   inn('#boss', 26.2, { y: 20 }, 0.5);
   tl.fromTo('#tok', { opacity: 0, x: 0, y: 0, scale: 0.6 }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 26.6);
   step(5, 26.9);
-  tl.to('#tok', { x: 80, y: 170, duration: 1.0, ease: 'power2.inOut' }, 27.1);
+  // Stops beside the manager, shrunk to 0.82, in the gap between the rule card (ends at 1158) and her avatar
+  // (starts at ~1468): the token with the logo is wider and used to cover her face
+  tl.to('#tok', { x: 32, y: 170, scale: 0.82, duration: 1.0, ease: 'power2.inOut' }, 27.1);
   tl.fromTo('#boss .ok', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, 28.4);
   tl.to('#tok', { x: 0, y: 0, duration: 1.0, ease: 'power2.inOut' }, 29.0);
   out('#tok', 30.0, 0.3);

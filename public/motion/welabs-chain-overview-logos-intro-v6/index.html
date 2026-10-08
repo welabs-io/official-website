@@ -32,6 +32,9 @@ html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--b
 .lg.magneto,.lg.knowly{height:calc(var(--lx)*2.014);vertical-align:calc(var(--lx)*-0.554)}
 .lg.relloo{height:calc(var(--lx)*1.894);vertical-align:calc(var(--lx)*-0.494)}
 .lg.tuner{height:calc(var(--lx)*2.2569);vertical-align:calc(var(--lx)*-0.556)}
+/* The Tuner waves rise 0.241 lx above the other logos; a matching negative top margin keeps them from growing the
+   line box, so the Tuner label and caption share the baseline of the other four */
+.lg.tuner{margin-top:calc(var(--lx)*-0.241)}
 /* Caption seal: logo, thin vertical rule, then the sentence without the product name */
 .cap .lg{--lx:32px}
 .cap .rule{display:inline-block;width:3px;height:56px;margin:0 30px;background:#5A5A66;vertical-align:-10px}

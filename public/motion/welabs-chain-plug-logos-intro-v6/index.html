@@ -254,7 +254,8 @@ window.__pieceParts = {};
   tl.to('#a1', { y: 70, duration: 0.6, ease: 'back.out(1.6)' }, 8.2);
   tl.to('#a1', { borderColor: AMBER, duration: 0.15 }, 8.75).to('#a1', { borderColor: '#3A3A44', duration: 0.5 }, 8.9);
   tl.to('#pipes line', { opacity: 1, duration: 0.4, stagger: 0.12 }, 8.8);
-  out(['#c2', '#s2'], 10.85);
+  // Leaves by 10.95 s, before the first plug caption enters at 11.0 s (they shared the same place for ~6 frames)
+  out(['#c2', '#s2'], 10.6);
 
   // Batidas 3 a 6: cada encaixe recebe o que a plataforma já tem (11,0–23,2 s)
   [0, 1, 2, 3].forEach(function (i) {
