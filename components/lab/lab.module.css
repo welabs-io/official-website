@@ -16,6 +16,14 @@
   overflow: hidden;
   background: #0b0e14;
 }
+/* Inline variant: the carousel sits in the flow of the page (the home) instead of filling the screen */
+.inline {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  background: transparent;
+}
+
 /* FILEIRA DE PRODUTOS */
 /* Five logos in weight order. The ones the active cut shows are lit (full colour and opacity); the others are grey at
    35%. The change uses the same duration and ease as the ring rotation. Not clickable. */

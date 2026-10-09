@@ -22,15 +22,30 @@ export const CUT_PRODUCTS: readonly (readonly ProductSlug[])[] =
     slide.segments.map((segment) => segment.products ?? []),
   );
 
-export function ChainSequence() {
+// `inline` places the carousel in the flow of a page (the home); otherwise it fills the screen (the workbench). Inline,
+// the playback runs only while the section is on screen and starts over at the first cut each time it comes back.
+export function ChainSequence({ inline = false }: { inline?: boolean }) {
   const stage = useRef<HTMLDivElement>(null);
   const tiles = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
+  const [live, setLive] = useState(!inline);
   // Products shown by the active cut (explicit `products` field of each cut in lib/home-montage.json)
   const lit = CUT_PRODUCTS[active] ?? [];
 
+  // Visibility gate of the inline carousel
+  useEffect(() => {
+    const element = stage.current;
+    if (!inline || !element) return;
+    const io = new IntersectionObserver(([entry]) =>
+      setLive(entry.isIntersecting),
+    );
+    io.observe(element);
+    return () => io.disconnect();
+  }, [inline]);
+
   // Playback of the whole montage: every cut owns the layer container of its tile
   useEffect(() => {
+    if (!live) return;
     let dead = false;
     let playback: Playback | null = null;
     ensurePlayer().then(() => {
@@ -93,12 +108,14 @@ export function ChainSequence() {
     return () => {
       dead = true;
       playback?.destroy();
+      // The next run starts over at the first cut
+      setActive(0);
     };
-  }, []);
+  }, [live]);
 
   return (
     <div
-      className={styles.screen}
+      className={inline ? `${styles.screen} ${styles.inline}` : styles.screen}
       ref={stage}
       data-cut={active + 1}
       data-lit={lit.join(",")}

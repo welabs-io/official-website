@@ -2,29 +2,11 @@
 /* Compact: no minimum heights, no empty area bigger than a title line. Gaps between title, line and ring are 12 to
    24 px. The ring takes the whole wrap. */
 
-/* SEÇÃO 1: TOPO E CADEIA */
-.hero {
-  --pt: calc(var(--header-h) + 24px);
-  --pb: 24px;
-}
-.heroText {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-.heroText .title {
-  max-width: 24ch;
-}
-.heroText .line {
-  max-width: 52ch;
-}
-.heroText > a {
-  margin-top: 4px;
-}
-.heroRing {
-  margin-top: 20px;
+/* SEÇÃO 1: CADEIA */
+/* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
+.chain {
+  --pt: calc(var(--header-h) + 48px);
+  --pb: 48px;
 }
 
 .srOnly {
@@ -88,11 +70,9 @@
 }
 
 @media (max-width: 860px) {
-  .hero {
-    --pb: 16px;
-  }
-  .heroRing {
-    margin-top: 12px;
+  .chain {
+    --pt: calc(var(--header-h) + 32px);
+    --pb: 32px;
   }
   .products {
     --pt: 16px;
