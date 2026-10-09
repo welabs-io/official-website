@@ -10,6 +10,7 @@ export function ProductPageBody({ slug }: { slug: ProductSlug }) {
   const Motion = PRODUCT_MOTION[slug];
   return (
     <section
+      id="product"
       className={`${styles.band} ${styles.dark}`}
       style={{ paddingTop: "calc(64px + clamp(48px, 8vh, 96px))" }}
     >

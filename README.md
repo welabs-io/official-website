@@ -1,36 +1,37 @@
 # Welabs — site da empresa e dos produtos
 
-Site da Welabs, empresa que desenvolve produtos próprios para gestão, relacionamento, automação e conhecimento. Apresenta a empresa e o seu ecossistema de produtos — Domus, Relloo, Magneto, Tuner e Knowly —, cada um com página própria e filmes em motion (HyperFrames) que mostram o produto em uso, com dados fictícios.
+Site da Welabs, empresa que desenvolve produtos próprios de software: Domus, Relloo, Magneto, Tuner e Knowly. Uma página única de sete seções, com pouco texto e motions SVG/CSS limpos, e uma página por produto na mesma linguagem. Não há vídeo nem player: tudo que se move é desenhado na página.
 
-Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, bilíngue (português e inglês) e sem banco de dados: o conteúdo vem de catálogos JSON versionados em `lib/` e de arquivos estáticos em `public/`. A identidade visual é a da marca Welabs (âmbar sobre grafite).
+Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em português, sem banco de dados. A identidade é a da marca Welabs (âmbar, grafite, creme, Inter).
 
-## Páginas
+## Rotas
 
-| Rota               | Conteúdo                                                   |
-| ------------------ | ---------------------------------------------------------- |
-| `/`                | Abertura, ecossistema de produtos e filmes da plataforma   |
-| `/produtos`        | Coleção dos produtos                                       |
-| `/produtos/[slug]` | Página do produto: desafio, filmes e produtos relacionados |
-| `/solucoes`        | Os produtos pelo problema que resolvem                     |
-| `/sobre`           | A empresa                                                  |
+| Rota               | Conteúdo                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| `/`                | Hub, Domus, Relloo, trilhos (Magneto, Tuner, Knowly), cadeia, a Welabs com carrosséis, CTA e rodapé |
+| `/products/[slug]` | Logo com selo, uma linha factual e o motion do produto (`domus`, `relloo`, `magneto`, `tuner`, `knowly`) |
 
-Slugs públicos, na ordem de peso dos produtos: `domus`, `relloo`, `magneto`, `tuner` e `knowly`. O Ecossistema Monitoramento está oculto por enquanto (`lib/catalog.ts`): os dados continuam no catálogo, mas o produto não tem cartão, página nem filme, e `/produtos/ecossistema-monitoramento` redireciona para `/produtos`. Ids internos (`/produtos/erp`, `/produtos/flow`…) e slugs anteriores (`rello`, `hub-de-dominio`, `operacao-seguranca`) redirecionam para o atual. `?lang=pt` e `?lang=en` escolhem o idioma, inclusive no HTML renderizado pelo servidor.
+Âncoras da home, em inglês: `#products` (hub), `#domus`, `#relloo`, `#rails`, `#chain`, `#about`, `#contact`.
 
-### Endereços antigos
+Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → `/`; `/produtos`, `/products`, `/solucoes` e `/solutions` → `/#products`; `/sobre` e `/about` → `/#about`; `/produtos/<slug>` → `/products/<slug>`; ids internos (`erp`, `flow`…) e slugs anteriores (`rello`, `hub-de-dominio`) vão direto ao slug atual; `/welabs/*` e `/portfolio-preview/*` do site compartilhado também. A query string é mantida. O produto oculto (`ecossistema-monitoramento`) volta para `/#products` (temporário). A lista está em `next.config.mjs`; `lib/routes.test.ts` trava segmento de rota em português e redirecionamento em mais de um salto.
 
-Até 07/10/2026 estas páginas viviam em `/welabs/*` no site compartilhado com a Imagine. Todos os endereços antigos redirecionam de forma permanente para os novos (`/welabs` → `/`, `/welabs/produtos/domus` → `/produtos/domus`, e assim por diante), assim como `/portfolio-preview/welabs` e as prévias dos produtos Welabs.
+## Movimento
+
+- Cada palco (`MotionStage`) é uma caixa cuja animação SVG/CSS só roda enquanto o controlador (`motion-controller.ts`) o marca vivo: visível na tela, página não pausada, no máximo dois ao mesmo tempo. Fora disso o palco não tem animação e mostra o quadro estático, que é o próprio estilo base.
+- `prefers-reduced-motion` começa a página pausada; o botão do cabeçalho pausa e retoma (a escolha fica no `localStorage`).
+- Conectores âmbar entre seções e carrosséis só animam na tela e com a página tocando. Com a página pausada os carrosséis viram uma linha quebrada, sem corte.
+- A cadeia (seção 5) é conduzida pela rolagem: um número (`--t`, de 0 a 4) escrito na seção; o resto é CSS.
 
 ## Estrutura de pastas
 
 ```
-app/                 rotas (App Router), layout raiz com a marca, estilos globais e imagem de compartilhamento
-components/          páginas, cabeçalho, rodapé, cartões de produto, filmes e camada de movimento
-lib/                 catálogos JSON (produtos, visuais, filmes, ênfase), slugs públicos e ícones da marca
-public/motion/       filmes HyperFrames publicados, com o player fixado (player.js) e os pôsteres
-public/brands/welabs/  logos da Welabs, logos dos produtos, favicons e selos
-public/company-brands/  logo usado como imagem de compartilhamento quando falta filme
-scripts/             sincronização de filmes, geração de pôsteres e verificação do site
-proxy.ts             idioma da requisição
+app/                    rotas (home e /products/[slug]), layout raiz, estilos globais e imagem de compartilhamento
+components/onepage/     seções, palcos de motion por produto, controlador de motion, cabeçalho e rodapé
+lib/                    lista de produtos, slugs públicos, logos dos carrosséis (com a evidência de uso) e ícones
+public/brands/welabs/   logos da Welabs, logos dos produtos, favicons e selos
+public/clients/         logos de terceiros que o site Imagine já exibe
+public/platforms/       marcas de infra e dev (simple-icons, CC0; AWS e HostDime oficiais)
+scripts/                verificação do site contra o preview
 ```
 
 ## Como rodar
@@ -42,55 +43,12 @@ npm i
 npm run dev
 ```
 
-O site abre em http://localhost:3000. Para um build de produção local:
-
-```sh
-npm run build
-npm start
-```
-
-`NEXT_DIST_DIR` permite usar outra pasta de build (por exemplo `.next-local`), útil para rodar um segundo servidor ao lado de outro já em execução.
-
-## Variáveis de ambiente
-
-Copie `.env.example` para `.env.local` e ajuste.
-
-| Variável                  | Uso                                                                                                                                                                                                          |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `NEXT_PUBLIC_IMAGINE_URL` | Endereço base do site da Imagine Apps, sem barra final. Alimenta o item "Imagine" do menu, a coluna do rodapé e a alternância de portfólio. É lida no build; sem ela, os links para a Imagine ficam ocultos. |
-
-O site não tem formulário nem segredos de servidor.
-
-## Filmes (HyperFrames)
-
-Os filmes são composições HyperFrames produzidas fora deste repositório, numa rodada de produção que guarda as peças, o índice de entregas e a lista de peças aceitas (com o hash de cada uma). `npm run` não os gera: quem os traz para o site é `scripts/sync-motion.mjs`, executado manualmente com `node scripts/sync-motion.mjs`. O script:
-
-1. copia de cada peça aceita apenas os arquivos de execução para `public/motion/<id>/`, conferindo o hash aprovado;
-2. copia o player HyperFrames na versão fixada;
-3. reescreve `lib/motion-catalog.json` com título, duração, tipo e produto de cada filme;
-4. gera os pôsteres dos cartões (`scripts/generate-motion-posters.mjs`) a partir do quadro final de cada peça.
-
-Todos os produtos abrem com a introdução de marca da Welabs (`lib/brand-intros.json`), cujo quadro final também é a capa dos cartões. A ordem dos filmes de cada produto está no próprio script; a ordem dos produtos fica em `lib/emphasis.json`.
+O site abre em http://localhost:3000. Para um build de produção local: `npm run build` e `npm start`. `NEXT_DIST_DIR` usa outra pasta de build, útil para um segundo servidor ao lado de outro já em execução.
 
 ## Verificação
 
-```sh
-npm run lint
-npm run typecheck
-npm test
-npm run build
-```
-
-`npm run check` executa os quatro em sequência. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas de produto nos dois idiomas, os títulos e todos os redirecionamentos; `PORTFOLIO_PREVIEW_URL` aponta outro servidor local.
-
-## Relação com o site da Imagine Apps
-
-A Imagine Apps, empresa irmã de software sob medida e design de produto, tem site e repositório próprios: [imagineapps-team/official-website](https://github.com/imagineapps-team/official-website). Os dois sites se apontam mutuamente: aqui, pelo item "Imagine" do menu, pelo rodapé e pela alternância de portfólio; lá, pelo caminho inverso, com `NEXT_PUBLIC_WELABS_URL`. Produtos de clientes construídos pela Welabs aparecem no portfólio da Imagine com o selo "feito pela Welabs", que aponta para cá.
-
-## Origem
-
-Separado do imagine-website-v2 em 07/10/2026, mantendo o histórico. Neste repositório a Welabs, que vivia em `/welabs`, passou a ser a raiz do site; as páginas, os filmes, os clientes e os pacotes de apresentação da Imagine saíram daqui e seguem no repositório dela. Os pacotes de apresentação legados dos produtos Welabs, que nunca eram exibidos, também saíram nessa separação.
+`npm run check` executa lint, typecheck, testes e build. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas, os redirecionamentos, os arquivos referenciados e as regras de conteúdo (sem player, sem vídeo, sem slogan, no máximo 70 palavras visíveis na home); `PORTFOLIO_PREVIEW_URL` aponta outro servidor.
 
 ## Limites atuais
 
-O site é uma prévia: páginas `noindex`, `robots.txt` bloqueando tudo e sitemap vazio. Os filmes usam dados fictícios, identificados pela legenda DEMO. Regra comercial: nenhum produto aparece com estágio, versão ou marcador de maturidade; os campos `maturity` e `stage` dos catálogos ficam como dado e não são renderizados.
+O site é uma prévia: páginas `noindex`, `robots.txt` bloqueando tudo e sitemap vazio. O botão "Conversar com a Welabs" aponta para a seção final (`#contact`); o destino definitivo ainda será decidido. O site da Imagine Apps, empresa irmã, tem repositório próprio: [imagineapps-team/official-website](https://github.com/imagineapps-team/official-website).
