@@ -41,11 +41,15 @@ const SLOGAN =
 const BANNED =
   /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|em breve|roadmap)\b/i;
 
-describe("pages carry no player and no video", () => {
+describe("pages carry no player interface", () => {
   it.each(pages)(
-    "$slug has no hyperframes-player, video, iframe or script src",
+    "$slug has no progress bar, no pause button, no controls and no video",
     ({ html }) => {
-      expect(html).not.toMatch(/hyperframes/i);
+      expect(html).not.toMatch(/role="progressbar"|<progress\b/i);
+      expect(html).not.toMatch(
+        /Pausar|Retomar|aria-pressed="(true|false)"[^>]*pause/i,
+      );
+      expect(html).not.toMatch(/<hyperframes-player[^>]*\bcontrols\b/i);
       expect(html).not.toMatch(/<video|<iframe|<audio/i);
       expect(html).not.toMatch(/\.(mp4|webm|mov)\b/i);
     },

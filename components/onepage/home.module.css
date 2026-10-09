@@ -1,0 +1,71 @@
+/* SEÇÕES DA HOME */
+/* One idea per screen; the bands alternate graphite and cream. */
+
+/* SEÇÃO 1: TOPO */
+.hero {
+  display: flex;
+  align-items: center;
+  min-height: min(100vh, 960px);
+  padding-top: calc(64px + clamp(32px, 6vh, 72px));
+}
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+.heroText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.heroStage {
+  display: grid;
+  gap: 20px;
+}
+/* The manual switch under the frame: names, the active one marked by a 4 px amber block */
+.names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.names button {
+  position: relative;
+  min-height: 44px;
+  padding: 0 0 0 14px;
+  border: 0;
+  background: none;
+  color: var(--mute);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.names button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 18px;
+  margin-top: -9px;
+  background: transparent;
+}
+.names button[aria-pressed="true"] {
+  color: inherit;
+}
+.names button[aria-pressed="true"]::before {
+  background: var(--a);
+}
+@media (max-width: 860px) {
+  .hero {
+    min-height: 0;
+  }
+  .heroGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

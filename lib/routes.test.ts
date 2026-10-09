@@ -119,25 +119,36 @@ describe("redirects", () => {
   });
 });
 
-describe("the repository has no player or video", () => {
+describe("the repository plays only our own pieces, without a player interface", () => {
   const files = [
     ...walk(path.join(root, "app")),
     ...walk(path.join(root, "components")),
     ...walk(path.join(root, "lib")),
     ...walk(path.join(root, "public")),
   ];
-  it("has no video file or HyperFrames bundle", () => {
+  it("has no video file and no <video> element", () => {
     expect(files.filter((f) => /\.(mp4|webm|mov)$/i.test(f))).toEqual([]);
-    expect(files.filter((f) => /\/public\/motion\//.test(f))).toEqual([]);
-  });
-  it("has no hyperframes-player or video element in the source", () => {
     const offenders = files
       .filter(
         (f) =>
           /\.(tsx?|jsx?|css|html|mjs)$/.test(f) && !/\.test\.tsx?$/.test(f),
       )
+      .filter((f) => /<video\b/i.test(fs.readFileSync(f, "utf8")));
+    expect(offenders).toEqual([]);
+  });
+  it("never turns the player controls on", () => {
+    // The pieces copied from the round (public/motion) are not site code; the site mounts them with controls off
+    const offenders = files
+      .filter(
+        (f) =>
+          /\.(tsx?|jsx?|html|mjs)$/.test(f) &&
+          !/\.test\.tsx?$/.test(f) &&
+          !f.includes("/public/motion/"),
+      )
       .filter((f) =>
-        /hyperframes-player|<video\b/i.test(fs.readFileSync(f, "utf8")),
+        /setAttribute\(\s*["']controls["']|\bcontrols\s*[:=]\s*(true|\{true\})|<hyperframes-player[^>]*\bcontrols\b/.test(
+          fs.readFileSync(f, "utf8"),
+        ),
       );
     expect(offenders).toEqual([]);
   });

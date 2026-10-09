@@ -3,9 +3,8 @@
 // section of the home; the contact destination is still to be decided by the operator.
 import Link from "next/link";
 import { CTA_LABEL, WELABS_LOGO } from "@/lib/products";
+import { CONTACT_HREF } from "./contact";
 import styles from "./shell.module.css";
-
-export const CONTACT_HREF = "/#contact";
 
 function Header({ home }: { home: boolean }) {
   return (

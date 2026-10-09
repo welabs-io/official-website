@@ -1,0 +1,31 @@
+/* QUADRO DO CARROSSEL DE MOTION */
+/* Only the frame: rounded corners and the brand shadow, no bar, no button. */
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #0b0e14;
+  box-shadow:
+    0 28px 64px -24px rgb(16 20 28 / 0.55),
+    0 0 0 1px rgb(250 245 234 / 0.08);
+  isolation: isolate;
+}
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+.host {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.host[data-ready="true"] {
+  opacity: 1;
+}
