@@ -164,9 +164,12 @@
   gap: 20px;
 }
 .logo {
+  --h: clamp(64px, 7vw, 88px);
   display: block;
-  height: clamp(64px, 7vw, 88px);
+  height: var(--h);
   width: auto;
+  /* The logo file has built-in left padding; --pad (share of the height) aligns the wordmark with the line below */
+  margin-left: calc(var(--h) * var(--pad, 0) * -1);
 }
 .logoLink {
   display: inline-block;

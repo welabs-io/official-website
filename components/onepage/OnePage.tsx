@@ -3,11 +3,13 @@
 // No video and no player: every motion is SVG/CSS drawn on the page. See PageFrame for the header and closing.
 import { Hub } from "./Hub";
 import { PageFrame } from "./PageFrame";
+import { DomusSection } from "./Sections";
 
 export function OnePage() {
   return (
     <PageFrame home>
       <Hub />
+      <DomusSection />
     </PageFrame>
   );
 }
