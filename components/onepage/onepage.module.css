@@ -173,9 +173,6 @@
 .light a:focus-visible {
   outline-color: var(--ink);
 }
-.support {
-  max-width: 44ch;
-}
 
 /* PALCO DE MOTION */
 .stage {
@@ -487,12 +484,83 @@
   padding: clamp(96px, 14vh, 160px) 0;
 }
 
+/* SEÇÃO 7: CTA E RODAPÉ */
+.closing {
+  text-align: center;
+  padding: clamp(112px, 18vh, 200px) 0;
+}
+.closing .lead {
+  max-width: 34ch;
+  margin: 20px auto 0;
+}
+.ctaBig {
+  height: 56px;
+  margin-top: 36px;
+  padding: 0 32px;
+  font-size: 17px;
+}
+.footer {
+  background: var(--g);
+  border-top: 1px solid var(--g3);
+  padding: 56px 0 32px;
+}
+.footerGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+}
+.footerDesc {
+  max-width: 34ch;
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--mute-d);
+}
+.footerProducts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.footerProducts li {
+  border-bottom: 1px solid var(--g3);
+}
+.footerProducts a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  color: var(--mute-d);
+  text-decoration: none;
+  font-size: 14px;
+}
+.footerProducts a:hover {
+  color: var(--c);
+}
+.footerProducts img {
+  height: 52px;
+  width: auto;
+}
+.footerBottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin-top: 40px;
+  font-size: 13px;
+  color: var(--mute-d);
+}
+.footerBottom a {
+  color: var(--mute-d);
+  margin-left: auto;
+}
+
 /* RESPONSIVO */
 @media (max-width: 960px) {
   .nav {
     display: none;
   }
   .hero .wrap,
+  .footerGrid,
   .railRow,
   .chainGrid,
   .coreGrid {

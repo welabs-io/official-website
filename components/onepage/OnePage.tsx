@@ -12,6 +12,8 @@ import {
 } from "react";
 import { ByWelabs } from "../ByWelabs";
 import { imagineContactHref } from "@/lib/sister-site";
+import Link from "next/link";
+import { publicSlug } from "@/lib/public-slugs";
 import motionData from "@/lib/onepage-motion.json";
 import { HubLive } from "./HubLive";
 import { LiveStage, ensurePlayer } from "./LiveStage";
@@ -414,6 +416,69 @@ function About() {
   );
 }
 
+// SEÇÃO 7: CTA E RODAPÉ
+// The single call to action again, then the product table (logo and verb, weight order) and the closing line.
+// No social networks: only links inside this site.
+const FOOTER_PRODUCTS = [
+  { id: "erp", file: "domus", name: "Domus", verb: "define" },
+  { id: "welabs-crm", file: "relloo", name: "Relloo", verb: "atende" },
+  { id: "flow", file: "magneto", name: "Magneto", verb: "workflow" },
+  { id: "channels", file: "tuner", name: "Tuner", verb: "entrega" },
+  { id: "wekb", file: "knowly", name: "Knowly", verb: "explica" },
+];
+function Closing() {
+  return (
+    <>
+      <section
+        id="contato"
+        className={`${styles.band} ${styles.dark} ${styles.closing}`}
+      >
+        <div className={styles.wrap}>
+          <h2>Sua empresa, num só fluxo.</h2>
+          <p className={styles.lead}>{CTA_SUPPORT}</p>
+          <a href={contactHref()} className={`${styles.cta} ${styles.ctaBig}`}>
+            {CTA_LABEL}
+          </a>
+        </div>
+      </section>
+      <footer className={styles.footer}>
+        <div className={`${styles.wrap} ${styles.footerGrid}`}>
+          <div>
+            <img
+              src="/brands/welabs/welabs-logo-dark.svg"
+              alt="Welabs"
+              height={28}
+            />
+            <p className={styles.footerDesc}>
+              Desenvolvemos produtos que conectam gestão, relacionamento,
+              automação, canais e conhecimento.
+            </p>
+          </div>
+          <ul className={styles.footerProducts}>
+            {FOOTER_PRODUCTS.map((p) => (
+              <li key={p.id}>
+                <Link href={`/produtos/${publicSlug(p.id)}`}>
+                  <img
+                    src={`/brands/welabs/products/${p.file}-dark-endorsed.svg`}
+                    alt={`${p.name} by Welabs`}
+                    height={52}
+                  />
+                  <span>{p.verb}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className={`${styles.wrap} ${styles.footerBottom}`}>
+          <p>© 2026 Welabs. Todos os direitos reservados.</p>
+          <p>Os dados exibidos nos filmes são fictícios.</p>
+          <Link href="/sobre">Sobre a Welabs</Link>
+        </div>
+      </footer>
+    </>
+  );
+}
+
 export function OnePage() {
   const paused = useSyncExternalStore(
     subscribePaused,
@@ -455,9 +520,7 @@ export function OnePage() {
       <Rails />
       <Chain />
       <About />
-      <p className={styles.support} hidden>
-        {CTA_SUPPORT}
-      </p>
+      <Closing />
     </div>
   );
 }
