@@ -4,6 +4,7 @@
 import { Carousel } from "./Carousel";
 import { Hero } from "./Hero";
 import { PageFrame } from "./PageFrame";
+import { Products } from "./Products";
 import { CLIENT_LOGOS, CLIENTS_LABEL } from "@/lib/partners";
 import home from "./home.module.css";
 import shell from "./shell.module.css";
@@ -26,6 +27,7 @@ export function OnePage() {
           />
         </div>
       </section>
+      <Products />
     </PageFrame>
   );
 }

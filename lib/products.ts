@@ -49,6 +49,15 @@ export const productBySlug = (slug: string) =>
 export const productLogo = (slug: ProductSlug, tone: "dark" | "light") =>
   `/brands/welabs/products/${slug}-${tone}-endorsed.svg`;
 
+// Left padding of each logo file (viewBox x offset over viewBox height), used to align the wordmark with the text
+export const LOGO_PAD: Record<ProductSlug, number> = {
+  domus: 0.1277,
+  relloo: 0.1365,
+  magneto: 0.1201,
+  tuner: 0.1122,
+  knowly: 0.1201,
+};
+
 export const WELABS_LOGO = {
   dark: "/brands/welabs/welabs-logo-dark.svg",
   light: "/brands/welabs/welabs-logo-light-block.svg",

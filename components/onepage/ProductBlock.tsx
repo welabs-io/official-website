@@ -1,17 +1,13 @@
 // CABEÇALHO DE PRODUTO
 // Logo with the "by welabs" seal and one factual line. The logo links to the product page except on that page itself.
 import Link from "next/link";
-import { productBySlug, productLogo, type ProductSlug } from "@/lib/products";
+import {
+  LOGO_PAD,
+  productBySlug,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
 import styles from "./shell.module.css";
-
-// Left padding of each logo file (viewBox x offset over viewBox height)
-const LOGO_PAD: Record<ProductSlug, number> = {
-  domus: 0.1277,
-  relloo: 0.1365,
-  magneto: 0.1201,
-  tuner: 0.1122,
-  knowly: 0.1201,
-};
 
 export function ProductBlock({
   slug,

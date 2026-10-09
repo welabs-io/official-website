@@ -67,7 +67,151 @@
   padding: clamp(36px, 6vh, 64px) 0;
 }
 
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* SEÇÃO 3: PRODUTOS */
+/* Logos in a column (the active one larger, with its line) beside the reel. */
+.products {
+  display: flex;
+  align-items: center;
+  min-height: min(92vh, 860px);
+}
+.productsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+.list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list li {
+  display: grid;
+  gap: 10px;
+  padding: 10px 0 10px 20px;
+  border-left: 4px solid transparent;
+}
+.list li[data-active="true"] {
+  border-left-color: var(--a);
+}
+.listLink {
+  display: inline-block;
+  align-self: start;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+}
+.listLogo {
+  height: 40px;
+  width: auto;
+  margin-left: calc(40px * var(--pad, 0) * -1);
+  opacity: 0.5;
+  transition:
+    height 0.25s ease,
+    margin-left 0.25s ease,
+    opacity 0.25s ease;
+}
+.list li[data-active="true"] .listLogo {
+  --h: clamp(56px, 6vw, 80px);
+  height: var(--h);
+  margin-left: calc(var(--h) * var(--pad, 0) * -1);
+  opacity: 1;
+}
+.listLink:hover .listLogo {
+  opacity: 0.85;
+}
+
+/* SEÇÃO 4: CADEIA */
+/* The film on the left and the list of the five products on the right; a row lights as the film reaches its product:
+   the current one with a 4 px amber block, the ones already shown stay lit, the ones to come are dim. */
+.chain {
+  display: flex;
+  align-items: center;
+  min-height: min(92vh, 860px);
+}
+.chainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+.chainText {
+  display: grid;
+  gap: 28px;
+}
+.chainText .title {
+  font-size: clamp(26px, 3vw, 40px);
+}
+.steps {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0 8px 20px;
+  border-left: 4px solid transparent;
+  transition:
+    opacity 0.3s ease,
+    border-color 0.3s ease;
+}
+.steps img {
+  flex: none;
+  height: 44px;
+  width: auto;
+  margin-left: calc(44px * var(--pad, 0) * -1);
+}
+.steps p {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--mute);
+}
+.steps li[data-state="idle"] {
+  opacity: 0.32;
+}
+.steps li[data-state="done"] {
+  opacity: 0.85;
+}
+.steps li[data-state="current"] {
+  opacity: 1;
+  border-left-color: var(--a);
+}
+
 @media (max-width: 860px) {
+  .chain {
+    min-height: 0;
+  }
+  .chainGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .products {
+    min-height: 0;
+  }
+  .productsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The frame comes first on a narrow screen */
+  .productsGrid > :last-child {
+    order: -1;
+  }
   .hero {
     min-height: 0;
   }

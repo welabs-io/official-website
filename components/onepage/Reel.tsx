@@ -104,7 +104,8 @@ export function Reel({
   slides: readonly Slide[];
   index: number;
   onIndex?: (next: number) => void;
-  onFilmTime?: (t: number) => void;
+  // Film time (s) while the film plays, -1 during the opening, null when the frame is not playing
+  onFilmTime?: (t: number | null) => void;
   eager?: boolean;
   className?: string;
 }) {
@@ -121,7 +122,7 @@ export function Reel({
     if (slides.length > 1) onIndex?.((index + 1) % slides.length);
     else setRun((n) => n + 1);
   });
-  const report = useEffectEvent((t: number) => onFilmTime?.(t));
+  const report = useEffectEvent((t: number | null) => onFilmTime?.(t));
 
   // Register the frame with the page controller; mount/unmount only flip the live flag
   useEffect(() => {
@@ -165,7 +166,7 @@ export function Reel({
       stop();
       element.innerHTML = "";
       setReady(false);
-      report(-1);
+      report(null);
     };
   }, [live, slide, run]);
 

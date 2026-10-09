@@ -12,7 +12,7 @@
         {
           "id": "hub-whole-house-ludic-logos-r4-s1",
           "duration": 36,
-          "clip": [4, 16]
+          "clip": [6, 20]
         },
         { "id": "hub-defines-runs-ludic-v3-logos-r4-s1", "duration": 34 },
         { "id": "hub-draw-born-ludic-v2-logos-r5-s1", "duration": 36 }
@@ -37,7 +37,7 @@
         {
           "id": "flow-canvas-build-logos-r4-s1",
           "duration": 31,
-          "clip": [4, 16]
+          "clip": [10, 24]
         },
         { "id": "flow-durable-run-logos-r4-s1", "duration": 34 },
         { "id": "flow-lifecycle-logos-r4-s1", "duration": 35 },
@@ -50,7 +50,7 @@
         {
           "id": "channels-one-contract-ludic-logos-r5-s1",
           "duration": 36,
-          "clip": [4, 16]
+          "clip": [10, 24]
         },
         { "id": "channels-call-center-ludic-logos-r4-s1", "duration": 36 },
         { "id": "channels-whatsapp-official-ludic-logos-r4-s1", "duration": 34 }
@@ -62,7 +62,7 @@
         {
           "id": "kb-ask-with-proof-ludic-logos-r5-s1",
           "duration": 34,
-          "clip": [4, 16]
+          "clip": [4, 18]
         },
         { "id": "kb-sources-to-knowledge-ludic-logos-r5-s1", "duration": 34 },
         { "id": "kb-who-reads-what-ludic-logos-r4-s1", "duration": 34 }
