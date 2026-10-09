@@ -12,6 +12,8 @@ export const SWAP_SECONDS = 1;
 export const BLEND_SECONDS = 0.4;
 const FADE_MS = 400;
 const TICK_MS = 40;
+// Head start of the incoming clip over its push, in seconds (the start latency of a parked player is 20 to 110 ms)
+const PUSH_PRE = 0.12;
 // Reveal of a preloaded player waits for the seek to its first frame to settle
 const SETTLE_MS = 140;
 
@@ -248,7 +250,10 @@ export class Playback {
     const segment = this.flat[this.cursor];
     const t = current.el.currentTime;
     // The range is in piece time: a real lead of `lead` s is lead * rate seconds of the piece
-    if (t < segment.range[1] - segment.lead * segment.rate) return;
+    // A pushed cut starts its successor PUSH_PRE s early: the new player needs a moment before its timeline moves, and
+    // the push only begins after that moment, so the incoming clip is already moving when it slides in
+    const pre = this.options.single && segment.transition ? PUSH_PRE : 0;
+    if (t < segment.range[1] - (segment.lead + pre) * segment.rate) return;
     if (this.flat.length === 1) return;
     const next = this.entries.get(this.after(this.cursor));
     if (!next || !next.settled) {
@@ -286,20 +291,24 @@ export class Playback {
     this.cursor = next.index;
     next.started = true;
     next.el.play();
-    if (this.options.single && from.transition)
-      this.push(current.wrap, next.wrap, from.transition);
-    else {
-      // The fade-in lasts as long as the lead, so the overlap and the crossfade end together
-      next.wrap.style.transitionDuration = `${Math.round(from.lead * 1000)}ms`;
-      next.wrap.style.opacity = "1";
-    }
-    if (to.slide !== from.slide) this.options.onSlide(to.slide);
-    this.options.onSwap?.({
-      from: from.slide,
-      to: to.slide,
-      prepared: true,
-      at: performance.now(),
-    });
+    const pushed = this.options.single ? from.transition : undefined;
+    const bring = () => {
+      if (pushed) this.push(current.wrap, next.wrap, pushed);
+      else {
+        // The fade-in lasts as long as the lead, so the overlap and the crossfade end together
+        next.wrap.style.transitionDuration = `${Math.round(from.lead * 1000)}ms`;
+        next.wrap.style.opacity = "1";
+      }
+      if (to.slide !== from.slide) this.options.onSlide(to.slide);
+      this.options.onSwap?.({
+        from: from.slide,
+        to: to.slide,
+        prepared: true,
+        at: performance.now(),
+      });
+    };
+    if (pushed) this.later(bring, PUSH_PRE * 1000);
+    else bring();
     // The leaving player keeps running under the new one until its range closes, then fades and goes away
     const stay = Math.max(remaining, 0.1) * 1000;
     this.later(() => {

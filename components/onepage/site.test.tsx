@@ -3,6 +3,7 @@
 // rendered on the server (the same HTML the first paint gets) and checked as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { MONTAGE_SLIDES } from "@/lib/motion-slides";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/page";
 import { generateMetadata } from "@/app/products/[slug]/page";
@@ -107,7 +108,7 @@ describe("the home has no sequential player and no opening on the chain", () => 
       home.indexOf('id="products"'),
     );
     expect(chain).not.toMatch(/intro|welabs-chain/);
-    expect(chain.match(/montage-\d\.jpg/g)).toHaveLength(6);
+    expect(chain.match(/montage-\d\.jpg/g)).toHaveLength(MONTAGE_SLIDES.length);
   });
   it("the title of the home is Welabs, without a suffix", () => {
     expect(homeMetadata.title).toBe("Welabs");

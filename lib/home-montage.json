@@ -1,8 +1,7 @@
 {
-  "rate": 1.75,
   "swap": 0.4,
   "cycle": {
-    "note": "cycle = sum of the cut screen times minus the overlap of each transition (the push of the incoming clip starts at T0 and the leaving clip stays until T0 + duration)"
+    "note": "cycle = sum of the cut screen times minus the overlap of each transition (the push of the incoming clip starts at T0 and the leaving clip stays until T0 + duration). Each cut keeps its caption still for at least 1.8 s: screen = 1.8 + push in + push out"
   },
   "transitionDefaults": {
     "between": { "type": "push-left", "duration": 0.4, "ease": "power2.inOut" },
@@ -18,7 +17,7 @@
           "kind": "product",
           "film": "channels-one-contract-ludic-logos-r5-s1",
           "start": 14.1,
-          "end": 17.1,
+          "end": 17.35,
           "rate": 1.25,
           "transition": { "type": "push-left", "duration": 0.4 },
           "shows": "o Tuner recebe as mensagens de três canais e fecha com a lista completa"
@@ -33,7 +32,7 @@
           "kind": "relation",
           "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
           "start": 7.5,
-          "end": 12.3,
+          "end": 12.5,
           "rate": 2,
           "transition": { "type": "push-up", "duration": 0.3 },
           "shows": "Tuner e Relloo juntos: os balões do Tuner entram no Relloo e a ficha da Ana aparece"
@@ -42,7 +41,7 @@
           "kind": "product",
           "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
           "start": 19.75,
-          "end": 24.5,
+          "end": 24.15,
           "rate": 1.75,
           "transition": { "type": "push-left", "duration": 0.4 },
           "shows": "o Relloo leva a conversa para quem atende"
@@ -57,7 +56,7 @@
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
           "start": 6.5,
-          "end": 11.2,
+          "end": 10.9,
           "rate": 1.75,
           "transition": { "type": "push-up", "duration": 0.3 },
           "shows": "Relloo e Domus juntos: o Relloo reconhece a Marina com o pedido e o endereço que já estão no Domus"
@@ -66,7 +65,7 @@
           "kind": "product",
           "film": "hub-whole-house-ludic-logos-r4-s1",
           "start": 14,
-          "end": 17.4,
+          "end": 17.75,
           "rate": 1.5,
           "transition": { "type": "push-left", "duration": 0.4 },
           "shows": "a casa cheia: onze cômodos sob o mesmo teto, a empresa inteira"
@@ -80,11 +79,20 @@
         {
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
-          "start": 25.2,
-          "end": 30.9,
-          "rate": 1.75,
-          "transition": { "type": "push-left", "duration": 0.4 },
+          "start": 25.3,
+          "end": 30.1,
+          "rate": 1.9,
+          "transition": { "type": "push-up", "duration": 0.3 },
           "shows": "Domus e Magneto juntos: a regra sai do Domus, o workflow chega à gestora e o recibo volta"
+        },
+        {
+          "kind": "relation",
+          "film": "welabs-chain-horizon-define-logos-r6-s1",
+          "start": 22.9,
+          "end": 26.65,
+          "rate": 1.5,
+          "transition": { "type": "push-left", "duration": 0.4 },
+          "shows": "Domus no centro, com Relloo, Magneto, Tuner e Knowly ligados por pontes"
         }
       ]
     },
@@ -96,7 +104,7 @@
           "kind": "product",
           "film": "kb-ask-with-proof-ludic-logos-r5-s1",
           "start": 13.6,
-          "end": 17.8,
+          "end": 17.95,
           "rate": 1.75,
           "transition": { "type": "push-up", "duration": 0.3 },
           "shows": "o Knowly responde com cada frase ligada à sua fonte"
@@ -105,29 +113,14 @@
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
           "start": 12.7,
-          "end": 16.5,
+          "end": 17.1,
           "rate": 1.75,
-          "transition": { "type": "push-left", "duration": 0.4 },
-          "shows": "Knowly e Relloo juntos: a resposta com base na política cai no telefone da Marina"
-        }
-      ]
-    },
-    {
-      "product": "domus",
-      "step": "Os produtos juntos, ligados ao Domus",
-      "segments": [
-        {
-          "kind": "relation",
-          "film": "welabs-chain-horizon-define-logos-r6-s1",
-          "start": 22.9,
-          "end": 26.2,
-          "rate": 1.5,
           "transition": {
             "type": "push-left",
             "duration": 0.4,
             "to": "first cut (cycle loop)"
           },
-          "shows": "Domus no centro, com Relloo, Magneto, Tuner e Knowly ligados por pontes"
+          "shows": "Knowly e Relloo juntos: a resposta com base na política cai no telefone da Marina"
         }
       ]
     }

@@ -56,7 +56,6 @@ describe("slides of the home", () => {
       "domus",
       "magneto",
       "knowly",
-      "domus",
     ]);
     for (const slide of MONTAGE_SLIDES) {
       expect(slide.segments.length).toBeGreaterThan(0);
@@ -75,7 +74,11 @@ describe("slides of the home", () => {
     );
     cuts.forEach((cut, i) => {
       const screen = (cut.range[1] - cut.range[0]) / (cut.rate ?? 1);
-      expect(screen).toBeGreaterThanOrEqual(1.8);
+      // The caption is still from the end of the push in to the start of the push out: at least 1.8 s
+      const pushIn = cuts[(i + cuts.length - 1) % cuts.length].transition;
+      expect(
+        screen - (pushIn?.duration ?? 0) - (cut.transition?.duration ?? 0),
+      ).toBeGreaterThanOrEqual(1.8 - 0.03);
       // 0.4 s between products, 0.3 s inside the same product
       const next = cuts[(i + 1) % cuts.length];
       expect(cut.transition?.duration).toBe(next.si === cut.si ? 0.3 : 0.4);
