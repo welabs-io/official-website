@@ -4,7 +4,12 @@
 import { Chain } from "./Chain";
 import { Hub } from "./Hub";
 import { PageFrame } from "./PageFrame";
-import { DomusSection, RailsSection, RellooSection } from "./Sections";
+import {
+  AboutSection,
+  DomusSection,
+  RailsSection,
+  RellooSection,
+} from "./Sections";
 
 export function OnePage() {
   return (
@@ -14,6 +19,7 @@ export function OnePage() {
       <RellooSection />
       <RailsSection />
       <Chain />
+      <AboutSection />
     </PageFrame>
   );
 }
