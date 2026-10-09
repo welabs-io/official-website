@@ -63,6 +63,8 @@ assert(motionProducts.every((p) => p.publisher === "Welabs"));
 
 let html = 0,
   redirects = 0;
+// Every page served in the loops below, keyed by address, for the brand 1.5.0 checks at the end.
+const pages = new Map();
 const get = async (url, status = 200) => {
   const r = await fetch(base + url);
   assert.equal(r.status, status, url);
@@ -150,6 +152,7 @@ for (const p of products) {
     assert.equal(titleOf(text), p.title(locale), slug + q + " title");
     assertNoStage(text, slug + q);
     assertCategoryMetadata(text, slug + q);
+    pages.set("/produtos/" + slug + q, text);
     html++;
   }
 }
@@ -162,6 +165,7 @@ for (const url of ["/", "/sobre", "/solucoes", "/produtos"])
   for (const q of ["?lang=pt", "?lang=en"]) {
     const text = await (await get(url + q)).text();
     assertNoStage(text, url + q);
+    pages.set(url + q, text);
     // The home and the collection render the hub: its cards follow the weight order
     if (url === "/" || url === "/produtos")
       assert.deepEqual(renderedOrder(text), WEIGHT_ORDER, url + q + " order");
@@ -185,11 +189,98 @@ for (const [from, to] of [
 ])
   await expectRedirect(from, to);
 
+// MARCA WELABS 1.5.0: SELO E PRIMEIRA MENÇÃO
+// The product is a sub-brand of Welabs and never shows without it (welabs-io/brand, PR #15).
+// 1) A product logo without the "by welabs" seal is allowed only when its x-height on screen is under 14 px.
+//    The x-height is the display height times 150 / viewBox height of the SVG (X = 150 units, construction.json);
+//    the display height is read from the CSS rule of the image class, so a larger logo without the seal fails.
+// 2) The first mention of a product in the visible text of each page is "<Product> by Welabs"; "Welabs <Product>" never.
+const UNSEALED_MAX_X_HEIGHT = 14;
+const PRODUCT_NAMES = ["Domus", "Relloo", "Magneto", "Tuner", "Knowly"];
+const cssSources = fs
+  .readdirSync("app")
+  .filter((f) => f.endsWith(".css"))
+  .map((f) => fs.readFileSync("app/" + f, "utf8"));
+// Largest `height: Npx` declared for a class in the global CSS files (media-query overrides included).
+const declaredHeights = (cls) => {
+  const heights = [];
+  for (const css of cssSources)
+    for (const [, body] of css.matchAll(
+      new RegExp(`(?:^|[\\s,}])\\.${cls}\\s*\\{([^}]*)\\}`, "g"),
+    ))
+      for (const [, px] of body.matchAll(/(?:^|[;\s])height:\s*([\d.]+)px/g))
+        heights.push(Number(px));
+  return heights;
+};
+const viewBoxHeight = (file) =>
+  Number(
+    fs
+      .readFileSync("public" + file, "utf8")
+      .match(/viewBox="[-\d.]+ [-\d.]+ [-\d.]+ ([\d.]+)"/)[1],
+  );
+let unsealed = 0;
+const problems = [];
+for (const [url, text] of pages) {
+  for (const [tag] of text.matchAll(/<img\b[^>]*>/g)) {
+    const src = tag.match(/\ssrc="([^"]*)"/)?.[1] ?? "";
+    const m = src.match(
+      /^\/brands\/welabs\/products\/[a-z]+-(?:dark|light)(-endorsed)?\.svg$/,
+    );
+    if (!m || m[1]) continue;
+    const cls = tag.match(/\sclass="([^"]*)"/)?.[1].split(/\s+/) ?? [];
+    const heights = [
+      ...cls.flatMap(declaredHeights),
+      ...[Number(tag.match(/\sheight="([\d.]+)"/)?.[1])].filter(Boolean),
+    ];
+    if (heights.length === 0) {
+      problems.push(
+        `${url}: product logo ${src} without seal has no measurable height (use the -endorsed file)`,
+      );
+      continue;
+    }
+    const xHeight = (Math.max(...heights) * 150) / viewBoxHeight(src);
+    if (xHeight >= UNSEALED_MAX_X_HEIGHT)
+      problems.push(
+        `${url}: product logo ${src} without seal has x-height ${xHeight.toFixed(1)} px (14 px or more needs the -endorsed file)`,
+      );
+    unsealed++;
+  }
+  // Text read on screen: comments and sr-only elements (headings that only name the card) do not count.
+  const visible = visibleText(
+    text
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .replace(
+        /<(\w+)\b[^>]*\bclass="[^"]*\bsr-only\b[^"]*"[^>]*>[\s\S]*?<\/\1>/g,
+        "",
+      ),
+  )
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ");
+  const wrong = visible.match(/\bWelabs (Domus|Relloo|Magneto|Tuner|Knowly)\b/);
+  if (wrong)
+    problems.push(`${url}: "${wrong[0]}" (the form is "Product by Welabs")`);
+  for (const name of PRODUCT_NAMES) {
+    const at = visible.search(new RegExp(`\\b${name}\\b`, "i"));
+    if (at < 0) continue;
+    if (
+      !visible
+        .slice(at)
+        .toLowerCase()
+        .startsWith(`${name.toLowerCase()} by welabs`)
+    )
+      problems.push(
+        `${url}: first mention of ${name} is not "${name} by Welabs": "${visible.slice(Math.max(0, at - 30), at + 50)}"`,
+      );
+  }
+}
+assert.deepEqual(problems, [], "brand 1.5.0 (seal and first mention)");
+
 console.log(
   JSON.stringify({
     products: products.length,
     htmlRoutes: html,
     redirects,
+    unsealedProductLogos: unsealed,
     status: "PASS",
   }),
 );

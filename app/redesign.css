@@ -661,3 +661,10 @@ html[data-scrolled] .header {
     animation: none;
   }
 }
+
+/* SELO EM TEXTO "BY WELABS" */
+/* Endorsement after a product name in running text and labels (brand 1.5.0): lighter, never louder than the name */
+.by-welabs {
+  font-weight: 400;
+  opacity: 0.72;
+}

@@ -70,8 +70,8 @@ export const PRODUCT_HIGHLIGHTS: Record<string, HighlightGroup[]> = {
             "Every product's flows are defined here.",
           ],
           text: [
-            "O Domus escreve a regra; o Magneto, o workflow, a conduz e devolve o recibo.",
-            "Domus writes the rule; Magneto, the workflow, carries it through and hands back the receipt.",
+            "O Domus escreve a regra; o Magneto by Welabs, o workflow, a conduz e devolve o recibo.",
+            "Domus writes the rule; Magneto by Welabs, the workflow, carries it through and hands back the receipt.",
           ],
         },
       ],

@@ -2,6 +2,7 @@
 import { useT } from "./LangProvider";
 import { useSiteBrand } from "./useSiteBrand";
 import Link from "./LangLink";
+import { ByWelabs } from "./ByWelabs";
 import { publicSlug } from "@/lib/public-slugs";
 import { isHiddenProduct } from "@/lib/catalog";
 import { imagineHref } from "@/lib/sister-site";
@@ -70,9 +71,12 @@ export function Footer() {
                 : "Desenvolvemos produtos que conectam gestão, relacionamento, automação, canais e conhecimento."}
             </p>
             <p className="footer-motto">
+              {/* Brand 1.5.0: the motto can be the first mention of Domus on a page */}
+              Domus
+              <ByWelabs />{" "}
               {lang === "en"
-                ? "Domus defines. The others bring it to life."
-                : "O Domus define. Os outros dão vida."}
+                ? "defines. The others bring it to life."
+                : "define. Os outros dão vida."}
             </p>
           </div>
           <div className="footer-nav-col footer-products">
