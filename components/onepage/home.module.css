@@ -5,7 +5,7 @@
 .hero {
   display: flex;
   align-items: center;
-  min-height: min(100vh, 960px);
+  min-height: 100vh;
   padding-top: calc(64px + clamp(32px, 6vh, 72px));
 }
 .heroGrid {
@@ -64,7 +64,12 @@
 /* SEÇÃO 2 E 5: FAIXAS DE LOGOS */
 /* Thin bands, one carousel each, black and white. */
 .strip {
-  padding: clamp(36px, 6vh, 64px) 0;
+  display: flex;
+  align-items: center;
+  min-height: 55vh;
+}
+.strip > * {
+  width: min(1200px, 100% - 48px);
 }
 
 .srOnly {
@@ -81,7 +86,7 @@
 .products {
   display: flex;
   align-items: center;
-  min-height: min(92vh, 860px);
+  min-height: 105vh;
 }
 .productsGrid {
   display: grid;
@@ -193,7 +198,7 @@
   align-items: center;
   justify-content: center;
   gap: clamp(56px, 12vh, 120px);
-  min-height: min(80vh, 760px);
+  min-height: 100vh;
 }
 .closing > :first-child {
   width: min(1200px, 100% - 48px);
@@ -210,7 +215,7 @@
 .chain {
   display: flex;
   align-items: center;
-  min-height: min(92vh, 860px);
+  min-height: 105vh;
 }
 .chainGrid {
   display: grid;

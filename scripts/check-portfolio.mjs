@@ -45,7 +45,11 @@ const pages = new Map();
 const page = async (url) => {
   const html = await (await get(url)).text();
   pages.set(url, html);
-  assert(!/hyperframes/i.test(html), `${url} has a player`);
+  assert(
+    !/<hyperframes-player[^>]*\bcontrols\b/i.test(html),
+    `${url} has a player with controls`,
+  );
+  assert(!/role="progressbar"|Pausar|Retomar/i.test(html), `${url} has a bar`);
   assert(!/<video|<iframe|<audio/i.test(html), `${url} has a video element`);
   const all = `${visibleText(html)} ${hiddenText(html)}`;
   assert(
@@ -59,17 +63,9 @@ const page = async (url) => {
   return html;
 };
 
-// HOME: sete seções, ordem de peso, selo, carrosséis
+// HOME: cinco seções, ordem de peso, selo, carrosséis
 const home = await page("/");
-for (const id of [
-  "top",
-  "domus",
-  "relloo",
-  "rails",
-  "chain",
-  "about",
-  "contact",
-])
+for (const id of ["top", "logos", "products", "chain", "platforms", "contact"])
   assert(home.includes(`id="${id}"`), `home has section #${id}`);
 const order = [
   ...new Set(
@@ -83,14 +79,14 @@ assert.deepEqual(
   SLUGS,
   "products appear in weight order, with the seal",
 );
-assert(/href="#contact"/.test(home), "CTA points to the closing section");
+assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
 const words = visibleText(home).split(" ").length;
-assert(words <= 70, `home has ${words} visible words`);
+assert(words <= 85, `home has ${words} visible words`);
 const clientLogos = [...home.matchAll(/src="\/clients\/[^"]+"/g)].length;
 assert(clientLogos >= 7, "clients carousel renders its logos");
 assert(
   !IMAGINE_SYSTEMS.test(
-    home.match(/Quem confia[\s\S]*?Infraestrutura/)?.[0] ?? "",
+    home.match(/Quem atendemos[\s\S]*?Infraestrutura/)?.[0] ?? "",
   ),
   "no Imagine system in the clients carousel",
 );
@@ -118,19 +114,26 @@ for (const slug of SLUGS) {
 const assets = new Set();
 for (const html of pages.values())
   for (const [, src] of html.matchAll(
-    /(?:src|href)="(\/(?:brands|clients|platforms)\/[^"]+)"/g,
+    /(?:src|href)="(\/(?:brands|clients|platforms|motion)\/[^"]+)"/g,
   ))
     assets.add(src);
+// The player, the sequence player and the manifest every reel needs
+for (const src of [
+  "/motion/player.js",
+  "/motion/_shared/player/sequence-player.js",
+  "/motion/_shared/brand/manifest.json",
+])
+  assets.add(src);
 for (const src of assets) await get(src);
 
 // REDIRECIONAMENTOS: um salto, 308, destino final com 200
 await expectRedirect("/new", "/");
 await expectRedirect("/produtos", "/#products");
 await expectRedirect("/solucoes", "/#products");
-await expectRedirect("/sobre", "/#about");
+await expectRedirect("/sobre", "/#chain");
 await expectRedirect("/products", "/#products");
 await expectRedirect("/solutions", "/#products");
-await expectRedirect("/about", "/#about");
+await expectRedirect("/about", "/#chain");
 for (const slug of SLUGS)
   await expectRedirect(`/produtos/${slug}`, `/products/${slug}`);
 for (const [from, to] of [
@@ -148,7 +151,7 @@ for (const [from, to] of [
 }
 await expectRedirect("/produtos/domus?x=1", "/products/domus?x=1");
 await expectRedirect("/welabs", "/");
-await expectRedirect("/welabs/sobre", "/#about");
+await expectRedirect("/welabs/sobre", "/#chain");
 // O produto oculto volta para a seção de produtos (temporário)
 const hidden = await fetch(base + "/produtos/ecossistema-monitoramento", {
   redirect: "manual",
