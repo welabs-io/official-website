@@ -1,0 +1,43 @@
+/* MOVIMENTO DO TUNER */
+/* Four waves of different amplitude and phase drift, then tune into a single amber wave that keeps flowing.
+   Base style = tuned (all four on top of each other). */
+.wave {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.28;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transform-origin: 240px 180px;
+}
+.tuned {
+  stroke: var(--a);
+  stroke-opacity: 1;
+  stroke-width: 5;
+}
+[data-live="true"] .wave {
+  animation: tune 8s cubic-bezier(0.5, 0, 0.2, 1) infinite backwards;
+}
+@keyframes tune {
+  0% {
+    transform: translateX(var(--tx)) scaleY(var(--sy));
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  22% {
+    transform: translateX(calc(var(--tx) * -0.6)) scaleY(var(--sy));
+  }
+  55% {
+    transform: translateX(0) scaleY(1);
+  }
+  90% {
+    transform: translateX(-80px) scaleY(1);
+    opacity: 1;
+  }
+  98%,
+  100% {
+    transform: translateX(-80px) scaleY(1);
+    opacity: 0;
+  }
+}

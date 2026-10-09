@@ -266,3 +266,23 @@
     transform: translateY(144px);
   }
 }
+
+/* TRILHOS */
+/* The three rail products share one amber bar on the left edge, so they read as one line crossing the page. */
+.rails .wrap {
+  display: grid;
+  gap: clamp(40px, 8vh, 96px);
+}
+.railBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: max(10px, calc((100% - 1200px) / 2 - 28px));
+  width: 4px;
+  background: var(--a);
+}
+@media (max-width: 820px) {
+  .railBar {
+    left: 10px;
+  }
+}

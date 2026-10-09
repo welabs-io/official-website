@@ -3,7 +3,10 @@
 // the amber connector that reaches into the next section.
 import { Connector } from "./Connector";
 import { DomusMotion } from "./DomusMotion";
+import { KnowlyMotion } from "./KnowlyMotion";
+import { MagnetoMotion } from "./MagnetoMotion";
 import { MotionStage } from "./MotionStage";
+import { TunerMotion } from "./TunerMotion";
 import { ProductBlock } from "./ProductBlock";
 import { RellooMotion } from "./RellooMotion";
 import shell from "./shell.module.css";
@@ -34,6 +37,34 @@ export function RellooSection() {
             <RellooMotion />
           </MotionStage>
         </ProductBlock>
+      </div>
+      <Connector />
+    </section>
+  );
+}
+
+// SEÇÃO 4: TRILHOS (MAGNETO, TUNER, KNOWLY)
+const RAILS = [
+  { slug: "magneto", Motion: MagnetoMotion, flip: false },
+  { slug: "tuner", Motion: TunerMotion, flip: true },
+  { slug: "knowly", Motion: KnowlyMotion, flip: false },
+] as const;
+
+export function RailsSection() {
+  return (
+    <section
+      id="rails"
+      className={`${shell.band} ${shell.light} ${shell.rails}`}
+    >
+      <span className={shell.railBar} aria-hidden="true" />
+      <div className={shell.wrap}>
+        {RAILS.map(({ slug, Motion, flip }) => (
+          <ProductBlock key={slug} slug={slug} tone="light" flip={flip}>
+            <MotionStage id={slug} className={shell.stage}>
+              <Motion />
+            </MotionStage>
+          </ProductBlock>
+        ))}
       </div>
       <Connector />
     </section>

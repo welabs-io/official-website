@@ -1,0 +1,85 @@
+/* MOVIMENTO DO KNOWLY */
+/* A loose network of sources links up, then its nodes travel to the surface of a globe and the globe's lines are drawn.
+   Base style = the globe with its nodes (links hidden). */
+.link {
+  stroke: currentColor;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5;
+  opacity: 0;
+}
+.node {
+  fill: currentColor;
+}
+.hot {
+  fill: var(--a);
+}
+.globe {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.55;
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+[data-live="true"] .link {
+  animation: links 9s ease-in-out infinite backwards;
+}
+[data-live="true"] .node {
+  animation: travel 9s cubic-bezier(0.6, 0, 0.2, 1) infinite backwards;
+}
+[data-live="true"] .globe {
+  animation: draw 9s ease-in-out infinite backwards;
+}
+@keyframes links {
+  0% {
+    opacity: 0;
+  }
+  14%,
+  30% {
+    opacity: 1;
+  }
+  42%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes travel {
+  0% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  30% {
+    transform: translate(var(--dx), var(--dy));
+  }
+  58%,
+  90% {
+    transform: none;
+    opacity: 1;
+  }
+  98%,
+  100% {
+    transform: none;
+    opacity: 0;
+  }
+}
+@keyframes draw {
+  0%,
+  44% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  72%,
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  98%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
