@@ -3,8 +3,8 @@
 // and paused on its first frame; a little before the current one ends (the lead) it is started, so it is running when
 // the ring brings it to the centre, and the two overlap with a crossfade. Players: the current one, the next one
 // (paused, preloaded) and, for about a second, the one that is leaving.
-import { createPlayer, piece, type PlayerElement } from "./player";
-import type { Slide } from "@/lib/motion-slides";
+import { createPlayer, hideLoader, piece, type PlayerElement } from "./player";
+import type { PushTransition, Slide } from "@/lib/motion-slides";
 
 // Duration of the position swap of the ring (keep equal to the CSS transition in ring.module.css)
 export const SWAP_SECONDS = 1;
@@ -23,6 +23,8 @@ export type FlatSegment = {
   rate: number;
   // Real seconds before the end of this segment at which the next one is started
   lead: number;
+  // Push into the next segment (workbench montage); the lead equals its duration
+  transition?: PushTransition;
 };
 
 // SEGMENTOS EM SEQUÊNCIA
@@ -40,11 +42,15 @@ export function flatten(
       range: segment.range,
       rate: segment.rate ?? 1,
       lead: 0,
+      transition: segment.transition,
     })),
   );
   return flat.map((segment, i) => {
     const next = flat[(i + 1) % flat.length];
-    const wanted = next.slide === segment.slide ? blend : swap;
+    // A push transition sets its own lead (the overlap is exactly the push)
+    const wanted =
+      segment.transition?.duration ??
+      (next.slide === segment.slide ? blend : swap);
     const length = (segment.range[1] - segment.range[0]) / segment.rate;
     return { ...segment, lead: Math.min(wanted, length * 0.8) };
   });
@@ -61,6 +67,8 @@ type Entry = {
   el: PlayerElement;
   wrap: HTMLElement;
   ready: boolean;
+  // Parked on its first frame and painted: the only state in which a handoff may bring it in
+  settled: boolean;
   started: boolean;
 };
 
@@ -194,9 +202,18 @@ export class Playback {
     );
     wrap.appendChild(el);
     host.appendChild(wrap);
-    const entry: Entry = { index, el, wrap, ready: false, started: autoplay };
+    hideLoader(el);
+    const entry: Entry = {
+      index,
+      el,
+      wrap,
+      ready: false,
+      settled: false,
+      started: autoplay,
+    };
     this.entries.set(index, entry);
     el.addEventListener("ready", () => {
+      hideLoader(el);
       entry.ready = true;
       // The playback-rate attribute set before the composition is ready is not applied by the player: set it again now
       // (the attribute change reaches the runtime, which scales the timeline)
@@ -205,7 +222,13 @@ export class Playback {
         el.seek(segment.range[0]);
         el.pause();
       }
-      this.later(() => this.reveal(entry), autoplay ? 0 : SETTLE_MS);
+      this.later(
+        () => {
+          entry.settled = true;
+          this.reveal(entry);
+        },
+        autoplay ? 0 : SETTLE_MS,
+      );
     });
   }
 
@@ -228,12 +251,33 @@ export class Playback {
     if (t < segment.range[1] - segment.lead * segment.rate) return;
     if (this.flat.length === 1) return;
     const next = this.entries.get(this.after(this.cursor));
-    if (!next || !next.ready) {
+    if (!next || !next.settled) {
       // Never let the range end run into a loop: hold the last frame until the next one is ready
       if (t >= segment.range[1] - 0.2 * segment.rate) current.el.pause();
       return;
     }
     this.handoff(current, next, (segment.range[1] - t) / segment.rate);
+  }
+
+  // EMPURRÃO ENTRE CORTES
+  // The incoming layer slides in from the right (push-left) or from below (push-up) while the leaving one slides out
+  // the opposite way, so two captions never sit on the same spot. Both layers use the same ease and duration.
+  private push(leaving: HTMLElement, entering: HTMLElement, t: PushTransition) {
+    const from =
+      t.type === "push-left" ? "translate(100%,0)" : "translate(0,100%)";
+    const to =
+      t.type === "push-left" ? "translate(-100%,0)" : "translate(0,-100%)";
+    const ease = "cubic-bezier(0.455,0.03,0.515,0.955)";
+    entering.style.transition = "none";
+    entering.style.transform = from;
+    entering.style.opacity = "1";
+    // Commit the start position before the transition is armed
+    entering.getBoundingClientRect();
+    const moving = `transform ${t.duration}s ${ease}`;
+    entering.style.transition = moving;
+    leaving.style.transition = moving;
+    entering.style.transform = "translate(0,0)";
+    leaving.style.transform = to;
   }
 
   private handoff(current: Entry, next: Entry, remaining: number) {
@@ -242,9 +286,13 @@ export class Playback {
     this.cursor = next.index;
     next.started = true;
     next.el.play();
-    // The fade-in lasts as long as the lead, so the overlap and the crossfade end together
-    next.wrap.style.transitionDuration = `${Math.round(from.lead * 1000)}ms`;
-    next.wrap.style.opacity = "1";
+    if (this.options.single && from.transition)
+      this.push(current.wrap, next.wrap, from.transition);
+    else {
+      // The fade-in lasts as long as the lead, so the overlap and the crossfade end together
+      next.wrap.style.transitionDuration = `${Math.round(from.lead * 1000)}ms`;
+      next.wrap.style.opacity = "1";
+    }
     if (to.slide !== from.slide) this.options.onSlide(to.slide);
     this.options.onSwap?.({
       from: from.slide,

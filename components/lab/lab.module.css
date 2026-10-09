@@ -14,7 +14,7 @@
 }
 .frame {
   position: relative;
-  width: min(100vw, calc((100vh - 48px) * 16 / 9));
+  width: min(100vw, calc(100vh * 16 / 9));
   aspect-ratio: 16 / 9;
   background: #10141c;
   overflow: hidden;
@@ -22,9 +22,4 @@
 .host {
   position: absolute;
   inset: 0;
-}
-.caption {
-  margin: 0;
-  padding: 0 16px;
-  text-align: center;
 }

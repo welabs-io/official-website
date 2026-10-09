@@ -1,17 +1,14 @@
 "use client";
 // BANCADA: SEQUÊNCIA DA CADEIA (bloco a)
-// Only the base of the chain montage, full screen: the clips of lib/home-montage.json one after the other at the
-// montage speed, each one already preloaded and running when the previous one closes (crossfade, no gap, no opening).
-// No ring yet. The small caption shows the step and the clip; `window` receives a `ring:swap` event at each handoff.
+// Only the base of the chain montage, full screen: the cuts of lib/home-montage.json one after the other, each at its
+// own rate, product cuts interleaved with relation cuts. The next cut is mounted, painted and parked on its first
+// frame before it enters, and enters by a push (0.4 s between products, 0.3 s inside one); no crossfade, no opening,
+// no loader and no debug footer. No ring yet. `window` receives a `ring:swap` event at each handoff.
 import { useEffect, useRef, useState } from "react";
 import { ensurePlayer } from "@/components/onepage/player";
 import { Playback, flatten } from "@/components/onepage/ring-playback";
-import montage from "@/lib/home-montage.json";
-import { MONTAGE_RATE, MONTAGE_SLIDES } from "@/lib/motion-slides";
+import { MONTAGE_SLIDES } from "@/lib/motion-slides";
 import styles from "./lab.module.css";
-
-// Crossfade between two clips, in seconds
-const CROSSFADE = 0.15;
 
 export function ChainSequence() {
   const host = useRef<HTMLDivElement>(null);
@@ -24,7 +21,7 @@ export function ChainSequence() {
     ensurePlayer().then(() => {
       if (dead) return;
       playback = new Playback({
-        flat: flatten(MONTAGE_SLIDES, CROSSFADE, CROSSFADE),
+        flat: flatten(MONTAGE_SLIDES),
         layers: () => MONTAGE_SLIDES.map(() => host.current),
         start: 0,
         ahead: 2,
@@ -77,19 +74,11 @@ export function ChainSequence() {
     };
   }, []);
 
-  const current = montage.steps[step];
   return (
-    <div className={styles.screen}>
+    <div className={styles.screen} data-step={step + 1}>
       <div className={styles.frame}>
         <div ref={host} className={styles.host} />
       </div>
-      <p className={styles.caption}>
-        {step + 1}/{montage.steps.length} · {current.step} ·{" "}
-        {current.segments
-          .map((c) => `${c.film.split("-ludic")[0]} ${c.start}-${c.end} s`)
-          .join(" + ")}{" "}
-        · {MONTAGE_RATE}x
-      </p>
     </div>
   );
 }

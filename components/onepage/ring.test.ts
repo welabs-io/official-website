@@ -5,7 +5,6 @@ import { describe, expect, it } from "vitest";
 import pieces from "@/lib/motion-pieces.json";
 import montage from "@/lib/home-montage.json";
 import {
-  MONTAGE_RATE,
   MONTAGE_SLIDES,
   PRODUCT_SLIDES,
   productReel,
@@ -50,8 +49,7 @@ describe("flat segments", () => {
 });
 
 describe("slides of the home", () => {
-  it("the chain is a montage of clips of the product films, at 2.5x, no opening", () => {
-    expect(MONTAGE_RATE).toBe(2.5);
+  it("the chain is a montage of product cuts and relation cuts, each at its own rate, no opening", () => {
     expect(MONTAGE_SLIDES.map((s) => s.slug)).toEqual([
       "tuner",
       "relloo",
@@ -63,22 +61,48 @@ describe("slides of the home", () => {
     for (const slide of MONTAGE_SLIDES) {
       expect(slide.segments.length).toBeGreaterThan(0);
       for (const { id, rate } of slide.segments) {
-        expect(id).not.toMatch(/intro|welabs-chain/);
-        expect(rate).toBe(2.5);
+        expect(id).not.toMatch(/intro/);
+        expect(rate).toBeGreaterThanOrEqual(1.25);
+        expect(rate).toBeLessThanOrEqual(2.5);
       }
     }
     expect(montage.steps).toHaveLength(MONTAGE_SLIDES.length);
   });
-  it("the loop lasts 10 to 20 s on screen and no clip is shorter than 0.5 s", () => {
+  it("the loop lasts 16 to 20 s, every cut holds the reading time and the pushes follow the product changes", () => {
     let cycle = 0;
-    for (const slide of MONTAGE_SLIDES)
-      for (const { range, rate } of slide.segments) {
-        const screen = (range[1] - range[0]) / (rate ?? 1);
-        expect(screen).toBeGreaterThanOrEqual(0.5);
-        cycle += screen;
-      }
-    expect(cycle).toBeGreaterThanOrEqual(10);
+    const cuts = MONTAGE_SLIDES.flatMap((slide, si) =>
+      slide.segments.map((segment) => ({ ...segment, si })),
+    );
+    cuts.forEach((cut, i) => {
+      const screen = (cut.range[1] - cut.range[0]) / (cut.rate ?? 1);
+      expect(screen).toBeGreaterThanOrEqual(1.8);
+      // 0.4 s between products, 0.3 s inside the same product
+      const next = cuts[(i + 1) % cuts.length];
+      expect(cut.transition?.duration).toBe(next.si === cut.si ? 0.3 : 0.4);
+      expect(cut.transition?.type).toBe(
+        next.si === cut.si ? "push-up" : "push-left",
+      );
+      cycle += screen - (cut.transition?.duration ?? 0);
+    });
+    expect(cycle).toBeGreaterThanOrEqual(16);
     expect(cycle).toBeLessThanOrEqual(20);
+  });
+  it("product cuts and relation cuts alternate and the Domus house is never shown empty", () => {
+    const kinds = montage.steps.flatMap((s) => s.segments.map((c) => c.kind));
+    expect(kinds.filter((k) => k === "relation").length).toBeGreaterThanOrEqual(
+      4,
+    );
+    for (let i = 1; i < kinds.length; i++)
+      if (kinds[i] === "product") expect(kinds[i - 1]).toBe("relation");
+    // hub-defines-runs draws the house as an outline for its whole length: no cut may use it
+    for (const slide of MONTAGE_SLIDES)
+      for (const { id } of slide.segments)
+        expect(id).not.toMatch(/hub-defines-runs/);
+  });
+  it("the lead of a cut is the duration of its push", () => {
+    const flat = flatten(MONTAGE_SLIDES);
+    for (const segment of flat)
+      expect(segment.lead).toBe(segment.transition?.duration);
   });
   it("the lead never exceeds 80% of the real time of a clip", () => {
     const flat = flatten(MONTAGE_SLIDES, montage.swap);
@@ -103,6 +127,7 @@ describe("slides of the home", () => {
   });
   it("no range goes past the duration of its piece", () => {
     const durations = new Map<string, number>();
+    for (const film of pieces.chain) durations.set(film.id, film.duration);
     for (const product of Object.values(pieces.products)) {
       durations.set(product.intro.id, product.intro.duration);
       for (const film of product.films) durations.set(film.id, film.duration);

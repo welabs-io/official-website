@@ -40,6 +40,8 @@ const add = (piece, cover) => list.push({ ...piece, cover });
 // skips the empty first frames): that is what a preloaded neighbour shows, so the cover and the player match.
 const FILM_START = 1.2;
 const filmCover = (film) => (film.clip?.[0] ?? FILM_START) + 0.5;
+// Chain films (the relation clips of the montage): copied whole, no cover of their own
+for (const film of pieces.chain ?? []) list.push({ ...film, cover: null });
 for (const product of Object.values(pieces.products)) {
   add(product.intro, product.intro.duration - 0.04);
   for (const film of product.films) add(film, filmCover(film));
@@ -53,11 +55,13 @@ const montage = JSON.parse(
 );
 const listed = new Set(list.map((piece) => piece.id));
 const covers = [
-  ...list.map((piece) => ({
-    id: piece.id,
-    name: piece.id,
-    cover: piece.cover,
-  })),
+  ...list
+    .filter((piece) => piece.cover !== null)
+    .map((piece) => ({
+      id: piece.id,
+      name: piece.id,
+      cover: piece.cover,
+    })),
   ...montage.steps.map((step, i) => {
     for (const segment of step.segments)
       if (!listed.has(segment.film))

@@ -1,4 +1,10 @@
 {
+  "chain": [
+    { "id": "welabs-chain-journey-define-logos-r6-s1", "duration": 44 },
+    { "id": "welabs-chain-overview-define-logos-r6-s1", "duration": 34 },
+    { "id": "welabs-chain-plug-define-logos-r6-s1", "duration": 36 },
+    { "id": "welabs-chain-horizon-define-logos-r6-s1", "duration": 36 }
+  ],
   "products": {
     "domus": {
       "intro": { "id": "domus-intro-s2-r2", "duration": 5.4, "tail": [2.8, 5] },

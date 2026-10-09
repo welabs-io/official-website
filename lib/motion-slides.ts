@@ -13,6 +13,15 @@ export type Segment = {
   range: readonly [number, number];
   // Playback speed (1 when absent); the range is in piece time, so it lasts (end - start) / rate on screen
   rate?: number;
+  // How the next segment enters when this one hands off (the workbench montage): a push of `duration` seconds. When
+  // absent the handoff is the crossfade of the ring.
+  transition?: PushTransition;
+};
+
+// Push transition: the incoming clip slides over the leaving one, both move together (no overlap of captions)
+export type PushTransition = {
+  type: "push-left" | "push-up";
+  duration: number;
 };
 
 export type Slide = {
@@ -39,21 +48,22 @@ const filmSegment = (film: Film): Segment => ({
 });
 
 // MONTAGEM DA CADEIA
-// The top of the home: clips of the individual product films, played at `rate` times the normal speed, in the order
-// that tells how it all works. The list lives in lib/home-montage.json (per step: product and clips with film, start,
-// end) so a clip is adjusted there; lib/film-beats.json holds the action and hold map the cuts follow. No opening, no Welabs film.
-export const MONTAGE_RATE = montage.rate;
+// The top of the home: cuts of the individual product films (kind "product") interleaved with cuts of the chain films
+// (kind "relation", the products together with their logos), each at its own `rate` (up to 2x where there is little to
+// read, 1.25x to 1.75x where there is text), in the order that tells how it all works. The list lives in
+// lib/home-montage.json (per step: product and cuts with film, start, end, rate, transition). No opening.
 // Duration of the position swap of the montage ring, in seconds
 export const MONTAGE_SWAP = montage.swap;
 export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
   key: `montage-${i + 1}`,
   label: `Passo ${i + 1}`,
   slug: step.product as ProductSlug,
-  // A step has one clip per action of the film; clips of a step play back to back (the pauses between them are skipped)
+  // A step is a run of cuts of the same product, played back to back
   segments: step.segments.map((segment) => ({
     id: segment.film,
     range: [segment.start, segment.end] as const,
-    rate: montage.rate,
+    rate: segment.rate,
+    transition: segment.transition as PushTransition,
   })),
   poster: poster(`montage-${i + 1}`),
 }));

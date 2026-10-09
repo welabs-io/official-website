@@ -56,6 +56,18 @@ export function ensurePlayer(): Promise<void> {
   return load;
 }
 
+// ESCONDER O CARREGAMENTO DO PLAYER
+// The pinned player draws a "Loading assets" panel inside its shadow root while it prepares; the site never shows it.
+// A style rule in the shadow root hides it (the layer is also kept transparent until the first frame is ready).
+export function hideLoader(el: HTMLElement) {
+  const root = el.shadowRoot;
+  if (!root || root.querySelector("style[data-site-loader]")) return;
+  const style = document.createElement("style");
+  style.dataset.siteLoader = "";
+  style.textContent = ".hfp-shader-loader{display:none!important}";
+  root.appendChild(style);
+}
+
 export function createPlayer(
   src: string,
   clip?: readonly [number, number] | null,
