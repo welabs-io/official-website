@@ -2,6 +2,7 @@
 // Five sections, one idea per screen, graphite and cream bands alternating. The sections are added one by one; see
 // PageFrame for the header and the footer.
 import { Carousel } from "./Carousel";
+import { Chain } from "./Chain";
 import { Hero } from "./Hero";
 import { PageFrame } from "./PageFrame";
 import { Products } from "./Products";
@@ -28,6 +29,7 @@ export function OnePage() {
         </div>
       </section>
       <Products />
+      <Chain />
     </PageFrame>
   );
 }
