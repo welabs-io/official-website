@@ -17,7 +17,7 @@ const PUSH_PRE = 0.12;
 // Reveal of a preloaded player waits for the seek to its first frame to settle
 const SETTLE_MS = 140;
 // A held segment freezes this many real seconds before its range end, so a slow tick can never run into the loop
-const HOLD_EDGE = 0.1;
+export const HOLD_EDGE = 0.1;
 
 export type FlatSegment = {
   slide: number;

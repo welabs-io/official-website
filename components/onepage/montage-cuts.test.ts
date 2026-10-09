@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import beats from "@/lib/film-beats.json";
 import montage from "@/lib/home-montage.json";
 import { MONTAGE_SLIDES } from "@/lib/motion-slides";
-import { flatten } from "./ring-playback";
+import { HOLD_EDGE, flatten } from "./ring-playback";
 
 const SLACK = 0.1;
 const EPS = 1e-6;
@@ -83,18 +83,19 @@ describe("montage cuts follow the beat map", () => {
     }
   });
 
-  it("cuts whose action was still settling keep their extended end", () => {
-    const end = (film: string, start: number) =>
-      montage.steps
-        .flatMap((s) => s.segments)
-        .find((c) => c.film === film && c.start === start)?.end ?? 0;
-    // "Atendida por Bruno" is fully in at 24.3; the recibo de volta is in at 30.5
-    expect(
-      end("crm-omnichannel-inbox-ludic2-logos-r4-s1", 19.75),
-    ).toBeGreaterThanOrEqual(24.4);
-    expect(
-      end("welabs-chain-journey-define-logos-r6-s1", 25.3),
-    ).toBeGreaterThanOrEqual(30.6);
+  // `settledAt` is the film second at which the action of the cut stopped moving (pixel difference between frames of
+  // the film seeked every 0.1 s, no motion until the next action). The clip freezes HOLD_EDGE real seconds before
+  // its end, so `end` sits that far (in film time) past it, plus a small margin, and never reaches into the next action.
+  it("every cut ends just after its action settled, so the frozen frame is the settled one", () => {
+    for (const cut of montage.steps.flatMap((s) => s.segments)) {
+      expect(cut.settledAt).toBeGreaterThan(cut.start);
+      expect(cut.end - cut.settledAt).toBeGreaterThanOrEqual(
+        HOLD_EDGE * cut.rate - EPS,
+      );
+      expect(cut.end - cut.settledAt).toBeLessThanOrEqual(
+        HOLD_EDGE * cut.rate + 0.02,
+      );
+    }
   });
 
   it("every cut names the products it shows, and the map is the one of the operator", () => {

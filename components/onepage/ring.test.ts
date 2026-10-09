@@ -85,7 +85,7 @@ describe("slides of the home", () => {
     }
     expect(montage.steps).toHaveLength(MONTAGE_SLIDES.length);
   });
-  it("the loop lasts 26 to 32 s, every cut holds its last frame for 1 s and the pushes follow the product changes", () => {
+  it("the loop lasts 20 to 26 s, every cut holds its last frame for 1 s and the pushes follow the product changes", () => {
     let cycle = 0;
     const cuts = MONTAGE_SLIDES.flatMap((slide, si) =>
       slide.segments.map((segment) => ({ ...segment, si })),
@@ -102,8 +102,8 @@ describe("slides of the home", () => {
       );
       cycle += screen + (cut.holdAfter ?? 0) - (cut.transition?.duration ?? 0);
     });
-    expect(cycle).toBeGreaterThanOrEqual(26);
-    expect(cycle).toBeLessThanOrEqual(32);
+    expect(cycle).toBeGreaterThanOrEqual(20);
+    expect(cycle).toBeLessThanOrEqual(26);
   });
   it("product cuts and relation cuts alternate and the Domus house is never shown empty", () => {
     const kinds = montage.steps.flatMap((s) => s.segments.map((c) => c.kind));
