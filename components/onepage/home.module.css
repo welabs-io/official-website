@@ -135,6 +135,24 @@
   opacity: 0.85;
 }
 
+/* SEÇÃO 5: PLATAFORMAS E FECHAMENTO */
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(56px, 12vh, 120px);
+  min-height: min(80vh, 760px);
+}
+.closing > :first-child {
+  width: min(1200px, 100% - 48px);
+}
+.contact {
+  display: flex;
+  justify-content: center;
+  scroll-margin-top: 96px;
+}
+
 /* SEÇÃO 4: CADEIA */
 /* The film on the left and the list of the five products on the right; a row lights as the film reaches its product:
    the current one with a 4 px amber block, the ones already shown stay lit, the ones to come are dim. */

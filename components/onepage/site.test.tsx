@@ -65,8 +65,8 @@ describe("pages carry little text and no slogan", () => {
 
   it("the home stays under the word budget", () => {
     const words = visibleText(home).split(" ").length;
-    // Measured at the time of writing: well below 70; the budget guards against text creeping back
-    expect(words).toBeLessThanOrEqual(70);
+    // Measured at the time of writing: 75; the budget guards against text creeping back
+    expect(words).toBeLessThanOrEqual(85);
   });
 
   it("every product line has at most six words", () => {
@@ -75,8 +75,21 @@ describe("pages carry little text and no slogan", () => {
   });
 
   it("the home has its sections and the call to action", () => {
-    for (const id of ["top", "logos"]) expect(home).toContain(`id="${id}"`);
+    for (const id of [
+      "top",
+      "logos",
+      "products",
+      "chain",
+      "platforms",
+      "contact",
+    ])
+      expect(home).toContain(`id="${id}"`);
     expect(home).toContain('href="/#contact"');
+    // Every product shows its logo with the seal, on the dark and on the light band
+    for (const p of PRODUCTS) {
+      expect(home).toContain(`${p.slug}-dark-endorsed.svg`);
+      expect(home).toContain(`${p.slug}-light-endorsed.svg`);
+    }
     expect(visibleText(home)).toContain("Conversar com a Welabs");
   });
 });

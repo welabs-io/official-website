@@ -3,6 +3,7 @@
 // PageFrame for the header and the footer.
 import { Carousel } from "./Carousel";
 import { Chain } from "./Chain";
+import { Closing } from "./Closing";
 import { Hero } from "./Hero";
 import { PageFrame } from "./PageFrame";
 import { Products } from "./Products";
@@ -30,6 +31,7 @@ export function OnePage() {
       </section>
       <Products />
       <Chain />
+      <Closing />
     </PageFrame>
   );
 }
