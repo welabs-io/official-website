@@ -87,6 +87,10 @@ export type SwapInfo = {
   // The next player was ready before the handoff (no wait)
   prepared: boolean;
   at: number;
+  // Segment indexes and real seconds of the swap (the ring rotation in tiles mode)
+  fromIndex: number;
+  toIndex: number;
+  duration: number;
 };
 
 export class Playback {
@@ -109,6 +113,10 @@ export class Playback {
       ahead?: number;
       // Every slide shares one frame (the workbench): a preloaded player stays hidden until its handoff
       single?: boolean;
+      // Circular workbench carousel: `layers()` is indexed by segment (one tile per cut); every mounted player is
+      // visible in its tile, the leaving cut stays frozen as the previous tile, and the swap is the page rotating the
+      // ring on `onSwap` (no push)
+      tiles?: boolean;
     },
   ) {
     this.cursor = options.start;
@@ -146,6 +154,19 @@ export class Playback {
       index = this.after(index);
       this.create(index, false);
     }
+  }
+
+  // Tiles mode: keep the previous cut, the current one and the ones ahead; drop every other player
+  private trim() {
+    const count = this.flat.length;
+    const keep = new Set([this.cursor, (this.cursor + count - 1) % count]);
+    let index = this.cursor;
+    for (let i = 0; i < this.ahead; i++) {
+      index = this.after(index);
+      keep.add(index);
+    }
+    for (const entry of [...this.entries.values()])
+      if (!keep.has(entry.index)) this.drop(entry);
   }
 
   destroy() {
@@ -199,7 +220,8 @@ export class Playback {
   private create(index: number, autoplay: boolean) {
     if (this.entries.has(index)) return;
     const segment = this.flat[index];
-    const host = this.options.layers()[segment.slide];
+    const layers = this.options.layers();
+    const host = this.options.tiles ? layers[index] : layers[segment.slide];
     if (!host) return;
     const wrap = document.createElement("div");
     wrap.style.cssText = `position:absolute;inset:0;opacity:0;transition:opacity ${FADE_MS}ms ease`;
@@ -244,6 +266,7 @@ export class Playback {
   private reveal(entry: Entry) {
     const current = this.flat[this.cursor];
     if (
+      this.options.tiles ||
       entry.index === this.cursor ||
       (!this.options.single && this.flat[entry.index].slide !== current.slide)
     )
@@ -315,7 +338,10 @@ export class Playback {
     next.el.play();
     const pushed = this.options.single ? from.transition : undefined;
     const bring = () => {
-      if (pushed) this.push(current.wrap, next.wrap, pushed);
+      // Tiles: the page rotates the ring from onSwap, nothing to animate here
+      if (this.options.tiles) {
+        /* rotation is driven by the page */
+      } else if (pushed) this.push(current.wrap, next.wrap, pushed);
       else {
         // The fade-in lasts as long as the lead, so the overlap and the crossfade end together
         next.wrap.style.transitionDuration = `${Math.round(from.lead * 1000)}ms`;
@@ -327,10 +353,26 @@ export class Playback {
         to: to.slide,
         prepared: true,
         at: performance.now(),
+        fromIndex: current.index,
+        toIndex: next.index,
+        duration: from.lead,
       });
     };
     if (pushed) this.later(bring, PUSH_PRE * 1000);
     else bring();
+    if (this.options.tiles) {
+      // The leaving cut stays frozen as the previous tile; players outside the new neighbourhood go once the rotation
+      // has finished
+      this.later(
+        () => {
+          current.el.pause();
+          this.trim();
+        },
+        (from.lead + PUSH_PRE) * 1000 + 120,
+      );
+      this.preload();
+      return;
+    }
     // The leaving player keeps running under the new one until its range closes, then fades and goes away
     const stay = Math.max(remaining, 0.1) * 1000;
     this.later(() => {

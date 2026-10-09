@@ -32,6 +32,24 @@ describe("ring positions", () => {
   });
 });
 
+describe("circular carousel of the workbench", () => {
+  it("nine cuts: the previous and the next sit beside the active one, the rest clamp behind", () => {
+    const positions = Array.from({ length: 9 }, (_, i) =>
+      ringPosition(i, 0, 9),
+    );
+    expect(positions).toEqual([0, 1, 2, 3, 4, -4, -3, -2, -1]);
+    // The last cut is the previous one of the first: the loop closes without a seam
+    expect(ringPosition(8, 0, 9)).toBe(-1);
+    expect(ringPosition(0, 8, 9)).toBe(1);
+  });
+  it("the swap duration is the push duration of the leaving cut (0.4 s between products, 0.3 s inside one)", () => {
+    const flat = flatten(MONTAGE_SLIDES);
+    expect(new Set(flat.map((segment) => segment.lead))).toEqual(
+      new Set([0.4, 0.3]),
+    );
+  });
+});
+
 describe("flat segments", () => {
   it("swap lead between slides, blend lead inside a slide, never past 80%", () => {
     const flat = flatten(PRODUCT_SLIDES);

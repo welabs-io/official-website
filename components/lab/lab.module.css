@@ -1,25 +1,92 @@
-/* BANCADA */
-/* Full-screen frame for validating one component alone. */
+/* BANCADA: CARROSSEL CIRCULAR */
+/* Full-screen workbench for the chain carousel. The stage is as tall as the centre tile; --tw is the width of the
+   centre tile in % of the stage. Neighbours are shifted by 56% of the centre width and scaled to 0.6, tucked half behind
+   it (on a phone only an edge of each stays in view); the cuts at the back (position 2 and -2) are invisible. The
+   rotation is one CSS transition whose duration (--swap-time) the page sets per swap: 0.4 s between products, 0.3 s
+   inside one. */
 .screen {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
   place-items: center;
-  align-content: center;
-  gap: 12px;
-  background: #0b0e14;
-  color: #9da3ae;
-  font: 500 13px/1.4 var(--font-sans-face, sans-serif);
-}
-.frame {
-  position: relative;
-  width: min(100vw, calc(100vh * 16 / 9));
-  aspect-ratio: 16 / 9;
-  background: #10141c;
   overflow: hidden;
+  background: #0b0e14;
 }
-.host {
+.stage {
+  --tw: 62;
+  --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  position: relative;
+  width: 100%;
+  aspect-ratio: calc(100 / (var(--tw) * 0.5625));
+}
+.tile {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: calc(var(--tw) * 1%);
+  aspect-ratio: 16 / 9;
+  transform: translateX(-50%);
+  transition:
+    transform var(--swap-time, 0.4s) var(--ease),
+    opacity var(--swap-time, 0.4s) var(--ease);
+  will-change: transform, opacity;
+}
+.tile[data-pos="0"] {
+  z-index: 3;
+}
+.tile[data-pos="1"] {
+  z-index: 2;
+  opacity: 0.5;
+  transform: translateX(calc(-50% + 56%)) scale(0.6);
+}
+.tile[data-pos="-1"] {
+  z-index: 2;
+  opacity: 0.5;
+  transform: translateX(calc(-50% - 56%)) scale(0.6);
+}
+.tile[data-pos="2"],
+.tile[data-pos="-2"] {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+.tile[data-pos="2"] {
+  transform: translateX(calc(-50% + 70%)) scale(0.4);
+}
+.tile[data-pos="-2"] {
+  transform: translateX(calc(-50% - 70%)) scale(0.4);
+}
+.tileFrame {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #10141c;
+  box-shadow:
+    0 24px 56px -24px rgb(0 0 0 / 0.6),
+    0 0 0 1px rgb(250 245 234 / 0.08);
+  isolation: isolate;
+}
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.layers {
+  position: absolute;
+  inset: 0;
+}
+
+@media (max-width: 860px) {
+  .stage {
+    --tw: 84;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    transition: none;
+  }
 }
