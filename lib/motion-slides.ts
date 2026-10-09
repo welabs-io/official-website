@@ -16,6 +16,8 @@ export type Segment = {
   // How the next segment enters when this one hands off (the workbench montage): a push of `duration` seconds. When
   // absent the handoff is the crossfade of the ring.
   transition?: PushTransition;
+  // Seconds the last frame of the range stays still before the next segment starts (workbench montage)
+  holdAfter?: number;
 };
 
 // Push transition: the incoming clip slides over the leaving one, both move together (no overlap of captions)
@@ -64,6 +66,9 @@ export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
     range: [segment.start, segment.end] as const,
     rate: segment.rate,
     transition: segment.transition as PushTransition,
+    // A cut may override the default hold of the montage
+    holdAfter:
+      (segment as { holdAfter?: number }).holdAfter ?? montage.holdAfter,
   })),
   poster: poster(`montage-${i + 1}`),
 }));

@@ -1,7 +1,8 @@
 {
   "swap": 0.4,
+  "holdAfter": 2,
   "cycle": {
-    "note": "cycle = sum of the cut screen times minus the overlap of each transition (the push of the incoming clip starts at T0 and the leaving clip stays until T0 + duration). Each cut keeps its caption still for at least 1.8 s: screen = 1.8 + push in + push out"
+    "note": "cycle = sum of (clip time on screen + holdAfter - transition duration) over the cuts. The clip plays from start to end (end falls after the action settled), its last frame stays still for holdAfter seconds (a cut may override it with its own holdAfter) and only then the next cut is pushed in; the leaving clip stays until the push ends."
   },
   "transitionDefaults": {
     "between": { "type": "push-left", "duration": 0.4, "ease": "power2.inOut" },
@@ -41,7 +42,7 @@
           "kind": "product",
           "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
           "start": 19.75,
-          "end": 24.15,
+          "end": 24.4,
           "rate": 1.75,
           "transition": { "type": "push-left", "duration": 0.4 },
           "shows": "o Relloo leva a conversa para quem atende"
@@ -80,7 +81,7 @@
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
           "start": 25.3,
-          "end": 30.1,
+          "end": 30.6,
           "rate": 1.9,
           "transition": { "type": "push-up", "duration": 0.3 },
           "shows": "Domus e Magneto juntos: a regra sai do Domus, o workflow chega à gestora e o recibo volta"

@@ -67,28 +67,25 @@ describe("slides of the home", () => {
     }
     expect(montage.steps).toHaveLength(MONTAGE_SLIDES.length);
   });
-  it("the loop lasts 16 to 20 s, every cut holds the reading time and the pushes follow the product changes", () => {
+  it("the loop lasts 34 to 40 s, every cut holds its last frame for 2 s and the pushes follow the product changes", () => {
     let cycle = 0;
     const cuts = MONTAGE_SLIDES.flatMap((slide, si) =>
       slide.segments.map((segment) => ({ ...segment, si })),
     );
     cuts.forEach((cut, i) => {
       const screen = (cut.range[1] - cut.range[0]) / (cut.rate ?? 1);
-      // The caption is still from the end of the push in to the start of the push out: at least 1.8 s
-      const pushIn = cuts[(i + cuts.length - 1) % cuts.length].transition;
-      expect(
-        screen - (pushIn?.duration ?? 0) - (cut.transition?.duration ?? 0),
-      ).toBeGreaterThanOrEqual(1.8 - 0.03);
+      // The last frame stays still for the hold (2 s by default) before the push out starts
+      expect(cut.holdAfter).toBeGreaterThanOrEqual(2);
       // 0.4 s between products, 0.3 s inside the same product
       const next = cuts[(i + 1) % cuts.length];
       expect(cut.transition?.duration).toBe(next.si === cut.si ? 0.3 : 0.4);
       expect(cut.transition?.type).toBe(
         next.si === cut.si ? "push-up" : "push-left",
       );
-      cycle += screen - (cut.transition?.duration ?? 0);
+      cycle += screen + (cut.holdAfter ?? 0) - (cut.transition?.duration ?? 0);
     });
-    expect(cycle).toBeGreaterThanOrEqual(16);
-    expect(cycle).toBeLessThanOrEqual(20);
+    expect(cycle).toBeGreaterThanOrEqual(34);
+    expect(cycle).toBeLessThanOrEqual(40);
   });
   it("product cuts and relation cuts alternate and the Domus house is never shown empty", () => {
     const kinds = montage.steps.flatMap((s) => s.segments.map((c) => c.kind));

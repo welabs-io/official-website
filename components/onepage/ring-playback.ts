@@ -16,6 +16,8 @@ const TICK_MS = 40;
 const PUSH_PRE = 0.12;
 // Reveal of a preloaded player waits for the seek to its first frame to settle
 const SETTLE_MS = 140;
+// A held segment freezes this many real seconds before its range end, so a slow tick can never run into the loop
+const HOLD_EDGE = 0.1;
 
 export type FlatSegment = {
   slide: number;
@@ -27,6 +29,8 @@ export type FlatSegment = {
   lead: number;
   // Push into the next segment (workbench montage); the lead equals its duration
   transition?: PushTransition;
+  // Real seconds the last frame of the range stays still before the push starts (workbench montage; 0 = none)
+  hold: number;
 };
 
 // SEGMENTOS EM SEQUÊNCIA
@@ -45,6 +49,7 @@ export function flatten(
       rate: segment.rate ?? 1,
       lead: 0,
       transition: segment.transition,
+      hold: segment.holdAfter ?? 0,
     })),
   );
   return flat.map((segment, i) => {
@@ -72,6 +77,8 @@ type Entry = {
   // Parked on its first frame and painted: the only state in which a handoff may bring it in
   settled: boolean;
   started: boolean;
+  // performance.now() at which the segment froze on its last frame (hold phase), when it did
+  heldAt?: number;
 };
 
 export type SwapInfo = {
@@ -253,6 +260,21 @@ export class Playback {
     // A pushed cut starts its successor PUSH_PRE s early: the new player needs a moment before its timeline moves, and
     // the push only begins after that moment, so the incoming clip is already moving when it slides in
     const pre = this.options.single && segment.transition ? PUSH_PRE : 0;
+    // A segment with a hold plays to its range end, freezes there for `hold` s and only then starts the next one
+    if (this.options.single && segment.hold > 0 && this.flat.length > 1) {
+      if (current.heldAt === undefined) {
+        if (t < segment.range[1] - HOLD_EDGE * segment.rate) return;
+        current.el.pause();
+        current.heldAt = performance.now();
+      }
+      if ((performance.now() - current.heldAt) / 1000 < segment.hold - pre)
+        return;
+      const following = this.entries.get(this.after(this.cursor));
+      // Keep holding the last frame until the next one is ready
+      if (!following || !following.settled) return;
+      this.handoff(current, following, segment.lead + pre);
+      return;
+    }
     if (t < segment.range[1] - (segment.lead + pre) * segment.rate) return;
     if (this.flat.length === 1) return;
     const next = this.entries.get(this.after(this.cursor));

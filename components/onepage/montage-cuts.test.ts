@@ -6,6 +6,8 @@
 import { describe, expect, it } from "vitest";
 import beats from "@/lib/film-beats.json";
 import montage from "@/lib/home-montage.json";
+import { MONTAGE_SLIDES } from "@/lib/motion-slides";
+import { flatten } from "./ring-playback";
 
 const SLACK = 0.1;
 const EPS = 1e-6;
@@ -69,6 +71,31 @@ describe("montage cuts follow the beat map", () => {
         );
     },
   );
+
+  it("every cut holds its last frame for the explicit holdAfter (2 s) before the push", () => {
+    expect(montage.holdAfter).toBe(2);
+    const flat = flatten(MONTAGE_SLIDES, montage.swap);
+    expect(flat).toHaveLength(9);
+    for (const segment of flat) {
+      expect(segment.hold).toBe(montage.holdAfter);
+      // The push (and its lead) happens after the hold, never inside the clip time
+      expect(segment.lead).toBe(segment.transition?.duration);
+    }
+  });
+
+  it("cuts whose action was still settling keep their extended end", () => {
+    const end = (film: string, start: number) =>
+      montage.steps
+        .flatMap((s) => s.segments)
+        .find((c) => c.film === film && c.start === start)?.end ?? 0;
+    // "Atendida por Bruno" is fully in at 24.3; the recibo de volta is in at 30.5
+    expect(
+      end("crm-omnichannel-inbox-ludic2-logos-r4-s1", 19.75),
+    ).toBeGreaterThanOrEqual(24.4);
+    expect(
+      end("welabs-chain-journey-define-logos-r6-s1", 25.3),
+    ).toBeGreaterThanOrEqual(30.6);
+  });
 
   it("the beat map has no hold shorter than the minimum", () => {
     for (const film of Object.values(films))
