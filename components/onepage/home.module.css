@@ -135,6 +135,57 @@
   opacity: 0.85;
 }
 
+/* PÁGINA DE PRODUTO */
+.productPage {
+  display: flex;
+  align-items: center;
+  min-height: min(100vh, 900px);
+  padding-top: calc(64px + clamp(32px, 6vh, 72px));
+}
+.productPageGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+/* Manual switch of the product reel: small squares, the active one amber */
+.dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dots button {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.dots button::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 20px;
+  height: 4px;
+  background: var(--g3);
+}
+.dots button[aria-pressed="true"]::before {
+  background: var(--a);
+}
+@media (max-width: 860px) {
+  .productPage {
+    min-height: 0;
+  }
+  .productPageGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* SEÇÃO 5: PLATAFORMAS E FECHAMENTO */
 .closing {
   display: flex;

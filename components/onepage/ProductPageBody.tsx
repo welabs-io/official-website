@@ -1,18 +1,21 @@
 // CORPO DA PÁGINA DE PRODUTO
-// One dark band: logo with seal and one factual line. The product's motion joins it in a later unit.
+// Same language as the home, compact: a dark band with the logo and the seal, one factual line and the reel with the
+// product's opening and films playing on their own.
 import { ProductBlock } from "./ProductBlock";
+import { ProductReel } from "./ProductReel";
 import type { ProductSlug } from "@/lib/products";
-import styles from "./shell.module.css";
+import home from "./home.module.css";
+import shell from "./shell.module.css";
 
 export function ProductPageBody({ slug }: { slug: ProductSlug }) {
   return (
     <section
       id="product"
-      className={`${styles.band} ${styles.dark}`}
-      style={{ paddingTop: "calc(64px + clamp(48px, 8vh, 96px))" }}
+      className={`${shell.band} ${shell.dark} ${home.productPage}`}
     >
-      <div className={styles.wrap}>
+      <div className={`${shell.wrap} ${home.productPageGrid}`}>
         <ProductBlock slug={slug} tone="dark" link={false} heading="h1" />
+        <ProductReel slug={slug} />
       </div>
     </section>
   );
