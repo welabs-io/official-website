@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useSiteBrand } from "./useSiteBrand";
 import { InstitutionalData } from "./InstitutionalData";
 import { Header } from "./Header";
@@ -12,6 +13,17 @@ import { MotionLayer } from "./MotionLayer";
 // The standalone presentation route left with the legacy packs, so every page gets the full chrome.
 export function ClientChrome({ children }: { children: React.ReactNode }) {
   const brand = useSiteBrand();
+  const pathname = usePathname();
+  // The one-page preview (/new) brings its own header, footer and motion, so it skips the site chrome
+  if (pathname === "/new")
+    return (
+      <div className="site-frame" data-site-brand={brand.company}>
+        <a className="skip-link" href="#main-content">
+          Ir para o conteúdo
+        </a>
+        <main id="main-content">{children}</main>
+      </div>
+    );
   return (
     <div className="site-frame" data-site-brand={brand.company}>
       <InstitutionalData />

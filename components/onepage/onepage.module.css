@@ -1,0 +1,651 @@
+/* BASE DA PÁGINA /new */
+/* Welabs 1.5.x: amber only as an area (dot, block, 4 px+ bar), graphite and cream bands, Inter text. */
+.page {
+  --g: #10141c;
+  --g2: #161b25;
+  --g3: #262d3a;
+  --c: #faf5ea;
+  --c2: #f3ecdd;
+  --cl: #e2d8c3;
+  --a: #ffb020;
+  --ink: #1c1a16;
+  --mute-d: #9da3ae;
+  --mute-l: #625b4e;
+  font-family: var(--wl-font, "Inter", system-ui, sans-serif);
+  color: var(--c);
+  background: var(--g);
+}
+:global(html:has(#onepage-root)) {
+  scroll-behavior: auto;
+}
+.page h1,
+.page h2,
+.page h3,
+.page p {
+  margin: 0;
+}
+.page img {
+  display: block;
+}
+
+.band {
+  position: relative;
+  padding: clamp(72px, 10vh, 120px) 0;
+  scroll-margin-top: 0;
+}
+.dark {
+  background: var(--g);
+  color: var(--c);
+}
+.light {
+  background: var(--c);
+  color: var(--ink);
+}
+.wrap {
+  width: min(1200px, 100% - 48px);
+  margin: 0 auto;
+}
+.page h1 {
+  font-size: clamp(34px, 4.6vw, 60px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.page h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.page .lead {
+  margin-top: 16px;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.5;
+  color: var(--mute-d);
+}
+.light .lead {
+  color: var(--mute-l);
+}
+.page .eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--mute-d);
+}
+.light .eyebrow {
+  color: var(--mute-l);
+}
+
+/* CABEÇALHO FIXO */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--g) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--g3);
+}
+.progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 4px;
+  width: 100%;
+  background: var(--a);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+}
+.headerInner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: min(1200px, 100% - 48px);
+  height: 64px;
+  margin: 0 auto;
+}
+.brand {
+  display: block;
+  margin-right: auto;
+}
+.brand img {
+  height: 26px;
+  width: auto;
+}
+.nav {
+  display: flex;
+  gap: 24px;
+}
+.nav a {
+  color: var(--c);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+.nav a:hover {
+  opacity: 1;
+}
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--g3);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--c);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.pause:hover {
+  border-color: var(--mute-d);
+}
+.pauseIcon {
+  font-size: 10px;
+  letter-spacing: -1px;
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 6px;
+  background: var(--a);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cta:hover {
+  background: #ffc247;
+}
+.page a:focus-visible,
+.page button:focus-visible {
+  outline: 3px solid var(--a);
+  outline-offset: 3px;
+}
+.light a:focus-visible {
+  outline-color: var(--ink);
+}
+
+/* PALCO DE MOTION */
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--g);
+  border: 1px solid var(--g3);
+  isolation: isolate;
+}
+.stagePoster,
+.stagePlayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.stagePlayer {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.stagePlayer[data-ready="true"] {
+  opacity: 1;
+}
+
+/* SEÇÃO 1: HERO E HUB */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 112px;
+}
+.hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.hub {
+  position: relative;
+  display: grid;
+  min-height: 380px;
+}
+.hubRails {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  align-items: center;
+}
+.rail {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.railHead {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  flex: none;
+  width: 130px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mute-d);
+}
+.railHead img {
+  height: 58px;
+  width: auto;
+}
+.railLine {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: var(--g3);
+}
+.railWire {
+  flex: none;
+  width: 158px;
+  text-align: center;
+  padding: 4px 10px;
+  border: 1px solid var(--g3);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--mute-d);
+  white-space: nowrap;
+}
+.pulse {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--a);
+  opacity: 0;
+}
+.hubCore {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  gap: 2px;
+  width: 340px;
+  padding: 2px;
+  border-radius: 10px;
+  background: var(--g3);
+}
+.coreNode {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 14px 10px 10px;
+  background: var(--g2);
+  border: 2px solid transparent;
+}
+.coreNode:first-child {
+  border-radius: 8px 0 0 8px;
+  flex: 1.25;
+}
+.coreNode:nth-child(2) {
+  border-radius: 0 8px 8px 0;
+}
+.coreNode img {
+  height: 84px;
+  width: auto;
+}
+.coreVerb {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mute-d);
+}
+.seam {
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--g);
+  border: 1px solid var(--g3);
+  font-size: 11px;
+  color: var(--mute-d);
+  white-space: nowrap;
+}
+
+/* Hub cycle: 5 beats of 2 s; --i is the node's turn (Domus 0 ... Knowly 4). Removed whenever the page is paused. */
+.page[data-motion="playing"] .coreNode.anim {
+  animation: nodeBeat 10s linear infinite;
+  animation-delay: calc(var(--i) * 2s);
+}
+.page[data-motion="playing"] .pulse.anim {
+  animation: pulseTravel 10s linear infinite;
+  animation-delay: calc(var(--i) * 2s);
+}
+@keyframes nodeBeat {
+  0% {
+    border-color: var(--a);
+    background: color-mix(in srgb, var(--a) 14%, var(--g2));
+  }
+  18% {
+    border-color: var(--a);
+    background: color-mix(in srgb, var(--a) 14%, var(--g2));
+  }
+  24%,
+  100% {
+    border-color: transparent;
+    background: var(--g2);
+  }
+}
+@keyframes pulseTravel {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  18% {
+    left: calc(100% - 10px);
+    opacity: 1;
+  }
+  19%,
+  100% {
+    left: calc(100% - 10px);
+    opacity: 0;
+  }
+}
+
+/* SEÇÕES 2 E 3: NÚCLEO */
+.core {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.coreGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.flip .coreText {
+  order: 2;
+}
+.coreText {
+  display: grid;
+  gap: 0;
+}
+.introStage {
+  margin-top: 32px;
+}
+.clipFigure {
+  margin: 0;
+}
+.clipFigure figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--mute-d);
+}
+.light .clipFigure figcaption {
+  color: var(--mute-l);
+}
+
+/* SEÇÃO 4: TRILHOS */
+.railList {
+  display: grid;
+  gap: clamp(40px, 8vh, 88px);
+  margin-top: 8px;
+}
+.railRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+  padding-left: 28px;
+}
+/* Connector: a 4 px bar back to the core, grey at rest and amber while the row's opening is live */
+.connector {
+  position: absolute;
+  left: 0;
+  top: -44px;
+  bottom: -44px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--cl);
+  transition: background 0.3s ease;
+}
+.railRow:first-child .connector {
+  top: 0;
+}
+.railRow:last-child .connector {
+  bottom: 50%;
+}
+.railRow:has([data-live="true"]) .connector {
+  background: var(--a);
+}
+
+/* SEÇÃO 5: CADEIA PELA ROLAGEM */
+.chain {
+  height: 520vh;
+  padding: 0;
+}
+.chainSticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-top: 64px;
+}
+.chainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.beats {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.beats li {
+  padding: 8px 0 8px 18px;
+  border-left: 4px solid var(--g3);
+  font-size: 17px;
+  color: var(--mute-d);
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+.beats li strong {
+  font-weight: 600;
+}
+.beats li[data-active="true"] {
+  border-left-color: var(--a);
+  color: var(--c);
+}
+
+/* SEÇÃO 6: A WELABS */
+.about {
+  padding: clamp(96px, 14vh, 160px) 0;
+}
+
+/* SEÇÃO 7: CTA E RODAPÉ */
+.closing {
+  text-align: center;
+  padding: clamp(112px, 18vh, 200px) 0;
+}
+.closing .lead {
+  max-width: 34ch;
+  margin: 20px auto 0;
+}
+.ctaBig {
+  height: 56px;
+  margin-top: 36px;
+  padding: 0 32px;
+  font-size: 17px;
+}
+.footer {
+  background: var(--g);
+  border-top: 1px solid var(--g3);
+  padding: 56px 0 32px;
+}
+.footerGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+}
+.footerDesc {
+  max-width: 34ch;
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--mute-d);
+}
+.footerProducts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.footerProducts li {
+  border-bottom: 1px solid var(--g3);
+}
+.footerProducts a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  color: var(--mute-d);
+  text-decoration: none;
+  font-size: 14px;
+}
+.footerProducts a:hover {
+  color: var(--c);
+}
+.footerProducts img {
+  height: 52px;
+  width: auto;
+}
+.footerBottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin-top: 40px;
+  font-size: 13px;
+  color: var(--mute-d);
+}
+.footerBottom a {
+  color: var(--mute-d);
+  margin-left: auto;
+}
+
+/* RESPONSIVO */
+@media (max-width: 960px) {
+  .nav {
+    display: none;
+  }
+  .hero .wrap,
+  .footerGrid,
+  .railRow,
+  .chainGrid,
+  .coreGrid {
+    grid-template-columns: 1fr;
+  }
+  .flip .coreText {
+    order: 0;
+  }
+  .core {
+    min-height: 0;
+  }
+  /* Chain on a phone: the film first, the five beats below it */
+  .chainText {
+    order: 2;
+  }
+  .chainSticky {
+    align-items: flex-start;
+    padding-top: 88px;
+  }
+  .beats {
+    margin-top: 16px;
+  }
+  .beats li {
+    font-size: 15px;
+    padding: 5px 0 5px 14px;
+  }
+  /* Same order on every width; the film clip stays desktop only */
+  .clipFigure {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .headerInner {
+    gap: 8px;
+    width: calc(100% - 32px);
+  }
+  .brand img {
+    height: 22px;
+  }
+  /* The label leaves the layout but stays in the accessible name */
+  .pause span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .pause {
+    padding: 0 12px;
+  }
+  .cta {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  .wrap {
+    width: calc(100% - 32px);
+  }
+  .hero {
+    padding-top: 96px;
+    min-height: 0;
+  }
+  /* Mobile hub: the core on top, the rails stacked as full-width bands */
+  .hub {
+    min-height: 0;
+    gap: 14px;
+  }
+  .hubRails {
+    position: static;
+    order: 2;
+    grid-template-rows: none;
+    gap: 10px;
+  }
+  .hubCore {
+    order: 1;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  .coreNode img {
+    height: 84px;
+  }
+  .railHead img {
+    height: 56px;
+  }
+  .railWire {
+    display: none;
+  }
+}

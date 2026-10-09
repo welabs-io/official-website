@@ -12,3 +12,10 @@ export function imagineHref(path: string, lang?: string): string | null {
   if (!IMAGINE_URL) return null;
   return `${IMAGINE_URL}${path}${lang === "en" ? "?lang=en" : lang === "pt" ? "?lang=pt" : ""}`;
 }
+
+// FORMULÁRIO DE CONTATO
+// The contact form lives on the Imagine site (section #contato of its home); null when the site is not configured,
+// so the caller falls back to its own anchor instead of a guessed domain.
+export function imagineContactHref(): string | null {
+  return IMAGINE_URL ? `${IMAGINE_URL}/?lang=pt#contato` : null;
+}
