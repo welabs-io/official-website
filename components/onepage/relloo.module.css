@@ -1,0 +1,129 @@
+/* MOVIMENTO DO RELLOO */
+/* Message chips find their contact card and dock into it; two rings close around the two groups and slide together
+   into the overlapping pair of the sign. The base style is the resolved frame (the pair of rings, cards gone). */
+.card,
+.chip {
+  opacity: 0;
+}
+.card {
+  fill: var(--soft);
+  stroke: currentColor;
+  stroke-opacity: 0.45;
+  stroke-width: 1.5;
+}
+.avatar {
+  fill: currentColor;
+  opacity: 0.35;
+}
+.text {
+  fill: currentColor;
+  opacity: 0.25;
+}
+.chipAmber {
+  fill: var(--a);
+}
+.chipInk {
+  fill: currentColor;
+  fill-opacity: 0.8;
+}
+.ring {
+  fill: none;
+  stroke-width: 10;
+}
+.ringWhite {
+  stroke: currentColor;
+}
+.ringAmber {
+  stroke: var(--a);
+}
+
+[data-live="true"] .card {
+  animation: card 8s ease-in-out infinite backwards;
+}
+[data-live="true"] .chip {
+  animation: chip 8s cubic-bezier(0.22, 0.8, 0.3, 1) infinite backwards;
+  animation-delay: calc(var(--n) * 160ms);
+}
+[data-live="true"] .ringWhite {
+  animation: ringL 8s cubic-bezier(0.6, 0, 0.2, 1) infinite backwards;
+}
+[data-live="true"] .ringAmber {
+  animation: ringR 8s cubic-bezier(0.6, 0, 0.2, 1) infinite backwards;
+}
+@keyframes card {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  8%,
+  54% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  72%,
+  100% {
+    opacity: 0;
+    transform: scale(0.25);
+  }
+}
+@keyframes chip {
+  0% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  34%,
+  54% {
+    transform: none;
+    opacity: 1;
+  }
+  72%,
+  100% {
+    transform: scale(0.25);
+    opacity: 0;
+  }
+}
+@keyframes ringL {
+  0%,
+  44% {
+    transform: translateX(-35px);
+    opacity: 0;
+  }
+  54% {
+    transform: translateX(-35px);
+    opacity: 1;
+  }
+  72%,
+  90% {
+    transform: none;
+    opacity: 1;
+  }
+  98%,
+  100% {
+    transform: none;
+    opacity: 0;
+  }
+}
+@keyframes ringR {
+  0%,
+  44% {
+    transform: translateX(35px);
+    opacity: 0;
+  }
+  54% {
+    transform: translateX(35px);
+    opacity: 1;
+  }
+  72%,
+  90% {
+    transform: none;
+    opacity: 1;
+  }
+  98%,
+  100% {
+    transform: none;
+    opacity: 0;
+  }
+}
