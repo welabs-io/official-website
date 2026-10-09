@@ -1,0 +1,96 @@
+{
+  "rate": 2.5,
+  "swap": 0.6,
+  "steps": [
+    {
+      "product": "tuner",
+      "step": "A mensagem chega por um canal",
+      "segments": [
+        {
+          "film": "channels-one-contract-ludic-logos-r5-s1",
+          "start": 7.7,
+          "end": 10.3,
+          "shows": "o Tuner junta os canais: mostrador, fios e ponteiro"
+        },
+        {
+          "film": "channels-one-contract-ludic-logos-r5-s1",
+          "start": 14.1,
+          "end": 16.5,
+          "shows": "três mensagens chegam do mesmo jeito ao mostrador"
+        }
+      ]
+    },
+    {
+      "product": "relloo",
+      "step": "O Relloo atende e reconhece a pessoa",
+      "segments": [
+        {
+          "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+          "start": 9.95,
+          "end": 11.45,
+          "shows": "os balões do canal entram no Relloo e o contato aparece"
+        },
+        {
+          "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+          "start": 19.75,
+          "end": 24.2,
+          "shows": "a conversa ganha protocolo, prazo e quem atende"
+        }
+      ]
+    },
+    {
+      "product": "domus",
+      "step": "O Domus tem o cadastro e a regra",
+      "segments": [
+        {
+          "film": "hub-defines-runs-ludic-v3-logos-r4-s1",
+          "start": 0.95,
+          "end": 5.3,
+          "shows": "a regra sai da casa, abre no meio e recebe o carimbo"
+        }
+      ]
+    },
+    {
+      "product": "magneto",
+      "step": "A regra vira workflow no Magneto",
+      "segments": [
+        {
+          "film": "hub-defines-runs-ludic-v3-logos-r4-s1",
+          "start": 7.95,
+          "end": 10.9,
+          "shows": "a regra encolhe, atravessa o fio e vira os passos do workflow"
+        }
+      ]
+    },
+    {
+      "product": "knowly",
+      "step": "O Knowly responde com a fonte",
+      "segments": [
+        {
+          "film": "kb-ask-with-proof-ludic-logos-r5-s1",
+          "start": 6.45,
+          "end": 12.15,
+          "shows": "a lupa acha as três fontes na pilha e elas vão para a coluna"
+        },
+        {
+          "film": "kb-ask-with-proof-ludic-logos-r5-s1",
+          "start": 13.6,
+          "end": 17.7,
+          "shows": "cada frase da resposta chega ligada à sua fonte"
+        }
+      ]
+    },
+    {
+      "product": "domus",
+      "step": "O recibo volta ao Domus",
+      "segments": [
+        {
+          "film": "hub-defines-runs-ludic-v3-logos-r4-s1",
+          "start": 21.95,
+          "end": 24.45,
+          "shows": "o recibo viaja de volta, a casa fecha em verde"
+        }
+      ]
+    }
+  ]
+}

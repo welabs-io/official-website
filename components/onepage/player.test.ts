@@ -1,7 +1,7 @@
 // TESTES DO PLAYER
 // Every player of the page is created from the same attributes and none of them has the controls attribute.
 import { describe, expect, it } from "vitest";
-import { SEQUENCE_OPTIONS, playerAttributes } from "./player";
+import { playerAttributes } from "./player";
 
 describe("player attributes", () => {
   it("autoplay and muted, never controls", () => {
@@ -16,7 +16,10 @@ describe("player attributes", () => {
     expect(attributes["range-end"]).toBe("16");
     expect(attributes).not.toHaveProperty("controls");
   });
-  it("the sequence player is mounted without controls", () => {
-    expect(SEQUENCE_OPTIONS.controls).toBe(false);
+  it("a preloaded player has no autoplay and still no controls", () => {
+    const attributes = playerAttributes("/x", [4, 16], false);
+    expect(attributes).not.toHaveProperty("autoplay");
+    expect(attributes).toHaveProperty("muted");
+    expect(attributes).not.toHaveProperty("controls");
   });
 });

@@ -1,0 +1,30 @@
+/* BANCADA */
+/* Full-screen frame for validating one component alone. */
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  background: #0b0e14;
+  color: #9da3ae;
+  font: 500 13px/1.4 var(--font-sans-face, sans-serif);
+}
+.frame {
+  position: relative;
+  width: min(100vw, calc((100vh - 48px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  background: #10141c;
+  overflow: hidden;
+}
+.host {
+  position: absolute;
+  inset: 0;
+}
+.caption {
+  margin: 0;
+  padding: 0 16px;
+  text-align: center;
+}

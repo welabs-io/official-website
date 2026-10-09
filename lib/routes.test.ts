@@ -30,11 +30,12 @@ describe("route segments are in English", () => {
   const pageFiles = walk(path.join(root, "app")).filter((f) =>
     /\/(page|route)\.tsx?$/.test(f),
   );
-  it("has the home and the product page", () => {
+  // lab/chain is the workbench of the chain montage (noindex, no link)
+  it("has the home, the product page and the workbench", () => {
     const routes = pageFiles.map((f) =>
       path.relative(path.join(root, "app"), path.dirname(f)),
     );
-    expect(routes.sort()).toEqual(["", "products/[slug]"]);
+    expect(routes.sort()).toEqual(["", "lab/chain", "products/[slug]"]);
   });
   it.each(pageFiles)("%s has no Portuguese segment", (file) => {
     const segments = path

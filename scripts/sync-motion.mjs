@@ -1,7 +1,7 @@
 // SINCRONIZAÇÃO DOS FILMES DO SITE
-// Copies the pieces listed in lib/motion-pieces.json (five product openings, the Welabs opening, the product films and
-// the chain film) from the portfolio round (read only) into public/motion/pieces/<id>/, copies _shared the way the site
-// serves it (manifest, loader, sequence player, vendor, Welabs brand version), copies the pinned HyperFrames player and
+// Copies the pieces listed in lib/motion-pieces.json (five product openings and the product films;
+// the chain montage of lib/home-montage.json uses clips of those films) from the portfolio round (read only) into public/motion/pieces/<id>/, copies _shared the way the site
+// serves it (manifest, loader, vendor, Welabs brand version), copies the pinned HyperFrames player and
 // renders one cover frame per piece into public/motion/posters/<id>.jpg.
 // Usage: node scripts/sync-motion.mjs [--no-posters]
 import { createServer } from "node:http";
@@ -36,16 +36,40 @@ const pieces = JSON.parse(
 // `cover` is the time (s) of the still frame: the closing frame for openings, a frame inside the clip for films.
 const list = [];
 const add = (piece, cover) => list.push({ ...piece, cover });
-add(pieces.welabsIntro, pieces.welabsIntro.duration - 0.04);
-add(pieces.chain, pieces.chain.beats[0]);
+// Film covers sit half a second after the start of the played range (clip, or 1.2 s for a film played in full, which
+// skips the empty first frames): that is what a preloaded neighbour shows, so the cover and the player match.
+const FILM_START = 1.2;
+const filmCover = (film) => (film.clip?.[0] ?? FILM_START) + 0.5;
 for (const product of Object.values(pieces.products)) {
   add(product.intro, product.intro.duration - 0.04);
-  for (const film of product.films)
-    add(
-      film,
-      film.clip ? (film.clip[0] + film.clip[1]) / 2 : film.duration * 0.45,
-    );
+  for (const film of product.films) add(film, filmCover(film));
 }
+
+// CAPAS DA MONTAGEM
+// The chain montage (lib/home-montage.json) plays clips of films already in the list; each step gets its own cover,
+// half a second into the clip, named montage-<n>.
+const montage = JSON.parse(
+  readFileSync(join(siteRoot, "lib/home-montage.json"), "utf8"),
+);
+const listed = new Set(list.map((piece) => piece.id));
+const covers = [
+  ...list.map((piece) => ({
+    id: piece.id,
+    name: piece.id,
+    cover: piece.cover,
+  })),
+  ...montage.steps.map((step, i) => {
+    for (const segment of step.segments)
+      if (!listed.has(segment.film))
+        throw new Error(`montage step ${i + 1}: ${segment.film} is not listed`);
+    const first = step.segments[0];
+    return {
+      id: first.film,
+      name: `montage-${i + 1}`,
+      cover: first.start + 0.5,
+    };
+  }),
+];
 
 // CONFERÊNCIA DE ACEITE
 const accepted = JSON.parse(readFileSync(join(round, "accepted.json"), "utf8"));
@@ -91,14 +115,8 @@ for (const [slug, product] of Object.entries(pieces.products))
     throw new Error(
       `manifest opening of ${slug} is ${manifest.products[slug]}`,
     );
-if (manifest.brands.welabs.intro !== pieces.welabsIntro.id)
-  throw new Error(`manifest Welabs opening is ${manifest.brands.welabs.intro}`);
 const shared = join(motionRoot, "_shared");
-for (const rel of [
-  "brand/manifest.json",
-  "brand/loader.js",
-  "player/sequence-player.js",
-]) {
+for (const rel of ["brand/manifest.json", "brand/loader.js"]) {
   mkdirSync(dirname(join(shared, rel)), { recursive: true });
   cpSync(join(round, "_shared", rel), join(shared, rel));
 }
@@ -183,7 +201,7 @@ const base = `http://127.0.0.1:${server.address().port}`;
 mkdirSync(join(motionRoot, "posters"), { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-for (const piece of list) {
+for (const piece of covers) {
   await page.goto(
     `${base}/__poster?src=${encodeURIComponent(`/motion/pieces/${piece.id}/index.html`)}`,
   );
@@ -202,11 +220,11 @@ for (const piece of list) {
   }, piece.cover);
   await page.waitForTimeout(700);
   await page.screenshot({
-    path: join(motionRoot, "posters", `${piece.id}.jpg`),
+    path: join(motionRoot, "posters", `${piece.name}.jpg`),
     type: "jpeg",
     quality: 78,
   });
 }
 await browser.close();
 server.close();
-process.stdout.write(`motion: ${list.length} posters written\n`);
+process.stdout.write(`motion: ${covers.length} posters written\n`);

@@ -1,64 +1,100 @@
 // SLIDES DE MOTION DO SITE
-// Builds the slides of every reel from lib/motion-pieces.json (the list scripts/sync-motion.mjs copies): the opening of
-// each product, the opening followed by a clip of the product's first film, the chain film behind the Welabs opening,
-// and the full reel of a product page. Products keep the operator's weight order.
+// Builds the slides of every ring from lib/motion-pieces.json (the list scripts/sync-motion.mjs copies). A slide is a
+// list of segments played back to back: a segment is a range of one piece. Home chain: a montage of clips of the
+// product films at 2.5x, no opening. Home products: the closing seconds of the product opening (the part that forms the logo) flowing into a
+// clip of its first film. Product page: the whole opening, then the films in full.
+import montage from "./home-montage.json";
 import pieces from "./motion-pieces.json";
 import { PRODUCTS, type ProductSlug } from "./products";
 
+export type Segment = {
+  id: string;
+  // Played range of the piece, in seconds (range-start and range-end of the player)
+  range: readonly [number, number];
+  // Playback speed (1 when absent); the range is in piece time, so it lasts (end - start) / rate on screen
+  rate?: number;
+};
+
 export type Slide = {
   key: string;
-  // Opening piece id and film piece id; a slide has at least one of them
-  intro?: string;
-  film?: string;
-  // Clip of the film, in seconds, played through range-start and range-end
-  clip?: readonly [number, number];
-  // Cover image: the closing frame of the opening, or a frame of the film
+  // Accessible name of the slide (used by the manual switch only)
+  label: string;
+  segments: Segment[];
+  // Cover image: what a neighbour shows before its player is ready, and the static frame under reduced motion
   poster: string;
+  slug?: ProductSlug;
 };
+
+// A film played in full skips its empty first frames
+export const FILM_START = 1.2;
 
 const poster = (id: string) => `/motion/posters/${id}.jpg`;
 const entry = (slug: ProductSlug) => pieces.products[slug];
+type Film = { id: string; duration: number; clip?: number[] };
+const filmSegment = (film: Film): Segment => ({
+  id: film.id,
+  range: film.clip
+    ? ([film.clip[0], film.clip[1]] as const)
+    : ([FILM_START, film.duration] as const),
+});
 
-// Section 1: the five openings, one after the other
-export const HERO_SLIDES: Slide[] = PRODUCTS.map(({ slug }) => ({
-  key: slug,
-  intro: entry(slug).intro.id,
-  poster: poster(entry(slug).intro.id),
+// MONTAGEM DA CADEIA
+// The top of the home: clips of the individual product films, played at `rate` times the normal speed, in the order
+// that tells how it all works. The list lives in lib/home-montage.json (per step: product and clips with film, start,
+// end) so a clip is adjusted there; lib/film-beats.json holds the action and hold map the cuts follow. No opening, no Welabs film.
+export const MONTAGE_RATE = montage.rate;
+// Duration of the position swap of the montage ring, in seconds
+export const MONTAGE_SWAP = montage.swap;
+export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
+  key: `montage-${i + 1}`,
+  label: `Passo ${i + 1}`,
+  slug: step.product as ProductSlug,
+  // A step has one clip per action of the film; clips of a step play back to back (the pauses between them are skipped)
+  segments: step.segments.map((segment) => ({
+    id: segment.film,
+    range: [segment.start, segment.end] as const,
+    rate: montage.rate,
+  })),
+  poster: poster(`montage-${i + 1}`),
 }));
 
-// Section 3: each product opens with its opening and goes on with a clip of its first film
-export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug }) => {
+// Products section of the home: opening tail, then a clip of the first film
+export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
   const { intro, films } = entry(slug);
-  const film = films[0] as { id: string; clip?: number[] };
   return {
     key: slug,
-    intro: intro.id,
-    film: film.id,
-    clip: film.clip ? ([film.clip[0], film.clip[1]] as const) : undefined,
+    label: name,
+    slug,
+    segments: [
+      { id: intro.id, range: [intro.tail[0], intro.tail[1]] as const },
+      filmSegment(films[0] as Film),
+    ],
     poster: poster(intro.id),
   };
 });
 
-// Section 4: the Welabs opening, then the whole chain film
-export const CHAIN_SLIDE: Slide = {
-  key: "chain",
-  intro: pieces.welabsIntro.id,
-  film: pieces.chain.id,
-  poster: poster(pieces.welabsIntro.id),
-};
-// Film time (s) at which each product lights up in the chain film (Domus, Relloo, Magneto, Tuner, Knowly) and the time
-// at which the last beat, where all of them work together, begins
-export const CHAIN_BEATS = pieces.chain.beats;
-
-// Product page: the opening, then every film of the product, each one playing in full
+// Product page: the opening in full, then every film of the product in full. The first slide carries the opening
+// and the first film; each other film is a slide of its own.
 export function productReel(slug: ProductSlug): Slide[] {
   const { intro, films } = entry(slug);
-  return [
-    { key: "intro", intro: intro.id, poster: poster(intro.id) },
-    ...films.map((film) => ({
-      key: film.id,
-      film: film.id,
-      poster: poster(film.id),
-    })),
-  ];
+  return (films as Film[]).map((film, i) => ({
+    key: film.id,
+    label: `Filme ${i + 1}`,
+    segments:
+      i === 0
+        ? [
+            { id: intro.id, range: [0, intro.duration] as const },
+            {
+              id: film.id,
+              range: [FILM_START, film.duration] as const,
+            },
+          ]
+        : [
+            {
+              id: film.id,
+              range: [FILM_START, film.duration] as const,
+            },
+          ],
+    poster: i === 0 ? poster(intro.id) : poster(film.id),
+  }));
 }

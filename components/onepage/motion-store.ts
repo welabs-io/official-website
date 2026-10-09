@@ -7,7 +7,9 @@ let controller: MotionController | null = null;
 
 export function getController(): MotionController {
   if (controller) return controller;
+  // One ring at a time: a ring keeps at most two players running (the current and the leaving or next one)
   controller = new MotionController({
+    maxLive: 1,
     reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
       .matches,
   });
