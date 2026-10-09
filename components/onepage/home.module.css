@@ -61,6 +61,12 @@
 .names button[aria-pressed="true"]::before {
   background: var(--a);
 }
+/* SEÇÃO 2 E 5: FAIXAS DE LOGOS */
+/* Thin bands, one carousel each, black and white. */
+.strip {
+  padding: clamp(36px, 6vh, 64px) 0;
+}
+
 @media (max-width: 860px) {
   .hero {
     min-height: 0;
