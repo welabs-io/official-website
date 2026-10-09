@@ -6,7 +6,9 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { ByWelabs } from "../ByWelabs";
 import { imagineContactHref } from "@/lib/sister-site";
+import motionData from "@/lib/onepage-motion.json";
 import { HubLive } from "./HubLive";
+import { LiveStage } from "./LiveStage";
 import {
   getPausedServerSnapshot,
   getPausedSnapshot,
@@ -14,6 +16,22 @@ import {
   subscribePaused,
 } from "./motion-store";
 import styles from "./onepage.module.css";
+
+// Pieces synced by scripts/sync-onepage-motion.mjs
+const motion = motionData as unknown as {
+  intros: Record<string, { src: string; poster: string }>;
+  films: Record<
+    string,
+    {
+      src: string;
+      poster: string;
+      clip: [number, number];
+      beats: number[];
+      scrub: [number, number];
+      beatPosters: string[];
+    }
+  >;
+};
 
 const CTA_LABEL = "Conversar com a Welabs";
 const CTA_SUPPORT =
@@ -96,6 +114,62 @@ function Hero() {
   );
 }
 
+// SEÇÕES 2 E 3: NÚCLEO, DOMUS E RELLOO
+// Same block for both: text and the product opening on one side, the film clip (desktop only) on the other.
+type CoreProps = {
+  id: string;
+  tone: "light" | "dark";
+  flip?: boolean;
+  eyebrow: React.ReactNode;
+  title: string;
+  lead: string;
+  intro: { src: string; poster: string };
+  clip: { src: string; poster: string; range: readonly [number, number] };
+};
+function CoreSection({
+  id,
+  tone,
+  flip,
+  eyebrow,
+  title,
+  lead,
+  intro,
+  clip,
+}: CoreProps) {
+  return (
+    <section
+      id={id}
+      className={`${styles.band} ${styles[tone]} ${styles.core}`}
+    >
+      <div
+        className={`${styles.wrap} ${styles.coreGrid} ${flip ? styles.flip : ""}`}
+      >
+        <div className={styles.coreText}>
+          <span className={styles.eyebrow}>{eyebrow}</span>
+          <h2>{title}</h2>
+          <p className={styles.lead}>{lead}</p>
+          <LiveStage
+            id={`${id}-intro`}
+            className={styles.introStage}
+            src={intro.src}
+            poster={intro.poster}
+          />
+        </div>
+        {/* The clip is too small to read on a phone: the stage is hidden there, so it never mounts */}
+        <figure className={styles.clipFigure}>
+          <LiveStage
+            id={`${id}-clip`}
+            src={clip.src}
+            poster={clip.poster}
+            clip={clip.range}
+          />
+          <figcaption>Trecho do filme. Os dados são fictícios.</figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
 export function OnePage() {
   const paused = useSyncExternalStore(
     subscribePaused,
@@ -110,6 +184,30 @@ export function OnePage() {
     >
       <Header paused={paused} />
       <Hero />
+      <CoreSection
+        id="domus"
+        tone="light"
+        eyebrow="Domus"
+        title="A empresa inteira numa casa."
+        lead="Telas, regras e fluxos nascem do Domus. O que você define uma vez vale para a empresa inteira."
+        intro={motion.intros.domus}
+        clip={{ ...motion.films.domus, range: motion.films.domus.clip }}
+      />
+      <CoreSection
+        id="relloo"
+        tone="dark"
+        flip
+        eyebrow={
+          <>
+            Relloo
+            <ByWelabs />
+          </>
+        }
+        title="Do primeiro “oi” ao fechamento."
+        lead="Atender e vender na mesma conversa. A pessoa chega por qualquer canal e segue com a história inteira, até o fechamento."
+        intro={motion.intros.relloo}
+        clip={{ ...motion.films.relloo, range: motion.films.relloo.clip }}
+      />
       <p className={styles.support} hidden>
         {CTA_SUPPORT}
       </p>

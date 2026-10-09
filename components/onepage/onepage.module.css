@@ -369,13 +369,58 @@
   }
 }
 
+/* SEÇÕES 2 E 3: NÚCLEO */
+.core {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.coreGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.flip .coreText {
+  order: 2;
+}
+.coreText {
+  display: grid;
+  gap: 0;
+}
+.introStage {
+  margin-top: 32px;
+}
+.clipFigure {
+  margin: 0;
+}
+.clipFigure figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--mute-d);
+}
+.light .clipFigure figcaption {
+  color: var(--mute-l);
+}
+
 /* RESPONSIVO */
 @media (max-width: 960px) {
   .nav {
     display: none;
   }
-  .hero .wrap {
+  .hero .wrap,
+  .coreGrid {
     grid-template-columns: 1fr;
+  }
+  .flip .coreText {
+    order: 0;
+  }
+  .core {
+    min-height: 0;
+  }
+  /* Same order on every width; the film clip stays desktop only */
+  .clipFigure {
+    display: none;
   }
 }
 @media (max-width: 640px) {
