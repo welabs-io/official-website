@@ -2,7 +2,14 @@
 // Each section is the product block (logo with seal, one factual line) next to the product's own motion, and ends with
 // the amber connector that reaches into the next section.
 import { ABOUT_LINE, WELABS_LOGO } from "@/lib/products";
+import {
+  CLIENT_LOGOS,
+  CLIENTS_LABEL,
+  PLATFORM_LOGOS,
+  PLATFORMS_LABEL,
+} from "@/lib/partners";
 import { AboutMotion } from "./AboutMotion";
+import { Carousel } from "./Carousel";
 import { Connector } from "./Connector";
 import { DomusMotion } from "./DomusMotion";
 import { KnowlyMotion } from "./KnowlyMotion";
@@ -75,7 +82,8 @@ export function RailsSection() {
 }
 
 // SEÇÃO 6: A WELABS
-// Company logo and one line beside the orbit of the five products; the carousels join in their own unit.
+// Company logo and one line beside the orbit of the five products; below, the two black-and-white carousels
+// (the third-party logos the Imagine site already shows, and the infra and dev platforms we use).
 export function AboutSection() {
   return (
     <section
@@ -98,6 +106,18 @@ export function AboutSection() {
             <AboutMotion />
           </MotionStage>
         </div>
+        <Carousel
+          label={CLIENTS_LABEL}
+          logos={CLIENT_LOGOS}
+          kind="clients"
+          seconds={40}
+        />
+        <Carousel
+          label={PLATFORMS_LABEL}
+          logos={PLATFORM_LOGOS}
+          kind="platforms"
+          seconds={60}
+        />
       </div>
       <Connector />
     </section>

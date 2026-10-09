@@ -1,7 +1,7 @@
 /* SEÇÃO 6: A WELABS */
 /* The company logo and one line beside a slow orbit of five dots (one per product); below, two black-and-white
    carousels. Without data-live the orbit is still and the carousels are a wrapped row of logos. */
-.about .wrap {
+.about > div {
   display: grid;
   gap: clamp(48px, 9vh, 96px);
 }
@@ -78,8 +78,8 @@
 }
 /* Black and white: clients keep their shapes in grey, platform marks are solid black */
 .clients img {
-  filter: grayscale(1) contrast(1.1);
-  opacity: 0.85;
+  filter: grayscale(1) contrast(1.35) brightness(0.8);
+  opacity: 0.9;
 }
 .platforms img {
   filter: brightness(0);
