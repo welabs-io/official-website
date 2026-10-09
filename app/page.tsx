@@ -1,35 +1,12 @@
 import type { Metadata } from "next";
-import { WelabsHome } from "@/components/InstitutionalSite";
-const copy = {
-  pt: [
-    "Empresa e produtos | Welabs",
-    "Criamos produtos próprios para gestão, relacionamento, automação e conhecimento.",
-  ],
-  en: [
-    "Company and products | Welabs",
-    "We build our own products for management, relationships, automation and knowledge.",
-  ],
+import { OnePage } from "@/components/onepage/OnePage";
+
+export const metadata: Metadata = {
+  title: "Welabs | Produtos próprios de software",
+  description: "Domus, Relloo, Magneto, Tuner e Knowly.",
+  robots: { index: false, follow: false },
 };
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<{ lang?: string }>;
-}): Promise<Metadata> {
-  const en = (await searchParams).lang === "en";
-  const [title, description] = copy[en ? "en" : "pt"];
-  return {
-    title,
-    description,
-    robots: { index: false, follow: false },
-    openGraph: {
-      type: "website",
-      siteName: "Welabs",
-      title,
-      description,
-      locale: en ? "en_US" : "pt_BR",
-    },
-  };
-}
+
 export default function Page() {
-  return <WelabsHome />;
+  return <OnePage />;
 }
