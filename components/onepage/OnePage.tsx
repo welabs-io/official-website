@@ -3,13 +3,20 @@
 // Seven sections, one idea per screen, alternating graphite and cream bands. The product moves on its own inside the
 // block (see LiveStage and motion-controller); the chain section is driven by scrolling. Copy follows the operator's
 // approved structure of 2026-10-09; the only call to action is "Conversar com a Welabs".
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ByWelabs } from "../ByWelabs";
 import { imagineContactHref } from "@/lib/sister-site";
 import motionData from "@/lib/onepage-motion.json";
 import { HubLive } from "./HubLive";
-import { LiveStage } from "./LiveStage";
+import { LiveStage, ensurePlayer } from "./LiveStage";
 import {
+  getController,
   getPausedServerSnapshot,
   getPausedSnapshot,
   setMotionPaused,
@@ -27,7 +34,7 @@ const motion = motionData as unknown as {
       poster: string;
       clip: [number, number];
       beats: number[];
-      scrub: [number, number];
+      segments: number[];
       beatPosters: string[];
     }
   >;
@@ -226,6 +233,160 @@ function Rails() {
   );
 }
 
+// SEÇÃO 5: A CADEIA CONDUZIDA PELA ROLAGEM
+// The only section where scrolling drives the film: the section is tall, its content sticks, and the scroll progress
+// maps to a time inside the chain film (seek). Five beats, one per product; with no scrolling nothing runs, and with
+// motion paused the stage shows a still frame of the current beat instead of the player.
+const BEATS = [
+  ["Domus", "define a empresa inteira."],
+  ["Relloo", "atende colado ao centro."],
+  ["Magneto", "é o workflow que passa por tudo."],
+  ["Tuner", "entrega em todo canal."],
+  ["Knowly", "explica com a fonte junto."],
+];
+type ChainPlayer = HTMLElement & {
+  seek?: (t: number) => void;
+  pause?: () => void;
+};
+
+function Chain() {
+  const film = motion.films.chain;
+  const outer = useRef<HTMLElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const player = useRef<ChainPlayer | null>(null);
+  const targetTime = useRef(film.segments[0]);
+  const isReady = useRef(false);
+  const frame = useRef(0);
+  const [beat, setBeat] = useState(0);
+  const [live, setLive] = useState(false);
+  const [ready, setReady] = useState(false);
+  const setPlayer = useCallback((el: ChainPlayer | null) => {
+    player.current = el;
+  }, []);
+
+  // One seek per animation frame, to the time the scroll progress maps to
+  const applySeek = useCallback(() => {
+    frame.current = 0;
+    if (isReady.current) player.current?.seek?.(targetTime.current);
+  }, []);
+
+  // Scroll progress of the tall section -> chain time and current beat
+  useEffect(() => {
+    const update = () => {
+      const el = outer.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const span = r.height - window.innerHeight;
+      const p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      // Each beat owns an equal share of the scroll and a segment of the film
+      const scaled = p * BEATS.length;
+      const i = Math.min(BEATS.length - 1, Math.floor(scaled));
+      const seg = film.segments;
+      targetTime.current = seg[i] + (scaled - i) * (seg[i + 1] - seg[i]);
+      setBeat(i);
+      if (!frame.current) frame.current = requestAnimationFrame(applySeek);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      cancelAnimationFrame(frame.current);
+    };
+  }, [film.segments, applySeek]);
+
+  // The stage joins the page controller like any other stage; its player starts paused and only seeks
+  useEffect(() => {
+    const element = stage.current;
+    if (!element) return;
+    return getController().register({
+      id: "chain-stage",
+      element,
+      mount: () => {
+        void ensurePlayer();
+        setLive(true);
+      },
+      unmount: () => {
+        isReady.current = false;
+        setLive(false);
+        setReady(false);
+      },
+      play: () => {},
+      pause: () => player.current?.pause?.(),
+    });
+  }, []);
+
+  // First frame exists: show the player and jump to the time of the current scroll position
+  useEffect(() => {
+    const el = player.current;
+    if (!live || !el) return;
+    const done = () => {
+      isReady.current = true;
+      setReady(true);
+      el.pause?.();
+      el.seek?.(targetTime.current);
+    };
+    if ((el as ChainPlayer & { ready?: boolean }).ready) queueMicrotask(done);
+    el.addEventListener("ready", done);
+    return () => el.removeEventListener("ready", done);
+  }, [live]);
+
+  return (
+    <section
+      id="cadeia"
+      ref={outer}
+      className={`${styles.band} ${styles.dark} ${styles.chain}`}
+    >
+      <div className={styles.chainSticky}>
+        <div className={`${styles.wrap} ${styles.chainGrid}`}>
+          <div className={styles.chainText}>
+            <span className={styles.eyebrow}>A cadeia</span>
+            <h2>Cinco produtos, um só caminho.</h2>
+            <p className={styles.lead}>
+              Role e veja cada um entrar na conversa.
+            </p>
+            <ol className={styles.beats}>
+              {BEATS.map(([name, text], i) => (
+                <li key={name} data-active={i === beat ? "true" : "false"}>
+                  <strong>{name}</strong> {text}
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div
+            ref={stage}
+            className={styles.stage}
+            data-live={live ? "true" : "false"}
+            aria-hidden="true"
+          >
+            <img
+              className={styles.stagePoster}
+              src={film.beatPosters[beat]}
+              alt=""
+              width={1920}
+              height={1080}
+              decoding="async"
+            />
+            {live && (
+              <hyperframes-player
+                ref={setPlayer}
+                src={film.src}
+                width={1920}
+                height={1080}
+                muted
+                tabIndex={-1}
+                className={styles.stagePlayer}
+                data-ready={ready ? "true" : "false"}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function OnePage() {
   const paused = useSyncExternalStore(
     subscribePaused,
@@ -265,6 +426,7 @@ export function OnePage() {
         clip={{ ...motion.films.relloo, range: motion.films.relloo.clip }}
       />
       <Rails />
+      <Chain />
       <p className={styles.support} hidden>
         {CTA_SUPPORT}
       </p>

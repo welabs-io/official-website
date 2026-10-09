@@ -45,8 +45,9 @@ const FILMS = {
   relloo: { id: "crm-omnichannel-inbox-ludic2-logos-r4-s1", clip: [20.5, 36] },
   chain: {
     id: "welabs-chain-overview-define-logos-r5-s1",
-    scrub: [6.5, 26],
-    beats: [8, 11, 16, 19.5, 23.5],
+    // Film time (s) where each beat starts and where the last one ends; beats are the still frames of each link
+    segments: [6.5, 9.5, 12.5, 15.5, 18.5, 23],
+    beats: [8, 11, 14, 17, 20.5],
   },
 };
 
@@ -129,7 +130,7 @@ const out = {
         ...piece(film.id),
         clip: film.clip ?? null,
         beats: film.beats ?? null,
-        scrub: film.scrub ?? null,
+        segments: film.segments ?? null,
         poster: `/motion/pieces/${film.id}/poster.jpg`,
         beatPosters: film.beats
           ? film.beats.map((_, i) => `/motion/pieces/${film.id}/beat-${i}.jpg`)

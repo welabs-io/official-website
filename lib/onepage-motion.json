@@ -44,7 +44,7 @@
       "duration": 36,
       "clip": [4, 26],
       "beats": null,
-      "scrub": null,
+      "segments": null,
       "poster": "/motion/pieces/hub-whole-house-ludic-logos-r4-s1/poster.jpg",
       "beatPosters": null
     },
@@ -54,7 +54,7 @@
       "duration": 45,
       "clip": [20.5, 36],
       "beats": null,
-      "scrub": null,
+      "segments": null,
       "poster": "/motion/pieces/crm-omnichannel-inbox-ludic2-logos-r4-s1/poster.jpg",
       "beatPosters": null
     },
@@ -63,8 +63,8 @@
       "src": "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/index.html",
       "duration": 34,
       "clip": null,
-      "beats": [8, 11, 16, 19.5, 23.5],
-      "scrub": [6.5, 26],
+      "beats": [8, 11, 14, 17, 20.5],
+      "segments": [6.5, 9.5, 12.5, 15.5, 18.5, 23],
       "poster": "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/poster.jpg",
       "beatPosters": [
         "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/beat-0.jpg",

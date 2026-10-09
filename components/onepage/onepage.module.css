@@ -438,6 +438,50 @@
   background: var(--a);
 }
 
+/* SEÇÃO 5: CADEIA PELA ROLAGEM */
+.chain {
+  height: 520vh;
+  padding: 0;
+}
+.chainSticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-top: 64px;
+}
+.chainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+.beats {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.beats li {
+  padding: 8px 0 8px 18px;
+  border-left: 4px solid var(--g3);
+  font-size: 17px;
+  color: var(--mute-d);
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+.beats li strong {
+  font-weight: 600;
+}
+.beats li[data-active="true"] {
+  border-left-color: var(--a);
+  color: var(--c);
+}
+
 /* RESPONSIVO */
 @media (max-width: 960px) {
   .nav {
@@ -445,6 +489,7 @@
   }
   .hero .wrap,
   .railRow,
+  .chainGrid,
   .coreGrid {
     grid-template-columns: 1fr;
   }
@@ -453,6 +498,21 @@
   }
   .core {
     min-height: 0;
+  }
+  /* Chain on a phone: the film first, the five beats below it */
+  .chainText {
+    order: 2;
+  }
+  .chainSticky {
+    align-items: flex-start;
+    padding-top: 88px;
+  }
+  .beats {
+    margin-top: 16px;
+  }
+  .beats li {
+    font-size: 15px;
+    padding: 5px 0 5px 14px;
   }
   /* Same order on every width; the film clip stays desktop only */
   .clipFigure {
