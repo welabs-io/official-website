@@ -10,6 +10,7 @@ import emphasis from "@/lib/emphasis.json";
 import motionProducts from "@/lib/motion-products.json";
 import { coverFilm } from "./MotionFilm";
 import { publicSlug } from "@/lib/public-slugs";
+import { ByWelabs } from "./ByWelabs";
 import styles from "./PortfolioShowcase.module.css";
 
 type Item = (typeof catalog)[number];
@@ -227,7 +228,9 @@ export function ProductHub({
   return (
     <div className={styles.hubFrame}>
       <p className={styles.hubLead}>
-        {en ? "Domus defines." : "O Domus define."}{" "}
+        {/* First mention of Domus on the page: "Domus by Welabs" (brand 1.5.0) */}
+        Domus
+        <ByWelabs /> {en ? "defines." : "define."}{" "}
         <span>
           {en ? "The others bring it to life." : "Os outros dão vida."}
         </span>
@@ -240,6 +243,8 @@ export function ProductHub({
             // The separator closes each item, so a wrapped line never starts with it
             <span key={e.id}>
               <strong>{entryName(e, locale)}</strong>
+              {/* The lead above already introduced Domus; the others get their first mention here */}
+              {e.id !== HUB_ID && <ByWelabs />}
               {chainJoin(e.id, i)}
               {HUB_VERB[e.id][i]}
               {n < all.length - 1 && <i aria-hidden="true">·</i>}

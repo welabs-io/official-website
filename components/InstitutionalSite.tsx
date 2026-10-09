@@ -24,6 +24,7 @@ import motionProducts from "@/lib/motion-products.json";
 import { publicSlug } from "@/lib/public-slugs";
 import { imagineHref } from "@/lib/sister-site";
 import { PRODUCT_HIGHLIGHTS } from "@/lib/product-highlights";
+import { ByWelabs } from "./ByWelabs";
 type Item = (typeof catalog)[number];
 type Locale = "pt-BR" | "en";
 const localeFor = (lang: string): Locale => (lang === "en" ? "en" : "pt-BR");
@@ -422,7 +423,11 @@ export function SolutionsPage() {
                 >
                   <span className={styles.solutionNumber}>0{i + 1}</span>
                   <div>
-                    <span className={styles.small}>{item.productName}</span>
+                    {/* First mention of each product on the page: "<Product> by Welabs" (brand 1.5.0) */}
+                    <span className={styles.small}>
+                      {item.productName}
+                      <ByWelabs />
+                    </span>
                     <h2>{title}</h2>
                     <p>{copy}</p>
                   </div>

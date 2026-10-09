@@ -8,8 +8,8 @@
     "logoClearZone": 0.11223,
     "sector": ["Canais de atendimento", "Service channels"],
     "summary": [
-      "Tuner, um contrato para todos os canais: WhatsApp oficial com número próprio e templates, central de voz com fila e transferência, e eventos assinados para qualquer produto que se conecte.",
-      "Tuner, one contract for every channel: official WhatsApp with its own number and templates, a voice centre with queues and transfers, and signed events for any product that connects."
+      "Tuner by Welabs, um contrato para todos os canais: WhatsApp oficial com número próprio e templates, central de voz com fila e transferência, e eventos assinados para qualquer produto que se conecte.",
+      "Tuner by Welabs, one contract for every channel: official WhatsApp with its own number and templates, a voice centre with queues and transfers, and signed events for any product that connects."
     ],
     "audience": [
       "Produtos e equipes que atendem por mensagem e voz.",

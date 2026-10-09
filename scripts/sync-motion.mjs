@@ -159,11 +159,11 @@ const ROUND2 = {
   "crm-omnichannel-inbox-ludic2-logos-r3-s1": reel(
     "welabs-crm",
     "Relloo · Cada pessoa com a história inteira, em qualquer canal",
-    "Os canais chegam pelo Tuner, e o Relloo reconhece a pessoa, guarda a história, leva a conversa a quem atende e junta a ligação na mesma ficha.",
+    "Os canais chegam pelo Tuner by Welabs, e o Relloo reconhece a pessoa, guarda a história, leva a conversa a quem atende e junta a ligação na mesma ficha.",
   ),
   "crm-agent-studio-ludic2-logos-r3-s1": reel(
     "welabs-crm",
-    "Relloo · Agentes de IA que respondem com o Knowly",
+    "Relloo · Agentes de IA que respondem com o Knowly by Welabs",
     "O agente nasce de peças prontas, responde com as fontes da empresa pelo Knowly, usa só o que foi liberado e é testado antes de entrar no ar.",
   ),
   "crm-flow-builder-ludic2-logos-r3-s1": reel(
@@ -207,7 +207,7 @@ const ROUND2 = {
   ),
   "channels-one-contract-ludic-logos-r4-s1": reel(
     "channels",
-    "Tuner · Todo canal num lugar só, pronto para o Relloo",
+    "Tuner · Todo canal num lugar só, pronto para o Relloo by Welabs",
     "WhatsApp, voz, chat do site e Discord chegam do mesmo jeito, o Relloo atende e vende, e um produto novo só conecta.",
     "business",
     KNOWHOW,
