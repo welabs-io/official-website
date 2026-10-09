@@ -84,10 +84,17 @@ export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
     label: name,
     slug,
     segments: [
+      // The opening tail flows into the film (blend); it ends before the tagline of the opening appears
       { id: intro.id, range: [intro.tail[0], intro.tail[1]] as const },
-      filmSegment(films[0] as Film),
+      {
+        ...filmSegment(films[0] as Film),
+        // The film holds its settled last frame, then the ring rotates to the next product
+        transition: { type: "push-left", duration: MONTAGE_SWAP },
+        holdAfter: montage.holdAfter,
+      },
     ],
-    poster: poster(intro.id),
+    // Still of the formed logo (no tagline): what a neighbour shows before it plays
+    poster: `/motion/posters/tail-${slug}.jpg`,
   };
 });
 

@@ -56,8 +56,9 @@ describe("flat segments", () => {
     expect(flat).toHaveLength(PRODUCTS.length * 2);
     // opening tail -> film (same slide)
     expect(flat[0].lead).toBeCloseTo(BLEND_SECONDS);
-    // film -> next product opening (another slide)
-    expect(flat[1].lead).toBeCloseTo(SWAP_SECONDS);
+    // film -> next product: the swap of the carousel (0.4 s)
+    expect(flat[1].lead).toBeCloseTo(0.4);
+    expect(SWAP_SECONDS).toBe(1);
     for (const segment of flat)
       expect(segment.lead).toBeLessThanOrEqual(
         (segment.range[1] - segment.range[0]) * 0.8 + 1e-9,
@@ -129,7 +130,28 @@ describe("slides of the home", () => {
         ((segment.range[1] - segment.range[0]) / segment.rate) * 0.8 + 1e-9,
       );
   });
-  it("the products keep the weight order, each with a short opening tail and a 6 to 9 s clip", () => {
+  it("each product opens with the logo forming (no tagline) and its film holds the settled frame for the montage hold", () => {
+    const flat = flatten(PRODUCT_SLIDES);
+    PRODUCT_SLIDES.forEach((slide) => {
+      const entry = pieces.products[slide.slug as keyof typeof pieces.products];
+      const [tail, film] = slide.segments;
+      // The tagline and the seal of the opening start to appear at 3.65 s of every opening (pixel difference)
+      expect(tail.range[1]).toBeLessThanOrEqual(3.65 + 1e-9);
+      expect(tail.holdAfter).toBeUndefined();
+      expect(film.holdAfter).toBe(montage.holdAfter);
+      expect(film.transition?.duration).toBe(montage.swap);
+      // The film ends just after its action settled (frozen frame is the settled one)
+      const settled = (entry.films[0] as { settledAt: number }).settledAt;
+      expect(film.range[1] - settled).toBeGreaterThanOrEqual(0.1 - 1e-9);
+      expect(film.range[1] - settled).toBeLessThanOrEqual(0.12);
+      expect(slide.poster).toBe(`/motion/posters/tail-${slide.slug}.jpg`);
+    });
+    // Only the film segments hold; the opening flows straight into it
+    expect(flat.map((segment) => segment.hold)).toEqual(
+      PRODUCT_SLIDES.flatMap(() => [0, montage.holdAfter]),
+    );
+  });
+  it("the products keep the weight order, each with a short opening tail and a 3 to 9 s clip", () => {
     expect(PRODUCT_SLIDES.map((s) => s.slug)).toEqual(
       PRODUCTS.map((p) => p.slug),
     );
@@ -139,7 +161,7 @@ describe("slides of the home", () => {
       expect(tail.range[1] - tail.range[0]).toBeGreaterThanOrEqual(1.5);
       expect(tail.range[1] - tail.range[0]).toBeLessThanOrEqual(2.5);
       expect(film.id).not.toMatch(/intro/);
-      expect(film.range[1] - film.range[0]).toBeGreaterThanOrEqual(6);
+      expect(film.range[1] - film.range[0]).toBeGreaterThanOrEqual(3);
       expect(film.range[1] - film.range[0]).toBeLessThanOrEqual(9);
     }
   });

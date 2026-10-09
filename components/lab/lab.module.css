@@ -51,6 +51,15 @@
   opacity: 1;
   filter: none;
 }
+/* On the home each logo leads to the page of its product */
+.product a {
+  display: flex;
+  border-radius: 4px;
+}
+.product a:focus-visible {
+  outline: 3px solid #ffb020;
+  outline-offset: 4px;
+}
 .product img {
   display: block;
   height: clamp(18px, 3.4vh, 30px);

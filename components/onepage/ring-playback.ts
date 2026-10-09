@@ -117,6 +117,10 @@ export class Playback {
       // visible in its tile, the leaving cut stays frozen as the previous tile, and the swap is the page rotating the
       // ring on `onSwap` (no push)
       tiles?: boolean;
+      // With `tiles`: one tile per slide (the products carousel) instead of one per segment. `layers()` is indexed by
+      // slide; the segments of a slide play in the same tile and blend into each other, and a preloaded player of
+      // another slide stays hidden (the tile shows its poster) until the rotation brings it in.
+      tileBySlide?: boolean;
     },
   ) {
     this.cursor = options.start;
@@ -159,7 +163,18 @@ export class Playback {
   // Tiles mode: keep the previous cut, the current one and the ones ahead; drop every other player
   private trim() {
     const count = this.flat.length;
-    const keep = new Set([this.cursor, (this.cursor + count - 1) % count]);
+    const before = (i: number) => (i + count - 1) % count;
+    const keep = new Set([this.cursor]);
+    // The previous cut stays frozen as a neighbour. With one tile per slide it is the last segment of the previous
+    // slide (the opening of the slide that is playing now sits under its film and is no longer seen)
+    let previous = before(this.cursor);
+    if (this.options.tileBySlide)
+      while (
+        previous !== this.cursor &&
+        this.flat[previous].slide === this.flat[this.cursor].slide
+      )
+        previous = before(previous);
+    keep.add(previous);
     let index = this.cursor;
     for (let i = 0; i < this.ahead; i++) {
       index = this.after(index);
@@ -221,7 +236,10 @@ export class Playback {
     if (this.entries.has(index)) return;
     const segment = this.flat[index];
     const layers = this.options.layers();
-    const host = this.options.tiles ? layers[index] : layers[segment.slide];
+    const host =
+      this.options.tiles && !this.options.tileBySlide
+        ? layers[index]
+        : layers[segment.slide];
     if (!host) return;
     const wrap = document.createElement("div");
     wrap.style.cssText = `position:absolute;inset:0;opacity:0;transition:opacity ${FADE_MS}ms ease`;
@@ -266,7 +284,7 @@ export class Playback {
   private reveal(entry: Entry) {
     const current = this.flat[this.cursor];
     if (
-      this.options.tiles ||
+      (this.options.tiles && !this.options.tileBySlide) ||
       entry.index === this.cursor ||
       (!this.options.single && this.flat[entry.index].slide !== current.slide)
     )
@@ -339,10 +357,15 @@ export class Playback {
     const pushed = this.options.single ? from.transition : undefined;
     const bring = () => {
       // Tiles: the page rotates the ring from onSwap, nothing to animate here
-      if (this.options.tiles) {
+      if (this.options.tiles && !this.options.tileBySlide) {
         /* rotation is driven by the page */
-      } else if (pushed) this.push(current.wrap, next.wrap, pushed);
-      else {
+      } else if (this.options.tileBySlide && to.slide !== from.slide) {
+        // The incoming slide has its own tile: show its player at once, the page rotates the ring
+        next.wrap.style.transitionDuration = "0ms";
+        next.wrap.style.opacity = "1";
+      } else if (pushed && !this.options.tiles) {
+        this.push(current.wrap, next.wrap, pushed);
+      } else {
         // The fade-in lasts as long as the lead, so the overlap and the crossfade end together
         next.wrap.style.transitionDuration = `${Math.round(from.lead * 1000)}ms`;
         next.wrap.style.opacity = "1";

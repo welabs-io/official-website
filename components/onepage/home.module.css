@@ -19,21 +19,9 @@
 }
 
 /* SEÇÃO 2: PRODUTOS */
-/* The logo under the active frame; --pad aligns the wordmark with the line below. */
 .products {
-  --pt: 32px;
-  --pb: 32px;
-}
-.captionLogo {
-  display: block;
-  line-height: 0;
-  border-radius: 4px;
-}
-.captionLogo img {
-  --h: clamp(48px, 5vw, 64px);
-  display: block;
-  height: var(--h);
-  width: auto;
+  --pt: 48px;
+  --pb: 48px;
 }
 
 /* PÁGINA DE PRODUTO */
@@ -75,8 +63,8 @@
     --pb: 32px;
   }
   .products {
-    --pt: 16px;
-    --pb: 16px;
+    --pt: 32px;
+    --pb: 32px;
   }
   .closing {
     gap: 20px;
