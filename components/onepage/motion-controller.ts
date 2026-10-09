@@ -1,9 +1,9 @@
-// CONTROLADOR DE MOTION DA PÁGINA /new
-// One controller owns every live motion of the one-page preview. A slot is a stage that can mount a player,
-// play, pause and unmount it. Rules: a slot is eligible only while at least `visibleRatio` of it is on screen;
-// at most `maxLive` eligible slots are mounted at once (the most visible first); a slot that leaves the screen is
-// paused and then unmounted; while the page is paused (user choice, or reduced motion until the user opts in)
-// or hidden nothing is mounted at all and every stage shows its poster.
+// CONTROLADOR DE MOTION DA PÁGINA
+// One controller owns every live motion of the page. A slot is a stage that can mount a player, play, pause and
+// unmount it. Rules: a slot is eligible only while at least `visibleRatio` of it is on screen; at most `maxLive`
+// eligible slots are mounted at once (the most visible first); a slot that leaves the screen is paused and then
+// unmounted; under reduced motion, or while the tab is hidden, nothing is mounted at all and every stage shows its
+// cover frame. There is no user control: the page has no pause button.
 
 export type MotionSlot = {
   id: string;
@@ -33,7 +33,7 @@ export type ControllerOptions = {
   maxLive?: number;
   // Minimum share of the stage on screen for it to run (the khal.ai pattern uses 0.1)
   visibleRatio?: number;
-  // Reduced motion starts the page paused: posters only, until the user presses resume
+  // Reduced motion keeps every stage on its cover frame for the whole visit
   reducedMotion?: boolean;
   observerFactory?: ObserverFactory;
 };
@@ -54,14 +54,14 @@ export class MotionController {
   private states = new Map<string, SlotState>();
   private observer: ObserverLike;
   private counter = 0;
-  private paused: boolean;
+  readonly reducedMotion: boolean;
   private hidden = false;
   private listeners = new Set<() => void>();
 
   constructor(options: ControllerOptions = {}) {
     this.maxLive = options.maxLive ?? 2;
     this.visibleRatio = options.visibleRatio ?? 0.1;
-    this.paused = options.reducedMotion ?? false;
+    this.reducedMotion = options.reducedMotion ?? false;
     const factory: ObserverFactory =
       options.observerFactory ??
       ((callback, thresholds) =>
@@ -78,14 +78,11 @@ export class MotionController {
       .sort((a, b) => a.order - b.order)
       .map((s) => s.slot.id);
   }
-  get isPaused() {
-    return this.paused;
-  }
   isLive(id: string) {
     return this.states.get(id)?.mounted ?? false;
   }
 
-  // Subscribe to state changes (live set or paused flag); returns the unsubscribe function
+  // Subscribe to changes of the live set; returns the unsubscribe function
   subscribe(listener: () => void) {
     this.listeners.add(listener);
     return () => {
@@ -109,13 +106,6 @@ export class MotionController {
       this.states.delete(slot.id);
       this.reconcile();
     };
-  }
-
-  setPaused(paused: boolean) {
-    if (this.paused === paused) return;
-    this.paused = paused;
-    this.reconcile();
-    this.emit();
   }
 
   // The tab is hidden: nothing runs, nothing stays mounted
@@ -157,7 +147,7 @@ export class MotionController {
   private reconcile() {
     const before = this.liveIds.join("|");
     const allowed = new Set<string>();
-    if (!this.paused && !this.hidden) {
+    if (!this.reducedMotion && !this.hidden) {
       [...this.states.values()]
         .filter((s) => s.ratio >= this.visibleRatio)
         // Most visible first; registration order breaks ties

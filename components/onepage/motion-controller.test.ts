@@ -72,26 +72,16 @@ describe("MotionController", () => {
     expect(controller.liveIds.length).toBeLessThanOrEqual(2);
   });
 
-  it("starts paused under reduced motion: posters only, nothing mounted", () => {
+  it("under reduced motion nothing is ever mounted: cover frames only, no control", () => {
     const { controller, log, slot, see } = harness({ reducedMotion: true });
     const a = slot("a");
     controller.register(a);
     see([a], { a: 1 });
-    expect(controller.isPaused).toBe(true);
+    expect(controller.reducedMotion).toBe(true);
     expect(controller.liveIds).toEqual([]);
     expect(log).toEqual([]);
-  });
-
-  it("lets the user resume after reduced motion, and pause again", () => {
-    const { controller, log, slot, see } = harness({ reducedMotion: true });
-    const a = slot("a");
-    controller.register(a);
-    see([a], { a: 1 });
-    controller.setPaused(false);
-    expect(controller.liveIds).toEqual(["a"]);
-    log.length = 0;
-    controller.setPaused(true);
-    expect(log).toEqual(["pause:a", "unmount:a"]);
+    // The controller exposes no way to resume
+    expect("setPaused" in controller).toBe(false);
   });
 
   it("releases everything while the tab is hidden and restores it after", () => {

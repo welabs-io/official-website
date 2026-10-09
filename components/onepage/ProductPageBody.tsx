@@ -1,13 +1,10 @@
 // CORPO DA PÁGINA DE PRODUTO
-// One dark band: logo with seal, one factual line and the product's motion in loop (same pieces as the home).
-import { MotionStage } from "./MotionStage";
+// One dark band: logo with seal and one factual line. The product's motion joins it in a later unit.
 import { ProductBlock } from "./ProductBlock";
-import { PRODUCT_MOTION } from "./ProductMotion";
 import type { ProductSlug } from "@/lib/products";
 import styles from "./shell.module.css";
 
 export function ProductPageBody({ slug }: { slug: ProductSlug }) {
-  const Motion = PRODUCT_MOTION[slug];
   return (
     <section
       id="product"
@@ -15,11 +12,7 @@ export function ProductPageBody({ slug }: { slug: ProductSlug }) {
       style={{ paddingTop: "calc(64px + clamp(48px, 8vh, 96px))" }}
     >
       <div className={styles.wrap}>
-        <ProductBlock slug={slug} tone="dark" link={false} heading="h1">
-          <MotionStage id={`product-${slug}`} className={styles.stage}>
-            <Motion />
-          </MotionStage>
-        </ProductBlock>
+        <ProductBlock slug={slug} tone="dark" link={false} heading="h1" />
       </div>
     </section>
   );

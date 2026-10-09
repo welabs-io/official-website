@@ -1,0 +1,102 @@
+/* CARROSSEL DE LOGOS EM PRETO E BRANCO */
+/* A slow marquee that runs while it is on screen. Two tones: "light" sits on cream (grey and solid black marks),
+   "dark" sits on graphite (white marks). Under prefers-reduced-motion it is one wrapped row, nothing cut off. */
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+}
+.label {
+  flex: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mute);
+  max-width: 11ch;
+  line-height: 1.3;
+}
+.window {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+.track {
+  display: flex;
+  width: max-content;
+}
+.set {
+  display: flex;
+  align-items: center;
+  gap: clamp(40px, 6vw, 72px);
+  padding-right: clamp(40px, 6vw, 72px);
+  margin: 0;
+  list-style: none;
+}
+.set li {
+  flex: none;
+}
+.set img {
+  display: block;
+  width: auto;
+}
+/* Black and white: logos keep their shapes in grey, platform marks are solid */
+.light.clients img {
+  filter: grayscale(1) contrast(1.35) brightness(0.8);
+  opacity: 0.9;
+}
+.dark.clients img {
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.8;
+}
+.light.platforms img {
+  filter: brightness(0);
+  opacity: 0.8;
+}
+.dark.platforms img {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+.carousel[data-on="true"] .track {
+  animation: slide var(--dur, 50s) linear infinite;
+}
+@keyframes slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 640px) {
+  .carousel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .label {
+    max-width: none;
+  }
+  .window {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .window {
+    mask-image: none;
+  }
+  .track {
+    width: auto;
+    animation: none !important;
+  }
+  .set {
+    flex-wrap: wrap;
+    row-gap: 32px;
+    padding-right: 0;
+  }
+  .set[aria-hidden="true"] {
+    display: none;
+  }
+}

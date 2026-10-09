@@ -1,25 +1,25 @@
 // PÁGINA ÚNICA
-// Seven sections in one scroll: living hub, Domus, Relloo, rails (Magneto, Tuner, Knowly), chain, Welabs, closing.
-// No video and no player: every motion is SVG/CSS drawn on the page. See PageFrame for the header and closing.
-import { Chain } from "./Chain";
-import { Hub } from "./Hub";
+// Five sections, one idea per screen, graphite and cream bands alternating. The sections are added one by one; see
+// PageFrame for the header and the footer.
+import { Carousel } from "./Carousel";
 import { PageFrame } from "./PageFrame";
-import {
-  AboutSection,
-  DomusSection,
-  RailsSection,
-  RellooSection,
-} from "./Sections";
+import { CLIENT_LOGOS, CLIENTS_LABEL } from "@/lib/partners";
+import shell from "./shell.module.css";
 
 export function OnePage() {
   return (
     <PageFrame home>
-      <Hub />
-      <DomusSection />
-      <RellooSection />
-      <RailsSection />
-      <Chain />
-      <AboutSection />
+      <section id="logos" className={`${shell.band} ${shell.light}`}>
+        <div className={shell.wrap}>
+          <Carousel
+            label={CLIENTS_LABEL}
+            logos={CLIENT_LOGOS}
+            kind="clients"
+            tone="light"
+            seconds={40}
+          />
+        </div>
+      </section>
     </PageFrame>
   );
 }

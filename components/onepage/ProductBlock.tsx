@@ -1,6 +1,5 @@
-// BLOCO DE PRODUTO
-// Logo with the "by welabs" seal and one factual line on one side, the product's motion on the other. The logo links to
-// the product page except on that page itself.
+// CABEÇALHO DE PRODUTO
+// Logo with the "by welabs" seal and one factual line. The logo links to the product page except on that page itself.
 import Link from "next/link";
 import { productBySlug, productLogo, type ProductSlug } from "@/lib/products";
 import styles from "./shell.module.css";
@@ -17,17 +16,15 @@ const LOGO_PAD: Record<ProductSlug, number> = {
 export function ProductBlock({
   slug,
   tone,
-  flip = false,
   link = true,
   heading = "h2",
-  children,
+  className,
 }: {
   slug: ProductSlug;
   tone: "dark" | "light";
-  flip?: boolean;
   link?: boolean;
   heading?: "h1" | "h2";
-  children: React.ReactNode;
+  className?: string;
 }) {
   const product = productBySlug(slug)!;
   const Heading = heading;
@@ -42,24 +39,24 @@ export function ProductBlock({
     />
   );
   return (
-    <div className={`${styles.block} ${flip ? styles.flip : ""}`}>
-      <div className={styles.blockText}>
-        <Heading style={{ margin: 0, fontSize: "inherit", lineHeight: 0 }}>
-          {link ? (
-            <Link
-              className={styles.logoLink}
-              href={`/products/${slug}`}
-              aria-label={`${product.name} by Welabs`}
-            >
-              {logo}
-            </Link>
-          ) : (
-            logo
-          )}
-        </Heading>
-        <p className={styles.line}>{product.line}</p>
-      </div>
-      {children}
+    <div
+      className={className}
+      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+    >
+      <Heading style={{ margin: 0, fontSize: "inherit", lineHeight: 0 }}>
+        {link ? (
+          <Link
+            className={styles.logoLink}
+            href={`/products/${slug}`}
+            aria-label={`${product.name} by Welabs`}
+          >
+            {logo}
+          </Link>
+        ) : (
+          logo
+        )}
+      </Heading>
+      <p className={styles.line}>{product.line}</p>
     </div>
   );
 }

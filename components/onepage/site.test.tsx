@@ -70,23 +70,9 @@ describe("pages carry little text and no slogan", () => {
       expect(p.line.split(" ").length).toBeLessThanOrEqual(6);
   });
 
-  it("the home has seven sections and the call to action points to the closing one", () => {
-    for (const id of [
-      "top",
-      "domus",
-      "relloo",
-      "rails",
-      "chain",
-      "about",
-      "contact",
-    ])
-      expect(home).toContain(`id="${id}"`);
-    expect(home).toContain('href="#contact"');
+  it("the home has its sections and the call to action", () => {
+    for (const id of ["top", "logos"]) expect(home).toContain(`id="${id}"`);
+    expect(home).toContain('href="/#contact"');
     expect(visibleText(home)).toContain("Conversar com a Welabs");
-  });
-
-  it("product logos carry the seal on every page", () => {
-    for (const p of PRODUCTS)
-      expect(home).toMatch(new RegExp(`${p.slug}-(dark|light)-endorsed\\.svg`));
   });
 });

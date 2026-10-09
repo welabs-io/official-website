@@ -95,5 +95,5 @@ export const PLATFORM_LOGOS = [
   },
 ] as const;
 
-export const CLIENTS_LABEL = "Quem confia";
+export const CLIENTS_LABEL = "Quem atendemos";
 export const PLATFORMS_LABEL = "Infraestrutura e ferramentas";

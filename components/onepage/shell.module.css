@@ -1,5 +1,6 @@
 /* BASE DA PÁGINA */
-/* Welabs 1.5.x: amber only as an area (dot, block, 4 px+ bar), graphite and cream bands, Inter text. */
+/* Welabs 1.5.x: amber only as an area (dot, block, 4 px+ bar), graphite and cream bands alternating by section,
+   Inter text. */
 .page {
   --g: #10141c;
   --g2: #161b25;
@@ -23,20 +24,20 @@
 
 .band {
   position: relative;
-  padding: clamp(72px, 11vh, 128px) 0;
+  padding: clamp(56px, 9vh, 104px) 0;
 }
 .dark {
   background: var(--g);
   color: var(--c);
   --line: var(--g3);
-  --ink-now: var(--c);
+  --mute: var(--mute-d);
   --soft: rgb(250 245 234 / 0.1);
 }
 .light {
   background: var(--c);
   color: var(--ink);
   --line: var(--cl);
-  --ink-now: var(--ink);
+  --mute: var(--mute-l);
   --soft: rgb(28 26 22 / 0.08);
 }
 .wrap {
@@ -44,16 +45,19 @@
   margin: 0 auto;
 }
 
-/* LINHA FACTUAL */
-/* The only text of a section: one short line, never a slogan. */
-.line {
-  font-size: clamp(18px, 1.7vw, 22px);
-  line-height: 1.35;
-  font-weight: 500;
-  color: var(--mute-d);
+/* TÍTULO E LINHA FACTUAL */
+/* Short title (3 to 8 words) and one supporting line, never a slogan. */
+.title {
+  font-size: clamp(30px, 4.2vw, 56px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
-.light .line {
-  color: var(--mute-l);
+.line {
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--mute);
 }
 
 /* CABEÇALHO FIXO */
@@ -64,16 +68,6 @@
   background: color-mix(in srgb, var(--g) 90%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--g3);
-}
-.progress {
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  height: 4px;
-  width: 100%;
-  background: var(--a);
-  transform-origin: 0 50%;
-  transform: scaleX(var(--p, 0));
 }
 .headerInner {
   display: flex;
@@ -90,26 +84,6 @@
 .brand img {
   height: 26px;
   width: auto;
-}
-.pause {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--g3);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--c);
-  cursor: pointer;
-}
-.pause:hover {
-  border-color: var(--a);
-}
-.pause svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
 }
 .cta {
   display: inline-flex;
@@ -137,85 +111,27 @@
     padding: 0 12px;
     font-size: 13px;
   }
-  .headerInner {
-    gap: 10px;
-  }
 }
 
-/* BLOCO DE PRODUTO */
-/* Logo and one line on one side, the motion on the other; alternating sides. */
-.block {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: clamp(32px, 6vw, 96px);
-  min-height: min(74vh, 720px);
-}
-.block.flip {
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-}
-.block.flip .blockText {
-  order: 2;
-}
-.blockText {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 20px;
-}
+/* LOGO DE PRODUTO */
+/* The logo file has built-in left padding; --pad (share of the height) aligns the wordmark with the line below. */
 .logo {
-  --h: clamp(64px, 7vw, 88px);
+  --h: clamp(56px, 6vw, 80px);
   display: block;
   height: var(--h);
   width: auto;
-  /* The logo file has built-in left padding; --pad (share of the height) aligns the wordmark with the line below */
   margin-left: calc(var(--h) * var(--pad, 0) * -1);
 }
 .logoLink {
   display: inline-block;
   border-radius: 4px;
 }
-.stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  color: var(--ink-now);
-}
-.stage > svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-@media (max-width: 820px) {
-  .block,
-  .block.flip {
-    grid-template-columns: minmax(0, 1fr);
-    min-height: 0;
-    gap: 24px;
-  }
-  .block.flip .blockText {
-    order: 0;
-  }
-  .stage {
-    max-width: 520px;
-    margin: 0 auto;
-  }
-}
 
-/* CTA E RODAPÉ */
-.closing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  min-height: 56vh;
-  justify-content: center;
-  text-align: center;
-}
+/* RODAPÉ */
 .footer {
   background: var(--g);
   border-top: 1px solid var(--g3);
-  padding: 32px 0;
+  padding: 28px 0;
 }
 .footerGrid {
   display: flex;
@@ -231,58 +147,4 @@
 .footerGrid p {
   font-size: 14px;
   color: var(--mute-d);
-}
-
-/* CONECTOR ENTRE SEÇÕES */
-/* A 4 px amber bar centred on the boundary of two sections; a lighter spark runs down it while it is on screen and
-   the page is playing. It "pulls" the eye from one section into the next. */
-.connector {
-  position: absolute;
-  left: 50%;
-  bottom: -72px;
-  z-index: 5;
-  width: 4px;
-  height: 144px;
-  margin-left: -2px;
-  overflow: hidden;
-  background: var(--a);
-  pointer-events: none;
-}
-.spark {
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 56px;
-  background: linear-gradient(to bottom, transparent, #fff4d6);
-  transform: translateY(44px);
-}
-.page[data-motion="playing"] .connector[data-on="true"] .spark {
-  animation: pull 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite backwards;
-}
-@keyframes pull {
-  from {
-    transform: translateY(-56px);
-  }
-  to {
-    transform: translateY(144px);
-  }
-}
-
-/* TRILHOS */
-/* The three rail products share one amber bar on the left edge, so they read as one line crossing the page. */
-.rails .wrap {
-  display: grid;
-  gap: clamp(40px, 8vh, 96px);
-}
-.railBar {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: max(10px, calc((100% - 1200px) / 2 - 28px));
-  width: 4px;
-  background: var(--a);
-}
-@media (max-width: 820px) {
-  .railBar {
-    left: 10px;
-  }
 }

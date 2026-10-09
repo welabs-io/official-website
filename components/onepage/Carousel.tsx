@@ -1,9 +1,9 @@
 "use client";
 // CARROSSEL DE LOGOS EM PRETO E BRANCO
-// A slow marquee that runs only while it is on screen and the page is playing; the second copy of the list exists only
-// to close the loop (aria-hidden). On a paused page (user choice or reduced motion) CSS turns it into one wrapped row.
+// A slow marquee that runs only while it is on screen; the second copy of the list exists only to close the loop
+// (aria-hidden). Under prefers-reduced-motion CSS turns it into one wrapped row.
 import { useEffect, useRef, useState } from "react";
-import styles from "./about.module.css";
+import styles from "./logos.module.css";
 
 type Logo = { name: string; src: string; h: number };
 
@@ -11,11 +11,13 @@ export function Carousel({
   label,
   logos,
   kind,
+  tone,
   seconds,
 }: {
   label: string;
   logos: readonly Logo[];
   kind: "clients" | "platforms";
+  tone: "light" | "dark";
   seconds: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,7 +48,7 @@ export function Carousel({
   return (
     <div
       ref={ref}
-      className={`${styles.carousel} ${styles[kind]}`}
+      className={`${styles.carousel} ${styles[kind]} ${styles[tone]}`}
       data-on={on ? "true" : "false"}
       style={{ "--dur": `${seconds}s` } as React.CSSProperties}
       role="region"
