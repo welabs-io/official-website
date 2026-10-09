@@ -1,36 +1,17 @@
 // PÁGINA ÚNICA
-// Five sections, one idea per screen, graphite and cream bands alternating. The sections are added one by one; see
-// PageFrame for the header and the footer.
-import { Carousel } from "./Carousel";
-import { Chain } from "./Chain";
+// Three sections, no pause between them: the chain at the top (title, line, button and the ring of the four chain
+// films), the products (ring with each product's opening tail flowing into its film), and the closing (clients and
+// platforms in one theme, final button). See PageFrame for the header and the footer.
 import { Closing } from "./Closing";
 import { Hero } from "./Hero";
 import { PageFrame } from "./PageFrame";
 import { Products } from "./Products";
-import { CLIENT_LOGOS, CLIENTS_LABEL } from "@/lib/partners";
-import home from "./home.module.css";
-import shell from "./shell.module.css";
 
 export function OnePage() {
   return (
     <PageFrame home>
       <Hero />
-      <section
-        id="logos"
-        className={`${shell.band} ${shell.light} ${home.strip}`}
-      >
-        <div className={shell.wrap}>
-          <Carousel
-            label={CLIENTS_LABEL}
-            logos={CLIENT_LOGOS}
-            kind="clients"
-            tone="light"
-            seconds={40}
-          />
-        </div>
-      </section>
       <Products />
-      <Chain />
       <Closing />
     </PageFrame>
   );

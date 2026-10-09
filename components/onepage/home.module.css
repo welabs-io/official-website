@@ -1,75 +1,30 @@
 /* SEÇÕES DA HOME */
-/* One idea per screen; the bands alternate graphite and cream. */
+/* Compact: no minimum heights, no empty area bigger than a title line. Gaps between title, line and ring are 12 to
+   24 px. The ring takes the whole wrap. */
 
-/* SEÇÃO 1: TOPO */
+/* SEÇÃO 1: TOPO E CADEIA */
 .hero {
-  display: flex;
-  align-items: center;
-  min-height: 100vh;
-  padding-top: calc(64px + clamp(32px, 6vh, 72px));
-}
-.heroGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
+  --pt: calc(var(--header-h) + 24px);
+  --pb: 24px;
 }
 .heroText {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-}
-.heroStage {
-  display: grid;
-  gap: 20px;
-}
-/* The manual switch under the frame: names, the active one marked by a 4 px amber block */
-.names {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.names button {
-  position: relative;
-  min-height: 44px;
-  padding: 0 0 0 14px;
-  border: 0;
-  background: none;
-  color: var(--mute);
-  font: inherit;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-}
-.names button::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 4px;
-  height: 18px;
-  margin-top: -9px;
-  background: transparent;
-}
-.names button[aria-pressed="true"] {
-  color: inherit;
-}
-.names button[aria-pressed="true"]::before {
-  background: var(--a);
-}
-/* SEÇÃO 2 E 5: FAIXAS DE LOGOS */
-/* Thin bands, one carousel each, black and white. */
-.strip {
-  display: flex;
   align-items: center;
-  min-height: 55vh;
+  gap: 12px;
+  text-align: center;
 }
-.strip > * {
-  width: min(1200px, 100% - 48px);
+.heroText .title {
+  max-width: 24ch;
+}
+.heroText .line {
+  max-width: 52ch;
+}
+.heroText > a {
+  margin-top: 4px;
+}
+.heroRing {
+  margin-top: 20px;
 }
 
 .srOnly {
@@ -81,127 +36,50 @@
   white-space: nowrap;
 }
 
-/* SEÇÃO 3: PRODUTOS */
-/* Logos in a column (the active one larger, with its line) beside the reel. */
+/* SEÇÃO 2: PRODUTOS */
+/* The logo under the active frame; --pad aligns the wordmark with the line below. */
 .products {
-  display: flex;
-  align-items: center;
-  min-height: 105vh;
+  --pt: 32px;
+  --pb: 32px;
 }
-.productsGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
-}
-.list {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.list li {
-  display: grid;
-  gap: 10px;
-  padding: 10px 0 10px 20px;
-  border-left: 4px solid transparent;
-}
-.list li[data-active="true"] {
-  border-left-color: var(--a);
-}
-.listLink {
-  display: inline-block;
-  align-self: start;
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  cursor: pointer;
+.captionLogo {
+  display: block;
   line-height: 0;
+  border-radius: 4px;
 }
-.listLogo {
-  height: 40px;
-  width: auto;
-  margin-left: calc(40px * var(--pad, 0) * -1);
-  opacity: 0.5;
-  transition:
-    height 0.25s ease,
-    margin-left 0.25s ease,
-    opacity 0.25s ease;
-}
-.list li[data-active="true"] .listLogo {
-  --h: clamp(56px, 6vw, 80px);
+.captionLogo img {
+  --h: clamp(48px, 5vw, 64px);
+  display: block;
   height: var(--h);
-  margin-left: calc(var(--h) * var(--pad, 0) * -1);
-  opacity: 1;
-}
-.listLink:hover .listLogo {
-  opacity: 0.85;
+  width: auto;
 }
 
 /* PÁGINA DE PRODUTO */
 .productPage {
-  display: flex;
-  align-items: center;
-  min-height: min(100vh, 900px);
-  padding-top: calc(64px + clamp(32px, 6vh, 72px));
+  --pt: calc(var(--header-h) + 24px);
+  --pb: 32px;
 }
 .productPageGrid {
   display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
+  justify-items: center;
+  gap: 16px;
 }
-/* Manual switch of the product reel: small squares, the active one amber */
-.dots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.dots button {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-.dots button::before {
-  content: "";
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  top: 20px;
-  height: 4px;
-  background: var(--g3);
-}
-.dots button[aria-pressed="true"]::before {
-  background: var(--a);
-}
-@media (max-width: 860px) {
-  .productPage {
-    min-height: 0;
-  }
-  .productPageGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.productPageGrid > :first-child {
+  justify-self: start;
 }
 
-/* SEÇÃO 5: PLATAFORMAS E FECHAMENTO */
+/* SEÇÃO 3: FECHAMENTO */
 .closing {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: clamp(56px, 12vh, 120px);
-  min-height: 100vh;
+  gap: 24px;
+  --pt: 24px;
+  --pb: 40px;
 }
-.closing > :first-child {
-  width: min(1200px, 100% - 48px);
+.strips {
+  display: grid;
+  gap: 0;
 }
 .contact {
   display: flex;
@@ -209,87 +87,19 @@
   scroll-margin-top: 96px;
 }
 
-/* SEÇÃO 4: CADEIA */
-/* The film on the left and the list of the five products on the right; a row lights as the film reaches its product:
-   the current one with a 4 px amber block, the ones already shown stay lit, the ones to come are dim. */
-.chain {
-  display: flex;
-  align-items: center;
-  min-height: 105vh;
-}
-.chainGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
-}
-.chainText {
-  display: grid;
-  gap: 28px;
-}
-.chainText .title {
-  font-size: clamp(26px, 3vw, 40px);
-}
-.steps {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.steps li {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 0 8px 20px;
-  border-left: 4px solid transparent;
-  transition:
-    opacity 0.3s ease,
-    border-color 0.3s ease;
-}
-.steps img {
-  flex: none;
-  height: 44px;
-  width: auto;
-  margin-left: calc(44px * var(--pad, 0) * -1);
-}
-.steps p {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--mute);
-}
-.steps li[data-state="idle"] {
-  opacity: 0.32;
-}
-.steps li[data-state="done"] {
-  opacity: 0.85;
-}
-.steps li[data-state="current"] {
-  opacity: 1;
-  border-left-color: var(--a);
-}
-
 @media (max-width: 860px) {
-  .chain {
-    min-height: 0;
+  .hero {
+    --pb: 16px;
   }
-  .chainGrid {
-    grid-template-columns: minmax(0, 1fr);
+  .heroRing {
+    margin-top: 12px;
   }
   .products {
-    min-height: 0;
+    --pt: 16px;
+    --pb: 16px;
   }
-  .productsGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  /* The frame comes first on a narrow screen */
-  .productsGrid > :last-child {
-    order: -1;
-  }
-  .hero {
-    min-height: 0;
-  }
-  .heroGrid {
-    grid-template-columns: minmax(0, 1fr);
+  .closing {
+    gap: 20px;
+    --pb: 32px;
   }
 }

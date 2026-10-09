@@ -43,6 +43,7 @@ export function Ring({
   slides,
   caption,
   swap = SWAP_SECONDS,
+  ahead = 1,
   eager = false,
 }: {
   id: string;
@@ -52,6 +53,8 @@ export function Ring({
   caption?: (slide: Slide) => ReactNode;
   // Duration of the position swap, in seconds (also the lead of the handoff between slides)
   swap?: number;
+  // Segments ahead that keep a ready player (short clips need two)
+  ahead?: number;
   eager?: boolean;
 }) {
   const box = useRef<HTMLDivElement>(null);
@@ -101,6 +104,7 @@ export function Ring({
           flat,
           layers: () => layers.current,
           start: startAt(),
+          ahead,
           onSlide: setActive,
           onSwap: (info) => swapped(info.to, info.from),
         });

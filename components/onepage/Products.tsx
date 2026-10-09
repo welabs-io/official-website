@@ -1,70 +1,55 @@
 "use client";
-// SEÇÃO 3: PRODUTOS
-// The five products as a list of logos with the seal, the active one showing its factual line, beside a reel that plays
-// each product's opening followed by a clip of its film and moves on to the next product on its own. Picking a logo
-// switches by hand; the logo of the active product links to its page.
-import { useState } from "react";
+// SEÇÃO 2: PRODUTOS
+// The five products in a circular ring, in weight order (Domus, Relloo, Magneto, Tuner, Knowly). Each one enters with
+// the last seconds of its opening, the part that forms the logo, which flows straight into a clip of its film. Under
+// the active frame: the logo with the seal (a link to the product page) and one factual line.
 import Link from "next/link";
-import { PRODUCT_SLIDES } from "@/lib/motion-slides";
-import { LOGO_PAD, PRODUCTS, productLogo } from "@/lib/products";
-import { Reel } from "./Reel";
+import { PRODUCT_SLIDES, type Slide } from "@/lib/motion-slides";
+import {
+  LOGO_PAD,
+  productBySlug,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
+import { Ring } from "./Ring";
 import styles from "./home.module.css";
 import shell from "./shell.module.css";
 
+function Caption({ slide }: { slide: Slide }) {
+  const product = productBySlug(slide.slug as ProductSlug)!;
+  return (
+    <>
+      <Link
+        href={`/products/${product.slug}`}
+        className={styles.captionLogo}
+        aria-label={`${product.name} by Welabs`}
+      >
+        <img
+          src={productLogo(product.slug, "light")}
+          alt={`${product.name} by Welabs`}
+          width={1005}
+          height={550}
+          style={{ "--pad": LOGO_PAD[product.slug] } as React.CSSProperties}
+        />
+      </Link>
+      <p className={shell.line}>{product.line}</p>
+    </>
+  );
+}
+
 export function Products() {
-  const [index, setIndex] = useState(0);
   return (
     <section
       id="products"
-      className={`${shell.band} ${shell.dark} ${styles.products}`}
+      className={`${shell.band} ${shell.light} ${styles.products}`}
     >
       <h2 className={styles.srOnly}>Produtos</h2>
-      <div className={`${shell.wrap} ${styles.productsGrid}`}>
-        <ul className={styles.list}>
-          {PRODUCTS.map((product, i) => {
-            const active = i === index;
-            const logo = (
-              <img
-                src={productLogo(product.slug, "dark")}
-                alt={`${product.name} by Welabs`}
-                width={1005}
-                height={550}
-                className={styles.listLogo}
-                style={
-                  { "--pad": LOGO_PAD[product.slug] } as React.CSSProperties
-                }
-              />
-            );
-            return (
-              <li key={product.slug} data-active={active ? "true" : "false"}>
-                {active ? (
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className={styles.listLink}
-                    aria-label={`${product.name} by Welabs`}
-                  >
-                    {logo}
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.listLink}
-                    onClick={() => setIndex(i)}
-                    aria-label={`${product.name} by Welabs`}
-                  >
-                    {logo}
-                  </button>
-                )}
-                {active && <p className={shell.line}>{product.line}</p>}
-              </li>
-            );
-          })}
-        </ul>
-        <Reel
+      <div className={shell.wrap}>
+        <Ring
           id="products"
+          label="Produtos da Welabs"
           slides={PRODUCT_SLIDES}
-          index={index}
-          onIndex={setIndex}
+          caption={(slide) => <Caption slide={slide} />}
         />
       </div>
     </section>

@@ -20,8 +20,8 @@ export async function generateMetadata({
   const product = productBySlug((await params).slug);
   if (!product) return { title: "Welabs" };
   return {
-    // The category term (ERP, CRM...) lives here only, never in the visible text
-    title: `${product.name} by Welabs · ${product.category}`,
+    // The category term (ERP, CRM...) lives in the description and keywords only, never in the visible text or the title
+    title: `${product.name} by Welabs`,
     description: `${product.category} da Welabs. ${product.line}.`,
     keywords: [...product.keywords],
     robots: { index: false, follow: false },

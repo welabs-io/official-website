@@ -12,6 +12,9 @@
   --ink: #1c1a16;
   --mute-d: #9da3ae;
   --mute-l: #625b4e;
+  /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
+  --header-h: 72px;
+  --logo-h: 42px;
   background: var(--g);
   color: var(--c);
   overflow-x: clip;
@@ -24,7 +27,8 @@
 
 .band {
   position: relative;
-  padding: clamp(56px, 9vh, 104px) 0;
+  /* 48 px between sections on desktop, 32 px on a phone; a section may set --pt and --pb */
+  padding: var(--pt, clamp(32px, 4vw, 48px)) 0 var(--pb, clamp(32px, 4vw, 48px));
 }
 .dark {
   background: var(--g);
@@ -48,7 +52,7 @@
 /* TÍTULO E LINHA FACTUAL */
 /* Short title (3 to 8 words) and one supporting line, never a slogan. */
 .title {
-  font-size: clamp(30px, 4.2vw, 56px);
+  font-size: clamp(28px, 3.6vw, 48px);
   line-height: 1.08;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -74,16 +78,23 @@
   align-items: center;
   gap: 16px;
   width: min(1200px, 100% - 48px);
-  height: 64px;
+  height: var(--header-h);
   margin: 0 auto;
 }
 .brand {
   display: block;
   margin-right: auto;
+  line-height: 0;
 }
 .brand img {
-  height: 26px;
+  height: var(--logo-h);
   width: auto;
+}
+@media (max-width: 520px) {
+  .page {
+    --header-h: 56px;
+    --logo-h: 34px;
+  }
 }
 .cta {
   display: inline-flex;
