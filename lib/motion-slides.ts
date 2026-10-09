@@ -18,6 +18,8 @@ export type Segment = {
   transition?: PushTransition;
   // Seconds the last frame of the range stays still before the next segment starts (workbench montage)
   holdAfter?: number;
+  // Products this cut shows (they light up in the product row of the workbench)
+  products?: readonly ProductSlug[];
 };
 
 // Push transition: the incoming clip slides over the leaving one, both move together (no overlap of captions)
@@ -69,6 +71,7 @@ export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
     // A cut may override the default hold of the montage
     holdAfter:
       (segment as { holdAfter?: number }).holdAfter ?? montage.holdAfter,
+    products: segment.products as ProductSlug[],
   })),
   poster: poster(`montage-${i + 1}`),
 }));

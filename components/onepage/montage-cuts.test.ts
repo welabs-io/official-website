@@ -72,8 +72,8 @@ describe("montage cuts follow the beat map", () => {
     },
   );
 
-  it("every cut holds its last frame for the explicit holdAfter (2 s) before the push", () => {
-    expect(montage.holdAfter).toBe(2);
+  it("every cut holds its last frame for the explicit holdAfter (1 s) before the push", () => {
+    expect(montage.holdAfter).toBe(1);
     const flat = flatten(MONTAGE_SLIDES, montage.swap);
     expect(flat).toHaveLength(9);
     for (const segment of flat) {
@@ -95,6 +95,35 @@ describe("montage cuts follow the beat map", () => {
     expect(
       end("welabs-chain-journey-define-logos-r6-s1", 25.3),
     ).toBeGreaterThanOrEqual(30.6);
+  });
+
+  it("every cut names the products it shows, and the map is the one of the operator", () => {
+    const order = ["domus", "relloo", "magneto", "tuner", "knowly"];
+    const map = montage.steps.flatMap((s) =>
+      s.segments.map((c) => (c as { products?: string[] }).products),
+    );
+    expect(map).toEqual([
+      ["tuner"],
+      ["relloo", "tuner"],
+      ["relloo"],
+      ["domus", "relloo"],
+      ["domus"],
+      ["domus", "magneto"],
+      ["domus", "relloo", "magneto", "tuner", "knowly"],
+      ["knowly"],
+      ["knowly", "relloo"],
+    ]);
+    for (const products of map)
+      for (const p of products ?? []) expect(order).toContain(p);
+    // A relation cut lights two or more products; a product cut lights its own (the one of its step)
+    montage.steps.forEach((step) =>
+      step.segments.forEach((c) => {
+        const products = (c as { products?: string[] }).products ?? [];
+        if (c.kind === "relation")
+          expect(products.length).toBeGreaterThanOrEqual(2);
+        else expect(products).toContain(step.product);
+      }),
+    );
   });
 
   it("the beat map has no hold shorter than the minimum", () => {

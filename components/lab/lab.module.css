@@ -5,17 +5,52 @@
    rotation is one CSS transition whose duration (--swap-time) the page sets per swap: 0.4 s between products, 0.3 s
    inside one. */
 .screen {
+  --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
   place-items: center;
+  align-content: center;
+  gap: clamp(12px, 3vh, 28px);
   overflow: hidden;
   background: #0b0e14;
 }
+/* FILEIRA DE PRODUTOS */
+/* Five logos in weight order. The ones the active cut shows are lit (full colour and opacity); the others are grey at
+   35%. The change uses the same duration and ease as the ring rotation. Not clickable. */
+.products {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(14px, 3.5vw, 40px);
+  width: 100%;
+  margin: 0;
+  padding: 0 16px;
+  list-style: none;
+}
+.product {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  opacity: 0.35;
+  filter: grayscale(1);
+  transition:
+    opacity var(--swap-time, 0.4s) var(--ease, ease),
+    filter var(--swap-time, 0.4s) var(--ease, ease);
+}
+.product[data-on="true"] {
+  opacity: 1;
+  filter: none;
+}
+.product img {
+  display: block;
+  height: clamp(18px, 3.4vh, 30px);
+  width: auto;
+  max-width: 100%;
+}
 .stage {
   --tw: 62;
-  --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
   position: relative;
   width: 100%;
   aspect-ratio: calc(100 / (var(--tw) * 0.5625));
@@ -86,7 +121,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tile {
+  .tile,
+  .product {
     transition: none;
   }
 }

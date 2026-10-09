@@ -1,6 +1,6 @@
 {
   "swap": 0.4,
-  "holdAfter": 2,
+  "holdAfter": 1,
   "cycle": {
     "note": "cycle = sum of (clip time on screen + holdAfter - transition duration) over the cuts. The clip plays from start to end (end falls after the action settled), its last frame stays still for holdAfter seconds (a cut may override it with its own holdAfter) and only then the next cut is pushed in; the leaving clip stays until the push ends."
   },
@@ -17,6 +17,7 @@
         {
           "kind": "product",
           "film": "channels-one-contract-ludic-logos-r5-s1",
+          "products": ["tuner"],
           "start": 14.1,
           "end": 17.35,
           "rate": 1.25,
@@ -32,6 +33,7 @@
         {
           "kind": "relation",
           "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+          "products": ["relloo", "tuner"],
           "start": 7.5,
           "end": 12.5,
           "rate": 2,
@@ -41,6 +43,7 @@
         {
           "kind": "product",
           "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+          "products": ["relloo"],
           "start": 19.75,
           "end": 24.4,
           "rate": 1.75,
@@ -56,6 +59,7 @@
         {
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
+          "products": ["domus", "relloo"],
           "start": 6.5,
           "end": 10.9,
           "rate": 1.75,
@@ -65,6 +69,7 @@
         {
           "kind": "product",
           "film": "hub-whole-house-ludic-logos-r4-s1",
+          "products": ["domus"],
           "start": 14,
           "end": 17.75,
           "rate": 1.5,
@@ -80,6 +85,7 @@
         {
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
+          "products": ["domus", "magneto"],
           "start": 25.3,
           "end": 30.6,
           "rate": 1.9,
@@ -89,6 +95,7 @@
         {
           "kind": "relation",
           "film": "welabs-chain-horizon-define-logos-r6-s1",
+          "products": ["domus", "relloo", "magneto", "tuner", "knowly"],
           "start": 22.9,
           "end": 26.65,
           "rate": 1.5,
@@ -104,6 +111,7 @@
         {
           "kind": "product",
           "film": "kb-ask-with-proof-ludic-logos-r5-s1",
+          "products": ["knowly"],
           "start": 13.6,
           "end": 17.95,
           "rate": 1.75,
@@ -113,6 +121,7 @@
         {
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
+          "products": ["knowly", "relloo"],
           "start": 12.7,
           "end": 17.1,
           "rate": 1.75,

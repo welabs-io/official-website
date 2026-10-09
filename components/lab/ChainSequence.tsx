@@ -11,15 +11,23 @@ import { ensurePlayer } from "@/components/onepage/player";
 import { Playback, flatten } from "@/components/onepage/ring-playback";
 import { ringPosition } from "@/components/onepage/Ring";
 import { MONTAGE_SLIDES } from "@/lib/motion-slides";
+import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
 import styles from "./lab.module.css";
 
 // One tile per cut, in playing order
 const CUTS = flatten(MONTAGE_SLIDES);
+// Products of each cut, in playing order (same order as CUTS)
+export const CUT_PRODUCTS: readonly (readonly ProductSlug[])[] =
+  MONTAGE_SLIDES.flatMap((slide) =>
+    slide.segments.map((segment) => segment.products ?? []),
+  );
 
 export function ChainSequence() {
   const stage = useRef<HTMLDivElement>(null);
   const tiles = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
+  // Products shown by the active cut (explicit `products` field of each cut in lib/home-montage.json)
+  const lit = CUT_PRODUCTS[active] ?? [];
 
   // Playback of the whole montage: every cut owns the layer container of its tile
   useEffect(() => {
@@ -89,8 +97,13 @@ export function ChainSequence() {
   }, []);
 
   return (
-    <div className={styles.screen} data-cut={active + 1}>
-      <div className={styles.stage} ref={stage} data-ring="lab-chain">
+    <div
+      className={styles.screen}
+      ref={stage}
+      data-cut={active + 1}
+      data-lit={lit.join(",")}
+    >
+      <div className={styles.stage} data-ring="lab-chain">
         {CUTS.map((cut, i) => {
           const pos = ringPosition(i, active, CUTS.length);
           // Everything past the first neighbour sits hidden behind, on its own side
@@ -123,6 +136,22 @@ export function ChainSequence() {
           );
         })}
       </div>
+      <ul className={styles.products} aria-label="Produtos">
+        {PRODUCTS.map(({ slug, name }) => (
+          <li
+            key={slug}
+            className={styles.product}
+            data-on={lit.includes(slug) ? "true" : "false"}
+          >
+            <img
+              src={productLogo(slug, "dark")}
+              alt={name}
+              height={28}
+              decoding="async"
+            />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
