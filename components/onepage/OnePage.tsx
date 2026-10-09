@@ -170,6 +170,62 @@ function CoreSection({
   );
 }
 
+// SEÇÃO 4: TRILHOS
+// Magneto, Tuner and Knowly: one row each, the product opening in loop and its phrase as the heading. The amber
+// connector on the left runs back to the core and lights up while the row's opening is live.
+const RAILS = [
+  {
+    key: "magneto",
+    name: "Magneto",
+    title: "Do jeito que você explica, ele automatiza.",
+    lead: "Planilha, e-mail e lembrete viram um fluxo em blocos, sem programar.",
+  },
+  {
+    key: "tuner",
+    name: "Tuner",
+    title: "Todo canal, uma conversa só.",
+    lead: "WhatsApp, voz e chat do site chegam do mesmo jeito, prontos para o Relloo.",
+  },
+  {
+    key: "knowly",
+    name: "Knowly",
+    title: "Não é só memória, é conhecimento.",
+    lead: "Documentos, reuniões e tickets viram respostas, com a fonte de cada frase.",
+  },
+];
+function Rails() {
+  return (
+    <section
+      id="trilhos"
+      className={`${styles.band} ${styles.light} ${styles.rails}`}
+    >
+      <div className={styles.wrap}>
+        <span className={styles.eyebrow}>Trilhos</span>
+        <div className={styles.railList}>
+          {RAILS.map((r) => (
+            <article key={r.key} className={styles.railRow}>
+              <span className={styles.connector} aria-hidden="true" />
+              <div className={styles.railText}>
+                <span className={styles.eyebrow}>
+                  {r.name}
+                  <ByWelabs />
+                </span>
+                <h2>{r.title}</h2>
+                <p className={styles.lead}>{r.lead}</p>
+              </div>
+              <LiveStage
+                id={`rail-${r.key}`}
+                src={motion.intros[r.key].src}
+                poster={motion.intros[r.key].poster}
+              />
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function OnePage() {
   const paused = useSyncExternalStore(
     subscribePaused,
@@ -208,6 +264,7 @@ export function OnePage() {
         intro={motion.intros.relloo}
         clip={{ ...motion.films.relloo, range: motion.films.relloo.clip }}
       />
+      <Rails />
       <p className={styles.support} hidden>
         {CTA_SUPPORT}
       </p>

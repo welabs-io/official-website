@@ -403,12 +403,48 @@
   color: var(--mute-l);
 }
 
+/* SEÇÃO 4: TRILHOS */
+.railList {
+  display: grid;
+  gap: clamp(40px, 8vh, 88px);
+  margin-top: 8px;
+}
+.railRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+  padding-left: 28px;
+}
+/* Connector: a 4 px bar back to the core, grey at rest and amber while the row's opening is live */
+.connector {
+  position: absolute;
+  left: 0;
+  top: -44px;
+  bottom: -44px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--cl);
+  transition: background 0.3s ease;
+}
+.railRow:first-child .connector {
+  top: 0;
+}
+.railRow:last-child .connector {
+  bottom: 50%;
+}
+.railRow:has([data-live="true"]) .connector {
+  background: var(--a);
+}
+
 /* RESPONSIVO */
 @media (max-width: 960px) {
   .nav {
     display: none;
   }
   .hero .wrap,
+  .railRow,
   .coreGrid {
     grid-template-columns: 1fr;
   }
