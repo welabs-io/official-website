@@ -28,6 +28,24 @@ export function Hub() {
           aria-label="Domus e Relloo no núcleo, Magneto, Tuner e Knowly nos trilhos"
         >
           <MotionStage id="hub" className={styles.hub}>
+            {/* The core comes first in reading order and sits above the rails by z-index */}
+            <div className={styles.core}>
+              <img
+                className={styles.coreLogo}
+                src={productLogo(CORE[0].slug, "dark")}
+                alt=""
+                width={1005}
+                height={550}
+              />
+              <span className={styles.seam} />
+              <img
+                className={styles.coreLogo}
+                src={productLogo(CORE[1].slug, "dark")}
+                alt=""
+                width={1005}
+                height={550}
+              />
+            </div>
             <div className={styles.rails}>
               {RAILS.map((r, n) => (
                 <div
@@ -47,23 +65,6 @@ export function Hub() {
                   />
                 </div>
               ))}
-            </div>
-            <div className={styles.core}>
-              <img
-                className={styles.coreLogo}
-                src={productLogo(CORE[0].slug, "dark")}
-                alt=""
-                width={1005}
-                height={550}
-              />
-              <span className={styles.seam} />
-              <img
-                className={styles.coreLogo}
-                src={productLogo(CORE[1].slug, "dark")}
-                alt=""
-                width={1005}
-                height={550}
-              />
             </div>
           </MotionStage>
         </div>

@@ -40,6 +40,10 @@ const redirects = [
   { source: "/produtos", destination: "/#products", permanent: true },
   { source: "/solucoes", destination: "/#products", permanent: true },
   { source: "/sobre", destination: "/#about", permanent: true },
+  // English routes that have no page of their own: the home already holds that content
+  { source: "/products", destination: "/#products", permanent: true },
+  { source: "/solutions", destination: "/#products", permanent: true },
+  { source: "/about", destination: "/#about", permanent: true },
   ...productRedirects("/produtos"),
   // Retired slugs under the English route
   ...productRedirects("/products").filter(

@@ -55,6 +55,7 @@
 }
 .core {
   position: absolute;
+  z-index: 1;
   top: clamp(72px, 12vh, 120px);
   left: 50%;
   transform: translateX(-50%);
