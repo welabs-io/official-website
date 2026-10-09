@@ -37,5 +37,12 @@
       "version": "current",
       "intro": "imagine-intro-s1"
     }
+  },
+  "products": {
+    "domus": "domus-intro-s2-r2",
+    "relloo": "relloo-intro-s2-r3",
+    "magneto": "magneto-intro-s3-r3",
+    "tuner": "tuner-intro-s2",
+    "knowly": "knowly-intro-s2"
   }
 }

@@ -507,3 +507,12 @@ const posters = spawnSync(
   { stdio: "inherit" },
 );
 if (posters.status !== 0) process.exit(posters.status ?? 1);
+
+// PEÇAS DA PÁGINA /new
+// The full sync wipes public/motion above, so the one-page preview pieces are copied back right after.
+const onepage = spawnSync(
+  process.execPath,
+  [join(siteRoot, "scripts/sync-onepage-motion.mjs")],
+  { stdio: "inherit" },
+);
+if (onepage.status !== 0) process.exit(onepage.status ?? 1);

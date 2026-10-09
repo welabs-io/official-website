@@ -1,0 +1,78 @@
+{
+  "intros": {
+    "domus": {
+      "id": "domus-intro-s2-r2",
+      "src": "/motion/pieces/domus-intro-s2-r2/index.html",
+      "duration": 5.4,
+      "poster": "/motion/pieces/domus-intro-s2-r2/poster.jpg"
+    },
+    "relloo": {
+      "id": "relloo-intro-s2-r3",
+      "src": "/motion/pieces/relloo-intro-s2-r3/index.html",
+      "duration": 5.4,
+      "poster": "/motion/pieces/relloo-intro-s2-r3/poster.jpg"
+    },
+    "magneto": {
+      "id": "magneto-intro-s3-r3",
+      "src": "/motion/pieces/magneto-intro-s3-r3/index.html",
+      "duration": 5.4,
+      "poster": "/motion/pieces/magneto-intro-s3-r3/poster.jpg"
+    },
+    "tuner": {
+      "id": "tuner-intro-s2",
+      "src": "/motion/pieces/tuner-intro-s2/index.html",
+      "duration": 5.4,
+      "poster": "/motion/pieces/tuner-intro-s2/poster.jpg"
+    },
+    "knowly": {
+      "id": "knowly-intro-s2",
+      "src": "/motion/pieces/knowly-intro-s2/index.html",
+      "duration": 5.4,
+      "poster": "/motion/pieces/knowly-intro-s2/poster.jpg"
+    },
+    "welabs": {
+      "id": "welabs-intro-v7-s1",
+      "src": "/motion/pieces/welabs-intro-v7-s1/index.html",
+      "duration": 8.5,
+      "poster": "/motion/pieces/welabs-intro-v7-s1/poster.jpg"
+    }
+  },
+  "films": {
+    "domus": {
+      "id": "hub-whole-house-ludic-logos-r4-s1",
+      "src": "/motion/pieces/hub-whole-house-ludic-logos-r4-s1/index.html",
+      "duration": 36,
+      "clip": [4, 26],
+      "beats": null,
+      "scrub": null,
+      "poster": "/motion/pieces/hub-whole-house-ludic-logos-r4-s1/poster.jpg",
+      "beatPosters": null
+    },
+    "relloo": {
+      "id": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+      "src": "/motion/pieces/crm-omnichannel-inbox-ludic2-logos-r4-s1/index.html",
+      "duration": 45,
+      "clip": [20.5, 36],
+      "beats": null,
+      "scrub": null,
+      "poster": "/motion/pieces/crm-omnichannel-inbox-ludic2-logos-r4-s1/poster.jpg",
+      "beatPosters": null
+    },
+    "chain": {
+      "id": "welabs-chain-overview-define-logos-r5-s1",
+      "src": "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/index.html",
+      "duration": 34,
+      "clip": null,
+      "beats": [8, 11, 16, 19.5, 23.5],
+      "scrub": [6.5, 26],
+      "poster": "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/poster.jpg",
+      "beatPosters": [
+        "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/beat-0.jpg",
+        "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/beat-1.jpg",
+        "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/beat-2.jpg",
+        "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/beat-3.jpg",
+        "/motion/pieces/welabs-chain-overview-define-logos-r5-s1/beat-4.jpg"
+      ]
+    }
+  }
+}
