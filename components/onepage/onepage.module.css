@@ -482,6 +482,11 @@
   color: var(--c);
 }
 
+/* SEÇÃO 6: A WELABS */
+.about {
+  padding: clamp(96px, 14vh, 160px) 0;
+}
+
 /* RESPONSIVO */
 @media (max-width: 960px) {
   .nav {

@@ -387,6 +387,33 @@ function Chain() {
   );
 }
 
+// SEÇÃO 6: A WELABS
+// An institutional pause: the company opening in loop beside two lines of text, no product demo.
+function About() {
+  return (
+    <section
+      id="welabs"
+      className={`${styles.band} ${styles.light} ${styles.about}`}
+    >
+      <div className={`${styles.wrap} ${styles.coreGrid}`}>
+        <div className={styles.coreText}>
+          <span className={styles.eyebrow}>Welabs</span>
+          <h2>Uma empresa. Um ecossistema conectado.</h2>
+          <p className={styles.lead}>
+            Desenvolvemos nossos próprios produtos para gestão, relacionamento,
+            automação e conhecimento, preservando o contexto de cada operação.
+          </p>
+        </div>
+        <LiveStage
+          id="welabs-intro"
+          src={motion.intros.welabs.src}
+          poster={motion.intros.welabs.poster}
+        />
+      </div>
+    </section>
+  );
+}
+
 export function OnePage() {
   const paused = useSyncExternalStore(
     subscribePaused,
@@ -427,6 +454,7 @@ export function OnePage() {
       />
       <Rails />
       <Chain />
+      <About />
       <p className={styles.support} hidden>
         {CTA_SUPPORT}
       </p>
