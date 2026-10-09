@@ -88,6 +88,19 @@ describe("pages carry little text and no slogan", () => {
     expect(visibleText(home)).toContain("Conversar com a Welabs");
   });
 
+  it("the closing is one strip with the logos of clients and platforms together, then the button", () => {
+    const closing = home.slice(home.indexOf('id="platforms"'));
+    // One carousel only (the loop copy is aria-hidden), no visible label
+    expect(closing.match(/role="region"/g)).toHaveLength(1);
+    expect(visibleText(closing)).not.toMatch(/Quem atendemos|Infraestrutura/);
+    for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
+      expect(closing).toContain(`alt="${name}"`);
+    expect(closing).toMatch(/src="\/clients\//);
+    expect(closing.indexOf('role="region"')).toBeLessThan(
+      closing.indexOf('id="contact"'),
+    );
+  });
+
   it("the sections come in order: chain, products, closing", () => {
     const at = (id: string) => home.indexOf(`id="${id}"`);
     expect(at("chain")).toBeLessThan(at("products"));

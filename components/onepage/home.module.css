@@ -44,8 +44,8 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
-  --pt: 24px;
-  --pb: 40px;
+  --pt: 48px;
+  --pb: 48px;
 }
 .strips {
   display: grid;
@@ -68,6 +68,7 @@
   }
   .closing {
     gap: 20px;
+    --pt: 32px;
     --pb: 32px;
   }
 }

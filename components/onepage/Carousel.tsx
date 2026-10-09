@@ -16,7 +16,8 @@ export function Carousel({
 }: {
   label: string;
   logos: readonly Logo[];
-  kind: "clients" | "platforms";
+  // "all" is one strip with both kinds of mark, without a visible label
+  kind: "clients" | "platforms" | "all";
   seconds: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -53,7 +54,7 @@ export function Carousel({
       role="region"
       aria-label={label}
     >
-      <span className={styles.label}>{label}</span>
+      {kind !== "all" && <span className={styles.label}>{label}</span>}
       <div className={styles.window}>
         <div className={styles.track}>
           {set(0)}

@@ -47,7 +47,8 @@
   width: auto;
 }
 /* Black and white: every mark becomes white, a little softened */
-.clients img {
+.clients img,
+.all img {
   filter: grayscale(1) brightness(0) invert(1);
   opacity: 0.8;
 }

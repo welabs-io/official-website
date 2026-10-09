@@ -63,10 +63,21 @@ const page = async (url) => {
   return html;
 };
 
-// HOME: cinco seções, ordem de peso, selo, carrosséis
+// HOME: cadeia, produtos e fechamento, ordem de peso, selo, carrosséis
 const home = await page("/");
-for (const id of ["top", "logos", "products", "chain", "platforms", "contact"])
+for (const id of ["top", "chain", "products", "platforms", "contact"])
   assert(home.includes(`id="${id}"`), `home has section #${id}`);
+assert(!home.includes('id="logos"'), "the old logos strip is gone");
+assert(
+  home.indexOf('id="chain"') < home.indexOf('id="products"') &&
+    home.indexOf('id="products"') < home.indexOf('id="platforms"'),
+  "sections come in order: chain, products, closing",
+);
+for (const slug of SLUGS)
+  assert(
+    home.includes(`href="/products/${slug}"`),
+    `the product row links to /products/${slug}`,
+  );
 const order = [
   ...new Set(
     [...home.matchAll(/products\/(\w+)-(?:dark|light)-endorsed\.svg/g)].map(
@@ -85,10 +96,8 @@ assert(words <= 85, `home has ${words} visible words`);
 const clientLogos = [...home.matchAll(/src="\/clients\/[^"]+"/g)].length;
 assert(clientLogos >= 7, "clients carousel renders its logos");
 assert(
-  !IMAGINE_SYSTEMS.test(
-    home.match(/Quem atendemos[\s\S]*?Infraestrutura/)?.[0] ?? "",
-  ),
-  "no Imagine system in the clients carousel",
+  !IMAGINE_SYSTEMS.test(home.slice(home.indexOf('id="platforms"'))),
+  "no Imagine system in the closing strip",
 );
 for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
   assert(home.includes(`alt="${name}"`), `platform carousel has ${name}`);
@@ -105,8 +114,8 @@ for (const slug of SLUGS) {
     `${slug} keywords`,
   );
   assert(
-    /<title>[^<]*·[^<]*<\/title>/.test(html),
-    `${slug} title carries the category`,
+    /<title>[^<]* by Welabs<\/title>/.test(html),
+    `${slug} title follows the "<Product> by Welabs" pattern`,
   );
 }
 
@@ -117,12 +126,8 @@ for (const html of pages.values())
     /(?:src|href)="(\/(?:brands|clients|platforms|motion)\/[^"]+)"/g,
   ))
     assets.add(src);
-// The player, the sequence player and the manifest every reel needs
-for (const src of [
-  "/motion/player.js",
-  "/motion/_shared/player/sequence-player.js",
-  "/motion/_shared/brand/manifest.json",
-])
+// The player and the manifest every reel needs (there is no sequential player any more)
+for (const src of ["/motion/player.js", "/motion/_shared/brand/manifest.json"])
   assets.add(src);
 for (const src of assets) await get(src);
 

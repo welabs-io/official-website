@@ -1,18 +1,21 @@
 // SEÇÃO 3: FECHAMENTO
-// Who we serve and the platforms we work with, together on one graphite band, in the same black-and-white theme: two
-// looping strips, one under the other with no extra space between them, then the closing button. The footer comes
-// after it (PageFrame).
-import {
-  CLIENT_LOGOS,
-  CLIENTS_LABEL,
-  PLATFORM_LOGOS,
-  PLATFORMS_LABEL,
-} from "@/lib/partners";
+// Logos of the companies we work with and of the infrastructure and development platforms, together in ONE continuous
+// strip on one graphite band, all in the same black-and-white theme (no labels), then the closing button. The footer
+// comes after it (PageFrame).
+import { CLIENT_LOGOS, PLATFORM_LOGOS } from "@/lib/partners";
 import { CTA_LABEL } from "@/lib/products";
 import { Carousel } from "./Carousel";
 import { CONTACT_HREF } from "./contact";
 import styles from "./home.module.css";
 import shell from "./shell.module.css";
+
+// Both lists interleaved, so the strip alternates between the two kinds of mark
+const LOGOS = Array.from(
+  { length: Math.max(CLIENT_LOGOS.length, PLATFORM_LOGOS.length) },
+  (_, i) => [CLIENT_LOGOS[i], PLATFORM_LOGOS[i]],
+)
+  .flat()
+  .filter((logo) => logo !== undefined);
 
 export function Closing() {
   return (
@@ -22,16 +25,10 @@ export function Closing() {
     >
       <div className={`${shell.wrap} ${styles.strips}`}>
         <Carousel
-          label={CLIENTS_LABEL}
-          logos={CLIENT_LOGOS}
-          kind="clients"
-          seconds={40}
-        />
-        <Carousel
-          label={PLATFORMS_LABEL}
-          logos={PLATFORM_LOGOS}
-          kind="platforms"
-          seconds={60}
+          label="Marcas e plataformas"
+          logos={LOGOS}
+          kind="all"
+          seconds={70}
         />
       </div>
       <div id="contact" className={styles.contact}>
