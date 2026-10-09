@@ -229,3 +229,37 @@
   font-size: 14px;
   color: var(--mute-d);
 }
+
+/* CONECTOR ENTRE SEÇÕES */
+/* A 4 px amber bar centred on the boundary of two sections; a lighter spark runs down it while it is on screen and
+   the page is playing. It "pulls" the eye from one section into the next. */
+.connector {
+  position: absolute;
+  left: 50%;
+  bottom: -72px;
+  z-index: 5;
+  width: 4px;
+  height: 144px;
+  margin-left: -2px;
+  overflow: hidden;
+  background: var(--a);
+  pointer-events: none;
+}
+.spark {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 56px;
+  background: linear-gradient(to bottom, transparent, #fff4d6);
+  transform: translateY(44px);
+}
+.page[data-motion="playing"] .connector[data-on="true"] .spark {
+  animation: pull 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite backwards;
+}
+@keyframes pull {
+  from {
+    transform: translateY(-56px);
+  }
+  to {
+    transform: translateY(144px);
+  }
+}
