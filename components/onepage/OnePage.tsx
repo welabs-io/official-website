@@ -8,10 +8,13 @@ import { Closing } from "./Closing";
 import { ConnectorsBand } from "./ConnectorsBand";
 import { PageFrame } from "./PageFrame";
 import { Products } from "./Products";
+import styles from "./home.module.css";
 
 export function OnePage() {
   return (
     <PageFrame home>
+      {/* Page heading for screen readers and SEO; the home shows no visible title */}
+      <h1 className={styles.srOnly}>Welabs</h1>
       <Chain />
       <Products />
       <ConnectorsBand />
