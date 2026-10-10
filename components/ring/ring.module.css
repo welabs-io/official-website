@@ -6,6 +6,9 @@
    inside one. */
 .screen {
   --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  /* Width of the centre tile: proportional to the window on a desktop (56% of the width, and never taller than 52% of
+     the height), 760 px at most; the whole wrap on a phone */
+  --tile-w: min(100%, 760px, 56vw, calc(52vh * 16 / 9));
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -32,7 +35,7 @@
   justify-content: center;
   align-items: center;
   gap: clamp(14px, 3vw, 36px);
-  width: min(100%, 760px);
+  width: var(--tile-w);
   margin: 0;
   padding: 0 16px;
   list-style: none;
@@ -68,8 +71,8 @@
 }
 .stage {
   position: relative;
-  /* The stage is the centre tile: 760 px at most on a desktop, the whole wrap (about 87% of a phone) below that */
-  width: min(100%, 760px);
+  /* The stage is the centre tile (see --tile-w on .screen) */
+  width: var(--tile-w);
   margin: 0 auto;
   aspect-ratio: 16 / 9;
 }
@@ -155,6 +158,12 @@
   inset: 0;
 }
 
+/* Phone: the tile takes the whole wrap (about 87% of the screen) */
+@media (max-width: 860px) {
+  .screen {
+    --tile-w: min(100%, 760px);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .tile,
   .product {
