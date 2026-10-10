@@ -74,6 +74,8 @@ type Entry = {
   started: boolean;
   // performance.now() at which the segment froze on its last frame (hold phase), when it did
   heldAt?: number;
+  // The segment has already been the current one: it is finished and must never be started again
+  played?: boolean;
 };
 
 export type SwapInfo = {
@@ -155,8 +157,11 @@ export class Playback {
       index = this.after(index);
       keep.add(index);
     }
+    // A finished segment is dropped even when it is also the next one (a ring of two tiles): the next is always a
+    // fresh player parked on its first frame, never the old one that already ran to its last frame
     for (const entry of [...this.entries.values()])
-      if (!keep.has(entry.index)) this.drop(entry);
+      if (!keep.has(entry.index) || entry.played) this.drop(entry);
+    this.preload();
   }
 
   destroy() {
@@ -277,14 +282,14 @@ export class Playback {
         return;
       const following = this.entries.get(this.after(this.cursor));
       // Keep holding the last frame until the next one is ready
-      if (!following || !following.settled) return;
+      if (!following || !following.settled || following.played) return;
       this.handoff(current, following, segment.lead + pre);
       return;
     }
     if (t < segment.range[1] - (segment.lead + pre) * segment.rate) return;
     if (this.flat.length === 1) return;
     const next = this.entries.get(this.after(this.cursor));
-    if (!next || !next.settled) {
+    if (!next || !next.settled || next.played) {
       // Never let the range end run into a loop: hold the last frame until the next one is ready
       if (t >= segment.range[1] - 0.2 * segment.rate) current.el.pause();
       return;
@@ -317,6 +322,7 @@ export class Playback {
     const from = this.flat[current.index];
     const to = this.flat[next.index];
     this.cursor = next.index;
+    current.played = true;
     next.started = true;
     next.el.play();
     const pushed = this.options.single ? from.transition : undefined;
