@@ -1,0 +1,231 @@
+/* BASE DA PÁGINA */
+/* Welabs 1.5.x: amber only as an area (dot, block, 4 px+ bar), graphite and cream bands alternating by section,
+   Inter text. */
+.page {
+  --g: #10141c;
+  --g2: #161b25;
+  --g3: #262d3a;
+  --c: #faf5ea;
+  --c2: #f3ecdd;
+  --cl: #e2d8c3;
+  --a: #ffb020;
+  --ink: #1c1a16;
+  --mute-d: #9da3ae;
+  --mute-l: #625b4e;
+  /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
+  --header-h: 72px;
+  --logo-h: 42px;
+  background: var(--g);
+  color: var(--c);
+  overflow-x: clip;
+}
+.page h1,
+.page h2,
+.page p {
+  margin: 0;
+}
+
+.band {
+  position: relative;
+  /* 48 px between sections on desktop, 32 px on a phone; a section may set --pt and --pb */
+  padding: var(--pt, clamp(32px, 4vw, 48px)) 0 var(--pb, clamp(32px, 4vw, 48px));
+}
+.dark {
+  background: var(--g);
+  color: var(--c);
+  --line: var(--g3);
+  --mute: var(--mute-d);
+  --soft: rgb(250 245 234 / 0.1);
+}
+.light {
+  background: var(--c);
+  color: var(--ink);
+  --line: var(--cl);
+  --mute: var(--mute-l);
+  --soft: rgb(28 26 22 / 0.08);
+}
+.wrap {
+  width: min(1200px, 100% - 48px);
+  margin: 0 auto;
+}
+
+/* TÍTULO E LINHA FACTUAL */
+/* Short title (3 to 8 words) and one supporting line, never a slogan. */
+.title {
+  font-size: clamp(28px, 3.6vw, 48px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.line {
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--mute);
+}
+
+/* CABEÇALHO FIXO */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--g) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--g3);
+}
+.headerInner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: min(1200px, 100% - 48px);
+  height: var(--header-h);
+  margin: 0 auto;
+}
+.brand {
+  display: block;
+  margin-right: auto;
+  line-height: 0;
+}
+.brand img {
+  height: var(--logo-h);
+  width: auto;
+}
+@media (max-width: 520px) {
+  .page {
+    --header-h: 56px;
+    --logo-h: 34px;
+  }
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 6px;
+  background: var(--a);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cta:hover {
+  background: #ffc04d;
+}
+.ctaBig {
+  min-height: 56px;
+  padding: 0 32px;
+  font-size: 18px;
+}
+@media (max-width: 520px) {
+  .cta:not(.ctaBig) {
+    padding: 0 12px;
+    font-size: 13px;
+  }
+}
+
+/* LOGO DE PRODUTO */
+/* The logo file has built-in left padding; --pad (share of the height) aligns the wordmark with the line below. */
+.logo {
+  --h: clamp(56px, 6vw, 80px);
+  display: block;
+  height: var(--h);
+  width: auto;
+  margin-left: calc(var(--h) * var(--pad, 0) * -1);
+}
+.logoLink {
+  display: inline-block;
+  border-radius: 4px;
+}
+
+/* RODAPÉ */
+.footer {
+  background: var(--g);
+  border-top: 1px solid var(--g3);
+  padding: 28px 0;
+}
+.footerGrid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.footerGrid img {
+  height: 28px;
+  width: auto;
+}
+.footerGrid p {
+  font-size: 14px;
+  color: var(--mute-d);
+}
+
+/* FIO ENTRE AS SEÇÕES */
+/* A thin thread at the left of the content runs through every band and joins them: a grey hairline, an amber dot where
+   each section starts and, while the band is on screen (data-on, set by LiveObserver), an amber 4 px pulse that slides
+   down it at its own pace. Under reduced motion the pulse is not drawn. The content never sits under it: it lives in the
+   outer margin, 20 px left of the content column. */
+.band {
+  --thread-x: calc((100% - min(1200px, 100% - 48px)) / 2 - 20px);
+  --thread-dur: 6s;
+}
+.band:nth-child(3n + 1) {
+  --thread-dur: 5.2s;
+}
+.band:nth-child(3n + 2) {
+  --thread-dur: 6.8s;
+}
+.band:nth-child(3n) {
+  --thread-dur: 8.4s;
+}
+.band::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: var(--thread-x);
+  width: 4px;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent, var(--a)) no-repeat 0 -160px / 4px
+      160px,
+    linear-gradient(
+      to right,
+      transparent 1.5px,
+      color-mix(in srgb, var(--mute) 45%, transparent) 1.5px 2.5px,
+      transparent 2.5px
+    );
+}
+.band::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: calc(var(--thread-x) - 3px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--a);
+}
+.band[data-on="true"]::before {
+  animation: thread var(--thread-dur) linear infinite;
+}
+@keyframes thread {
+  from {
+    background-position:
+      0 -160px,
+      0 0;
+  }
+  to {
+    background-position:
+      0 calc(100% + 160px),
+      0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .band[data-on="true"]::before {
+    animation: none;
+  }
+}

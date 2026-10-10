@@ -1,0 +1,93 @@
+/* SEÇÕES DA HOME */
+/* Compact: no minimum heights, no empty area bigger than a title line. Gaps between title, line and ring are 12 to
+   24 px. The ring takes the whole wrap. */
+
+/* SEÇÃO 1: CADEIA */
+/* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
+.chain {
+  --pt: calc(var(--header-h) + 48px);
+  --pb: 48px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* SEÇÃO 2: PRODUTOS */
+.products {
+  --pt: 48px;
+  --pb: 48px;
+}
+
+/* PÁGINA DE PRODUTO */
+.productPage {
+  --pt: calc(var(--header-h) + 24px);
+  --pb: 32px;
+}
+.productPageGrid {
+  display: grid;
+  justify-items: stretch;
+  gap: 16px;
+}
+.productPageGrid > :first-child {
+  justify-self: start;
+}
+
+/* BLOCOS DA PÁGINA DE PRODUTO */
+/* The films carousel and the closing call to action, as compact as the home's sections */
+.films {
+  --pt: 40px;
+  --pb: 40px;
+}
+.productCta {
+  --pt: 32px;
+  --pb: 32px;
+}
+
+/* SEÇÃO 3: CONECTORES */
+.connectors {
+  --pt: 40px;
+  --pb: 48px;
+}
+
+/* SEÇÃO 4: FECHAMENTO */
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  --pt: 48px;
+  --pb: 48px;
+  /* Both this band and the connectors above it are graphite: a hairline tells them apart */
+  border-top: 1px solid var(--line);
+}
+.strips {
+  display: grid;
+  gap: 0;
+}
+.contact {
+  display: flex;
+  justify-content: center;
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 860px) {
+  .chain {
+    --pt: calc(var(--header-h) + 32px);
+    --pb: 32px;
+  }
+  .products {
+    --pt: 32px;
+    --pb: 32px;
+  }
+  .closing {
+    gap: 20px;
+    --pt: 32px;
+    --pb: 32px;
+  }
+}

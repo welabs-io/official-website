@@ -53,7 +53,7 @@
     var lamp = document.getElementById('lamp'), orbits = document.getElementById('orbits'), fx = document.getElementById('fx');
 
     // LAYOUT (logo + seal + role word form one group centred on the frame; x centred, y from the group height)
-    var w = ev[2] * SCALE, h = ev[3] * SCALE, GAP = 40, ROLE_H = 56;
+    var w = ev[2] * SCALE, h = ev[3] * SCALE, GAP = 96, ROLE_H = 56;
     var left = Math.round((W - w) / 2), top = Math.round((H - (h + GAP + ROLE_H)) / 2);
     host.style.position = 'absolute'; host.style.left = left + 'px'; host.style.top = top + 'px';
     seal.style.cssText = 'position:absolute;left:' + left + 'px;top:' + top + 'px;width:' + w + 'px;height:' + h + 'px;opacity:0';

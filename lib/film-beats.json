@@ -1,0 +1,144 @@
+{
+  "source": "Read from the GSAP timelines in the round portfolio-20261002 (pieces/<id>/index.html, tl.* calls and the Batida comments); the receipts carry no beat table. Times are piece seconds.",
+  "rules": {
+    "action": "Something on screen moves or appears. Gaps between two actions shorter than minHold stay inside one action window.",
+    "hold": "Nothing new happens (static frame or a wait). A montage clip never contains one.",
+    "transition": "The film changes scene (caption and elements of the beat before leave, the next beat comes in). A clip never starts before a transition ends nor ends inside one.",
+    "minHold": 0.6,
+    "startSlack": "A clip starts at most 0.1 s before the first action of its window and ends at most 0.1 s after the window ends."
+  },
+  "films": {
+    "channels-one-contract-ludic-logos-r5-s1": {
+      "product": "tuner",
+      "duration": 36,
+      "actions": [
+        [0.2, 3.05, "cabeçalho, canais e cada canal num lugar"],
+        [7.8, 10.25, "o Tuner junta tudo: mostrador, fios, ponteiro"],
+        [
+          14.2,
+          16.45,
+          "tudo chega do mesmo jeito: três mensagens entram no mostrador"
+        ],
+        [20.6, 23.4, "a mesma resposta sai do jeito de cada canal"],
+        [27.0, 29.55, "um produto novo só conecta"]
+      ],
+      "holds": [
+        [3.05, 7.0],
+        [10.25, 13.6],
+        [16.45, 20.0],
+        [23.4, 26.4],
+        [29.55, 30.9],
+        [31.9, 36]
+      ],
+      "transitions": [
+        [7.0, 7.7],
+        [13.6, 14.1],
+        [20.0, 20.6],
+        [26.4, 26.8],
+        [30.9, 31.9]
+      ]
+    },
+    "crm-omnichannel-inbox-ludic2-logos-r4-s1": {
+      "product": "relloo",
+      "duration": 45,
+      "actions": [
+        [0.2, 1.9, "abertura: logo e módulo"],
+        [4.0, 6.3, "o logo voa para o cabeçalho, entram o Tuner e os canais"],
+        [7.6, 8.5, "fios e balões saem dos canais"],
+        [10.0, 11.35, "os balões entram no Relloo e o contato aparece"],
+        [13.0, 13.55, "etiquetas da ficha"],
+        [15.1, 15.65, "campos da ficha"],
+        [17.2, 17.75, "histórico"],
+        [19.8, 24.15, "protocolo, prazo (anel contínuo) e quem atende"],
+        [26.0, 31.2, "resposta pronta com o nome e modelo aprovado"],
+        [33.1, 41.5, "a ligação entra na mesma ficha, é transferida e resolve"]
+      ],
+      "holds": [
+        [1.9, 3.9],
+        [6.3, 7.6],
+        [8.5, 10.0],
+        [11.35, 12.6],
+        [13.55, 15.1],
+        [15.65, 17.2],
+        [17.75, 19.1],
+        [42.7, 45]
+      ],
+      "transitions": [
+        [3.9, 4.4],
+        [12.6, 12.95],
+        [19.1, 19.75],
+        [25.5, 26.0],
+        [32.6, 33.1],
+        [41.5, 42.7]
+      ]
+    },
+    "hub-defines-runs-ludic-v3-logos-r4-s1": {
+      "product": "domus",
+      "duration": 34,
+      "actions": [
+        [0.2, 1.4, "cabeçalho, casa e máquina"],
+        [
+          1.0,
+          5.25,
+          "o Domus escreve a regra: sai da casa, abre, quatro linhas, carimbo"
+        ],
+        [
+          8.0,
+          10.85,
+          "a regra encolhe, atravessa o fio e vira os passos do Magneto"
+        ],
+        [13.8, 14.7, "primeiro passo concluído"],
+        [15.6, 16.0, "pergunta de confirmação"],
+        [17.0, 18.25, "o botão é tocado e o segundo passo conclui"],
+        [19.1, 19.4, "terceiro passo concluído"],
+        [22.0, 24.4, "o recibo volta para casa e a casa fecha em verde"]
+      ],
+      "holds": [
+        [5.25, 7.4],
+        [10.85, 13.4],
+        [14.7, 15.6],
+        [16.0, 17.0],
+        [18.25, 19.1],
+        [19.4, 21.4],
+        [24.4, 27.4],
+        [28.8, 34]
+      ],
+      "transitions": [
+        [7.4, 7.8],
+        [13.4, 13.8],
+        [21.4, 21.8],
+        [27.4, 28.8]
+      ]
+    },
+    "kb-ask-with-proof-ludic-logos-r5-s1": {
+      "product": "knowly",
+      "duration": 34,
+      "actions": [
+        [0.2, 2.9, "cabeçalho e a pergunta digitada"],
+        [
+          6.5,
+          12.1,
+          "a pilha do que a equipe escreveu e a lupa acha as três fontes"
+        ],
+        [13.7, 17.65, "cada frase vem com a fonte"],
+        [20.0, 21.05, "o que não sabe, ele diz"],
+        [24.3, 27.0, "quem pergunta abre a fonte e confere"]
+      ],
+      "holds": [
+        [2.9, 6.0],
+        [12.3, 13.2],
+        [17.65, 19.4],
+        [21.05, 23.9],
+        [27.0, 28.6],
+        [29.6, 34]
+      ],
+      "transitions": [
+        [6.0, 6.45],
+        [13.2, 13.55],
+        [19.4, 19.7],
+        [23.9, 24.2],
+        [28.6, 29.6]
+      ]
+    }
+  }
+}

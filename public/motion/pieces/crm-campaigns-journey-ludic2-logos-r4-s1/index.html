@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Relloo · Campanhas e fidelização (lúdica v2)</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand tokens come from _shared/brand/welabs/welabs-brand.js (tools/build-brand.mjs); text uses Inter 400/500/600 only */
+:root{--bg:#10141C;--panel:#181B22;--panel2:#232732;--line:#373C48;--amber:var(--wl-amber);--text:#FFFFFF;--muted:#BCC0CB;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif;font-weight:500}
+#root [data-wl-name]{color:inherit}
+#lg{position:absolute;left:64px;top:34px;height:68px;transform-origin:0 0;opacity:0}
+#hd{position:absolute;left:232px;top:34px;height:68px;display:flex;align-items:center;gap:20px;opacity:0;white-space:nowrap}
+#hd .bar{width:4px;height:44px;border-radius:2px;background:var(--amber)}
+#hd .mod{font-size:36px;font-weight:600}
+#hd .adv{height:40px;padding:0 14px;border-radius:20px;border:2px solid var(--wl-wait);color:var(--wl-wait);background:var(--wl-wait-soft);font-size:24px;font-weight:600;line-height:36px}
+#hd .pos{font-size:28px;color:var(--muted)}
+#demo{position:absolute;right:64px;top:48px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:600;color:var(--muted);line-height:36px;opacity:0}
+#op{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#op .l1{position:absolute;left:0;top:452px;width:1920px;text-align:center;font-size:56px;letter-spacing:-1px}
+/* LOGO DE PRODUTO NO TEXTO */
+/* Height-only sizing; vertical-align puts the logo baseline (210 of 284.1 units) on the text baseline */
+.nl{display:inline-block;height:1.17em;width:auto;vertical-align:-0.3051em;margin-right:0.12em}
+#op .mk{position:absolute;left:0;top:572px;width:1920px;text-align:center;font-size:28px;font-weight:600;letter-spacing:4px;color:var(--muted)}
+#op .mn{position:absolute;left:0;top:616px;width:1920px;text-align:center;font-size:76px;font-weight:600;letter-spacing:-1.5px;color:var(--amber)}
+#op .inc{position:absolute;left:0;top:730px;width:1920px;text-align:center;font-size:32px;color:var(--muted)}
+#op .adv{position:absolute;left:810px;top:800px;width:300px;height:48px;border-radius:24px;border:2px solid var(--wl-wait);color:var(--wl-wait);background:var(--wl-wait-soft);font-size:26px;font-weight:600;line-height:44px;text-align:center}
+.cap{position:absolute;left:0;top:916px;width:1920px;text-align:center;font-size:52px;font-weight:600;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.cap span{color:var(--amber)}
+.card{position:absolute;border-radius:30px;background:var(--panel);border:3px solid var(--line);opacity:0}
+.card .t{position:absolute;left:32px;top:24px;font-size:32px;font-weight:600;white-space:nowrap}
+.pill{position:absolute;height:48px;padding:0 18px;border-radius:24px;font-size:24px;font-weight:600;line-height:44px;white-space:nowrap;opacity:0}
+.okp{border:2px solid var(--ok);color:var(--ok);background:#12291F}
+.amp{background:var(--amber);color:var(--wl-ink-on-amber);border:2px solid var(--amber)}
+.mup{border:2px solid var(--line);color:var(--muted)}
+.phone{position:absolute;width:400px;height:690px;border-radius:52px;background:#0B0E14;border:6px solid #2C313C;opacity:0}
+.phone .bar{position:absolute;left:0;top:0;width:388px;height:80px;border-radius:46px 46px 0 0;background:var(--panel2);font-size:24px;font-weight:600;line-height:80px;padding-left:32px;white-space:nowrap}
+
+/* TRILHO DA JORNADA */
+#rail{position:absolute;left:0;top:836px;width:1920px;display:flex;justify-content:center;gap:14px;opacity:0}
+.rc{height:50px;padding:0 22px;border-radius:25px;border:2px solid var(--line);color:var(--muted);font-size:24px;font-weight:600;line-height:46px;white-space:nowrap}
+
+/* FORMULÁRIO */
+#fg{left:100px;top:140px;width:640px;height:670px}
+.fn{position:absolute;left:32px;width:570px;height:96px;border-radius:20px;background:var(--panel2);padding:12px 20px}
+.fn b{display:block;font-size:24px;font-weight:600;color:var(--muted);white-space:nowrap}
+.fn em{display:block;margin-top:4px;font-style:normal;font-size:28px;font-weight:600;white-space:nowrap}
+.fn .gl{position:absolute;inset:-5px;border-radius:24px;border:4px solid var(--amber);box-shadow:0 0 26px rgba(var(--wl-amber-rgb),.45);opacity:0}
+.cn{position:absolute;left:312px;width:4px;height:44px;border-radius:2px;background:var(--line)}
+#ph1{left:820px;top:130px}
+#ph1 .q{position:absolute;left:30px;top:110px;font-size:28px;font-weight:600;white-space:nowrap}
+.ob{position:absolute;top:166px;width:156px;height:60px;border-radius:18px;border:2px solid var(--line);font-size:26px;font-weight:600;line-height:56px;text-align:center}
+#oA{left:30px;top:166px;width:156px;height:60px;border-radius:18px;font-size:26px;line-height:56px;text-align:center;padding:0}
+#ph1 .fl{position:absolute;left:30px;top:260px;font-size:26px;color:var(--muted)}
+#cam{position:absolute;left:30px;top:304px;width:328px;height:220px;border-radius:20px;border:3px dashed var(--line);display:grid;place-items:center;color:var(--muted)}
+#photo{position:absolute;left:30px;top:304px;width:328px;height:220px;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#2B3446,#1A202B);opacity:0}
+#photo .it{position:absolute;left:104px;top:40px;width:120px;height:150px;border-radius:24px;background:var(--amber)}
+#photo .it2{position:absolute;left:134px;top:20px;width:60px;height:30px;border-radius:10px;background:#E0E3EA}
+#done{left:30px;top:560px;width:328px;height:70px;border-radius:20px;font-size:28px;line-height:66px;text-align:center;padding:0}
+#res{left:1300px;top:150px;width:520px;height:650px}
+#res .k{position:absolute;left:32px;font-size:24px;color:var(--muted);white-space:nowrap}
+#res .v{position:absolute;left:32px;width:456px;height:68px;border-radius:18px;background:var(--panel2);font-size:28px;font-weight:600;line-height:68px;padding:0 20px;white-space:nowrap;opacity:0}
+
+/* CAMPANHA E ROLETA */
+#cp{left:140px;top:150px;width:660px;height:600px}
+#cp .kv{position:absolute;left:32px;width:596px;height:96px;border-radius:20px;background:var(--panel2);padding:12px 20px}
+#cp .kv b{display:block;font-size:24px;color:var(--muted);font-weight:500}
+#cp .kv em{display:block;margin-top:4px;font-style:normal;font-size:28px;font-weight:600;white-space:nowrap}
+#wh{position:absolute;left:1010px;top:140px;width:600px;height:600px;opacity:0}
+#prize{left:1190px;top:762px}
+
+/* CUPOM NO WHATSAPP */
+#ph2{left:760px;top:130px}
+#ph2 .bar{background:#173A2A;color:#D9F5E6}
+#ph2 .m{position:absolute;left:24px;top:104px;width:340px;padding:14px 18px;border-radius:8px 22px 22px 22px;background:var(--panel2);font-size:26px;font-weight:600;line-height:34px;opacity:0}
+#qr{position:absolute;left:44px;top:224px;width:300px;height:360px;border-radius:24px;background:#FFFFFF;opacity:0}
+#qr svg{position:absolute;left:30px;top:24px}
+#qr .c{position:absolute;left:0;top:290px;width:300px;text-align:center;font-size:28px;font-weight:600;color:#10141C;letter-spacing:2px}
+#lc{position:absolute;left:1260px;top:250px;width:420px;height:420px;opacity:0}
+#lc .h{font-size:26px;color:var(--muted);white-space:nowrap}
+.ls{position:absolute;left:0;width:300px;height:68px;border-radius:20px;border:2px solid var(--line);color:var(--muted);font-size:28px;font-weight:600;line-height:64px;padding-left:24px}
+.lo{position:absolute;left:0;width:300px;height:68px;border-radius:20px;background:var(--amber);color:var(--wl-ink-on-amber);font-size:28px;font-weight:600;line-height:68px;padding-left:24px;opacity:0}
+
+/* NA LOJA: CUPOM VALIDADO E PRÉ-VENDA NO CAIXA */
+#sc{position:absolute;left:830px;top:180px;width:380px;height:380px;opacity:0}
+#sc .qrs{position:absolute;left:70px;top:70px;width:240px;height:240px;border-radius:16px;background:#fff}
+#sc .qrs svg{position:absolute;left:20px;top:20px}
+#sl{position:absolute;left:40px;top:60px;width:300px;height:6px;border-radius:3px;background:var(--amber);box-shadow:0 0 18px var(--amber);opacity:0}
+#valid{left:830px;top:600px;width:380px;text-align:center;padding:0}
+#cx{left:1300px;top:150px;width:540px;height:650px}
+#cx .s{position:absolute;left:32px;top:72px;font-size:24px;color:var(--muted);white-space:nowrap}
+#ps{position:absolute;left:32px;top:130px;width:470px;height:360px;border-radius:22px;background:var(--panel2);opacity:0}
+#ps .h{position:absolute;left:24px;top:20px;font-size:28px;font-weight:600;white-space:nowrap}
+#ps .i{position:absolute;left:24px;width:422px;height:60px;border-radius:14px;background:var(--panel);font-size:26px;font-weight:600;line-height:60px;padding:0 16px;white-space:nowrap}
+#conf{left:32px;top:520px}
+
+/* CASHBACK E HOTSITE */
+#cb{left:120px;top:150px;width:780px;height:650px}
+#cb .k{position:absolute;left:32px;top:100px;font-size:26px;color:var(--muted)}
+.trk{position:absolute;left:32px;width:600px;height:30px;border-radius:15px;background:var(--panel2);overflow:hidden}
+.fil{position:absolute;left:0;top:0;width:600px;height:30px;border-radius:15px;background:var(--amber);transform-origin:0 50%}
+#cb .val{position:absolute;left:652px;top:138px;font-size:28px;font-weight:600}
+#cb .ex{position:absolute;left:32px;width:716px;height:76px;border-radius:18px;background:var(--panel2);font-size:26px;font-weight:600;line-height:76px;padding:0 22px;white-space:nowrap}
+#ex2{opacity:0;border:3px solid var(--amber)}
+#hs{left:980px;top:150px;width:820px;height:650px}
+#hs .bw{position:absolute;left:0;top:0;width:814px;height:64px;border-radius:28px 28px 0 0;background:var(--panel2)}
+#hs .bw i{position:absolute;top:24px;width:16px;height:16px;border-radius:50%;background:var(--line)}
+#hs .bw em{position:absolute;left:110px;top:12px;height:40px;padding:0 18px;border-radius:20px;background:var(--panel);font-style:normal;font-size:24px;color:var(--muted);line-height:40px}
+#hs .ht{position:absolute;left:40px;top:100px;font-size:36px;font-weight:600;white-space:nowrap}
+#hs .in{position:absolute;left:40px;top:170px;width:500px;height:68px;border-radius:18px;border:3px solid var(--line);font-size:28px;line-height:62px;padding:0 20px;color:var(--muted)}
+#hs .go{position:absolute;left:560px;top:170px;height:68px;padding:0 26px;border-radius:18px;background:var(--amber);color:var(--wl-ink-on-amber);font-size:28px;font-weight:600;line-height:68px}
+#hsr{position:absolute;left:40px;top:280px;width:740px;height:200px;border-radius:22px;background:var(--panel2);opacity:0}
+#hsr .k{position:absolute;left:28px;top:24px;font-size:26px;color:var(--muted)}
+#hsr .val{position:absolute;left:28px;top:120px;font-size:32px;font-weight:600}
+#hs .lk{position:absolute;left:40px;top:530px;font-size:26px;color:var(--amber);white-space:nowrap}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:262px;width:1920px;text-align:center;font-size:72px;font-weight:600;letter-spacing:-2px;line-height:90px}
+#close .l2{position:absolute;left:0;top:352px;width:1920px;text-align:center;font-size:72px;font-weight:600;letter-spacing:-2px;line-height:90px;color:var(--amber)}
+#close .dm{position:absolute;left:0;top:860px;width:1920px;text-align:center;font-size:26px;color:var(--muted)}
+/* PASSE DO SELO BY WELABS R4 (tools/endorse-pass.mjs sobre pieces/crm-campaigns-journey-ludic2-logos-r3-s1, sha256 03ca2989769d; marca 1.5.0, medido, nada à mão) */
+/* relloo #0: x-height 34.6 px at t=0.75 s; seal band 31.804 px under the wordmark, taken back from the margins */
+img[data-es="0"]{width:148px !important;height:97.408px !important;margin-top:0.198px !important;margin-bottom:-31.606px !important}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="crm-campaigns-journey-ludic2-logos-r4-s1" data-brand="welabs" data-brand-scripts="welabs/welabs-brand.js" data-width="1920" data-height="1080" data-start="0" data-duration="46">
+  <img id="lg" data-brand-src="welabs/relloo-endorsed-on-dark.svg" alt="Relloo by welabs">
+  <div id="hd"><div class="bar"></div><div class="mod">Campanhas e fidelização</div><div class="adv">recurso avançado</div><div class="pos">· relacionamento com quem compra de você</div></div>
+  <div id="demo">DEMO</div>
+
+  <div id="op">
+    <div class="l1"><img class="nl" data-brand-src="welabs/relloo-endorsed-on-dark.svg" alt="Relloo by welabs" data-es="0"> · relacionamento com quem compra de você</div>
+    <div class="mk">MÓDULO</div>
+    <div class="mn">Campanhas e fidelização</div>
+    <div class="inc">Formulários · campanhas e roleta · cupons · cashback · vendas no ponto</div>
+    <div class="adv">recurso avançado</div>
+  </div>
+
+  <div id="rail"><div class="rc" id="r0">Formulário</div><div class="rc" id="r1">Roleta</div><div class="rc" id="r2">Cupom</div><div class="rc" id="r3">Venda</div><div class="rc" id="r4">Cashback</div></div>
+
+  <div class="card" id="fg">
+    <div class="t">Gerador de formulários</div>
+    <div class="fn" style="top:90px"><b>Início</b><em>Atendimento na loja</em></div>
+    <div class="cn" style="top:186px"></div>
+    <div class="fn" style="top:230px"><div class="gl" id="gq"></div><b>Pergunta · escolha única</b><em>Qual o uso principal?</em></div>
+    <div class="cn" style="top:326px"></div>
+    <div class="fn" style="top:370px"><b>Condição</b><em>se a resposta for · DEMO</em></div>
+    <div class="cn" style="top:466px"></div>
+    <div class="fn" style="top:510px"><div class="gl" id="gr"></div><b>Resultado</b><em>recomenda e libera brinde</em></div>
+  </div>
+  <div class="phone" id="ph1">
+    <div class="bar">App de campo · Vendedor</div>
+    <div class="q">Qual o uso principal?</div>
+    <div class="ob" id="ob0" style="left:30px">Opção A</div><div class="ob" style="left:202px">Opção B</div>
+    <div class="pill amp" id="oA" data-layout-allow-overlap>Opção A</div>
+    <div class="fl">Foto do item</div>
+    <div id="cam"><svg width="64" height="64" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></div>
+    <div id="photo"><div class="it2"></div><div class="it"></div></div>
+    <div class="pill amp" id="done">Concluir</div>
+  </div>
+  <div class="card" id="res">
+    <div class="t">Resultado</div>
+    <div class="k" style="top:88px">Recomendado</div>
+    <div class="v" id="v0" style="top:124px">Produto A · DEMO</div>
+    <div class="k" style="top:214px">Se faltar, troca por</div>
+    <div class="v" id="v1" style="top:250px">Produto C · DEMO</div>
+    <div class="k" style="top:340px">Brinde liberado</div>
+    <div class="v" id="v2" style="top:376px;background:var(--amber);color:var(--wl-ink-on-amber)">Brinde DEMO</div>
+    <div class="k" style="top:466px">Resumo para a pessoa</div>
+    <div class="v" id="v3" style="top:502px;border:2px solid var(--ok);color:var(--ok);background:#12291F;line-height:64px">PDF enviado pelo WhatsApp</div>
+  </div>
+
+  <div class="card" id="cp">
+    <div class="t">Campanha DEMO</div>
+    <div class="pill mup" id="st0" style="left:420px;top:24px;opacity:1">rascunho</div>
+    <div class="pill okp" id="st1" style="left:420px;top:24px" data-layout-allow-overlap>ativa</div>
+    <div class="kv" style="top:100px"><b>Tipo</b><em>cupom de prêmio</em></div>
+    <div class="kv" style="top:212px"><b>Prêmios</b><em>A, B e C</em></div>
+    <div class="kv" style="top:324px"><b>Desconto</b><em>DEMO</em></div>
+    <div class="kv" style="top:436px"><b>Onde vale</b><em>unidades da rede · DEMO</em></div>
+  </div>
+  <svg id="wh" viewBox="0 0 600 600">
+    <g id="whg">
+      <path d="M300 300 L300 30 A270 270 0 0 1 533.8 165 Z" fill="var(--amber)"/>
+      <path d="M300 300 L533.8 165 A270 270 0 0 1 533.8 435 Z" fill="#232732"/>
+      <path d="M300 300 L533.8 435 A270 270 0 0 1 300 570 Z" fill="var(--amber)"/>
+      <path d="M300 300 L300 570 A270 270 0 0 1 66.2 435 Z" fill="#232732"/>
+      <path d="M300 300 L66.2 435 A270 270 0 0 1 66.2 165 Z" fill="var(--amber)"/>
+      <path d="M300 300 L66.2 165 A270 270 0 0 1 300 30 Z" fill="#232732"/>
+      <text x="395" y="150" font-size="64" font-weight="600" fill="#1C1A16" text-anchor="middle" font-family="Inter">A</text>
+      <text x="485" y="322" font-size="64" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter">B</text>
+      <text x="395" y="494" font-size="64" font-weight="600" fill="#1C1A16" text-anchor="middle" font-family="Inter">C</text>
+      <text x="205" y="494" font-size="64" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter">A</text>
+      <text x="115" y="322" font-size="64" font-weight="600" fill="#1C1A16" text-anchor="middle" font-family="Inter">B</text>
+      <text x="205" y="150" font-size="64" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter">C</text>
+    </g>
+    <circle cx="300" cy="300" r="270" fill="none" stroke="#373C48" stroke-width="8"/>
+    <circle cx="300" cy="300" r="36" fill="#FFFFFF"/>
+    <path d="M300 54 L276 4 L324 4 Z" fill="#FFFFFF"/>
+  </svg>
+  <div class="pill amp" id="prize">Saiu o Prêmio B!</div>
+
+  <div class="phone" id="ph2">
+    <div class="bar">WhatsApp · Loja DEMO</div>
+    <div class="m" id="pm">Parabéns! Seu Prêmio B virou cupom:</div>
+    <div id="qr">
+      <svg width="240" height="240" viewBox="0 0 24 24"><path fill="#10141C" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM17 0h7v7h-7zM18 1v5h5V1zM19 2h3v3h-3zM0 17h7v7H0zM1 18v5h5v-5zM2 19h3v3H2zM9 0h2v2H9zM12 1h3v2h-3zM9 4h4v2H9zM14 4h2v3h-2zM8 8h3v2H8zM12 8h2v3h-2zM15 8h4v2h-4zM20 9h3v2h-3zM0 9h2v3H0zM3 10h3v2H3zM9 12h3v2H9zM14 12h3v3h-3zM18 12h2v2h-2zM21 13h3v3h-3zM9 16h2v3H9zM12 15h2v2h-2zM12 18h4v2h-4zM17 17h3v2h-3zM9 21h3v3H9zM14 21h2v3h-2zM18 20h2v4h-2zM21 18h3v2h-3zM21 22h3v2h-3z"/></svg>
+      <div class="c">DEMO-7K2</div>
+    </div>
+  </div>
+  <div id="lc">
+    <div class="h">Vida do cupom</div>
+    <div class="ls" id="ls0" style="top:56px">gerado</div><div class="lo" id="lo0" data-layout-allow-overlap style="top:56px">gerado</div>
+    <div class="ls" id="ls1" style="top:150px">enviado</div><div class="lo" id="lo1" data-layout-allow-overlap style="top:150px">enviado</div>
+    <div class="ls" id="ls2" style="top:244px">ativo</div><div class="lo" id="lo2" data-layout-allow-overlap style="top:244px">ativo</div>
+  </div>
+
+  <div id="sc">
+    <svg width="380" height="380" viewBox="0 0 380 380"><path d="M10 80V10h70M300 10h70v70M370 300v70h-70M80 370H10v-70" fill="none" stroke="var(--amber)" stroke-width="10" stroke-linecap="round"/></svg>
+    <div class="qrs"><svg width="200" height="200" viewBox="0 0 24 24"><path fill="#10141C" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM17 0h7v7h-7zM18 1v5h5V1zM19 2h3v3h-3zM0 17h7v7H0zM1 18v5h5v-5zM2 19h3v3H2zM9 0h2v2H9zM12 1h3v2h-3zM9 4h4v2H9zM14 4h2v3h-2zM8 8h3v2H8zM12 8h2v3h-2zM15 8h4v2h-4zM20 9h3v2h-3zM0 9h2v3H0zM3 10h3v2H3zM9 12h3v2H9zM14 12h3v3h-3zM18 12h2v2h-2zM21 13h3v3h-3zM9 16h2v3H9zM12 15h2v2h-2zM12 18h4v2h-4zM17 17h3v2h-3zM9 21h3v3H9zM14 21h2v3h-2zM18 20h2v4h-2zM21 18h3v2h-3zM21 22h3v2h-3z"/></svg></div>
+    <div id="sl"></div>
+  </div>
+  <div class="pill okp" id="valid">Cupom válido · agora usado</div>
+  <div class="card" id="cx">
+    <div class="t">Caixa 2 · DEMO</div>
+    <div class="s">vendas no ponto</div>
+    <div id="ps">
+      <div class="h">Pré-venda chegou</div>
+      <div class="i" style="top:84px">Produto A · DEMO</div>
+      <div class="i" style="top:160px">Brinde DEMO</div>
+      <div class="i" style="top:236px">Cupom DEMO-7K2</div>
+    </div>
+    <div class="pill okp" id="conf">Venda confirmada</div>
+  </div>
+
+  <div class="card" id="cb">
+    <div class="t">Programa de fidelidade · DEMO</div>
+    <div class="k">Saldo de cashback</div>
+    <div class="trk" style="top:140px"><div class="fil" id="f1"></div></div>
+    <div class="val">DEMO</div>
+    <div class="ex" style="top:220px">Adesão automática na primeira compra</div>
+    <div class="ex" style="top:316px">Unidades participantes · DEMO</div>
+    <div class="ex" id="ex2" style="top:412px">Venda DEMO-31 · cashback gerado</div>
+  </div>
+  <div class="card" id="hs">
+    <div class="bw"><i style="left:30px"></i><i style="left:56px"></i><i style="left:82px"></i><em>rede.demo/fidelidade</em></div>
+    <div class="ht">Consulte seu saldo</div>
+    <div class="in">CPF · DEMO</div>
+    <div class="go">Consultar</div>
+    <div id="hsr"><div class="k">Saldo disponível</div><div class="trk" style="top:70px;width:680px"><div class="fil" id="f2" style="width:680px"></div></div><div class="val">DEMO</div></div>
+    <div class="lk">Regras do programa · onde usar</div>
+  </div>
+
+  <div class="cap" id="c1">O formulário descobre <span>o que a pessoa precisa</span></div>
+  <div class="cap" id="c2">A campanha ativa <span>vira giro na roleta</span></div>
+  <div class="cap" id="c3">O prêmio chega <span>como cupom no WhatsApp</span></div>
+  <div class="cap" id="c4">Na loja, <span>o cupom vira venda</span></div>
+  <div class="cap" id="c5">Cada compra <span>devolve cashback</span></div>
+
+  <div id="close">
+    <div class="l1">Quem compra uma vez</div>
+    <div class="l2">ganha motivo para voltar.</div>
+    <div class="dm">Exemplo ilustrativo · DEMO · recurso avançado</div>
+  </div>
+</div>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 46;
+  var C = window.WELABS_BRAND.color;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function sw(a, b, t) { out(a, t, 0.25); inn(b, t + 0.2, {}, 0.3); }
+  // Journey rail: the step lights up in the brand amber and stays lit
+  function rail(i, t) { tl.fromTo('#r' + i, { backgroundColor: 'rgba(0,0,0,0)', color: '#BCC0CB', borderColor: '#373C48' }, { backgroundColor: C.amber, color: C.inkOnAmber, borderColor: C.amber, duration: 0.3 }, t); }
+
+  // Abertura: posicionamento e módulo; o logo voa para o cabeçalho (0–4,6 s, parado de 2,0 a 3,9 s)
+  // Lockup centred on the frame axis by its box (x 671.5 -> 729: the endorsed logo box is now 421.83 units tall, so
+  // it is narrower at the same height) and raised (y 156 -> 120) to clear the opening line below it
+  tl.set('#lg', { x: 729, y: 120, scale: 3.235 }, 0);
+  tl.fromTo('#lg', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
+  inn('#op', 0.2, {}, 0.01);
+  inn('#op .l1', 0.6, { y: 16 });
+  inn(['#op .mk', '#op .mn'], 1.0, { y: 16 });
+  inn(['#op .inc', '#op .adv'], 1.4, { y: 12 });
+  out('#op', 3.9, 0.4);
+  tl.to('#lg', { x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.inOut' }, 4.0);
+  inn('#hd', 4.5, { x: -16 }, 0.5);
+  inn('#demo', 4.6, {}, 0.5);
+
+  // Batida 1: formulário em grafo, aplicado no app de campo, com resultado (4,8–13,8 s)
+  inn('#c1', 4.8, { y: 16 });
+  inn('#rail', 4.9, { y: 10 }, 0.4);
+  rail(0, 5.0);
+  inn('#fg', 5.0, { x: -30 }, 0.5);
+  inn('#ph1', 5.6, { y: 30 }, 0.5);
+  tl.fromTo('#gq', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 7.6);
+  inn('#oA', 7.6, { scale: 0.8 }, 0.3);
+  out('#ob0', 7.6, 0.2);
+  inn('#photo', 9.6, { scale: 1.08 }, 0.35);
+  inn('#done', 9.7, { y: 10 }, 0.3);
+  tl.to('#gq', { opacity: 0, duration: 0.3 }, 11.5);
+  tl.fromTo('#gr', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 11.5);
+  inn('#res', 11.5, { x: 30 }, 0.45);
+  tl.fromTo('#res .v', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.1 }, 11.6);
+  out('#c1', 13.4);
+
+  // Batida 2: a campanha sai do rascunho e a roleta sorteia o prêmio (13,7–21,8 s)
+  inn('#c2', 13.7, { y: 16 });
+  out(['#fg', '#ph1', '#res'], 13.7, 0.35);
+  rail(1, 13.8);
+  // Enters once the form generator has left (13.7 + 0.35), so the two never share the spot
+  inn('#cp', 14.05, { x: -30 }, 0.5);
+  sw('#st0', '#st1', 15.9);
+  inn('#wh', 16.0, { scale: 0.85 }, 0.5);
+  // 630° (same landing angle as the former 1710°) with power2.inOut: peak ≈ 19° per frame at 30 fps, so the spin
+  // no longer strobes (it peaked at ≈ 78° per frame)
+  tl.fromTo('#whg', { rotation: 0 }, { rotation: 630, svgOrigin: '300 300', duration: 2.2, ease: 'power2.inOut' }, 18.0);
+  inn('#prize', 20.2, { y: 12, scale: 0.8 }, 0.35);
+  out('#c2', 21.8);
+
+  // Batida 3: o prêmio vira cupom com QR no WhatsApp e o cupom ganha vida (22,1–28,2 s)
+  inn('#c3', 22.1, { y: 16 });
+  out(['#cp', '#wh', '#prize'], 22.1, 0.35);
+  rail(2, 22.2);
+  inn('#ph2', 22.3, { y: 30 }, 0.5);
+  inn('#pm', 22.6, { y: 10 }, 0.35);
+  inn('#qr', 22.8, { scale: 0.85 }, 0.4);
+  inn('#lc', 22.8, { x: 20 }, 0.4);
+  inn('#lo0', 23.0, { scale: 0.9 }, 0.3);
+  out('#ls0', 23.0, 0.2);
+  inn('#lo1', 24.8, { scale: 0.9 }, 0.3);
+  out('#ls1', 24.8, 0.2);
+  inn('#lo2', 26.6, { scale: 0.9 }, 0.3);
+  out('#ls2', 26.6, 0.2);
+  out('#c3', 28.2);
+
+  // Batida 4: na loja o QR é lido, o cupom é usado e a pré-venda chega ao caixa (28,5–36,4 s)
+  inn('#c4', 28.5, { y: 16 });
+  out('#lc', 28.5, 0.3);
+  rail(3, 28.6);
+  tl.to('#ph2', { x: -560, duration: 0.7, ease: 'power2.inOut' }, 28.5);
+  inn('#sc', 29.0, { scale: 0.9 }, 0.4);
+  tl.fromTo('#sl', { opacity: 1, y: 0 }, { opacity: 1, y: 250, duration: 1.0, ease: 'sine.inOut' }, 29.5);
+  out('#sl', 30.5, 0.15);
+  inn('#valid', 30.7, { y: 10 }, 0.35);
+  inn('#cx', 32.6, { x: 30 }, 0.45);
+  inn('#ps', 32.8, { y: -20 }, 0.4);
+  inn('#conf', 34.75, { scale: 0.8 }, 0.35);
+  out('#c4', 36.4);
+
+  // Batida 5: a venda gera cashback e o hotsite mostra o saldo (36,6–43,0 s)
+  // Enters after the previous caption has fully left
+  inn('#c5', 36.8, { y: 16 });
+  out(['#ph2', '#sc', '#valid', '#cx'], 36.6, 0.35);
+  rail(4, 36.7);
+  // Enters once the phone has left (36.6 + 0.35)
+  inn('#cb', 36.95, { x: -30 }, 0.5);
+  tl.set('#f1', { scaleX: 0.35 }, 0);
+  inn('#ex2', 38.8, { x: 20 }, 0.35);
+  tl.to('#f1', { scaleX: 0.7, duration: 0.5, ease: 'power2.out' }, 38.9);
+  inn('#hs', 40.9, { x: 30 }, 0.45);
+  inn('#hsr', 41.1, { y: 10 }, 0.35);
+  tl.fromTo('#f2', { scaleX: 0 }, { scaleX: 0.7, duration: 0.5, ease: 'power2.out' }, 41.2);
+  out('#c5', 43.0);
+
+  // Fecho (43,6–46 s, parado de 44,2 s ao fim)
+  out(['#hd', '#demo', '#cb', '#hs', '#rail'], 43.2, 0.4);
+  // The header logo flies back to the centre and becomes the closing signature (one logo node)
+  tl.to('#lg', { x: 729, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 43.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 43.6);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["crm-campaigns-journey-ludic2-logos-r4-s1"] = tl;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{
+  "chain": [
+    { "id": "welabs-chain-journey-define-logos-r6-s1", "duration": 44 },
+    { "id": "welabs-chain-overview-define-logos-r6-s1", "duration": 34 },
+    { "id": "welabs-chain-plug-define-logos-r6-s1", "duration": 36 },
+    { "id": "welabs-chain-horizon-define-logos-r6-s1", "duration": 36 }
+  ],
+  "products": {
+    "domus": {
+      "intro": {
+        "id": "domus-intro-s2-r2",
+        "duration": 5.4,
+        "tail": [1.7, 3.65]
+      },
+      "films": [
+        {
+          "id": "hub-whole-house-ludic-logos-r4-s1",
+          "duration": 36,
+          "clip": [21.5, 28.8],
+          "settledAt": 28.7
+        },
+        { "id": "hub-defines-runs-ludic-v3-logos-r4-s1", "duration": 34 },
+        { "id": "hub-draw-born-ludic-v2-logos-r5-s1", "duration": 36 }
+      ]
+    },
+    "relloo": {
+      "intro": {
+        "id": "relloo-intro-s2-r3",
+        "duration": 5.4,
+        "tail": [1.7, 3.65]
+      },
+      "films": [
+        {
+          "id": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+          "duration": 45,
+          "clip": [9.9, 17.8],
+          "settledAt": 17.7
+        },
+        { "id": "crm-agent-studio-ludic2-logos-r4-s1", "duration": 46 },
+        { "id": "crm-flow-builder-ludic2-logos-r4-s1", "duration": 39 },
+        { "id": "crm-campaigns-journey-ludic2-logos-r4-s1", "duration": 46 }
+      ]
+    },
+    "magneto": {
+      "intro": {
+        "id": "magneto-intro-s3-r3",
+        "duration": 5.4,
+        "tail": [1.7, 3.65]
+      },
+      "films": [
+        {
+          "id": "flow-canvas-build-logos-r4-s1",
+          "duration": 31,
+          "clip": [13.1, 20.1],
+          "settledAt": 20
+        },
+        { "id": "flow-durable-run-logos-r4-s1", "duration": 34 },
+        { "id": "flow-lifecycle-logos-r4-s1", "duration": 35 },
+        { "id": "flow-copilot-logos-r4-s1", "duration": 32 }
+      ]
+    },
+    "tuner": {
+      "intro": {
+        "id": "tuner-intro-s2",
+        "duration": 5.4,
+        "tail": [1.7, 3.65]
+      },
+      "films": [
+        {
+          "id": "channels-one-contract-ludic-logos-r5-s1",
+          "duration": 36,
+          "clip": [13.4, 16.5],
+          "settledAt": 16.4
+        },
+        { "id": "channels-call-center-ludic-logos-r4-s1", "duration": 36 },
+        { "id": "channels-whatsapp-official-ludic-logos-r4-s1", "duration": 34 }
+      ]
+    },
+    "knowly": {
+      "intro": {
+        "id": "knowly-intro-s2",
+        "duration": 5.4,
+        "tail": [1.7, 3.65]
+      },
+      "films": [
+        {
+          "id": "kb-ask-with-proof-ludic-logos-r5-s1",
+          "duration": 34,
+          "clip": [9.7, 17.7],
+          "settledAt": 17.6
+        },
+        { "id": "kb-sources-to-knowledge-ludic-logos-r5-s1", "duration": 34 },
+        { "id": "kb-who-reads-what-ludic-logos-r4-s1", "duration": 34 }
+      ]
+    }
+  }
+}

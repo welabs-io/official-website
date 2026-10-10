@@ -1,9 +1,10 @@
-// SINCRONIZAÇÃO DOS FILMES HYPERFRAMES PARA O SITE
-// Copies only the runtime files of each accepted composition into public/motion/<id>/ (round 1) or
-// public/motion/pieces/<id>/ (round 2, shared pieces), copies _shared once (manifest, loader, sequence player, vendor,
-// the manifest version of each brand), copies the pinned HyperFrames Player and writes lib/motion-catalog.json.
-// A film and its brand intro stay separate pieces: the catalog item carries `introSrc` and MotionFilm plays them in sequence.
-import { spawnSync } from "node:child_process";
+// SINCRONIZAÇÃO DOS FILMES DO SITE
+// Copies the pieces listed in lib/motion-pieces.json (five product openings and the product films;
+// the chain montage of lib/home-montage.json uses clips of those films) from the portfolio round (read only) into public/motion/pieces/<id>/, copies _shared the way the site
+// serves it (manifest, loader, vendor, Welabs brand version), copies the pinned HyperFrames player and
+// renders one cover frame per piece into public/motion/posters/<id>.jpg.
+// Usage: node scripts/sync-motion.mjs [--no-posters]
+import { createServer } from "node:http";
 import { createHash } from "node:crypto";
 import {
   cpSync,
@@ -12,507 +13,222 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
-  writeFileSync,
+  statSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, extname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const campaign = resolve(
-  homedir(),
-  "code/control/portfolio/motion/portfolio-20261001",
-);
-const productsRoot = join(campaign, "products");
-const publicRoot = join(siteRoot, "public/motion");
-const PLAYER_VERSION = "0.8.104";
-
-// Runtime entries only; briefs, evidence, QA and snapshots stay private.
-const RUNTIME_ENTRIES = [
-  "index.html",
-  "build.js",
-  "story-data.js",
-  "styles.css",
-  "assets",
-  "data",
-  "shared",
-  "compositions",
-  "components",
-  "styles",
-];
-// Product-specific stylesheet at the root (e.g. flow-graph.css); tooling scripts stay out.
-const isRootStyle = (name) => name.endsWith(".css");
-
-// JORNADAS DA PRIMEIRA RODADA
-// Round 20261001 journeys this site publishes: none since 2026-10-07. The Welabs journeys were superseded
-// by the per-product reels below (wemalupe also shows an internal codename), and the Imagine journeys
-// belong to the Imagine site since the split of 2026-10-07. channels-product and channels-sdk left on
-// 2026-10-07: both still carry the retired "Channels" name, and Tuner has its own reel films.
-const SITE_JOURNEYS = new Set([]);
-
-// Round 20261002 pieces, bound to the coordinator's accepted hash.
-const round2 = resolve(
+const publicRoot = join(siteRoot, "public");
+const motionRoot = join(publicRoot, "motion");
+const round = resolve(
   homedir(),
   "code/control/portfolio/motion/portfolio-20261002",
 );
-// Reel pieces follow the operator-approved selection and order per product (publish/index.html, PRODUCTS
-// of 2026-10-04); `reel` marks them for the product page gallery and `also` lists other pages that show them.
-// Since 2026-10-07 every piece also carries `description`: one commercial line shown under the film.
-const reel = (product, title, description, kind = "business", extra = {}) => ({
-  kind,
-  product,
-  title,
-  description,
-  reel: true,
-  ...extra,
-});
-// Films that also appeared in the Imagine know-how section (page "servicos") of the shared site; kept so
-// the catalog stays comparable with the Imagine site.
-const KNOWHOW = { also: ["servicos"] };
-// Insertion order is the gallery order; the collection order lives in lib/emphasis.json.
-const ROUND2 = {
-  // Know-how ("servicos") is shown through the Welabs chain and the Magneto, Domus, Knowly and Tuner films.
-  // Welabs product names since 2026-10-06: Magneto (flow), Domus (erp), Knowly (wekb), Relloo (welabs-crm, Rello
-  // until 2026-10-07), Tuner (channels).
-  // The svc-* pieces left on 2026-10-04: they cite "ERP" as a node or the word "cliente".
-  // Operator decision of 2026-10-07: the site publishes only the playful cuts, each with its brand intro (the
-  // selection of the Projection Room, publish/index.html); feature cuts stay off the site. Welabs films open
-  // with the Room's current Welabs intro (lib/brand-intros.json): welabs-intro-v6 replaced v5 on 2026-10-07 and
-  // welabs-intro-v7 (brand 1.3.0) replaced v6 on 2026-10-08.
-  // Since 2026-10-07 (evening) the Welabs films cite every product by its logo: the "-logos" cuts replace the
-  // earlier ones, whose product names were text; same films, durations and titles.
-  // Ecossistema Monitoramento is hidden for now (operator, 2026-10-07): its mon-*-ludic cuts stay accepted in the
-  // round but leave this catalog, together with the product card and page (lib/catalog.ts).
-  // Titles and descriptions rewritten on 2026-10-07 (commercial tone, partner products by name, only what
-  // the film shows, no "cliente" nor "ERP"); the before/after table is in
-  // control/portfolio/site-redesign/titulos-v2.md.
-  // Since 2026-10-08 the order follows the operator's product weight (lib/emphasis.json): chain first,
-  // then Domus, Relloo, Magneto, Tuner and Knowly. The chain and Domus films are the "define" cuts of
-  // 2026-10-08 (Domus defines, Relloo serves next to it, Magneto is the workflow, Tuner delivers, Knowly
-  // explains); titles and descriptions come from the chain and hub groups of publish/index.html. The
-  // earlier welabs-chain-*-logos-intro-v6 and hub-{dominio-spa,fiscal-br,concessoes} cuts left the site
-  // and stay in the round.
-  // Since 2026-10-08 (evening) every film is its "-r2" revision from the round: the intro hands over with the
-  // film already running (no empty frames) and the logos sit on the baseline measured by the round's gate.
-  // Same films, titles and descriptions; each montage is 0.5 s shorter.
-  // Since 2026-10-08 (night) the films with a DEMO pill beside the Welabs seal are their "-r3" revision: the
-  // pill is centred on the seal, which stays on the text baseline. flow-durable-run moved to "-r3" on
-  // 2026-10-08, once its r3 film was accepted under the operator's recorded exception.
-  // Since 2026-10-08 (brand 1.3.0) Relloo swaps the colours of its two "o" (the first graphite/white on top, the
-  // second amber underneath). Every Welabs montage opens with welabs-intro-v7, which shows the new Relloo; the
-  // films that cite Relloo by logo are their brand revision (chain "-r4", Relloo "-r3", Tuner one-contract "-r4").
-  // Same films, titles, descriptions and durations.
-  "welabs-chain-overview-define-logos-r4-s1": {
-    kind: "topology",
-    page: "welabs",
-    title: "Plataforma Welabs · O Domus define, os outros dão vida",
-    description:
-      "O Domus define a empresa inteira e o Relloo atende colado a ele; o workflow do Magneto, os canais do Tuner e as respostas do Knowly passam por tudo, sem ninguém copiando dado de um sistema para o outro.",
-    ...KNOWHOW,
-  },
-  "welabs-chain-journey-define-logos-r4-s1": {
-    kind: "topology",
-    page: "welabs",
-    title: "Plataforma Welabs · Do WhatsApp à aprovação, sem repetir nada",
-    description:
-      "A mensagem chega pelo Tuner, o Relloo reconhece a pessoa com o que já está no Domus, o Knowly responde com a fonte e a regra do Domus vira workflow no Magneto, que leva até quem decide e devolve o recibo.",
-    ...KNOWHOW,
-  },
-  "welabs-chain-plug-define-logos-r4-s1": {
-    kind: "topology",
-    page: "welabs",
-    title: "Plataforma Welabs · O app novo já nasce com o negócio definido",
-    description:
-      "Encaixado no núcleo de Domus e Relloo, ele já nasce com telas, regras, contatos e pedidos, e ganha o workflow do Magneto, os canais do Tuner e as respostas do Knowly.",
-    ...KNOWHOW,
-  },
-  "welabs-chain-horizon-define-logos-r4-s1": {
-    kind: "topology",
-    page: "welabs",
-    title:
-      "Plataforma Welabs · Um centro que define e três pontes que dão vida",
-    description:
-      "No centro, o Domus define e o Relloo atende; o workflow do Magneto, os avisos do Tuner e as respostas do Knowly atravessam do seu app até a sua equipe.",
-    ...KNOWHOW,
-  },
-  "hub-whole-house-ludic-logos-r3-s1": reel(
-    "erp",
-    "Domus · A empresa inteira numa casa só",
-    "Financeiro, fiscal, contratos, pessoas, compras, estoque, vendas, produção, projetos, ativos e qualidade ganham cada um o seu cômodo, e uma frente passa a vez à outra sob o mesmo teto.",
-    "business",
-    KNOWHOW,
-  ),
-  "hub-defines-runs-ludic-v3-logos-r3-s1": reel(
-    "erp",
-    "Domus · O Domus define, o workflow do Magneto anda e o recibo volta",
-    "A regra nasce no Domus e vira workflow no Magneto: cobrança, nota de serviço e aviso por e-mail passo a passo, com o recibo de volta para casa.",
-    "business",
-    KNOWHOW,
-  ),
-  "hub-draw-born-ludic-v2-logos-r3-s1": reel(
-    "erp",
-    "Domus · Desenhou, nasceu: tela e fluxo sem programar",
-    "Desenhe um cadastro novo e a tela aparece pronta; desenhe o caminho e ele vira workflow no Magneto. O próprio Domus funciona assim, com a cobrança e a nota rodando no Magneto.",
-    "business",
-    KNOWHOW,
-  ),
-  "crm-omnichannel-inbox-ludic2-logos-r3-s1": reel(
-    "welabs-crm",
-    "Relloo · Cada pessoa com a história inteira, em qualquer canal",
-    "Os canais chegam pelo Tuner by Welabs, e o Relloo reconhece a pessoa, guarda a história, leva a conversa a quem atende e junta a ligação na mesma ficha.",
-  ),
-  "crm-agent-studio-ludic2-logos-r3-s1": reel(
-    "welabs-crm",
-    "Relloo · Agentes de IA que respondem com o Knowly by Welabs",
-    "O agente nasce de peças prontas, responde com as fontes da empresa pelo Knowly, usa só o que foi liberado e é testado antes de entrar no ar.",
-  ),
-  "crm-flow-builder-ludic2-logos-r3-s1": reel(
-    "welabs-crm",
-    "Relloo · Automações que conversam e decidem",
-    "Você desenha o atendimento em blocos: o menu espera a resposta, a condição escolhe o caminho e cada execução deixa o rastro.",
-  ),
-  "crm-campaigns-journey-ludic2-logos-r3-s1": reel(
-    "welabs-crm",
-    "Relloo · Campanhas que viram venda e voltam como cashback",
-    "Formulário que recomenda, roleta, cupom no WhatsApp, venda no caixa e cashback, numa jornada só de fidelização.",
-    "journey",
-  ),
-  "flow-canvas-build-logos-r3-s1": reel(
-    "flow",
-    "Magneto · Quem conhece o processo monta o fluxo",
-    "Planilha, e-mail e lembrete viram um caminho em blocos, sem programar, e o desenho já é o processo andando.",
-    "business",
-    KNOWHOW,
-  ),
-  "flow-durable-run-logos-r3-s1": reel(
-    "flow",
-    "Magneto · Nenhum processo fica pela metade",
-    "O fluxo espera a pessoa o tempo que for, sobrevive à queda do sistema e segue do mesmo ponto, sem repetir nenhum passo.",
-    "business",
-    KNOWHOW,
-  ),
-  "flow-lifecycle-logos-r3-s1": reel(
-    "flow",
-    "Magneto · Mude a regra sem medo",
-    "A versão nova nasce ao lado, é testada com um pedido de teste, entra no ar quando estiver pronta e volta num toque, com o registro de quem mudou.",
-    "business",
-    KNOWHOW,
-  ),
-  "flow-copilot-logos-r3-s1": reel(
-    "flow",
-    "Magneto · Do texto ao processo rodando",
-    "Você descreve o processo numa frase, o Magneto monta os blocos, você revisa e ativa.",
-    "business",
-    KNOWHOW,
-  ),
-  "channels-one-contract-ludic-logos-r4-s1": reel(
-    "channels",
-    "Tuner · Todo canal num lugar só, pronto para o Relloo by Welabs",
-    "WhatsApp, voz, chat do site e Discord chegam do mesmo jeito, o Relloo atende e vende, e um produto novo só conecta.",
-    "business",
-    KNOWHOW,
-  ),
-  "channels-call-center-ludic-logos-r3-s1": reel(
-    "channels",
-    "Tuner · Ninguém repete a história ao telefone",
-    "A ligação é bem recebida, cai na fila certa e passa adiante com a história junto.",
-    "business",
-    KNOWHOW,
-  ),
-  "channels-whatsapp-official-ludic-logos-r3-s1": reel(
-    "channels",
-    "Tuner · Seu número no WhatsApp oficial, nenhuma conversa perdida",
-    "Foto e localização chegam inteiras e, um dia depois, a mensagem aprovada retoma a conversa no mesmo lugar.",
-    "business",
-    KNOWHOW,
-  ),
-  "kb-ask-with-proof-ludic-logos-r3-s1": reel(
-    "wekb",
-    "Knowly · Respostas com prova, frase por frase",
-    "A dúvida chega em palavras, o Knowly acha onde aquilo já foi dito e mostra a fonte de cada frase; o que não sabe, ele diz.",
-    "business",
-    KNOWHOW,
-  ),
-  "kb-sources-to-knowledge-ludic-logos-r3-s1": reel(
-    "wekb",
-    "Knowly · Tudo o que a equipe sabe, num lugar só",
-    "Documentos, reuniões, tickets e código se juntam num lugar só, sempre atualizados e sem dado pessoal.",
-    "business",
-    KNOWHOW,
-  ),
-  "kb-who-reads-what-ludic-logos-r3-s1": reel(
-    "wekb",
-    "Knowly · Cada pessoa vê só o que pode ver",
-    "Cada área guarda o que é seu, a porta errada não abre e, quem muda de time, muda de chave junto.",
-    "business",
-    KNOWHOW,
-  ),
-  // The Imagine reels (Tabe.la, Stant, WeGO, Resíduos, IUS, Central ESG) moved to the Imagine site on 2026-10-07.
-};
+const PLAYER_VERSION = "0.8.104";
+const withPosters = !process.argv.includes("--no-posters");
+const pieces = JSON.parse(
+  readFileSync(join(siteRoot, "lib/motion-pieces.json"), "utf8"),
+);
 
-// Every brand intro of lib/brand-intros.json is synced once accepted: its closing frame is the card
-// cover of the brand's products. Intros outside a product reel carry no product, so they never
-// show up in a gallery; the cover lookup goes by id through the same map.
-// The intro of each brand is the one the round's manifest names (_shared/brand/manifest.json): changing a brand's
-// intro or version is an edit there and the next sync follows it. lib/brand-intros.json keeps this site's brand keys
-// (`manifest`: site brand -> manifest brand), the product map and the names; its `brands` field is rewritten here.
-const roundManifest = JSON.parse(
-  readFileSync(join(round2, "_shared/brand/manifest.json"), "utf8"),
-);
-const brandIntros = JSON.parse(
-  readFileSync(join(siteRoot, "lib/brand-intros.json"), "utf8"),
-);
-for (const [brand, manifestBrand] of Object.entries(brandIntros.manifest)) {
-  const id = roundManifest.brands[manifestBrand]?.intro;
-  if (!id) throw new Error(`manifest has no intro for ${manifestBrand}`);
-  brandIntros.brands[brand] = id;
-  ROUND2[id] ??= {
-    kind: "intro",
-    title: `${brandIntros.names[brand] ?? brand} · Introdução de marca`,
-  };
+// PEÇAS DA LISTA
+// `cover` is the time (s) of the still frame: the closing frame for openings, a frame inside the clip for films.
+const list = [];
+const add = (piece, cover) => list.push({ ...piece, cover });
+// Film covers sit half a second after the start of the played range (clip, or 1.2 s for a film played in full, which
+// skips the empty first frames): that is what a preloaded neighbour shows, so the cover and the player match.
+const FILM_START = 1.2;
+const filmCover = (film) => (film.clip?.[0] ?? FILM_START) + 0.5;
+// Chain films (the relation clips of the montage): copied whole, no cover of their own
+for (const film of pieces.chain ?? []) list.push({ ...film, cover: null });
+for (const product of Object.values(pieces.products)) {
+  add(product.intro, product.intro.duration - 0.04);
+  for (const film of product.films) add(film, filmCover(film));
 }
-writeFileSync(
-  join(siteRoot, "lib/brand-intros.json"),
-  `${JSON.stringify(brandIntros, null, 2)}\n`,
+
+// CAPAS DA MONTAGEM
+// The chain montage (lib/home-montage.json) plays clips of films already in the list; each step gets its own cover,
+// half a second into the clip, named montage-<n>.
+const montage = JSON.parse(
+  readFileSync(join(siteRoot, "lib/home-montage.json"), "utf8"),
 );
+const listed = new Set(list.map((piece) => piece.id));
+const covers = [
+  ...list
+    .filter((piece) => piece.cover !== null)
+    .map((piece) => ({
+      id: piece.id,
+      name: piece.id,
+      cover: piece.cover,
+    })),
+  ...montage.steps.map((step, i) => {
+    for (const segment of step.segments)
+      if (!listed.has(segment.film))
+        throw new Error(`montage step ${i + 1}: ${segment.film} is not listed`);
+    const first = step.segments[0];
+    return {
+      id: first.film,
+      name: `montage-${i + 1}`,
+      cover: first.start + 0.5,
+    };
+  }),
+];
 
-// Existing catalog slug for round 1 compositions that overlap a catalog product (none of the Tuner pieces).
-const PRESENTATION_SLUG = {};
+// CONFERÊNCIA DE ACEITE
+const accepted = JSON.parse(readFileSync(join(round, "accepted.json"), "utf8"));
+const html = (id) => join(round, "pieces", id, "index.html");
+const sha = (file) =>
+  createHash("sha256").update(readFileSync(file)).digest("hex");
+const durationOf = (id) =>
+  Number(
+    readFileSync(html(id), "utf8").match(/data-duration="([0-9.]+)"/)?.[1],
+  );
+for (const piece of list) {
+  if (
+    !existsSync(html(piece.id)) ||
+    accepted[piece.id]?.sha256 !== sha(html(piece.id))
+  )
+    throw new Error(`${piece.id} is not accepted at its hash`);
+  if (durationOf(piece.id) !== piece.duration)
+    throw new Error(
+      `${piece.id}: duration ${durationOf(piece.id)} differs from lib/motion-pieces.json (${piece.duration})`,
+    );
+}
 
-function findPlayer() {
+// CÓPIA
+rmSync(motionRoot, { recursive: true, force: true });
+mkdirSync(join(motionRoot, "pieces"), { recursive: true });
+for (const { id } of list) {
+  const target = join(motionRoot, "pieces", id);
+  mkdirSync(target, { recursive: true });
+  cpSync(html(id), join(target, "index.html"));
+  const assets = join(round, "pieces", id, "assets");
+  if (existsSync(assets))
+    cpSync(assets, join(target, "assets"), {
+      recursive: true,
+      dereference: true,
+    });
+}
+const manifest = JSON.parse(
+  readFileSync(join(round, "_shared/brand/manifest.json"), "utf8"),
+);
+// The product openings of the manifest must be the ones this site lists
+for (const [slug, product] of Object.entries(pieces.products))
+  if (manifest.products[slug] !== product.intro.id)
+    throw new Error(
+      `manifest opening of ${slug} is ${manifest.products[slug]}`,
+    );
+const shared = join(motionRoot, "_shared");
+for (const rel of ["brand/manifest.json", "brand/loader.js"]) {
+  mkdirSync(dirname(join(shared, rel)), { recursive: true });
+  cpSync(join(round, "_shared", rel), join(shared, rel));
+}
+cpSync(
+  join(round, "_shared/brand/welabs", manifest.brands.welabs.version),
+  join(shared, "brand/welabs", manifest.brands.welabs.version),
+  { recursive: true },
+);
+cpSync(join(round, "_shared/vendor"), join(shared, "vendor"), {
+  recursive: true,
+});
+
+// PLAYER FIXADO
+function findNpx(pkgPath, check) {
   const cacheRoot = join(homedir(), ".npm/_npx");
   for (const entry of readdirSync(cacheRoot)) {
-    const pkg = join(cacheRoot, entry, "node_modules/hyperframes");
+    const pkg = join(cacheRoot, entry, "node_modules", pkgPath);
     try {
-      if (
-        JSON.parse(readFileSync(join(pkg, "package.json"), "utf8")).version ===
-        PLAYER_VERSION
-      )
-        return join(pkg, "dist/hyperframes-player.global.js");
+      if (check(pkg)) return pkg;
     } catch {
       /* not this cache entry */
     }
   }
+  return null;
+}
+const hyperframes = findNpx(
+  "hyperframes",
+  (p) =>
+    JSON.parse(readFileSync(join(p, "package.json"), "utf8")).version ===
+    PLAYER_VERSION,
+);
+if (!hyperframes)
   throw new Error(`HyperFrames ${PLAYER_VERSION} not found in the npm cache`);
-}
+cpSync(
+  join(hyperframes, "dist/hyperframes-player.global.js"),
+  join(motionRoot, "player.js"),
+);
+process.stdout.write(`motion: ${list.length} pieces synced\n`);
+if (!withPosters) process.exit(0);
 
-// Welabs products carry their own names since 2026-10-06 (the old titles of the delivery index map to them).
-const RENAMED = {
-  "Channels hosted product": "Tuner · Produto hospedado",
-  "Channels SDK": "Tuner · SDK",
+// CAPAS
+// A still of each piece through the pinned player, served by a static server over public/ like the site does.
+const playwrightRoot = findNpx("playwright", (p) =>
+  existsSync(join(p, "index.mjs")),
+);
+if (!playwrightRoot) throw new Error("playwright not found in the npx cache");
+const { chromium } = await import(join(playwrightRoot, "index.mjs"));
+const types = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".webp": "image/webp",
+  ".woff2": "font/woff2",
 };
-
-function readTitles() {
-  // Titles and accepted state come from the coordinator's delivery index.
-  const titles = new Map();
-  const index = readFileSync(join(campaign, "delivery-index.md"), "utf8");
-  for (const line of index.split("\n")) {
-    const match = line.match(
-      /^\| (.+?) \| Aceito \| \[HTML editável\]\(.*?\/products\/([^/]+)\/index\.html\)/,
-    );
-    if (match) titles.set(match[2], RENAMED[match[1]] ?? match[1]);
+const host = (src) =>
+  `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;background:#000;overflow:hidden}hyperframes-player{display:block;width:100vw;height:100vh}</style><script src="/motion/player.js"></script><hyperframes-player src="${src}" width="1920" height="1080"></hyperframes-player>`;
+const server = createServer((req, res) => {
+  const url = new URL(req.url, "http://x");
+  if (url.pathname === "/__poster") {
+    res.writeHead(200, { "content-type": types[".html"] });
+    return res.end(host(url.searchParams.get("src")));
   }
-  return titles;
-}
-
-// Player picks its GSAP adapter once; a zero-length timeline at that moment freezes playback.
-// Seed the registered timeline with the declared duration so the player drives GSAP directly.
-// The module seed runs after build.js (modules execute in order) and re-applies while the
-// composition registers its timeline asynchronously, so the film keeps its accepted length.
-function seedTimeline(html, compositionId, duration) {
-  const seed =
-    `<script type="module">const id=${JSON.stringify(compositionId)},d=${duration};` +
-    `const pad=()=>{const t=window.__timelines||{};for(const tl of [t[id],...Object.values(t)]){if(tl&&tl.duration&&tl.duration()<d){tl.to({},{duration:d-tl.duration()},tl.duration());}}};` +
-    `pad();let n=0;const tick=()=>{pad();if(++n<40)setTimeout(tick,50);};tick();</script>`;
-  return html.replace(/(<\/body>)/i, `${seed}\n$1`);
-}
-
-// Studio serves each project at the origin root, so some stylesheets use "/assets/...".
-// Under the site every film lives in /motion/<id>/, so those URLs are rebased in the copy.
-function rebaseAbsoluteAssets(dir, id) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) rebaseAbsoluteAssets(path, id);
-    else if (entry.name.endsWith(".css")) {
-      const css = readFileSync(path, "utf8");
-      const rebased = css.replace(
-        /(["'(])\/assets\//g,
-        `$1/motion/${id}/assets/`,
-      );
-      if (rebased !== css) writeFileSync(path, rebased);
-    }
-  }
-}
-
-const titles = readTitles();
-rmSync(publicRoot, { recursive: true, force: true });
-mkdirSync(publicRoot, { recursive: true });
-cpSync(findPlayer(), join(publicRoot, "player.js"));
-
-const catalog = [];
-for (const id of readdirSync(productsRoot).sort()) {
-  const source = join(productsRoot, id);
-  // Allowlist: only this site's round 1 journeys are copied.
+  const file = resolve(publicRoot, `.${decodeURIComponent(url.pathname)}`);
   if (
-    !SITE_JOURNEYS.has(id) ||
-    !titles.has(id) ||
-    !existsSync(join(source, "index.html"))
-  )
-    continue;
-  const target = join(publicRoot, id);
-  for (const entry of [
-    ...RUNTIME_ENTRIES,
-    ...readdirSync(source).filter(isRootStyle),
-  ]) {
-    if (existsSync(join(source, entry)))
-      cpSync(join(source, entry), join(target, entry), {
-        recursive: true,
-        dereference: true,
-      });
-  }
-  rebaseAbsoluteAssets(target, id);
-  const html = readFileSync(join(target, "index.html"), "utf8");
-  const compositionId = html.match(/data-composition-id="([^"]+)"/)?.[1];
-  const duration = Number(html.match(/data-duration="([0-9.]+)"/)?.[1]);
-  if (!compositionId || !duration)
-    throw new Error(`${id}: missing data-composition-id or data-duration`);
-  writeFileSync(
-    join(target, "index.html"),
-    seedTimeline(html, compositionId, duration),
-  );
-  catalog.push({
-    id,
-    title: titles.get(id),
-    duration,
-    compositionId,
-    src: `/motion/${id}/index.html`,
-    introSrc: null,
-    poster: `/motion/${id}/poster.jpg`,
-    // Round 1 journeys carry no commercial line
-    description: null,
-    kind: "journey",
-    page: null,
-    product: PRESENTATION_SLUG[id] ?? id,
-    reel: false,
-    also: [],
-  });
-}
-
-// Round 2: only pieces whose index.html still matches the accepted sha256 reach the site.
-const accepted = JSON.parse(
-  readFileSync(join(round2, "accepted.json"), "utf8"),
-);
-const pending = [];
-const acceptedAtHash = (id) => {
-  const file = join(round2, "pieces", id, "index.html");
-  const hash = existsSync(file)
-    ? createHash("sha256").update(readFileSync(file)).digest("hex")
-    : null;
-  return Boolean(accepted[id]) && accepted[id].sha256 === hash;
-};
-const durationOf = (id) =>
-  Number(
-    readFileSync(join(round2, "pieces", id, "index.html"), "utf8").match(
-      /data-duration="([0-9.]+)"/,
-    )?.[1],
-  );
-const brandsInUse = new Set();
-// PEÇAS SHARED DA RODADA
-// A film and its brand intro are separate pieces under public/motion/pieces/<id>/ (the pieces reach ../../_shared/,
-// which is public/motion/_shared/). MotionFilm plays the intro and then the film; `duration` is the sum.
-for (const [id, meta] of Object.entries(ROUND2)) {
-  const source = join(round2, "pieces", id);
-  const htmlPath = join(source, "index.html");
-  const html = existsSync(htmlPath) ? readFileSync(htmlPath, "utf8") : "";
-  const brand = html.match(/data-brand="([^"]+)"/)?.[1];
-  const intro =
-    meta.kind === "intro" ? null : roundManifest.brands[brand]?.intro;
-  if (!acceptedAtHash(id) || (intro && !acceptedAtHash(intro))) {
-    pending.push(id);
-    continue;
-  }
-  const target = join(publicRoot, "pieces", id);
-  mkdirSync(target, { recursive: true });
-  cpSync(htmlPath, join(target, "index.html"));
-  if (existsSync(join(source, "assets")))
-    cpSync(join(source, "assets"), join(target, "assets"), {
-      recursive: true,
-      dereference: true,
+    file.startsWith(publicRoot + sep) &&
+    existsSync(file) &&
+    statSync(file).isFile()
+  ) {
+    res.writeHead(200, {
+      "content-type": types[extname(file)] ?? "application/octet-stream",
     });
-  brandsInUse.add(brand);
-  // A film's cover is the closing frame of its brand intro; intros and films without one own their poster.
-  const posterOwner = intro ?? id;
-  catalog.push({
-    id,
-    title: meta.title,
-    duration: durationOf(id) + (intro ? durationOf(intro) : 0),
-    compositionId: html.match(/data-composition-id="([^"]+)"/)?.[1],
-    src: `/motion/pieces/${id}/index.html`,
-    introSrc: intro ? `/motion/pieces/${intro}/index.html` : null,
-    poster: `/motion/pieces/${posterOwner}/poster.jpg`,
-    description: meta.description ?? null,
-    kind: meta.kind,
-    page: meta.page ?? null,
-    product: meta.product ?? null,
-    reel: meta.reel ?? false,
-    also: meta.also ?? [],
+    return res.end(readFileSync(file));
+  }
+  res.writeHead(404).end();
+});
+await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
+const base = `http://127.0.0.1:${server.address().port}`;
+mkdirSync(join(motionRoot, "posters"), { recursive: true });
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+for (const piece of covers) {
+  await page.goto(
+    `${base}/__poster?src=${encodeURIComponent(`/motion/pieces/${piece.id}/index.html`)}`,
+  );
+  await page.waitForFunction(
+    () => {
+      const el = document.querySelector("hyperframes-player");
+      return el && el.ready && el.duration > 0;
+    },
+    null,
+    { timeout: 30000 },
+  );
+  await page.evaluate((t) => {
+    const el = document.querySelector("hyperframes-player");
+    el.pause();
+    el.seek(t);
+  }, piece.cover);
+  await page.waitForTimeout(700);
+  await page.screenshot({
+    path: join(motionRoot, "posters", `${piece.name}.jpg`),
+    type: "jpeg",
+    quality: 78,
   });
 }
-
-// _SHARED UMA VEZ
-// Manifest, loader, sequence player, vendor files and the manifest version of each brand in use; the manifest is copied
-// whole, so a brand switch in the round reaches the site by the next sync.
-const sharedRoot = join(round2, "_shared");
-const sharedTarget = join(publicRoot, "_shared");
-mkdirSync(sharedTarget, { recursive: true });
-for (const rel of [
-  "brand/manifest.json",
-  "brand/loader.js",
-  "player/sequence-player.js",
-]) {
-  mkdirSync(dirname(join(sharedTarget, rel)), { recursive: true });
-  cpSync(join(sharedRoot, rel), join(sharedTarget, rel));
-}
-for (const brand of brandsInUse) {
-  const version = roundManifest.brands[brand].version;
-  cpSync(
-    join(sharedRoot, "brand", brand, version),
-    join(sharedTarget, "brand", brand, version),
-    { recursive: true },
-  );
-}
-cpSync(join(sharedRoot, "vendor"), join(sharedTarget, "vendor"), {
-  recursive: true,
-});
-
-// presentationSlug links a film to an existing framepack page, when there is one; this site has no
-// framepacks since the legacy packs left with the split of 2026-10-07, so every slug is null.
-const packsRoot = join(siteRoot, "public/presentations");
-const framepacks = new Set(existsSync(packsRoot) ? readdirSync(packsRoot) : []);
-for (const item of catalog)
-  item.presentationSlug =
-    item.product && framepacks.has(item.product) ? item.product : null;
-writeFileSync(
-  join(siteRoot, "lib/motion-catalog.json"),
-  `${JSON.stringify(catalog, null, 2)}\n`,
-);
-process.stdout.write(
-  `motion: ${catalog.length} films synced (${titles.size} accepted journeys, ${SITE_JOURNEYS.size} published here; round 2 pending: ${pending.join(", ") || "none"})\n`,
-);
-
-// Posters come from the synced pieces, so they are regenerated on every sync.
-const posters = spawnSync(
-  process.execPath,
-  [join(siteRoot, "scripts/generate-motion-posters.mjs")],
-  { stdio: "inherit" },
-);
-if (posters.status !== 0) process.exit(posters.status ?? 1);
-
-// PEÇAS DA PÁGINA /new
-// The full sync wipes public/motion above, so the one-page preview pieces are copied back right after.
-const onepage = spawnSync(
-  process.execPath,
-  [join(siteRoot, "scripts/sync-onepage-motion.mjs")],
-  { stdio: "inherit" },
-);
-if (onepage.status !== 0) process.exit(onepage.status ?? 1);
+await browser.close();
+server.close();
+process.stdout.write(`motion: ${covers.length} posters written\n`);

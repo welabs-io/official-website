@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Plataforma · Encaixe</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand amber: --coral keeps its name but now carries the Welabs amber from _shared/brand/welabs/welabs-brand.js; background is brand graphite */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+/* Product names come from WELABS_BRAND.names and keep their parent's color */
+#root [data-wl-name]{color:inherit}
+/* Header is visible in the resting state: the intro handoff (before the film timeline starts) already shows it */
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:1}
+#wm{position:absolute;left:0;top:0;font-size:56px;font-weight:800;letter-spacing:-1.5px;line-height:72px}
+#wm span,.cap span,#close span{color:var(--coral)}
+#kick{position:absolute;left:372px;top:14px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+/* New logo is wider per height (4.25 vs 3.67): seal at 48px and DEMO chip moved left to clear it */
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.sub{position:absolute;left:0;top:978px;width:1920px;text-align:center;font-size:32px;font-weight:500;color:var(--muted);opacity:0;white-space:nowrap}
+
+/* APP NOVO COM OS QUATRO ENCAIXES */
+.app{position:absolute;left:260px;top:190px;width:1400px;height:400px;border-radius:30px;background:var(--panel);border:3px solid var(--line);opacity:0}
+.app .bar{height:70px;border-radius:27px 27px 0 0;background:var(--panel2);display:flex;align-items:center;gap:12px;padding:0 28px;font-size:30px;font-weight:800}
+.app .bar i{width:16px;height:16px;border-radius:50%;background:#55556A}
+.app .bar span{margin-left:16px}
+.slot{position:absolute;top:120px;width:320px;height:210px;border-radius:22px;border:3px dashed #4A4A56;background:#141418}
+.slot .q{position:absolute;left:128px;top:73px;width:64px;height:64px;border-radius:50%;background:#2A2A33;border:3px solid #55556A;color:var(--muted);font-size:38px;font-weight:800;display:grid;place-items:center;opacity:0}
+.slot .fill{position:absolute;inset:-3px;border-radius:22px;border:3px solid var(--coral);background:rgba(var(--wl-amber-rgb),.10);padding:22px 22px;opacity:0}
+.slot .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.18);color:var(--coral)}
+.slot .tt{margin-top:14px;font-size:30px;font-weight:800;white-space:nowrap}
+.slot .ln{margin-top:6px;font-size:24px;font-weight:600;line-height:30px;color:var(--muted)}
+.slot .tk{position:absolute;right:-16px;top:-16px;width:44px;height:44px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+.s0{left:24px}.s1{left:368px}.s2{left:712px}.s3{left:1056px}
+
+/* PLATAFORMA QUE RECEBE O ENCAIXE */
+#plate{position:absolute;left:260px;top:720px;width:1400px;height:150px;border-radius:30px;background:#1A1A20;border:3px solid #4A4A56;opacity:0}
+.sock{position:absolute;top:28px;width:320px;height:88px;border-radius:18px;background:var(--panel2);border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;white-space:nowrap}
+.sock.on{border-color:var(--coral)}
+
+/* LOGO DE PRODUTO NO TEXTO */
+/* Official product logos, sized by height only. --lx is the rendered x-height (150 viewBox units);
+   height = viewBox height / 150 * lx and vertical-align drops the box bottom so the logo baseline (y=210) sits on the text baseline. */
+.lg{display:inline-block}
+.lg.domus{height:calc(var(--lx)*1.958);vertical-align:calc(var(--lx)*-0.526)}
+.lg.magneto,.lg.knowly{height:calc(var(--lx)*2.014);vertical-align:calc(var(--lx)*-0.554)}
+.lg.relloo{height:calc(var(--lx)*1.894);vertical-align:calc(var(--lx)*-0.494)}
+.lg.tuner{height:calc(var(--lx)*2.2569);vertical-align:calc(var(--lx)*-0.556)}
+/* Socket labels are logos; the shared socket holds two logos joined by "+" */
+.sock .lg{--lx:24px}
+.sock .lg.pair{--lx:20px}
+.sock .plus{margin:0 14px;color:var(--muted)}
+/* Core socket: amber-tinted, it is where the business is defined */
+.sock.core{background:rgba(var(--wl-amber-rgb),.12)}
+/* Transversal rail: runs under all four sockets, through the core */
+#pipes .rail{stroke:var(--coral);stroke-width:6;opacity:0}
+#pipes{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible;pointer-events:none}
+#pipes line{stroke:#4A4A56;stroke-width:10;stroke-linecap:round;opacity:0}
+#pipes circle{fill:var(--coral);opacity:0;filter:drop-shadow(0 0 10px rgba(var(--wl-amber-rgb),.9))}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center;gap:44px}
+#close .bw{font-size:124px;font-weight:800;letter-spacing:-4px;line-height:1}
+#close .bs{width:4px;height:96px;background:var(--line)}
+#close img{height:84px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* PASSE DE MARCA R2 (tools/brand-pass.mjs sobre pieces/welabs-chain-plug-define-logos, sha256 0a6d814f8586; medido pelo gate, nada à mão) */
+/* logo +11.3 vs #kick; moved -11.3 px (top 12px) */
+#seal{top:0.7px !important}
+/* logo -1.6 vs #k1 > span > img.lg.magneto; moved +1.6 px (with its pair) */
+#k0 > span > img{position:relative !important;top:1.6px !important}
+/* logo +2.9 vs #k1 > span > img.lg.magneto, +2.9 vs #k3 > span > img.lg.knowly; moved -2.9 px */
+#k2 > span > img.lg.tuner{position:relative !important;top:-2.9px !important}
+/* logo -4.2 vs #close > div.brand:nth-of-type(2) > div.bw:nth-of-type(2); moved +4.2 px */
+#close > div.brand:nth-of-type(2) > img{position:relative !important;top:4.2px !important}
+/* PASSE DE MARCA R3 (tools/brand-pass.mjs sobre pieces/welabs-chain-plug-define-logos-r2, sha256 23d666ecb41c; medido pelo gate, nada à mão) */
+/* pill centre +11.3 px vs #seal; moved -11.3 px (top 16px) */
+#demo{top:4.7px !important}
+/* PASSE DO SELO BY WELABS R6 (tools/endorse-pass.mjs sobre pieces/welabs-chain-plug-define-logos-r4-s1, sha256 025b9fafa0d6; marca 1.5.0, medido, nada à mão) */
+/* domus #0: x-height 20 px at t=6.25 s; seal band 17.652 px under the wordmark, taken back from the margins */
+img[data-es="0"]{width:114.817px !important;height:56.652px !important;margin-bottom:-17.652px !important;margin-left:0.092px !important;margin-right:0.092px !important}
+/* relloo #1: x-height 20 px at t=6.25 s; seal band 18.266 px under the wordmark, taken back from the margins */
+img[data-es="1"]{width:85px !important;height:55.944px !important;margin-top:0.161px !important;margin-bottom:-18.105px !important}
+/* magneto #2: x-height 24 px at t=6.25 s; lockup fitted into the plain box height (--fit), wordmark x-height 16.7 px */
+img[data-es="2"]{width:auto !important;height:48px !important}
+/* tuner #3: x-height 24 px at t=6.25 s; lockup fitted into the plain box height (--fit), wordmark x-height 17.3 px */
+img[data-es="3"]{width:auto !important;height:54px !important}
+/* knowly #4: x-height 24 px at t=6.25 s; lockup fitted into the plain box height (--fit), wordmark x-height 16.7 px */
+img[data-es="4"]{width:auto !important;height:48px !important}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="welabs-chain-plug-define-logos-r6-s1" data-brand="welabs" data-brand-scripts="welabs/welabs-brand.js" data-width="1920" data-height="1080" data-start="0" data-duration="36">
+  <div id="hd">
+    <div id="wm">Plataforma<span>.</span></div>
+    <div id="kick">Some o começar do zero</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" data-brand-src="welabs/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div id="plate">
+    <!-- Weight order (08/10/2026): the core socket (Domus + Relloo) plugs first; Magneto (the workflow), Tuner and Knowly are layers
+         whose current runs along the whole plate, under the core, before rising to their own socket -->
+    <div class="sock core" id="k0" style="left:24px"><span><img class="lg domus pair" data-brand-src="welabs/domus-endorsed-on-dark.svg" alt="Domus by welabs" data-es="0"><span class="plus">+</span><img class="lg relloo pair" data-brand-src="welabs/relloo-endorsed-on-dark.svg" alt="Relloo by welabs" data-es="1"></span></div>
+    <div class="sock" id="k1" style="left:368px"><span><img class="lg magneto" data-brand-src="welabs/magneto-endorsed-on-dark.svg" alt="Magneto by welabs" data-es="2"></span></div>
+    <div class="sock" id="k2" style="left:712px"><span><img class="lg tuner" data-brand-src="welabs/tuner-endorsed-on-dark.svg" alt="Tuner by welabs" data-es="3"></span></div>
+    <div class="sock" id="k3" style="left:1056px"><span><img class="lg knowly" data-brand-src="welabs/knowly-endorsed-on-dark.svg" alt="Knowly by welabs" data-es="4"></span></div>
+  </div>
+  <svg id="pipes" viewBox="0 0 1920 1080">
+    <line x1="444" y1="662" x2="444" y2="746"/><line x1="788" y1="662" x2="788" y2="746"/><line x1="1132" y1="662" x2="1132" y2="746"/><line x1="1476" y1="662" x2="1476" y2="746"/>
+    <!-- Dim rail that stays once drawn, plus a bright sweep drawn over it at each layer (no full-width blink, video-qa 08/10) -->
+    <line class="rail" id="rail" x1="284" y1="855" x2="1636" y2="855"/>
+    <line class="rail" id="railS" x1="284" y1="855" x2="1636" y2="855"/>
+    <circle id="e0" cx="444" cy="746" r="14"/><circle id="e1" cx="788" cy="746" r="14"/><circle id="e2" cx="1132" cy="746" r="14"/><circle id="e3" cx="1476" cy="746" r="14"/>
+  </svg>
+
+  <div class="app" id="a1">
+    <div class="bar"><i></i><i></i><i></i><span>Portal novo · DEMO</span></div>
+    <div class="slot s0"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Núcleo do negócio</div><div class="ln">telas, regras, contatos e pedidos</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s1"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Workflow</div><div class="ln">a regra vira fluxo, e o recibo volta</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s2"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Canais</div><div class="ln">entrega avisos e conversas</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s3"><div class="q">?</div><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">explica com a fonte junto</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  </div>
+
+  <div class="app" id="a2">
+    <div class="bar"><i></i><i></i><i></i><span>Portal de parceiros · DEMO</span></div>
+    <div class="slot s0"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Núcleo do negócio</div><div class="ln">telas, regras, contatos e pedidos</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s1"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="6" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="19" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7.5 11l9-4M7.5 13l9 4" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Workflow</div><div class="ln">a regra vira fluxo, e o recibo volta</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s2"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div><div class="tt">Canais</div><div class="ln">entrega avisos e conversas</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+    <div class="slot s3"><div class="fill"><div class="ic"><svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 6v14" stroke="currentColor" stroke-width="2.2"/></svg></div><div class="tt">Conhecimento</div><div class="ln">explica com a fonte junto</div></div><div class="tk"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div></div>
+  </div>
+
+  <div class="cap" id="c1">Um app novo <span>começaria do zero</span></div>
+  <div class="sub" id="s1">telas, regras, atendimento, workflow e respostas: tudo por fazer</div>
+  <div class="cap" id="c2">Ele encaixa <span>na plataforma</span></div>
+  <div class="sub" id="s2">que já tem tudo isso de pé</div>
+  <!-- Core first (defined by the Domus, served by the Relloo), then the three layers that run through everything -->
+  <div class="cap" id="h0">Já nasce <span>com o negócio definido</span></div>
+  <div class="sub" id="hs0">telas, regras, contatos e pedidos vêm prontos do centro</div>
+  <div class="cap" id="h1">Já tem <span>workflow passando por tudo</span></div>
+  <div class="cap" id="h2">Já fala <span>em todo canal</span></div>
+  <div class="cap" id="h3">Já responde <span>com base</span></div>
+  <div class="cap" id="c7">O próximo app <span>encaixa igual</span></div>
+  <div class="sub" id="s7">e herda tudo de uma vez, sem refazer nada</div>
+
+  <div id="close">
+    <div class="l1">Um app novo já começa<br><span>com tudo pronto.</span></div>
+    <!-- Brand signature: Welabs leads, then the product name -->
+    <div class="brand"><img data-brand-src="welabs/welabs-logo-on-dark.svg" alt="Welabs"><div class="bs"></div><div class="bw">Plataforma<span>.</span></div></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 36;
+  var tl = gsap.timeline({ paused: true });
+  // Brand amber as a literal hex: GSAP cannot tween var()
+  var AMBER = WELABS_BRAND.color.amber;
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+
+  // Cabeçalho
+  // Header is on from frame 0, so the intro handoff fades onto it instead of onto an empty frame (video-qa 08/10)
+  tl.set('#hd', { opacity: 1 }, 0);
+
+  // Batida 1: o app novo está vazio (0,6–5,6 s)
+  inn('#a1', 0.6, { y: 30 }, 0.6);
+  [0, 1, 2, 3].forEach(function (i) { inn('#a1 .s' + i + ' .q', 1.8 + i * 0.2, { scale: 0.4 }, 0.4); });
+  inn('#c1', 1.2, { y: 16 }); inn('#s1', 1.5, { y: 12 });
+  out(['#c1', '#s1'], 5.5);
+
+  // Batida 2: a plataforma aparece e o app encaixa (5,9–10,9 s)
+  inn('#c2', 5.9, { y: 16 }); inn('#s2', 6.2, { y: 12 });
+  // Rises 30 px (was 80): the plate bottom no longer crosses the caption top while it fades in (video-qa 08/10)
+  inn('#plate', 6.1, { y: 30 }, 0.7);
+  out('#a1 .q', 7.6, 0.3);
+  tl.to('#a1', { y: 70, duration: 0.6, ease: 'back.out(1.6)' }, 8.2);
+  tl.to('#a1', { borderColor: AMBER, duration: 0.15 }, 8.75).to('#a1', { borderColor: '#3A3A44', duration: 0.5 }, 8.9);
+  tl.to('#pipes line:not(.rail)', { opacity: 1, duration: 0.4, stagger: 0.12 }, 8.8);
+  // Leaves by 10.95 s, before the first plug caption enters at 11.0 s (they shared the same place for ~6 frames)
+  out(['#c2', '#s2'], 10.6);
+
+  // Batidas 3 a 6: o núcleo encaixa primeiro; Magneto, Tuner e Knowly correm a placa inteira, passando pelo núcleo (11,0–23,2 s)
+  var RAIL = 1352;
+  [0, 1, 2, 3].forEach(function (i) {
+    var t = 11.0 + i * 3.1;
+    // Layers (i > 0) first sweep the rail under all sockets, then rise to their own socket
+    var d = i > 0 ? 0.6 : 0;
+    inn('#h' + i, t, { y: 16 });
+    if (i > 0) {
+      // Bright sweep over the dim rail; the dim rail appears once, under the first sweep, and then stays
+      tl.fromTo('#railS', { opacity: 1, strokeDasharray: RAIL + ' ' + RAIL, strokeDashoffset: RAIL }, { opacity: 1, strokeDasharray: RAIL + ' ' + RAIL, strokeDashoffset: 0, duration: 0.6, ease: 'power1.inOut', immediateRender: false }, t + 0.05);
+      tl.to('#railS', { opacity: 0, duration: 0.4 }, t + 1.2);
+      if (i === 1) tl.to('#rail', { opacity: 0.45, duration: 0.4 }, t + 1.2);
+    }
+    tl.to('#k' + i, { borderColor: AMBER, duration: 0.25 }, t + d);
+    tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.1 }, t + d + 0.05);
+    tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.4, ease: 'power1.in' }, t + d + 0.1);
+    tl.to('#e' + i, { opacity: 0, duration: 0.1 }, t + d + 0.5);
+    tl.to('#pipes line:nth-of-type(' + (i + 1) + ')', { stroke: AMBER, duration: 0.3 }, t + d + 0.1);
+    inn('#a1 .s' + i + ' .fill', t + d + 0.5, { scale: 0.92 }, 0.35);
+    tl.fromTo('#a1 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t + d + 0.7);
+    out('#h' + i, t + 2.8);
+  });
+  inn('#hs0', 11.3, { y: 12 }); out('#hs0', 13.8);
+
+  // Batida 7: o próximo app encaixa igual (23,4–29,0 s)
+  inn('#c7', 23.4, { y: 16 }); inn('#s7', 23.7, { y: 12 });
+  tl.to('#a1', { x: -300, opacity: 0, duration: 0.5, ease: 'power2.in' }, 23.4);
+  // Enters 0.2 s later than before, once the outgoing app is nearly gone (video-qa 08/10)
+  tl.fromTo('#a2', { opacity: 0, x: 300, y: 0 }, { opacity: 1, x: 0, y: 0, duration: 0.4, ease: 'power2.out' }, 23.8);
+  tl.to('#a2', { y: 70, duration: 0.5, ease: 'back.out(1.6)' }, 24.2);
+  [0, 1, 2, 3].forEach(function (i) {
+    tl.fromTo('#e' + i, { opacity: 0, attr: { cy: 746 } }, { opacity: 1, attr: { cy: 746 }, duration: 0.05 }, 24.6);
+    tl.to('#e' + i, { attr: { cy: 650 }, duration: 0.35, ease: 'power1.in' }, 24.65);
+    tl.to('#e' + i, { opacity: 0, duration: 0.1 }, 25.0);
+    inn('#a2 .s' + i + ' .fill', 24.85 + i * 0.05, { scale: 0.92 }, 0.3);
+    tl.fromTo('#a2 .s' + i + ' .tk', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2.5)' }, 24.95 + i * 0.05);
+  });
+  out(['#c7', '#s7'], 29.0);
+
+  // Fecho (29,4–36 s, parado de 30,0 s ao fim)
+  out(['#hd', '#a2', '#plate', '#pipes'], 29.1, 0.4);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 29.4);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["welabs-chain-plug-define-logos-r6-s1"] = tl;
+})();
+</script>
+</body>
+</html>
