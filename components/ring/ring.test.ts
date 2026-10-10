@@ -1,10 +1,13 @@
 // TESTES DO CARROSSEL CIRCULAR
 // Positions around the ring, the flat segment list with its leads, and the shape of the slides: the chain montage has no
 // opening and runs at 2.5x, the product ring uses 1.5 to 2.5 s of each opening, nothing is a sequential player.
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import pieces from "@/lib/motion-pieces.json";
 import montage from "@/lib/home-montage.json";
 import {
+  INTRO_HOLD,
   MONTAGE_SLIDES,
   PRODUCT_SLIDES,
   productFilms,
@@ -129,9 +132,12 @@ describe("slides of the home", () => {
     PRODUCT_SLIDES.forEach((slide) => {
       const entry = pieces.products[slide.slug as keyof typeof pieces.products];
       const [tail, film] = slide.segments;
-      // The tagline and the seal of the opening start to appear at 3.65 s of every opening (pixel difference)
-      expect(tail.range[1]).toBeLessThanOrEqual(3.65 + 1e-9);
-      expect(tail.holdAfter).toBeUndefined();
+      // Logo and seal settle at 3.9 s of every opening (pixel difference at 1x) and the tagline would start at 3.8 s;
+      // the player freezes 0.1 s before the range end, so the range ends just after the settle point and the settled
+      // frame holds for the montage hold before the blend into the film
+      expect(tail.range[1]).toBeGreaterThanOrEqual(3.95);
+      expect(tail.range[1]).toBeLessThanOrEqual(4.05);
+      expect(tail.holdAfter).toBe(INTRO_HOLD);
       expect(film.holdAfter).toBe(montage.holdAfter);
       expect(film.transition?.duration).toBe(montage.swap);
       // The film ends just after its action settled (frozen frame is the settled one)
@@ -140,10 +146,24 @@ describe("slides of the home", () => {
       expect(film.range[1] - settled).toBeLessThanOrEqual(0.12);
       expect(slide.poster).toBe(`/motion/posters/tail-${slide.slug}.webp`);
     });
-    // Only the film segments hold; the opening flows straight into it
+    // Both the opening and the film hold their settled frame
     expect(flat.map((segment) => segment.hold)).toEqual(
-      PRODUCT_SLIDES.flatMap(() => [0, montage.holdAfter]),
+      PRODUCT_SLIDES.flatMap(() => [INTRO_HOLD, montage.holdAfter]),
     );
+  });
+  it("the site copy of every opening hides the tagline slot", () => {
+    for (const product of Object.values(pieces.products)) {
+      const html = readFileSync(
+        join(
+          process.cwd(),
+          "public/motion/pieces",
+          product.intro.id,
+          "index.html",
+        ),
+        "utf8",
+      );
+      expect(html).toContain(".role{display:none!important}");
+    }
   });
   it("the products keep the weight order, each with a short opening tail and a 3 to 9 s clip", () => {
     expect(PRODUCT_SLIDES.map((s) => s.slug)).toEqual(
