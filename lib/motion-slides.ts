@@ -35,13 +35,16 @@ export type Slide = {
   segments: Segment[];
   // Cover image: what a neighbour shows before its player is ready, and the static frame under reduced motion
   poster: string;
+  // Last frame the slide plays: what the tile shows as the dimmed previous neighbour once its player is gone
+  endPoster?: string;
   slug?: ProductSlug;
 };
 
 // A film played in full skips its empty first frames
 export const FILM_START = 1.2;
 
-const poster = (id: string) => `/motion/posters/${id}.jpg`;
+const poster = (id: string) => `/motion/posters/${id}.webp`;
+const endPoster = (id: string) => `/motion/posters/end-${id}.webp`;
 const entry = (slug: ProductSlug) => pieces.products[slug];
 type Film = { id: string; duration: number; clip?: number[] };
 const filmSegment = (film: Film): Segment => ({
@@ -58,6 +61,9 @@ const filmSegment = (film: Film): Segment => ({
 // lib/home-montage.json (per step: product and cuts with film, start, end, rate, transition). No opening.
 // Duration of the position swap of the montage ring, in seconds
 export const MONTAGE_SWAP = montage.swap;
+// 1-based number of the first cut of step `step` (cuts are numbered across the whole montage)
+const cutNumber = (step: number) =>
+  1 + montage.steps.slice(0, step).reduce((n, s) => n + s.segments.length, 0);
 export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
   key: `montage-${i + 1}`,
   label: `Passo ${i + 1}`,
@@ -73,8 +79,14 @@ export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
       (segment as { holdAfter?: number }).holdAfter ?? montage.holdAfter,
     products: segment.products as ProductSlug[],
   })),
-  poster: poster(`montage-${i + 1}`),
+  poster: poster(`cut-${cutNumber(i)}`),
 }));
+
+// Cover of every cut in playing order: its settled last frame (the same still serves as the previous and the next
+// neighbour of the chain carousel, which has one tile per cut)
+export const CUT_POSTERS: string[] = montage.steps.flatMap((step, i) =>
+  step.segments.map((_, j) => poster(`cut-${cutNumber(i) + j}`)),
+);
 
 // Products section of the home: opening tail, then a clip of the first film
 export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
@@ -94,32 +106,28 @@ export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
       },
     ],
     // Still of the formed logo (no tagline): what a neighbour shows before it plays
-    poster: `/motion/posters/tail-${slug}.jpg`,
+    poster: poster(`tail-${slug}`),
+    endPoster: endPoster(films[0].id),
   };
 });
 
-// Product page: the opening in full, then every film of the product in full. The first slide carries the opening
-// and the first film; each other film is a slide of its own.
-export function productReel(slug: ProductSlug): Slide[] {
-  const { intro, films } = entry(slug);
-  return (films as Film[]).map((film, i) => ({
+// Product page: the other films of the product in full (the first one plays in the opening block, clipped), as slides
+// of a circular carousel like the one of the home. Each film holds its last frame, then the ring rotates.
+export function productFilms(slug: ProductSlug): Slide[] {
+  const { films } = entry(slug);
+  return (films as Film[]).slice(1).map((film, i) => ({
     key: film.id,
     label: `Filme ${i + 1}`,
-    segments:
-      i === 0
-        ? [
-            { id: intro.id, range: [0, intro.duration] as const },
-            {
-              id: film.id,
-              range: [FILM_START, film.duration] as const,
-            },
-          ]
-        : [
-            {
-              id: film.id,
-              range: [FILM_START, film.duration] as const,
-            },
-          ],
-    poster: i === 0 ? poster(intro.id) : poster(film.id),
+    slug,
+    segments: [
+      {
+        id: film.id,
+        range: [FILM_START, film.duration] as const,
+        transition: { type: "push-left", duration: MONTAGE_SWAP },
+        holdAfter: montage.holdAfter,
+      },
+    ],
+    poster: poster(film.id),
+    endPoster: endPoster(film.id),
   }));
 }

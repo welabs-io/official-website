@@ -1,0 +1,122 @@
+// EXECUÇÃO DO CARROSSEL NO NAVEGADOR
+// Loaded on demand by RingDriver. Binds a server-rendered stage (RingStage) to a Playback: the slide list of the kind
+// decides the segments, and the "active" state lives in the DOM only (`data-pos` of each tile, `data-on` of each logo),
+// so React never re-renders. Only the active tile plays and the next one is parked, ready; every other tile is a cover
+// image. `run` returns the function that releases everything (players, timers) and puts the ring back on its first tile.
+import {
+  MONTAGE_SLIDES,
+  PRODUCT_SLIDES,
+  productFilms,
+  type Slide,
+} from "@/lib/motion-slides";
+import type { ProductSlug } from "@/lib/products";
+import { ensurePlayer } from "./player";
+import { Playback, flatten } from "./ring-playback";
+import { isNear, placeOf, ringPosition } from "./positions";
+import type { RingKind } from "./RingDriver";
+
+// Download the player script ahead of the first play
+export const warm = () => {
+  ensurePlayer().catch(() => {});
+};
+
+const slidesOf = (kind: RingKind, slug?: string): Slide[] =>
+  kind === "chain"
+    ? MONTAGE_SLIDES
+    : kind === "products"
+      ? PRODUCT_SLIDES
+      : kind === "films"
+        ? productFilms(slug as ProductSlug)
+        : PRODUCT_SLIDES.filter((slide) => slide.slug === slug);
+
+export function run(root: HTMLElement, kind: RingKind, slug?: string) {
+  const stage = root.querySelector<HTMLElement>("[data-ring]");
+  if (!stage) return () => {};
+  const tiles = [...stage.children] as HTMLElement[];
+  const layers = tiles.map((tile) =>
+    tile.querySelector<HTMLElement>("[data-layers]"),
+  );
+  const logos = [...root.querySelectorAll<HTMLElement>("[data-slug]")];
+  const slides = slidesOf(kind, slug);
+  const flat = flatten(slides);
+  // The chain has one tile per cut; the other kinds have one tile per slide (opening tail and film share a tile)
+  const perCut = kind === "chain";
+  const cutProducts = slides.flatMap((slide) =>
+    slide.segments.map((segment) => segment.products ?? []),
+  );
+
+  // Moves the ring to `active`: tile positions, accessibility and the lit logos
+  const show = (active: number) => {
+    tiles.forEach((tile, i) => {
+      const position = ringPosition(i, active, tiles.length);
+      tile.dataset.pos = String(placeOf(position));
+      if (isNear(position)) tile.dataset.near = "";
+      else delete tile.dataset.near;
+      if (position === 0) tile.removeAttribute("aria-hidden");
+      else tile.setAttribute("aria-hidden", "true");
+    });
+    const lit: readonly string[] = perCut
+      ? (cutProducts[active] ?? [])
+      : [slides[active]?.slug ?? ""];
+    for (const logo of logos)
+      logo.dataset.on = lit.includes(logo.dataset.slug ?? "")
+        ? "true"
+        : "false";
+  };
+
+  let dead = false;
+  let playback: Playback | null = null;
+  let restart = 0;
+  const begin = () => {
+    playback = new Playback({
+      flat,
+      layers: () => layers,
+      start: 0,
+      ahead: 1,
+      single: true,
+      tiles: true,
+      tileBySlide: !perCut,
+      onSlide: () => {},
+      onSwap: (info) => {
+        // A single-slide ring (the opening of a product page) loops: start over once the film has held its last frame
+        if (slides.length === 1) {
+          // The blend from the tail into the film is the only other handoff; the wrap-around is the one that restarts
+          if (info.toIndex !== 0) return;
+          window.clearTimeout(restart);
+          restart = window.setTimeout(() => {
+            if (dead) return;
+            playback?.destroy();
+            begin();
+          }, 0);
+          return;
+        }
+        // The opening tail blending into its film is not a rotation
+        if (!perCut && info.from === info.to) return;
+        root.style.setProperty("--swap-time", `${info.duration}s`);
+        show(perCut ? info.toIndex : info.to);
+        window.dispatchEvent(
+          new CustomEvent("ring:swap", {
+            detail: { ring: root.id, from: info.from, to: info.to },
+          }),
+        );
+      },
+    });
+    playback.start();
+  };
+
+  ensurePlayer().then(
+    () => {
+      if (!dead) begin();
+    },
+    () => {},
+  );
+
+  return () => {
+    dead = true;
+    window.clearTimeout(restart);
+    playback?.destroy();
+    playback = null;
+    // The next run starts over on the first tile
+    show(0);
+  };
+}

@@ -160,21 +160,10 @@ export class Playback {
     }
   }
 
-  // Tiles mode: keep the previous cut, the current one and the ones ahead; drop every other player
+  // Tiles mode: keep only the current segment and the ones parked ahead; every other player goes. The previous
+  // neighbour is not kept frozen: its tile shows the cover of its last frame (an image, no player).
   private trim() {
-    const count = this.flat.length;
-    const before = (i: number) => (i + count - 1) % count;
     const keep = new Set([this.cursor]);
-    // The previous cut stays frozen as a neighbour. With one tile per slide it is the last segment of the previous
-    // slide (the opening of the slide that is playing now sits under its film and is no longer seen)
-    let previous = before(this.cursor);
-    if (this.options.tileBySlide)
-      while (
-        previous !== this.cursor &&
-        this.flat[previous].slide === this.flat[this.cursor].slide
-      )
-        previous = before(previous);
-    keep.add(previous);
     let index = this.cursor;
     for (let i = 0; i < this.ahead; i++) {
       index = this.after(index);

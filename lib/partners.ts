@@ -2,13 +2,13 @@
 // Third-party logos only: the ones the Imagine site already shows in its section of the companies it serves
 // (imagine/public/brands, lib/emphasis.json). Stant, Tabe.la and WeGO are Imagine systems and stay out.
 export const CLIENT_LOGOS = [
-  { name: "Light", src: "/clients/light.png", h: 44 },
-  { name: "Neoenergia", src: "/clients/neoenergia.png", h: 36 },
-  { name: "Enel", src: "/clients/enel.png", h: 32 },
+  { name: "Light", src: "/clients/light.webp", h: 44 },
+  { name: "Neoenergia", src: "/clients/neoenergia.webp", h: 36 },
+  { name: "Enel", src: "/clients/enel.webp", h: 32 },
   { name: "Report", src: "/clients/report.svg", h: 36 },
   { name: "Kiosk Brands", src: "/clients/kiosk-brands.svg", h: 40 },
   { name: "IMA", src: "/clients/ima.svg", h: 44 },
-  { name: "AVSI", src: "/clients/avsi.png", h: 44 },
+  { name: "AVSI", src: "/clients/avsi.webp", h: 44 },
 ] as const;
 
 // PLATAFORMAS DE INFRA E DESENVOLVIMENTO

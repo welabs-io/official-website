@@ -7,10 +7,10 @@ import montage from "@/lib/home-montage.json";
 import {
   MONTAGE_SLIDES,
   PRODUCT_SLIDES,
-  productReel,
+  productFilms,
 } from "@/lib/motion-slides";
 import { PRODUCTS } from "@/lib/products";
-import { ringPosition } from "./Ring";
+import { ringPosition } from "./positions";
 import {
   BLEND_SECONDS,
   SWAP_SECONDS,
@@ -144,7 +144,7 @@ describe("slides of the home", () => {
       const settled = (entry.films[0] as { settledAt: number }).settledAt;
       expect(film.range[1] - settled).toBeGreaterThanOrEqual(0.1 - 1e-9);
       expect(film.range[1] - settled).toBeLessThanOrEqual(0.12);
-      expect(slide.poster).toBe(`/motion/posters/tail-${slide.slug}.jpg`);
+      expect(slide.poster).toBe(`/motion/posters/tail-${slide.slug}.webp`);
     });
     // Only the film segments hold; the opening flows straight into it
     expect(flat.map((segment) => segment.hold)).toEqual(
@@ -175,7 +175,7 @@ describe("slides of the home", () => {
     const all = [
       ...MONTAGE_SLIDES,
       ...PRODUCT_SLIDES,
-      ...PRODUCTS.flatMap((p) => productReel(p.slug)),
+      ...PRODUCTS.flatMap((p) => productFilms(p.slug)),
     ];
     for (const slide of all)
       for (const segment of slide.segments)
@@ -185,14 +185,28 @@ describe("slides of the home", () => {
   });
 });
 
-describe("product page ring", () => {
-  it("opens with the whole opening, then the films in full", () => {
+describe("product page carousel", () => {
+  it("holds the other films in full, each with a last-frame cover, and never the opening", () => {
     for (const { slug } of PRODUCTS) {
-      const slides = productReel(slug);
-      expect(slides[0].segments[0].id).toMatch(/intro/);
-      expect(slides[0].segments[0].range[0]).toBe(0);
-      for (const slide of slides.slice(1))
+      const slides = productFilms(slug);
+      const films = pieces.products[slug].films;
+      expect(slides).toHaveLength(films.length - 1);
+      slides.forEach((slide, i) => {
+        expect(slide.segments).toHaveLength(1);
+        expect(slide.segments[0].id).toBe(films[i + 1].id);
         expect(slide.segments[0].id).not.toMatch(/intro/);
+        expect(slide.segments[0].holdAfter).toBe(montage.holdAfter);
+        expect(slide.endPoster).toBe(
+          `/motion/posters/end-${films[i + 1].id}.webp`,
+        );
+      });
     }
+  });
+});
+
+describe("ring positions with two tiles", () => {
+  it("the other tile always waits on the right", () => {
+    expect([0, 1].map((i) => ringPosition(i, 0, 2))).toEqual([0, 1]);
+    expect([0, 1].map((i) => ringPosition(i, 1, 2))).toEqual([1, 0]);
   });
 });

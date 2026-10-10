@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import beats from "@/lib/film-beats.json";
 import montage from "@/lib/home-montage.json";
 import { MONTAGE_SLIDES } from "@/lib/motion-slides";
-import { HOLD_EDGE, flatten } from "./ring-playback";
+import { HOLD_EDGE, flatten } from "@/components/ring/ring-playback";
 
 const SLACK = 0.1;
 const EPS = 1e-6;

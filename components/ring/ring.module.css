@@ -127,6 +127,28 @@
   height: 100%;
   object-fit: cover;
 }
+/* Cover of the last frame (carousels whose tiles play a film): it sits under the cover of the first frame and takes its
+   place once the tile is the previous neighbour, so the frame the viewer saw last is the frame that stays. It is only
+   rendered where it can be seen (centre and previous), so the next tiles never download it. */
+.posterEnd {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tile:not([data-near]) .poster,
+.tile:not([data-near]) .posterEnd {
+  display: none;
+}
+.tile[data-pos="1"] .posterEnd,
+.tile[data-pos="2"] .posterEnd {
+  display: none;
+}
+.tile[data-pos="-1"] .posterEnd ~ .poster,
+.tile[data-pos="-2"] .posterEnd ~ .poster {
+  display: none;
+}
 .layers {
   position: absolute;
   inset: 0;

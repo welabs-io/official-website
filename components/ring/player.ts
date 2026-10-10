@@ -16,7 +16,6 @@ export type PlayerElement = HTMLElement & {
 
 export const PLAYER_SRC = "/motion/player.js";
 export const piece = (id: string) => `/motion/pieces/${id}/index.html`;
-export const poster = (id: string) => `/motion/posters/${id}.jpg`;
 
 // Attributes of every player of the page. `controls` is never part of them (a test guards it). A preloaded player is
 // created without `autoplay` and is started by the ring at the handoff.

@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { CTA_LABEL, WELABS_LOGO } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
+import { LiveObserver } from "./LiveObserver";
 import styles from "./shell.module.css";
 
 function Header({ home }: { home: boolean }) {
@@ -49,6 +50,7 @@ export function PageFrame({
       <Header home={home} />
       {children}
       <Footer />
+      <LiveObserver />
     </div>
   );
 }

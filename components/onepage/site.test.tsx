@@ -121,7 +121,7 @@ describe("the home has no sequential player and no opening on the chain", () => 
     );
     expect(chain).not.toMatch(/intro|welabs-chain/);
     // One still per cut (nine cuts), no title text
-    expect(chain.match(/cut-\d\.jpg/g)).toHaveLength(9);
+    expect(chain.match(/cut-\d\.webp/g)).toHaveLength(9);
   });
   it("the title of the home is Welabs, without a suffix", () => {
     expect(homeMetadata.title).toBe("Welabs");
