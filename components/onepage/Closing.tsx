@@ -1,4 +1,4 @@
-// SEÇÃO 3: FECHAMENTO
+// SEÇÃO 4: FECHAMENTO
 // Logos of the companies we work with and of the infrastructure and development platforms, together in ONE continuous
 // strip on one graphite band, all in the same black-and-white theme (no labels), then the closing button. The footer
 // comes after it (PageFrame).
@@ -22,6 +22,8 @@ export function Closing() {
     <section
       id="platforms"
       className={`${shell.band} ${shell.dark} ${styles.closing}`}
+      data-live
+      data-on="false"
     >
       <div className={`${shell.wrap} ${styles.strips}`}>
         <Carousel

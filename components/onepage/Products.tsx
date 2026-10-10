@@ -13,6 +13,8 @@ export function Products() {
     <section
       id="products"
       className={`${shell.band} ${shell.light} ${home.products}`}
+      data-live
+      data-on="false"
     >
       <h2 className={home.srOnly}>Produtos</h2>
       <div className={shell.wrap}>

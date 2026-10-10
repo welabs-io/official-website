@@ -1,0 +1,153 @@
+/* BLOCO DE CONECTORES */
+/* The graph is drawn in an SVG whose view box sets the proportions; the logos are real links laid over it by percentage.
+   Two layouts exist in the markup and CSS shows one: the wide one, and the tall one on phones. Pulses animate only while
+   the block is on screen (data-on is set by LiveObserver). Amber appears only as a block of 4 px or more. */
+.root {
+  --panel: #161b25;
+  --rail: #323a4c;
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}
+.root[data-tone="light"] {
+  --panel: #fff;
+  --rail: #d2c6ae;
+}
+.graph {
+  position: relative;
+  width: 100%;
+}
+.wide {
+  max-width: 880px;
+}
+.tall {
+  display: none;
+  max-width: 360px;
+}
+@media (max-width: 640px) {
+  .wide {
+    display: none;
+  }
+  .tall {
+    display: block;
+  }
+}
+.drawing {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* TRILHOS E NÚCLEO */
+.rail {
+  stroke: var(--rail);
+  stroke-width: 2;
+}
+.end {
+  fill: var(--rail);
+}
+.drawing g[data-state="dim"] {
+  opacity: 0.35;
+}
+.core {
+  fill: var(--panel);
+  stroke: var(--rail);
+  stroke-width: 1.5;
+}
+.coreGlow {
+  fill: var(--a);
+  opacity: 0;
+}
+.seam {
+  stroke: var(--a);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+/* PULSOS */
+/* Hidden until the block is live; under reduced motion one still pulse sits on each rail. */
+.pulse {
+  opacity: 0;
+}
+.root[data-on="true"] .pulse {
+  animation: run 4.8s linear infinite backwards;
+  animation-delay: var(--delay);
+}
+.root[data-on="true"] .coreGlow {
+  animation: glow 1.6s ease-in-out infinite;
+}
+@keyframes run {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    opacity: 1;
+    transform: translate(calc(var(--dx) * 0.28), calc(var(--dy) * 0.28));
+  }
+  .root[data-on="true"] .pulse,
+  .root[data-on="true"] .coreGlow {
+    animation: none;
+  }
+}
+
+/* LOGOS DOS PRODUTOS */
+.node {
+  position: absolute;
+  display: block;
+  line-height: 0;
+  border-radius: 8px;
+  transition: opacity 0.3s ease;
+}
+.node img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.node[data-state="dim"] {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+.node[data-state="dim"]:hover,
+.node[data-state="dim"]:focus-visible {
+  opacity: 0.8;
+}
+/* The product of the page carries a 4 px amber bar under its logo */
+.node[data-state="lit"]::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -4px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--a);
+}
+@media (prefers-reduced-motion: reduce) {
+  .node {
+    transition: none;
+  }
+}

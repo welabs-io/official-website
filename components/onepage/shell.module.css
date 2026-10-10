@@ -159,3 +159,73 @@
   font-size: 14px;
   color: var(--mute-d);
 }
+
+/* FIO ENTRE AS SEÇÕES */
+/* A thin thread at the left of the content runs through every band and joins them: a grey hairline, an amber dot where
+   each section starts and, while the band is on screen (data-on, set by LiveObserver), an amber 4 px pulse that slides
+   down it at its own pace. Under reduced motion the pulse is not drawn. The content never sits under it: it lives in the
+   outer margin, 20 px left of the content column. */
+.band {
+  --thread-x: calc((100% - min(1200px, 100% - 48px)) / 2 - 20px);
+  --thread-dur: 6s;
+}
+.band:nth-child(3n + 1) {
+  --thread-dur: 5.2s;
+}
+.band:nth-child(3n + 2) {
+  --thread-dur: 6.8s;
+}
+.band:nth-child(3n) {
+  --thread-dur: 8.4s;
+}
+.band::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: var(--thread-x);
+  width: 4px;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent, var(--a)) no-repeat 0 -160px / 4px
+      160px,
+    linear-gradient(
+      to right,
+      transparent 1.5px,
+      color-mix(in srgb, var(--mute) 45%, transparent) 1.5px 2.5px,
+      transparent 2.5px
+    );
+}
+.band::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: calc(var(--thread-x) - 3px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--a);
+}
+.band[data-on="true"]::before {
+  animation: thread var(--thread-dur) linear infinite;
+}
+@keyframes thread {
+  from {
+    background-position:
+      0 -160px,
+      0 0;
+  }
+  to {
+    background-position:
+      0 calc(100% + 160px),
+      0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .band[data-on="true"]::before {
+    animation: none;
+  }
+}

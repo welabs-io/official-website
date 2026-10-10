@@ -31,14 +31,31 @@
 }
 .productPageGrid {
   display: grid;
-  justify-items: center;
+  justify-items: stretch;
   gap: 16px;
 }
 .productPageGrid > :first-child {
   justify-self: start;
 }
 
-/* SEÇÃO 3: FECHAMENTO */
+/* BLOCOS DA PÁGINA DE PRODUTO */
+/* The films carousel and the closing call to action, as compact as the home's sections */
+.films {
+  --pt: 40px;
+  --pb: 40px;
+}
+.productCta {
+  --pt: 32px;
+  --pb: 32px;
+}
+
+/* SEÇÃO 3: CONECTORES */
+.connectors {
+  --pt: 40px;
+  --pb: 48px;
+}
+
+/* SEÇÃO 4: FECHAMENTO */
 .closing {
   display: flex;
   flex-direction: column;
@@ -46,6 +63,8 @@
   gap: 24px;
   --pt: 48px;
   --pb: 48px;
+  /* Both this band and the connectors above it are graphite: a hairline tells them apart */
+  border-top: 1px solid var(--line);
 }
 .strips {
   display: grid;

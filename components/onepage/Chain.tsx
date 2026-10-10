@@ -11,6 +11,8 @@ export function Chain() {
     <section
       id="chain"
       className={`${shell.band} ${shell.dark} ${styles.chain}`}
+      data-live
+      data-on="false"
     >
       <h2 className={styles.srOnly}>Cadeia</h2>
       <div className={shell.wrap}>
