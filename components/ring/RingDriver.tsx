@@ -39,19 +39,33 @@ export function RingDriver({
       }
       if (stop || pending) return;
       pending = true;
-      load().then((mod) => {
-        pending = false;
-        // The ring may have left the screen while the code was downloading
-        if (wanted() && !stop) stop = mod.run(root, kind, slug);
-      });
+      load().then(
+        (mod) => {
+          pending = false;
+          // The ring may have left the screen while the code was downloading
+          if (wanted() && !stop) stop = mod.run(root, kind, slug);
+        },
+        () => {
+          // The chunk failed to download: the covers stay, and the next visibility change tries again
+          pending = false;
+          loaded = null;
+        },
+      );
     };
 
     const near = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        // Fetch the code and the player script ahead of time; they cost nothing until the ring plays
-        load().then((mod) => mod.warm());
         near.disconnect();
+        // Under reduced motion the ring never plays, so nothing is fetched
+        if (reduced.matches) return;
+        // Fetch the code and the player script ahead of time; they cost nothing until the ring plays
+        load().then(
+          (mod) => mod.warm(),
+          () => {
+            loaded = null;
+          },
+        );
       },
       { rootMargin: "400px 0px" },
     );

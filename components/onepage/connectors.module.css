@@ -127,13 +127,14 @@
   width: 100%;
   height: auto;
 }
+/* A product the page's product is not tied to: still a readable link (about 3:1), just quieter */
 .node[data-state="dim"] {
-  opacity: 0.35;
+  opacity: 0.55;
   filter: grayscale(1);
 }
 .node[data-state="dim"]:hover,
 .node[data-state="dim"]:focus-visible {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 /* The product of the page carries a 4 px amber bar under its logo */
 .node[data-state="lit"]::after {

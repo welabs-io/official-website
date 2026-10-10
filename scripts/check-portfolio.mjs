@@ -63,15 +63,27 @@ const page = async (url) => {
   return html;
 };
 
-// HOME: cadeia, produtos e fechamento, ordem de peso, selo, carrosséis
+// HOME: cadeia, produtos, conectores e fechamento, ordem de peso, selo, carrosséis
 const home = await page("/");
-for (const id of ["top", "chain", "products", "platforms", "contact"])
+for (const id of [
+  "top",
+  "chain",
+  "products",
+  "connectors",
+  "platforms",
+  "contact",
+])
   assert(home.includes(`id="${id}"`), `home has section #${id}`);
 assert(!home.includes('id="logos"'), "the old logos strip is gone");
 assert(
   home.indexOf('id="chain"') < home.indexOf('id="products"') &&
-    home.indexOf('id="products"') < home.indexOf('id="platforms"'),
-  "sections come in order: chain, products, closing",
+    home.indexOf('id="products"') < home.indexOf('id="connectors"') &&
+    home.indexOf('id="connectors"') < home.indexOf('id="platforms"'),
+  "sections come in order: chain, products, connectors, closing",
+);
+assert(
+  (home.match(/<section[^>]*>/g) ?? []).every((s) => s.includes("data-live")),
+  "every band is marked live (the thread and the pulses pause off screen)",
 );
 for (const slug of SLUGS)
   assert(
@@ -117,7 +129,33 @@ for (const slug of SLUGS) {
     /<title>[^<]* by Welabs<\/title>/.test(html),
     `${slug} title follows the "<Product> by Welabs" pattern`,
   );
+  // Template: opening, connectors with this product lit, other films, call to action
+  const at = (id) => html.indexOf(`id="${id}"`);
+  assert(
+    at("product") > 0 &&
+      at("product") < at("connectors") &&
+      at("connectors") < at("films") &&
+      at("films") < at("contact"),
+    `${slug} page has the four blocks in order`,
+  );
+  const block = html.slice(at("connectors"), at("films"));
+  assert(
+    block.includes('aria-current="page"') &&
+      !block.includes(`href="/products/${slug}"`),
+    `${slug} is lit in the connectors and does not link to itself`,
+  );
+  for (const other of SLUGS.filter((s) => s !== slug))
+    assert(
+      block.includes(`href="/products/${other}"`),
+      `${slug} connectors link to ${other}`,
+    );
 }
+// /lab/chain is a workbench: it must stay out of the index
+const lab = await (await get("/lab/chain")).text();
+assert(
+  /<meta name="robots" content="noindex/.test(lab),
+  "/lab/chain is noindex",
+);
 
 // ARQUIVOS REFERENCIADOS (logos, marcas, favicons) respondem 200
 const assets = new Set();
