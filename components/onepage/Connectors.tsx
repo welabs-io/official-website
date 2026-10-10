@@ -166,6 +166,7 @@ function Nodes({
       <Link
         key={slug}
         href={`/products/${slug}`}
+        prefetch={false}
         className={styles.node}
         data-state={state}
         data-slug={slug}

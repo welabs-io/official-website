@@ -133,6 +133,7 @@ export function RingStage({
                 {logos === "links" ? (
                   <Link
                     href={`/products/${product}`}
+                    prefetch={false}
                     aria-label={`${name} by Welabs`}
                   >
                     {logo}

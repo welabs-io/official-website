@@ -63,7 +63,4 @@ export const WELABS_LOGO = {
   light: "/brands/welabs/welabs-logo-light-block.svg",
 };
 
-export const HERO_TITLE = "Cinco produtos de software, feitos pela Welabs";
-export const HERO_LINE =
-  "Gestão, relacionamento, fluxos, canais e conhecimento, conectados entre si.";
 export const CTA_LABEL = "Conversar com a Welabs";

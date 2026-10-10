@@ -2,7 +2,8 @@
 // Plays the segments of every slide back to back with no gap. The next segment already has its player mounted, ready
 // and paused on its first frame; a little before the current one ends (the lead) it is started, so it is running when
 // the ring brings it to the centre, and the two overlap with a crossfade. Players: the current one, the next one
-// (paused, preloaded) and, for about a second, the one that is leaving.
+// (paused, preloaded) and, for about a second, the one that is leaving. In tiles mode (the carousels) nothing else is
+// kept: the neighbours are cover images.
 import { createPlayer, hideLoader, piece, type PlayerElement } from "./player";
 import type { PushTransition, Slide } from "@/lib/motion-slides";
 
@@ -62,12 +63,6 @@ export function flatten(
     return { ...segment, lead: Math.min(wanted, length * 0.8) };
   });
 }
-
-export const firstSegmentOf = (flat: readonly FlatSegment[], slide: number) =>
-  Math.max(
-    0,
-    flat.findIndex((segment) => segment.slide === slide),
-  );
 
 type Entry = {
   index: number;
@@ -140,15 +135,6 @@ export class Playback {
     this.timer = window.setInterval(() => this.tick(), TICK_MS);
   }
 
-  // Manual switch: start over at the first segment of another slide
-  jump(slide: number) {
-    this.clear();
-    this.cursor = firstSegmentOf(this.flat, slide);
-    this.options.onSlide(slide);
-    this.create(this.cursor, true);
-    this.preload();
-  }
-
   // PRÉ-CARGA
   // The next `ahead` segments get their players mounted, ready and parked on the first frame. Very short segments need
   // more than one ahead: the one after the next must already be ready when the next one starts.
@@ -182,16 +168,6 @@ export class Playback {
   private drop(entry: Entry) {
     this.remove(entry);
     this.entries.delete(entry.index);
-  }
-
-  // Element of the segment that is playing now (the workbench measures its start)
-  get currentElement(): PlayerElement | null {
-    return this.entries.get(this.cursor)?.el ?? null;
-  }
-
-  // Players alive right now (for the page measurements)
-  get alive() {
-    return this.entries.size;
   }
 
   private clear() {

@@ -13,6 +13,7 @@ function Header({ home }: { home: boolean }) {
       <div className={styles.headerInner}>
         <Link
           href={home ? "#top" : "/"}
+          prefetch={false}
           className={styles.brand}
           aria-label="Welabs, início"
         >

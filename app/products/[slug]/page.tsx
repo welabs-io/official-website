@@ -6,8 +6,11 @@ import { PRODUCTS, productBySlug } from "@/lib/products";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 
 // PÁGINA DE PRODUTO
-// Same language as the home: logo with seal, one factual line and the product's motion in loop. Slugs are the
-// current public ones; older slugs and ids are redirected by next.config.mjs.
+// One template for the five products (see ProductPageBody): opening, connectors, other films, call to action. Slugs
+// are the current public ones; older slugs and ids are redirected by next.config.mjs. Any other slug is a 404 that
+// is decided at build time (dynamicParams off), so no unknown page is ever rendered on demand.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return PRODUCTS.map(({ slug }) => ({ slug }));
 }

@@ -11,12 +11,7 @@ import {
 } from "@/lib/motion-slides";
 import { PRODUCTS } from "@/lib/products";
 import { ringPosition } from "./positions";
-import {
-  BLEND_SECONDS,
-  SWAP_SECONDS,
-  firstSegmentOf,
-  flatten,
-} from "./ring-playback";
+import { BLEND_SECONDS, SWAP_SECONDS, flatten } from "./ring-playback";
 
 describe("ring positions", () => {
   it("five slides: centre, two neighbours, two behind", () => {
@@ -63,7 +58,6 @@ describe("flat segments", () => {
       expect(segment.lead).toBeLessThanOrEqual(
         (segment.range[1] - segment.range[0]) * 0.8 + 1e-9,
       );
-    expect(firstSegmentOf(flat, 2)).toBe(4);
   });
 });
 
