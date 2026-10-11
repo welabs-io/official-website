@@ -1,0 +1,365 @@
+{
+  "domus": {
+    "id": "domus-product-sequence-v1",
+    "title": "Empresa, regras e novos cadastros",
+    "description": "Veja a empresa inteira e acompanhe exemplos distintos de cobrança e vistoria.",
+    "chapters": [
+      {
+        "key": "business-overview",
+        "title": "A empresa inteira, sob o mesmo teto",
+        "body": "Os módulos convivem na mesma gestão. Um item passa por compras, estoque, produção, vendas e financeiro.",
+        "scenario": "Empresa de demonstração · Item DEMO-0042",
+        "segments": [
+          {
+            "pieceId": "domus-intro-s2-r2",
+            "start": 0,
+            "end": 5.4,
+            "rate": 1,
+            "holdAfter": 1,
+            "poster": "/motion/posters/tail-domus.webp"
+          },
+          {
+            "pieceId": "hub-whole-house-ludic-logos-r4-s1",
+            "start": 13.8,
+            "end": 27.2,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-domus-business-overview-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "monthly-billing",
+        "title": "Da regra ao trabalho concluído",
+        "body": "Uma regra de cobrança vira etapas no Magneto. A confirmação conclui a nota e o resultado volta ao Domus.",
+        "scenario": "Outro exemplo · Cobrança do mês",
+        "segments": [
+          {
+            "pieceId": "hub-defines-runs-ludic-v3-logos-r4-s1",
+            "start": 1,
+            "end": 5.4,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-domus-monthly-billing-0.webp"
+          },
+          {
+            "pieceId": "hub-defines-runs-ludic-v3-logos-r4-s1",
+            "start": 7.8,
+            "end": 24.9,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-domus-monthly-billing-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "inspection-screen",
+        "title": "Do desenho ao cadastro de vistoria",
+        "body": "O desenho com local, data, responsável e situação se transforma em uma tela com vistorias e ação de novo cadastro.",
+        "scenario": "Outro exemplo · Cadastro de vistoria",
+        "segments": [
+          {
+            "pieceId": "hub-draw-born-ludic-v2-logos-r5-s1",
+            "start": 7.8,
+            "end": 13.6,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-domus-inspection-screen-0.webp"
+          }
+        ]
+      }
+    ]
+  },
+  "relloo": {
+    "id": "relloo-product-sequence-v1",
+    "title": "Contato, resposta e relacionamento",
+    "description": "Quatro cenários de relacionamento: histórico, assistente, conversa em blocos e cupom usado na loja.",
+    "chapters": [
+      {
+        "key": "contact-context",
+        "title": "Reconhecer a pessoa e sua história",
+        "body": "As mensagens de Ana encontram o mesmo contato, com etiquetas, campos e histórico disponíveis para o atendimento.",
+        "scenario": "Ana · Contato de demonstração",
+        "segments": [
+          {
+            "pieceId": "relloo-intro-s2-r3",
+            "start": 0,
+            "end": 5.4,
+            "rate": 1,
+            "holdAfter": 1,
+            "poster": "/motion/posters/tail-relloo.webp"
+          },
+          {
+            "pieceId": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+            "start": 9.9,
+            "end": 17.8,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-relloo-contact-context-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "test-assistant",
+        "title": "Conferir o assistente antes de publicar",
+        "body": "Uma conversa de teste recebe resposta com fonte. A conferência aparece antes de a versão sair do ambiente de teste.",
+        "scenario": "Outro cenário · Lia, agente em teste",
+        "segments": [
+          {
+            "pieceId": "crm-agent-studio-ludic2-logos-r4-s1",
+            "start": 28.6,
+            "end": 35.7,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-relloo-test-assistant-0.webp"
+          }
+        ]
+      },
+      {
+        "key": "conversation-route",
+        "title": "Levar a conversa pelo caminho certo",
+        "body": "O menu espera a resposta. A escolha de orçamento segue para o agente de vendas e chega ao encerramento da conversa.",
+        "scenario": "Outro cenário · Conversa de orçamento",
+        "segments": [
+          {
+            "pieceId": "crm-flow-builder-ludic2-logos-r4-s1",
+            "start": 11.4,
+            "end": 24.1,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-relloo-conversation-route-0.webp"
+          }
+        ]
+      },
+      {
+        "key": "redeem-coupon",
+        "title": "Do cupom recebido à venda confirmada",
+        "body": "Um cupom demonstrativo já recebido é lido na loja. A pré-venda chega ao caixa e a confirmação conclui a compra.",
+        "scenario": "Outro cenário · Cupom DEMO-7K2 na loja",
+        "segments": [
+          {
+            "pieceId": "crm-campaigns-journey-ludic2-logos-r4-s1",
+            "start": 28.5,
+            "end": 35.9,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-relloo-redeem-coupon-0.webp"
+          }
+        ]
+      }
+    ]
+  },
+  "magneto": {
+    "id": "magneto-product-sequence-v1",
+    "title": "Desenhar, ativar, continuar e mudar",
+    "description": "Exemplos distintos mostram construção, ativação, retomada após interrupção e retorno à versão anterior.",
+    "chapters": [
+      {
+        "key": "draw-workflow",
+        "title": "Desenhar o processo em blocos",
+        "body": "Pedido, aprovação de Ana e aviso ao financeiro deixam os materiais espalhados e ganham um caminho conectado.",
+        "scenario": "Pedido de compra · Desenho demonstrativo",
+        "segments": [
+          {
+            "pieceId": "magneto-intro-s3-r3",
+            "start": 0,
+            "end": 5.4,
+            "rate": 1,
+            "holdAfter": 1,
+            "poster": "/motion/posters/tail-magneto.webp"
+          },
+          {
+            "pieceId": "flow-canvas-build-logos-r4-s1",
+            "start": 6.6,
+            "end": 11.9,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-magneto-draw-workflow-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "activate-suggestion",
+        "title": "Da descrição ao fluxo conferido e ativo",
+        "body": "O processo é descrito em palavras. Depois da revisão, o exemplo mostra a ativação e o pedido percorrendo os blocos.",
+        "scenario": "Outro exemplo · Sugestão de pedido de compra",
+        "segments": [
+          {
+            "pieceId": "flow-copilot-logos-r4-s1",
+            "start": 0.7,
+            "end": 5.8,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-magneto-activate-suggestion-0.webp"
+          },
+          {
+            "pieceId": "flow-copilot-logos-r4-s1",
+            "start": 18.8,
+            "end": 24.9,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-magneto-activate-suggestion-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "resume-execution",
+        "title": "Continuar do ponto em que parou",
+        "body": "Uma interrupção encontra o pedido esperando aprovação. Ao voltar, a execução continua e chega ao fim sem repetir o passo já feito.",
+        "scenario": "Outro exemplo · Pedido interrompido",
+        "segments": [
+          {
+            "pieceId": "flow-durable-run-logos-r4-s1",
+            "start": 11.5,
+            "end": 27.8,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-magneto-resume-execution-0.webp"
+          }
+        ]
+      },
+      {
+        "key": "restore-version",
+        "title": "Voltar à versão anterior",
+        "body": "A versão 2 já está ativa neste exemplo. Bruno aciona o retorno e a versão 1 volta a conduzir a regra.",
+        "scenario": "Outro exemplo · Retorno da versão 2 à versão 1",
+        "segments": [
+          {
+            "pieceId": "flow-lifecycle-logos-r4-s1",
+            "start": 20.6,
+            "end": 25,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-magneto-restore-version-0.webp"
+          }
+        ]
+      }
+    ]
+  },
+  "tuner": {
+    "id": "tuner-product-sequence-v1",
+    "title": "Canais, transferência e retomada",
+    "description": "Três cenários de atendimento: mensagens reunidas, ligação transferida com contexto e conversa retomada no WhatsApp.",
+    "chapters": [
+      {
+        "key": "unify-channels",
+        "title": "Receber os canais no mesmo lugar",
+        "body": "Os canais se conectam ao atendimento e as mensagens chegam com a origem identificada, prontas para seguir na operação.",
+        "scenario": "Mensagens independentes · Paula, Rui e visitante",
+        "segments": [
+          {
+            "pieceId": "tuner-intro-s2",
+            "start": 0,
+            "end": 5.4,
+            "rate": 1,
+            "holdAfter": 1,
+            "poster": "/motion/posters/tail-tuner.webp"
+          },
+          {
+            "pieceId": "channels-one-contract-ludic-logos-r5-s1",
+            "start": 7.4,
+            "end": 16.7,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-tuner-unify-channels-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "transfer-call",
+        "title": "Transferir sem pedir a história de novo",
+        "body": "Rita atende Paula e entende o pedido. A transferência leva esse contexto para Davi, que recebe a história já contada.",
+        "scenario": "Outro cenário · Ligação de Paula, pedido DEMO-07",
+        "segments": [
+          {
+            "pieceId": "channels-call-center-ludic-logos-r4-s1",
+            "start": 14.1,
+            "end": 28.2,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-tuner-transfer-call-0.webp"
+          }
+        ]
+      },
+      {
+        "key": "resume-whatsapp",
+        "title": "Retomar a conversa e preservar o contexto",
+        "body": "Neste outro atendimento, uma mensagem aprovada retoma o contato. Paula lê, responde e o histórico mantém foto, localização e mensagens.",
+        "scenario": "Outro cenário · Troca de pedido pelo WhatsApp",
+        "segments": [
+          {
+            "pieceId": "channels-whatsapp-official-ludic-logos-r4-s1",
+            "start": 12.9,
+            "end": 27.5,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-tuner-resume-whatsapp-0.webp"
+          }
+        ]
+      }
+    ]
+  },
+  "knowly": {
+    "id": "knowly-product-sequence-v1",
+    "title": "Das fontes à resposta permitida",
+    "description": "Três exemplos mostram conhecimento reunido, resposta conferida na fonte e acesso conforme quem pergunta.",
+    "chapters": [
+      {
+        "key": "organize-sources",
+        "title": "Reunir o conhecimento da equipe",
+        "body": "Documentos, reuniões, tickets e código encontram o mesmo lugar. Uma reunião nova entra com dados pessoais deixados de fora.",
+        "scenario": "Atlas · Fontes de demonstração",
+        "segments": [
+          {
+            "pieceId": "knowly-intro-s2",
+            "start": 0,
+            "end": 5.4,
+            "rate": 1,
+            "holdAfter": 1,
+            "poster": "/motion/posters/tail-knowly.webp"
+          },
+          {
+            "pieceId": "kb-sources-to-knowledge-ludic-logos-r5-s1",
+            "start": 6.4,
+            "end": 18.6,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-knowly-organize-sources-1.webp"
+          }
+        ]
+      },
+      {
+        "key": "verify-answer",
+        "title": "Conferir a resposta na fonte",
+        "body": "Bia vê a origem de cada afirmação, recebe um limite explícito quando falta informação e abre o trecho que sustenta a resposta.",
+        "scenario": "Outro exemplo · Bia consulta o prazo da proposta",
+        "segments": [
+          {
+            "pieceId": "kb-ask-with-proof-ludic-logos-r5-s1",
+            "start": 13.5,
+            "end": 28.4,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-knowly-verify-answer-0.webp"
+          }
+        ]
+      },
+      {
+        "key": "respect-access",
+        "title": "Respeitar o acesso de quem pergunta",
+        "body": "Uma pergunta fora do acesso é recusada. Quando Bia muda de equipe, a chave acompanha sua nova área.",
+        "scenario": "Outro exemplo · Permissões de Bia entre áreas",
+        "segments": [
+          {
+            "pieceId": "kb-who-reads-what-ludic-logos-r4-s1",
+            "start": 18.9,
+            "end": 28.5,
+            "rate": 1,
+            "holdAfter": 3,
+            "poster": "/motion/posters/motion-knowly-respect-access-0.webp"
+          }
+        ]
+      }
+    ]
+  }
+}

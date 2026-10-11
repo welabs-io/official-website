@@ -71,6 +71,7 @@ type Entry = {
   index: number;
   el: PlayerElement;
   wrap: HTMLElement;
+  host: HTMLElement;
   ready: boolean;
   // Parked on its first frame and painted: the only state in which a handoff may bring it in
   settled: boolean;
@@ -235,6 +236,9 @@ export class Playback {
     this.timeouts.clear();
     for (const entry of this.entries.values()) this.remove(entry);
     this.entries.clear();
+    // Reset readiness before a manual selection or fallback reveals its operational poster again.
+    for (const host of this.options.layers())
+      if (host) delete host.dataset.mediaReady;
   }
 
   private later(fn: () => void, ms: number) {
@@ -288,6 +292,7 @@ export class Playback {
       index,
       el,
       wrap,
+      host,
       ready: false,
       settled: false,
       started: autoplay,
@@ -327,6 +332,8 @@ export class Playback {
       (!this.options.single && this.flat[entry.index].slide !== current.slide)
     )
       entry.wrap.style.opacity = "1";
+    // A parked successor must not hide the fallback before the active composition has actually painted.
+    if (entry.index === this.cursor) entry.host.dataset.mediaReady = "true";
   }
 
   // AVANÇO E REPOUSO DOS SEGMENTOS
@@ -433,6 +440,7 @@ export class Playback {
     next.el.play();
     const pushed = this.options.single ? from.transition : undefined;
     const bring = () => {
+      next.host.dataset.mediaReady = "true";
       // Tiles: the page rotates the ring from onSwap, nothing to animate here
       if (this.options.tiles && !this.options.tileBySlide) {
         /* rotation is driven by the page */

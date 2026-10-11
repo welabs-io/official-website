@@ -1,8 +1,8 @@
 // PÁGINA DETALHADA DE PRODUTO
-// Product capabilities remain readable without motion; the opening and complete films demonstrate the same public scope.
+// Functional content remains independent from motion plans; overview and story use separate consumers of one narrative runtime.
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { RingStage } from "@/components/ring/RingStage";
+import { ProductMotion } from "@/components/motion/ProductMotion";
 import { PRODUCT_DETAILS } from "@/lib/product-details";
 import {
   CTA_LABEL,
@@ -64,20 +64,9 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
               </div>
             </div>
             <div className={styles.heroDemonstration}>
-              <RingStage
-                id="product-opening"
-                kind="hero"
-                presentation="single"
-                slug={slug}
-                tone="dark"
-                caption={false}
-                navigation={false}
-                clean
-                eager
-                label={`Demonstração de ${product.name} by Welabs`}
-              />
+              <ProductMotion id="product-opening" slug={slug} mode="overview" />
               <p className={styles.demonstrationNote}>
-                Demonstração ilustrativa do produto
+                Visão geral ilustrativa do produto
               </p>
             </div>
           </div>
@@ -154,19 +143,11 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
             <p>{detail.demonstrationDescription}</p>
           </div>
           <div className={styles.filmStage}>
-            <RingStage
-              id="product-films"
-              kind="films"
-              slug={slug}
-              tone="light"
-              caption
-              navigation
-              clean
-              label={`Outras demonstrações de ${product.name} by Welabs`}
-            />
+            <ProductMotion id="product-story" slug={slug} mode="story" />
           </div>
           <p className={styles.filmNote}>
-            Exemplos ilustrativos com dados de demonstração.
+            Sequência ilustrativa com dados de demonstração. Escolha um capítulo
+            para acompanhar cada etapa.
           </p>
         </div>
       </section>
@@ -180,7 +161,7 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
           <div className={styles.relatedCopy}>
             <h2 id="related-title">{detail.relatedTitle}</h2>
             <p>{detail.relatedDescription}</p>
-            <Link className={styles.textLink} href="/#chain">
+            <Link className={styles.textLink} href="/#journey">
               Conhecer a família Welabs
             </Link>
           </div>

@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PRODUCTS } from "@/lib/products";
 import { PRODUCT_DETAILS } from "@/lib/product-details";
-import { productFilms } from "@/lib/motion-slides";
+import { getProductMotionPlan } from "@/lib/product-motion-plans";
 import { ProductDetail } from "@/components/site/ProductDetail";
 
 describe("product detail template", () => {
@@ -42,9 +42,14 @@ describe("product detail template", () => {
         PRODUCT_DETAILS[slug].capabilities.length,
       );
       const films = html.slice(at("films"), at("related-products"));
-      expect(films.match(/data-layers/g)).toHaveLength(
-        productFilms(slug).length,
-      );
+      // One visible frame carries an ordered narrative while the functional sections remain independent.
+      expect(films.match(/data-motion-viewport/g)).toHaveLength(1);
+      expect(films).toContain('data-mode="story"');
+      for (const chapter of getProductMotionPlan(slug).chapters) {
+        expect(films).toContain(`data-motion-chapter="${chapter.key}"`);
+        expect(films).toContain(chapter.title);
+      }
+      expect(resources).not.toContain("data-product-motion");
       expect(
         html.slice(at("overview"), at("capabilities")).match(/data-layers/g),
       ).toHaveLength(1);

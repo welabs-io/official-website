@@ -7,6 +7,8 @@ import {
   heroSlides,
   previewSlides,
   productFilms,
+  productStorySlides,
+  productOverviewSlides,
   type Slide,
 } from "@/lib/motion-slides";
 import { PRODUCTS, type ProductSlug } from "@/lib/products";
@@ -14,7 +16,8 @@ import { ensurePlayer } from "./player";
 import { Playback, flatten } from "./ring-playback";
 import { isNear, placeOf, ringPosition } from "./positions";
 import type { RingKind } from "./RingDriver";
-import { motionPhase } from "./projection";
+import { motionPhase, projectionVariables } from "./projection";
+import { revealSelectedMotion } from "./scroll-selected-motion";
 
 export const ROTATION_SECONDS = 0.8;
 const COVER_HOLD_MS = 4400;
@@ -33,7 +36,11 @@ const slidesOf = (kind: RingKind, slug?: string): Slide[] =>
         ? productFilms(slug as ProductSlug)
         : kind === "preview"
           ? previewSlides(slug as ProductSlug)
-          : heroSlides(slug as ProductSlug);
+          : kind === "story"
+            ? productStorySlides(slug as ProductSlug)
+            : kind === "overview"
+              ? productOverviewSlides(slug as ProductSlug)
+              : heroSlides(slug as ProductSlug);
 
 export type RingController = {
   play: () => void;
@@ -61,6 +68,9 @@ export function run(
   );
   const logos = [...root.querySelectorAll<HTMLElement>("[data-slug]")];
   const captions = [...root.querySelectorAll<HTMLElement>("[data-caption]")];
+  const chapters = [
+    ...root.querySelectorAll<HTMLElement>("[data-motion-chapter]"),
+  ];
   const announcement = root.querySelector<HTMLElement>("[data-announcement]");
   const slides = slidesOf(kind, slug);
   const manualIdentity =
@@ -74,7 +84,8 @@ export function run(
   const flat = flatten(slides);
   // The chain has one tile per cut; the other kinds have one tile per slide (opening tail and film share a tile)
   const perCut = kind === "chain";
-  const singlePane = perCut && root.dataset.presentation === "single";
+  const singlePane =
+    (perCut || kind === "story") && root.dataset.presentation === "single";
   const posters = tiles.map((tile) =>
     tile.querySelector<HTMLImageElement>("[data-poster]"),
   );
@@ -233,6 +244,15 @@ export function run(
     if (singlePane && posters[0] && cover) {
       // One visible pane follows the narrative; cached covers never depend on a previously changed image source.
       posters[0].setAttribute("src", cover);
+      const projection = posters[0].parentElement;
+      const source =
+        slides[active]?.posterPieceId ?? slides[active]?.segments[0]?.id;
+      if (kind === "story" && projection && source) {
+        projection.dataset.motionPhase =
+          slides[active]?.posterPhase ?? motionPhase(source);
+        for (const [name, value] of Object.entries(projectionVariables(source)))
+          projection.style.setProperty(name, value);
+      }
     }
     const lit: readonly string[] = perCut
       ? (cutProducts[active] ?? [])
@@ -249,10 +269,15 @@ export function run(
         caption.dataset.captionIndex === undefined
           ? caption.dataset.caption !== lit[0]
           : Number(caption.dataset.captionIndex) !== active;
+    for (const chapter of chapters) {
+      const current = Number(chapter.dataset.select) === active;
+      chapter.dataset.current = String(current);
+      chapter.setAttribute("aria-pressed", String(current));
+    }
     if (announce && announcement) {
       const product = PRODUCTS.find((item) => item.slug === lit[0]);
       announcement.textContent =
-        kind === "films"
+        kind === "films" || kind === "story"
           ? (slides[active]?.label ?? "")
           : product
             ? `${product.name}. ${product.line}.`
@@ -376,6 +401,8 @@ export function run(
   // NAVEGAÇÃO POR CONTEÚDO
   const select = (index: number) => {
     const next = ((index % tiles.length) + tiles.length) % tiles.length;
+    // Re-selecting a chapter reveals its frame without resetting the narrative clock.
+    if (kind === "story") revealSelectedMotion(root);
     // Selecting the current identity explicitly replays its complete formation.
     if (next === active && !manualIdentity) return;
     generation++;

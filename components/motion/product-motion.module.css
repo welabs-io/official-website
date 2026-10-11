@@ -1,0 +1,157 @@
+/* UM QUADRO E UMA NARRATIVA */
+.root.story {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.34fr);
+  align-items: start;
+  justify-items: stretch;
+  gap: 28px;
+  width: 100%;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  color: inherit;
+}
+.root.story .frame {
+  width: 100%;
+  margin: 0;
+  aspect-ratio: 16 / 9;
+}
+.visual {
+  min-width: 0;
+}
+/* PÔSTER DE CONTINGÊNCIA E COMPOSIÇÃO ATIVA */
+.root.story
+  [data-tile]:has([data-layers][data-media-ready="true"])
+  [data-poster],
+.overview
+  [data-tile]:has([data-layers][data-media-ready="true"])
+  [data-poster] {
+  visibility: hidden;
+}
+.detail {
+  padding-top: 20px;
+  min-height: 148px;
+}
+.detail h3 {
+  margin: 0 0 10px;
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.detail p {
+  max-width: 66ch;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+}
+.detail .scenario {
+  margin-top: 10px;
+  font-size: 16px;
+  opacity: 0.72;
+}
+
+/* CAPÍTULOS COMO NAVEGAÇÃO */
+.navigation {
+  min-width: 0;
+}
+.description {
+  margin: 0 0 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.78;
+}
+.chapters {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chapter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 58px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+.chapter:hover {
+  background: rgb(127 127 127 / 0.055);
+}
+.chapter[data-current="true"] {
+  border-color: rgb(127 127 127 / 0.28);
+  background: rgb(127 127 127 / 0.085);
+}
+.number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgb(127 127 127 / 0.3);
+  border-radius: 50%;
+  font-size: 14px;
+}
+.chapter[data-current="true"] .number {
+  border-color: transparent;
+  background: #ffb020;
+  color: #10141c;
+}
+.next {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+.next span {
+  font-size: 26px;
+}
+.chapter:focus-visible,
+.next:focus-visible,
+.root.story:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* LEITURA NO CELULAR */
+@media (max-width: 900px) {
+  .root.story {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .detail {
+    min-height: 180px;
+  }
+  .detail h3 {
+    font-size: 21px;
+  }
+  .chapters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .chapter {
+    min-height: 78px;
+    padding: 10px 8px;
+  }
+}

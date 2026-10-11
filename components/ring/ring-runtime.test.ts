@@ -6,6 +6,7 @@ import {
   MONTAGE_SLIDES,
   PRODUCT_SLIDES,
   heroSlides,
+  productStorySlides,
 } from "@/lib/motion-slides";
 import {
   Playback,
@@ -214,6 +215,85 @@ afterEach(() => {
 
 // NAVEGAÇÃO INDEPENDENTE DO PLAYER
 describe("content navigation", () => {
+  it("keeps narrative chapters in the same viewport while exposing manual selection", async () => {
+    const root = element(["navigation", "true"]);
+    root.dataset.presentation = "single";
+    const stage = root.appendChild(element(["ring", "story"]));
+    stage.dataset.motionViewport = "true";
+    const scrollTo = vi.fn();
+    Object.assign(window, {
+      scrollTo,
+      scrollY: 900,
+      innerHeight: 844,
+      matchMedia: () => ({ matches: true }),
+    });
+    Object.assign(document, { querySelectorAll: () => [] });
+    vi.spyOn(stage, "getBoundingClientRect").mockReturnValue({
+      width: 350,
+      height: 197,
+      top: -121,
+      bottom: 76,
+    } as ReturnType<TestElement["getBoundingClientRect"]>);
+    const slides = productStorySlides("domus");
+    const tiles = slides.map((slide) => {
+      const tile = stage.appendChild(element(["tile", ""]));
+      const poster = tile.appendChild(element(["poster", ""], "img"));
+      poster.setAttribute("src", slide.poster);
+      tile.appendChild(element(["layers", ""]));
+      return tile;
+    });
+    const buttons = slides.map((slide, index) => {
+      const button = root.appendChild(
+        element(["motionChapter", slide.key], "button"),
+      );
+      button.dataset.select = String(index);
+      return button;
+    });
+    const controller = run(root as unknown as HTMLElement, "story", "domus");
+    emit(root, "click", { target: buttons[1] });
+    expect(root.dataset.active).toBe("1");
+    expect(buttons[1].dataset.current).toBe("true");
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(tiles[0].dataset.pos).toBe("0");
+    controller.play();
+    await Promise.resolve();
+    expect(
+      tiles[0].querySelector("[data-layers]")!.children.length,
+    ).toBeGreaterThan(0);
+    expect(
+      tiles
+        .slice(1)
+        .every(
+          (tile) => tile.querySelector("[data-layers]")!.children.length === 0,
+        ),
+    ).toBe(true);
+    players.forEach((player) => emit(player, "ready"));
+    vi.advanceTimersByTime(160);
+    expect(tiles[0].querySelector("[data-layers]")!.dataset.mediaReady).toBe(
+      "true",
+    );
+    const selectedTime = players[0].currentTime;
+    emit(root, "click", { target: buttons[1] });
+    expect(players).toHaveLength(2);
+    expect(players[0].currentTime).toBe(selectedTime);
+    expect(scrollTo).toHaveBeenCalledTimes(2);
+    const segments = flatten(slides);
+    const selected = segments.findIndex((segment) => segment.slide === 1);
+    players[0].currentTime = segments[selected].range[1] - 0.02;
+    vi.advanceTimersByTime(3500);
+    expect(root.dataset.active).toBe("1");
+    emit(players[2], "ready");
+    vi.advanceTimersByTime(160);
+    players[1].currentTime = segments[selected + 1].range[1] - 0.02;
+    vi.advanceTimersByTime(3500);
+    expect(root.dataset.active).toBe("2");
+    expect(buttons[2].dataset.current).toBe("true");
+    expect(scrollTo).toHaveBeenCalledTimes(2);
+    controller.destroy();
+    expect(
+      tiles[0].querySelector("[data-layers]")!.dataset.mediaReady,
+    ).toBeUndefined();
+  });
   it("forms the identity once and preserves the selected logo for reading without loading another product", async () => {
     const { root, tiles } = ring();
     root.dataset.rotate = "false";

@@ -1,11 +1,15 @@
 // SLIDES DE MOTION DO SITE
 // Builds the slides of every ring from lib/motion-pieces.json (the list scripts/sync-motion.mjs copies). A slide is a
 // list of segments played back to back: a segment is a range of one piece. The home journey contains authored cuts
-// without an opening; its product carousel contains only complete identity openings. Product pages retain the whole
-// opening followed by the first film in full, and standalone previews remain qualified product clips.
+// without an opening; its product carousel contains only complete identity openings. Product-page narratives use
+// authored chapter ranges with their complete opening, and standalone previews remain qualified product clips.
 import montage from "./home-montage.json";
 import pieces from "./motion-pieces.json";
 import { PRODUCTS, type ProductSlug } from "./products";
+import {
+  getProductMotionPlan,
+  type ProductMotionChapter,
+} from "./product-motion-plans";
 
 export type Segment = {
   id: string;
@@ -35,6 +39,9 @@ export type Slide = {
   segments: Segment[];
   // Cover image: what a neighbour shows before its player is ready, and the static frame under reduced motion
   poster: string;
+  // Narrative fallback shows the operational result, independently from the first live segment's identity phase.
+  posterPhase?: "intro" | "film";
+  posterPieceId?: string;
   // Last frame the slide plays: what the tile shows as the dimmed previous neighbour once its player is gone
   endPoster?: string;
   slug?: ProductSlug;
@@ -212,4 +219,44 @@ export function productFilms(slug: ProductSlug): Slide[] {
     poster: poster(film.id),
     endPoster: endPoster(film.id),
   }));
+}
+
+// NARRATIVAS CONTÍNUAS DE PRODUTO
+// Consume authored chapters without mixing functional-page content into media sources, ranges or timing.
+const chapterPoster = (value: string) =>
+  value.startsWith("/") ? value : poster(value.replace(/\.webp$/, ""));
+
+function chapterSlide(chapter: ProductMotionChapter, slug: ProductSlug): Slide {
+  const result = chapter.segments[chapter.segments.length - 1];
+  return {
+    key: chapter.key,
+    label: chapter.title,
+    slug,
+    // The last authored action is readable when media is reduced or unavailable; playback still starts at segment zero.
+    poster: chapterPoster(result.poster),
+    posterPhase: result.pieceId.includes("intro") ? "intro" : "film",
+    posterPieceId: result.pieceId,
+    segments: chapter.segments.map((segment) => ({
+      id: segment.pieceId,
+      range: [segment.start, segment.end],
+      rate: segment.rate,
+      holdAfter: segment.holdAfter,
+      // Identity dissolves into its example; scene changes move through the same shared frame.
+      ...(segment.pieceId.includes("intro")
+        ? {}
+        : {
+            transition: { type: "push-left", duration: 0.4 } as PushTransition,
+          }),
+    })),
+  };
+}
+
+export function productStorySlides(slug: ProductSlug): Slide[] {
+  const plan = getProductMotionPlan(slug);
+  return plan.chapters.map((chapter) => chapterSlide(chapter, slug));
+}
+
+export function productOverviewSlides(slug: ProductSlug): Slide[] {
+  const plan = getProductMotionPlan(slug);
+  return [chapterSlide(plan.chapters[0], slug)];
 }

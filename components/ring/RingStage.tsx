@@ -11,6 +11,8 @@ import {
   heroSlides,
   previewSlides,
   productFilms,
+  productOverviewSlides,
+  productStorySlides,
   type Slide,
 } from "@/lib/motion-slides";
 import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
@@ -30,6 +32,7 @@ type Tile = {
   endPoster?: string;
   slug?: ProductSlug;
   phase: MotionPhase;
+  posterPhase?: MotionPhase;
   firstId: string;
   lastId: string;
 };
@@ -50,16 +53,28 @@ const chainTiles = (): Tile[] =>
     lastId: MONTAGE_SLIDES.flatMap((slide) => slide.segments)[i].id,
   }));
 const slideTiles = (slides: Slide[]): Tile[] =>
-  slides.map(({ key, label, poster, endPoster, slug, segments }) => ({
-    key,
-    label,
-    poster,
-    endPoster,
-    slug,
-    phase: motionPhase(segments[0].id),
-    firstId: segments[0].id,
-    lastId: segments[segments.length - 1].id,
-  }));
+  slides.map(
+    ({
+      key,
+      label,
+      poster,
+      endPoster,
+      slug,
+      segments,
+      posterPhase,
+      posterPieceId,
+    }) => ({
+      key,
+      label,
+      poster,
+      endPoster,
+      slug,
+      phase: motionPhase(segments[0].id),
+      posterPhase,
+      firstId: posterPieceId ?? segments[0].id,
+      lastId: segments[segments.length - 1].id,
+    }),
+  );
 
 export type RingProps = {
   id: string;
@@ -109,7 +124,11 @@ export function RingStage({
           ? slideTiles(productFilms(slug!))
           : kind === "preview"
             ? slideTiles(previewSlides(slug!))
-            : slideTiles(heroSlides(slug!));
+            : kind === "overview"
+              ? slideTiles(productOverviewSlides(slug!))
+              : kind === "story"
+                ? slideTiles(productStorySlides(slug!))
+                : slideTiles(heroSlides(slug!));
   const lit =
     kind === "chain" ? CHAIN_LIT[0] : [tiles[0]?.slug ?? PRODUCTS[0].slug];
   const projectionStyle = projectionVariables() as CSSProperties;
@@ -174,7 +193,7 @@ export function RingStage({
                 <div
                   className={`${styles.projection} ${styles.firstCover}`}
                   data-projection
-                  data-motion-phase={tile.phase}
+                  data-motion-phase={tile.posterPhase ?? tile.phase}
                   style={projectionVariables(tile.firstId) as CSSProperties}
                 >
                   <img

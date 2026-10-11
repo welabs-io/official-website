@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import type { RingController } from "./ring-run";
 import { bootstrapNavigation } from "./navigation-bootstrap";
 
-export type RingKind = "chain" | "products" | "films" | "hero" | "preview";
+export type RingKind =
+  "chain" | "products" | "films" | "hero" | "preview" | "story" | "overview";
 
 export function RingDriver({
   rootId,
@@ -77,8 +78,13 @@ export function RingDriver({
       visible = entry.isIntersecting;
       update();
     });
-    near.observe(root);
-    on.observe(root);
+    // Story controls can remain visible after their frame leaves the viewport; only the frame owns playback visibility.
+    const playbackTarget =
+      kind === "story"
+        ? (root.querySelector<HTMLElement>("[data-motion-viewport]") ?? root)
+        : root;
+    near.observe(playbackTarget);
+    on.observe(playbackTarget);
     // Bind navigation independently of IntersectionObserver delivery and preserve any first pending intention.
     if (root.dataset.navigation === "true") bind(true);
     document.addEventListener("visibilitychange", update);

@@ -1,5 +1,6 @@
 // CONTEÚDO PÚBLICO DOS PRODUTOS
-// Public capabilities follow the product dossiers and accepted demonstrations; no deployment or performance claim is implied.
+// Public capabilities follow the product dossiers; motion plans remain independent from this functional copy.
+// Demonstration descriptions explain the existing scope as a sequence without adding deployment or performance claims.
 import type { ProductSlug } from "./products";
 
 type Capability = {
@@ -87,7 +88,7 @@ export const PRODUCT_DETAILS: Record<ProductSlug, ProductDetailContent> = {
     ],
     demonstrationTitle: "Veja a gestão ganhar forma.",
     demonstrationDescription:
-      "As demonstrações percorrem a definição de uma regra, seu fluxo de trabalho e a criação de cadastros e telas.",
+      "A sequência apresenta as áreas da empresa, a definição de regras e a criação de cadastros e telas.",
     relatedTitle: "A gestão é o ponto de partida.",
     relatedDescription:
       "Conheça também os produtos para relacionamento, processos, canais e conhecimento. Cada um cuida de uma parte do trabalho.",
@@ -155,7 +156,7 @@ export const PRODUCT_DETAILS: Record<ProductSlug, ProductDetailContent> = {
     ],
     demonstrationTitle: "Explore os caminhos do relacionamento.",
     demonstrationDescription:
-      "Veja como preparar um agente, desenhar uma conversa em blocos e acompanhar uma campanha até a fidelização.",
+      "Acompanhe o atendimento, a preparação de agentes, os fluxos de conversa e as campanhas em uma sequência.",
     relatedTitle: "O relacionamento faz parte de uma operação maior.",
     relatedDescription:
       "Conheça a gestão do Domus e os produtos para processos, canais e conhecimento que compõem a família Welabs.",
@@ -220,7 +221,7 @@ export const PRODUCT_DETAILS: Record<ProductSlug, ProductDetailContent> = {
     ],
     demonstrationTitle: "Acompanhe o processo em movimento.",
     demonstrationDescription:
-      "Veja uma execução esperar e retomar, uma regra mudar de versão e uma descrição virar um desenho revisável.",
+      "A sequência percorre o desenho do processo, a execução, as versões de uma regra e o apoio do copiloto.",
     relatedTitle: "Processos atravessam áreas diferentes.",
     relatedDescription:
       "Conheça os produtos de gestão, relacionamento, canais e conhecimento para as outras partes da sua operação.",
@@ -276,7 +277,7 @@ export const PRODUCT_DETAILS: Record<ProductSlug, ProductDetailContent> = {
     ],
     demonstrationTitle: "Veja a conversa continuar.",
     demonstrationDescription:
-      "As demonstrações mostram uma ligação passar entre pessoas e uma conversa continuar no WhatsApp oficial.",
+      "Acompanhe, em sequência, a chegada pelos canais, a central de ligações e a conversa no WhatsApp oficial.",
     relatedTitle: "O canal é parte do relacionamento.",
     relatedDescription:
       "Explore o Relloo para acompanhar contatos e oportunidades, e conheça a gestão, os processos e o conhecimento da família Welabs.",
@@ -332,7 +333,7 @@ export const PRODUCT_DETAILS: Record<ProductSlug, ProductDetailContent> = {
     ],
     demonstrationTitle: "Explore as fontes e seus limites.",
     demonstrationDescription:
-      "Veja como fontes diferentes se tornam conhecimento consultável e como cada resposta respeita quem pergunta.",
+      "A sequência conecta as fontes, as perguntas com referências e os limites de acesso de quem consulta.",
     relatedTitle: "Conhecimento acompanha o trabalho.",
     relatedDescription:
       "Conheça os produtos para gestão, relacionamento, processos e canais, as outras partes da família Welabs.",

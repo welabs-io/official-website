@@ -345,7 +345,7 @@
 }
 
 /* DEMONSTRAÇÕES E PRODUTOS RELACIONADOS */
-/* Films retain their navigation and adjacent products link to full detail pages. */
+/* One narrative viewport carries the demonstration; adjacent products link to full detail pages. */
 .films {
   padding-block: clamp(64px, 7vw, 104px) 56px;
   border-top: 1px solid rgb(16 20 28 / 12%);
