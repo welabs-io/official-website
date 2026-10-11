@@ -2,7 +2,7 @@
 
 // SINAIS DA CADEIA NO MAPA
 // Playback events illuminate the products present in a cut without restarting the composition or rendering React state.
-import type { ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
 
 const attachSignals = (root: HTMLDivElement | null) => {
   if (!root) return;
@@ -41,5 +41,35 @@ export function ChainSignals({
     >
       {children}
     </div>
+  );
+}
+
+// CONTEXTO LEGÍVEL DAS ETAPAS
+// A stage keeps its caption across related cuts; the example change is explicit instead of implying one person throughout.
+export function ChainCaption({
+  captions,
+  className,
+}: {
+  captions: readonly string[];
+  className: string;
+}) {
+  const attachCaption = useCallback(
+    (root: HTMLParagraphElement | null) => {
+      if (!root) return;
+      const onSwap = (event: Event) => {
+        const detail = (event as CustomEvent<{ ring: string; toIndex: number }>)
+          .detail;
+        if (detail?.ring !== "chain-ring") return;
+        root.textContent = captions[detail.toIndex] ?? captions[0];
+      };
+      window.addEventListener("ring:swap", onSwap);
+      return () => window.removeEventListener("ring:swap", onSwap);
+    },
+    [captions],
+  );
+  return (
+    <p id="chain-caption" ref={attachCaption} className={className}>
+      {captions[0]}
+    </p>
   );
 }
