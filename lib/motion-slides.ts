@@ -79,13 +79,19 @@ export const MONTAGE_SLIDES: Slide[] = montage.steps.map((step, i) => ({
       (segment as { holdAfter?: number }).holdAfter ?? montage.holdAfter,
     products: segment.products as ProductSlug[],
   })),
-  poster: poster(`cut-${cutNumber(i)}`),
+  poster: poster(
+    (step.segments[0] as { poster?: string }).poster ?? `cut-${cutNumber(i)}`,
+  ),
 }));
 
 // Cover of every cut in playing order: its settled last frame (the same still serves as the previous and the next
 // neighbour of the chain carousel, which has one tile per cut)
 export const CUT_POSTERS: string[] = montage.steps.flatMap((step, i) =>
-  step.segments.map((_, j) => poster(`cut-${cutNumber(i) + j}`)),
+  step.segments.map((segment, j) =>
+    poster(
+      (segment as { poster?: string }).poster ?? `cut-${cutNumber(i) + j}`,
+    ),
+  ),
 );
 
 // Seconds the settled logo of an opening stays still before the blend into the film. The player freezes up to 0.1 s
@@ -122,13 +128,87 @@ export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
   };
 });
 
-// Product page: the other films of the product in full (the first one plays in the opening block, clipped), as slides
-// of a circular carousel like the one of the home. Each film holds its last frame, then the ring rotates.
+// HERO E PRÉVIAS DE PRODUTO
+// Product-page heroes retain the entire opening and first film. Home previews use only the qualified product clip.
+const FILM_LABELS: Record<ProductSlug, readonly string[]> = {
+  domus: [
+    "Gestão completa da empresa",
+    "Regras e automação",
+    "Construção de telas e fluxos",
+  ],
+  relloo: [
+    "Relacionamento, atendimento e vendas",
+    "Assistentes no atendimento",
+    "Fluxos de relacionamento",
+    "Campanhas e jornadas",
+  ],
+  magneto: [
+    "Construção de workflows",
+    "Processos em execução",
+    "Do desenho à publicação",
+    "Automação com assistência",
+  ],
+  tuner: ["Canais e conversas", "Operação de voz", "WhatsApp oficial"],
+  knowly: [
+    "Respostas com fontes",
+    "Fontes de conhecimento",
+    "Acesso ao conhecimento",
+  ],
+};
+
+export function heroSlides(slug: ProductSlug): Slide[] {
+  const { intro, films } = entry(slug);
+  return [
+    {
+      key: `${slug}-hero`,
+      label: FILM_LABELS[slug][0],
+      slug,
+      segments: [
+        { id: intro.id, range: [0, intro.duration], holdAfter: INTRO_HOLD },
+        {
+          id: films[0].id,
+          range: [FILM_START, films[0].duration],
+          holdAfter: montage.holdAfter,
+        },
+      ],
+      poster: poster(`tail-${slug}`),
+      endPoster: endPoster(films[0].id),
+    },
+  ];
+}
+
+export function previewSlides(slug: ProductSlug): Slide[] {
+  const film = entry(slug).films[0];
+  const cuts = MONTAGE_SLIDES.flatMap((slide) => slide.segments);
+  const matchingCut = cuts.findIndex((cut) => cut.id === film.id);
+  return [
+    {
+      key: `${slug}-preview`,
+      label: FILM_LABELS[slug][0],
+      slug,
+      segments: [
+        slug === "domus"
+          ? { id: film.id, range: [14.1, 20.8] }
+          : filmSegment(film as Film),
+      ],
+      poster:
+        slug === "domus"
+          ? poster("cut-5")
+          : matchingCut >= 0
+            ? CUT_POSTERS[matchingCut]
+            : endPoster(film.id),
+    },
+  ];
+}
+
+// FILMES COMPLETOS DE PRODUTO
+// The remaining films retain their full ranges and factual names instead of numbered placeholders.
 export function productFilms(slug: ProductSlug): Slide[] {
   const { films } = entry(slug);
   return (films as Film[]).slice(1).map((film, i) => ({
     key: film.id,
-    label: `Filme ${i + 1}`,
+    label:
+      FILM_LABELS[slug][i + 1] ?? PRODUCTS.find((p) => p.slug === slug)!.name,
     slug,
     segments: [
       {

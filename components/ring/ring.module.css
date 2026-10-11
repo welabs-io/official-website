@@ -1,17 +1,17 @@
 /* BANCADA: CARROSSEL CIRCULAR */
-/* Product previews follow a shallow circular arc. The settled centre carries the content; readable neighbours invite
-   navigation. A separate single-frame presentation keeps the chain film clear in the hero. */
+/* Five opaque frames orbit a legible centre. The two rear positions stay visible above it, while a rear wrap travels
+   behind the stage. Single-frame previews retain the same projection and playback contract without the orbit. */
 .screen {
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --swap-time: 0.7s;
-  --tile-w: min(100%, 620px, 60vw);
+  --swap-time: 0.8s;
+  --tile-w: min(100%, 560px, 52vw);
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 20px;
+  gap: 18px;
   overflow: clip;
   background: #0b0e14;
 }
@@ -21,7 +21,7 @@
   inset: auto;
   z-index: auto;
   background: transparent;
-  padding: 36px 0 0;
+  padding: 78px 0 0;
   overflow: visible;
 }
 .screen[data-presentation="single"] {
@@ -36,6 +36,9 @@
 .screen[data-presentation="single"] .tile {
   transform: translateX(-50%);
 }
+.screen[data-presentation="single"] .stage {
+  perspective: none;
+}
 .screen:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 8px;
@@ -47,8 +50,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: clamp(12px, 2vw, 24px);
-  width: min(100%, 620px);
+  gap: clamp(8px, 1.2vw, 18px);
+  width: min(100%, 600px);
   margin: 0;
   padding: 0 16px;
   list-style: none;
@@ -57,7 +60,7 @@
   display: flex;
   flex: 0 1 auto;
   min-width: 0;
-  opacity: 0.6;
+  opacity: 0.72;
   filter: grayscale(1);
   transition:
     opacity var(--swap-time) var(--ease),
@@ -71,11 +74,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 102px;
-  min-height: 58px;
-  padding: 4px;
+  width: 100px;
+  min-height: 50px;
+  padding: 6px;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: 10px;
   color: inherit;
   background: transparent;
   cursor: pointer;
@@ -94,7 +97,7 @@
 }
 .product img {
   display: block;
-  width: 90px;
+  width: 86px;
   height: auto;
   max-width: 100%;
 }
@@ -104,7 +107,7 @@
   width: var(--tile-w);
   margin: 0 auto;
   aspect-ratio: 16 / 9;
-  perspective: 1400px;
+  perspective: 1200px;
   isolation: isolate;
   touch-action: pan-y;
 }
@@ -127,34 +130,38 @@
 .tile[data-pos="1"] {
   z-index: 3;
   opacity: 1;
-  transform: translateX(calc(-50% + 63%)) translateY(-18px) rotateY(-10deg)
-    scale(0.65);
+  transform: translateX(calc(-50% + 60%)) translateY(-24px) translateZ(-40px)
+    rotateY(-10deg) scale(0.74);
 }
 .tile[data-pos="-1"] {
   z-index: 3;
   opacity: 1;
-  transform: translateX(calc(-50% - 63%)) translateY(-18px) rotateY(10deg)
-    scale(0.65);
+  transform: translateX(calc(-50% - 60%)) translateY(-24px) translateZ(-40px)
+    rotateY(10deg) scale(0.74);
 }
 .tile[data-pos="2"],
 .tile[data-pos="-2"] {
   z-index: 1;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 1;
 }
 .tile[data-pos="2"] {
-  transform: translateX(calc(-50% + 34%)) translateY(-22%) rotateY(-16deg)
-    scale(0.44);
+  transform: translateX(calc(-50% + 32%)) translateY(-155px) translateZ(-100px)
+    rotateY(-15deg) scale(0.45);
 }
 .tile[data-pos="-2"] {
-  transform: translateX(calc(-50% - 34%)) translateY(-22%) rotateY(16deg)
-    scale(0.44);
+  transform: translateX(calc(-50% - 32%)) translateY(-155px) translateZ(-100px)
+    rotateY(15deg) scale(0.45);
+}
+.tile[data-wrapping="true"] {
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
 }
 .tileFrame {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 14px;
   background: #10141c;
   box-shadow:
     0 16px 32px -20px rgb(0 0 0 / 0.25),
@@ -164,7 +171,11 @@
 .tile[data-pos="1"] .tileFrame,
 .tile[data-pos="-1"] .tileFrame {
   /* Dim the content inside an opaque graphite frame instead of blending the whole tile with the page. */
-  filter: brightness(0.72);
+  filter: brightness(0.76);
+}
+.tile[data-pos="2"] .tileFrame,
+.tile[data-pos="-2"] .tileFrame {
+  filter: brightness(0.6);
 }
 .poster {
   position: absolute;
@@ -187,17 +198,61 @@
 .tile:not([data-near]) .posterEnd {
   display: none;
 }
-.tile[data-pos="1"] .posterEnd,
-.tile[data-pos="2"] .posterEnd {
+.tile[data-pos="1"] .endCover,
+.tile[data-pos="2"] .endCover {
   display: none;
 }
-.tile[data-pos="-1"] .posterEnd ~ .poster,
-.tile[data-pos="-2"] .posterEnd ~ .poster {
+.tile[data-pos="-1"][data-phase="film"] .endCover ~ .firstCover,
+.tile[data-pos="-2"][data-phase="film"] .endCover ~ .firstCover {
+  display: none;
+}
+.tile[data-phase="intro"] .endCover {
+  display: none;
+}
+.tile[data-pos="0"][data-phase="film"]
+  .endCover
+  ~ .firstCover[data-motion-phase="intro"] {
   display: none;
 }
 .layers {
   position: absolute;
   inset: 0;
+}
+
+/* QUADRO ÚTIL E IDENTIDADE INTEGRAL */
+/* Crop the useful film rectangle with a uniform scale. Opening layers use a complete, smaller native frame. */
+.projection,
+.screen [data-projection] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.screen [data-projection] > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.screen [data-projection][data-motion-phase="intro"] {
+  inset: 8%;
+}
+.screen[data-clean="true"] [data-projection][data-motion-phase="film"] {
+  inset: auto;
+  left: 0;
+  top: var(--crop-top);
+  width: 100%;
+  height: var(--crop-height);
+}
+.screen[data-clean="true"] [data-projection][data-motion-phase="film"] > img,
+.screen[data-clean="true"]
+  [data-projection][data-motion-phase="film"]
+  > :global(hyperframes-player) {
+  inset: auto !important;
+  left: var(--content-left) !important;
+  top: var(--content-top) !important;
+  width: var(--content-width) !important;
+  height: var(--content-height) !important;
 }
 
 /* NAVEGAÇÃO E LEGENDA */
@@ -209,9 +264,7 @@
   background: transparent;
   cursor: pointer;
 }
-.tile[data-pos="0"] .neighbor,
-.tile[data-pos="2"] .neighbor,
-.tile[data-pos="-2"] .neighbor {
+.tile[data-pos="0"] .neighbor {
   display: none;
 }
 .navigation {
@@ -220,7 +273,7 @@
   justify-content: center;
   gap: clamp(14px, 4vw, 52px);
   width: min(100%, 620px);
-  min-height: 102px;
+  min-height: 116px;
   padding: 0 10px;
 }
 .arrow {
@@ -261,15 +314,15 @@
   text-align: center;
 }
 .caption h3 {
-  margin: 0 0 7px;
-  font-size: 14px;
+  margin: 0 0 6px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.01em;
-  opacity: 0.6;
+  opacity: 0.76;
 }
 .caption p {
   margin: 0 0 12px;
-  font-size: clamp(20px, 2vw, 25px);
+  font-size: clamp(20px, 1.7vw, 24px);
   font-weight: 400;
   line-height: 1.3;
   letter-spacing: -0.025em;
@@ -280,10 +333,22 @@
   align-items: center;
   gap: 6px;
   color: inherit;
-  font-size: 13px;
+  font-size: 16px;
   text-decoration: none;
   border-bottom: 1px solid rgb(127 127 127 / 0.4);
   padding-bottom: 3px;
+}
+.caption .summary {
+  max-width: 44ch;
+  margin: 0 auto 12px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+  opacity: 0.8;
+}
+.screen[data-summaries="true"] .navigation {
+  min-height: 184px;
 }
 .srOnly {
   position: absolute;
@@ -300,10 +365,10 @@
 /* ADAPTAÇÃO AO CELULAR */
 @media (max-width: 760px) {
   .screen {
-    --tile-w: min(100%, 88vw);
+    --tile-w: min(100%, 85vw);
   }
   .inline {
-    padding-top: 20px;
+    padding-top: 60px;
   }
   .navigation {
     gap: 8px;
@@ -327,6 +392,28 @@
   }
   .tileFrame {
     border-radius: 10px;
+  }
+  .tile[data-pos="1"] {
+    transform: translateX(calc(-50% + 58%)) translateY(-10px) rotateY(-8deg)
+      scale(0.68);
+  }
+  .tile[data-pos="-1"] {
+    transform: translateX(calc(-50% - 58%)) translateY(-10px) rotateY(8deg)
+      scale(0.68);
+  }
+  .tile[data-pos="2"] {
+    transform: translateX(calc(-50% + 27%)) translateY(calc(-28.5% - 52px))
+      rotateY(-12deg) scale(0.43);
+  }
+  .tile[data-pos="-2"] {
+    transform: translateX(calc(-50% - 27%)) translateY(calc(-28.5% - 52px))
+      rotateY(12deg) scale(0.43);
+  }
+  .screen[data-presentation="single"] .tile {
+    transform: translateX(-50%);
+  }
+  .screen[data-summaries="true"] .navigation {
+    min-height: 228px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

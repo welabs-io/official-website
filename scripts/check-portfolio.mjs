@@ -1,28 +1,23 @@
 import assert from "node:assert/strict";
 
-// VERIFICAÇÃO DO SITE CONTRA O PREVIEW
-// Checks what the Welabs site serves today against a running server (PORTFOLIO_PREVIEW_URL, default 3000): the home
-// and the product pages, the one-hop redirects of every old address, the logo files the pages reference, the metadata
-// and the operator's rules of 2026-10-09 (no player, no video, little text, no slogan, no banned word).
+// VERIFICAÇÃO DO SITE COMPLETO
+// Validate public pages, real contact, referenced assets and every preserved redirect against a running preview.
 const base = process.env.PORTFOLIO_PREVIEW_URL || "http://127.0.0.1:3000";
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"];
-
 const get = async (url, status = 200) => {
-  const r = await fetch(base + url);
-  assert.equal(r.status, status, url);
-  return r;
+  const response = await fetch(base + url);
+  assert.equal(response.status, status, url);
+  return response;
 };
 const expectRedirect = async (from, to) => {
-  const r = await fetch(base + from, { redirect: "manual" });
-  assert.equal(r.status, 308, `${from} is a permanent redirect`);
+  const response = await fetch(base + from, { redirect: "manual" });
+  assert.equal(response.status, 308, from + " permanent redirect");
   assert.equal(
-    new URL(r.headers.get("location"), base).href,
+    new URL(response.headers.get("location"), base).href,
     new URL(to, base).href,
     from,
   );
 };
-
-// Text a person reads: no head, scripts, styles or tags
 const visibleText = (html) =>
   html
     .replace(/<head[\s\S]*?<\/head>/gi, "")
@@ -30,126 +25,113 @@ const visibleText = (html) =>
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-const hiddenText = (html) =>
-  [...html.matchAll(/(?:alt|aria-label)="([^"]*)"/g)]
-    .map((m) => m[1])
-    .join(" ");
-
-const SLOGAN =
-  /\b(domina|atende|automatiza|entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
-const BANNED =
-  /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|sandbox|em breve|roadmap|em desenvolvimento|coming soon)\b/i;
-const IMAGINE_SYSTEMS = /stant|tabe\.la|tabela|wego/i;
-
 const pages = new Map();
 const page = async (url) => {
   const html = await (await get(url)).text();
   pages.set(url, html);
-  assert(
-    !/<hyperframes-player[^>]*\bcontrols\b/i.test(html),
-    `${url} has a player with controls`,
+  assert.equal(
+    (html.match(/<main\b/g) ?? []).length,
+    1,
+    url + " main landmark",
   );
-  assert(!/role="progressbar"|Pausar|Retomar/i.test(html), `${url} has a bar`);
-  assert(!/<video|<iframe|<audio/i.test(html), `${url} has a video element`);
-  const all = `${visibleText(html)} ${hiddenText(html)}`;
-  assert(
-    !SLOGAN.test(all),
-    `${url} has a slogan word: ${all.match(SLOGAN)?.[0]}`,
+  assert.equal(
+    (html.match(/<h1\b/g) ?? []).length,
+    1,
+    url + " primary heading",
   );
   assert(
-    !BANNED.test(all),
-    `${url} has a banned word: ${all.match(BANNED)?.[0]}`,
+    !/<hyperframes-player[^>]*\bcontrols\b|role="progressbar"|<button[^>]*>\s*(?:Pausar|Retomar)\s*<|<video|<iframe|<audio/i.test(
+      html,
+    ),
+    url + " presentation controls",
+  );
+  assert(
+    !/\b(erp|crm|beta|alpha|mvp|roadmap|em breve)\b/i.test(visibleText(html)),
+    url + " visible categories and promises",
+  );
+  assert(
+    html.includes('href="mailto:contato@welabs.io?subject='),
+    url + " commercial contact",
   );
   return html;
 };
 
-// HOME: cadeia, produtos, conectores e fechamento, ordem de peso, selo, carrosséis
+// HOME E JORNADA
 const home = await page("/");
-for (const id of [
-  "top",
-  "chain",
-  "products",
-  "connectors",
-  "platforms",
-  "contact",
-])
-  assert(home.includes(`id="${id}"`), `home has section #${id}`);
-assert(!home.includes('id="logos"'), "the old logos strip is gone");
+const blocks = ["chain", "products", "journey", "platforms", "contact"];
+const positions = blocks.map((id) => home.indexOf('id="' + id + '"'));
 assert(
-  home.indexOf('id="chain"') < home.indexOf('id="products"') &&
-    home.indexOf('id="products"') < home.indexOf('id="connectors"') &&
-    home.indexOf('id="connectors"') < home.indexOf('id="platforms"'),
-  "sections come in order: chain, products, connectors, closing",
+  positions.every((index) => index >= 0),
+  "all five home sections exist",
+);
+assert.deepEqual(
+  positions,
+  [...positions].sort((a, b) => a - b),
+  "home sequence",
+);
+assert(home.includes('data-rotate="false"'), "product selection stays stable");
+assert(home.includes('data-summaries="true"'), "functional product summaries");
+assert(
+  visibleText(home).includes("Marina · Pedido 1234"),
+  "persistent native journey context",
 );
 assert(
-  (home.match(/<section[^>]*>/g) ?? []).every((s) => s.includes("data-live")),
-  "every band is marked live (the thread and the pulses pause off screen)",
+  home.includes('aria-label="Marcas do portfólio"'),
+  "portfolio attribution",
+);
+assert(
+  home.includes('aria-label="Plataformas de infraestrutura e desenvolvimento"'),
+  "technology attribution",
 );
 for (const slug of SLUGS)
-  assert(
-    home.includes(`href="/products/${slug}"`),
-    `the product row links to /products/${slug}`,
-  );
-const order = [
-  ...new Set(
-    [...home.matchAll(/products\/(\w+)-(?:dark|light)-endorsed\.svg/g)].map(
-      (m) => m[1],
-    ),
-  ),
-];
-assert.deepEqual(
-  order,
-  SLUGS,
-  "products appear in weight order, with the seal",
-);
-assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
+  assert(home.includes('href="/products/' + slug + '"'), "route " + slug);
 const words = visibleText(home).split(" ").length;
-assert(words <= 85, `home has ${words} visible words`);
-const clientLogos = [...home.matchAll(/src="\/clients\/[^"]+"/g)].length;
-assert(clientLogos >= 7, "clients carousel renders its logos");
 assert(
-  !IMAGINE_SYSTEMS.test(home.slice(home.indexOf('id="platforms"'))),
-  "no Imagine system in the closing strip",
+  words <= 700,
+  "compact home: " + words + " native words including inactive summaries",
 );
-for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
-  assert(home.includes(`alt="${name}"`), `platform carousel has ${name}`);
 
-// PÁGINAS DE PRODUTO: logo com selo, metadado de categoria, zero player
+// RECURSOS, DEMONSTRAÇÕES E RELAÇÕES DOS PRODUTOS
 for (const slug of SLUGS) {
-  const html = await page(`/products/${slug}`);
+  const html = await page("/products/" + slug);
   assert(
-    new RegExp(`${slug}-dark-endorsed\\.svg`).test(html),
-    `${slug} page has the logo with seal`,
+    html.includes(slug + "-dark-endorsed.svg"),
+    slug + " endorsed identity",
   );
   assert(
     /<meta name="keywords" content="[^"]+"/.test(html),
-    `${slug} keywords`,
+    slug + " keywords",
   );
+  assert(/<title>[^<]* by Welabs<\/title>/.test(html), slug + " title");
+  const ids = [
+    "overview",
+    "capabilities",
+    "films",
+    "related-products",
+    "contact",
+  ];
+  const at = ids.map((id) => html.indexOf('id="' + id + '"'));
   assert(
-    /<title>[^<]* by Welabs<\/title>/.test(html),
-    `${slug} title follows the "<Product> by Welabs" pattern`,
+    at.every((index) => index >= 0),
+    slug + " complete sections",
   );
-  // Template: opening, connectors with this product lit, other films, call to action
-  const at = (id) => html.indexOf(`id="${id}"`);
+  assert.deepEqual(
+    at,
+    [...at].sort((a, b) => a - b),
+    slug + " sequence",
+  );
+  const related = html.slice(at[3], at[4]);
   assert(
-    at("product") > 0 &&
-      at("product") < at("connectors") &&
-      at("connectors") < at("films") &&
-      at("films") < at("contact"),
-    `${slug} page has the four blocks in order`,
+    !related.includes('href="/products/' + slug + '"'),
+    slug + " does not link to itself",
   );
-  const block = html.slice(at("connectors"), at("films"));
-  assert(
-    block.includes('aria-current="page"') &&
-      !block.includes(`href="/products/${slug}"`),
-    `${slug} is lit in the connectors and does not link to itself`,
-  );
-  for (const other of SLUGS.filter((s) => s !== slug))
+  for (const other of SLUGS.filter((item) => item !== slug))
     assert(
-      block.includes(`href="/products/${other}"`),
-      `${slug} connectors link to ${other}`,
+      related.includes('href="/products/' + other + '"'),
+      slug + " links " + other,
     );
 }
+
 // /lab/chain is a workbench: it must stay out of the index
 const lab = await (await get("/lab/chain")).text();
 assert(

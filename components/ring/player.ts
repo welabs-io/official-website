@@ -24,12 +24,14 @@ export function playerAttributes(
   clip?: readonly [number, number] | null,
   autoplay = true,
   rate = 1,
+  loop = false,
 ): Record<string, string> {
   return {
     src,
     width: "1920",
     height: "1080",
     ...(autoplay ? { autoplay: "" } : {}),
+    ...(loop ? { loop: "" } : {}),
     muted: "",
     // Clicking the film must not silently pause the content carousel.
     "disable-click-to-play": "",
@@ -90,10 +92,11 @@ export function createPlayer(
   clip?: readonly [number, number] | null,
   autoplay = true,
   rate = 1,
+  loop = false,
 ): PlayerElement {
   const el = document.createElement("hyperframes-player");
   for (const [name, value] of Object.entries(
-    playerAttributes(src, clip, autoplay, rate),
+    playerAttributes(src, clip, autoplay, rate, loop),
   ))
     el.setAttribute(name, value);
   el.style.cssText =

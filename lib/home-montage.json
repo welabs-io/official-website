@@ -1,145 +1,70 @@
 {
-  "swap": 0.4,
-  "holdAfter": 1,
+  "swap": 0.5,
+  "holdAfter": 1.15,
   "cycle": {
-    "note": "cycle = sum of (clip time on screen + holdAfter - transition duration) over the cuts. The clip plays from start to end (end falls after the action settled), its last frame stays still for holdAfter seconds (a cut may override it with its own holdAfter) and only then the next cut is pushed in; the leaving clip stays until the push ends."
-  },
-  "transitionDefaults": {
-    "between": { "type": "push-left", "duration": 0.4, "ease": "power2.inOut" },
-    "within": { "type": "push-up", "duration": 0.3, "ease": "power2.inOut" },
-    "rule": "push 0.4 s between products and 0.3 s inside the same product; never a crossfade between cuts with different captions"
+    "note": "Three chapters from the same accepted journey keep Marina and order 1234 as persistent anchors; each source range preserves its original content."
   },
   "steps": [
     {
-      "product": "tuner",
-      "step": "A mensagem chega por um canal",
-      "segments": [
-        {
-          "kind": "product",
-          "film": "channels-one-contract-ludic-logos-r5-s1",
-          "products": ["tuner"],
-          "start": 14.1,
-          "end": 16.53,
-          "settledAt": 16.4,
-          "rate": 1.25,
-          "transition": { "type": "push-left", "duration": 0.4 },
-          "shows": "o Tuner recebe as mensagens de três canais e fecha com a lista completa"
-        }
-      ]
-    },
-    {
       "product": "relloo",
-      "step": "O Relloo atende e reconhece a pessoa",
-      "segments": [
-        {
-          "kind": "relation",
-          "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
-          "products": ["relloo", "tuner"],
-          "start": 7.5,
-          "end": 11.6,
-          "settledAt": 11.4,
-          "rate": 2,
-          "transition": { "type": "push-up", "duration": 0.3 },
-          "shows": "Tuner e Relloo juntos: os balões do Tuner entram no Relloo e a ficha da Ana aparece"
-        },
-        {
-          "kind": "product",
-          "film": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
-          "products": ["relloo"],
-          "start": 19.75,
-          "end": 24.33,
-          "settledAt": 24.15,
-          "rate": 1.75,
-          "transition": { "type": "push-left", "duration": 0.4 },
-          "shows": "o Relloo leva a conversa para quem atende"
-        }
-      ]
-    },
-    {
-      "product": "domus",
-      "step": "O Domus guarda o cadastro e define a regra",
+      "step": "Relacionamento com contexto",
       "segments": [
         {
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
-          "products": ["domus", "relloo"],
+          "poster": "cut-4",
+          "products": ["relloo", "domus"],
           "start": 6.5,
           "end": 9.18,
           "settledAt": 9,
-          "rate": 1.75,
-          "transition": { "type": "push-up", "duration": 0.3 },
-          "shows": "Relloo e Domus juntos: o Relloo reconhece a Marina com o pedido e o endereço que já estão no Domus"
-        },
-        {
-          "kind": "product",
-          "film": "hub-whole-house-ludic-logos-r4-s1",
-          "products": ["domus"],
-          "start": 14,
-          "end": 15.55,
-          "settledAt": 15.4,
-          "rate": 1.5,
-          "transition": { "type": "push-left", "duration": 0.4 },
-          "shows": "a casa cheia: onze cômodos sob o mesmo teto, a empresa inteira"
-        }
-      ]
-    },
-    {
-      "product": "magneto",
-      "step": "A regra vira workflow no Magneto",
-      "segments": [
-        {
-          "kind": "relation",
-          "film": "welabs-chain-journey-define-logos-r6-s1",
-          "products": ["domus", "magneto"],
-          "start": 25.3,
-          "end": 30.79,
-          "settledAt": 30.6,
-          "rate": 1.9,
-          "transition": { "type": "push-up", "duration": 0.3 },
-          "shows": "Domus e Magneto juntos: a regra sai do Domus, o workflow chega à gestora e o recibo volta"
-        },
-        {
-          "kind": "relation",
-          "film": "welabs-chain-horizon-define-logos-r6-s1",
-          "products": ["domus", "relloo", "magneto", "tuner", "knowly"],
-          "start": 22.9,
-          "end": 25.05,
-          "settledAt": 24.9,
-          "rate": 1.5,
-          "transition": { "type": "push-left", "duration": 0.4 },
-          "shows": "Domus no centro, com Relloo, Magneto, Tuner e Knowly ligados por pontes"
+          "rate": 0.7,
+          "transition": {
+            "type": "push-left",
+            "duration": 0.5
+          },
+          "shows": "Marina e o pedido 1234 aparecem juntos no Relloo e no Domus."
         }
       ]
     },
     {
       "product": "knowly",
-      "step": "O Knowly responde com a fonte",
+      "step": "Conhecimento na conversa",
       "segments": [
-        {
-          "kind": "product",
-          "film": "kb-ask-with-proof-ludic-logos-r5-s1",
-          "products": ["knowly"],
-          "start": 13.6,
-          "end": 17.78,
-          "settledAt": 17.6,
-          "rate": 1.75,
-          "transition": { "type": "push-up", "duration": 0.3 },
-          "shows": "o Knowly responde com cada frase ligada à sua fonte"
-        },
         {
           "kind": "relation",
           "film": "welabs-chain-journey-define-logos-r6-s1",
+          "poster": "cut-9",
           "products": ["knowly", "relloo"],
           "start": 12.7,
           "end": 15.68,
           "settledAt": 15.5,
-          "rate": 1.75,
+          "rate": 0.7,
           "transition": {
             "type": "push-left",
-            "duration": 0.4,
-            "to": "first cut (cycle loop)"
+            "duration": 0.5
           },
-          "shows": "Knowly e Relloo juntos: a resposta com base na política cai no telefone da Marina"
+          "shows": "A informação da política aparece na mesma conversa de Marina."
+        }
+      ]
+    },
+    {
+      "product": "magneto",
+      "step": "Decisão e retorno",
+      "segments": [
+        {
+          "kind": "relation",
+          "film": "welabs-chain-journey-define-logos-r6-s1",
+          "poster": "cut-6",
+          "products": ["domus", "magneto", "tuner", "relloo"],
+          "start": 25.3,
+          "end": 30.79,
+          "settledAt": 30.6,
+          "rate": 0.7,
+          "transition": {
+            "type": "push-left",
+            "duration": 0.5
+          },
+          "shows": "O trabalho da operação retorna ao pedido de Marina sem trocar de contexto."
         }
       ]
     }

@@ -23,4 +23,10 @@ describe("player attributes", () => {
     expect(attributes).toHaveProperty("muted");
     expect(attributes).not.toHaveProperty("controls");
   });
+  it("loops a single qualified range without changing multi-segment playback", () => {
+    expect(playerAttributes("/x", [21.5, 28.8], true, 1, true)).toHaveProperty(
+      "loop",
+    );
+    expect(playerAttributes("/x", [21.5, 28.8])).not.toHaveProperty("loop");
+  });
 });

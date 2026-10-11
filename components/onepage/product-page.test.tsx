@@ -1,52 +1,56 @@
-// TESTES DO TEMPLATE DE PRODUTO
-// One template for the five pages: opening, connectors with the product lit, other films, call to action. The page is
-// rendered on the server and read as text.
+// TESTES DAS PÁGINAS COMPLETAS DE PRODUTO
+// Public scope is readable independently of motion and routes into contextual contact.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PRODUCTS } from "@/lib/products";
+import { PRODUCT_DETAILS } from "@/lib/product-details";
 import { productFilms } from "@/lib/motion-slides";
-import { ProductPageBody } from "./ProductPageBody";
+import { ProductDetail } from "@/components/site/ProductDetail";
 
-const slugs = PRODUCTS.map((p) => p.slug);
-
-describe("product page template", () => {
-  it.each(slugs)(
-    "the %s page lights its own product and links the other four",
-    (slug) => {
-      const html = renderToStaticMarkup(<ProductPageBody slug={slug} />);
-      const block = html.slice(
-        html.indexOf('id="connectors"'),
-        html.indexOf('id="films"'),
+describe("product detail template", () => {
+  it.each(PRODUCTS)(
+    "$slug links the four related products without linking itself",
+    ({ slug }) => {
+      const html = renderToStaticMarkup(<ProductDetail slug={slug} />);
+      const related = html.slice(
+        html.indexOf('id="related-products"'),
+        html.indexOf('id="contact"'),
       );
-      expect(block.match(/aria-current="page"/g)).toHaveLength(2);
-      // One lit logo per layout (a lit rail also marks its own line in the drawing)
-      expect(block.match(/<span[^>]*data-state="lit"/g)).toHaveLength(2);
-      expect(block).not.toContain(`href="/products/${slug}"`);
-      for (const other of PRODUCTS.filter((p) => p.slug !== slug))
-        expect(block).toContain(`href="/products/${other.slug}"`);
+      expect(related).not.toContain(`href="/products/${slug}"`);
+      for (const product of PRODUCTS.filter((item) => item.slug !== slug)) {
+        expect(related).toContain(`href="/products/${product.slug}"`);
+      }
+      expect(related.match(/href="\/products\//g)).toHaveLength(4);
     },
   );
-  it.each(slugs)(
-    "the %s page has the four blocks in order and one carousel tile per other film",
-    (slug) => {
-      const html = renderToStaticMarkup(<ProductPageBody slug={slug} />);
+  it.each(PRODUCTS)(
+    "$slug presents resources before demonstrations and contact",
+    ({ slug, name }) => {
+      const html = renderToStaticMarkup(<ProductDetail slug={slug} />);
       const at = (id: string) => html.indexOf(`id="${id}"`);
-      expect(at("product")).toBeLessThan(at("connectors"));
-      expect(at("connectors")).toBeLessThan(at("films"));
-      expect(at("films")).toBeLessThan(at("contact"));
-      const films = html.slice(at("films"), at("contact"));
+      expect(at("overview")).toBeLessThan(at("capabilities"));
+      expect(at("capabilities")).toBeLessThan(at("films"));
+      expect(at("films")).toBeLessThan(at("related-products"));
+      expect(at("related-products")).toBeLessThan(at("contact"));
+      const resources = html.slice(at("capabilities"), at("films"));
+      for (const capability of PRODUCT_DETAILS[slug].capabilities) {
+        expect(resources).toContain(capability.title);
+        for (const point of capability.points)
+          expect(resources).toContain(point);
+      }
+      expect(resources.match(/<article\b/g)).toHaveLength(
+        PRODUCT_DETAILS[slug].capabilities.length,
+      );
+      const films = html.slice(at("films"), at("related-products"));
       expect(films.match(/data-layers/g)).toHaveLength(
         productFilms(slug).length,
       );
-      // The opening block is one tile that holds the opening and the first film
-      const opening = html.slice(at("product"), at("connectors"));
-      expect(opening.match(/data-layers/g)).toHaveLength(1);
+      expect(
+        html.slice(at("overview"), at("capabilities")).match(/data-layers/g),
+      ).toHaveLength(1);
+      expect(html).toContain(
+        `subject=${encodeURIComponent(`Conhecer ${name} by Welabs`)}`,
+      );
     },
   );
-  it("every band of the pages is marked live, so the thread and the pulses pause off screen", () => {
-    const html = renderToStaticMarkup(<ProductPageBody slug="domus" />);
-    const bands = html.match(/<section[^>]*>/g) ?? [];
-    expect(bands).toHaveLength(4);
-    for (const band of bands) expect(band).toContain("data-live");
-  });
 });

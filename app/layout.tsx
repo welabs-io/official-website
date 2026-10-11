@@ -14,15 +14,16 @@ const sans = Inter({
 });
 
 // MARCA NO NAVEGADOR
-// Graphite browser chrome and the official favicon; themeColor mirrors --wl-graphite (metadata cannot read CSS variables).
+// Ivory browser chrome follows the marketing surface; product demonstrations keep their graphite stage.
 export const viewport: Viewport = {
-  themeColor: "#10141C",
-  colorScheme: "dark",
+  themeColor: "#FAF5EA",
+  colorScheme: "light",
 };
 export const metadata: Metadata = {
   title: "Welabs",
-  description: "Produtos próprios de software.",
-  metadataBase: new URL("http://localhost:3000"),
+  description:
+    "Gestão, relacionamento, workflows, canais e conhecimento para a operação da empresa.",
+  metadataBase: new URL("https://welabs.io"),
   robots: { index: false, follow: false },
   icons: WELABS_ICONS,
   authors: [{ name: "Welabs" }],
@@ -30,7 +31,8 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Welabs",
     title: "Welabs",
-    description: "Produtos próprios de software.",
+    description:
+      "Gestão, relacionamento, workflows, canais e conhecimento para a operação da empresa.",
     locale: "pt_BR",
   },
 };
@@ -40,14 +42,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // data-theme="dark" sits on <html>: the package's dark tokens only apply on the root element
+  // The site defaults to the official light palette; dark demonstration surfaces use local tokens.
   return (
-    <html lang="pt-BR" data-theme="dark" className={sans.variable}>
+    <html lang="pt-BR" data-theme="light" className={sans.variable}>
       <body>
         <a className="skip-link" href="#main-content">
           Ir para o conteúdo
         </a>
-        <main id="main-content">{children}</main>
+        {children}
       </body>
     </html>
   );

@@ -3,19 +3,36 @@
 // logos. RingDriver moves the tiles and the active caption in the DOM; content navigation stays independent from
 // video playback, including reduced motion and a player that cannot load.
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import {
   CUT_POSTERS,
   MONTAGE_SLIDES,
   PRODUCT_SLIDES,
+  heroSlides,
+  previewSlides,
   productFilms,
   type Slide,
 } from "@/lib/motion-slides";
 import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
 import { isNear, placeOf, ringPosition } from "./positions";
 import { RingDriver, type RingKind } from "./RingDriver";
+import {
+  projectionVariables,
+  motionPhase,
+  type MotionPhase,
+} from "./projection";
 import styles from "./ring.module.css";
 
-type Tile = { key: string; poster: string; endPoster?: string };
+type Tile = {
+  key: string;
+  label: string;
+  poster: string;
+  endPoster?: string;
+  slug?: ProductSlug;
+  phase: MotionPhase;
+  firstId: string;
+  lastId: string;
+};
 
 // Products each cut of the chain shows (the same order as the tiles)
 export const CHAIN_LIT: readonly (readonly ProductSlug[])[] =
@@ -24,9 +41,25 @@ export const CHAIN_LIT: readonly (readonly ProductSlug[])[] =
   );
 
 const chainTiles = (): Tile[] =>
-  CUT_POSTERS.map((poster, i) => ({ key: `cut-${i + 1}`, poster }));
+  CUT_POSTERS.map((poster, i) => ({
+    key: `cut-${i + 1}`,
+    label: "Produtos em conjunto",
+    poster,
+    phase: "film",
+    firstId: MONTAGE_SLIDES.flatMap((slide) => slide.segments)[i].id,
+    lastId: MONTAGE_SLIDES.flatMap((slide) => slide.segments)[i].id,
+  }));
 const slideTiles = (slides: Slide[]): Tile[] =>
-  slides.map(({ key, poster, endPoster }) => ({ key, poster, endPoster }));
+  slides.map(({ key, label, poster, endPoster, slug, segments }) => ({
+    key,
+    label,
+    poster,
+    endPoster,
+    slug,
+    phase: motionPhase(segments[0].id),
+    firstId: segments[0].id,
+    lastId: segments[segments.length - 1].id,
+  }));
 
 export type RingProps = {
   id: string;
@@ -41,6 +74,11 @@ export type RingProps = {
   // Theme of the logo files: the one of the band the stage sits on
   tone?: "dark" | "light";
   presentation?: "carousel" | "single";
+  // Film projection removes authored presentation chrome; identity openings remain complete and contained.
+  clean?: boolean;
+  // Automatic content rotation is separate from media playback; manual exploration can keep one film looping.
+  rotate?: boolean;
+  summaries?: Partial<Record<ProductSlug, string>>;
   caption?: boolean;
   navigation?: boolean;
   label: string;
@@ -55,7 +93,10 @@ export function RingStage({
   logos = null,
   tone = "dark",
   presentation = "carousel",
-  caption = kind === "products",
+  clean = false,
+  rotate = true,
+  summaries,
+  caption = kind === "products" || kind === "films",
   navigation = kind === "products" || kind === "films",
   label,
 }: RingProps) {
@@ -66,8 +107,12 @@ export function RingStage({
         ? slideTiles(PRODUCT_SLIDES)
         : kind === "films"
           ? slideTiles(productFilms(slug!))
-          : slideTiles(PRODUCT_SLIDES.filter((slide) => slide.slug === slug));
-  const lit = kind === "chain" ? CHAIN_LIT[0] : [PRODUCTS[0].slug];
+          : kind === "preview"
+            ? slideTiles(previewSlides(slug!))
+            : slideTiles(heroSlides(slug!));
+  const lit =
+    kind === "chain" ? CHAIN_LIT[0] : [tiles[0]?.slug ?? PRODUCTS[0].slug];
+  const projectionStyle = projectionVariables() as CSSProperties;
   const navigable =
     navigation && presentation === "carousel" && tiles.length > 1;
   return (
@@ -83,6 +128,11 @@ export function RingStage({
       data-presentation={presentation}
       data-navigation={navigable ? "true" : "false"}
       data-tone={tone}
+      data-clean={clean ? "true" : "false"}
+      data-kind={kind}
+      data-rotate={rotate ? "true" : "false"}
+      data-summaries={kind === "products" && summaries ? "true" : "false"}
+      style={projectionStyle}
     >
       <div className={styles.stage} data-ring={kind}>
         {tiles.map((tile, i) => {
@@ -94,32 +144,47 @@ export function RingStage({
               data-tile
               data-index={i}
               data-pos={placeOf(position)}
+              data-phase={tile.phase}
               data-near={isNear(position) ? "" : undefined}
               aria-hidden={position === 0 ? undefined : true}
             >
               <div className={styles.tileFrame}>
                 {tile.endPoster && (
+                  <div
+                    className={`${styles.projection} ${styles.endCover}`}
+                    data-projection
+                    data-motion-phase="film"
+                    style={projectionVariables(tile.lastId) as CSSProperties}
+                  >
+                    <img
+                      className={styles.posterEnd}
+                      src={tile.endPoster}
+                      alt=""
+                      width={960}
+                      height={540}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                )}
+                <div
+                  className={`${styles.projection} ${styles.firstCover}`}
+                  data-projection
+                  data-motion-phase={tile.phase}
+                  style={projectionVariables(tile.firstId) as CSSProperties}
+                >
                   <img
-                    className={styles.posterEnd}
-                    src={tile.endPoster}
+                    className={styles.poster}
+                    data-poster
+                    src={tile.poster}
                     alt=""
                     width={960}
                     height={540}
-                    loading="lazy"
+                    loading={eager && position === 0 ? "eager" : "lazy"}
+                    fetchPriority={eager && position === 0 ? "high" : undefined}
                     decoding="async"
                   />
-                )}
-                <img
-                  className={styles.poster}
-                  data-poster
-                  src={tile.poster}
-                  alt=""
-                  width={960}
-                  height={540}
-                  loading={eager && position === 0 ? "eager" : "lazy"}
-                  fetchPriority={eager && position === 0 ? "high" : undefined}
-                  decoding="async"
-                />
+                </div>
                 <div className={styles.layers} data-layers />
               </div>
               {navigable && (
@@ -128,7 +193,7 @@ export function RingStage({
                   className={styles.neighbor}
                   data-select={i}
                   tabIndex={-1}
-                  aria-label={`Mostrar ${kind === "products" ? PRODUCTS[i].name : `filme ${i + 1}`}`}
+                  aria-label={`Mostrar ${tile.label}`}
                 />
               )}
             </div>
@@ -154,19 +219,32 @@ export function RingStage({
           )}
           {caption && (
             <div className={styles.caption}>
-              {PRODUCTS.map((product, index) => (
-                <div
-                  key={product.slug}
-                  data-caption={product.slug}
-                  hidden={index !== 0}
-                >
-                  <h3>{product.name}</h3>
-                  <p>{product.line}</p>
-                  <Link href={`/products/${product.slug}`} prefetch={false}>
-                    Conhecer produto
-                  </Link>
-                </div>
-              ))}
+              {tiles.map((tile, index) => {
+                const product = PRODUCTS.find(
+                  (item) => item.slug === tile.slug,
+                );
+                return (
+                  <div
+                    key={tile.key}
+                    data-caption={tile.slug ?? tile.key}
+                    data-caption-index={index}
+                    hidden={index !== 0}
+                  >
+                    <h3>{product?.name ?? "Welabs"}</h3>
+                    <p>{kind === "products" ? product?.line : tile.label}</p>
+                    {kind === "products" &&
+                      tile.slug &&
+                      summaries?.[tile.slug] && (
+                        <p className={styles.summary}>{summaries[tile.slug]}</p>
+                      )}
+                    {kind === "products" && product && (
+                      <Link href={`/products/${product.slug}`} prefetch={false}>
+                        Conhecer produto
+                      </Link>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
           {navigable && (

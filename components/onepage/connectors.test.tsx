@@ -14,7 +14,7 @@ import {
 } from "@/lib/connectors";
 import { PRODUCTS } from "@/lib/products";
 import { Connectors } from "./Connectors";
-import { OnePage } from "./OnePage";
+import { CompleteHome } from "@/components/site/CompleteHome";
 
 describe("graph geometry", () => {
   it.each([WIDE, TALL])(
@@ -92,10 +92,12 @@ describe("connectors markup", () => {
 
 describe("integrated architecture and live markers", () => {
   it("the architecture shares the opening and motion bands remain marked live", () => {
-    const html = renderToStaticMarkup(<OnePage />);
-    const bands = html.match(/<section[^>]*>/g) ?? [];
-    expect(bands).toHaveLength(3);
-    for (const band of bands) expect(band).toContain("data-live");
+    const html = renderToStaticMarkup(<CompleteHome />);
+    const stages = html.match(/<(?:div|section)[^>]*data-live[^>]*>/g) ?? [];
+    expect(stages.length).toBeGreaterThanOrEqual(4);
+    for (const slug of [...CORE, ...RAILS]) {
+      expect(html).toContain(`data-architecture-node="${slug}"`);
+    }
     expect(html).not.toContain('id="connectors"');
     expect(html).toContain("Domus e Relloo no núcleo");
   });

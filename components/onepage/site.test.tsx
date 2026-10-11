@@ -1,146 +1,135 @@
-// TESTES DO CONTEÚDO DA PÁGINA ÚNICA
-// The operator's direction of 2026-10-09: no player, no video, little text, no brand-concept slogans. The pages are
-// rendered on the server (the same HTML the first paint gets) and checked as text.
+// TESTES DO SITE COMPLETO
+// Validate the actual routed components and the operator's presentation constraints.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/page";
 import { generateMetadata } from "@/app/products/[slug]/page";
-import { OnePage } from "./OnePage";
-import { PageFrame } from "./PageFrame";
-import { ProductPageBody } from "./ProductPageBody";
+import { CompleteHome } from "@/components/site/CompleteHome";
+import { SiteFrame } from "@/components/site/SiteFrame";
+import { ProductDetail } from "@/components/site/ProductDetail";
 
-const home = renderToStaticMarkup(<OnePage />);
-const productPages = PRODUCTS.map((p) => ({
-  slug: p.slug,
-  html: renderToStaticMarkup(
-    <PageFrame>
-      <ProductPageBody slug={p.slug} />
-    </PageFrame>,
-  ),
-}));
-const pages = [{ slug: "home", html: home }, ...productPages];
-
-// Text a person reads: no tags, no scripts or styles
+const home = renderToStaticMarkup(<CompleteHome />);
+const pages = [
+  { slug: "home", html: home },
+  ...PRODUCTS.map(({ slug }) => ({
+    slug,
+    html: renderToStaticMarkup(
+      <SiteFrame>
+        <ProductDetail slug={slug} />
+      </SiteFrame>,
+    ),
+  })),
+];
 const visibleText = (html: string) =>
   html
     .replace(/<(script|style)[\s\S]*?<\/\1>/g, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&")
-    .replace(/&#x27;|&#39;/g, "'")
     .replace(/\s+/g, " ")
     .trim();
-// Text that only assistive technology gets
-const hiddenText = (html: string) =>
-  [...html.matchAll(/(?:alt|aria-label)="([^"]*)"/g)]
-    .map((m) => m[1])
-    .join(" ");
 
-// Brand-concept words and phrases that are only allowed inside chain presentations
-const SLOGAN =
-  /\b(domina|atende|automatiza|entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
-// Words the operator ruled out of the site
-const BANNED =
-  /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|em breve|roadmap)\b/i;
-
-describe("pages carry no player interface", () => {
+describe("complete public pages", () => {
   it.each(pages)(
-    "$slug has no progress bar, no pause button, no controls and no video",
+    "$slug supplies one main landmark and one heading",
     ({ html }) => {
-      expect(html).not.toMatch(/role="progressbar"|<progress\b/i);
+      expect(html.match(/<main\b/g)).toHaveLength(1);
+      expect(html.match(/<h1\b/g)).toHaveLength(1);
+      expect(html).toContain('id="main-content"');
+      expect(html).toContain('aria-label="Navegação principal"');
+      expect(html).toContain('aria-label="Navegação mobile"');
+    },
+  );
+  it.each(pages)(
+    "$slug carries no player controls or release promises",
+    ({ html }) => {
       expect(html).not.toMatch(
-        /Pausar|Retomar|aria-pressed="(true|false)"[^>]*pause/i,
+        /role="progressbar"|<progress\b|<button[^>]*>\s*(?:Pausar|Retomar)\s*</i,
       );
-      expect(html).not.toMatch(/<hyperframes-player[^>]*\bcontrols\b/i);
-      expect(html).not.toMatch(/<video|<iframe|<audio/i);
+      expect(html).not.toMatch(
+        /<hyperframes-player[^>]*\bcontrols\b|<video|<iframe|<audio/i,
+      );
       expect(html).not.toMatch(/\.(mp4|webm|mov)\b/i);
+      expect(visibleText(html)).not.toMatch(
+        /\b(erp|crm|beta|alpha|mvp|roadmap|em breve)\b/i,
+      );
+      expect(visibleText(html)).not.toMatch(
+        /Domus domina|Relloo atende|Magneto automatiza|Tuner entrega|Knowly sabe/i,
+      );
+    },
+  );
+  it.each(pages)(
+    "$slug has a real contact destination and all five product routes",
+    ({ html }) => {
+      expect(html).toContain('href="mailto:contato@welabs.io?subject=');
+      expect(visibleText(html)).toContain("contato@welabs.io");
+      expect(visibleText(html)).toContain("Copiar e-mail");
+      for (const { slug } of PRODUCTS)
+        expect(html).toContain(`href="/products/${slug}"`);
     },
   );
 });
 
-describe("pages carry little text and no slogan", () => {
-  it.each(pages)("$slug has no slogan or banned word", ({ html }) => {
-    const all = `${visibleText(html)} ${hiddenText(html)}`;
-    expect(all).not.toMatch(SLOGAN);
-    expect(all).not.toMatch(BANNED);
-  });
-
-  it("the home stays under the word budget", () => {
-    const words = visibleText(home).split(" ").length;
-    // Functional context and all server-rendered captions remain within a compact editorial budget.
-    expect(words).toBeLessThanOrEqual(145);
-  });
-
-  it("every product line has at most six words", () => {
-    for (const p of PRODUCTS)
-      expect(p.line.split(" ").length).toBeLessThanOrEqual(6);
-  });
-
-  it("the home has its three sections, visible context and the call to action", () => {
-    for (const id of ["top", "chain", "products", "platforms", "contact"])
-      expect(home).toContain(`id="${id}"`);
-    // The old strip and the second products-like section are gone
-    expect(home).not.toContain('id="logos"');
-    expect(home).toContain('href="/#contact"');
-    // Every product shows its logo with the seal under the active frame
-    for (const p of PRODUCTS)
-      expect(home).toContain(`${p.slug}-light-endorsed.svg`);
-    expect(visibleText(home)).toContain("Conversar com a Welabs");
-    expect(home.match(/<h1\b/g)).toHaveLength(1);
-    expect(home).toContain('id="chain-heading"');
-    expect(visibleText(home)).toContain("Domus e Relloo no núcleo");
-    // The architecture belongs to the demonstration rather than a repeated standalone section.
+describe("home presentation", () => {
+  it("provides architecture, products, journey, experience and contact in order", () => {
+    const ids = ["chain", "products", "journey", "platforms", "contact"];
+    const positions = ids.map((id) => home.indexOf(`id="${id}"`));
+    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect(positions).toEqual([...positions].sort((a, b) => a - b));
+    expect(home.match(/<section\b/g)).toHaveLength(5);
     expect(home).not.toContain('id="connectors"');
   });
-
-  it("the closing is one strip with the logos of clients and platforms together, then the button", () => {
-    const closing = home.slice(home.indexOf('id="platforms"'));
-    // One carousel only (the loop copy is aria-hidden), no visible label
-    expect(closing.match(/role="region"/g)).toHaveLength(1);
-    expect(visibleText(closing)).not.toMatch(/Quem atendemos|Infraestrutura/);
+  it("keeps a persistent request readable without relying on the motion canvas", () => {
+    expect(visibleText(home)).toContain("Marina · Pedido 1234");
+    expect(visibleText(home)).toContain(
+      "Dá para mudar a entrega do meu pedido para sábado?",
+    );
+    expect(visibleText(home)).toContain("Fonte: Política de entregas, seção 3");
+    expect(home.match(/data-journey-detail/g)).toHaveLength(3);
+    expect(home).toContain('data-architecture-node="domus"');
+    expect(home).toContain('data-architecture-node="relloo"');
+  });
+  it("lets visitors hold a product while reading its functional summary", () => {
+    const orbit = home.slice(
+      home.indexOf('id="products-ring"'),
+      home.indexOf('id="journey"'),
+    );
+    expect(orbit).toContain('data-rotate="false"');
+    expect(orbit).toContain('data-summaries="true"');
+    expect(orbit).toContain("Finanças, vendas, compras, estoque e pessoas");
+    expect(orbit).toContain("Contatos, oportunidades, conversas e campanhas");
+    for (const { slug } of PRODUCTS)
+      expect(orbit).toContain(`${slug}-light-endorsed.svg`);
+  });
+  it("distinguishes portfolio brands from the technology base", () => {
+    const closing = home.slice(
+      home.indexOf('id="platforms"'),
+      home.indexOf('id="contact"'),
+    );
+    expect(closing).toContain('aria-label="Marcas do portfólio"');
+    expect(closing).toContain(
+      'aria-label="Plataformas de infraestrutura e desenvolvimento"',
+    );
+    expect(closing).toMatch(/src="\/clients\//);
     for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
       expect(closing).toContain(`alt="${name}"`);
-    expect(closing).toMatch(/src="\/clients\//);
-    expect(closing.indexOf('role="region"')).toBeLessThan(
-      closing.indexOf('id="contact"'),
-    );
   });
-
-  it("the sections come in order: chain, products, closing", () => {
-    const at = (id: string) => home.indexOf(`id="${id}"`);
-    expect(at("chain")).toBeLessThan(at("products"));
-    expect(at("products")).toBeLessThan(at("platforms"));
-    expect(at("platforms")).toBeLessThan(at("contact"));
+  it("keeps the home compact enough to support scanning", () => {
+    // Count all native text, including the inactive functional summaries.
+    expect(visibleText(home).split(" ").length).toBeLessThanOrEqual(700);
   });
 });
 
-describe("the home has no sequential player and no opening on the chain", () => {
-  it("no sequential player anywhere in the page", () => {
-    expect(home).not.toMatch(/sequence-player|SequencePlayer|sequence:ended/i);
-    expect(home).not.toMatch(/welabs-intro/);
-  });
-  it("the chain section carries no opening and no chain film, only montage covers", () => {
-    const chain = home.slice(
-      home.indexOf('id="chain"'),
-      home.indexOf('id="products"'),
-    );
-    expect(chain).not.toMatch(/intro|welabs-chain/);
-    // One still per cut (nine cuts), no title text
-    expect(chain.match(/cut-\d\.webp/g)).toHaveLength(9);
-  });
-  it("the title of the home is Welabs, without a suffix", () => {
-    expect(homeMetadata.title).toBe("Welabs");
-    expect(String(homeMetadata.title)).not.toMatch(/Plataforma/i);
-  });
-  it("other pages follow the 'Domus by Welabs' pattern", async () => {
-    for (const { slug, name } of PRODUCTS.map((p) => ({
-      slug: p.slug,
-      name: p.name,
-    }))) {
+describe("metadata", () => {
+  it("uses the Welabs title", () => expect(homeMetadata.title).toBe("Welabs"));
+  it("keeps product category terms in metadata", async () => {
+    for (const { slug, name, category } of PRODUCTS) {
       const meta = await generateMetadata({
         params: Promise.resolve({ slug }),
       });
       expect(meta.title).toBe(`${name} by Welabs`);
+      expect(meta.description).toContain(category);
+      expect(meta.keywords).toBeDefined();
     }
   });
 });

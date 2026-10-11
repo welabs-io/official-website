@@ -10,13 +10,15 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <RingStage
-      id="lab-chain"
-      kind="chain"
-      logos="lit"
-      fullscreen
-      eager
-      label="Cortes dos filmes dos produtos"
-    />
+    <main id="main-content">
+      <RingStage
+        id="lab-chain"
+        kind="chain"
+        logos="lit"
+        fullscreen
+        eager
+        label="Cortes dos filmes dos produtos"
+      />
+    </main>
   );
 }

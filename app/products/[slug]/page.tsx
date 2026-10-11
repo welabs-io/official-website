@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PageFrame } from "@/components/onepage/PageFrame";
-import { ProductPageBody } from "@/components/onepage/ProductPageBody";
+import { ProductDetail } from "@/components/site/ProductDetail";
+import { SiteFrame } from "@/components/site/SiteFrame";
+import { PRODUCT_DETAILS } from "@/lib/product-details";
 import { PRODUCTS, productBySlug } from "@/lib/products";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 
 // PÁGINA DE PRODUTO
-// One template for the five products (see ProductPageBody): opening, connectors, other films, call to action. Slugs
-// are the current public ones; older slugs and ids are redirected by next.config.mjs. Any other slug is a 404 that
-// is decided at build time (dynamicParams off), so no unknown page is ever rendered on demand.
+// The full detail template exposes public capabilities, complete demonstrations and product-aware contact.
+// Existing public slugs and build-time 404 handling remain shared with the product catalog.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -25,7 +25,7 @@ export async function generateMetadata({
   return {
     // The category term (ERP, CRM...) lives in the description and keywords only, never in the visible text or the title
     title: `${product.name} by Welabs`,
-    description: `${product.category} da Welabs. ${product.line}.`,
+    description: `${product.category} da Welabs. ${PRODUCT_DETAILS[product.slug].benefits.join(" ")}`,
     keywords: [...product.keywords],
     robots: { index: false, follow: false },
     icons: WELABS_ICONS,
@@ -40,8 +40,8 @@ export default async function Page({
   const product = productBySlug((await params).slug);
   if (!product) notFound();
   return (
-    <PageFrame>
-      <ProductPageBody slug={product.slug} />
-    </PageFrame>
+    <SiteFrame>
+      <ProductDetail slug={product.slug} />
+    </SiteFrame>
   );
 }

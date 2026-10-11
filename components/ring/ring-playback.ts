@@ -6,6 +6,7 @@
 // kept: the neighbours are cover images.
 import { createPlayer, hideLoader, piece, type PlayerElement } from "./player";
 import type { PushTransition, Slide } from "@/lib/motion-slides";
+import { motionPhase, projectionVariables } from "./projection";
 
 // Duration of the position swap of the ring (keep equal to the CSS transition in ring.module.css)
 export const SWAP_SECONDS = 1;
@@ -127,6 +128,8 @@ export class Playback {
       // slide; the segments of a slide play in the same tile and blend into each other, and a preloaded player of
       // another slide stays hidden (the tile shows its poster) until the rotation brings it in.
       tileBySlide?: boolean;
+      // Manual exploration plays the identity once and then loops the selected film without rotating its caption.
+      loopFilm?: boolean;
     },
   ) {
     this.cursor = options.start;
@@ -179,6 +182,11 @@ export class Playback {
   // The next `ahead` segments get their players mounted, ready and parked on the first frame. Very short segments need
   // more than one ahead: the one after the next must already be ready when the next one starts.
   private preload() {
+    if (
+      this.options.loopFilm &&
+      motionPhase(this.flat[this.cursor].id) === "film"
+    )
+      return;
     let index = this.cursor;
     for (let i = 0; i < Math.min(this.ahead, this.flat.length - 1); i++) {
       index = this.after(index);
@@ -191,7 +199,11 @@ export class Playback {
   private trim() {
     const keep = new Set([this.cursor]);
     let index = this.cursor;
-    for (let i = 0; i < this.ahead; i++) {
+    const ahead =
+      this.options.loopFilm && motionPhase(this.flat[this.cursor].id) === "film"
+        ? 0
+        : this.ahead;
+    for (let i = 0; i < ahead; i++) {
       index = this.after(index);
       keep.add(index);
     }
@@ -252,12 +264,19 @@ export class Playback {
         : layers[segment.slide];
     if (!host) return;
     const wrap = document.createElement("div");
-    wrap.style.cssText = `position:absolute;inset:0;opacity:0;transition:opacity ${FADE_MS}ms ease`;
+    wrap.style.cssText = `opacity:0;transition:opacity ${FADE_MS}ms ease`;
+    wrap.dataset.motionPhase = motionPhase(segment.id);
+    wrap.dataset.projection = "";
+    for (const [name, value] of Object.entries(projectionVariables(segment.id)))
+      wrap.style.setProperty(name, value);
     const el = createPlayer(
       piece(segment.id),
       segment.range,
       autoplay,
       segment.rate,
+      // A single-range home preview loops natively instead of stopping at its last frame.
+      this.flat.length === 1 ||
+        Boolean(this.options.loopFilm && motionPhase(segment.id) === "film"),
     );
     wrap.appendChild(el);
     host.appendChild(wrap);
@@ -334,6 +353,7 @@ export class Playback {
       this.options.onUnavailable?.("stalled");
       return;
     }
+    if (this.options.loopFilm && motionPhase(segment.id) === "film") return;
     // The range is in piece time: a real lead of `lead` s is lead * rate seconds of the piece
     // A pushed cut starts its successor PUSH_PRE s early: the new player needs a moment before its timeline moves, and
     // the push only begins after that moment, so the incoming clip is already moving when it slides in

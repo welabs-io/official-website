@@ -2,7 +2,7 @@
 // Exercise the real ring controller and Playback with DOM elements and a controlled browser clock.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PRODUCTS } from "@/lib/products";
-import { MONTAGE_SLIDES } from "@/lib/motion-slides";
+import { MONTAGE_SLIDES, PRODUCT_SLIDES } from "@/lib/motion-slides";
 import {
   Playback,
   READY_TIMEOUT_MS,
@@ -210,6 +210,59 @@ afterEach(() => {
 
 // NAVEGAÇÃO INDEPENDENTE DO PLAYER
 describe("content navigation", () => {
+  it("plays the identity once and loops the selected film while its caption remains available", async () => {
+    const { root, tiles } = ring();
+    root.dataset.rotate = "false";
+    const controller = run(root as unknown as HTMLElement, "products");
+    controller.play();
+    await Promise.resolve();
+    players.forEach((player) => emit(player, "ready"));
+    expect(playerMock.createPlayer.mock.calls[0][4]).toBe(false);
+    expect(playerMock.createPlayer.mock.calls[1][4]).toBe(true);
+    players[0].currentTime = PRODUCT_SLIDES[0].segments[0].range[1] - 0.02;
+    vi.advanceTimersByTime(1200);
+    expect(tiles[0].dataset.phase).toBe("film");
+    for (let index = 0; index < 12; index++) {
+      players[1].currentTime =
+        PRODUCT_SLIDES[0].segments[1].range[0] + (index % 5);
+      vi.advanceTimersByTime(1000);
+    }
+    expect(root.dataset.active).toBe("0");
+    expect(root.dataset.playback).toBe("films");
+    expect(players).toHaveLength(2);
+    controller.destroy();
+  });
+
+  it("updates the shared tile from complete identity to clean film before an intra-slide early return", async () => {
+    const { root, tiles } = ring();
+    const controller = run(root as unknown as HTMLElement, "products");
+    controller.play();
+    await Promise.resolve();
+    players.forEach((player) => emit(player, "ready"));
+    expect(tiles[0].dataset.phase).toBe("intro");
+    expect(players[0].parent!.dataset.motionPhase).toBe("intro");
+    players[0].currentTime = PRODUCT_SLIDES[0].segments[0].range[1] - 0.02;
+    vi.advanceTimersByTime(1200);
+    expect(root.dataset.active).toBe("0");
+    expect(tiles[0].dataset.phase).toBe("film");
+    expect(players[1].parent!.dataset.motionPhase).toBe("film");
+    controller.destroy();
+  });
+
+  it("enables native range looping for a single home preview", async () => {
+    const { root, stage, tiles } = ring();
+    stage.children = stage.children.slice(0, 1);
+    root.dataset.navigation = "false";
+    root.dataset.presentation = "single";
+    const controller = run(root as unknown as HTMLElement, "preview", "domus");
+    controller.play();
+    await Promise.resolve();
+    expect(tiles[0].dataset.phase).toBe("film");
+    expect(playerMock.createPlayer.mock.calls[0][4]).toBe(true);
+    expect(playerMock.createPlayer.mock.calls[0][1]).toEqual([14.1, 20.8]);
+    controller.destroy();
+  });
+
   it("keeps the chain in one visible pane while its narrative and product-map event advance", async () => {
     const root = element(["navigation", "false"]);
     root.id = "chain-ring";

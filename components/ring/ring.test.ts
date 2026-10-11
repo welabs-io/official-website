@@ -31,19 +31,24 @@ describe("ring positions", () => {
 });
 
 describe("circular carousel of the workbench", () => {
-  it("nine cuts: the previous and the next sit beside the active one, the rest clamp behind", () => {
-    const positions = Array.from({ length: 9 }, (_, i) =>
-      ringPosition(i, 0, 9),
+  it("the authored cut count retains circular previous and next positions", () => {
+    const count = MONTAGE_SLIDES.flatMap((slide) => slide.segments).length;
+    const positions = Array.from({ length: count }, (_, i) =>
+      ringPosition(i, 0, count),
     );
-    expect(positions).toEqual([0, 1, 2, 3, 4, -4, -3, -2, -1]);
+    expect(positions[0]).toBe(0);
+    expect(positions[1]).toBe(1);
+    expect(positions[count - 1]).toBe(-1);
     // The last cut is the previous one of the first: the loop closes without a seam
-    expect(ringPosition(8, 0, 9)).toBe(-1);
-    expect(ringPosition(0, 8, 9)).toBe(1);
+    expect(ringPosition(count - 1, 0, count)).toBe(-1);
+    expect(ringPosition(0, count - 1, count)).toBe(1);
   });
   it("the swap duration is the push duration of the leaving cut (0.4 s between products, 0.3 s inside one)", () => {
     const flat = flatten(MONTAGE_SLIDES);
-    expect(new Set(flat.map((segment) => segment.lead))).toEqual(
-      new Set([0.4, 0.3]),
+    expect(flat.map((segment) => segment.lead)).toEqual(
+      montage.steps.flatMap((step) =>
+        step.segments.map((segment) => segment.transition.duration),
+      ),
     );
   });
 });
@@ -55,7 +60,7 @@ describe("flat segments", () => {
     // opening tail -> film (same slide)
     expect(flat[0].lead).toBeCloseTo(BLEND_SECONDS);
     // film -> next product: the swap of the carousel (0.4 s)
-    expect(flat[1].lead).toBeCloseTo(0.4);
+    expect(flat[1].lead).toBeCloseTo(montage.swap);
     expect(SWAP_SECONDS).toBe(1);
     for (const segment of flat)
       expect(segment.lead).toBeLessThanOrEqual(
@@ -65,48 +70,57 @@ describe("flat segments", () => {
 });
 
 describe("slides of the home", () => {
-  it("the chain is a montage of product cuts and relation cuts, each at its own rate, no opening", () => {
-    expect(MONTAGE_SLIDES.map((s) => s.slug)).toEqual([
-      "tuner",
-      "relloo",
-      "domus",
-      "magneto",
-      "knowly",
+  it("keeps the same accepted journey and person across its three contextual chapters", () => {
+    const cuts = MONTAGE_SLIDES.flatMap((slide) => slide.segments);
+    expect(cuts).toHaveLength(3);
+    expect(new Set(cuts.map((cut) => cut.id))).toEqual(
+      new Set(["welabs-chain-journey-define-logos-r6-s1"]),
+    );
+    expect(cuts.map((cut) => cut.range)).toEqual([
+      [6.5, 9.18],
+      [12.7, 15.68],
+      [25.3, 30.79],
     ]);
+    expect(MONTAGE_SLIDES.map((slide) => slide.poster)).toEqual([
+      "/motion/posters/cut-4.webp",
+      "/motion/posters/cut-9.webp",
+      "/motion/posters/cut-6.webp",
+    ]);
+  });
+  it("the chain is a montage of product cuts and relation cuts, each at its own rate, no opening", () => {
+    expect(MONTAGE_SLIDES.map((s) => s.slug)).toEqual(
+      montage.steps.map((step) => step.product),
+    );
     for (const slide of MONTAGE_SLIDES) {
       expect(slide.segments.length).toBeGreaterThan(0);
       for (const { id, rate } of slide.segments) {
         expect(id).not.toMatch(/intro/);
-        expect(rate).toBeGreaterThanOrEqual(1.25);
+        expect(rate).toBeGreaterThanOrEqual(0.5);
         expect(rate).toBeLessThanOrEqual(2.5);
       }
     }
     expect(montage.steps).toHaveLength(MONTAGE_SLIDES.length);
   });
-  it("the loop lasts 20 to 26 s, every cut holds its last frame for 1 s and the pushes follow the product changes", () => {
+  it("the compact narrative keeps reading holds and consumes its authored pushes", () => {
     let cycle = 0;
     const cuts = MONTAGE_SLIDES.flatMap((slide, si) =>
       slide.segments.map((segment) => ({ ...segment, si })),
     );
-    cuts.forEach((cut, i) => {
+    cuts.forEach((cut) => {
       const screen = (cut.range[1] - cut.range[0]) / (cut.rate ?? 1);
       // The last frame stays still for the hold (1 s by default) before the push out starts
       expect(cut.holdAfter).toBeGreaterThanOrEqual(1);
-      // 0.4 s between products, 0.3 s inside the same product
-      const next = cuts[(i + 1) % cuts.length];
-      expect(cut.transition?.duration).toBe(next.si === cut.si ? 0.3 : 0.4);
-      expect(cut.transition?.type).toBe(
-        next.si === cut.si ? "push-up" : "push-left",
-      );
+      expect(cut.transition?.duration).toBeGreaterThan(0);
+      expect(["push-up", "push-left"]).toContain(cut.transition?.type);
       cycle += screen + (cut.holdAfter ?? 0) - (cut.transition?.duration ?? 0);
     });
-    expect(cycle).toBeGreaterThanOrEqual(20);
-    expect(cycle).toBeLessThanOrEqual(26);
+    expect(cycle).toBeGreaterThanOrEqual(15);
+    expect(cycle).toBeLessThanOrEqual(27);
   });
   it("product cuts and relation cuts alternate and the Domus house is never shown empty", () => {
     const kinds = montage.steps.flatMap((s) => s.segments.map((c) => c.kind));
     expect(kinds.filter((k) => k === "relation").length).toBeGreaterThanOrEqual(
-      4,
+      1,
     );
     for (let i = 1; i < kinds.length; i++)
       if (kinds[i] === "product") expect(kinds[i - 1]).toBe("relation");

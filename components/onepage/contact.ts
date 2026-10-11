@@ -1,4 +1,4 @@
 // DESTINO DO CONTATO
-// The contact destination is still to be decided by the operator: the call to action points to the contact section of
-// the home (an absolute path, so it also works from a product page).
-export const CONTACT_HREF = "/#contact";
+// The public company website publishes this commercial address; opening a draft never simulates message delivery.
+export const CONTACT_EMAIL = "contato@welabs.io";
+export const CONTACT_HREF = `mailto:${CONTACT_EMAIL}`;

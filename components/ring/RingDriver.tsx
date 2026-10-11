@@ -1,11 +1,12 @@
 "use client";
-// MOTOR DO CARROSSEL (CLIENTE, SOB DEMANDA)
-// Observers load content navigation near the screen and suspend video playback when the ring leaves the viewport.
+// NAVEGAÇÃO IMEDIATA E MÍDIA SOB DEMANDA
+// Hydration binds content intentions immediately; observers govern only media warming and playback.
 // Reduced motion keeps navigation available without downloading the player; unmount releases every listener.
 import { useEffect } from "react";
 import type { RingController } from "./ring-run";
+import { bootstrapNavigation } from "./navigation-bootstrap";
 
-export type RingKind = "chain" | "products" | "films" | "hero";
+export type RingKind = "chain" | "products" | "films" | "hero" | "preview";
 
 export function RingDriver({
   rootId,
@@ -28,14 +29,15 @@ export function RingDriver({
     let dead = false;
     const wanted = () =>
       visible && !document.hidden && !reduced.matches && !dead;
+    const navigation = bootstrapNavigation(root, () => bind(true));
 
-    const update = () => {
+    const bind = (force = false) => {
       if (controller) {
         if (wanted()) controller.play();
         else controller.pause();
         return;
       }
-      if (!visible || pending || dead) return;
+      if ((!visible && !force) || pending || dead) return;
       pending = true;
       load().then(
         (mod) => {
@@ -43,6 +45,7 @@ export function RingDriver({
           if (dead) return;
           // Bind navigation independently from motion preference, then reconcile current visibility.
           controller = mod.run(root, kind, slug);
+          navigation.flush(controller);
           update();
         },
         () => {
@@ -52,6 +55,7 @@ export function RingDriver({
         },
       );
     };
+    const update = () => bind();
 
     const near = new IntersectionObserver(
       ([entry]) => {
@@ -75,6 +79,8 @@ export function RingDriver({
     });
     near.observe(root);
     on.observe(root);
+    // Bind navigation independently of IntersectionObserver delivery and preserve any first pending intention.
+    if (root.dataset.navigation === "true") bind(true);
     document.addEventListener("visibilitychange", update);
     reduced.addEventListener("change", update);
     return () => {
@@ -83,6 +89,7 @@ export function RingDriver({
       on.disconnect();
       document.removeEventListener("visibilitychange", update);
       reduced.removeEventListener("change", update);
+      navigation.destroy();
       controller?.destroy();
       controller = null;
     };

@@ -42,4 +42,78 @@ describe("product preview markup", () => {
     expect(html).not.toContain("<button");
     expect(html).not.toContain("Conhecer produto");
   });
+  it("keeps preview and hero phases distinct while enabling the clean website projection", () => {
+    const preview = renderToStaticMarkup(
+      <RingStage
+        id="preview"
+        kind="preview"
+        slug="domus"
+        presentation="single"
+        clean
+        label="Domus"
+      />,
+    );
+    const hero = renderToStaticMarkup(
+      <RingStage
+        id="hero"
+        kind="hero"
+        slug="domus"
+        presentation="single"
+        clean
+        label="Domus"
+      />,
+    );
+    expect(preview).toContain('data-phase="film"');
+    expect(preview).toContain('data-clean="true"');
+    expect(preview).not.toContain("tail-domus");
+    expect(hero).toContain('data-phase="intro"');
+    expect(hero).toContain('data-motion-phase="intro"');
+  });
+  it("renders factual captions for each film instead of hiding every caption of one product", () => {
+    const html = renderToStaticMarkup(
+      <RingStage id="films" kind="films" slug="relloo" clean label="Relloo" />,
+    );
+    expect(html).toContain('data-caption-index="0"');
+    expect(html).toContain('data-caption-index="2"');
+    expect(html).toContain("Assistentes no atendimento");
+    expect(html).not.toContain("Filme 1");
+  });
+  it("separates automatic media playback from manual product exploration", () => {
+    const html = renderToStaticMarkup(
+      <RingStage
+        id="manual-products"
+        kind="products"
+        rotate={false}
+        clean
+        label="Produtos"
+      />,
+    );
+    expect(html).toContain('data-rotate="false"');
+    expect(html).toContain('data-navigation="true"');
+  });
+  it("renders supplied product summaries as native copy without leaking them into film captions", () => {
+    const summaries = {
+      domus: "Reúne a gestão e a definição do negócio na mesma base.",
+    };
+    const products = renderToStaticMarkup(
+      <RingStage
+        id="summaries"
+        kind="products"
+        summaries={summaries}
+        label="Produtos"
+      />,
+    );
+    const films = renderToStaticMarkup(
+      <RingStage
+        id="film-summaries"
+        kind="films"
+        slug="domus"
+        summaries={summaries}
+        label="Filmes"
+      />,
+    );
+    expect(products).toContain(summaries.domus);
+    expect(products).toContain('data-summaries="true"');
+    expect(films).not.toContain(summaries.domus);
+  });
 });
