@@ -1,8 +1,8 @@
 // SLIDES DE MOTION DO SITE
 // Builds the slides of every ring from lib/motion-pieces.json (the list scripts/sync-motion.mjs copies). A slide is a
-// list of segments played back to back: a segment is a range of one piece. Home chain: a montage of clips of the
-// product films at 2.5x, no opening. Home products: the closing seconds of the product opening (the part that forms the logo) flowing into a
-// clip of its first film. Product page: the whole opening, then the films in full.
+// list of segments played back to back: a segment is a range of one piece. The home journey contains authored cuts
+// without an opening; its product carousel contains only complete identity openings. Product pages retain the whole
+// opening followed by the first film in full, and standalone previews remain qualified product clips.
 import montage from "./home-montage.json";
 import pieces from "./motion-pieces.json";
 import { PRODUCTS, type ProductSlug } from "./products";
@@ -94,37 +94,28 @@ export const CUT_POSTERS: string[] = montage.steps.flatMap((step, i) =>
   ),
 );
 
-// Seconds the settled logo of an opening stays still before the blend into the film. The player freezes up to 0.1 s
-// after the seal settles and the first frame of the blend lands about 0.1 s after the hold ends, so 0.95 s here is
-// measured as 1 s of still logo and seal on screen.
+// Additional reading hold after the complete opening when a sequence is allowed to advance. Manual identity
+// exploration keeps the formed mark until the reader selects another product or explicitly replays it.
 export const INTRO_HOLD = 0.95;
 
-// Products section of the home: the opening until the logo and seal settle (1 s still), then a clip of the first film
+// ABERTURAS INDIVIDUAIS DO CARROSSEL
+// Show the entire identity formation; the settled mark has a reading hold, with no product-film segment or film cover.
 export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
-  const { intro, films } = entry(slug);
+  const { intro } = entry(slug);
   return {
     key: slug,
     label: name,
     slug,
     segments: [
-      // The opening plays until the logo and the "by welabs" seal have settled (3.9 s; the player freezes 0.1 s
-      // before the range end at 4 s), holds that still frame for the montage hold and then blends into the film.
-      // The tagline slot of the piece is hidden in the site copy (public/motion), so no tagline ever shows.
+      // Preserve every formation beat and the authored settled identity at the end of the full range.
       {
         id: intro.id,
-        range: [intro.tail[0], intro.tail[1]] as const,
+        range: [0, intro.duration] as const,
         holdAfter: INTRO_HOLD,
-      },
-      {
-        ...filmSegment(films[0] as Film),
-        // The film holds its settled last frame, then the ring rotates to the next product
-        transition: { type: "push-left", duration: MONTAGE_SWAP },
-        holdAfter: montage.holdAfter,
       },
     ],
     // Still of the formed logo (no tagline): what a neighbour shows before it plays
     poster: poster(`tail-${slug}`),
-    endPoster: endPoster(films[0].id),
   };
 });
 

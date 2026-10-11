@@ -98,8 +98,10 @@ describe("home presentation", () => {
     expect(orbit).toContain('data-summaries="true"');
     expect(orbit).toContain("Finanças, vendas, compras, estoque e pessoas");
     expect(orbit).toContain("Contatos, oportunidades, conversas e campanhas");
-    for (const { slug } of PRODUCTS)
-      expect(orbit).toContain(`${slug}-light-endorsed.svg`);
+    for (const { slug, name } of PRODUCTS) {
+      expect(orbit).toContain(`data-product="${slug}"`);
+      expect(orbit).toContain(`aria-label="Mostrar ${name}"`);
+    }
   });
   it("distinguishes portfolio brands from the technology base", () => {
     const closing = home.slice(

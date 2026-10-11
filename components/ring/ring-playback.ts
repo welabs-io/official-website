@@ -130,6 +130,8 @@ export class Playback {
       tileBySlide?: boolean;
       // Manual exploration plays the identity once and then loops the selected film without rotating its caption.
       loopFilm?: boolean;
+      // Manual identity exploration forms the mark once and keeps its settled frame until another selection.
+      holdIdentity?: boolean;
     },
   ) {
     this.cursor = options.start;
@@ -182,6 +184,7 @@ export class Playback {
   // The next `ahead` segments get their players mounted, ready and parked on the first frame. Very short segments need
   // more than one ahead: the one after the next must already be ready when the next one starts.
   private preload() {
+    if (this.options.holdIdentity) return;
     if (
       this.options.loopFilm &&
       motionPhase(this.flat[this.cursor].id) === "film"
@@ -326,7 +329,7 @@ export class Playback {
       entry.wrap.style.opacity = "1";
   }
 
-  // PASSAGEM PARA O PRÓXIMO SEGMENTO
+  // AVANÇO E REPOUSO DOS SEGMENTOS
   private tick() {
     if (this.dead || this.failed || this.suspendedAt !== undefined) return;
     const now = performance.now();
@@ -351,6 +354,18 @@ export class Playback {
     ) {
       this.failed = true;
       this.options.onUnavailable?.("stalled");
+      return;
+    }
+    if (this.options.holdIdentity) {
+      if (
+        current.heldAt === undefined &&
+        t >= segment.range[1] - HOLD_EDGE * segment.rate
+      ) {
+        // Keep the exact final authored frame, including the complete identity formation and its seal.
+        current.el.seek(segment.range[1]);
+        current.el.pause();
+        current.heldAt = now;
+      }
       return;
     }
     if (this.options.loopFilm && motionPhase(segment.id) === "film") return;

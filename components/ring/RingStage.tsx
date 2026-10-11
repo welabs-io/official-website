@@ -115,6 +115,9 @@ export function RingStage({
   const projectionStyle = projectionVariables() as CSSProperties;
   const navigable =
     navigation && presentation === "carousel" && tiles.length > 1;
+  // Institutional product navigation uses plain names; the authored identity stays in each complete opening.
+  const textNavigation =
+    id === "products-ring" && kind === "products" && logos === "links";
   return (
     <div
       id={id}
@@ -132,6 +135,7 @@ export function RingStage({
       data-kind={kind}
       data-rotate={rotate ? "true" : "false"}
       data-summaries={kind === "products" && summaries ? "true" : "false"}
+      data-text-navigation={textNavigation ? "true" : "false"}
       style={projectionStyle}
     >
       <div className={styles.stage} data-ring={kind}>
@@ -292,7 +296,11 @@ export function RingStage({
                     aria-pressed={lit.includes(product)}
                     aria-controls={id}
                   >
-                    {logo}
+                    {textNavigation ? (
+                      <span className={styles.productName}>{name}</span>
+                    ) : (
+                      logo
+                    )}
                   </button>
                 ) : (
                   logo

@@ -11,6 +11,7 @@ import {
   MONTAGE_SLIDES,
   PRODUCT_SLIDES,
   productFilms,
+  heroSlides,
 } from "@/lib/motion-slides";
 import { PRODUCTS } from "@/lib/products";
 import { ringPosition } from "./positions";
@@ -56,11 +57,10 @@ describe("circular carousel of the workbench", () => {
 describe("flat segments", () => {
   it("swap lead between slides, blend lead inside a slide, never past 80%", () => {
     const flat = flatten(PRODUCT_SLIDES);
-    expect(flat).toHaveLength(PRODUCTS.length * 2);
-    // opening tail -> film (same slide)
-    expect(flat[0].lead).toBeCloseTo(BLEND_SECONDS);
-    // film -> next product: the swap of the carousel (0.4 s)
-    expect(flat[1].lead).toBeCloseTo(montage.swap);
+    expect(flat).toHaveLength(PRODUCTS.length);
+    // Independent identities hand off between product slots; detail heroes still blend within the same slot.
+    expect(flat.every((segment) => segment.lead === SWAP_SECONDS)).toBe(true);
+    expect(flatten(heroSlides("domus"))[0].lead).toBeCloseTo(BLEND_SECONDS);
     expect(SWAP_SECONDS).toBe(1);
     for (const segment of flat)
       expect(segment.lead).toBeLessThanOrEqual(
@@ -141,28 +141,20 @@ describe("slides of the home", () => {
         ((segment.range[1] - segment.range[0]) / segment.rate) * 0.8 + 1e-9,
       );
   });
-  it("each product opens with the logo forming (no tagline) and its film holds the settled frame for the montage hold", () => {
+  it("each product retains its complete identity formation and a legible settled-mark hold without a film cover", () => {
     const flat = flatten(PRODUCT_SLIDES);
     PRODUCT_SLIDES.forEach((slide) => {
       const entry = pieces.products[slide.slug as keyof typeof pieces.products];
-      const [tail, film] = slide.segments;
-      // Logo and seal settle at 3.9 s of every opening (pixel difference at 1x) and the tagline would start at 3.8 s;
-      // the player freezes 0.1 s before the range end, so the range ends just after the settle point and the settled
-      // frame holds for the montage hold before the blend into the film
-      expect(tail.range[1]).toBeGreaterThanOrEqual(3.95);
-      expect(tail.range[1]).toBeLessThanOrEqual(4.05);
-      expect(tail.holdAfter).toBe(INTRO_HOLD);
-      expect(film.holdAfter).toBe(montage.holdAfter);
-      expect(film.transition?.duration).toBe(montage.swap);
-      // The film ends just after its action settled (frozen frame is the settled one)
-      const settled = (entry.films[0] as { settledAt: number }).settledAt;
-      expect(film.range[1] - settled).toBeGreaterThanOrEqual(0.1 - 1e-9);
-      expect(film.range[1] - settled).toBeLessThanOrEqual(0.12);
+      expect(slide.segments).toHaveLength(1);
+      const [opening] = slide.segments;
+      expect(opening.range).toEqual([0, entry.intro.duration]);
+      expect(opening.holdAfter).toBe(INTRO_HOLD);
+      expect(slide.endPoster).toBeUndefined();
       expect(slide.poster).toBe(`/motion/posters/tail-${slide.slug}.webp`);
     });
-    // Both the opening and the film hold their settled frame
+    // The additional reading interval belongs to the formed identity only.
     expect(flat.map((segment) => segment.hold)).toEqual(
-      PRODUCT_SLIDES.flatMap(() => [INTRO_HOLD, montage.holdAfter]),
+      PRODUCT_SLIDES.map(() => INTRO_HOLD),
     );
   });
   it("the site copy of every opening hides the tagline slot", () => {
@@ -179,18 +171,16 @@ describe("slides of the home", () => {
       expect(html).toContain(".role{display:none!important}");
     }
   });
-  it("the products keep the weight order, each with a short opening tail and a 3 to 9 s clip", () => {
+  it("the five brand openings keep commercial order and never load product-film segments", () => {
     expect(PRODUCT_SLIDES.map((s) => s.slug)).toEqual(
       PRODUCTS.map((p) => p.slug),
     );
     for (const slide of PRODUCT_SLIDES) {
-      const [tail, film] = slide.segments;
-      expect(tail.id).toMatch(/intro/);
-      expect(tail.range[1] - tail.range[0]).toBeGreaterThanOrEqual(1.5);
-      expect(tail.range[1] - tail.range[0]).toBeLessThanOrEqual(2.5);
-      expect(film.id).not.toMatch(/intro/);
-      expect(film.range[1] - film.range[0]).toBeGreaterThanOrEqual(3);
-      expect(film.range[1] - film.range[0]).toBeLessThanOrEqual(9);
+      expect(slide.segments).toHaveLength(1);
+      const [opening] = slide.segments;
+      expect(opening.id).toMatch(/intro/);
+      expect(opening.range[0]).toBe(0);
+      expect(opening.range[1]).toBeGreaterThan(5);
     }
   });
   it("no range goes past the duration of its piece", () => {

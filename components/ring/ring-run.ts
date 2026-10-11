@@ -63,6 +63,14 @@ export function run(
   const captions = [...root.querySelectorAll<HTMLElement>("[data-caption]")];
   const announcement = root.querySelector<HTMLElement>("[data-announcement]");
   const slides = slidesOf(kind, slug);
+  const manualIdentity =
+    kind === "products" &&
+    root.dataset.rotate === "false" &&
+    slides.every(
+      (slide) =>
+        slide.segments.length === 1 &&
+        motionPhase(slide.segments[0].id) === "intro",
+    );
   const flat = flatten(slides);
   // The chain has one tile per cut; the other kinds have one tile per slide (opening tail and film share a tile)
   const perCut = kind === "chain";
@@ -303,6 +311,7 @@ export function run(
       tiles: !singlePane,
       tileBySlide: !perCut && !singlePane,
       loopFilm: kind === "products" && root.dataset.rotate === "false",
+      holdIdentity: manualIdentity,
       onSlide: () => {},
       onUnavailable: fallback,
       onSwap: (info) => {
@@ -367,7 +376,8 @@ export function run(
   // NAVEGAÇÃO POR CONTEÚDO
   const select = (index: number) => {
     const next = ((index % tiles.length) + tiles.length) % tiles.length;
-    if (next === active) return;
+    // Selecting the current identity explicitly replays its complete formation.
+    if (next === active && !manualIdentity) return;
     generation++;
     window.clearTimeout(restart);
     window.clearTimeout(coverTimer);

@@ -6,6 +6,36 @@ import { PRODUCTS } from "@/lib/products";
 import { RingStage } from "./RingStage";
 
 describe("product preview markup", () => {
+  it("uses textual homepage navigation while preserving authored identities and logo signals elsewhere", () => {
+    const home = renderToStaticMarkup(
+      <RingStage
+        id="products-ring"
+        kind="products"
+        logos="links"
+        label="Produtos"
+      />,
+    );
+    const signals = renderToStaticMarkup(
+      <RingStage id="signals" kind="chain" logos="lit" label="Cadeia" />,
+    );
+    const other = renderToStaticMarkup(
+      <RingStage
+        id="other-products"
+        kind="products"
+        logos="links"
+        label="Produtos"
+      />,
+    );
+    expect(home).toContain('data-text-navigation="true"');
+    for (const product of PRODUCTS) {
+      expect(home).toContain(`aria-label="Mostrar ${product.name}"`);
+      expect(home).toContain(`>${product.name}</span>`);
+    }
+    expect(home).not.toMatch(/<button[^>]*data-product[^>]*><img/);
+    expect(signals).toContain('data-text-navigation="false"');
+    expect(signals).toContain("<img");
+    expect(other).toMatch(/<button[^>]*data-product[^>]*><img/);
+  });
   it("renders factual captions, detail links and product-selection buttons", () => {
     const html = renderToStaticMarkup(
       <RingStage

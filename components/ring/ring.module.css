@@ -101,6 +101,41 @@
   height: auto;
   max-width: 100%;
 }
+
+/* NAVEGAÇÃO TEXTUAL DA VITRINE */
+/* Names are interface labels rather than substitute marks; only the current selection carries the amber underline. */
+.screen[data-text-navigation="true"] .products {
+  gap: 12px;
+}
+.screen[data-text-navigation="true"] .product {
+  filter: none;
+}
+.screen[data-text-navigation="true"] .product button {
+  position: relative;
+  width: auto;
+  min-height: 44px;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+}
+.productName {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.screen[data-text-navigation="true"] .product[data-on="true"] button::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  bottom: 2px;
+  left: 8px;
+  height: 4px;
+  border-radius: 2px;
+  background: #ffb020;
+}
 .stage {
   position: relative;
   /* The stage is the centre tile (see --tile-w on .screen) */
@@ -414,6 +449,16 @@
   }
   .screen[data-summaries="true"] .navigation {
     min-height: 228px;
+  }
+  .screen[data-text-navigation="true"] .products {
+    gap: 1px;
+  }
+  .screen[data-text-navigation="true"] .product button {
+    padding-inline: 4px;
+  }
+  .screen[data-text-navigation="true"] .product[data-on="true"] button::after {
+    right: 4px;
+    left: 4px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
