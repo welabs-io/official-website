@@ -1,6 +1,5 @@
 /* BASE DA PÁGINA */
-/* Welabs 1.5.x: amber only as an area (dot, block, 4 px+ bar), graphite and cream bands alternating by section,
-   Inter text. */
+/* Brand colours frame different content roles; navigation and layout stay quiet around the product demonstrations. */
 .page {
   --g: #10141c;
   --g2: #161b25;
@@ -12,9 +11,9 @@
   --ink: #1c1a16;
   --mute-d: #9da3ae;
   --mute-l: #625b4e;
-  /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
-  --header-h: 72px;
-  --logo-h: 42px;
+  /* The official SVG includes protection space; its box is larger than the visible wordmark. */
+  --header-h: 80px;
+  --logo-h: 54px;
   background: var(--g);
   color: var(--c);
   overflow-x: clip;
@@ -45,7 +44,7 @@
   --soft: rgb(28 26 22 / 0.08);
 }
 .wrap {
-  width: min(1200px, 100% - 48px);
+  width: min(1160px, 100% - 48px);
   margin: 0 auto;
 }
 
@@ -77,7 +76,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  width: min(1200px, 100% - 48px);
+  width: min(1160px, 100% - 48px);
   height: var(--header-h);
   margin: 0 auto;
 }
@@ -90,10 +89,32 @@
   height: var(--logo-h);
   width: auto;
 }
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-right: 24px;
+}
+.navigation a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #bcc1ca;
+}
+.navigation a:hover {
+  color: var(--c);
+}
+@media (max-width: 760px) {
+  .navigation {
+    display: none;
+  }
+}
 @media (max-width: 520px) {
   .page {
-    --header-h: 56px;
-    --logo-h: 34px;
+    --header-h: 64px;
+    --logo-h: 44px;
   }
 }
 .cta {
@@ -101,7 +122,7 @@
   align-items: center;
   min-height: 44px;
   padding: 0 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--a);
   color: var(--ink);
   font-size: 15px;
@@ -113,9 +134,9 @@
   background: #ffc04d;
 }
 .ctaBig {
-  min-height: 56px;
-  padding: 0 32px;
-  font-size: 18px;
+  min-height: 48px;
+  padding: 0 24px;
+  font-size: 15px;
 }
 @media (max-width: 520px) {
   .cta:not(.ctaBig) {
@@ -158,74 +179,4 @@
 .footerGrid p {
   font-size: 14px;
   color: var(--mute-d);
-}
-
-/* FIO ENTRE AS SEÇÕES */
-/* A thin thread at the left of the content runs through every band and joins them: a grey hairline, an amber dot where
-   each section starts and, while the band is on screen (data-on, set by LiveObserver), an amber 4 px pulse that slides
-   down it at its own pace. Under reduced motion the pulse is not drawn. The content never sits under it: it lives in the
-   outer margin, 20 px left of the content column. */
-.band {
-  --thread-x: calc((100% - min(1200px, 100% - 48px)) / 2 - 20px);
-  --thread-dur: 6s;
-}
-.band:nth-child(3n + 1) {
-  --thread-dur: 5.2s;
-}
-.band:nth-child(3n + 2) {
-  --thread-dur: 6.8s;
-}
-.band:nth-child(3n) {
-  --thread-dur: 8.4s;
-}
-.band::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  left: var(--thread-x);
-  width: 4px;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, transparent, var(--a)) no-repeat 0 -160px / 4px
-      160px,
-    linear-gradient(
-      to right,
-      transparent 1.5px,
-      color-mix(in srgb, var(--mute) 45%, transparent) 1.5px 2.5px,
-      transparent 2.5px
-    );
-}
-.band::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  top: -5px;
-  left: calc(var(--thread-x) - 3px);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: var(--a);
-}
-.band[data-on="true"]::before {
-  animation: thread var(--thread-dur) linear infinite;
-}
-@keyframes thread {
-  from {
-    background-position:
-      0 -160px,
-      0 0;
-  }
-  to {
-    background-position:
-      0 calc(100% + 160px),
-      0 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .band[data-on="true"]::before {
-    animation: none;
-  }
 }

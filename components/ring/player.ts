@@ -31,6 +31,8 @@ export function playerAttributes(
     height: "1080",
     ...(autoplay ? { autoplay: "" } : {}),
     muted: "",
+    // Clicking the film must not silently pause the content carousel.
+    "disable-click-to-play": "",
     tabindex: "-1",
     ...(rate !== 1 ? { "playback-rate": String(rate) } : {}),
     ...(clip
@@ -45,8 +47,24 @@ export function ensurePlayer(): Promise<void> {
     if (customElements.get("hyperframes-player")) return resolve();
     const el = document.createElement("script");
     el.src = PLAYER_SRC;
-    el.onload = () => resolve();
-    el.onerror = () => reject(new Error(PLAYER_SRC));
+    // A blocked script must return to navigable covers instead of leaving the carousel pending forever.
+    const timeout = window.setTimeout(() => failed(), 8000);
+    const cleanup = () => {
+      window.clearTimeout(timeout);
+      el.onload = null;
+      el.onerror = null;
+    };
+    const failed = () => {
+      cleanup();
+      el.remove();
+      reject(new Error(PLAYER_SRC));
+    };
+    el.onload = () => {
+      if (!customElements.get("hyperframes-player")) return failed();
+      cleanup();
+      resolve();
+    };
+    el.onerror = failed;
     document.head.appendChild(el);
   }).catch((error) => {
     load = null;

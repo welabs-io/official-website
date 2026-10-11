@@ -1,6 +1,6 @@
 /* FAIXAS DE LOGOS EM PRETO E BRANCO */
 /* A slow marquee that runs while it is on screen, white marks on the graphite band. One strip is 64 px tall. Under
-   prefers-reduced-motion it is one wrapped row, nothing cut off. */
+   prefers-reduced-motion it is a manually scrollable still strip with every mark available. */
 .carousel {
   display: flex;
   align-items: center;
@@ -77,14 +77,14 @@
 @media (prefers-reduced-motion: reduce) {
   .window {
     mask-image: none;
+    overflow-x: auto;
+    scrollbar-width: thin;
   }
   .track {
-    width: auto;
+    width: max-content;
     animation: none !important;
   }
   .set {
-    flex-wrap: wrap;
-    row-gap: 20px;
     padding-right: 0;
   }
   .set[aria-hidden="true"] {

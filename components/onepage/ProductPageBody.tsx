@@ -1,8 +1,6 @@
 // CORPO DA PÁGINA DE PRODUTO
-// One template for the five products, four compact blocks: the opening (logo with the seal, one factual line, the
-// brand opening flowing into the first film), the connectors with THIS product lit and the others one click away, the
-// other films in a circular carousel like the home's, and the call to action. Bands alternate graphite and cream and the
-// thread of the band style joins them; the footer comes after (PageFrame). No slogan and no extra text.
+// The detail page shows its complete opening in one window, architecture and navigable related films.
+// Its first motion is a demonstration, so it does not inherit the carousel's orbit treatment.
 import { RingStage } from "@/components/ring/RingStage";
 import { CTA_LABEL, productBySlug, type ProductSlug } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
@@ -26,6 +24,7 @@ export function ProductPageBody({ slug }: { slug: ProductSlug }) {
           <RingStage
             id="product-opening"
             kind="hero"
+            presentation="single"
             slug={slug}
             eager
             label={`Abertura do ${name}`}

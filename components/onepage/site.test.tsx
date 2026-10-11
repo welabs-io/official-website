@@ -67,8 +67,8 @@ describe("pages carry little text and no slogan", () => {
 
   it("the home stays under the word budget", () => {
     const words = visibleText(home).split(" ").length;
-    // Measured at the time of writing: 75; the budget guards against text creeping back
-    expect(words).toBeLessThanOrEqual(85);
+    // Functional context and all server-rendered captions remain within a compact editorial budget.
+    expect(words).toBeLessThanOrEqual(145);
   });
 
   it("every product line has at most six words", () => {
@@ -76,7 +76,7 @@ describe("pages carry little text and no slogan", () => {
       expect(p.line.split(" ").length).toBeLessThanOrEqual(6);
   });
 
-  it("the home has its three sections and the call to action", () => {
+  it("the home has its three sections, visible context and the call to action", () => {
     for (const id of ["top", "chain", "products", "platforms", "contact"])
       expect(home).toContain(`id="${id}"`);
     // The old strip and the second products-like section are gone
@@ -86,6 +86,11 @@ describe("pages carry little text and no slogan", () => {
     for (const p of PRODUCTS)
       expect(home).toContain(`${p.slug}-light-endorsed.svg`);
     expect(visibleText(home)).toContain("Conversar com a Welabs");
+    expect(home.match(/<h1\b/g)).toHaveLength(1);
+    expect(home).toContain('id="chain-heading"');
+    expect(visibleText(home)).toContain("Domus e Relloo no núcleo");
+    // The architecture belongs to the demonstration rather than a repeated standalone section.
+    expect(home).not.toContain('id="connectors"');
   });
 
   it("the closing is one strip with the logos of clients and platforms together, then the button", () => {

@@ -4,6 +4,7 @@
 // aria-hidden SVG; the logos are real links laid over it, so the block reads and tabs like normal content. On a product
 // page `lit` is the product of the page: it stays lit, the products it is tied to stay linked and the others dim, and
 // every other logo leads to its own page. Two layouts (wide, tall for phones) are rendered and CSS shows one of them.
+// The compact home variant uses one responsive core-and-rails drawing with readable HTML role labels.
 // The pulses run only while the block is on screen (`data-live`, see LiveObserver) and stop under reduced motion.
 import Link from "next/link";
 import {
@@ -19,6 +20,7 @@ import {
 } from "@/lib/connectors";
 import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
 import styles from "./connectors.module.css";
+import { ChainSignals } from "./ChainSignals";
 
 const PULSE_SECONDS = 4.8;
 // Length of a pulse (tail and head) along its rail
@@ -181,10 +183,55 @@ function Nodes({
 export function Connectors({
   lit,
   tone,
+  compact = false,
 }: {
   lit?: ProductSlug;
   tone: "dark" | "light";
+  compact?: boolean;
 }) {
+  // Use one layout on phones as well, keeping the product roles at native text size.
+  if (compact) {
+    const roles: Record<ProductSlug, string> = {
+      domus: "Gestão",
+      relloo: "Relacionamento",
+      magneto: "Workflows",
+      tuner: "Canais",
+      knowly: "Conhecimento",
+    };
+    const node = (slug: ProductSlug) => (
+      <Link
+        key={slug}
+        href={`/products/${slug}`}
+        prefetch={false}
+        className={styles.compactNode}
+        data-chain-product={slug}
+      >
+        <img
+          src={productLogo(slug, tone)}
+          alt={`${PRODUCTS.find((product) => product.slug === slug)!.name} by Welabs`}
+          width={110}
+          height={60}
+          loading="lazy"
+          decoding="async"
+        />
+        <span>{roles[slug]}</span>
+      </Link>
+    );
+    return (
+      <ChainSignals className={styles.compact}>
+        <div className={styles.compactCore}>{CORE.map(node)}</div>
+        <svg
+          className={styles.compactRails}
+          viewBox="0 0 600 42"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d="M300 0V20M100 42V20H500V42M300 20V42" />
+        </svg>
+        <div className={styles.compactServices}>{RAILS.map(node)}</div>
+      </ChainSignals>
+    );
+  }
   const layouts = [WIDE, TALL];
   return (
     <div

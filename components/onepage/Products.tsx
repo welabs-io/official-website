@@ -1,9 +1,6 @@
 // SEÇÃO 2: PRODUTOS
-// The five products in a circular carousel, in weight order (Domus, Relloo, Magneto, Tuner, Knowly), one product per
-// tile. Each one opens with its brand opening up to the settled logo and "by welabs" seal (no tagline), held still for
-// 1 s, which blends into the main film of the product; the film holds its settled last frame for 1 s and then the ring
-// rotates to the next product. Under the carousel the row of logos: the active product lights up and each logo leads to its page. No
-// controls, no progress bar, no pause. The markup is server-rendered; RingDriver downloads and plays it when it is near.
+// A single content carousel lets visitors select a product while its functional caption stays outside the motion.
+// Product order, complete openings and the detail routes remain shared with the product pages.
 import { RingStage } from "@/components/ring/RingStage";
 import home from "./home.module.css";
 import shell from "./shell.module.css";
@@ -12,12 +9,16 @@ export function Products() {
   return (
     <section
       id="products"
+      aria-labelledby="products-heading"
       className={`${shell.band} ${shell.light} ${home.products}`}
       data-live
       data-on="false"
     >
-      <h2 className={home.srOnly}>Produtos</h2>
       <div className={shell.wrap}>
+        <div className={home.sectionHeading}>
+          <h2 id="products-heading">Cada produto, de perto.</h2>
+          <p>Escolha por onde começar.</p>
+        </div>
         <RingStage
           id="products-ring"
           kind="products"

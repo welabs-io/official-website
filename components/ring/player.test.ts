@@ -8,6 +8,7 @@ describe("player attributes", () => {
     const attributes = playerAttributes("/motion/pieces/x/index.html");
     expect(attributes).toHaveProperty("autoplay");
     expect(attributes).toHaveProperty("muted");
+    expect(attributes).toHaveProperty("disable-click-to-play");
     expect(attributes).not.toHaveProperty("controls");
   });
   it("a clip becomes range-start and range-end", () => {

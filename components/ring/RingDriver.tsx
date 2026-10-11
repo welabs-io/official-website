@@ -1,11 +1,9 @@
 "use client";
 // MOTOR DO CARROSSEL (CLIENTE, SOB DEMANDA)
-// The only client piece of a ring, and a tiny one: it renders nothing. Two observers decide when the heavy part
-// (ring-run.ts and the player script, both fetched with a dynamic import) is downloaded and when it plays:
-//  - near the screen (400 px margin): the code is fetched, nothing runs;
-//  - on screen, tab visible and no reduced motion: the playback runs; any of the three going away stops it.
-// Everything is released on unmount: both observers, the listeners and the playback.
+// Observers load content navigation near the screen and suspend video playback when the ring leaves the viewport.
+// Reduced motion keeps navigation available without downloading the player; unmount releases every listener.
 import { useEffect } from "react";
+import type { RingController } from "./ring-run";
 
 export type RingKind = "chain" | "products" | "films" | "hero";
 
@@ -25,25 +23,27 @@ export function RingDriver({
     let loaded: Promise<typeof import("./ring-run")> | null = null;
     const load = () => (loaded ??= import("./ring-run"));
     let visible = false;
-    let stop: (() => void) | null = null;
+    let controller: RingController | null = null;
     let pending = false;
     let dead = false;
     const wanted = () =>
       visible && !document.hidden && !reduced.matches && !dead;
 
     const update = () => {
-      if (!wanted()) {
-        stop?.();
-        stop = null;
+      if (controller) {
+        if (wanted()) controller.play();
+        else controller.pause();
         return;
       }
-      if (stop || pending) return;
+      if (!visible || pending || dead) return;
       pending = true;
       load().then(
         (mod) => {
           pending = false;
-          // The ring may have left the screen while the code was downloading
-          if (wanted() && !stop) stop = mod.run(root, kind, slug);
+          if (dead) return;
+          // Bind navigation independently from motion preference, then reconcile current visibility.
+          controller = mod.run(root, kind, slug);
+          update();
         },
         () => {
           // The chunk failed to download: the covers stay, and the next visibility change tries again
@@ -57,11 +57,11 @@ export function RingDriver({
       ([entry]) => {
         if (!entry.isIntersecting) return;
         near.disconnect();
-        // Under reduced motion the ring never plays, so nothing is fetched
-        if (reduced.matches) return;
-        // Fetch the code and the player script ahead of time; they cost nothing until the ring plays
+        // Content navigation still loads under reduced motion; only the player script is skipped.
         load().then(
-          (mod) => mod.warm(),
+          (mod) => {
+            if (!reduced.matches && !dead) mod.warm();
+          },
           () => {
             loaded = null;
           },
@@ -83,8 +83,8 @@ export function RingDriver({
       on.disconnect();
       document.removeEventListener("visibilitychange", update);
       reduced.removeEventListener("change", update);
-      stop?.();
-      stop = null;
+      controller?.destroy();
+      controller = null;
     };
   }, [rootId, kind, slug]);
 

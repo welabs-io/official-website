@@ -1,6 +1,6 @@
 // MOLDURA DA PÁGINA
-// Fixed header (logo and the single call to action) and the footer. The call to action always points to the contact
-// section of the home; the contact destination is still to be decided by the operator.
+// The fixed header separates the shared demonstration from product exploration with plain anchor navigation.
+// The approved contact destination is shared with every product page.
 import Link from "next/link";
 import { CTA_LABEL, WELABS_LOGO } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
@@ -19,6 +19,10 @@ function Header({ home }: { home: boolean }) {
         >
           <img src={WELABS_LOGO.dark} alt="Welabs" height={42} />
         </Link>
+        <nav className={styles.navigation} aria-label="Navegação principal">
+          <a href={home ? "#chain" : "/#chain"}>Como funciona</a>
+          <a href={home ? "#products" : "/#products"}>Produtos</a>
+        </nav>
         <a href={CONTACT_HREF} className={styles.cta}>
           {CTA_LABEL}
         </a>

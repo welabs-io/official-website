@@ -90,12 +90,13 @@ describe("connectors markup", () => {
   });
 });
 
-describe("the thread and the live markers", () => {
-  it("every band of the home is marked live, so the thread and the pulses pause off screen", () => {
+describe("integrated architecture and live markers", () => {
+  it("the architecture shares the opening and motion bands remain marked live", () => {
     const html = renderToStaticMarkup(<OnePage />);
     const bands = html.match(/<section[^>]*>/g) ?? [];
-    expect(bands).toHaveLength(4);
+    expect(bands).toHaveLength(3);
     for (const band of bands) expect(band).toContain("data-live");
-    expect(html).toContain('id="connectors"');
+    expect(html).not.toContain('id="connectors"');
+    expect(html).toContain("Domus e Relloo no núcleo");
   });
 });

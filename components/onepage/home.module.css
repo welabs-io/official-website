@@ -1,12 +1,58 @@
 /* SEÇÕES DA HOME */
-/* Compact: no minimum heights, no empty area bigger than a title line. Gaps between title, line and ring are 12 to
-   24 px. The ring takes the whole wrap. */
+/* The joint operation is a composed demonstration; the product section is the only orbiting showcase. */
 
 /* SEÇÃO 1: CADEIA */
-/* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
+/* Context and motion share the first row; architecture is integrated underneath rather than repeated as a band. */
 .chain {
-  --pt: calc(var(--header-h) + 56px);
-  --pb: 56px;
+  --pt: calc(var(--header-h) + 48px);
+  --pb: 32px;
+  scroll-margin-top: var(--header-h);
+}
+.chainGrid {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.9fr) minmax(0, 1.65fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+}
+.chainIntro {
+  display: grid;
+  justify-items: start;
+  gap: 22px;
+  padding-bottom: 12px;
+}
+.heroTitle {
+  font-size: clamp(34px, 3.25vw, 48px);
+  line-height: 1.13;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.heroDescription {
+  max-width: 31ch;
+  color: #bac0cb;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.explore {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 17px;
+  border: 1px solid #454b57;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.explore:hover {
+  background: #202633;
+  border-color: #626a78;
+}
+.architecture {
+  max-width: 750px;
+  margin: 22px auto 0;
+}
+.architecture > div {
+  --panel: #10141c;
 }
 
 .srOnly {
@@ -20,8 +66,28 @@
 
 /* SEÇÃO 2: PRODUTOS */
 .products {
-  --pt: 56px;
-  --pb: 56px;
+  --pt: 44px;
+  --pb: 44px;
+  scroll-margin-top: var(--header-h);
+}
+.sectionHeading {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  gap: 9px;
+  text-align: center;
+  margin-bottom: 26px;
+}
+.sectionHeading h2 {
+  font-size: clamp(25px, 2.5vw, 34px);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.sectionHeading p {
+  color: var(--mute-l);
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 /* PÁGINA DE PRODUTO */
@@ -33,6 +99,8 @@
   display: grid;
   justify-items: stretch;
   gap: 16px;
+  max-width: 960px;
+  margin-inline: auto;
 }
 .productPageGrid > :first-child {
   justify-self: start;
@@ -60,11 +128,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  --pt: 48px;
-  --pb: 48px;
-  /* Both this band and the connectors above it are graphite: a hairline tells them apart */
-  border-top: 1px solid var(--line);
+  gap: 32px;
+  --pt: 42px;
+  --pb: 42px;
 }
 .strips {
   display: grid;
@@ -78,8 +144,30 @@
 
 @media (max-width: 860px) {
   .chain {
-    --pt: calc(var(--header-h) + 32px);
-    --pb: 40px;
+    --pt: calc(var(--header-h) + 36px);
+    --pb: 28px;
+  }
+  .chainGrid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .chainIntro {
+    text-align: center;
+    justify-items: center;
+    gap: 15px;
+    padding-bottom: 0;
+  }
+  .heroTitle {
+    font-size: clamp(32px, 5vw, 44px);
+  }
+  .heroDescription {
+    max-width: 42ch;
+    font-size: 15px;
+  }
+  .architecture {
+    margin-top: 14px;
   }
   .products,
   .films {
@@ -90,5 +178,16 @@
     gap: 20px;
     --pt: 32px;
     --pb: 32px;
+  }
+}
+@media (max-width: 520px) {
+  .chain {
+    --pt: calc(var(--header-h) + 28px);
+  }
+  .architecture {
+    max-width: 320px;
+  }
+  .sectionHeading {
+    margin-bottom: 20px;
   }
 }

@@ -17,6 +17,8 @@ const TICK_MS = 40;
 const PUSH_PRE = 0.12;
 // Reveal of a preloaded player waits for the seek to its first frame to settle
 const SETTLE_MS = 140;
+// Covers take over when a composition cannot prepare or its timeline stops advancing.
+export const READY_TIMEOUT_MS = 8000;
 // A held segment freezes this many real seconds before its range end, so a slow tick can never run into the loop
 export const HOLD_EDGE = 0.1;
 
@@ -72,6 +74,10 @@ type Entry = {
   // Parked on its first frame and painted: the only state in which a handoff may bring it in
   settled: boolean;
   started: boolean;
+  createdAt: number;
+  advancedAt: number;
+  lastTime: number;
+  waiting?: boolean;
   // performance.now() at which the segment froze on its last frame (hold phase), when it did
   heldAt?: number;
   // The segment has already been the current one: it is finished and must never be started again
@@ -97,6 +103,8 @@ export class Playback {
   private timeouts = new Set<number>();
   private dead = false;
   private ahead: number;
+  private suspendedAt: number | undefined;
+  private failed = false;
 
   constructor(
     private options: {
@@ -106,6 +114,7 @@ export class Playback {
       start: number;
       onSlide: (slide: number) => void;
       onSwap?: (info: SwapInfo) => void;
+      onUnavailable?: (reason: "ready" | "stalled") => void;
       // How many segments ahead keep a ready player (1 by default)
       ahead?: number;
       // Every slide shares one frame (the workbench): a preloaded player stays hidden until its handoff
@@ -135,6 +144,35 @@ export class Playback {
     this.create(this.cursor, true);
     this.preload();
     this.timer = window.setInterval(() => this.tick(), TICK_MS);
+  }
+
+  // SUSPENSÃO SEM REINICIAR O FILME
+  // Keep the active composition and its time when the viewport or tab becomes inactive.
+  pause() {
+    if (this.dead || this.suspendedAt !== undefined) return;
+    this.suspendedAt = performance.now();
+    for (const entry of this.entries.values()) {
+      if (entry.started) entry.el.pause();
+    }
+  }
+
+  resume() {
+    if (this.dead || this.suspendedAt === undefined) return;
+    const elapsed = performance.now() - this.suspendedAt;
+    for (const entry of this.entries.values()) {
+      entry.createdAt += elapsed;
+      entry.advancedAt += elapsed;
+      if (entry.heldAt !== undefined) entry.heldAt += elapsed;
+    }
+    this.suspendedAt = undefined;
+    const current = this.entries.get(this.cursor);
+    if (
+      current?.ready &&
+      current.started &&
+      current.heldAt === undefined &&
+      !current.waiting
+    )
+      current.el.play();
   }
 
   // PRÉ-CARGA
@@ -173,6 +211,8 @@ export class Playback {
   private drop(entry: Entry) {
     this.remove(entry);
     this.entries.delete(entry.index);
+    // A two-cut shared frame needs a fresh successor after the leaving instance has been removed.
+    if (!this.dead) this.preload();
   }
 
   private clear() {
@@ -229,11 +269,16 @@ export class Playback {
       ready: false,
       settled: false,
       started: autoplay,
+      createdAt: performance.now(),
+      advancedAt: performance.now(),
+      lastTime: segment.range[0],
     };
     this.entries.set(index, entry);
     el.addEventListener("ready", () => {
+      if (this.dead) return;
       hideLoader(el);
       entry.ready = true;
+      entry.advancedAt = performance.now();
       // The playback-rate attribute set before the composition is ready is not applied by the player: set it again now
       // (the attribute change reaches the runtime, which scales the timeline)
       if (segment.rate !== 1) el.playbackRate = segment.rate;
@@ -241,6 +286,7 @@ export class Playback {
         el.seek(segment.range[0]);
         el.pause();
       }
+      if (this.suspendedAt !== undefined) el.pause();
       this.later(
         () => {
           entry.settled = true;
@@ -263,10 +309,31 @@ export class Playback {
 
   // PASSAGEM PARA O PRÓXIMO SEGMENTO
   private tick() {
+    if (this.dead || this.failed || this.suspendedAt !== undefined) return;
+    const now = performance.now();
+    for (const entry of this.entries.values()) {
+      if (!entry.ready && now - entry.createdAt >= READY_TIMEOUT_MS) {
+        this.failed = true;
+        this.options.onUnavailable?.("ready");
+        return;
+      }
+    }
     const current = this.entries.get(this.cursor);
     if (!current || !current.ready || !current.started) return;
     const segment = this.flat[this.cursor];
     const t = current.el.currentTime;
+    if (Math.abs(t - current.lastTime) > 0.001) {
+      current.lastTime = t;
+      current.advancedAt = now;
+    } else if (
+      current.heldAt === undefined &&
+      !current.waiting &&
+      now - current.advancedAt >= READY_TIMEOUT_MS
+    ) {
+      this.failed = true;
+      this.options.onUnavailable?.("stalled");
+      return;
+    }
     // The range is in piece time: a real lead of `lead` s is lead * rate seconds of the piece
     // A pushed cut starts its successor PUSH_PRE s early: the new player needs a moment before its timeline moves, and
     // the push only begins after that moment, so the incoming clip is already moving when it slides in
@@ -291,7 +358,10 @@ export class Playback {
     const next = this.entries.get(this.after(this.cursor));
     if (!next || !next.settled || next.played) {
       // Never let the range end run into a loop: hold the last frame until the next one is ready
-      if (t >= segment.range[1] - 0.2 * segment.rate) current.el.pause();
+      if (t >= segment.range[1] - 0.2 * segment.rate) {
+        current.waiting = true;
+        current.el.pause();
+      }
       return;
     }
     this.handoff(current, next, (segment.range[1] - t) / segment.rate);
@@ -324,6 +394,7 @@ export class Playback {
     this.cursor = next.index;
     current.played = true;
     next.started = true;
+    next.advancedAt = performance.now();
     next.el.play();
     const pushed = this.options.single ? from.transition : undefined;
     const bring = () => {

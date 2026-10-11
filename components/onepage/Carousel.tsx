@@ -2,7 +2,7 @@
 // A slow marquee (white marks on the graphite band, one theme for clients and platforms). Server markup only: it runs
 // while `data-on` is "true", which LiveObserver sets for the elements marked `data-live` that are on screen. The second
 // copy of the list exists only to close the loop (aria-hidden). Under prefers-reduced-motion CSS turns it into one
-// wrapped row.
+// scrollable still strip, keeping the closing compact while every mark remains reachable.
 import styles from "./logos.module.css";
 
 type Logo = { name: string; src: string; h: number };
@@ -45,7 +45,11 @@ export function Carousel({
       aria-label={label}
     >
       {kind !== "all" && <span className={styles.label}>{label}</span>}
-      <div className={styles.window}>
+      <div
+        className={styles.window}
+        tabIndex={0}
+        aria-label="Marcas e plataformas, faixa horizontal"
+      >
         <div className={styles.track}>
           {set(0)}
           {set(1)}
