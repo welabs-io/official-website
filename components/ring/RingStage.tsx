@@ -10,7 +10,12 @@ import {
   productFilms,
   type Slide,
 } from "@/lib/motion-slides";
-import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
+import {
+  PRODUCTS,
+  productAlt,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
 import { isNear, placeOf, ringPosition } from "./positions";
 import { RingDriver, type RingKind } from "./RingDriver";
 import styles from "./ring.module.css";
@@ -112,11 +117,13 @@ export function RingStage({
       </div>
       {logos && (
         <ul className={styles.products} aria-label="Produtos">
-          {PRODUCTS.map(({ slug: product, name }) => {
+          {PRODUCTS.map(({ slug: product }) => {
             const logo = (
               <img
-                src={productLogo(product, tone)}
-                alt={logos === "lit" ? name : ""}
+                src={productLogo(product, tone, "row")}
+                alt={
+                  logos === "lit" ? productAlt(product, "first-mention") : ""
+                }
                 height={28}
                 width={51}
                 loading="lazy"
@@ -134,7 +141,7 @@ export function RingStage({
                   <Link
                     href={`/products/${product}`}
                     prefetch={false}
-                    aria-label={`${name} by Welabs`}
+                    aria-label={productAlt(product, "row")}
                   >
                     {logo}
                   </Link>

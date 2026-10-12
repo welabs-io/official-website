@@ -92,15 +92,15 @@ for (const slug of SLUGS)
   );
 const order = [
   ...new Set(
-    [...home.matchAll(/products\/(\w+)-(?:dark|light)-endorsed\.svg/g)].map(
-      (m) => m[1],
-    ),
+    [
+      ...home.matchAll(/products\/(\w+)-(?:dark|light)(?:-endorsed)?\.svg/g),
+    ].map((m) => m[1]),
   ),
 ];
-assert.deepEqual(
-  order,
-  SLUGS,
-  "products appear in weight order, with the seal",
+assert.deepEqual(order, SLUGS, "products appear in weight order");
+assert(
+  !/products\/\w+-(?:dark|light)-endorsed\.svg/.test(home),
+  "the seal is only the identity highlight of the product page, not the home",
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
 const words = visibleText(home).split(" ").length;

@@ -82,9 +82,11 @@ describe("pages carry little text and no slogan", () => {
     // The old strip and the second products-like section are gone
     expect(home).not.toContain('id="logos"');
     expect(home).toContain('href="/#contact"');
-    // Every product shows its logo with the seal under the active frame
-    for (const p of PRODUCTS)
-      expect(home).toContain(`${p.slug}-light-endorsed.svg`);
+    // Every product shows its standalone logo under the active frame (the seal is only the identity highlight)
+    for (const p of PRODUCTS) {
+      expect(home).toContain(`${p.slug}-light.svg`);
+      expect(home).not.toContain(`${p.slug}-light-endorsed.svg`);
+    }
     expect(visibleText(home)).toContain("Conversar com a Welabs");
   });
 

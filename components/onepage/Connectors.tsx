@@ -17,7 +17,12 @@ import {
   stateOf,
   type Layout,
 } from "@/lib/connectors";
-import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
+import {
+  PRODUCTS,
+  productAlt,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
 import styles from "./connectors.module.css";
 
 const PULSE_SECONDS = 4.8;
@@ -132,7 +137,7 @@ function Nodes({
   lit?: ProductSlug;
   tone: "dark" | "light";
 }) {
-  return PRODUCTS.map(({ slug, name }) => {
+  return PRODUCTS.map(({ slug }) => {
     const spot = nodeAt(layout, slug);
     const state = stateOf(slug, lit);
     const style = {
@@ -142,8 +147,8 @@ function Nodes({
     };
     const logo = (
       <img
-        src={productLogo(slug, tone)}
-        alt={`${name} by Welabs`}
+        src={productLogo(slug, tone, "hub")}
+        alt={productAlt(slug, "hub")}
         width={1005}
         height={550}
         loading="lazy"

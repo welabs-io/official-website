@@ -2,6 +2,8 @@
 // Single list for the home and the product pages, in the operator's weight order. The line under each logo is factual
 // and short (at most six words): no slogan, no brand-concept phrase. `category` and `keywords` live in the page
 // metadata only (operator decision of 2026-10-08): nothing here but `name` and `line` may be rendered.
+import { endorsePolicy, type LogoPlace } from "./brand-config";
+
 export const PRODUCTS = [
   {
     slug: "domus",
@@ -45,9 +47,21 @@ export type ProductSlug = (typeof PRODUCTS)[number]["slug"];
 export const productBySlug = (slug: string) =>
   PRODUCTS.find((p) => p.slug === slug);
 
-// Official logo with the "by welabs" seal; the file theme matches the band it sits on
-export const productLogo = (slug: ProductSlug, tone: "dark" | "light") =>
-  `/brands/welabs/products/${slug}-${tone}-endorsed.svg`;
+// Official logo of the product; the file theme matches the band it sits on. Whether it carries the "by welabs" seal is
+// decided by endorsePolicy (lib/brand-config.ts) from the place and the rendered height, never by the caller.
+export const productLogo = (
+  slug: ProductSlug,
+  tone: "dark" | "light",
+  place: LogoPlace = "row",
+  height?: number,
+) =>
+  `/brands/welabs/products/${slug}-${tone}${endorsePolicy(place, height) ? "-endorsed" : ""}.svg`;
+
+// Accessible name of a product logo: "<Name> by Welabs" only where the policy allows the seal
+export const productAlt = (slug: ProductSlug, place: LogoPlace = "row") =>
+  endorsePolicy(place)
+    ? `${productBySlug(slug)!.name} by Welabs`
+    : productBySlug(slug)!.name;
 
 // Left padding of each logo file (viewBox x offset over viewBox height), used to align the wordmark with the text
 export const LOGO_PAD: Record<ProductSlug, number> = {
