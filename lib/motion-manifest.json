@@ -804,7 +804,7 @@
           },
           "from": 16.4,
           "to": 20.367,
-          "label": "Domus entrega o que já sabe"
+          "label": "Domus passa endereço e pedido"
         },
         "detail": {
           "piece": "welabs-chain-detail-s1",
@@ -1016,7 +1016,7 @@
           "evidence": "audits/chain-detail/measure.json (S6); frames a 1/30 s da cópia do site"
         },
         "step": 6,
-        "srLabel": "O recibo volta ao cômodo Pedidos do Domus e o Tuner entrega à Marina a confirmação \"Confirmado: sábado\".",
+        "srLabel": "O recibo volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
         "products": [
           "domus",
           "tuner"
@@ -1040,7 +1040,7 @@
           },
           "from": 35.267,
           "to": 38.667,
-          "label": "Tudo registrado, cliente avisada"
+          "label": "Pedido atualizado, Marina avisada"
         },
         "detail": {
           "piece": "welabs-chain-detail-s1",
@@ -1061,7 +1061,7 @@
               "w640": "/motion/v5/posters/welabs-chain-detail-s1--38667-640.webp"
             }
           },
-          "srLabel": "O recibo volta ao cômodo Pedidos do Domus e o Tuner entrega à Marina a confirmação \"Confirmado: sábado\".",
+          "srLabel": "O recibo volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
           "story": "marina"
         }
       }

@@ -3,6 +3,7 @@
 // selectors keep the order of the chain and give the four ties of the connector block; the labels follow the rules of the
 // site (3 words, 24 characters, no mechanism name).
 import { describe, expect, it } from "vitest";
+import { COPY_RULES } from "../content/rules";
 import raw from "../motion-manifest.json";
 import { PRODUCT_SLUGS } from "../product-slugs";
 import { PRODUCTS } from "../products";
@@ -119,6 +120,16 @@ describe("parse", () => {
       /more than 6 words/,
     ],
     [
+      "overview label with a banned word (cliente)",
+      (m) => (m.chain.steps[0].overview.label = "Cliente avisada"),
+      /forbidden word/,
+    ],
+    [
+      "overview label with a slogan verb (entrega)",
+      (m) => (m.chain.steps[0].overview.label = "Domus entrega o pedido"),
+      /forbidden word/,
+    ],
+    [
       "overview label with a mechanism name",
       (m) => (m.chain.steps[0].overview.label = "Recibo do pedido"),
       /forbidden word/,
@@ -215,6 +226,18 @@ describe("what the site shows of the manifest", () => {
         /recibo|protocolo|tenant|fila|erp|crm|cliente/i,
       );
     }
+  });
+  it("the banned words and slogan verbs of the site apply to every caption the manifest gives the chain, no exception", () => {
+    const bad: string[] = [];
+    MANIFEST.chain.steps.forEach((s, i) => {
+      for (const [where, text] of Object.entries({
+        overview: s.overview.label,
+        connection: s.connection.label,
+        detailSrLabel: s.detail.srLabel,
+      }))
+        if (COPY_RULES.test(text)) bad.push(`step ${i} ${where}: ${text}`);
+    });
+    expect(bad).toEqual([]);
   });
   it("the slug list of the reader is the list of products of the site, in weight order", () => {
     expect([...PRODUCT_SLUGS]).toEqual(PRODUCTS.map((p) => p.slug));

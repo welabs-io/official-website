@@ -2,6 +2,7 @@
 // The structural check the site does at build time, without a schema library: the full JSON Schema is checked by
 // scripts/sync-motion.mjs when the manifest is copied in; this one guards what the site depends on (timing, slugs, the
 // connection labels, one main film per product) and fails with the path of the offending field.
+import { COPY_RULES } from "../content/rules";
 import { PRODUCT_SLUGS } from "../product-slugs";
 import type { ChainStep, Manifest, SegmentCore } from "./types";
 
@@ -16,8 +17,6 @@ const SLUGS: readonly string[] = PRODUCT_SLUGS;
 // Words that name a mechanism: never shown to the visitor (operator rule of the site)
 const FORBIDDEN =
   /\b(recibo|protocolo|tenant|fila|erp|crm|cliente|clientes|webhook|payload)\b/i;
-
-const MECHANISM = /\b(recibo|protocolo|tenant|fila|erp|crm|webhook|payload)\b/i;
 
 const isObject = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
@@ -79,8 +78,10 @@ function checkLabel(label: unknown, where: string) {
 // The two blocks of a step (schema 1.2). The detail is the time of the step, so it must equal the flat fields; the
 // overview follows it and must stay inside its range. Invariant restored from the old check on `connection` ends: the
 // token (what the overview draws) walks between products (or to the outcome) and at least one of its ends is an active
-// node, the system whose detail is on screen. Both ends being active is not required: the data has the token leave a
-// product that is not on screen (Relloo opens the card, then the Domus is the lit one).
+// node, the system whose detail is on screen. Why not "both ends are active nodes" (the first reading of the rule):
+// the nodes are the products the detail shows, and in 4 of the 7 steps the token comes from, or goes to, a product that
+// is not on screen (Relloo opens the card the Domus fills; Knowly's text lands in the Relloo card), so that stricter
+// check rejects the real data. One end on screen is what ties the token to the scene.
 function checkTwoBlocks(step: ChainStep, where: string) {
   const { overview: o, detail: d } = step;
   if (!isObject(o)) throw new ManifestError(where, "overview is missing");
@@ -124,9 +125,8 @@ function checkTwoBlocks(step: ChainStep, where: string) {
       `${where}/overview`,
       `label has more than 6 words or 48 characters: ${o.label}`,
     );
-  // "cliente" is left out here: in the overview it names the person of the story ("cliente avisada"), not a mechanism.
-  // The connection labels keep the full list.
-  if (MECHANISM.test(o.label))
+  // The same banned words and slogan verbs as every other visible text of the site, no exception for the manifest
+  if (FORBIDDEN.test(o.label) || COPY_RULES.test(o.label))
     throw new ManifestError(
       `${where}/overview`,
       `label has a forbidden word: ${o.label}`,
