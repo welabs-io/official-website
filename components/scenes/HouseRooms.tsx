@@ -94,13 +94,16 @@ export function HouseRooms({
                   {/* The name leaves and the two lines of the result take its place */}
                   <span
                     className={styles.roomOld}
-                    {...act(result.action, "out")}
+                    {...act(result.action, "out", { length: 0.15 })}
                   >
                     {name}
                   </span>
                   <span
                     className={styles.roomNew}
-                    {...act(result.action, "in")}
+                    {...act(result.action, "in", {
+                      offset: 0.15,
+                      length: 0.25,
+                    })}
                     data-focal=""
                   >
                     <b>{result.lines[0]}</b>

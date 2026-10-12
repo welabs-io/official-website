@@ -145,9 +145,14 @@ export function CardStatus({
             <span
               key={entry.stage}
               className={last ? styles.statusLast : styles.statusPrev}
-              {...(away ? act(away, "out") : {})}
+              {...(away ? act(away, "out", { length: 0.2 }) : {})}
             >
-              <span {...(entry.action ? act(entry.action, "in") : {})}>
+              {/* The new stage comes in after the old one has gone, so the two names never overlap */}
+              <span
+                {...(entry.action
+                  ? act(entry.action, "in", { offset: 0.2, length: 0.3 })
+                  : {})}
+              >
                 {stages[entry.stage]}
               </span>
             </span>
