@@ -7,6 +7,7 @@
 // the next one is parked, ready; every other tile is a cover image. `run` returns the function that releases
 // everything (players, timers) and puts the ring back on its first tile.
 import type { RingData } from "@/lib/ring-data";
+import { follow } from "./overview-follow";
 import { ensurePlayer } from "./player";
 import { Playback, flatten } from "./ring-playback";
 import { coverShown, isNear, placeOf, ringPosition } from "./positions";
@@ -38,8 +39,26 @@ export function run(root: HTMLElement, kind: RingKind) {
   // The chain has one tile per cut; the other kinds have one tile per slide (opening and film share a tile)
   const perCut = kind === "chain";
 
+  // The tile one place behind the hidden one (position 3 of a long ring shares data-pos 2 with it) starts fetching its
+  // cover now, a full swap before it takes place +2, so the cover is decoded by the time the rotation brings it in.
+  // Without it the cover started loading at the swap itself and could still be in flight a few frames later. Runs for
+  // the first state too, which no swap ever draws.
+  const warmBehind = (active: number) =>
+    tiles.forEach((tile, i) => {
+      if (ringPosition(i, active, tiles.length) !== 3) return;
+      const covers = [
+        ...tile.querySelectorAll<HTMLImageElement>("[data-cover]"),
+      ];
+      const hasEnd = covers.some((img) => img.dataset.cover === "end");
+      for (const img of covers)
+        if (coverShown(2, img.dataset.cover as "start" | "end", hasEnd))
+          img.loading = "eager";
+    });
+  warmBehind(0);
+
   // Moves the ring to `active`: tile positions, accessibility and the lit logos
-  const show = (active: number) => {
+  // `label` is false when the ring is only put back (stop): the caption is written by a swap or when the playback starts
+  const show = (active: number, label = true) => {
     tiles.forEach((tile, i) => {
       const position = ringPosition(i, active, tiles.length);
       tile.dataset.pos = String(placeOf(position));
@@ -56,6 +75,7 @@ export function run(root: HTMLElement, kind: RingKind) {
       if (position === 0) tile.removeAttribute("aria-hidden");
       else tile.setAttribute("aria-hidden", "true");
     });
+    warmBehind(active);
     const lit: readonly string[] = data.lit[active] ?? [];
     for (const logo of logos)
       logo.dataset.on = lit.includes(logo.dataset.slug ?? "")
@@ -65,8 +85,8 @@ export function run(root: HTMLElement, kind: RingKind) {
       card.dataset.on = lit.includes(card.dataset.card ?? "")
         ? "true"
         : "false";
-    // The caption changes with the scene (aria-live="polite" announces it)
-    if (caption && data.captions?.[active])
+    // The caption changes with the scene (plain text, not a live region)
+    if (label && caption && data.captions?.[active])
       caption.textContent = data.captions[active];
   };
 
@@ -134,27 +154,41 @@ export function run(root: HTMLElement, kind: RingKind) {
       const active = perCut ? info.toIndex : info.to;
       show(active);
       pulse(active);
+      // `index` is the tile now in the centre: the block above the chain follows it (components/ring/overview-follow.ts)
       window.dispatchEvent(
         new CustomEvent("ring:swap", {
-          detail: { ring: root.id, from: info.from, to: info.to },
+          detail: {
+            ring: root.id,
+            from: info.from,
+            to: info.to,
+            index: active,
+          },
         }),
       );
     },
   });
 
+  // The block above the chain (home) follows the swaps of this ring; it has no clock of its own
+  const overview = perCut ? follow(root.id, root.closest("section")) : null;
+
   ensurePlayer().then(
     () => {
-      if (!dead) playback?.start();
+      if (dead) return;
+      // The ring starts over on its first tile: its caption is written here, since a stop does not rewrite it
+      if (caption && data.captions?.[0]) caption.textContent = data.captions[0];
+      playback?.start();
+      overview?.begin();
     },
     () => {},
   );
 
   return () => {
     dead = true;
+    overview?.();
     playback?.destroy();
     playback = null;
     // The next run starts over on the first tile
-    show(0);
+    show(0, false);
     idle();
   };
 }

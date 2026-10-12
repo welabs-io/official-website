@@ -12,7 +12,8 @@ for (const vp of VIEWPORTS)
     });
 
     test("size, order, capsule and bus", async ({ page }) => {
-      await page.goto("/", { waitUntil: "load" });
+      // The home has no row of logos (the chain has its overview, the products have their cards); the product page has two
+      await page.goto("/products/domus", { waitUntil: "load" });
       const rows = await page.evaluate(() =>
         [...document.querySelectorAll("[data-row]")].map((row) => {
           const box = (el: Element | null) => {
@@ -35,7 +36,8 @@ for (const vp of VIEWPORTS)
           };
         }),
       );
-      expect(rows).toHaveLength(2);
+      // The pinned row of the page's own product and the row of the chain narrowed to it
+      expect(rows.map((r) => r.mode)).toEqual(["pinned", "connection"]);
       for (const r of rows) {
         expect(r.slugs).toEqual([
           "domus",

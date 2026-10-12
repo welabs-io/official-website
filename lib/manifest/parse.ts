@@ -2,6 +2,7 @@
 // The structural check the site does at build time, without a schema library: the full JSON Schema is checked by
 // scripts/sync-motion.mjs when the manifest is copied in; this one guards what the site depends on (timing, slugs, the
 // connection labels, one main film per product) and fails with the path of the offending field.
+import { COPY_RULES } from "../content/rules";
 import { PRODUCT_SLUGS } from "../product-slugs";
 import type { ChainStep, Manifest, SegmentCore } from "./types";
 
@@ -69,8 +70,98 @@ function checkLabel(label: unknown, where: string) {
   // Sentence case: one capital, the first letter
   if (!/^\p{Lu}[^\p{Lu}]*$/u.test(label))
     throw new ManifestError(where, `label is not sentence case: ${label}`);
-  if (FORBIDDEN.test(label))
-    throw new ManifestError(where, `label has a forbidden word: ${label}`);
+  checkCopy(label, where, "label");
+}
+
+// TEXTO EXIBIDO OU LIDO
+// Every text of the manifest that is shown or read aloud (labels, srLabels, titles) obeys the banned words, mechanism
+// words and slogan verbs of the whole site (lib/content/rules.ts); there is no exception for what comes from the round.
+function checkCopy(text: unknown, where: string, field: string) {
+  if (typeof text !== "string") return;
+  if (FORBIDDEN.test(text) || COPY_RULES.test(text))
+    throw new ManifestError(where, `${field} has a forbidden word: ${text}`);
+}
+
+// OVERVIEW E DETAIL DE UM PASSO
+// The two blocks of a step (schema 1.2). The detail is the time of the step, so it must equal the flat fields; the
+// overview follows it and must stay inside its range. Invariant restored from the old check on `connection` ends: the
+// token (what the overview draws) walks between products (or to the outcome) and at least one of its ends is an active
+// node, the system whose detail is on screen. Why not "both ends are active nodes" (the first reading of the rule):
+// the nodes are the products the detail shows, and in 4 of the 7 steps the token comes from, or goes to, a product that
+// is not on screen (Relloo opens the card the Domus fills; Knowly's text lands in the Relloo card), so that stricter
+// check rejects the real data. One end on screen is what ties the token to the scene.
+function checkTwoBlocks(step: ChainStep, where: string) {
+  const { overview: o, detail: d } = step;
+  if (!isObject(o)) throw new ManifestError(where, "overview is missing");
+  if (!isObject(d)) throw new ManifestError(where, "detail is missing");
+  if (
+    !Array.isArray(o.nodes) ||
+    !o.nodes.length ||
+    o.nodes.some((n) => !SLUGS.includes(n)) ||
+    new Set(o.nodes).size !== o.nodes.length
+  )
+    throw new ManifestError(
+      `${where}/overview`,
+      "nodes must be distinct, known products",
+    );
+  const ends = [o.token?.from, o.token?.to];
+  if (ends.some((e) => e !== "outcome" && !SLUGS.includes(String(e))))
+    throw new ManifestError(
+      `${where}/overview`,
+      "token ends must be products or outcome",
+    );
+  if (!ends.some((e) => o.nodes.includes(e as never)))
+    throw new ManifestError(
+      `${where}/overview`,
+      "token touches no active node",
+    );
+  if (
+    typeof o.from !== "number" ||
+    typeof o.to !== "number" ||
+    !(o.to > o.from)
+  )
+    throw new ManifestError(`${where}/overview`, "from/to must be a range");
+  if (o.from < d.from || o.to > d.to)
+    throw new ManifestError(
+      `${where}/overview`,
+      "from/to must be inside the detail range",
+    );
+  if (typeof o.label !== "string" || !o.label)
+    throw new ManifestError(`${where}/overview`, "label is missing");
+  if (o.label.split(" ").length > 6 || o.label.length > 48)
+    throw new ManifestError(
+      `${where}/overview`,
+      `label has more than 6 words or 48 characters: ${o.label}`,
+    );
+  checkCopy(o.label, `${where}/overview`, "label");
+  // The detail is the step: same piece, range, rate and covers; its hold is the holdAfter of the step
+  if (
+    d.piece !== step.piece ||
+    d.from !== step.from ||
+    d.to !== step.to ||
+    d.settledAt !== step.settledAt ||
+    d.rate !== step.rate
+  )
+    throw new ManifestError(
+      `${where}/detail`,
+      "must equal the flat fields of the step",
+    );
+  if (d.hold !== step.holdAfter)
+    throw new ManifestError(
+      `${where}/detail`,
+      "hold must equal holdAfter of the step",
+    );
+  if (typeof d.srLabel !== "string" || d.srLabel.length < 8)
+    throw new ManifestError(`${where}/detail`, "srLabel is too short");
+  checkCopy(d.srLabel, `${where}/detail`, "srLabel");
+  if (
+    o.nodes.length !== step.products.length ||
+    o.nodes.some((n) => !step.products.includes(n))
+  )
+    throw new ManifestError(
+      `${where}/overview`,
+      "nodes must be the products of the step",
+    );
 }
 
 export function parseManifest(raw: unknown): Manifest {
@@ -110,6 +201,7 @@ export function parseManifest(raw: unknown): Manifest {
     known(step.piece, where);
     if (typeof step.srLabel !== "string" || step.srLabel.length < 8)
       throw new ManifestError(where, "srLabel is too short");
+    checkCopy(step.srLabel, where, "srLabel");
     if (!step.products?.length || step.products.some((p) => !SLUGS.includes(p)))
       throw new ManifestError(where, "products has an unknown slug");
     const c = step.connection;
@@ -122,6 +214,7 @@ export function parseManifest(raw: unknown): Manifest {
       // light the product acting while the connection names the pair whose value it shows)
     }
     checkLabel(c.label, `${where}/connection/label`);
+    checkTwoBlocks(step, where);
     // The same unordered pair always carries the same label
     if (c.to !== "outcome") {
       const pair = [c.from, c.to].sort().join("-");
@@ -142,6 +235,7 @@ export function parseManifest(raw: unknown): Manifest {
     if (!product) throw new ManifestError(where, "is missing");
     checkSegment(product.intro, `${where}/intro`);
     known(product.intro.piece, `${where}/intro`);
+    checkCopy(product.intro.title, `${where}/intro`, "title");
     if (!product.films?.length) throw new ManifestError(where, "has no films");
     const mains = product.films.filter((f) => f.role === "main");
     if (mains.length !== 1)
@@ -150,11 +244,13 @@ export function parseManifest(raw: unknown): Manifest {
       const at = `${where}/films/${f}`;
       known(film.piece, at);
       if (!film.title) throw new ManifestError(at, "has no title");
+      checkCopy(film.title, at, "title");
       if (!film.segments?.length)
         throw new ManifestError(at, "has no segments");
       film.segments.forEach((s, j) => {
         checkSegment(s, `${at}/segments/${j}`);
         known(s.piece, `${at}/segments/${j}`);
+        checkCopy(s.title, `${at}/segments/${j}`, "title");
       });
     });
   }

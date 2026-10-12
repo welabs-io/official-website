@@ -78,7 +78,8 @@ describe("pages carry little text and no slogan", () => {
 
   it("the home and a product page stay under the word budget of the content layer", () => {
     // Measured when the content layer landed: see COUNT in the test below; the budgets guard against text creeping in
-    expect(visibleText(home).split(" ").length).toBeLessThanOrEqual(160);
+    // 160 before the opening (29 words) and the overview (token and caption, 7 words) entered the home; now 180
+    expect(visibleText(home).split(" ").length).toBeLessThanOrEqual(180);
     for (const { html } of productPages)
       expect(visibleText(html).split(" ").length).toBeLessThanOrEqual(260);
   });
@@ -203,8 +204,9 @@ describe("the content layer on the rendered pages", () => {
         expect(t).toContain(r.does);
       }
       for (const cap of c.capabilities) expect(t).toContain(cap.text);
-      // The caption is a polite live region that starts on the first tile
-      expect(html).toMatch(/<p[^>]*data-caption[^>]*aria-live="polite"[^>]*>/);
+      // The caption starts on the first tile and is plain text: no live region on a carousel that changes by itself
+      expect(html).toMatch(/<p[^>]*data-caption[^>]*>/);
+      expect(html).not.toMatch(/aria-live/);
       expect(t).toContain(c.filmCaptions[0]);
       for (const tie of ties(MANIFEST).filter(
         (x) => x.a === slug || x.b === slug,

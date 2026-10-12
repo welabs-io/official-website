@@ -9,6 +9,45 @@
   --pb: 44px;
 }
 
+/* ABERTURA DA HOME */
+/* Compact, centred on the axis of the page: one line of title on a desktop, one supporting line, 16 px under them. */
+.lede {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.ledeTitle {
+  max-width: 28ch;
+  font-size: clamp(24px, 2.8vw, 36px);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ledeLine {
+  max-width: 64ch;
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--mute);
+  text-wrap: balance;
+}
+@media (min-width: 1100px) {
+  .ledeTitle {
+    max-width: none;
+  }
+}
+
+/* CADEIA EM DOIS BLOCOS */
+/* The overview (top) and the ring (bottom) are one column on the axis; the connector of the overview ends on the top
+   edge of the tile, so there is no gap between them. */
+.chainBlock {
+  display: grid;
+  justify-items: stretch;
+}
+
 .srOnly {
   position: absolute;
   width: 1px;

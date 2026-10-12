@@ -1,7 +1,7 @@
 // SELETORES DO MANIFESTO
 // Pure functions over a parsed manifest: which chain steps a product takes part in, and the four ties of the connector
 // block (the seam of the core and the three rails) with the label of each.
-import type { ChainStep, Manifest, ProductSlug } from "./types";
+import type { ChainStep, Manifest, ProductSlug, TokenEnd } from "./types";
 
 // Steps of the chain, in order; with `only` just the ones that show that product
 export const chainSteps = (
@@ -9,6 +9,25 @@ export const chainSteps = (
   only?: ProductSlug,
 ): ChainStep[] =>
   manifest.chain.steps.filter((step) => !only || step.products.includes(only));
+
+// Order of the nodes of the overview line: the products in the order the plot first uses them (the lit nodes and the
+// ends of the token, step by step), then the ones the plot never touches in weight order. "outcome" closes the line when
+// a token ends there.
+export function overviewOrder(manifest: Manifest): TokenEnd[] {
+  const seen: TokenEnd[] = [];
+  let outcome = false;
+  const add = (end: TokenEnd) => {
+    if (end === "outcome") outcome = true;
+    else if (!seen.includes(end)) seen.push(end);
+  };
+  for (const { overview } of manifest.chain.steps) {
+    overview.nodes.forEach(add);
+    add(overview.token.from);
+    add(overview.token.to);
+  }
+  for (const slug of Object.keys(manifest.products) as ProductSlug[]) add(slug);
+  return outcome ? [...seen, "outcome"] : seen;
+}
 
 export type Tie = {
   a: ProductSlug;

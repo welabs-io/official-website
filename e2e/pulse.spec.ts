@@ -1,6 +1,6 @@
 // PULSO DA TROCA
 // Acceptance of the pulse unit: on every `ring:swap` of the chain the pulse of the section restarts within 50 ms, the
-// bus of the row fills the stretch of the new cut and the page never reads the layout for it. Needs the player to
+// connector of the overview takes the reach of the new step and the page never reads the layout for it. Needs the player to
 // play, so it runs without reduced motion and waits for real swaps (a cut of the chain lasts a few seconds).
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
@@ -35,14 +35,16 @@ for (const vp of VIEWPORTS)
     );
     const { swaps, pulses, lit } = await page.evaluate(() => {
       const w = window as unknown as { __swaps: number[]; __pulses: number[] };
-      const row = document.querySelector("#chain [data-row]") as HTMLElement;
+      const overview = document.querySelector(
+        "#chain [data-overview]",
+      ) as HTMLElement;
       return {
         swaps: w.__swaps,
         pulses: w.__pulses,
         lit: {
-          lo: row.style.getPropertyValue("--lo"),
-          hi: row.style.getPropertyValue("--hi"),
-          fill: row.querySelector<HTMLElement>("[data-fill]")!.dataset.fill,
+          lo: overview.style.getPropertyValue("--bl"),
+          hi: overview.style.getPropertyValue("--br"),
+          fill: overview.dataset.pulse,
         },
       };
     });
@@ -53,8 +55,8 @@ for (const vp of VIEWPORTS)
       expect(next, "a pulse follows the swap").toBeDefined();
       expect(next! - swap).toBeLessThanOrEqual(50);
     }
-    // The bus carries the stretch of the cut that is showing, and its animation was restarted
+    // The connector of the overview carries the reach of the step that is showing, and its pulse was restarted
     expect(["a", "b"]).toContain(lit.fill);
-    expect(lit.lo).not.toBe("");
-    expect(Number(lit.hi)).toBeGreaterThanOrEqual(Number(lit.lo));
+    expect(lit.lo).toMatch(/%$/);
+    expect(parseFloat(lit.hi)).toBeGreaterThanOrEqual(parseFloat(lit.lo));
   });

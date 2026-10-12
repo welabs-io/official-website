@@ -1,5 +1,5 @@
 // TIPOS DO MANIFESTO DE MOTION
-// Mirrors lib/motion-manifest.schema.json (schema 1.1.0 of the motion round): what the site reads of the manifest and
+// Mirrors lib/motion-manifest.schema.json (schema 1.2.0 of the motion round: chain steps carry `overview` and `detail`): what the site reads of the manifest and
 // nothing else. Times are seconds of piece time; every duration, hold and transition on screen comes from here.
 import type { PRODUCT_SLUGS } from "../product-slugs";
 
@@ -42,12 +42,41 @@ export type Connection = {
   label: string;
 };
 
+// End of the token: a product, or "outcome" (the end of the chain)
+export type TokenEnd = ProductSlug | "outcome";
+
+// Top block of a step (schema 1.2): drawn by the site in SVG and CSS. Times are seconds of piece time of the detail piece.
+export type Overview = {
+  // Nodes lit while the step is active
+  nodes: ProductSlug[];
+  token: { from: TokenEnd; to: TokenEnd };
+  from: number;
+  to: number;
+  // Caption of the top block: pt-BR, sentence case, at most 6 words and 48 characters
+  label: string;
+};
+
+// Bottom block of a step (schema 1.2): a clip of an accepted piece. `hold` is the screen seconds the last frame stays
+// still, and it is part of the time of the step.
+export type Detail = {
+  piece: string;
+  from: number;
+  to: number;
+  settledAt: number;
+  rate: number;
+  hold: number;
+  covers: Covers;
+  srLabel: string;
+};
+
 export type ChainStep = SegmentCore & {
   step: number;
   // One short sentence for screen readers: the accessible name of the active step
   srLabel: string;
   products: ProductSlug[];
   connection: Connection;
+  overview: Overview;
+  detail: Detail;
 };
 
 export type Film = {

@@ -29,7 +29,8 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024"))
     });
     await page.goto("/products/domus", { waitUntil: "load" });
     const caption = page.locator("[data-caption]");
-    await expect(caption).toHaveAttribute("aria-live", "polite");
+    // Plain text: a carousel that changes by itself is not a live region
+    await expect(caption).not.toHaveAttribute("aria-live", /.*/);
     const captions = PRODUCT_CONTENT.domus.filmCaptions;
     await expect(caption).toHaveText(captions[0]);
     // Two swaps: opening and main film to the support film, and back

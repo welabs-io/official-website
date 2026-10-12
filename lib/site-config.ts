@@ -25,28 +25,34 @@ type Base = {
   pad: SectionPad;
   // Heading for screen readers only (the site shows no visible titles)
   srTitle?: string;
-  // Thread of the page: "off" where the drawing of the section crosses the axis itself
-  thread?: "on" | "off" | "none";
+  // Thread of the page: "off" where the drawing of the section crosses the axis itself; "tail" draws only the stretch
+  // under the content (the chain of the home, whose own connector carries the axis down to the ring)
+  thread?: "on" | "off" | "tail" | "none";
   // Stretch of the thread at the bottom of the section, with the pulse that goes down to the next dock; `railDelay`
   // is the wait (seconds) between the swap of the ring and the start of the pulse
   rail?: "drop" | "converge";
   railDelay?: number;
 };
 
+export type RingConfig = {
+  id: string;
+  kind: RingKind;
+  // The product of the ring: the page's own (kind "product") or the one the chain is narrowed to
+  slug?: ProductSlug;
+  logos?: "lit" | "links" | "pinned" | null;
+  eager?: boolean;
+  label: string;
+  // Live caption under the ring, from the content of the product (product page)
+  caption?: boolean;
+};
+
 export type SectionConfig =
+  // The chain of the home in two blocks: opening, overview (top) and the ring of detail scenes (bottom), joined by the
+  // connector that drops from the lit node
+  | (Base & { kind: "chain"; ring: RingConfig })
   | (Base & {
       kind: "ring";
-      ring: {
-        id: string;
-        kind: RingKind;
-        // The product of the ring: the page's own (kind "product") or the one the chain is narrowed to
-        slug?: ProductSlug;
-        logos?: "lit" | "links" | "pinned" | null;
-        eager?: boolean;
-        label: string;
-        // Live caption under the ring, from the content of the product (product page)
-        caption?: boolean;
-      };
+      ring: RingConfig;
       // Product block (logo and factual line) above the stage, on the product page
       head?: { slug: ProductSlug };
       // Grid of the five product cards under the ring, the active product lit (home)
@@ -91,18 +97,17 @@ export const HOME_CONFIG: PageConfig = {
   sections: [
     {
       id: "chain",
-      kind: "ring",
+      kind: "chain",
       tone: "dark",
       pad: "chain",
-      srTitle: "Cadeia",
+      thread: "tail",
       rail: "drop",
-      railDelay: 0.5,
+      railDelay: 1,
       ring: {
         id: "chain-ring",
         kind: "chain",
-        logos: "lit",
         eager: true,
-        label: "Cortes dos filmes dos produtos",
+        label: "Cenas de cada sistema da cadeia",
       },
     },
     {
@@ -116,7 +121,8 @@ export const HOME_CONFIG: PageConfig = {
       ring: {
         id: "products-ring",
         kind: "products",
-        logos: "links",
+        // No row of logos: the five cards right below repeat it and already light the active product
+        logos: null,
         label: "Abertura e filme de cada produto",
       },
       cards: true,

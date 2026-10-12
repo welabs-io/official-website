@@ -3,12 +3,13 @@
 // selectors keep the order of the chain and give the four ties of the connector block; the labels follow the rules of the
 // site (3 words, 24 characters, no mechanism name).
 import { describe, expect, it } from "vitest";
+import { COPY_RULES } from "../content/rules";
 import raw from "../motion-manifest.json";
 import { PRODUCT_SLUGS } from "../product-slugs";
 import { PRODUCTS } from "../products";
 import { MANIFEST } from "./index";
 import { ManifestError, parseManifest } from "./parse";
-import { chainSteps, ties } from "./select";
+import { chainSteps, overviewOrder, ties } from "./select";
 
 const clone = () => JSON.parse(JSON.stringify(raw));
 
@@ -86,6 +87,90 @@ describe("parse", () => {
       /no duration/,
     ],
     [
+      "overview with an unknown node",
+      (m) => (m.chain.steps[0].overview.nodes = ["domus", "zeta"]),
+      /nodes must be distinct, known products/,
+    ],
+    [
+      "overview nodes that differ from the products of the step",
+      (m) => (m.chain.steps[1].products = ["relloo"]),
+      /nodes must be the products of the step/,
+    ],
+    [
+      "token that touches no active node",
+      (m) =>
+        (m.chain.steps[1].overview.token = { from: "domus", to: "relloo" }),
+      /token touches no active node/,
+    ],
+    [
+      "token end that is not a product",
+      (m) => (m.chain.steps[0].overview.token.to = "zeta"),
+      /token ends must be products or outcome/,
+    ],
+    [
+      "overview range outside the detail",
+      (m) => (m.chain.steps[0].overview.to = m.chain.steps[0].detail.to + 1),
+      /inside the detail range/,
+    ],
+    [
+      "overview label with seven words",
+      (m) =>
+        (m.chain.steps[0].overview.label =
+          "Um dois três quatro cinco seis sete"),
+      /more than 6 words/,
+    ],
+    [
+      "overview label with a banned word (cliente)",
+      (m) => (m.chain.steps[0].overview.label = "Cliente avisada"),
+      /forbidden word/,
+    ],
+    [
+      "overview label with a slogan verb (entrega)",
+      (m) => (m.chain.steps[0].overview.label = "Domus entrega o pedido"),
+      /forbidden word/,
+    ],
+    [
+      "step srLabel with a slogan verb",
+      (m) => (m.chain.steps[0].srLabel = "O Domus define o negócio inteiro."),
+      /srLabel has a forbidden word/,
+    ],
+    [
+      "detail srLabel with a mechanism word",
+      (m) =>
+        (m.chain.steps[0].detail.srLabel = "O recibo volta ao cômodo Pedidos."),
+      /srLabel has a forbidden word/,
+    ],
+    [
+      "connection label that is a slogan fragment",
+      (m) => (m.chain.steps[0].connection.label = "Domus entrega"),
+      /label has a forbidden word/,
+    ],
+    [
+      "film title with a slogan verb",
+      (m) => (m.products.domus.films[0].title = "Domus: ele automatiza tudo"),
+      /title has a forbidden word/,
+    ],
+    [
+      "overview label with a mechanism name",
+      (m) => (m.chain.steps[0].overview.label = "Recibo do pedido"),
+      /forbidden word/,
+    ],
+    [
+      "detail that differs from the flat fields",
+      (m) => (m.chain.steps[2].detail.rate = 2),
+      /must equal the flat fields/,
+    ],
+    [
+      "detail hold that differs from holdAfter",
+      (m) => (m.chain.steps[2].detail.hold = 3),
+      /hold must equal holdAfter/,
+    ],
+    [
+      "step without overview",
+      (m) => delete m.chain.steps[3].overview,
+      /overview is missing/,
+    ],
+    [
       "brand version outside 1.x",
       (m) => (m.brandVersion = "2.0.0"),
       /not 1\.x/,
@@ -108,6 +193,29 @@ describe("select", () => {
     for (const slug of PRODUCT_SLUGS)
       for (const step of chainSteps(MANIFEST, slug))
         expect(step.products).toContain(slug);
+  });
+  it("orders the overview line by the plot, with the outcome last", () => {
+    expect(overviewOrder(MANIFEST)).toEqual([
+      "domus",
+      "relloo",
+      "tuner",
+      "knowly",
+      "magneto",
+      "outcome",
+    ]);
+  });
+  it("the overview of every step stays inside its detail and touches an active node", () => {
+    for (const { overview: o, detail: d } of MANIFEST.chain.steps) {
+      expect(o.from).toBeGreaterThanOrEqual(d.from);
+      expect(o.to).toBeLessThanOrEqual(d.to);
+      expect(
+        [o.token.from, o.token.to].some(
+          (e) => e !== "outcome" && o.nodes.includes(e),
+        ),
+        o.label,
+      ).toBe(true);
+      expect(o.label.split(" ").length).toBeLessThanOrEqual(6);
+    }
   });
   it("gives exactly the seam and the three rails, and the same pair never changes its label", () => {
     const list = ties(MANIFEST);
@@ -139,6 +247,23 @@ describe("what the site shows of the manifest", () => {
         /recibo|protocolo|tenant|fila|erp|crm|cliente/i,
       );
     }
+  });
+  it("the banned words and slogan verbs of the site apply to every caption the manifest gives the chain, no exception", () => {
+    const bad: string[] = [];
+    MANIFEST.chain.steps.forEach((s, i) => {
+      for (const [where, text] of Object.entries({
+        overview: s.overview.label,
+        connection: s.connection.label,
+        detailSrLabel: s.detail.srLabel,
+      }))
+        if (COPY_RULES.test(text)) bad.push(`step ${i} ${where}: ${text}`);
+    });
+    for (const [slug, p] of Object.entries(MANIFEST.products))
+      p.films.forEach((film, i) => {
+        if (COPY_RULES.test(film.title))
+          bad.push(`${slug} film ${i} title: ${film.title}`);
+      });
+    expect(bad).toEqual([]);
   });
   it("the slug list of the reader is the list of products of the site, in weight order", () => {
     expect([...PRODUCT_SLUGS]).toEqual(PRODUCTS.map((p) => p.slug));

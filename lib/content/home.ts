@@ -3,7 +3,7 @@
 // of the product page. Functional language of the buyer, no slogan, no brand-concept phrase.
 import type { ProductSlug } from "../products";
 
-// Opening above the chain: kept as data only. The chain section is being redesigned, so nothing renders it yet.
+// Opening above the chain (components/template/SiteTemplate, kind "chain"): title and supporting line of the home.
 export const HOME_INTRO = {
   title: "Welabs desenvolve sistemas de gestão, atendimento e processos",
   lead: "Cinco produtos próprios que se ligam. Um pedido entra pelo WhatsApp e ninguém digita o mesmo dado duas vezes.",

@@ -37,8 +37,8 @@ for (const vp of VIEWPORTS)
               at: performance.now(),
               to: d.to,
               label:
-                document.querySelector("#chain-ring [data-label]")
-                  ?.textContent ?? "",
+                document.querySelector("#chain [data-legend]")?.textContent ??
+                "",
             }),
           );
         });
@@ -52,6 +52,12 @@ for (const vp of VIEWPORTS)
       const data: Data = JSON.parse(
         (await page
           .locator("#chain-ring script[data-ring-data]")
+          .textContent())!,
+      );
+      // The caption of the step is the label of the overview (the block above the ring), which follows the swap
+      const overview: { steps: { label: string }[] } = JSON.parse(
+        (await page
+          .locator("#chain script[data-overview-data]")
           .textContent())!,
       );
       await page.waitForFunction(
@@ -69,7 +75,7 @@ for (const vp of VIEWPORTS)
       expect(max).toBeLessThanOrEqual(2);
       for (const swap of swaps)
         expect(swap.label, "label of the step on screen").toBe(
-          data.labels[swap.to],
+          overview.steps[swap.to].label,
         );
       for (let i = 1; i < swaps.length; i++) {
         // The interval between swap i-1 and i is the time step (i-1) is on screen: its screen time plus its hold

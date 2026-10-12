@@ -7,11 +7,12 @@ import { ProductBlock } from "@/components/onepage/ProductBlock";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { RingStage } from "@/components/ring/RingStage";
-import { PAGE_HEADINGS } from "@/lib/content";
+import { HOME_INTRO, PAGE_HEADINGS } from "@/lib/content";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
+import { ChainOverview } from "./ChainOverview";
 import { Closing } from "./Closing";
 import {
   BandTitle,
@@ -25,6 +26,29 @@ import { Section } from "./Section";
 
 function Body({ section }: { section: SectionConfig }) {
   switch (section.kind) {
+    // Opening, then the chain in two blocks: the overview on top and, joined to it by the connector, the ring that plays
+    // the scene of the system the overview lights
+    case "chain": {
+      const { ring, tone } = section;
+      return (
+        <div className={shell.wrap}>
+          <div className={home.lede}>
+            <h2 className={home.ledeTitle}>{HOME_INTRO.title}</h2>
+            <p className={home.ledeLine}>{HOME_INTRO.lead}</p>
+          </div>
+          <div className={home.chainBlock} data-chain>
+            <ChainOverview tone={tone} />
+            <RingStage
+              id={ring.id}
+              kind={ring.kind}
+              eager={ring.eager}
+              tone={tone}
+              label={ring.label}
+            />
+          </div>
+        </div>
+      );
+    }
     case "ring": {
       const { ring, head, tone, cards } = section;
       const stage = (
