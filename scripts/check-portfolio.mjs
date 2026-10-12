@@ -158,9 +158,10 @@ for (const slug of SLUGS) {
     html.includes('id="resolves"') && html.includes('id="capabilities"'),
     `${slug} page has the problems and the capabilities`,
   );
+  // The caption follows the scene as plain text: a carousel that changes by itself is not a live region
   assert(
-    /<p[^>]*data-caption[^>]*aria-live="polite"/.test(html),
-    `${slug} page has the live caption`,
+    /<p[^>]*data-caption/.test(html) && !/aria-live/.test(html),
+    `${slug} page has the caption, without a live region`,
   );
   const productWords = visibleText(html).split(" ").length;
   assert(productWords <= 260, `${slug} has ${productWords} visible words`);
