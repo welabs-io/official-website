@@ -1,0 +1,115 @@
+/* MOVIMENTO DAS CENAS NATIVAS */
+/* The only motion of the scenes. Every scene (.scn) has a phase, written by the runner:
+     end    the settled frame: no animation at all, the plain CSS of each element (default, reduced motion, no script);
+     start  the first frame: every animated element held at its "from" state (animation paused at 0, fill backwards);
+     play   the same animations running with the times of the script (--at, --d, --i, --st).
+   Each effect animates FROM a state TO the natural one, so "end" needs no keyframes and a scene that leaves "play" does
+   not jump. Only opacity, transform, clip-path and colours move. */
+.scn [data-fx] {
+  animation-duration: var(--d, 0.35s);
+  animation-delay: calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s));
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation-fill-mode: both;
+}
+.scn[data-phase="start"] [data-fx],
+.scn[data-phase="start"] [data-fx]::before {
+  animation-play-state: paused;
+}
+/* The runner pauses everything when the stage leaves the screen or the tab is hidden */
+[data-run="paused"] .scn[data-phase="play"] [data-fx],
+[data-run="paused"] .scn[data-phase="play"] [data-fx]::before {
+  animation-play-state: paused;
+}
+
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="in"] {
+  animation-name: fx-in;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pop"] {
+  animation-name: fx-pop;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="wipe"] {
+  animation-name: fx-wipe;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="out"] {
+  animation-name: fx-out;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="drop"] {
+  animation-name: fx-drop;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="blink"] {
+  animation-name: fx-blink;
+}
+/* "light": the element goes from plain to the lit colours, and its 4 px amber bar (::before) grows */
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="light"] {
+  animation-name: fx-light;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="light"]::before {
+  animation: fx-bar var(--d, 0.35s)
+    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s))
+    cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes fx-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+@keyframes fx-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+@keyframes fx-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes fx-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fx-drop {
+  from {
+    transform: translateY(var(--dy, 0));
+  }
+}
+@keyframes fx-blink {
+  0% {
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fx-light {
+  from {
+    background-color: var(--s-surface);
+    border-color: var(--s-line);
+  }
+}
+@keyframes fx-bar {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+/* Reduced motion: every scene shows its settled frame, whatever the runner wrote */
+@media (prefers-reduced-motion: reduce) {
+  .scn [data-fx],
+  .scn [data-fx]::before {
+    animation: none !important;
+  }
+}

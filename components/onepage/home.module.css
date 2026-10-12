@@ -145,7 +145,7 @@
   width: 2px;
   height: var(--closing-gap);
   margin-left: -1px;
-  background: var(--line);
+  background: var(--thread, var(--line));
 }
 .thread::after {
   content: "";

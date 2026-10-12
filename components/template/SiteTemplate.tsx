@@ -7,6 +7,7 @@ import { ProductBlock } from "@/components/onepage/ProductBlock";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { RingStage } from "@/components/ring/RingStage";
+import { SceneStage } from "@/components/scenes/SceneStage";
 import { HOME_INTRO, PAGE_HEADINGS } from "@/lib/content";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
@@ -38,13 +39,7 @@ function Body({ section }: { section: SectionConfig }) {
           </div>
           <div className={home.chainBlock} data-chain>
             <ChainOverview tone={tone} />
-            <RingStage
-              id={ring.id}
-              kind={ring.kind}
-              eager={ring.eager}
-              tone={tone}
-              label={ring.label}
-            />
+            <SceneStage id={ring.id} tone={tone} label={ring.label} />
           </div>
         </div>
       );

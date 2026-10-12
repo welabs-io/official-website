@@ -6,13 +6,6 @@
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 
-type Data = {
-  slides: {
-    segments: { range: [number, number]; rate: number; holdAfter: number }[];
-  }[];
-  labels: string[];
-};
-
 for (const vp of VIEWPORTS)
   test.describe(`manifest at ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
@@ -49,11 +42,12 @@ for (const vp of VIEWPORTS)
         }, 100);
       });
       await page.goto("/", { waitUntil: "load" });
-      const data: Data = JSON.parse(
+      // The durations are the script's (settle + hold of each native scene), written next to the stage
+      const data = JSON.parse(
         (await page
-          .locator("#chain-ring script[data-ring-data]")
+          .locator("#chain-ring script[data-scene-data]")
           .textContent())!,
-      );
+      ) as { scenes: number[] };
       // The caption of the step is the label of the overview (the block above the ring), which follows the swap
       const overview: { steps: { label: string }[] } = JSON.parse(
         (await page
@@ -78,10 +72,8 @@ for (const vp of VIEWPORTS)
           overview.steps[swap.to].label,
         );
       for (let i = 1; i < swaps.length; i++) {
-        // The interval between swap i-1 and i is the time step (i-1) is on screen: its screen time plus its hold
-        const step = data.slides[swaps[i - 1].to].segments[0];
-        const expected =
-          (step.range[1] - step.range[0]) / step.rate + step.holdAfter;
+        // The interval between swap i-1 and i is the time scene (i-1) is on screen: its settle plus its hold
+        const expected = data.scenes[swaps[i - 1].to];
         const measured = (swaps[i].at - swaps[i - 1].at) / 1000;
         expect(
           Math.abs(measured - expected),

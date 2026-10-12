@@ -1,6 +1,6 @@
 /* BASE DA PÁGINA */
-/* Welabs 1.5.x: amber only as an area (dot, block, 4 px+ bar), graphite and cream bands alternating by section,
-   Inter text. */
+/* Welabs light theme (cream): one theme for the whole page, amber only as an area (dot, block, 4 px+ bar), Inter text.
+   Only the footer is graphite. The products' videos are dark objects inside the cream. */
 .page {
   --g: #10141c;
   --g2: #161b25;
@@ -12,13 +12,15 @@
   --ink: #1c1a16;
   --mute-d: #9da3ae;
   --mute-l: #625b4e;
+  /* Structural lines of the light theme (thread, rails, bus): darker than the hairlines of the cards, so the drawing reads */
+  --thread-l: #d2c6ae;
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;
   --logo-h: 42px;
   /* Top padding of the closing: the stretches of the section above run down to the strip through it */
   --closing-pt: clamp(28px, 3.5vh, 40px);
-  background: var(--g);
-  color: var(--c);
+  background: var(--c);
+  color: var(--ink);
   overflow-x: clip;
 }
 .page h1,
@@ -45,6 +47,7 @@
   color: var(--ink);
   --bg: var(--c);
   --line: var(--cl);
+  --thread: var(--thread-l);
   --mute: var(--mute-l);
   --soft: rgb(28 26 22 / 0.08);
 }
@@ -73,9 +76,9 @@
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--g) 90%, transparent);
+  background: color-mix(in srgb, var(--c) 92%, transparent);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--g3);
+  border-bottom: 1px solid var(--cl);
 }
 .headerInner {
   display: flex;
@@ -204,7 +207,7 @@
   width: 2px;
   margin-left: -1px;
   pointer-events: none;
-  background: var(--line);
+  background: var(--thread, var(--line));
 }
 .band::after {
   content: "";
@@ -318,7 +321,7 @@
   left: calc((2 * var(--i) + 1) / 6 * 100%);
   width: 2px;
   margin-left: -1px;
-  background: var(--line);
+  background: var(--thread, var(--line));
 }
 .clip {
   position: absolute;

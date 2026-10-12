@@ -5,10 +5,11 @@ import "./brand/welabs.css";
 import "./globals.css";
 
 // MARCA NO NAVEGADOR
-// Graphite browser chrome and the official favicon; themeColor mirrors --wl-graphite (metadata cannot read CSS variables).
+// Cream browser chrome (the light theme of the brand) and the official favicon; themeColor mirrors --wl-cream (metadata
+// cannot read CSS variables).
 export const viewport: Viewport = {
-  themeColor: "#10141C",
-  colorScheme: "dark",
+  themeColor: "#FAF5EA",
+  colorScheme: "light",
 };
 export const metadata: Metadata = {
   title: "Welabs",
@@ -31,9 +32,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // data-theme="dark" sits on <html>: the package's dark tokens only apply on the root element
+  // data-theme="light" sits on <html>: it pins the package's light tokens against the system dark preference
   return (
-    <html lang="pt-BR" data-theme="dark">
+    <html lang="pt-BR" data-theme="light">
       <head>
         {/* Inter is the only text face of the brand (the Ibrand lives in the logos); see app/globals.css */}
         <link

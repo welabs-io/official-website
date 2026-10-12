@@ -1,6 +1,6 @@
 /* FAIXAS DE LOGOS EM PRETO E BRANCO */
-/* A slow marquee that runs while it is on screen, white marks on the graphite band. One strip is 64 px tall. Under
-   prefers-reduced-motion it is one wrapped row, nothing cut off. */
+/* A slow marquee that runs while it is on screen, graphite marks on the cream band. One strip is 64 px tall. Under
+   prefers-reduced-motion it is centred rows of equal cells, nothing cut off. */
 .carousel {
   display: flex;
   align-items: center;
@@ -46,15 +46,15 @@
   display: block;
   width: auto;
 }
-/* Black and white: every mark becomes white, a little softened */
+/* Black and white: every mark becomes graphite, a little softened */
 .clients img,
 .all img {
-  filter: grayscale(1) brightness(0) invert(1);
-  opacity: 0.8;
+  filter: grayscale(1) brightness(0);
+  opacity: 0.7;
 }
 .platforms img {
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
+  filter: brightness(0);
+  opacity: 0.7;
 }
 .carousel[data-on="true"] .track {
   animation: slide var(--dur, 50s) linear infinite;
@@ -79,13 +79,22 @@
     mask-image: none;
   }
   .track {
-    width: auto;
+    width: 100%;
     animation: none !important;
   }
+  /* Centred and regular: every mark gets a cell of the same width, rows fill from the middle and the last row is
+     centred too, so no row hangs to the left with a few marks over */
   .set {
     flex-wrap: wrap;
-    row-gap: 20px;
+    justify-content: center;
+    gap: 20px 12px;
+    width: 100%;
     padding-right: 0;
+  }
+  .set li {
+    display: flex;
+    flex: 0 0 7.5rem;
+    justify-content: center;
   }
   .set[aria-hidden="true"] {
     display: none;

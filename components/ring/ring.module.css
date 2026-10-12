@@ -157,9 +157,17 @@
 }
 
 /* Phone: the tile takes the whole wrap (about 87% of the screen) */
+/* The openings and films of the home are dark objects on the cream page: their carousel is 0.75 of the tile of the chain
+   (570 px at most, 42% of the window, 87% of the wrap on a phone), so the dark frame does not outweigh the scenes above */
+.screen:has([data-ring="products"]) {
+  --tile-w: min(570px, 42vw);
+}
 @media (max-width: 860px) {
   .screen {
     --tile-w: min(100%, 760px);
+  }
+  .screen:has([data-ring="products"]) {
+    --tile-w: 87%;
   }
   .caption {
     min-height: 2.8em;

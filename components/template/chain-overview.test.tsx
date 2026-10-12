@@ -5,13 +5,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
 import { overviewData } from "@/lib/overview-data";
+import { SCRIPT, sceneSeconds } from "@/lib/scenes/script";
 import { colPercent, stepVars } from "@/lib/overview-geometry";
 import { SiteTemplate } from "./SiteTemplate";
 import { PRODUCTS } from "@/lib/products";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
 
-const html = renderToStaticMarkup(<ChainOverview tone="dark" />);
+const html = renderToStaticMarkup(<ChainOverview tone="light" />);
 const page = renderToStaticMarkup(<SiteTemplate config={HOME_CONFIG} />);
 
 describe("overview data", () => {
@@ -24,14 +25,13 @@ describe("overview data", () => {
         expect(c).toBeLessThan(data.order.length);
       }
   });
-  it("the token delay and duration are the manifest's piece seconds over the rate", () => {
-    MANIFEST.chain.steps.forEach(({ overview: o, detail: d }, i) => {
-      expect(data.steps[i].delay).toBeCloseTo((o.from - d.from) / d.rate, 3);
-      expect(data.steps[i].dur).toBeCloseTo((o.to - o.from) / d.rate, 3);
-      // The token lands before the scene ends (hold included)
-      expect(data.steps[i].delay + data.steps[i].dur).toBeLessThan(
-        (d.to - d.from) / d.rate + d.hold,
-      );
+  it("the token delay and duration are the script's, and the token lands before the scene ends", () => {
+    SCRIPT.forEach((scene) => {
+      expect(data.steps[scene.step].delay).toBeCloseTo(scene.token.at, 3);
+      expect(data.steps[scene.step].dur).toBeCloseTo(scene.token.dur, 3);
+      expect(
+        data.steps[scene.step].delay + data.steps[scene.step].dur,
+      ).toBeLessThan(sceneSeconds(scene));
     });
   });
   it("the bridge of the connector reaches from the farthest lit node to the axis", () => {
@@ -51,7 +51,7 @@ describe("overview markup", () => {
     expect(html).not.toMatch(/aria-live/);
     expect(html).toContain("Pedido 1234");
     for (const slug of Object.keys(MANIFEST.products))
-      expect(html).toContain(`${slug}-dark.svg`);
+      expect(html).toContain(`${slug}-light.svg`);
     expect(html).not.toContain("-endorsed");
   });
   it("names each product once, without 'by Welabs' where the file has no seal", () => {

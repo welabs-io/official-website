@@ -1,8 +1,8 @@
 // CARROSSEL DE LOGOS EM PRETO E BRANCO
-// A slow marquee (white marks on the graphite band, one theme for clients and platforms). Server markup only: it runs
+// A slow marquee (graphite marks on the cream band, one theme for clients and platforms). Server markup only: it runs
 // while `data-on` is "true", which LiveObserver sets for the elements marked `data-live` that are on screen. The second
-// copy of the list exists only to close the loop (aria-hidden). Under prefers-reduced-motion CSS turns it into one
-// wrapped row.
+// copy of the list exists only to close the loop (aria-hidden). Under prefers-reduced-motion CSS turns it into centred
+// rows of equal cells.
 import styles from "./logos.module.css";
 
 type Logo = { name: string; src: string; h: number };

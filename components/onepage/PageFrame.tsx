@@ -18,7 +18,7 @@ function Header({ home }: { home: boolean }) {
           className={styles.brand}
           aria-label="Welabs, início"
         >
-          <img src={WELABS_LOGO.dark} alt="Welabs" height={42} />
+          <img src={WELABS_LOGO.light} alt="Welabs" height={42} />
         </Link>
         <a href={CONTACT_HREF} className={styles.cta}>
           {CTA_LABEL}

@@ -1,7 +1,7 @@
 // A TROCA NUNCA MOSTRA QUADRO VAZIO
-// In three consecutive swaps of the chain ring, sampled every 50 ms, the tile that is about to enter (the next neighbour
-// at +1 and the one behind it at +2) always has a displayed cover that is decoded (`complete` and `naturalWidth > 0`)
-// before the swap starts. Covers of the tiles at +2 are loaded ahead on purpose (components/ring/positions.ts).
+// In three consecutive swaps of the native chain, sampled every 50 ms, the tile that is about to enter (the next neighbour
+// at +1 and the one behind it at +2) is always a drawn scene (a window with text) before the swap starts: the scenes are
+// server markup, so there is no image to wait for.
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 
@@ -35,15 +35,14 @@ for (const vp of VIEWPORTS)
           const tiles = [
             ...ring.querySelectorAll<HTMLElement>(`[data-pos="${pos}"]`),
           ];
-          // The displayed cover: an image of the tile that is rendered (display is not none)
-          const ok = tiles.some((tile) =>
-            [...tile.querySelectorAll("img")].some(
-              (img) =>
-                img.offsetParent !== null &&
-                img.complete &&
-                img.naturalWidth > 0,
-            ),
-          );
+          // Native scenes have no cover image: the tile that is about to enter must already be a drawn scene (a window
+          // with text), standing still in its first frame
+          const ok = tiles.some((tile) => {
+            const scene = tile.querySelector<HTMLElement>(".scn");
+            return (
+              !!scene && scene.offsetHeight > 0 && !!scene.textContent?.trim()
+            );
+          });
           if (!ok)
             w.__bad.push(
               `swap ${w.__swaps} pos ${pos} ${tiles.map((t) => t.getAttribute("aria-label")).join(" | ")}`,

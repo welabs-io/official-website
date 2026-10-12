@@ -14,7 +14,7 @@ import {
   tieKey,
 } from "./home";
 import { PRODUCT_CONTENT } from "./products";
-import { COPY_RULES, words } from "./rules";
+import { copyViolation, words } from "./rules";
 
 const sentences = (): string[] => {
   const all: string[] = [
@@ -91,6 +91,6 @@ describe("the common sentences respect their limits", () => {
 
 describe("no slogan, banned word or maturity marker in any sentence", () => {
   it.each(sentences().map((s) => [s]))("%s", (sentence) => {
-    expect(sentence).not.toMatch(COPY_RULES);
+    expect(copyViolation(sentence)).toBeNull();
   });
 });

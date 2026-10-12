@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 // VERIFICAÇÃO DO SITE CONTRA O PREVIEW
 // Checks what the Welabs site serves today against a running server (PORTFOLIO_PREVIEW_URL, default 3000): the home
@@ -40,10 +41,19 @@ const hiddenText = (html) =>
     .map((m) => m[1])
     .join(" ");
 
-const SLOGAN =
-  /\b(domina|atende|automatiza|entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
-const BANNED =
-  /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|sandbox|em breve|roadmap|em desenvolvimento|coming soon)\b/i;
+// The copy rules are ONE list, shared with the tests (lib/content/rules.ts reads the same file): slogan verbs, banned
+// words ("cliente", "erp"...), slogan phrases, and the closed list of expressions where "entrega" is a noun
+const rules = JSON.parse(
+  readFileSync(new URL("../lib/content/copy-rules.json", import.meta.url)),
+);
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const WORDS = new RegExp(`\\b(?:${rules.words.map(esc).join("|")})\\b`, "i");
+const PHRASES = new RegExp(rules.phrases.map(esc).join("|"), "i");
+const ALLOWED = new RegExp(rules.allowed.map(esc).join("|"), "gi");
+const violation = (text) => {
+  const clean = text.replace(ALLOWED, " ");
+  return clean.match(WORDS)?.[0] ?? clean.match(PHRASES)?.[0] ?? null;
+};
 const IMAGINE_SYSTEMS = /stant|tabe\.la|tabela|wego/i;
 
 const pages = new Map();
@@ -57,14 +67,7 @@ const page = async (url) => {
   assert(!/role="progressbar"|Pausar|Retomar/i.test(html), `${url} has a bar`);
   assert(!/<video|<iframe|<audio/i.test(html), `${url} has a video element`);
   const all = `${visibleText(html)} ${hiddenText(html)}`;
-  assert(
-    !SLOGAN.test(all),
-    `${url} has a slogan word: ${all.match(SLOGAN)?.[0]}`,
-  );
-  assert(
-    !BANNED.test(all),
-    `${url} has a banned word: ${all.match(BANNED)?.[0]}`,
-  );
+  assert(!violation(all), `${url} breaks the copy rules: ${violation(all)}`);
   return html;
 };
 
@@ -122,9 +125,26 @@ assert(
   "the seal is only the identity highlight of the product page, not the home",
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
-const words = visibleText(home).split(" ").length;
+// The words of the page copy: the text drawn inside the native scenes is product interface (a screen), not copy, so the
+// block between the stage and its data is left out of the count (the slogan and banned-word rules above still read it)
+const copyOnly = (html) => {
+  const at = html.indexOf("data-scenes");
+  const end = html.indexOf("data-scene-data");
+  return at < 0 || end < at
+    ? html
+    : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+};
+const words = visibleText(copyOnly(home)).split(" ").length;
 // 160 before the opening and the overview of the chain entered the home (about 36 words); now 180
 assert(words <= 180, `home has ${words} visible words`);
+assert(
+  !/<video|<hyperframes-player/i.test(chainHtml),
+  "the chain has no video",
+);
+assert(
+  (home.match(/data-tile="s\d"/g) ?? []).length === 7,
+  "the chain has seven native scenes",
+);
 // Content layer: five product cards, the active one lit, each leading to its page
 const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
 assert.equal(cards.length, 5, "the home has five product cards");
@@ -146,7 +166,7 @@ for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
 for (const slug of SLUGS) {
   const html = await page(`/products/${slug}`);
   assert(
-    new RegExp(`${slug}-dark-endorsed\\.svg`).test(html),
+    new RegExp(`${slug}-light-endorsed\\.svg`).test(html),
     `${slug} page has the logo with seal`,
   );
   assert(
