@@ -636,7 +636,7 @@
           "input": "ligação e mensagem da cliente",
           "output": "a solicitação, em pacote",
           "value": "venha de onde vier, o pedido chega inteiro na mesma conversa",
-          "label": "Uma conversa só"
+          "label": "Canais juntos"
         },
         "overview": {
           "nodes": [
@@ -1233,7 +1233,7 @@
           "evidence": "plan-v5/out/measurements.md (chain step 4); frames at 1/30 s of the site copy"
         },
         "step": 4,
-        "srLabel": "O que o Domus define vira um fluxo que roda no Magneto.",
+        "srLabel": "A regra cadastrada no Domus vira um fluxo que roda no Magneto.",
         "products": [
           "domus",
           "magneto"

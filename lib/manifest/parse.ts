@@ -70,8 +70,16 @@ function checkLabel(label: unknown, where: string) {
   // Sentence case: one capital, the first letter
   if (!/^\p{Lu}[^\p{Lu}]*$/u.test(label))
     throw new ManifestError(where, `label is not sentence case: ${label}`);
-  if (FORBIDDEN.test(label))
-    throw new ManifestError(where, `label has a forbidden word: ${label}`);
+  checkCopy(label, where, "label");
+}
+
+// TEXTO EXIBIDO OU LIDO
+// Every text of the manifest that is shown or read aloud (labels, srLabels, titles) obeys the banned words, mechanism
+// words and slogan verbs of the whole site (lib/content/rules.ts); there is no exception for what comes from the round.
+function checkCopy(text: unknown, where: string, field: string) {
+  if (typeof text !== "string") return;
+  if (FORBIDDEN.test(text) || COPY_RULES.test(text))
+    throw new ManifestError(where, `${field} has a forbidden word: ${text}`);
 }
 
 // OVERVIEW E DETAIL DE UM PASSO
@@ -125,12 +133,7 @@ function checkTwoBlocks(step: ChainStep, where: string) {
       `${where}/overview`,
       `label has more than 6 words or 48 characters: ${o.label}`,
     );
-  // The same banned words and slogan verbs as every other visible text of the site, no exception for the manifest
-  if (FORBIDDEN.test(o.label) || COPY_RULES.test(o.label))
-    throw new ManifestError(
-      `${where}/overview`,
-      `label has a forbidden word: ${o.label}`,
-    );
+  checkCopy(o.label, `${where}/overview`, "label");
   // The detail is the step: same piece, range, rate and covers; its hold is the holdAfter of the step
   if (
     d.piece !== step.piece ||
@@ -150,6 +153,7 @@ function checkTwoBlocks(step: ChainStep, where: string) {
     );
   if (typeof d.srLabel !== "string" || d.srLabel.length < 8)
     throw new ManifestError(`${where}/detail`, "srLabel is too short");
+  checkCopy(d.srLabel, `${where}/detail`, "srLabel");
   if (
     o.nodes.length !== step.products.length ||
     o.nodes.some((n) => !step.products.includes(n))
@@ -197,6 +201,7 @@ export function parseManifest(raw: unknown): Manifest {
     known(step.piece, where);
     if (typeof step.srLabel !== "string" || step.srLabel.length < 8)
       throw new ManifestError(where, "srLabel is too short");
+    checkCopy(step.srLabel, where, "srLabel");
     if (!step.products?.length || step.products.some((p) => !SLUGS.includes(p)))
       throw new ManifestError(where, "products has an unknown slug");
     const c = step.connection;
@@ -230,6 +235,7 @@ export function parseManifest(raw: unknown): Manifest {
     if (!product) throw new ManifestError(where, "is missing");
     checkSegment(product.intro, `${where}/intro`);
     known(product.intro.piece, `${where}/intro`);
+    checkCopy(product.intro.title, `${where}/intro`, "title");
     if (!product.films?.length) throw new ManifestError(where, "has no films");
     const mains = product.films.filter((f) => f.role === "main");
     if (mains.length !== 1)
@@ -238,11 +244,13 @@ export function parseManifest(raw: unknown): Manifest {
       const at = `${where}/films/${f}`;
       known(film.piece, at);
       if (!film.title) throw new ManifestError(at, "has no title");
+      checkCopy(film.title, at, "title");
       if (!film.segments?.length)
         throw new ManifestError(at, "has no segments");
       film.segments.forEach((s, j) => {
         checkSegment(s, `${at}/segments/${j}`);
         known(s.piece, `${at}/segments/${j}`);
+        checkCopy(s.title, `${at}/segments/${j}`, "title");
       });
     });
   }

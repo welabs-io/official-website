@@ -130,6 +130,27 @@ describe("parse", () => {
       /forbidden word/,
     ],
     [
+      "step srLabel with a slogan verb",
+      (m) => (m.chain.steps[0].srLabel = "O Domus define o negócio inteiro."),
+      /srLabel has a forbidden word/,
+    ],
+    [
+      "detail srLabel with a mechanism word",
+      (m) =>
+        (m.chain.steps[0].detail.srLabel = "O recibo volta ao cômodo Pedidos."),
+      /srLabel has a forbidden word/,
+    ],
+    [
+      "connection label that is a slogan fragment",
+      (m) => (m.chain.steps[0].connection.label = "Domus entrega"),
+      /label has a forbidden word/,
+    ],
+    [
+      "film title with a slogan verb",
+      (m) => (m.products.domus.films[0].title = "Domus: ele automatiza tudo"),
+      /title has a forbidden word/,
+    ],
+    [
       "overview label with a mechanism name",
       (m) => (m.chain.steps[0].overview.label = "Recibo do pedido"),
       /forbidden word/,
