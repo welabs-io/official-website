@@ -19,7 +19,7 @@ export const SWAP_SECONDS = 0.4;
 export const CONNECTOR_SECONDS = 0.7;
 
 // Share of the cycle that must be still
-export const STILL_TARGET = 0.68;
+export const STILL_TARGET = 0.7;
 
 export type Action = {
   // Name the components look up (`data-act`); unique inside the scene
@@ -55,7 +55,7 @@ export const SCRIPT: readonly SceneScript[] = [
       { id: "funnel", at: 1.5, dur: 0.35 },
     ],
     settle: 1.85,
-    hold: 3.9,
+    hold: 4.7,
     token: { at: 0.5, dur: 1.35 },
   },
   {
@@ -68,7 +68,7 @@ export const SCRIPT: readonly SceneScript[] = [
       { id: "merge", at: 2.3, dur: 0.5 },
     ],
     settle: 2.8,
-    hold: 3.9,
+    hold: 4.7,
     token: { at: 2.3, dur: 0.5 },
   },
   {
@@ -81,7 +81,7 @@ export const SCRIPT: readonly SceneScript[] = [
       { id: "review", at: 2.4, dur: 0.45 },
     ],
     settle: 2.85,
-    hold: 3.9,
+    hold: 4.7,
     token: { at: 2.4, dur: 0.45 },
   },
   {
@@ -90,7 +90,7 @@ export const SCRIPT: readonly SceneScript[] = [
     products: ["domus"],
     actions: [{ id: "handoff", at: 0.5, dur: 1.1 }],
     settle: 1.6,
-    hold: 3.9,
+    hold: 4.7,
     token: { at: 0.5, dur: 1.1 },
   },
   {
@@ -103,7 +103,7 @@ export const SCRIPT: readonly SceneScript[] = [
       { id: "answer", at: 1.9, dur: 0.5 },
     ],
     settle: 2.4,
-    hold: 3.9,
+    hold: 4.7,
     token: { at: 1.9, dur: 0.5 },
   },
   {
@@ -116,7 +116,7 @@ export const SCRIPT: readonly SceneScript[] = [
       { id: "finish", at: 2.5, dur: 0.8 },
     ],
     settle: 3.3,
-    hold: 4.1,
+    hold: 4.9,
     token: { at: 0.5, dur: 0.6 },
   },
   {
@@ -130,7 +130,7 @@ export const SCRIPT: readonly SceneScript[] = [
     ],
     settle: 2.2,
     // The last scene stays longer, with the whole map at rest before the loop
-    hold: 4.9,
+    hold: 5.7,
     token: { at: 0.5, dur: 0.8 },
   },
 ];

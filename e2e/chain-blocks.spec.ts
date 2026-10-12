@@ -71,18 +71,14 @@ const install = () => {
       w.__p.node,
     );
   });
-  // The centre tile must always show a decoded cover or a player
+  // The centre tile must always show a drawn scene (a window with text), never an empty frame
   setInterval(() => {
     if (w.__p.swaps.length < 1) return;
     const tile = document.querySelector<HTMLElement>(
       '#chain-ring [data-pos="0"]',
     );
-    const ok =
-      !!tile?.querySelector("hyperframes-player") ||
-      [...(tile?.querySelectorAll("img") ?? [])].some(
-        (img) =>
-          img.offsetParent !== null && img.complete && img.naturalWidth > 0,
-      );
+    const scene = tile?.querySelector<HTMLElement>(".scn");
+    const ok = !!scene && scene.offsetHeight > 0 && !!scene.textContent?.trim();
     if (!ok) w.__p.empty.push(String(performance.now()));
   }, 40);
 };
