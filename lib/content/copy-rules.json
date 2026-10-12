@@ -1,0 +1,51 @@
+{
+  "_note": "Single list of the copy rules: read by lib/content/rules.ts (vitest) and by scripts/check-portfolio.mjs, so the two never diverge. `words` are matched as whole words, `phrases` as they are, `allowed` are the closed list of expressions removed before matching (the slogan verb 'entrega' is only allowed inside them).",
+  "words": [
+    "domina",
+    "atende",
+    "automatiza",
+    "entrega",
+    "sabe",
+    "define",
+    "explica",
+    "conecta",
+    "transforma",
+    "ecossistema",
+    "cliente",
+    "clientes",
+    "erp",
+    "ficha",
+    "recibo",
+    "protocolo",
+    "tenant",
+    "fila",
+    "webhook",
+    "payload",
+    "beta",
+    "alpha",
+    "mvp",
+    "v2",
+    "roadmap",
+    "em breve",
+    "breve",
+    "sandbox",
+    "em desenvolvimento",
+    "coming soon"
+  ],
+  "phrases": [
+    "a empresa inteira numa casa",
+    "ele automatiza",
+    "todo canal, uma conversa só",
+    "não é só memória",
+    "os outros dão vida",
+    "ideias que viram",
+    "um só fluxo",
+    "do primeiro oi ao fechamento"
+  ],
+  "allowed": [
+    "alteração de entrega",
+    "janela de entrega",
+    "política de entregas",
+    "entregas"
+  ]
+}

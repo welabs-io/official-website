@@ -4,7 +4,7 @@
 // rules. The stage keeps the same swap of positions as the ring it replaced.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { COPY_RULES } from "@/lib/content/rules";
+import { copyViolation } from "@/lib/content/rules";
 import { MANIFEST } from "@/lib/manifest";
 import { SCRIPT } from "@/lib/scenes/script";
 import { STORY } from "@/lib/scenes/story";
@@ -54,7 +54,7 @@ describe("scene components", () => {
     };
     walk(STORY);
     expect(strings.length).toBeGreaterThan(30);
-    for (const s of strings) expect(s).not.toMatch(COPY_RULES);
+    for (const s of strings) expect(copyViolation(s), s).toBeNull();
   });
 
   it("the story has the texts of the brief", () => {

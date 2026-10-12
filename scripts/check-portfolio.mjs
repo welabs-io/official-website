@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 // VERIFICAÇÃO DO SITE CONTRA O PREVIEW
 // Checks what the Welabs site serves today against a running server (PORTFOLIO_PREVIEW_URL, default 3000): the home
@@ -40,11 +41,19 @@ const hiddenText = (html) =>
     .map((m) => m[1])
     .join(" ");
 
-// "entrega" is the slogan verb; "de entrega" (the order of the story, interface text of the scenes) is a noun
-const SLOGAN =
-  /\b(domina|atende|automatiza|(?<!\bde )entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
-const BANNED =
-  /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|sandbox|em breve|roadmap|em desenvolvimento|coming soon)\b/i;
+// The copy rules are ONE list, shared with the tests (lib/content/rules.ts reads the same file): slogan verbs, banned
+// words ("cliente", "erp"...), slogan phrases, and the closed list of expressions where "entrega" is a noun
+const rules = JSON.parse(
+  readFileSync(new URL("../lib/content/copy-rules.json", import.meta.url)),
+);
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const WORDS = new RegExp(`\\b(?:${rules.words.map(esc).join("|")})\\b`, "i");
+const PHRASES = new RegExp(rules.phrases.map(esc).join("|"), "i");
+const ALLOWED = new RegExp(rules.allowed.map(esc).join("|"), "gi");
+const violation = (text) => {
+  const clean = text.replace(ALLOWED, " ");
+  return clean.match(WORDS)?.[0] ?? clean.match(PHRASES)?.[0] ?? null;
+};
 const IMAGINE_SYSTEMS = /stant|tabe\.la|tabela|wego/i;
 
 const pages = new Map();
@@ -58,14 +67,7 @@ const page = async (url) => {
   assert(!/role="progressbar"|Pausar|Retomar/i.test(html), `${url} has a bar`);
   assert(!/<video|<iframe|<audio/i.test(html), `${url} has a video element`);
   const all = `${visibleText(html)} ${hiddenText(html)}`;
-  assert(
-    !SLOGAN.test(all),
-    `${url} has a slogan word: ${all.match(SLOGAN)?.[0]}`,
-  );
-  assert(
-    !BANNED.test(all),
-    `${url} has a banned word: ${all.match(BANNED)?.[0]}`,
-  );
+  assert(!violation(all), `${url} breaks the copy rules: ${violation(all)}`);
   return html;
 };
 

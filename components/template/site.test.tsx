@@ -10,7 +10,7 @@ import {
   TIE_LINES,
   tieKey,
 } from "@/lib/content";
-import { COPY_RULES } from "@/lib/content/rules";
+import { copyViolation } from "@/lib/content/rules";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
@@ -57,14 +57,6 @@ const copyOnly = (html: string) => {
     : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
 };
 
-// Brand-concept words and phrases that are only allowed inside chain presentations. "entrega" is the slogan verb; after
-// "de" it is the noun of the order of the story ("Alteração de entrega").
-const SLOGAN =
-  /\b(domina|atende|automatiza|(?<!\bde )entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
-// Words the operator ruled out of the site
-const BANNED =
-  /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|em breve|roadmap)\b/i;
-
 describe("pages carry no player interface", () => {
   it.each(pages)(
     "$slug has no progress bar, no pause button, no controls and no video",
@@ -83,8 +75,8 @@ describe("pages carry no player interface", () => {
 describe("pages carry little text and no slogan", () => {
   it.each(pages)("$slug has no slogan or banned word", ({ html }) => {
     const all = `${visibleText(html)} ${hiddenText(html)}`;
-    expect(all).not.toMatch(SLOGAN);
-    expect(all).not.toMatch(BANNED);
+    // One list for slogans and banned words (lib/content/copy-rules.json), with the closed list of allowed expressions
+    expect(copyViolation(all)).toBeNull();
   });
 
   it("the home and a product page stay under the word budget of the content layer", () => {
@@ -178,7 +170,7 @@ describe("the content layer on the rendered pages", () => {
     "$slug carries no slogan, banned word or maturity marker in what it shows or announces",
     ({ html }) => {
       const all = `${text(html)} ${hiddenText(html)}`;
-      expect(all).not.toMatch(COPY_RULES);
+      expect(copyViolation(all)).toBeNull();
     },
   );
 
