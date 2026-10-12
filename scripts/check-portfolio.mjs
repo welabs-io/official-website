@@ -164,7 +164,7 @@ for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
 for (const slug of SLUGS) {
   const html = await page(`/products/${slug}`);
   assert(
-    new RegExp(`${slug}-dark-endorsed\\.svg`).test(html),
+    new RegExp(`${slug}-light-endorsed\\.svg`).test(html),
     `${slug} page has the logo with seal`,
   );
   assert(
