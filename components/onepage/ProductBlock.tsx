@@ -29,7 +29,7 @@ export function ProductBlock({
   const logo = (
     <img
       className={styles.logo}
-      src={productLogo(slug, tone, "hero", 80)}
+      src={productLogo(slug, tone, "hero", 64)}
       alt={productAlt(slug, "hero")}
       width={1005}
       height={550}
@@ -39,7 +39,7 @@ export function ProductBlock({
   return (
     <div
       className={className}
-      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      style={{ display: "flex", flexDirection: "column", gap: 8 }}
     >
       <Heading style={{ margin: 0, fontSize: "inherit", lineHeight: 0 }}>
         {link ? (

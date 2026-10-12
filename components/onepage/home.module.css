@@ -5,8 +5,8 @@
 /* SEÇÃO 1: CADEIA */
 /* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
 .chain {
-  --pt: calc(var(--header-h) + 56px);
-  --pb: 56px;
+  --pt: calc(var(--header-h) + 44px);
+  --pb: 44px;
 }
 
 .srOnly {
@@ -20,19 +20,19 @@
 
 /* SEÇÃO 2: PRODUTOS */
 .products {
-  --pt: 56px;
-  --pb: 56px;
+  --pt: 44px;
+  --pb: 44px;
 }
 
 /* PÁGINA DE PRODUTO */
 .productPage {
-  --pt: calc(var(--header-h) + 32px);
-  --pb: 48px;
+  --pt: calc(var(--header-h) + 16px);
+  --pb: 36px;
 }
 .productPageGrid {
   display: grid;
   justify-items: stretch;
-  gap: 16px;
+  gap: 8px;
 }
 .productPageGrid > :first-child {
   justify-self: start;
@@ -42,14 +42,14 @@
 
 /* The chain narrowed to the product, as compact as the home's sections */
 .productChain {
-  --pt: 56px;
-  --pb: 56px;
+  --pt: 44px;
+  --pb: 44px;
 }
 
 /* SEÇÃO 3: CONECTORES */
 .connectors {
-  --pt: 48px;
-  --pb: 48px;
+  --pt: 40px;
+  --pb: 40px;
 }
 
 /* SEÇÃO 4: FECHAMENTO */
@@ -60,7 +60,7 @@
   /* Gap and top padding are named: the stretches that converge on the strip (ConnectorRail, --closing-pt comes from
      the page, as the stretches belong to the section above) and the thread between the strip and the button are drawn
      from them */
-  --closing-gap: 24px;
+  --closing-gap: 16px;
   gap: var(--closing-gap);
   --pt: var(--closing-pt);
   --pb: var(--closing-pt);

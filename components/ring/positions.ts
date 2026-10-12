@@ -11,6 +11,6 @@ export function ringPosition(index: number, active: number, count: number) {
 export const placeOf = (position: number) =>
   Math.max(-2, Math.min(2, position));
 
-// Only the tiles within two places of the centre carry their cover images; the others have them hidden (display none),
-// so the browser never downloads the covers of a long ring until the ring comes close to them
-export const isNear = (position: number) => position >= -2 && position <= 2;
+// Only the centre and its two neighbours carry their cover images; the others (the invisible tiles behind) have them
+// hidden (display none), so the browser never downloads a cover until the tile is one step from being seen
+export const isNear = (position: number) => position >= -1 && position <= 1;

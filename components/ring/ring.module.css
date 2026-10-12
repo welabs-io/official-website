@@ -1,6 +1,6 @@
 /* BANCADA: CARROSSEL CIRCULAR */
 /* Full-screen workbench for the chain carousel. The stage is the centre tile (760 px at most, centred). Neighbours are
-   shifted by 38% of the centre width, scaled to 0.5 and faded to 30%, tucked behind it so only a strip of each shows (on
+   shifted by 38% of the centre width, scaled to 0.5 and darkened by a veil (--veil), tucked behind it so only a strip of each shows (on
    a phone only an edge of each stays in view); the cuts at the back (position 2 and -2) are invisible. The
    rotation is one CSS transition whose duration (--swap-time) the page sets per swap: 0.4 s between products, 0.3 s
    inside one. */
@@ -15,18 +15,15 @@
   display: grid;
   place-items: center;
   align-content: center;
-  gap: clamp(12px, 3vh, 28px);
+  gap: clamp(8px, 2vh, 16px);
   overflow: hidden;
   background: #0b0e14;
 }
-/* Fade of the neighbours: a dark cover at 30% reads well on graphite but washes to a flat grey on cream, where the cover
-   has to stay recognisable (the settled frame, with its content), so on a light band the neighbours are fainter only by
-   a little. */
+/* Veil of the neighbours: a receded film, not a faded one. The tile stays fully opaque (so a dark cover never washes to
+   grey on a cream band) and its picture is darkened by the theme's own veil; the frame keeps the shadow of the active
+   tile. The veil goes on the picture, not on the frame. */
 .screen {
-  --dim: 0.3;
-}
-.screen[data-tone="light"] {
-  --dim: 0.62;
+  --veil: brightness(0.55) saturate(0.8);
 }
 /* The workbench has no band around it, so it brings the colours the row of logos reads from its band */
 .screen:not(.inline) {
@@ -67,12 +64,10 @@
 }
 .tile[data-pos="1"] {
   z-index: 2;
-  opacity: var(--dim);
   transform: translateX(calc(-50% + 38%)) scale(0.5);
 }
 .tile[data-pos="-1"] {
   z-index: 2;
-  opacity: var(--dim);
   transform: translateX(calc(-50% - 38%)) scale(0.5);
 }
 .tile[data-pos="2"],
@@ -98,6 +93,13 @@
     0 0 0 1px rgb(250 245 234 / 0.08);
   isolation: isolate;
 }
+.tileFrame > * {
+  transition: filter var(--swap-time, 0.4s) var(--ease);
+}
+.tile[data-pos="1"] .tileFrame > *,
+.tile[data-pos="-1"] .tileFrame > * {
+  filter: var(--veil);
+}
 .poster {
   position: absolute;
   inset: 0;
@@ -119,15 +121,15 @@
 .tile:not([data-near]) .posterEnd {
   display: none;
 }
-/* Both neighbours show the settled frame (the cover of the last frame) when the tile has one: it is the frame with its
-   content on screen, which is what a faded neighbour must show (the formed logo of an opening is empty at the edge the
-   other tile leaves visible). The tiles at +2 and -2 are invisible and never download it; at +2 the tile shows the
-   cover of the first frame, ready for when it comes to the centre. */
-.tile[data-pos="2"] .posterEnd,
+/* A tile with a settled frame (the cover of the last frame) shows that one everywhere but the centre: it is the frame
+   with its content on screen, which is what a receded neighbour must show (the formed logo of an opening is empty at the
+   edge the other tile leaves visible). The cover of the first frame is only needed by the centre tile. The tiles at +2
+   and -2 are invisible and load nothing (see isNear). */
 .tile[data-pos="-2"] .posterEnd {
   display: none;
 }
 .tile[data-pos="1"] .posterEnd ~ .poster,
+.tile[data-pos="2"] .posterEnd ~ .poster,
 .tile[data-pos="-1"] .posterEnd ~ .poster,
 .tile[data-pos="-2"] .posterEnd ~ .poster {
   display: none;

@@ -16,7 +16,7 @@
   --header-h: 72px;
   --logo-h: 42px;
   /* Top padding of the closing: the stretches of the section above run down to the strip through it */
-  --closing-pt: clamp(32px, 4.5vh, 48px);
+  --closing-pt: clamp(28px, 3.5vh, 40px);
   background: var(--g);
   color: var(--c);
   overflow-x: clip;
@@ -136,7 +136,7 @@
 /* LOGO DE PRODUTO */
 /* The logo file has built-in left padding; --pad (share of the height) aligns the wordmark with the line below. */
 .logo {
-  --h: clamp(56px, 6vw, 80px);
+  --h: clamp(52px, 4.6vw, 66px);
   display: block;
   height: var(--h);
   width: auto;
@@ -151,7 +151,7 @@
 .footer {
   background: var(--g);
   border-top: 1px solid var(--g3);
-  padding: 28px 0;
+  padding: 18px 0;
 }
 .footerGrid {
   display: flex;

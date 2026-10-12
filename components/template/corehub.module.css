@@ -8,12 +8,12 @@
 .hub {
   --logo: 56px;
   --line-top: 48px;
-  --label-top: 64px;
+  --label-top: 60px;
   --label-h: 22px;
-  --core-top: 100px;
-  --core-h: 88px;
-  --seam-top: 196px;
-  --hub-h: 226px;
+  --core-top: 92px;
+  --core-h: 84px;
+  --seam-top: 184px;
+  --hub-h: 212px;
   --rail-len: calc(var(--hub-h) - var(--line-top));
   --dur: 4.8s;
   --step: 0.96s;

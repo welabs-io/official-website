@@ -3,7 +3,7 @@
 // The only client piece of a ring, and a tiny one: it renders nothing. Two observers decide when the heavy part
 // (ring-run.ts and the player script, both fetched with a dynamic import) is downloaded and when it plays:
 //  - near the screen (400 px margin): the code is fetched, nothing runs;
-//  - on screen, tab visible and no reduced motion: the playback runs; any of the three going away stops it.
+//  - half of it on screen, tab visible and no reduced motion: the playback runs; any of the three going away stops it.
 // Everything is released on unmount: both observers, the listeners and the playback.
 import { useEffect } from "react";
 
@@ -68,10 +68,15 @@ export function RingDriver({
       },
       { rootMargin: "400px 0px" },
     );
-    const on = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      update();
-    });
+    // A ring plays once half of it is on screen: a ring that only shows its top edge under the fold would mount
+    // players (and fetch their pieces) nobody is looking at
+    const on = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        update();
+      },
+      { threshold: [0, 0.5] },
+    );
     near.observe(root);
     on.observe(root);
     document.addEventListener("visibilitychange", update);
