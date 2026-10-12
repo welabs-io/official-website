@@ -3,10 +3,10 @@
   "schemaVersion": "1.1.0",
   "round": "portfolio-20261002",
   "brandVersion": "1.3.0",
-  "generatedAt": "2026-10-12T13:49:36Z",
+  "generatedAt": "2026-10-12T18:59:41Z",
   "source": {
     "round": "/home/douglas/code/control/portfolio/motion/portfolio-20261002",
-    "roundHead": "43e3cc4",
+    "roundHead": "8d44b58",
     "exportDir": "publish/site-v5",
     "plan": "site-redesign/plan-v5/motion-plan.md"
   },
@@ -424,121 +424,80 @@
         "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--30667-1280.webp",
         "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--30667-640.webp"
       ]
+    },
+    "welabs-chain-value-s5": {
+      "src": "/motion/v5/pieces/welabs-chain-value-s5/index.html",
+      "sha256": "22102e0b264fef724f37f8c1dfd4b06b39d1dd472d5e24da5e9c44a5e3289824",
+      "sourceSha256": "22102e0b264fef724f37f8c1dfd4b06b39d1dd472d5e24da5e9c44a5e3289824",
+      "duration": 49,
+      "width": 1920,
+      "height": 1080,
+      "minDisplayWidth": 760,
+      "endorse": "off",
+      "siteVariant": {
+        "hide": []
+      },
+      "posters": [
+        "/motion/v5/posters/welabs-chain-value-s5--500-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--500-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--2400-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--2400-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--4900-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--4900-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--9400-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--9400-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--11900-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--11900-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--16600-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--16600-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--19100-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--19100-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--23400-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--23400-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--25900-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--25900-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--29600-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--29600-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--32100-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--32100-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--37400-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--37400-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--39900-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--39900-640.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--43500-1280.webp",
+        "/motion/v5/posters/welabs-chain-value-s5--43500-640.webp"
+      ]
     }
   },
   "chain": {
-    "status": "fallback",
+    "status": "final",
     "loop": true,
-    "cycleSeconds": 22.481,
+    "cycleSeconds": 33.26,
     "variants": {
-      "desktop": null,
+      "desktop": "welabs-chain-value-s5",
       "mobile": null
     },
     "steps": [
       {
-        "piece": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
-        "from": 7.5,
-        "to": 11.4,
-        "settledAt": 11.3,
-        "rate": 1.5,
-        "holdAfter": 1,
-        "covers": {
-          "start": {
-            "t": 8,
-            "w1280": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--8000-1280.webp",
-            "w640": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--8000-640.webp"
-          },
-          "settled": {
-            "t": 11.3,
-            "w1280": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--11300-1280.webp",
-            "w640": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--11300-640.webp"
-          }
-        },
-        "poster": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--11300-1280.webp",
-        "transition": {
-          "type": "push-left",
-          "duration": 0.4,
-          "ease": "power2.inOut"
-        },
-        "measure": {
-          "method": "pixel-diff-1/30s",
-          "status": "measured",
-          "evidence": "plan-v5/out/measurements.md (chain step 1); frames at 1/30 s of the site copy"
-        },
-        "step": 1,
-        "srLabel": "A mensagem chega pelo WhatsApp e cai inteira na conversa do Relloo.",
-        "products": ["tuner", "relloo"],
-        "connection": {
-          "from": "tuner",
-          "to": "relloo",
-          "input": "mensagem da Marina no WhatsApp",
-          "output": "conversa única no Relloo",
-          "value": "venha de onde vier, a mensagem chega inteira na mesma conversa",
-          "label": "Mensagem inteira"
-        }
-      },
-      {
-        "piece": "welabs-chain-journey-define-logos-r6-s1",
-        "from": 6.5,
-        "to": 9.367,
-        "settledAt": 9.267,
-        "rate": 1.5,
-        "holdAfter": 1,
-        "covers": {
-          "start": {
-            "t": 7,
-            "w1280": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--7000-1280.webp",
-            "w640": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--7000-640.webp"
-          },
-          "settled": {
-            "t": 9.267,
-            "w1280": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--9267-1280.webp",
-            "w640": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--9267-640.webp"
-          }
-        },
-        "poster": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--9267-1280.webp",
-        "transition": {
-          "type": "push-left",
-          "duration": 0.4,
-          "ease": "power2.inOut"
-        },
-        "measure": {
-          "method": "pixel-diff-1/30s",
-          "status": "measured",
-          "evidence": "plan-v5/out/measurements.md (chain step 2); frames at 1/30 s of the site copy"
-        },
-        "step": 2,
-        "srLabel": "Os dados da casa do Domus chegam ao Relloo e a pessoa é reconhecida, com o pedido.",
-        "products": ["relloo", "domus"],
-        "connection": {
-          "from": "domus",
-          "to": "relloo",
-          "input": "conversa sem contexto",
-          "output": "Marina reconhecida com pedido e endereço da casa",
-          "value": "ninguém pede de novo o que a empresa já sabe",
-          "label": "Contexto pronto"
-        }
-      },
-      {
-        "piece": "welabs-chain-journey-define-logos-r6-s1",
-        "from": 12.7,
-        "to": 15.867,
-        "settledAt": 15.767,
+        "piece": "welabs-chain-value-s5",
+        "from": 0,
+        "to": 2.5,
+        "settledAt": 2.4,
         "rate": 1.25,
         "holdAfter": 1,
         "covers": {
           "start": {
-            "t": 13.2,
-            "w1280": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--13200-1280.webp",
-            "w640": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--13200-640.webp"
+            "t": 0.5,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--500-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--500-640.webp"
           },
           "settled": {
-            "t": 15.767,
-            "w1280": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--15767-1280.webp",
-            "w640": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--15767-640.webp"
+            "t": 2.4,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--2400-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--2400-640.webp"
           }
         },
-        "poster": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--15767-1280.webp",
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--2400-1280.webp",
         "transition": {
           "type": "push-left",
           "duration": 0.4,
@@ -547,40 +506,40 @@
         "measure": {
           "method": "pixel-diff-1/30s",
           "status": "measured",
-          "evidence": "plan-v5/out/measurements.md (chain step 3); frames at 1/30 s of the site copy"
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S0); frames a 1/30 s da cópia do site com o selo \"off\""
         },
-        "step": 3,
-        "srLabel": "O Knowly entrega a política de entregas, com a fonte, na resposta do Relloo.",
-        "products": ["knowly", "relloo"],
+        "step": 0,
+        "srLabel": "A casa do Domus monta cheia, o funil do Relloo encaixa na parede e os três trilhos acendem os cinco produtos.",
+        "products": ["domus", "relloo"],
         "connection": {
-          "from": "knowly",
+          "from": "domus",
           "to": "relloo",
-          "input": "dúvida sobre a entrega",
-          "output": "resposta com a fonte da política",
-          "value": "a resposta certa sai na hora, e diz de onde veio",
-          "label": "Resposta com fonte"
+          "input": "nada: a ilha se monta",
+          "output": "mapa em repouso, funil vazio",
+          "value": "o negócio definido e o relacionamento formam um núcleo só, com três trilhos passando por ele",
+          "label": "Dados no cartão"
         }
       },
       {
-        "piece": "hub-draw-born-ludic-v2-logos-r5-s1",
-        "from": 14.15,
-        "to": 20.167,
-        "settledAt": 20.067,
-        "rate": 1.75,
+        "piece": "welabs-chain-value-s5",
+        "from": 4.4,
+        "to": 9.5,
+        "settledAt": 9.4,
+        "rate": 1.25,
         "holdAfter": 1,
         "covers": {
           "start": {
-            "t": 14.65,
-            "w1280": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--14650-1280.webp",
-            "w640": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--14650-640.webp"
+            "t": 4.9,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--4900-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--4900-640.webp"
           },
           "settled": {
-            "t": 20.067,
-            "w1280": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--20067-1280.webp",
-            "w640": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--20067-640.webp"
+            "t": 9.4,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--9400-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--9400-640.webp"
           }
         },
-        "poster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--20067-1280.webp",
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--9400-1280.webp",
         "transition": {
           "type": "push-left",
           "duration": 0.4,
@@ -589,82 +548,208 @@
         "measure": {
           "method": "pixel-diff-1/30s",
           "status": "measured",
-          "evidence": "plan-v5/out/measurements.md (chain step 4); frames at 1/30 s of the site copy"
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S1); frames a 1/30 s da cópia do site com o selo \"off\""
+        },
+        "step": 1,
+        "srLabel": "Uma ligação e uma mensagem de WhatsApp viram uma conversa só no Tuner: \"Dá para entregar sábado?\".",
+        "products": ["tuner"],
+        "connection": {
+          "from": "tuner",
+          "to": "relloo",
+          "input": "ligação e mensagem da cliente",
+          "output": "a solicitação, em pacote",
+          "value": "venha de onde vier, o pedido chega inteiro na mesma conversa",
+          "label": "Uma conversa só"
+        }
+      },
+      {
+        "piece": "welabs-chain-value-s5",
+        "from": 11.4,
+        "to": 16.7,
+        "settledAt": 16.6,
+        "rate": 1.25,
+        "holdAfter": 1,
+        "covers": {
+          "start": {
+            "t": 11.9,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--11900-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--11900-640.webp"
+          },
+          "settled": {
+            "t": 16.6,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--16600-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--16600-640.webp"
+          }
+        },
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--16600-1280.webp",
+        "transition": {
+          "type": "push-left",
+          "duration": 0.4,
+          "ease": "power2.inOut"
+        },
+        "measure": {
+          "method": "pixel-diff-1/30s",
+          "status": "measured",
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S2); frames a 1/30 s da cópia do site com o selo \"off\""
+        },
+        "step": 2,
+        "srLabel": "No Relloo o cartão \"Alteração de entrega, Pedido 1234\" nasce em Novo, ganha responsável, prazo, histórico e retorno e vai para Em análise.",
+        "products": ["relloo"],
+        "connection": {
+          "from": "relloo",
+          "to": "domus",
+          "input": "a solicitação em pacote",
+          "output": "cartão em análise, com a entrega ainda em branco",
+          "value": "o cartão tem dono e prazo, mas ainda não sabe o que a empresa já sabe",
+          "label": "Dados no cartão"
+        }
+      },
+      {
+        "piece": "welabs-chain-value-s5",
+        "from": 18.6,
+        "to": 23.5,
+        "settledAt": 23.4,
+        "rate": 1.25,
+        "holdAfter": 1,
+        "covers": {
+          "start": {
+            "t": 19.1,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--19100-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--19100-640.webp"
+          },
+          "settled": {
+            "t": 23.4,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--23400-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--23400-640.webp"
+          }
+        },
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--23400-1280.webp",
+        "transition": {
+          "type": "push-left",
+          "duration": 0.4,
+          "ease": "power2.inOut"
+        },
+        "measure": {
+          "method": "pixel-diff-1/30s",
+          "status": "measured",
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S3); frames a 1/30 s da cópia do site com o selo \"off\""
+        },
+        "step": 3,
+        "srLabel": "Os cômodos do Domus mandam endereço, pedido e janela de sábado para o cartão.",
+        "products": ["domus"],
+        "connection": {
+          "from": "domus",
+          "to": "relloo",
+          "input": "o cartão em análise",
+          "output": "cartão com endereço, pedido e janela de sábado",
+          "value": "ninguém pede de novo o que a empresa já sabe",
+          "label": "Dados no cartão"
+        }
+      },
+      {
+        "piece": "welabs-chain-value-s5",
+        "from": 25.4,
+        "to": 29.7,
+        "settledAt": 29.6,
+        "rate": 1.25,
+        "holdAfter": 1,
+        "covers": {
+          "start": {
+            "t": 25.9,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--25900-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--25900-640.webp"
+          },
+          "settled": {
+            "t": 29.6,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--29600-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--29600-640.webp"
+          }
+        },
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--29600-1280.webp",
+        "transition": {
+          "type": "push-left",
+          "duration": 0.4,
+          "ease": "power2.inOut"
+        },
+        "measure": {
+          "method": "pixel-diff-1/30s",
+          "status": "measured",
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S4); frames a 1/30 s da cópia do site com o selo \"off\""
         },
         "step": 4,
-        "srLabel": "O que o Domus define vira um fluxo que roda no Magneto.",
-        "products": ["domus", "magneto"],
+        "srLabel": "O Knowly abre a política de entregas e a linha \"Sábado: entregas até 12h\" entra no cartão como fonte.",
+        "products": ["knowly"],
+        "connection": {
+          "from": "knowly",
+          "to": "relloo",
+          "input": "a dúvida sobre sábado",
+          "output": "cartão com resposta e fonte",
+          "value": "a resposta certa sai na hora e diz de onde veio",
+          "label": "Fonte no cartão"
+        }
+      },
+      {
+        "piece": "welabs-chain-value-s5",
+        "from": 31.6,
+        "to": 37.5,
+        "settledAt": 37.4,
+        "rate": 1.25,
+        "holdAfter": 1,
+        "covers": {
+          "start": {
+            "t": 32.1,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--32100-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--32100-640.webp"
+          },
+          "settled": {
+            "t": 37.4,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--37400-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--37400-640.webp"
+          }
+        },
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--37400-1280.webp",
+        "transition": {
+          "type": "push-left",
+          "duration": 0.4,
+          "ease": "power2.inOut"
+        },
+        "measure": {
+          "method": "pixel-diff-1/30s",
+          "status": "measured",
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S5); frames a 1/30 s da cópia do site com o selo \"off\""
+        },
+        "step": 5,
+        "srLabel": "No Magneto a regra vira três passos, a Gestora aprova e o cartão vai de Aguardando aprovação para Resolvido.",
+        "products": ["magneto"],
         "connection": {
           "from": "domus",
           "to": "magneto",
-          "input": "pedido de mudança",
-          "output": "workflow com aprovação da gestora",
+          "input": "a regra do cômodo Regras",
+          "output": "fluxo concluído e recibo",
           "value": "a regra que o Domus define se cumpre sozinha, com a pessoa só onde precisa decidir",
           "label": "Regra que roda"
         }
       },
       {
-        "piece": "welabs-chain-journey-define-logos-r6-s1",
-        "from": 24.85,
-        "to": 30.767,
-        "settledAt": 30.667,
-        "rate": 1.5,
-        "holdAfter": 1,
-        "covers": {
-          "start": {
-            "t": 25.35,
-            "w1280": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--25350-1280.webp",
-            "w640": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--25350-640.webp"
-          },
-          "settled": {
-            "t": 30.667,
-            "w1280": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--30667-1280.webp",
-            "w640": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--30667-640.webp"
-          }
-        },
-        "poster": "/motion/v5/posters/welabs-chain-journey-define-logos-r6-s1--30667-1280.webp",
-        "transition": {
-          "type": "push-left",
-          "duration": 0.4,
-          "ease": "power2.inOut"
-        },
-        "measure": {
-          "method": "pixel-diff-1/30s",
-          "status": "measured",
-          "evidence": "plan-v5/out/measurements.md (chain step 5); frames at 1/30 s of the site copy"
-        },
-        "step": 5,
-        "srLabel": "O fluxo conclui, o pedido volta atualizado ao Domus e a pessoa é avisada.",
-        "products": ["magneto", "domus"],
-        "connection": {
-          "from": "magneto",
-          "to": "domus",
-          "input": "aprovação concluída",
-          "output": "pedido atualizado na casa e confirmação no WhatsApp",
-          "value": "tudo volta registrado, e quem pediu fica sabendo sem perguntar",
-          "label": "Regra que roda"
-        }
-      },
-      {
-        "piece": "hub-draw-born-ludic-v2-logos-r5-s1",
-        "from": 24.2,
-        "to": 26.767,
-        "settledAt": 26.667,
+        "piece": "welabs-chain-value-s5",
+        "from": 39.4,
+        "to": 43.6,
+        "settledAt": 43.5,
         "rate": 1.25,
-        "holdAfter": 1,
+        "holdAfter": 1.5,
         "covers": {
           "start": {
-            "t": 24.7,
-            "w1280": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--24700-1280.webp",
-            "w640": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--24700-640.webp"
+            "t": 39.9,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--39900-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--39900-640.webp"
           },
           "settled": {
-            "t": 26.667,
-            "w1280": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--26667-1280.webp",
-            "w640": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--26667-640.webp"
+            "t": 43.5,
+            "w1280": "/motion/v5/posters/welabs-chain-value-s5--43500-1280.webp",
+            "w640": "/motion/v5/posters/welabs-chain-value-s5--43500-640.webp"
           }
         },
-        "poster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--26667-1280.webp",
+        "poster": "/motion/v5/posters/welabs-chain-value-s5--43500-1280.webp",
         "transition": {
           "type": "push-left",
           "duration": 0.4,
@@ -673,18 +758,18 @@
         "measure": {
           "method": "pixel-diff-1/30s",
           "status": "measured",
-          "evidence": "plan-v5/out/measurements.md (chain step 6); frames at 1/30 s of the site copy"
+          "evidence": "plan-v5/out/measurements.md (chain-value-s5, cena S6); frames a 1/30 s da cópia do site com o selo \"off\""
         },
         "step": 6,
-        "srLabel": "Tudo fecha no Domus: as regras moram dentro da casa.",
-        "products": ["domus", "magneto"],
+        "srLabel": "O recibo volta ao Domus, o Tuner leva \"Confirmado: sábado\" à cliente e o cartão é arquivado: a ilha volta ao repouso.",
+        "products": ["domus", "tuner"],
         "connection": {
           "from": "domus",
           "to": "outcome",
-          "input": "o que foi definido",
-          "output": "regras dentro da casa, tudo sob o mesmo teto",
-          "value": "o que se define na casa já nasce pronto e conectado",
-          "label": "Tudo na casa"
+          "input": "o recibo do pedido atualizado",
+          "output": "pedido atualizado e cliente avisada",
+          "value": "tudo volta registrado e quem pediu fica sabendo sem perguntar",
+          "label": "Tudo ligado"
         }
       }
     ],

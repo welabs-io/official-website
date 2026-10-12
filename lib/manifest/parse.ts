@@ -118,13 +118,8 @@ export function parseManifest(raw: unknown): Manifest {
     if (c.to !== "outcome") {
       if (!SLUGS.includes(c.to))
         throw new ManifestError(where, "connection.to is not a product");
-      // Both ends of a connection are products of the step
-      for (const end of [c.from, c.to])
-        if (!step.products.includes(end))
-          throw new ManifestError(
-            where,
-            `connection ${end} is not in products`,
-          );
+      // `products` is the set the row lights, independent of the ends of the connection (v5 value chain: the cut may
+      // light the product acting while the connection names the pair whose value it shows)
     }
     checkLabel(c.label, `${where}/connection/label`);
     // The same unordered pair always carries the same label

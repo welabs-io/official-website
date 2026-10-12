@@ -41,9 +41,9 @@ describe("parse", () => {
       /unknown slug/,
     ],
     [
-      "connection end outside products",
-      (m) => (m.chain.steps[0].connection.to = "knowly"),
-      /not in products/,
+      "connection end that is not a product",
+      (m) => (m.chain.steps[0].connection.to = "zeta" as never),
+      /connection.to is not a product/,
     ],
     [
       "forbidden word in a label",
@@ -62,7 +62,7 @@ describe("parse", () => {
     ],
     [
       "the same pair with two labels",
-      (m) => (m.chain.steps[4].connection.label = "Outro valor"),
+      (m) => (m.chain.steps[2].connection.label = "Outro valor"),
       /two labels/,
     ],
     [

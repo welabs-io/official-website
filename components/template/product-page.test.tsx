@@ -83,10 +83,10 @@ describe("product page", () => {
     const html = render("domus");
     const block = html.slice(html.indexOf('role="group" aria-label="Núcleo'));
     // Domus has the seam and the Magneto rail
-    expect(block).toContain("Contexto pronto");
+    expect(block).toContain("Dados no cartão");
     expect(block).toContain("Regra que roda");
-    expect(block).not.toContain("Mensagem inteira");
-    expect(block).not.toContain("Resposta com fonte");
+    expect(block).not.toContain("Uma conversa só");
+    expect(block).not.toContain("Fonte no cartão");
   });
   it("every band of the pages is marked live, so the thread and the pulses pause off screen", () => {
     const html = render("domus");
