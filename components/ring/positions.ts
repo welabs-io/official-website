@@ -11,6 +11,22 @@ export function ringPosition(index: number, active: number, count: number) {
 export const placeOf = (position: number) =>
   Math.max(-2, Math.min(2, position));
 
-// Only the centre and its two neighbours carry their cover images; the others (the invisible tiles behind) have them
-// hidden (display none), so the browser never downloads a cover until the tile is one step from being seen
-export const isNear = (position: number) => position >= -1 && position <= 1;
+// Only the tiles within two places of the centre carry their cover images; the others have them hidden (display none),
+// so the browser never downloads the covers of a long ring until the ring comes close to them. Two places, not one: the
+// tile at +2 is invisible but is the next neighbour, so its cover must already be in when the swap brings it to +1
+// (a swap never shows an empty frame; e2e/cover.spec.ts measures it)
+export const isNear = (position: number) => position >= -2 && position <= 2;
+
+// Which cover of a tile is on display at a position, so worth fetching at once (it mirrors ring.module.css): a tile with a
+// settled cover ("end") shows it everywhere but at -2 and shows the entry cover ("start") only at the centre; a tile
+// without one shows the entry cover. A cover that is on display is set to load eagerly: a lazy image of a tile that is
+// scaled down and faded out can still be loading when the swap brings it in
+export const coverShown = (
+  position: number,
+  cover: "start" | "end",
+  hasEnd: boolean,
+) => {
+  if (!isNear(position)) return false;
+  if (cover === "end") return position !== -2;
+  return !hasEnd || position === 0;
+};

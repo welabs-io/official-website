@@ -6,7 +6,7 @@ import { LogoRow } from "@/components/template/LogoRow";
 import type { Cover } from "@/lib/manifest/types";
 import { ringData, slidesOf, type RingKind } from "@/lib/ring-data";
 import type { ProductSlug } from "@/lib/products";
-import { isNear, placeOf, ringPosition } from "./positions";
+import { coverShown, isNear, placeOf, ringPosition } from "./positions";
 import { RingDriver } from "./RingDriver";
 import styles from "./ring.module.css";
 
@@ -77,7 +77,12 @@ export function RingStage({
                     alt=""
                     width={1280}
                     height={720}
-                    loading="lazy"
+                    data-cover="end"
+                    loading={
+                      eager && coverShown(position, "end", true)
+                        ? "eager"
+                        : "lazy"
+                    }
                     decoding="async"
                   />
                 )}
@@ -89,7 +94,12 @@ export function RingStage({
                   alt=""
                   width={1280}
                   height={720}
-                  loading={eager && position === 0 ? "eager" : "lazy"}
+                  data-cover="start"
+                  loading={
+                    eager && coverShown(position, "start", !!slide.endCover)
+                      ? "eager"
+                      : "lazy"
+                  }
                   fetchPriority={eager && position === 0 ? "high" : undefined}
                   decoding="async"
                 />

@@ -19,6 +19,8 @@ const TICK_MS = 40;
 const PUSH_PRE = 0.12;
 // Reveal of a preloaded player waits for the seek to its first frame to settle
 const SETTLE_MS = 140;
+// Pause between mounting the current player and the parked next one (main thread only, not a screen time)
+const PRELOAD_DELAY_MS = 700;
 // A held segment freezes this many real seconds before its range end, so a slow tick can never run into the loop
 export const HOLD_EDGE = 0.1;
 
@@ -131,7 +133,10 @@ export class Playback {
 
   start() {
     this.create(this.cursor, true);
-    this.preload();
+    // The parked next player is mounted after the current one has had its turn: two pieces booting in the same frame
+    // made a 100 to 150 ms task (each piece's own script is 20 to 60 ms), and the next one is not needed for seconds
+    // (the shortest segment is on screen 1.8 s plus its hold)
+    this.later(() => this.preload(), PRELOAD_DELAY_MS);
     this.timer = window.setInterval(() => this.tick(), TICK_MS);
   }
 

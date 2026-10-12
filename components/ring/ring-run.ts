@@ -9,7 +9,7 @@
 import type { RingData } from "@/lib/ring-data";
 import { ensurePlayer } from "./player";
 import { Playback, flatten } from "./ring-playback";
-import { isNear, placeOf, ringPosition } from "./positions";
+import { coverShown, isNear, placeOf, ringPosition } from "./positions";
 import type { RingKind } from "./RingDriver";
 
 // Download the player script ahead of the first play
@@ -39,6 +39,14 @@ export function run(root: HTMLElement, kind: RingKind) {
       tile.dataset.pos = String(placeOf(position));
       if (isNear(position)) tile.dataset.near = "";
       else delete tile.dataset.near;
+      // The cover on display at this place loads now, not when the browser's lazy distance says so
+      const covers = [
+        ...tile.querySelectorAll<HTMLImageElement>("[data-cover]"),
+      ];
+      const hasEnd = covers.some((img) => img.dataset.cover === "end");
+      for (const img of covers)
+        if (coverShown(position, img.dataset.cover as "start" | "end", hasEnd))
+          img.loading = "eager";
       if (position === 0) tile.removeAttribute("aria-hidden");
       else tile.setAttribute("aria-hidden", "true");
     });
