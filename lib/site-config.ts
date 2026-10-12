@@ -21,6 +21,12 @@ type Base = {
   pad: SectionPad;
   // Heading for screen readers only (the site shows no visible titles)
   srTitle?: string;
+  // Thread of the page: "off" where the drawing of the section crosses the axis itself
+  thread?: "on" | "off";
+  // Stretch of the thread at the bottom of the section, with the pulse that goes down to the next dock; `railDelay`
+  // is the wait (seconds) between the swap of the ring and the start of the pulse
+  rail?: "drop" | "converge";
+  railDelay?: number;
 };
 
 export type SectionConfig =
@@ -58,6 +64,8 @@ export const HOME_CONFIG: PageConfig = {
       tone: "dark",
       pad: "chain",
       srTitle: "Cadeia",
+      rail: "drop",
+      railDelay: 0.5,
       ring: {
         id: "chain-ring",
         kind: "chain",
@@ -72,6 +80,8 @@ export const HOME_CONFIG: PageConfig = {
       tone: "light",
       pad: "products",
       srTitle: "Produtos",
+      rail: "drop",
+      railDelay: 0.4,
       ring: {
         id: "products-ring",
         kind: "products",
@@ -85,8 +95,15 @@ export const HOME_CONFIG: PageConfig = {
       tone: "dark",
       pad: "connectors",
       srTitle: "Produtos ligados entre si",
+      thread: "off",
     },
-    { id: "platforms", kind: "closing", tone: "dark", pad: "closing" },
+    {
+      id: "platforms",
+      kind: "closing",
+      tone: "dark",
+      pad: "closing",
+      thread: "off",
+    },
   ],
 };
 
@@ -116,6 +133,7 @@ export function productConfig(slug: ProductSlug): PageConfig {
         pad: "connectors",
         srTitle: `${name} no núcleo e nos trilhos`,
         lit: slug,
+        thread: "off",
       },
       {
         id: "films",
@@ -123,6 +141,8 @@ export function productConfig(slug: ProductSlug): PageConfig {
         tone: "dark",
         pad: "films",
         srTitle: `Outros filmes do ${name}`,
+        rail: "drop",
+        railDelay: 0.4,
         ring: {
           id: "product-films",
           kind: "films",

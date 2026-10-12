@@ -36,6 +36,8 @@
 }
 .productPageGrid > :first-child {
   justify-self: start;
+  /* Covers the thread behind the block, which on a phone would cross the factual line */
+  background: var(--bg);
 }
 
 /* BLOCOS DA PÁGINA DE PRODUTO */

@@ -33,6 +33,7 @@
 .dark {
   background: var(--g);
   color: var(--c);
+  --bg: var(--g);
   --line: var(--g3);
   --mute: var(--mute-d);
   --soft: rgb(250 245 234 / 0.1);
@@ -40,6 +41,7 @@
 .light {
   background: var(--c);
   color: var(--ink);
+  --bg: var(--c);
   --line: var(--cl);
   --mute: var(--mute-l);
   --soft: rgb(28 26 22 / 0.08);
@@ -161,71 +163,107 @@
 }
 
 /* FIO ENTRE AS SEÇÕES */
-/* A thin thread at the left of the content runs through every band and joins them: a grey hairline, an amber dot where
-   each section starts and, while the band is on screen (data-on, set by LiveObserver), an amber 4 px pulse that slides
-   down it at its own pace. Under reduced motion the pulse is not drawn. The content never sits under it: it lives in the
-   outer margin, 20 px left of the content column. */
-.band {
-  --thread-x: calc((100% - min(1200px, 100% - 48px)) / 2 - 20px);
-  --thread-dur: 6s;
-}
-.band:nth-child(3n + 1) {
-  --thread-dur: 5.2s;
-}
-.band:nth-child(3n + 2) {
-  --thread-dur: 6.8s;
-}
-.band:nth-child(3n) {
-  --thread-dur: 8.4s;
-}
+/* The thread runs down the centre axis of the page (x = 50%) through every band and joins them: a 2 px hairline behind
+   the content, so it shows only in the gaps (the tiles and the logo rows cover it) and seems to enter a tile from above
+   and leave it below, and a 10 px amber dock on the top edge of each band, where the pulse of the band above arrives.
+   The pulse itself belongs to the band above (ConnectorRail), so no band depends on another. A band whose own drawing
+   crosses the axis (the connector block, the closing) switches the hairline off with data-thread="off". */
 .band::before {
   content: "";
   position: absolute;
-  z-index: 1;
+  z-index: 0;
   top: 0;
   bottom: 0;
-  left: var(--thread-x);
-  width: 4px;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
   pointer-events: none;
-  background:
-    linear-gradient(to bottom, transparent, var(--a)) no-repeat 0 -160px / 4px
-      160px,
-    linear-gradient(
-      to right,
-      transparent 1.5px,
-      color-mix(in srgb, var(--mute) 45%, transparent) 1.5px 2.5px,
-      transparent 2.5px
-    );
+  background: var(--line);
 }
 .band::after {
   content: "";
   position: absolute;
   z-index: 2;
   top: -5px;
-  left: calc(var(--thread-x) - 3px);
+  left: 50%;
   width: 10px;
   height: 10px;
+  margin-left: -5px;
   border-radius: 50%;
   pointer-events: none;
   background: var(--a);
 }
-.band[data-on="true"]::before {
-  animation: thread var(--thread-dur) linear infinite;
+.band[data-thread="off"]::before {
+  display: none;
 }
-@keyframes thread {
-  from {
-    background-position:
-      0 -160px,
-      0 0;
+/* The first band starts under the fixed header: the thread and its dock begin at the header's lower edge */
+.band:first-of-type::before {
+  top: var(--header-h);
+}
+.band:first-of-type::after {
+  top: calc(var(--header-h) - 5px);
+}
+/* Content sits above the thread (not the heading for screen readers, which is absolutely positioned, nor the rail) */
+.band > :not(h2):not([data-rail]) {
+  position: relative;
+  z-index: 1;
+}
+
+/* TRECHO DO FIO NO FUNDO DA SEÇÃO (CONNECTORRAIL) */
+/* The stretch of the thread between the content of a band and its bottom edge. A 4 px amber pulse of 40 px goes down
+   it when the band says so (`data-pulse` flips between "a" and "b", two identical keyframes with different names, so a
+   new pulse restarts without reading the layout). Nothing is drawn under reduced motion or off screen. */
+.rail {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 0;
+  width: 4px;
+  --rail-h: var(--pb, clamp(32px, 4vw, 48px));
+  height: var(--rail-h);
+  margin-left: -2px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 40px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, transparent, var(--a) 85%);
+  opacity: 0;
+  transform: translateY(-40px);
+}
+.band[data-on="true"] .rail[data-pulse="a"] .pulse {
+  animation: drop-a var(--rail-dur, 0.7s) var(--rail-delay, 0s) ease-in both;
+}
+.band[data-on="true"] .rail[data-pulse="b"] .pulse {
+  animation: drop-b var(--rail-dur, 0.7s) var(--rail-delay, 0s) ease-in both;
+}
+@keyframes drop-a {
+  0% {
+    opacity: 1;
+    transform: translateY(-40px);
   }
-  to {
-    background-position:
-      0 calc(100% + 160px),
-      0 0;
+  100% {
+    opacity: 1;
+    transform: translateY(var(--rail-h));
+  }
+}
+@keyframes drop-b {
+  0% {
+    opacity: 1;
+    transform: translateY(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(var(--rail-h));
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .band[data-on="true"]::before {
-    animation: none;
+  .pulse {
+    display: none;
   }
 }

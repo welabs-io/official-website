@@ -71,6 +71,9 @@ export function Sections({ config }: { config: PageConfig }) {
       tone={section.tone}
       pad={section.pad}
       srTitle={section.srTitle}
+      thread={section.thread}
+      rail={section.rail}
+      railDelay={section.railDelay}
     >
       <Body section={section} />
     </Section>
