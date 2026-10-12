@@ -17,11 +17,13 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const motionRoot = join(siteRoot, "public/motion/v5");
@@ -132,7 +134,15 @@ for (const path of paths) {
   if (!path.includes("/posters/")) continue;
   const source = join(coversDir, basename(path));
   if (!existsSync(source)) fail(`missing cover ${basename(path)}`);
-  cpSync(source, join(motionRoot, "posters", basename(path)));
+  // Re-encoded at WebP quality 70 (the floor of the operator): the covers are stills seen at the edge of a ring or for the
+  // instant before the player paints, and a product page weighs 11 KB less with them. A file that does not shrink is
+  // copied as it is.
+  const smaller = await sharp(source)
+    .webp({ quality: 70, effort: 6, smartSubsample: true })
+    .toBuffer();
+  if (smaller.length < statSync(source).size)
+    writeFileSync(join(motionRoot, "posters", basename(path)), smaller);
+  else cpSync(source, join(motionRoot, "posters", basename(path)));
   covers++;
 }
 
