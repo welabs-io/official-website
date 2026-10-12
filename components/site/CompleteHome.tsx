@@ -74,20 +74,19 @@ export function CompleteHome() {
             <h2 id="products-heading">Conheça cada produto.</h2>
             <p>
               Gestão, relacionamento, workflows, canais e conhecimento. <br />
-              Cada marca se forma ao entrar em cena. Escolha um produto e
-              conheça seu papel.
+              Cada marca se forma ao entrar em cena, em uma sequência contínua.
+              Conheça o papel de cada produto.
             </p>
           </div>
           <RingStage
             id="products-ring"
             kind="products"
-            rotate={false}
+            rotate
             summaries={summaries}
             clean
-            logos="links"
             tone="light"
             caption
-            navigation
+            navigation={false}
             label="Conheça os cinco produtos Welabs"
           />
         </div>
@@ -124,9 +123,9 @@ export function CompleteHome() {
                 <div className={styles.roleHeader}>
                   <img
                     src={productLogo(slug, "dark")}
-                    alt={`${slug[0].toUpperCase()}${slug.slice(1)} by Welabs`}
-                    width={120}
-                    height={66}
+                    alt={`${slug[0].toUpperCase()}${slug.slice(1)}`}
+                    width={176}
+                    height={76}
                   />
                   <span>
                     {index < 2 ? "Núcleo da operação" : "Conecta o trabalho"}
@@ -181,7 +180,7 @@ export function CompleteHome() {
               label="Marcas do portfólio"
               logos={CLIENT_LOGOS}
               kind="all"
-              seconds={54}
+              seconds={30}
             />
           </div>
           <div className={styles.partnerRow}>
@@ -190,7 +189,7 @@ export function CompleteHome() {
               label="Plataformas de infraestrutura e desenvolvimento"
               logos={PLATFORM_LOGOS}
               kind="all"
-              seconds={70}
+              seconds={38}
             />
           </div>
         </div>

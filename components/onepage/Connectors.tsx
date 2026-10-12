@@ -145,7 +145,7 @@ function Nodes({
     const logo = (
       <img
         src={productLogo(slug, tone)}
-        alt={`${name} by Welabs`}
+        alt={`${name}`}
         width={1005}
         height={550}
         loading="lazy"
@@ -208,7 +208,7 @@ export function Connectors({
       >
         <img
           src={productLogo(slug, tone)}
-          alt={`${PRODUCTS.find((product) => product.slug === slug)!.name} by Welabs`}
+          alt={`${PRODUCTS.find((product) => product.slug === slug)!.name}`}
           width={110}
           height={60}
           loading="lazy"

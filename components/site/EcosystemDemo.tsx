@@ -8,9 +8,9 @@ import {
   hideLoader,
   type PlayerElement,
 } from "@/components/ring/player";
-import { revealSelectedMotion } from "@/components/ring/scroll-selected-motion";
 import {
   ECOSYSTEM_DURATION,
+  ECOSYSTEM_PLAYBACK_RATE,
   ECOSYSTEM_PHASES,
   ECOSYSTEM_REQUEST,
   ECOSYSTEM_VARIANTS,
@@ -26,15 +26,12 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
   const layers = root.querySelector<HTMLElement>("[data-chain-layer]")!;
   const image = root.querySelector<HTMLImageElement>("[data-chain-poster]")!;
   const mobileImage = root.querySelector<HTMLSourceElement>("source")!;
-  const buttons = [
-    ...root.querySelectorAll<HTMLButtonElement>("[data-chain-select]"),
+  const markers = [
+    ...root.querySelectorAll<HTMLElement>("[data-chain-marker]"),
   ];
   const captions = [
     ...root.querySelectorAll<HTMLElement>("[data-chain-caption]"),
   ];
-  const announcement = root.querySelector<HTMLElement>(
-    "[data-chain-announcement]",
-  )!;
   const owner = root.querySelector<HTMLElement>("[data-chain-owner]")!;
   const compact = window.matchMedia("(max-width: 700px)");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -51,24 +48,28 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
   const wantsMotion = () =>
     visible && !document.hidden && !reduced.matches && !dead;
 
-  const show = (index: number, announce = false) => {
+  const show = (index: number) => {
     phaseIndex = index;
     const phase = ECOSYSTEM_PHASES[index];
     root.dataset.chainPhase = phase.key;
-    owner.textContent = phase.owner;
+    root.dataset.reducedMotion = String(reduced.matches);
+    owner.textContent = reduced.matches
+      ? "Os cinco produtos em sequência"
+      : phase.owner;
     image.src = ecosystemPoster(ECOSYSTEM_VARIANTS.desktop.id, phase.key);
     mobileImage.srcset = ecosystemPoster(
       ECOSYSTEM_VARIANTS.mobile.id,
       phase.key,
     );
     captions.forEach((caption, i) => {
-      caption.hidden = i !== index;
+      // A static visit must still explain the complete operation without requiring chapter selection.
+      caption.hidden = !reduced.matches && i !== index;
     });
-    buttons.forEach((button, i) => {
-      button.dataset.active = String(i === index);
-      button.setAttribute("aria-pressed", String(i === index));
+    markers.forEach((marker, i) => {
+      marker.dataset.active = String(i === index);
+      if (i === index) marker.setAttribute("aria-current", "step");
+      else marker.removeAttribute("aria-current");
     });
-    if (announce) announcement.textContent = phase.title;
   };
   const removePlayer = () => {
     generation++;
@@ -105,6 +106,7 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
           ecosystemSource(format.id),
           [0, ECOSYSTEM_DURATION],
           false,
+          ECOSYSTEM_PLAYBACK_RATE,
         );
         current.setAttribute("width", String(format.width));
         current.setAttribute("height", String(format.height));
@@ -120,6 +122,8 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
           hideLoader(current);
           current.pause();
           current.seek(selectedTime);
+          // The pinned player applies the rate reliably after its source timeline becomes ready.
+          current.playbackRate = ECOSYSTEM_PLAYBACK_RATE;
           // Paint the actual composition before removing its operational fallback.
           requestAnimationFrame(() =>
             requestAnimationFrame(() => {
@@ -170,25 +174,10 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
       show(0);
     }
   }, 100);
-  const select = (event: MouseEvent) => {
-    if (!(event.target instanceof Element)) return;
-    const button = event.target.closest<HTMLButtonElement>(
-      "[data-chain-select]",
-    );
-    if (!button) return;
-    const index = Number(button.dataset.chainSelect);
-    selectedTime = ECOSYSTEM_PHASES[index].start + 0.1;
-    show(index, true);
-    revealSelectedMotion(root);
-    if (player?.ready) {
-      player.pause();
-      player.seek(selectedTime);
-    }
-    start();
-  };
   const visibility = () => start();
   const preference = () => {
     removePlayer();
+    show(phaseIndex);
     start();
   };
   const formatChange = () => {
@@ -204,7 +193,6 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
     { threshold: [0, 0.55, 1], rootMargin: "-84px 0px 0px" },
   );
   observer.observe(viewport);
-  root.addEventListener("click", select);
   document.addEventListener("visibilitychange", visibility);
   reduced.addEventListener("change", preference);
   compact.addEventListener("change", formatChange);
@@ -214,7 +202,6 @@ const attachEcosystem = (root: HTMLDivElement | null) => {
     observer.disconnect();
     window.clearInterval(tick);
     removePlayer();
-    root.removeEventListener("click", select);
     document.removeEventListener("visibilitychange", visibility);
     reduced.removeEventListener("change", preference);
     compact.removeEventListener("change", formatChange);
@@ -241,18 +228,19 @@ export function EcosystemDemo() {
           <span>Demonstração ilustrativa</span>
         </div>
       </div>
-      <ol className={styles.navigation} aria-label="Etapas da operação">
+      <ol
+        className={styles.navigation}
+        aria-label="Sequência automática da operação"
+      >
         {ECOSYSTEM_PHASES.map((phase, index) => (
           <li key={phase.key}>
-            <button
-              type="button"
-              data-chain-select={index}
+            <span
+              data-chain-marker={index}
               data-active={index === 0 ? "true" : "false"}
-              aria-pressed={index === 0}
+              aria-current={index === 0 ? "step" : undefined}
             >
-              <span aria-hidden="true">0{index + 1}</span>
               {phase.label}
-            </button>
+            </span>
           </li>
         ))}
       </ol>
@@ -291,11 +279,6 @@ export function EcosystemDemo() {
         ))}
         <p className={styles.request}>“{ECOSYSTEM_REQUEST}”</p>
       </div>
-      <span
-        className={styles.srOnly}
-        aria-live="polite"
-        data-chain-announcement
-      />
     </div>
   );
 }

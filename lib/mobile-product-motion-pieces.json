@@ -1,0 +1,142 @@
+{
+  "round": "site-product-mobile-20261011",
+  "products": {
+    "domus": {
+      "id": "domus-product-mobile-ludic-v1-r2-s1",
+      "duration": 24.4,
+      "sha256": "89a5a46a91d07ef3ba52c4f9c4e13a674db52e85099b642466abc9a95849ad97",
+      "chapters": [
+        {
+          "key": "business-overview",
+          "start": 0,
+          "end": 8,
+          "posterTime": 7.3
+        },
+        {
+          "key": "monthly-billing",
+          "start": 8.2,
+          "end": 16.2,
+          "posterTime": 15.5
+        },
+        {
+          "key": "inspection-screen",
+          "start": 16.4,
+          "end": 24.4,
+          "posterTime": 23.7
+        }
+      ]
+    },
+    "relloo": {
+      "id": "relloo-product-mobile-ludic-v1-r2-s1",
+      "duration": 31.8,
+      "sha256": "dec2930edf4036b443a8b12e47969f2f0a63c70aaf4f13512b4e1a8fdb967947",
+      "chapters": [
+        {
+          "key": "contact-context",
+          "start": 0,
+          "end": 7.8,
+          "posterTime": 7.1
+        },
+        {
+          "key": "test-assistant",
+          "start": 8,
+          "end": 15.8,
+          "posterTime": 15.1
+        },
+        {
+          "key": "conversation-route",
+          "start": 16,
+          "end": 23.8,
+          "posterTime": 23.1
+        },
+        {
+          "key": "redeem-coupon",
+          "start": 24,
+          "end": 31.8,
+          "posterTime": 31.1
+        }
+      ]
+    },
+    "magneto": {
+      "id": "magneto-product-mobile-ludic-v1-r2-s1",
+      "duration": 31.8,
+      "sha256": "830c028fc8ba4b3f7ac3f50b62fbc75a79854b46e134f9ffe83ba0e1ba764eb5",
+      "chapters": [
+        {
+          "key": "draw-workflow",
+          "start": 0,
+          "end": 7.8,
+          "posterTime": 7.1
+        },
+        {
+          "key": "activate-suggestion",
+          "start": 8,
+          "end": 15.8,
+          "posterTime": 15.1
+        },
+        {
+          "key": "resume-execution",
+          "start": 16,
+          "end": 23.8,
+          "posterTime": 23.1
+        },
+        {
+          "key": "restore-version",
+          "start": 24,
+          "end": 31.8,
+          "posterTime": 31.1
+        }
+      ]
+    },
+    "tuner": {
+      "id": "tuner-product-mobile-ludic-v1-r3-s1",
+      "duration": 24.4,
+      "sha256": "f83e1777487f3ec4834fdf1788c13391fd27dd39f8480e0871e5610409eb9d26",
+      "chapters": [
+        {
+          "key": "unify-channels",
+          "start": 0,
+          "end": 8,
+          "posterTime": 7.3
+        },
+        {
+          "key": "transfer-call",
+          "start": 8.2,
+          "end": 16.2,
+          "posterTime": 15.5
+        },
+        {
+          "key": "resume-whatsapp",
+          "start": 16.4,
+          "end": 24.4,
+          "posterTime": 23.7
+        }
+      ]
+    },
+    "knowly": {
+      "id": "knowly-product-mobile-ludic-v1-r2-s1",
+      "duration": 24.4,
+      "sha256": "b5bf5aa5f6ab4660e855b13197245758e4650434ed2ae54671bdf1319cf7b67a",
+      "chapters": [
+        {
+          "key": "organize-sources",
+          "start": 0,
+          "end": 8,
+          "posterTime": 7.3
+        },
+        {
+          "key": "verify-answer",
+          "start": 8.2,
+          "end": 16.2,
+          "posterTime": 15.5
+        },
+        {
+          "key": "respect-access",
+          "start": 16.4,
+          "end": 24.4,
+          "posterTime": 23.7
+        }
+      ]
+    }
+  }
+}

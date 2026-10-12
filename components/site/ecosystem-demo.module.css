@@ -41,36 +41,29 @@
   list-style: none;
   border-bottom: 1px solid rgb(255 255 255 / 10%);
 }
-.navigation button {
+.navigation [data-chain-marker] {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
-  min-height: 44px;
+  min-height: 32px;
   padding: 8px;
   border: 0;
-  border-radius: 7px;
+  border-bottom: 2px solid rgb(255 255 255 / 8%);
   background: transparent;
   color: #aab4c2;
   font: inherit;
   font-size: 16px;
-  cursor: pointer;
 }
-.navigation button span {
-  font-size: 13px;
-  opacity: 0.65;
-}
-.navigation button[data-active="true"] {
-  background: rgb(255 176 32 / 12%);
+.navigation [data-active="true"] {
+  border-bottom-color: #ffb020;
   color: #ffb020;
 }
-.navigation button:hover {
-  background: rgb(255 255 255 / 6%);
-}
-.navigation button:focus-visible {
-  outline: 2px solid #ffb020;
-  outline-offset: 2px;
+.root[data-reduced-motion="true"] .caption {
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
 .viewport {
   position: relative;
@@ -155,14 +148,9 @@
     gap: 0;
     padding: 8px 4px;
   }
-  .navigation button {
-    flex-direction: column;
-    gap: 4px;
+  .navigation [data-chain-marker] {
     padding: 6px 2px;
     font-size: 14px;
-  }
-  .navigation button span {
-    font-size: 11px;
   }
   .viewport {
     aspect-ratio: 4 / 5;

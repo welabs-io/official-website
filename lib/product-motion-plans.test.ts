@@ -29,19 +29,26 @@ describe("independent motion production plans", () => {
   });
 
   it.each(PRODUCTS)(
-    "$slug preserves identity, ordered chapters and usable source ranges",
+    "$slug starts with an action and preserves ordered chapters and usable source ranges",
     ({ slug }) => {
       const plan = getProductMotionPlan(slug);
       expect(plan.chapters.length).toBeGreaterThanOrEqual(3);
       expect(new Set(plan.chapters.map(({ key }) => key)).size).toBe(
         plan.chapters.length,
       );
-      const opening = plan.chapters[0].segments[0];
-      expect(opening.pieceId).toBe(pieces.products[slug].intro.id);
-      expect([opening.start, opening.end]).toEqual([
-        0,
-        pieces.products[slug].intro.duration,
-      ]);
+      const segments = plan.chapters.flatMap((chapter) => chapter.segments);
+      expect(
+        segments.every((segment) => !segment.pieceId.includes("intro")),
+      ).toBe(true);
+      expect(
+        segments.reduce(
+          (duration, segment) =>
+            duration +
+            (segment.end - segment.start) / segment.rate +
+            segment.holdAfter,
+          0,
+        ),
+      ).toBeLessThan(42);
       for (const chapter of plan.chapters) {
         expect(chapter.title.trim().length).toBeGreaterThan(0);
         expect(chapter.body.trim().length).toBeGreaterThan(0);
@@ -55,7 +62,7 @@ describe("independent motion production plans", () => {
             durations.get(segment.pieceId)!,
           );
           expect(segment.rate).toBeGreaterThan(0);
-          expect(segment.rate).toBeLessThanOrEqual(1);
+          expect(segment.rate).toBeLessThanOrEqual(1.2);
           expect(segment.holdAfter).toBeGreaterThanOrEqual(0);
           expect(
             fs.existsSync(path.join(process.cwd(), "public", segment.poster)),

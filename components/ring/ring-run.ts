@@ -19,7 +19,7 @@ import type { RingKind } from "./RingDriver";
 import { motionPhase, projectionVariables } from "./projection";
 import { revealSelectedMotion } from "./scroll-selected-motion";
 
-export const ROTATION_SECONDS = 0.8;
+export const ROTATION_SECONDS = 0.55;
 const COVER_HOLD_MS = 4400;
 
 // Download the player script ahead of the first play
@@ -266,13 +266,19 @@ export function run(
     }
     for (const caption of captions)
       caption.hidden =
-        caption.dataset.captionIndex === undefined
-          ? caption.dataset.caption !== lit[0]
-          : Number(caption.dataset.captionIndex) !== active;
+        root.dataset.reducedMotion === "true" && kind === "story"
+          ? false
+          : caption.dataset.captionIndex === undefined
+            ? caption.dataset.caption !== lit[0]
+            : Number(caption.dataset.captionIndex) !== active;
     for (const chapter of chapters) {
-      const current = Number(chapter.dataset.select) === active;
+      // Passive markers follow playback; only legacy interactive controls retain pressed semantics.
+      const current =
+        Number(chapter.dataset.chapterIndex ?? chapter.dataset.select) ===
+        active;
       chapter.dataset.current = String(current);
-      chapter.setAttribute("aria-pressed", String(current));
+      if (chapter.dataset.select !== undefined)
+        chapter.setAttribute("aria-pressed", String(current));
     }
     if (announce && announcement) {
       const product = PRODUCTS.find((item) => item.slug === lit[0]);

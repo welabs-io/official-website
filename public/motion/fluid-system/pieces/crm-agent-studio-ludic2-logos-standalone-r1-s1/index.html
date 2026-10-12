@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Relloo · Agentes (lúdica v2)</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Brand tokens come from _shared/brand/welabs/welabs-brand.js (tools/build-brand.mjs); text uses Inter 400/500/600 only */
+:root{--bg:#10141C;--panel:#181B22;--panel2:#232732;--line:#373C48;--amber:var(--wl-amber);--text:#FFFFFF;--muted:#BCC0CB;--ok:#3DD68C}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif;font-weight:500}
+#root [data-wl-name]{color:inherit}
+#lg{position:absolute;left:64px;top:34px;height:68px;transform-origin:0 0;opacity:0}
+#hd{position:absolute;left:232px;top:34px;height:68px;display:flex;align-items:center;gap:20px;opacity:0;white-space:nowrap}
+#hd .bar{width:4px;height:44px;border-radius:2px;background:var(--amber)}
+#hd .mod{font-size:36px;font-weight:600}
+#hd .pos{font-size:28px;color:var(--muted)}
+#demo{position:absolute;right:64px;top:48px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:600;color:var(--muted);line-height:36px;opacity:0}
+#op{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#op .l1{position:absolute;left:0;top:452px;width:1920px;text-align:center;font-size:56px;letter-spacing:-1px}
+/* LOGO DE PRODUTO NO TEXTO */
+/* Height-only sizing; vertical-align puts the logo baseline (210 of 284.1 units) on the text baseline */
+.nl{display:inline-block;height:1.17em;width:auto;vertical-align:-0.3051em;margin-right:0.12em}
+#op .mk{position:absolute;left:0;top:572px;width:1920px;text-align:center;font-size:28px;font-weight:600;letter-spacing:4px;color:var(--muted)}
+#op .mn{position:absolute;left:0;top:616px;width:1920px;text-align:center;font-size:76px;font-weight:600;letter-spacing:-1.5px;color:var(--amber)}
+#op .inc{position:absolute;left:0;top:730px;width:1920px;text-align:center;font-size:32px;color:var(--muted)}
+.cap{position:absolute;left:0;top:916px;width:1920px;text-align:center;font-size:52px;font-weight:600;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap}
+.cap span{color:var(--amber)}
+.ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:rgba(var(--wl-amber-rgb),.16);color:var(--amber);flex:none}
+.lbl{position:absolute;font-size:24px;font-weight:600;letter-spacing:2px;color:var(--muted);white-space:nowrap}
+.pnl{position:absolute;left:640px;width:1200px;border-radius:30px;background:var(--panel);border:3px solid var(--line);opacity:0}
+.pnl .t{position:absolute;left:32px;top:24px;font-size:32px;font-weight:600;white-space:nowrap}
+#links{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:visible}
+#links path{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round;opacity:0}
+
+/* O AGENTE (ÂNCORA) */
+#ag{position:absolute;left:80px;top:160px;width:440px;height:690px;border-radius:34px;background:var(--panel);border:3px solid var(--line);opacity:0}
+#bot{position:absolute;left:145px;top:30px;width:150px;height:160px}
+#agN{position:absolute;left:0;top:206px;width:434px;text-align:center;font-size:40px;font-weight:600}
+#agS{position:absolute;left:0;top:258px;width:434px;text-align:center;font-size:26px;color:var(--muted)}
+.row{position:absolute;left:32px;display:flex;gap:12px}
+.ch{height:50px;padding:0 14px;border-radius:25px;border:2px solid var(--line);font-size:24px;font-weight:600;line-height:46px;white-space:nowrap;opacity:0}
+.ch.on{background:var(--amber);border-color:var(--amber);color:var(--wl-ink-on-amber)}
+#vT,#vA{position:absolute;left:32px;top:576px;height:52px;padding:0 18px;border-radius:26px;font-size:24px;font-weight:600;line-height:48px;white-space:nowrap;opacity:0}
+#vT{border:2px solid var(--wl-wait);color:var(--wl-wait);background:var(--wl-wait-soft)}
+#vA{border:2px solid var(--ok);color:var(--ok);background:#12291F}
+#vP{position:absolute;left:32px;top:628px;height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--line);font-size:24px;color:var(--muted);line-height:40px;white-space:nowrap;opacity:0}
+
+/* PEÇAS PRONTAS */
+.pz{position:absolute;top:300px;width:340px;height:160px;border-radius:28px;background:var(--panel2);border:3px solid var(--amber);display:flex;flex-direction:column;justify-content:center;padding:0 28px;opacity:0}
+.pz b{font-size:34px;font-weight:600;white-space:nowrap}
+.pz em{font-style:normal;margin-top:8px;font-size:24px;color:var(--muted);white-space:nowrap}
+#more{position:absolute;left:1060px;top:500px;width:340px;text-align:center;font-size:26px;color:var(--muted);opacity:0}
+#hello{position:absolute;left:680px;top:250px;width:1100px;opacity:0}
+#hello .h{font-size:26px;color:var(--muted);white-space:nowrap}
+#hello .b{display:inline-block;margin-top:12px;height:84px;padding:0 30px;border-radius:26px 26px 26px 8px;background:var(--amber);color:var(--wl-ink-on-amber);font-size:32px;font-weight:600;line-height:84px;white-space:nowrap}
+#hello .b.f{background:var(--panel2);color:var(--text)}
+
+/* CONHECIMENTO: FONTES E KNOWLY */
+#kb{top:160px;height:330px}
+.src{position:absolute;left:32px;width:1130px;height:64px;border-radius:18px;background:var(--panel2);display:flex;align-items:center;gap:16px;padding:0 14px;font-size:28px;font-weight:600;white-space:nowrap}
+.src .ic{width:44px;height:44px;border-radius:12px}
+.src .k{font-weight:500;color:var(--muted);font-size:24px}
+.stt{position:absolute;right:16px;top:9px;height:46px;width:150px;border-radius:23px;font-size:24px;font-weight:600;line-height:42px;text-align:center;opacity:0}
+.s0{border:2px solid var(--line);color:var(--muted)}
+.s1{border:2px solid var(--wl-wait);color:var(--wl-wait);background:var(--wl-wait-soft)}
+.s2{border:2px solid var(--ok);color:var(--ok);background:#12291F}
+#kw{top:520px;height:330px;border-style:dashed}
+#kw .lb{position:absolute;left:32px;top:30px;font-size:28px;color:var(--muted);white-space:nowrap}
+#kw img{position:absolute;left:32px;top:80px;height:56px}
+#kw .row{top:190px;left:32px;gap:16px}
+#kw .dc{height:64px;padding:0 22px;border-radius:18px;background:var(--panel2);font-size:26px;font-weight:600;line-height:64px;white-space:nowrap}
+#kw .nt{position:absolute;left:32px;top:272px;font-size:24px;color:var(--muted);white-space:nowrap}
+
+/* FERRAMENTAS E MEMÓRIA */
+.tc{position:absolute;top:160px;width:380px;height:400px;border-radius:30px;background:var(--panel);border:3px solid var(--line);opacity:0}
+.tc .ic{position:absolute;left:28px;top:28px}
+.tc .n{position:absolute;left:28px;top:100px;font-size:32px;font-weight:600;white-space:nowrap}
+.tc .f{position:absolute;left:28px;width:324px;height:52px;border-radius:14px;background:var(--panel2);font-size:24px;line-height:52px;padding:0 14px;white-space:nowrap}
+.tc .f i{font-style:normal;color:var(--amber)}
+.ok{position:absolute;left:28px;top:322px;height:50px;padding:0 18px;border-radius:25px;border:2px solid var(--ok);color:var(--ok);background:#12291F;font-size:24px;font-weight:600;line-height:46px;white-space:nowrap;opacity:0}
+.lk{position:absolute;left:28px;top:322px;height:50px;padding:0 18px;border-radius:25px;border:2px solid var(--line);color:var(--muted);font-size:24px;font-weight:600;line-height:46px;white-space:nowrap;opacity:0}
+#mem{top:600px;height:220px}
+#mem .d{position:absolute;left:32px;top:84px;font-size:28px;white-space:nowrap}
+#mem .e{position:absolute;left:32px;top:136px;font-size:24px;color:var(--muted);white-space:nowrap}
+#tog{position:absolute;right:40px;top:88px;width:120px;height:64px;border-radius:32px;background:var(--line)}
+#togOn{position:absolute;left:0;top:0;width:120px;height:64px;border-radius:32px;background:var(--ok);opacity:0}
+#knob{position:absolute;left:6px;top:6px;width:52px;height:52px;border-radius:50%;background:#fff}
+
+/* CONVERSA DE TESTE */
+#sim{top:160px;height:690px}
+.md{position:absolute;top:26px;height:44px;padding:0 16px;border-radius:22px;font-size:24px;font-weight:600;line-height:40px;white-space:nowrap}
+#mT{left:360px;border:2px solid var(--wl-wait);color:var(--wl-wait);background:var(--wl-wait-soft)}
+#mA{left:360px;border:2px solid var(--ok);color:var(--ok);background:#12291F;opacity:0}
+#prom{position:absolute;right:32px;top:20px;height:56px;padding:0 24px;border-radius:18px;background:var(--amber);color:var(--wl-ink-on-amber);font-size:26px;font-weight:600;line-height:56px;opacity:0}
+.q,.a{position:absolute;height:68px;padding:0 24px;border-radius:22px;font-size:28px;font-weight:600;line-height:68px;white-space:nowrap;opacity:0}
+.q{left:32px;background:var(--panel2);border-bottom-left-radius:6px}
+.a{right:32px;background:var(--amber);color:var(--wl-ink-on-amber);border-bottom-right-radius:6px}
+#typ{position:absolute;right:32px;top:190px;width:110px;height:60px;border-radius:22px;background:var(--wl-amber-soft);opacity:0}
+#typ i{position:absolute;top:24px;width:12px;height:12px;border-radius:50%;background:var(--amber)}
+#src{position:absolute;right:32px;top:266px;height:48px;padding:0 16px;border-radius:24px;border:2px solid var(--amber);color:var(--amber);font-size:24px;font-weight:600;line-height:44px;white-space:nowrap;display:flex;align-items:center;gap:8px;opacity:0}
+#hand{position:absolute;right:32px;top:428px;height:76px;padding:0 20px 0 12px;border-radius:22px;background:var(--panel2);border:3px solid var(--ok);display:flex;align-items:center;gap:14px;font-size:26px;font-weight:600;white-space:nowrap;opacity:0}
+#chk{position:absolute;left:32px;top:560px;width:1130px;height:96px;border-radius:22px;background:var(--panel2);opacity:0}
+#chk .l{position:absolute;left:24px;top:30px;font-size:28px;font-weight:600;white-space:nowrap}
+.ck{position:absolute;top:24px;width:48px;height:48px;border-radius:50%;background:var(--ok);display:grid;place-items:center;opacity:0}
+#cur{position:absolute;left:1700px;top:200px;width:44px;height:44px;opacity:0}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0}
+#close .l1{position:absolute;left:0;top:262px;width:1920px;text-align:center;font-size:72px;font-weight:600;letter-spacing:-2px;line-height:90px}
+#close .l2{position:absolute;left:0;top:352px;width:1920px;text-align:center;font-size:72px;font-weight:600;letter-spacing:-2px;line-height:90px;color:var(--amber)}
+#close .dm{position:absolute;left:0;top:860px;width:1920px;text-align:center;font-size:26px;color:var(--muted)}
+/* AJUSTE GEOMÉTRICO HERDADO R4 (tools/endorse-pass.mjs sobre pieces/crm-agent-studio-ludic2-logos-r3-s1, sha256 34245d51cd7f; marca 1.5.0, medido, nada à mão) */
+/* relloo #0: x-height 34.6 px at t=0.75 s; seal band 31.804 px under the wordmark, taken back from the margins */
+img[data-es="0"]{width:148px !important;height:97.408px !important;margin-top:0.198px !important;margin-bottom:-31.606px !important}
+/* knowly #1: x-height 27.8 px at t=19.25 s; seal band 23.863 px under the wordmark, taken back from the margins */
+img[data-es="1"]{width:169.835px !important;height:79.863px !important;margin-bottom:-23.863px !important;margin-left:0.082px !important;margin-right:0.082px !important}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="crm-agent-studio-ludic2-logos-standalone-r1-s1" data-brand="welabs" data-brand-scripts="welabs/tokens.js welabs/legacy-contract-bridge.js" data-width="1920" data-height="1080" data-start="0" data-duration="46">
+  <img id="lg" data-brand-src="welabs/products/relloo-dark.svg" alt="Relloo">
+  <div id="hd"><div class="bar"></div><div class="mod">Agentes</div><div class="pos">· relacionamento com quem compra de você</div></div>
+  <div id="demo">DEMO</div>
+
+  <div id="op">
+    <div class="l1"><img class="nl" data-brand-src="welabs/products/relloo-dark.svg" alt="Relloo" data-es="0"> · relacionamento com quem compra de você</div>
+    <div class="mk">MÓDULO</div>
+    <div class="mn">Agentes</div>
+    <div class="inc">Agentes de IA · bases de conhecimento · simulador</div>
+  </div>
+
+  <svg id="links" viewBox="0 0 1920 1080">
+    <path id="l1" d="M640 325 C 590 325, 570 300, 520 300"/>
+    <path id="l2" d="M640 685 C 570 685, 580 340, 520 340"/>
+    <path id="l3" d="M640 360 C 590 360, 570 400, 520 400"/>
+  </svg>
+
+  <div id="ag">
+    <svg id="bot" viewBox="0 0 150 160"><path d="M75 6v22" stroke="var(--amber)" stroke-width="8" stroke-linecap="round"/><circle cx="75" cy="10" r="9" fill="var(--amber)"/><rect x="15" y="34" width="120" height="104" rx="34" fill="var(--amber)"/><circle cx="52" cy="82" r="11" fill="var(--wl-ink-on-amber)"/><circle cx="98" cy="82" r="11" fill="var(--wl-ink-on-amber)"/><path d="M56 112c10 8 28 8 38 0" fill="none" stroke="var(--wl-ink-on-amber)" stroke-width="7" stroke-linecap="round"/></svg>
+    <div id="agN">Lia · DEMO</div>
+    <div id="agS">agente de IA</div>
+    <div class="lbl" id="lbF" style="left:32px;top:316px;opacity:0">FINALIDADE</div>
+    <div class="row" style="top:352px"><div class="ch" id="f0">Suporte</div><div class="ch on" id="f1">Vendas</div><div class="ch" id="f2">Pessoal</div></div>
+    <div class="lbl" id="lbM" style="left:32px;top:424px;opacity:0">MODELOS PRONTOS</div>
+    <div class="row" style="top:458px"><div class="ch" id="m0">Núcleo</div><div class="ch" id="m1">Generalista</div></div>
+    <div class="row" style="top:516px"><div class="ch" id="m2">Direito do consumidor</div></div>
+    <div id="vT">Versão 3 · em teste</div>
+    <div id="vA" data-layout-allow-overlap>Versão 3 · no ar</div>
+    <div id="vP">Versão 2 · anterior</div>
+  </div>
+
+  <div class="pz" id="pz0" data-layout-allow-overlap style="left:680px"><b>Núcleo</b><em>modelo pronto</em></div>
+  <div class="pz" id="pz1" data-layout-allow-overlap style="left:1060px"><b>Generalista</b><em>modelo pronto</em></div>
+  <!-- Wider card (340 -> 430 px, left 1440 -> 1420): "Direito do consumidor" ran past the border; ends at 1850 -->
+  <div class="pz" id="pz2" data-layout-allow-overlap style="left:1420px;width:430px"><b>Direito do consumidor</b><em>modelo de área</em></div>
+  <div id="more">e outras áreas para combinar</div>
+  <div id="hello"><div class="h">Boas-vindas do agente</div><div class="b">Olá! Sou a Lia. Posso ajudar com a sua compra?</div><div class="h" style="margin-top:28px">Se não souber responder</div><div class="b f">Vou chamar alguém da equipe para você.</div></div>
+
+  <div class="pnl" id="kb">
+    <div class="t">Bases de conhecimento</div>
+    <div class="src" style="top:84px"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>Política de trocas <span class="k">· arquivo · DEMO</span><div class="stt s0" id="a0">pendente</div><div class="stt s1" id="a1" data-layout-allow-overlap>lendo…</div><div class="stt s2" id="a2" data-layout-allow-overlap>pronta</div></div>
+    <div class="src" style="top:162px"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Site da loja <span class="k">· endereço · DEMO</span><div class="stt s0" id="b0">pendente</div><div class="stt s1" id="b1" data-layout-allow-overlap>lendo…</div><div class="stt s2" id="b2" data-layout-allow-overlap>pronta</div></div>
+    <div class="src" style="top:240px"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="3" y="14" width="18" height="6" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>Catálogo <span class="k">· outro sistema, sempre atual · DEMO</span><div class="stt s0" id="e0">pendente</div><div class="stt s1" id="e1" data-layout-allow-overlap>lendo…</div><div class="stt s2" id="e2" data-layout-allow-overlap>pronta</div></div>
+  </div>
+  <div class="pnl" id="kw">
+    <div class="lb">E o conhecimento da empresa vem do</div>
+    <img data-brand-src="welabs/products/knowly-dark.svg" alt="Knowly" data-es="1">
+    <div class="row"><div class="dc">Manual de atendimento · DEMO</div><div class="dc">Perguntas frequentes · DEMO</div></div>
+    <div class="nt">cada resposta sai com a fonte de onde veio</div>
+  </div>
+
+  <div class="tc" id="t0" style="left:640px">
+    <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM8 7V4h8v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></div>
+    <div class="n">Consultar pedido</div>
+    <div class="f" style="top:160px">loja <i>· fixo</i></div>
+    <div class="f" style="top:218px">número <i>· a IA preenche</i></div>
+    <div class="ok" id="ok0">liberada</div>
+  </div>
+  <div class="tc" id="t1" style="left:1050px">
+    <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+    <div class="n">Agendar visita</div>
+    <div class="f" style="top:160px">data <i>· a IA preenche</i></div>
+    <div class="f" style="top:218px">contato <i>· da conversa</i></div>
+    <div class="ok" id="ok1">liberada</div>
+  </div>
+  <div class="tc" id="t2" style="left:1460px">
+    <div class="ic" style="background:rgba(188,192,203,.12);color:var(--muted)"><svg width="30" height="30" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></div>
+    <div class="n" style="color:var(--muted)">Apagar cadastro</div>
+    <div class="f" style="top:160px;color:var(--muted)">fora do alcance do agente</div>
+    <div class="lk" id="lk2">não liberada</div>
+  </div>
+  <div class="pnl" id="mem">
+    <div class="t">Memória</div>
+    <div class="d">Lembra do mesmo contato entre conversas</div>
+    <div class="e">quanto lembrar · DEMO</div>
+    <div id="tog"><div id="togOn"></div><div id="knob"></div></div>
+  </div>
+
+  <div class="pnl" id="sim">
+    <div class="t">Conversa de teste</div>
+    <div class="md" id="mT">em teste</div>
+    <div class="md" id="mA" data-layout-allow-overlap>no ar</div>
+    <div id="prom">Promover</div>
+    <div class="q" id="q1" style="top:100px">Posso trocar um produto?</div>
+    <div id="typ"><i style="left:22px"></i><i style="left:49px"></i><i style="left:76px"></i></div>
+    <div class="a" id="a1x" style="top:184px" data-layout-allow-overlap>Pode sim! A troca segue a política da loja.</div>
+    <div id="src"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>fonte: Política de trocas · DEMO</div>
+    <div class="q" id="q2" style="top:340px">Quero falar com uma pessoa</div>
+    <div id="hand"><svg width="56" height="56" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="#181B22"/><circle cx="60" cy="46" r="22" fill="#F2C6A8"/><path d="M22 104c4-22 20-34 38-34s34 12 38 34" fill="var(--amber)"/></svg>Ana, da Equipe Comercial, assume · com nota interna</div>
+    <div id="chk"><div class="l">Conferida antes de sair</div>
+      <div class="ck" style="left:420px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="ck" style="left:484px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="ck" style="left:548px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="ck" style="left:612px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="ck" style="left:676px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="ck" style="left:740px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+      <div class="ck" style="left:804px"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></div>
+    </div>
+  </div>
+  <svg id="cur" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.6L9.6 21z" fill="#fff" stroke="#0B0B0D" stroke-width="1.6" stroke-linejoin="round"/></svg>
+
+  <div class="cap" id="c1">Você monta o agente <span>com peças prontas</span></div>
+  <div class="cap" id="c2">As respostas vêm das suas fontes <span>e do conhecimento da empresa</span></div>
+  <div class="cap" id="c3">Ele só usa as ferramentas <span>que você libera</span></div>
+  <div class="cap" id="c4">Antes de ligar, <span>você conversa com ele</span></div>
+  <div class="cap" id="c5">Quando precisa de gente, <span>ele chama a equipe</span></div>
+  <div class="cap" id="c6">A versão nova só entra no ar <span>quando você promove</span></div>
+
+  <div id="close">
+    <div class="l1">Um agente que responde com base</div>
+    <div class="l2">e passa a vez na hora certa.</div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to/set com tempos fixos)
+(function () {
+  var D = 46;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+  function sw(a, b, t) { out(a, t, 0.25); inn(b, t + 0.2, {}, 0.3); }
+  function draw(id, t, d) { var p = document.getElementById(id), L = p.getTotalLength(); p.style.strokeDasharray = L; tl.set(p, { opacity: 0 }, 0); tl.set(p, { opacity: 1 }, t); tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power1.inOut' }, t); }
+
+  // Abertura: posicionamento e módulo; o logo voa para o cabeçalho (0–4,6 s, parado de 1,9 a 3,9 s)
+  // Lockup centred on the frame axis by its box (x 671.5 -> 729: the endorsed logo box is now 421.83 units tall, so
+  // it is narrower at the same height) and raised (y 156 -> 120) to clear the opening line below it
+  tl.set('#lg', { x: 729, y: 120, scale: 3.235 }, 0);
+  tl.fromTo('#lg', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.2);
+  inn('#op', 0.2, {}, 0.01);
+  inn('#op .l1', 0.6, { y: 16 });
+  inn(['#op .mk', '#op .mn'], 1.0, { y: 16 });
+  inn('#op .inc', 1.4, { y: 12 });
+  out('#op', 3.9, 0.4);
+  tl.to('#lg', { x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power3.inOut' }, 4.0);
+  inn('#hd', 4.5, { x: -16 }, 0.5);
+  inn('#demo', 4.6, {}, 0.5);
+
+  // Batida 1: o agente nasce de modelos prontos, com finalidade (4,8–11,6 s)
+  inn('#c1', 4.8, { y: 16 });
+  inn('#ag', 5.0, { x: -30 }, 0.5);
+  [0, 1, 2].forEach(function (i) { inn('#pz' + i, 5.4 + 0.25 * i, { y: 30, scale: 0.8 }, 0.45); });
+  inn('#more', 6.1, {}, 0.4);
+  // Each ready-made model flies into the agent and becomes a chip on its card
+  var fly = [[-683, 268], [-922, 268], [-1354, 328]];
+  [0, 1, 2].forEach(function (i) {
+    tl.to('#pz' + i, { x: fly[i][0], y: fly[i][1], scale: 0.3, duration: 0.75, ease: 'power2.inOut' }, 7.9 + 0.15 * i);
+    out('#pz' + i, 8.55 + 0.15 * i, 0.2);
+    inn('#m' + i, 8.6 + 0.15 * i, { scale: 0.6 }, 0.3);
+  });
+  out('#more', 7.9, 0.3);
+  inn('#lbM', 8.5, {}, 0.3);
+  inn('#lbF', 10.6, {}, 0.3);
+  inn(['#f0', '#f1', '#f2'], 10.6, { y: 10 }, 0.35);
+  inn('#vT', 10.7, { y: 10 }, 0.35);
+  inn('#hello', 10.6, { y: 20 }, 0.45);
+  out('#c1', 12.5);
+  out('#hello', 12.6, 0.3);
+
+  // Batida 2: fontes lidas e o conhecimento da empresa vindo do Knowly (12,9–21,3 s)
+  inn('#c2', 12.9, { y: 16 });
+  inn('#kb', 13.0, { x: 30 }, 0.5);
+  inn(['#a0', '#b0', '#e0'], 13.2, {}, 0.3);
+  sw(['#a0', '#b0', '#e0'], ['#a1', '#b1', '#e1'], 15.0);
+  sw(['#a1', '#b1', '#e1'], ['#a2', '#b2', '#e2'], 17.0);
+  draw('l1', 17.1, 0.5);
+  inn('#kw', 19.1, { y: 20 }, 0.5);
+  draw('l2', 19.3, 0.6);
+  out('#c2', 21.3);
+
+  // Batida 3: só as ferramentas liberadas, e memória do mesmo contato (21,6–28,3 s)
+  inn('#c3', 21.6, { y: 16 });
+  out(['#kb', '#kw', '#l1', '#l2'], 21.6, 0.35);
+  [0, 1, 2].forEach(function (i) { inn('#t' + i, 21.9 + 0.2 * i, { y: 24 }, 0.45); });
+  inn(['#ok0', '#ok1'], 24.3, { scale: 0.7 }, 0.35);
+  inn('#lk2', 24.3, { scale: 0.7 }, 0.35);
+  tl.to('#t2', { opacity: 0.55, duration: 0.3 }, 24.4);
+  draw('l3', 24.3, 0.5);
+  inn('#mem', 26.3, { y: 20 }, 0.45);
+  tl.fromTo('#knob', { x: 0 }, { x: 56, duration: 0.3, ease: 'power2.out' }, 26.8);
+  tl.fromTo('#togOn', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 26.8);
+  out('#c3', 28.3);
+
+  // Batida 4: conversa de teste com fonte citada e conferência antes de sair (28,6–35,9 s)
+  inn('#c4', 28.6, { y: 16 });
+  out(['#t0', '#t1', '#t2', '#mem', '#l3'], 28.6, 0.35);
+  inn('#sim', 28.8, { y: 20 }, 0.5);
+  inn('#q1', 29.2, { x: -20 }, 0.4);
+  inn('#typ', 29.7, { scale: 0.7 }, 0.3);
+  tl.fromTo('#typ i', { y: 0 }, { y: -8, duration: 0.25, ease: 'sine.inOut', yoyo: true, repeat: 3, stagger: 0.1 }, 29.8);
+  out('#typ', 31.0, 0.2);
+  inn('#a1x', 31.2, { x: 20 }, 0.4);
+  inn('#src', 31.4, { y: 10 }, 0.35);
+  inn('#chk', 33.3, { y: 10 }, 0.35);
+  tl.fromTo('#chk .ck', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2.5)', stagger: 0.12 }, 33.5);
+  out('#c4', 35.9);
+
+  // Batida 5: pede uma pessoa e o agente passa a vez para a equipe (36,2–40,2 s)
+  inn('#c5', 36.2, { y: 16 });
+  inn('#q2', 36.4, { x: -20 }, 0.4);
+  inn('#hand', 38.3, { x: 20 }, 0.45);
+  out('#c5', 40.2);
+
+  // Batida 6: promover a versão 3 (40,3–43,4 s, parado de 41,65 s)
+  inn('#prom', 40.3, { scale: 0.8 }, 0.3);
+  inn('#cur', 40.4, { x: 160, y: 120 }, 0.5);
+  inn('#c6', 40.5, { y: 16 });
+  tl.fromTo('#prom', { scale: 1 }, { scale: 0.92, duration: 0.12, yoyo: true, repeat: 1 }, 40.95);
+  sw('#mT', '#mA', 41.15);
+  sw('#vT', '#vA', 41.15);
+  inn('#vP', 41.35, { x: 10 }, 0.3);
+  out('#c6', 43.2);
+
+  // Fecho (43,8–46 s, parado de 44,4 s ao fim)
+  out(['#hd', '#demo', '#ag', '#sim', '#cur'], 43.4, 0.4);
+  // The header logo flies back to the centre and becomes the closing signature (one logo node)
+  tl.to('#lg', { x: 729, y: 506, scale: 3.235, duration: 0.8, ease: 'power3.inOut' }, 43.6);
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 43.8);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["crm-agent-studio-ludic2-logos-standalone-r1-s1"] = tl;
+})();
+</script>
+</body>
+</html>

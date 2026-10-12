@@ -1,0 +1,47 @@
+// LINHA DO TEMPO DETERMINÍSTICA
+// Authored native layout dimensions own the motion coordinates; no frame-time measurements or input handlers.
+// The Player leaves timed wrappers mounted, so inner content opacity follows the same clock explicitly.
+window.__timelines=window.__timelines||{};
+var tl=gsap.timeline({paused:true});
+tl.set("#knowly-organize-sources-content", {opacity:1}, 0);
+tl.set("#knowly-organize-sources-content", {opacity:0}, 8.2);
+tl.set("#knowly-verify-answer-content", {opacity:1}, 8.2);
+tl.set("#knowly-verify-answer-content", {opacity:0}, 16.4);
+tl.set("#knowly-respect-access-content", {opacity:1}, 16.4);
+tl.set("#knowly-organize-sources-dot",{"opacity":0},0.000);
+tl.fromTo("#knowly-organize-sources-dot",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},0.400);
+tl.to("#knowly-organize-sources-dot",{"y":0,"force3D":false,"duration":0.1,"ease":"power2.inOut"},0.400);
+tl.to("#knowly-organize-sources-node-0",{"borderColor":"#FFB020","duration":0.25},0.400);
+tl.to("#knowly-organize-sources-dot",{"y":116,"force3D":false,"duration":0.5,"ease":"power2.inOut"},1.000);
+tl.to("#knowly-organize-sources-node-1",{"borderColor":"#FFB020","duration":0.25},1.000);
+tl.to("#knowly-organize-sources-dot",{"y":232,"force3D":false,"duration":0.5,"ease":"power2.inOut"},1.600);
+tl.to("#knowly-organize-sources-node-2",{"borderColor":"#FFB020","duration":0.25},1.600);
+tl.to("#knowly-organize-sources-dot",{"y":348,"force3D":false,"duration":0.5,"ease":"power2.inOut"},2.200);
+tl.to("#knowly-organize-sources-node-3",{"borderColor":"#FFB020","duration":0.25},2.200);
+tl.set("#knowly-organize-sources-inputs",{"opacity":0},3.200);
+tl.set("#knowly-organize-sources-knowledge",{"opacity":1},3.200);
+tl.set("#knowly-organize-sources-privacy-before",{"opacity":0},4.500);
+tl.set("#knowly-organize-sources-privacy-after",{"opacity":1},4.500);
+tl.to("#knowly-organize-sources-personal-data",{"borderColor":"#42D872","duration":0.25},4.500);
+tl.set("#knowly-organize-sources-result-start",{"opacity":0},6.500);
+tl.set("#knowly-organize-sources-result-final",{"opacity":1},6.500);
+tl.set("#knowly-verify-answer-question",{"opacity":0},8.200);
+tl.fromTo("#knowly-verify-answer-question",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},8.400);
+tl.set("#knowly-verify-answer-answer",{"opacity":0},8.200);
+tl.fromTo("#knowly-verify-answer-answer",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},9.400);
+tl.set("#knowly-verify-answer-answer",{"opacity":0},11.400);
+tl.set("#knowly-verify-answer-source",{"opacity":1},11.400);
+tl.to("#knowly-verify-answer-source",{"borderColor":"#FFB020","duration":0.25},12.000);
+tl.set("#knowly-verify-answer-result-start",{"opacity":0},14.700);
+tl.set("#knowly-verify-answer-result-final",{"opacity":1},14.700);
+tl.set("#knowly-respect-access-question",{"opacity":0},16.400);
+tl.fromTo("#knowly-respect-access-question",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},17.400);
+tl.set("#knowly-respect-access-denied",{"opacity":0},16.400);
+tl.fromTo("#knowly-respect-access-denied",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},18.700);
+tl.set("#knowly-respect-access-team-before",{"opacity":0},21.200);
+tl.set("#knowly-respect-access-team-after",{"opacity":1},21.200);
+tl.to("#knowly-respect-access-person",{"borderColor":"#FFB020","duration":0.25},21.200);
+tl.set("#knowly-respect-access-result-start",{"opacity":0},22.900);
+tl.set("#knowly-respect-access-result-final",{"opacity":1},22.900);
+tl.to({}, {duration:24.4}, 0);
+window.__timelines["knowly-product-mobile-ludic-v1-r2-s1"]=tl;

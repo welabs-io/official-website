@@ -28,7 +28,7 @@ export function ProductBlock({
     <img
       className={styles.logo}
       src={productLogo(slug, tone)}
-      alt={`${product.name} by Welabs`}
+      alt={`${product.name}`}
       width={1005}
       height={550}
       style={{ "--pad": LOGO_PAD[slug] } as React.CSSProperties}
@@ -44,7 +44,7 @@ export function ProductBlock({
           <Link
             className={styles.logoLink}
             href={`/products/${slug}`}
-            aria-label={`${product.name} by Welabs`}
+            aria-label={`${product.name}`}
           >
             {logo}
           </Link>

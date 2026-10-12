@@ -43,7 +43,8 @@ describe("product detail template", () => {
       );
       const films = html.slice(at("films"), at("related-products"));
       // One visible frame carries an ordered narrative while the functional sections remain independent.
-      expect(films.match(/data-motion-viewport/g)).toHaveLength(1);
+      expect(films.match(/data-motion-viewport/g)).toHaveLength(2);
+      expect(films).toContain(`data-mobile-product-motion="${slug}"`);
       expect(films).toContain('data-mode="story"');
       for (const chapter of getProductMotionPlan(slug).chapters) {
         expect(films).toContain(`data-motion-chapter="${chapter.key}"`);
@@ -54,7 +55,7 @@ describe("product detail template", () => {
         html.slice(at("overview"), at("capabilities")).match(/data-layers/g),
       ).toHaveLength(1);
       expect(html).toContain(
-        `subject=${encodeURIComponent(`Conhecer ${name} by Welabs`)}`,
+        `subject=${encodeURIComponent(`Conhecer ${name}`)}`,
       );
     },
   );

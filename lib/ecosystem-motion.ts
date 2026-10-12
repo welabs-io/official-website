@@ -4,6 +4,8 @@ import type { ProductSlug } from "./products";
 import pieces from "./ecosystem-motion-pieces.json";
 
 export const ECOSYSTEM_DURATION = 24;
+// Preserve every authored action while completing one automatic cycle in twenty seconds.
+export const ECOSYSTEM_PLAYBACK_RATE = 1.2;
 export const ECOSYSTEM_REQUEST =
   "Dá para mudar a entrega do meu pedido para sábado?";
 export const ECOSYSTEM_PHASES = [
@@ -62,7 +64,7 @@ export const ECOSYSTEM_PHASES = [
 export const ECOSYSTEM_VARIANTS = pieces.variants;
 
 export const ecosystemSource = (id: string) =>
-  `/motion/chain-system/pieces/${id}/index.html`;
+  `/motion/${pieces.directory}/pieces/${id}/index.html`;
 export const ecosystemPoster = (id: string, phase: string) =>
   `/motion/posters/${id}-${phase}.webp`;
 export const ecosystemPhaseAt = (time: number) =>

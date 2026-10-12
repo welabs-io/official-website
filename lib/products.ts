@@ -45,17 +45,17 @@ export type ProductSlug = (typeof PRODUCTS)[number]["slug"];
 export const productBySlug = (slug: string) =>
   PRODUCTS.find((p) => p.slug === slug);
 
-// Official logo with the "by welabs" seal; the file theme matches the band it sits on
+// Standalone official wordmarks keep product identity legible outside the dedicated introductory carousel.
 export const productLogo = (slug: ProductSlug, tone: "dark" | "light") =>
-  `/brands/welabs/products/${slug}-${tone}-endorsed.svg`;
+  `/brands/welabs/products/${slug}-${tone}.svg`;
 
 // Left padding of each logo file (viewBox x offset over viewBox height), used to align the wordmark with the text
 export const LOGO_PAD: Record<ProductSlug, number> = {
-  domus: 0.1277,
-  relloo: 0.1365,
-  magneto: 0.1201,
-  tuner: 0.1122,
-  knowly: 0.1201,
+  domus: 0.1617,
+  relloo: 0.1728,
+  magneto: 0.152,
+  tuner: 0.1398,
+  knowly: 0.152,
 };
 
 export const WELABS_LOGO = {

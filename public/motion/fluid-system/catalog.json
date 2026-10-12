@@ -1,0 +1,166 @@
+{
+  "brandVersion": "1.8.0",
+  "pieces": [
+    {
+      "id": "hub-whole-house-ludic-logos-standalone-r2-s1",
+      "duration": 36,
+      "sha256": "27972282a65fcfe76c7bbe0085fe4125f2229a51860f47f343e70fba547c7b05",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/hub-whole-house-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "hub-defines-runs-ludic-v3-logos-standalone-r2-s1",
+      "duration": 34,
+      "sha256": "2ea9a6685ae40f29474e290c774bd2203a2f302a5b4f48b59bfc9a813af29d9a",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/hub-defines-runs-ludic-v3-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "hub-draw-born-ludic-v2-logos-standalone-r2-s1",
+      "duration": 36,
+      "sha256": "cc9666642daf676a9476e8e1382ab7937f8f1cd47ca0730affdd452f14c75609",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/hub-draw-born-ludic-v2-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "crm-omnichannel-inbox-ludic2-logos-standalone-r2-s1",
+      "duration": 45,
+      "sha256": "87875598656d812c8e30331a403a92f3cd376446d042016a15d9ff557cc9f0d5",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/crm-omnichannel-inbox-ludic2-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "crm-agent-studio-ludic2-logos-standalone-r1-s1",
+      "duration": 46,
+      "sha256": "9e5ccf97baca18246aa10e98593dad002aa69d7ec67e8243cdf424c30582ce3b",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/crm-agent-studio-ludic2-logos-standalone-r1-s1/index.html"
+    },
+    {
+      "id": "crm-flow-builder-ludic2-logos-standalone-r1-s1",
+      "duration": 39,
+      "sha256": "393a4627d7a9fa0e24159673c3147bdbad54f62e204a243fb76e5898258e6118",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/crm-flow-builder-ludic2-logos-standalone-r1-s1/index.html"
+    },
+    {
+      "id": "crm-campaigns-journey-ludic2-logos-standalone-r1-s1",
+      "duration": 46,
+      "sha256": "11bb26bd2914bbf133c93b4df8f4bd5f8d3aaed74523a8ac6bce60b2a56a9a6f",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/crm-campaigns-journey-ludic2-logos-standalone-r1-s1/index.html"
+    },
+    {
+      "id": "flow-canvas-build-logos-standalone-r2-s1",
+      "duration": 31,
+      "sha256": "3ae0ed813bc54adcb67e7c600a898c44144cf14c99e0de66d896abf4fc36fc3e",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/flow-canvas-build-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "flow-copilot-logos-standalone-r2-s1",
+      "duration": 32,
+      "sha256": "ca67c1f336cb68303d183af37ebaf46fbb01c0b5d208fe1da99158e9d12a2e1d",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/flow-copilot-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "flow-durable-run-logos-standalone-r3-s1",
+      "duration": 34,
+      "sha256": "34926f5321ae332ba0228ee35c18f5a68489a95423ba70d35ae6030b386beb2e",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/flow-durable-run-logos-standalone-r3-s1/index.html"
+    },
+    {
+      "id": "flow-lifecycle-logos-standalone-r2-s1",
+      "duration": 35,
+      "sha256": "3dc0f33f26e7e526ee3714526d5b79325e1eedee4e7f1fc28f90e0cabbf292c5",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/flow-lifecycle-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "channels-one-contract-ludic-logos-standalone-r2-s1",
+      "duration": 36,
+      "sha256": "b6e7588041a1b80df61cda830e3d8aaeb7cf8edf2595f9b6fd7411e3a3d6d193",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/channels-one-contract-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "channels-call-center-ludic-logos-standalone-r2-s1",
+      "duration": 36,
+      "sha256": "0ad0e561548e3ffa5b8ffe4027ff2ef412b98c2b47191838da70d1a1ee07e18d",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/channels-call-center-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "channels-whatsapp-official-ludic-logos-standalone-r2-s1",
+      "duration": 34,
+      "sha256": "942428a5bb8eae12f9d21c05499ba5f90ab6ba6168084627f853ac7b25401fda",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/channels-whatsapp-official-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "kb-sources-to-knowledge-ludic-logos-standalone-r2-s1",
+      "duration": 34,
+      "sha256": "5ce98d7b634578169b9466992165ce4a8b553caa4ad37a3b0021b31edcb48ff3",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/kb-sources-to-knowledge-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "kb-ask-with-proof-ludic-logos-standalone-r2-s1",
+      "duration": 34,
+      "sha256": "21636406d2005fbe3fd033f78136826ce34b4a4101ec0bc56cccfd7f87263b0a",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/kb-ask-with-proof-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "kb-who-reads-what-ludic-logos-standalone-r2-s1",
+      "duration": 34,
+      "sha256": "670b896131ef4896eaf459e5cd4f22e29e24ec3297ce682f506cdf18675f4088",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/kb-who-reads-what-ludic-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "welabs-operation-chain-ludic-mobile-v1-standalone-r4-s1",
+      "duration": 24,
+      "sha256": "7c146765a31c0f9f7d01b533c47e85fab2d56d49f0d0bbfac4a3589b1730defb",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/welabs-operation-chain-ludic-mobile-v1-standalone-r4-s1/index.html"
+    },
+    {
+      "id": "welabs-operation-chain-ludic-desktop-v1-standalone-r5-s1",
+      "duration": 24,
+      "sha256": "06ce000ba90f77eedcd9f1ef092aa0d1268607e9409029ac991e7967f73eaace",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/welabs-operation-chain-ludic-desktop-v1-standalone-r5-s1/index.html"
+    },
+    {
+      "id": "welabs-chain-journey-define-logos-standalone-r2-s1",
+      "duration": 44,
+      "sha256": "efcb60eb758eb249b9ab6a024a9906c8b61e67f966f0a672e556ab74e0aa80bc",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/welabs-chain-journey-define-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "welabs-chain-overview-define-logos-standalone-r2-s1",
+      "duration": 34,
+      "sha256": "926cd1701d59de25202c5e99277ca85db0e79877ec6d342ae5547378697e4588",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/welabs-chain-overview-define-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "welabs-chain-plug-define-logos-standalone-r2-s1",
+      "duration": 36,
+      "sha256": "6318d68e0ae49a4d732ebac619d8006527353af776dff603e2412d685541192e",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/welabs-chain-plug-define-logos-standalone-r2-s1/index.html"
+    },
+    {
+      "id": "welabs-chain-horizon-define-logos-standalone-r2-s1",
+      "duration": 36,
+      "sha256": "12f811ded1b105e32722e60d649261c886fd9f337154bf1c20ad10e676f9c9c8",
+      "acceptance": "accepted",
+      "src": "/motion/fluid-system/pieces/welabs-chain-horizon-define-logos-standalone-r2-s1/index.html"
+    }
+  ]
+}

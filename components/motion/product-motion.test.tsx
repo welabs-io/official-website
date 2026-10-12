@@ -1,5 +1,5 @@
 // TESTES DO QUADRO NARRATIVO
-// Verify one shared viewport, readable chapter controls and preservation of the authored chapter ranges.
+// Verify one automatic viewport, readable native captions and preservation of the authored action ranges.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ProductMotion } from "./ProductMotion";
@@ -9,13 +9,14 @@ import { productOverviewSlides, productStorySlides } from "@/lib/motion-slides";
 
 describe("product narrative markup", () => {
   it.each(PRODUCTS)(
-    "keeps $name chapters together in one viewport with native readable navigation",
+    "keeps $name chapters together in one automatic viewport without step controls",
     ({ slug }) => {
       const plan = getProductMotionPlan(slug);
       const html = renderToStaticMarkup(
         <ProductMotion id="product-story" slug={slug} mode="story" />,
       );
-      expect(html.match(/data-motion-viewport=/g)).toHaveLength(1);
+      expect(html.match(/data-motion-viewport=/g)).toHaveLength(2);
+      expect(html).toContain(`data-mobile-product-motion="${slug}"`);
       expect(html).toMatch(/data-motion-viewport="true" aria-hidden="true"/);
       expect(html).toContain('data-presentation="single"');
       expect(html).toContain(`data-motion-plan="${plan.id}"`);
@@ -27,6 +28,9 @@ describe("product narrative markup", () => {
       }
       expect(html).not.toContain("hyperframes-player");
       expect(html).not.toContain("data-product=");
+      expect(html).not.toMatch(/<button\b|data-select=|data-step=/);
+      expect(html).toContain('data-navigation="false"');
+      expect(html).toContain('data-rotate="true"');
     },
   );
 
@@ -40,8 +44,8 @@ describe("product narrative markup", () => {
       expect(overview[0]).toEqual(story[0]);
       expect(overview[0].poster).toBe(plan.chapters[0].segments.at(-1)!.poster);
       expect(overview[0].posterPhase).toBe("film");
-      expect(overview[0].segments[0].id).toContain("intro");
-      expect(overview[0].segments[0].range[0]).toBe(0);
+      expect(overview[0].segments[0].id).not.toContain("intro");
+      expect(overview[0].segments[0].range[0]).toBeGreaterThan(0);
       expect(
         story.flatMap((slide) => slide.segments).map((segment) => segment.id),
       ).toEqual(
@@ -52,7 +56,7 @@ describe("product narrative markup", () => {
       const html = renderToStaticMarkup(
         <ProductMotion id="product-opening" slug={slug} mode="overview" />,
       );
-      expect(html.match(/data-motion-viewport=/g)).toHaveLength(1);
+      expect(html.match(/data-motion-viewport=/g)).toHaveLength(2);
       expect(html).toContain('data-kind="overview"');
     },
   );

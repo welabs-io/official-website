@@ -1,0 +1,43 @@
+// LINHA DO TEMPO DETERMINÍSTICA
+// Authored native layout dimensions own the motion coordinates; no frame-time measurements or input handlers.
+// The Player leaves timed wrappers mounted, so inner content opacity follows the same clock explicitly.
+window.__timelines=window.__timelines||{};
+var tl=gsap.timeline({paused:true});
+tl.set("#tuner-unify-channels-content", {opacity:1}, 0);
+tl.set("#tuner-unify-channels-content", {opacity:0}, 8.2);
+tl.set("#tuner-transfer-call-content", {opacity:1}, 8.2);
+tl.set("#tuner-transfer-call-content", {opacity:0}, 16.4);
+tl.set("#tuner-resume-whatsapp-content", {opacity:1}, 16.4);
+tl.set("#tuner-unify-channels-paula",{"opacity":0},0.000);
+tl.fromTo("#tuner-unify-channels-paula",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},0.200);
+tl.set("#tuner-unify-channels-rui",{"opacity":0},0.000);
+tl.fromTo("#tuner-unify-channels-rui",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},1.200);
+tl.set("#tuner-unify-channels-visitor",{"opacity":0},0.000);
+tl.fromTo("#tuner-unify-channels-visitor",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},2.200);
+tl.set("#tuner-unify-channels-result-start",{"opacity":0},6.500);
+tl.set("#tuner-unify-channels-result-final",{"opacity":1},6.500);
+tl.set("#tuner-transfer-call-received",{"opacity":0},8.200);
+tl.to("#tuner-transfer-call-rita",{"borderColor":"#FFB020","duration":0.25},8.700);
+tl.to("#tuner-transfer-call-transfer",{"backgroundColor":"#FFB020","color":"#1C1A16","scale":0.97,"duration":0.15},10.400);
+tl.to("#tuner-transfer-call-transfer",{"scale":1,"duration":0.2},10.550);
+tl.set("#tuner-transfer-call-token",{"opacity":0},8.200);
+tl.fromTo("#tuner-transfer-call-token",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},10.600);
+tl.to("#tuner-transfer-call-token",{"x":475,"force3D":false,"duration":1,"ease":"power2.inOut"},10.950);
+tl.to("#tuner-transfer-call-token",{"opacity":0,"duration":0.2},11.950);
+tl.set("#tuner-transfer-call-rita-state-before",{"opacity":0},12.100);
+tl.set("#tuner-transfer-call-rita-state-after",{"opacity":1},12.100);
+tl.set("#tuner-transfer-call-davi-state-before",{"opacity":0},12.100);
+tl.set("#tuner-transfer-call-davi-state-after",{"opacity":1},12.100);
+tl.set("#tuner-transfer-call-received",{"opacity":1},12.100);
+tl.to("#tuner-transfer-call-davi",{"borderColor":"#42D872","duration":0.25},12.100);
+tl.set("#tuner-transfer-call-result-start",{"opacity":0},14.700);
+tl.set("#tuner-transfer-call-result-final",{"opacity":1},14.700);
+tl.set("#tuner-resume-whatsapp-approved-message",{"opacity":0},16.400);
+tl.fromTo("#tuner-resume-whatsapp-approved-message",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},17.400);
+tl.set("#tuner-resume-whatsapp-answer",{"opacity":0},16.400);
+tl.fromTo("#tuner-resume-whatsapp-answer",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},19.600);
+tl.to("#tuner-resume-whatsapp-context",{"borderColor":"#FFB020","duration":0.25},20.600);
+tl.set("#tuner-resume-whatsapp-result-start",{"opacity":0},22.900);
+tl.set("#tuner-resume-whatsapp-result-final",{"opacity":1},22.900);
+tl.to({}, {duration:24.4}, 0);
+window.__timelines["tuner-product-mobile-ludic-v1-r2-s1"]=tl;

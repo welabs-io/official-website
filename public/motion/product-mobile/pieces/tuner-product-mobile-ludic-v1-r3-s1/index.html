@@ -1,0 +1,102 @@
+<!doctype html><html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=1080,height=1350"><title>tuner · demonstração mobile · DEMO</title><style>
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--wl-slate-950)}
+#root{position:relative;width:100%;height:100%;overflow:hidden;color:var(--wl-foreground);font-family:"Inter",sans-serif;font-size:64px;font-weight:400;line-height:1.15}
+p,h1,h2,h3{margin:0}strong{font-weight:600}svg{display:block;flex:none}
+.backdrop{position:absolute;inset:0;background:var(--wl-slate-950)}
+.scene{position:absolute;inset:0}.scene-content{position:absolute;inset:0;opacity:0}
+.scene-heading{position:absolute;left:48px;right:48px;top:48px;display:flex;align-items:center;justify-content:space-between;gap:24px;height:100px;color:var(--wl-muted-foreground)}
+.scenario{font-size:64px;line-height:1.15;white-space:nowrap}.scene-count{font-size:64px;font-variant-numeric:tabular-nums}
+.scene-title{position:absolute;left:48px;right:48px;top:172px;max-height:170px;font-size:80px;line-height:1.03;font-weight:600;letter-spacing:-.035em}
+.workspace{position:absolute;left:48px;right:48px;top:378px;height:718px;padding:28px;border:3px solid var(--wl-border);border-radius:32px;background:var(--wl-slate-900);overflow:hidden}
+.result-bar{position:absolute;left:48px;right:48px;top:1140px;height:148px;display:flex;align-items:center;padding:28px 32px;border:3px solid var(--wl-border);border-radius:26px;background:var(--wl-slate-900)}
+.result-bar p{font-size:64px;line-height:1.1}.result-final{opacity:0;color:var(--wl-success);position:absolute;left:32px;right:32px}
+.result-start{color:var(--wl-muted-foreground)}
+.stack{display:flex;flex-direction:column;gap:24px}.row{display:flex;align-items:center;gap:24px}.muted,.subtext{color:var(--wl-muted-foreground)}
+.record{position:relative;padding:24px;border:3px solid var(--wl-border);border-radius:24px;background:var(--wl-slate-950)}
+.record p,.action-target,.tag,.chat-bubble{font-size:64px;line-height:1.12;letter-spacing:-.02em}
+.record p+p{margin-top:12px}.record h2{font-size:72px;line-height:1.08;font-weight:600;letter-spacing:-.02em}
+.avatar{display:grid;place-items:center;width:104px;height:104px;flex:none;border-radius:50%;background:var(--wl-slate-800);font-size:72px;line-height:1;font-weight:500}
+.person-header{display:flex;gap:20px;align-items:center;margin-bottom:24px}.person-header p{font-weight:600}
+.action-target{display:flex;align-items:center;justify-content:center;height:108px;padding:18px 24px;border:3px solid var(--wl-primary);border-radius:22px;color:var(--wl-primary);background:var(--wl-slate-950);white-space:nowrap}
+.swap{position:relative;min-height:76px}.swap .after{position:absolute;inset:0;opacity:0}.swap .before,.swap .after{margin:0}
+.chat-bubble{padding:24px;border:3px solid var(--wl-border);border-radius:26px 26px 26px 7px;background:var(--wl-slate-800)}
+.chat-bubble.reply{border-radius:26px 26px 7px 26px;background:var(--wl-primary-soft);border-color:var(--wl-primary)}
+.pipeline{position:relative;display:flex;flex-direction:column;gap:24px}
+.process-node{position:relative;min-height:112px;padding:20px 96px 20px 24px;border:3px solid var(--wl-border);border-radius:22px;background:var(--wl-slate-950)}
+.process-node p{font-size:64px;line-height:1.08;white-space:nowrap}.process-node .subtext{font-size:64px;white-space:normal;margin-top:10px}
+.process-node+.process-node::before{content:"";position:absolute;right:39px;top:-27px;width:3px;height:24px;background:var(--wl-border)}
+.travel-dot{position:absolute;right:24px;top:24px;width:56px;height:56px;border-radius:50%;background:var(--wl-primary);opacity:0;box-shadow:0 0 0 10px var(--wl-primary-soft)}
+.compact .process-node{min-height:100px;padding:12px 96px 12px 24px}.compact{gap:16px}.compact .process-node+.process-node::before{height:16px;top:-19px}
+.doc-mark{width:72px;height:92px;border:3px solid var(--wl-muted-foreground);border-radius:10px;position:relative;flex:none}
+.doc-mark::before,.doc-mark::after{content:"";position:absolute;left:14px;right:14px;height:3px;background:var(--wl-muted-foreground)}.doc-mark::before{top:26px}.doc-mark::after{top:50px}
+.call-record{height:188px}.call-actors{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px}.call-actor{height:336px;padding:20px}
+.call-actor .person-header{gap:18px;margin-bottom:16px}.call-actor .avatar{width:88px;height:88px;font-size:64px}.call-actor .swap{min-height:76px;margin-bottom:12px}.call-actor .action-target{height:96px;padding:12px;font-size:64px}
+.call-route{position:relative;height:92px;margin-top:12px}.call-route-line{position:absolute;left:223.5px;width:475px;top:48px;height:3px;background:var(--wl-border)}
+.call-token{position:absolute;left:191.5px;top:16px;width:64px;height:64px;border:3px solid var(--wl-primary);border-radius:18px;background:var(--wl-primary-soft);opacity:0}
+.call-token::before,.call-token::after{content:"";position:absolute;top:20px;width:27px;height:3px;background:var(--wl-primary)}.call-token::before{left:2px;transform:rotate(30deg)}.call-token::after{right:2px;transform:rotate(-30deg)}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.field{padding:24px 18px;border:3px dashed var(--wl-border);border-radius:22px;background:var(--wl-slate-950);font-size:64px;line-height:1.1}
+.layer{position:absolute;left:28px;right:28px;top:28px;bottom:28px}.layer-after{opacity:0}
+.coupon-code{font-size:96px !important;line-height:1.05 !important;font-weight:600;letter-spacing:-.04em !important}
+.coupon-card{border-style:dashed}.coupon-state{color:var(--wl-primary)}
+.document-title{display:flex;align-items:center;gap:20px;margin-bottom:20px;font-weight:600}.quote{padding:20px;border-radius:18px;background:var(--wl-primary-soft);font-size:64px;line-height:1.12}
+.outline{border:3px dashed var(--wl-muted-foreground);background:transparent}.answer-state{min-height:150px}
+.alert{padding:22px;border:3px solid var(--wl-warning);border-radius:24px;background:var(--wl-warning-soft);color:var(--wl-warning);font-size:64px;line-height:1.12}
+.success{color:var(--wl-success)}.neutral{color:var(--wl-muted-foreground)}
+.channel-stack{gap:16px}.channel-card{padding:20px}.channel-card .row{justify-content:space-between;gap:12px}.channel-card .row p{font-size:64px;font-weight:500;margin:0}.channel-card>p{margin-top:14px}
+.proof-area{position:relative;height:376px}.proof-area>.record{position:absolute;inset:0}
+.state-area{position:relative;height:160px}.state-area>.alert,.state-area>.record{position:absolute;inset:0}
+.scene[data-chapter="monthly-billing"] .workspace{padding:20px}.scene[data-chapter="monthly-billing"] .record{padding:16px}.scene[data-chapter="monthly-billing"] .record p{line-height:1.06}.scene[data-chapter="monthly-billing"] .record p+p{margin-top:8px}
+.scene[data-chapter="verify-answer"] .result-final{color:var(--wl-warning)}
+
+/* ENCAIXE DA RESPOSTA DO WHATSAPP */
+/* Preserve64px text and exact copy; the last message keeps its complete balloon inside the conversation viewport. */
+#tuner-resume-whatsapp-workspace{top:370px;height:752px;padding:24px}
+#tuner-resume-whatsapp-workspace>.stack{gap:20px}
+#tuner-resume-whatsapp-workspace .chat-bubble{padding:20px}
+</style></head><body><div id="root" data-composition-id="tuner-product-mobile-ludic-v1-r3-s1" data-brand="welabs" data-brand-scripts="welabs/tokens.js" data-width="1080" data-height="1350" data-duration="24.4"><div class="backdrop" aria-hidden="true"></div><section class="clip scene" id="tuner-unify-channels" data-start="0" data-duration="8.2" data-track-index="0" data-chapter="unify-channels"><div class="scene-content" id="tuner-unify-channels-content"><header class="scene-heading"><p class="scenario">Canais · DEMO</p><p class="scene-count">1/3</p></header><h1 class="scene-title">Cada mensagem, com sua origem</h1><div class="workspace" id="tuner-unify-channels-workspace"><div class="stack channel-stack"><div class="record channel-card" id="tuner-unify-channels-paula"><div class="row"><p id="tuner-unify-channels-paula-name" class="">Paula M.</p><p id="tuner-unify-channels-paula-channel" class="muted">WhatsApp</p></div><p id="tuner-unify-channels-paula-message" class="">Quero agendar uma visita</p></div><div class="record channel-card" id="tuner-unify-channels-rui"><div class="row"><p id="tuner-unify-channels-rui-name" class="">Rui T.</p><p id="tuner-unify-channels-rui-channel" class="muted">Voz</p></div><p id="tuner-unify-channels-rui-message" class="">Ligação recebida</p></div><div class="record channel-card" id="tuner-unify-channels-visitor"><div class="row"><p id="tuner-unify-channels-visitor-name" class="">Visitante</p><p id="tuner-unify-channels-visitor-channel" class="muted">Chat do site</p></div><p id="tuner-unify-channels-visitor-message" class="">Vocês abrem sábado?</p></div></div></div><div class="result-bar"><p id="tuner-unify-channels-result-start" class="result-start">DEMO</p><p id="tuner-unify-channels-result-final" class="result-final">Origens preservadas</p></div></div></section>
+<section class="clip scene" id="tuner-transfer-call" data-start="8.2" data-duration="8.2" data-track-index="1" data-chapter="transfer-call"><div class="scene-content" id="tuner-transfer-call-content"><header class="scene-heading"><p class="scenario">Paula · DEMO-07</p><p class="scene-count">2/3</p></header><h1 class="scene-title">Transferir com a história</h1><div class="workspace" id="tuner-transfer-call-workspace"><div class="record call-record" id="tuner-transfer-call-caller"><p id="tuner-transfer-call-order" class="">Pedido DEMO-07</p><p id="tuner-transfer-call-reason" class="muted">Entrega atrasada</p></div><div class="call-actors"><div class="record call-actor" id="tuner-transfer-call-rita"><div class="person-header"><span class="avatar" aria-hidden="true">R</span><p id="tuner-transfer-call-rita-name" class="">Rita</p></div><div class="swap "><p id="tuner-transfer-call-rita-state-before" class="before">Em ligação</p><p id="tuner-transfer-call-rita-state-after" class="after">Livre</p></div><div class="action-target" id="tuner-transfer-call-transfer">Transferir</div></div><div class="record call-actor" id="tuner-transfer-call-davi"><div class="person-header"><span class="avatar" aria-hidden="true">D</span><p id="tuner-transfer-call-davi-name" class="">Davi</p></div><div class="swap "><p id="tuner-transfer-call-davi-state-before" class="before">Disponível</p><p id="tuner-transfer-call-davi-state-after" class="after">Em ligação</p></div><p id="tuner-transfer-call-received" class="success">Contexto</p></div></div><div class="call-route"><div class="call-route-line" aria-hidden="true"></div><div class="call-token" id="tuner-transfer-call-token" aria-hidden="true"></div></div></div><div class="result-bar"><p id="tuner-transfer-call-result-start" class="result-start">DEMO</p><p id="tuner-transfer-call-result-final" class="result-final">Davi já sabe a história</p></div></div></section>
+<section class="clip scene" id="tuner-resume-whatsapp" data-start="16.4" data-duration="8" data-track-index="2" data-chapter="resume-whatsapp"><div class="scene-content" id="tuner-resume-whatsapp-content"><header class="scene-heading"><p class="scenario">Paula · WhatsApp</p><p class="scene-count">3/3</p></header><h1 class="scene-title">Retomar sem perder contexto</h1><div class="workspace" id="tuner-resume-whatsapp-workspace"><div class="stack"><div class="record " id="tuner-resume-whatsapp-context"><p id="tuner-resume-whatsapp-history-name" class="">Conversa da Paula</p><p id="tuner-resume-whatsapp-photo" class="muted">Foto do pedido</p><p id="tuner-resume-whatsapp-location" class="muted">Localização</p></div><div class="chat-bubble" id="tuner-resume-whatsapp-approved-message">Olá, Paula! Podemos continuar a troca do seu pedido?</div><div class="chat-bubble reply" id="tuner-resume-whatsapp-answer">Sim, pode continuar!</div></div></div><div class="result-bar"><p id="tuner-resume-whatsapp-result-start" class="result-start">DEMO</p><p id="tuner-resume-whatsapp-result-final" class="result-final">Conversa retomada</p></div></div></section></div><script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script><script src="../../_shared/brand/loader.js"></script><script>// LINHA DO TEMPO DETERMINÍSTICA
+// Authored native layout dimensions own the motion coordinates; no frame-time measurements or input handlers.
+// The Player leaves timed wrappers mounted, so inner content opacity follows the same clock explicitly.
+window.__timelines=window.__timelines||{};
+var tl=gsap.timeline({paused:true});
+tl.set("#tuner-unify-channels-content", {opacity:1}, 0);
+tl.set("#tuner-unify-channels-content", {opacity:0}, 8.2);
+tl.set("#tuner-transfer-call-content", {opacity:1}, 8.2);
+tl.set("#tuner-transfer-call-content", {opacity:0}, 16.4);
+tl.set("#tuner-resume-whatsapp-content", {opacity:1}, 16.4);
+tl.set("#tuner-unify-channels-paula",{"opacity":0},0.000);
+tl.fromTo("#tuner-unify-channels-paula",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},0.200);
+tl.set("#tuner-unify-channels-rui",{"opacity":0},0.000);
+tl.fromTo("#tuner-unify-channels-rui",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},1.200);
+tl.set("#tuner-unify-channels-visitor",{"opacity":0},0.000);
+tl.fromTo("#tuner-unify-channels-visitor",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},2.200);
+tl.set("#tuner-unify-channels-result-start",{"opacity":0},6.500);
+tl.set("#tuner-unify-channels-result-final",{"opacity":1},6.500);
+tl.set("#tuner-transfer-call-received",{"opacity":0},8.200);
+tl.to("#tuner-transfer-call-rita",{"borderColor":"#FFB020","duration":0.25},8.700);
+tl.to("#tuner-transfer-call-transfer",{"backgroundColor":"#FFB020","color":"#1C1A16","scale":0.97,"duration":0.15},10.400);
+tl.to("#tuner-transfer-call-transfer",{"scale":1,"duration":0.2},10.550);
+tl.set("#tuner-transfer-call-token",{"opacity":0},8.200);
+tl.fromTo("#tuner-transfer-call-token",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},10.600);
+tl.to("#tuner-transfer-call-token",{"x":475,"force3D":false,"duration":1,"ease":"power2.inOut"},10.950);
+tl.to("#tuner-transfer-call-token",{"opacity":0,"duration":0.2},11.950);
+tl.set("#tuner-transfer-call-rita-state-before",{"opacity":0},12.100);
+tl.set("#tuner-transfer-call-rita-state-after",{"opacity":1},12.100);
+tl.set("#tuner-transfer-call-davi-state-before",{"opacity":0},12.100);
+tl.set("#tuner-transfer-call-davi-state-after",{"opacity":1},12.100);
+tl.set("#tuner-transfer-call-received",{"opacity":1},12.100);
+tl.to("#tuner-transfer-call-davi",{"borderColor":"#42D872","duration":0.25},12.100);
+tl.set("#tuner-transfer-call-result-start",{"opacity":0},14.700);
+tl.set("#tuner-transfer-call-result-final",{"opacity":1},14.700);
+tl.set("#tuner-resume-whatsapp-approved-message",{"opacity":0},16.400);
+tl.fromTo("#tuner-resume-whatsapp-approved-message",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},17.400);
+tl.set("#tuner-resume-whatsapp-answer",{"opacity":0},16.400);
+tl.fromTo("#tuner-resume-whatsapp-answer",{"opacity":0,"x":20,"force3D":false},{"opacity":1,"x":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},19.600);
+tl.to("#tuner-resume-whatsapp-context",{"borderColor":"#FFB020","duration":0.25},20.600);
+tl.set("#tuner-resume-whatsapp-result-start",{"opacity":0},22.900);
+tl.set("#tuner-resume-whatsapp-result-final",{"opacity":1},22.900);
+tl.to({}, {duration:24.4}, 0);
+window.__timelines["tuner-product-mobile-ludic-v1-r3-s1"]=tl;
+</script></body></html>

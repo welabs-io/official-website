@@ -1,0 +1,75 @@
+/* QUADRO VERTICAL PARA CELULAR */
+.root {
+  display: none;
+}
+.viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #10141c;
+}
+.poster,
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.poster {
+  object-fit: contain;
+}
+.root[data-ready="true"] .poster {
+  visibility: hidden;
+}
+.progress {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.progress span {
+  flex: 1;
+  height: 2px;
+  background: rgb(127 127 127 / 20%);
+}
+.progress [data-current="true"] {
+  background: #ffb020;
+}
+.detail {
+  min-height: 280px;
+  padding-top: 20px;
+}
+.sequence {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
+}
+.detail h3 {
+  margin: 0 0 10px;
+  font-size: 21px;
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.detail p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+}
+.detail .scenario {
+  margin-top: 10px;
+  font-size: 16px;
+  opacity: 0.72;
+}
+.root[data-reduced-motion="true"] .detail {
+  display: grid;
+  gap: 24px;
+}
+@media (max-width: 700px) {
+  .root {
+    display: block;
+  }
+}

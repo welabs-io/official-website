@@ -59,7 +59,20 @@ export function RingDriver({
         },
       );
     };
-    const update = () => bind();
+    const update = () => {
+      // Automatic stories expose every native chapter when animation is disabled; no step click is required.
+      root.dataset.reducedMotion = String(reduced.matches);
+      if (kind === "story")
+        root
+          .querySelectorAll<HTMLElement>("[data-caption]")
+          .forEach((caption) => {
+            caption.hidden =
+              !reduced.matches &&
+              Number(caption.dataset.captionIndex) !==
+                Number(root.dataset.active ?? 0);
+          });
+      bind();
+    };
 
     const near = new IntersectionObserver(
       ([entry]) => {
@@ -96,6 +109,7 @@ export function RingDriver({
       root;
     near.observe(playbackTarget);
     on.observe(playbackTarget);
+    update();
     // Bind navigation independently of IntersectionObserver delivery and preserve any first pending intention.
     if (root.dataset.navigation === "true") bind(true);
     document.addEventListener("visibilitychange", update);

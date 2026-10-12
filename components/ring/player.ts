@@ -2,6 +2,7 @@
 // The pinned player registers <hyperframes-player> once per page. Every player of the site is created from the same
 // attributes and is never shown with controls: the page has no player interface, only the frame. There is no sequential
 // player (opening before film): the ring chains segments itself, one player per segment.
+import fluid from "@/lib/fluid-motion-pieces.json";
 
 export type PlayerElement = HTMLElement & {
   play: () => void;
@@ -15,7 +16,10 @@ export type PlayerElement = HTMLElement & {
 };
 
 export const PLAYER_SRC = "/motion/player.js";
-export const piece = (id: string) => `/motion/pieces/${id}/index.html`;
+const standaloneIds = new Set(fluid.pieces.map(({ id }) => id));
+// Accepted standalone revisions use an isolated brand runtime; identity openings retain their original bundle.
+export const piece = (id: string) =>
+  `/motion/${standaloneIds.has(id) ? "fluid-system/pieces" : "pieces"}/${id}/index.html`;
 
 // Attributes of every player of the page. `controls` is never part of them (a test guards it). A preloaded player is
 // created without `autoplay` and is started by the ring at the handoff.

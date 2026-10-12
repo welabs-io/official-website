@@ -44,7 +44,7 @@
 }
 
 .productLogo {
-  --logo-height: 92px;
+  --logo-height: 104px;
   width: auto;
   height: var(--logo-height);
   margin-left: calc(var(--logo-height) * var(--logo-pad) * -1);
@@ -424,7 +424,7 @@
   grid-row: span 2;
   width: auto;
   height: var(--logo-height);
-  max-width: 144px;
+  max-width: 176px;
   margin-left: calc(var(--logo-height) * var(--logo-pad) * -1);
   object-fit: contain;
   object-position: left center;
@@ -501,7 +501,7 @@
   }
 
   .productLogo {
-    --logo-height: 80px;
+    --logo-height: 86px;
   }
 
   .factualLine {

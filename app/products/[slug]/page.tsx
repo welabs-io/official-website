@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (!product) return { title: "Welabs" };
   return {
     // The category term (ERP, CRM...) lives in the description and keywords only, never in the visible text or the title
-    title: `${product.name} by Welabs`,
+    title: `${product.name}`,
     description: `${product.category} da Welabs. ${PRODUCT_DETAILS[product.slug].benefits.join(" ")}`,
     keywords: [...product.keywords],
     robots: { index: false, follow: false },

@@ -7,7 +7,7 @@ import styles from "./site.module.css";
 
 export function ContactSection({ product }: { product?: ProductSlug }) {
   const subject = product
-    ? `Conhecer ${productBySlug(product)!.name} by Welabs`
+    ? `Conhecer ${productBySlug(product)!.name}`
     : "Conversar sobre a minha operação";
   const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
   return (

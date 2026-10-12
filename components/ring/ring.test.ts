@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import pieces from "@/lib/motion-pieces.json";
+import fluid from "@/lib/fluid-motion-pieces.json";
 import montage from "@/lib/home-montage.json";
 import {
   INTRO_HOLD,
@@ -74,7 +75,12 @@ describe("slides of the home", () => {
     const cuts = MONTAGE_SLIDES.flatMap((slide) => slide.segments);
     expect(cuts).toHaveLength(3);
     expect(new Set(cuts.map((cut) => cut.id))).toEqual(
-      new Set(["welabs-chain-journey-define-logos-r6-s1"]),
+      new Set([
+        fluid.pieces.find(
+          ({ sourceId }) =>
+            sourceId === "welabs-chain-journey-define-logos-r6-s1",
+        )!.id,
+      ]),
     );
     expect(cuts.map((cut) => cut.range)).toEqual([
       [6.5, 9.18],
@@ -82,9 +88,9 @@ describe("slides of the home", () => {
       [25.3, 30.79],
     ]);
     expect(MONTAGE_SLIDES.map((slide) => slide.poster)).toEqual([
-      "/motion/posters/cut-4.webp",
-      "/motion/posters/cut-9.webp",
-      "/motion/posters/cut-6.webp",
+      "/motion/posters/cut-4-standalone.webp",
+      "/motion/posters/cut-9-standalone.webp",
+      "/motion/posters/cut-6-standalone.webp",
     ]);
   });
   it("the chain is a montage of product cuts and relation cuts, each at its own rate, no opening", () => {

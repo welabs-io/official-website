@@ -1,6 +1,6 @@
 {
   "domus": {
-    "id": "domus-product-sequence-v1",
+    "id": "domus-product-sequence-v2",
     "title": "Empresa, regras e novos cadastros",
     "description": "Veja a empresa inteira e acompanhe exemplos distintos de cobrança e vistoria.",
     "chapters": [
@@ -11,20 +11,12 @@
         "scenario": "Empresa de demonstração · Item DEMO-0042",
         "segments": [
           {
-            "pieceId": "domus-intro-s2-r2",
-            "start": 0,
-            "end": 5.4,
-            "rate": 1,
-            "holdAfter": 1,
-            "poster": "/motion/posters/tail-domus.webp"
-          },
-          {
-            "pieceId": "hub-whole-house-ludic-logos-r4-s1",
+            "pieceId": "hub-whole-house-ludic-logos-standalone-r2-s1",
             "start": 13.8,
             "end": 27.2,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-domus-business-overview-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-domus-business-overview-1-standalone.webp"
           }
         ]
       },
@@ -35,20 +27,20 @@
         "scenario": "Outro exemplo · Cobrança do mês",
         "segments": [
           {
-            "pieceId": "hub-defines-runs-ludic-v3-logos-r4-s1",
+            "pieceId": "hub-defines-runs-ludic-v3-logos-standalone-r2-s1",
             "start": 1,
             "end": 5.4,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-domus-monthly-billing-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-domus-monthly-billing-0-standalone.webp"
           },
           {
-            "pieceId": "hub-defines-runs-ludic-v3-logos-r4-s1",
+            "pieceId": "hub-defines-runs-ludic-v3-logos-standalone-r2-s1",
             "start": 7.8,
             "end": 24.9,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-domus-monthly-billing-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-domus-monthly-billing-1-standalone.webp"
           }
         ]
       },
@@ -59,19 +51,19 @@
         "scenario": "Outro exemplo · Cadastro de vistoria",
         "segments": [
           {
-            "pieceId": "hub-draw-born-ludic-v2-logos-r5-s1",
+            "pieceId": "hub-draw-born-ludic-v2-logos-standalone-r2-s1",
             "start": 7.8,
             "end": 13.6,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-domus-inspection-screen-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-domus-inspection-screen-0-standalone.webp"
           }
         ]
       }
     ]
   },
   "relloo": {
-    "id": "relloo-product-sequence-v1",
+    "id": "relloo-product-sequence-v2",
     "title": "Contato, resposta e relacionamento",
     "description": "Quatro cenários de relacionamento: histórico, assistente, conversa em blocos e cupom usado na loja.",
     "chapters": [
@@ -82,20 +74,12 @@
         "scenario": "Ana · Contato de demonstração",
         "segments": [
           {
-            "pieceId": "relloo-intro-s2-r3",
-            "start": 0,
-            "end": 5.4,
-            "rate": 1,
-            "holdAfter": 1,
-            "poster": "/motion/posters/tail-relloo.webp"
-          },
-          {
-            "pieceId": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
+            "pieceId": "crm-omnichannel-inbox-ludic2-logos-standalone-r2-s1",
             "start": 9.9,
             "end": 17.8,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-relloo-contact-context-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-relloo-contact-context-1-standalone.webp"
           }
         ]
       },
@@ -106,12 +90,12 @@
         "scenario": "Outro cenário · Lia, agente em teste",
         "segments": [
           {
-            "pieceId": "crm-agent-studio-ludic2-logos-r4-s1",
+            "pieceId": "crm-agent-studio-ludic2-logos-standalone-r1-s1",
             "start": 28.6,
             "end": 35.7,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-relloo-test-assistant-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-relloo-test-assistant-0-standalone.webp"
           }
         ]
       },
@@ -122,12 +106,12 @@
         "scenario": "Outro cenário · Conversa de orçamento",
         "segments": [
           {
-            "pieceId": "crm-flow-builder-ludic2-logos-r4-s1",
+            "pieceId": "crm-flow-builder-ludic2-logos-standalone-r1-s1",
             "start": 11.4,
             "end": 24.1,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-relloo-conversation-route-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-relloo-conversation-route-0-standalone.webp"
           }
         ]
       },
@@ -138,19 +122,19 @@
         "scenario": "Outro cenário · Cupom DEMO-7K2 na loja",
         "segments": [
           {
-            "pieceId": "crm-campaigns-journey-ludic2-logos-r4-s1",
+            "pieceId": "crm-campaigns-journey-ludic2-logos-standalone-r1-s1",
             "start": 28.5,
             "end": 35.9,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-relloo-redeem-coupon-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-relloo-redeem-coupon-0-standalone.webp"
           }
         ]
       }
     ]
   },
   "magneto": {
-    "id": "magneto-product-sequence-v1",
+    "id": "magneto-product-sequence-v2",
     "title": "Desenhar, ativar, continuar e mudar",
     "description": "Exemplos distintos mostram construção, ativação, retomada após interrupção e retorno à versão anterior.",
     "chapters": [
@@ -161,20 +145,12 @@
         "scenario": "Pedido de compra · Desenho demonstrativo",
         "segments": [
           {
-            "pieceId": "magneto-intro-s3-r3",
-            "start": 0,
-            "end": 5.4,
-            "rate": 1,
-            "holdAfter": 1,
-            "poster": "/motion/posters/tail-magneto.webp"
-          },
-          {
-            "pieceId": "flow-canvas-build-logos-r4-s1",
+            "pieceId": "flow-canvas-build-logos-standalone-r2-s1",
             "start": 6.6,
             "end": 11.9,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-magneto-draw-workflow-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-magneto-draw-workflow-1-standalone.webp"
           }
         ]
       },
@@ -185,20 +161,20 @@
         "scenario": "Outro exemplo · Sugestão de pedido de compra",
         "segments": [
           {
-            "pieceId": "flow-copilot-logos-r4-s1",
+            "pieceId": "flow-copilot-logos-standalone-r2-s1",
             "start": 0.7,
             "end": 5.8,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-magneto-activate-suggestion-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-magneto-activate-suggestion-0-standalone.webp"
           },
           {
-            "pieceId": "flow-copilot-logos-r4-s1",
+            "pieceId": "flow-copilot-logos-standalone-r2-s1",
             "start": 18.8,
             "end": 24.9,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-magneto-activate-suggestion-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-magneto-activate-suggestion-1-standalone.webp"
           }
         ]
       },
@@ -209,12 +185,12 @@
         "scenario": "Outro exemplo · Pedido interrompido",
         "segments": [
           {
-            "pieceId": "flow-durable-run-logos-r4-s1",
+            "pieceId": "flow-durable-run-logos-standalone-r3-s1",
             "start": 11.5,
             "end": 27.8,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-magneto-resume-execution-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-magneto-resume-execution-0-standalone.webp"
           }
         ]
       },
@@ -225,19 +201,19 @@
         "scenario": "Outro exemplo · Retorno da versão 2 à versão 1",
         "segments": [
           {
-            "pieceId": "flow-lifecycle-logos-r4-s1",
+            "pieceId": "flow-lifecycle-logos-standalone-r2-s1",
             "start": 20.6,
             "end": 25,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-magneto-restore-version-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-magneto-restore-version-0-standalone.webp"
           }
         ]
       }
     ]
   },
   "tuner": {
-    "id": "tuner-product-sequence-v1",
+    "id": "tuner-product-sequence-v2",
     "title": "Canais, transferência e retomada",
     "description": "Três cenários de atendimento: mensagens reunidas, ligação transferida com contexto e conversa retomada no WhatsApp.",
     "chapters": [
@@ -248,20 +224,12 @@
         "scenario": "Mensagens independentes · Paula, Rui e visitante",
         "segments": [
           {
-            "pieceId": "tuner-intro-s2",
-            "start": 0,
-            "end": 5.4,
-            "rate": 1,
-            "holdAfter": 1,
-            "poster": "/motion/posters/tail-tuner.webp"
-          },
-          {
-            "pieceId": "channels-one-contract-ludic-logos-r5-s1",
+            "pieceId": "channels-one-contract-ludic-logos-standalone-r2-s1",
             "start": 7.4,
             "end": 16.7,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-tuner-unify-channels-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-tuner-unify-channels-1-standalone.webp"
           }
         ]
       },
@@ -272,12 +240,12 @@
         "scenario": "Outro cenário · Ligação de Paula, pedido DEMO-07",
         "segments": [
           {
-            "pieceId": "channels-call-center-ludic-logos-r4-s1",
+            "pieceId": "channels-call-center-ludic-logos-standalone-r2-s1",
             "start": 14.1,
             "end": 28.2,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-tuner-transfer-call-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-tuner-transfer-call-0-standalone.webp"
           }
         ]
       },
@@ -288,19 +256,19 @@
         "scenario": "Outro cenário · Troca de pedido pelo WhatsApp",
         "segments": [
           {
-            "pieceId": "channels-whatsapp-official-ludic-logos-r4-s1",
+            "pieceId": "channels-whatsapp-official-ludic-logos-standalone-r2-s1",
             "start": 12.9,
             "end": 27.5,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-tuner-resume-whatsapp-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-tuner-resume-whatsapp-0-standalone.webp"
           }
         ]
       }
     ]
   },
   "knowly": {
-    "id": "knowly-product-sequence-v1",
+    "id": "knowly-product-sequence-v2",
     "title": "Das fontes à resposta permitida",
     "description": "Três exemplos mostram conhecimento reunido, resposta conferida na fonte e acesso conforme quem pergunta.",
     "chapters": [
@@ -311,20 +279,12 @@
         "scenario": "Atlas · Fontes de demonstração",
         "segments": [
           {
-            "pieceId": "knowly-intro-s2",
-            "start": 0,
-            "end": 5.4,
-            "rate": 1,
-            "holdAfter": 1,
-            "poster": "/motion/posters/tail-knowly.webp"
-          },
-          {
-            "pieceId": "kb-sources-to-knowledge-ludic-logos-r5-s1",
+            "pieceId": "kb-sources-to-knowledge-ludic-logos-standalone-r2-s1",
             "start": 6.4,
             "end": 18.6,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-knowly-organize-sources-1.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-knowly-organize-sources-1-standalone.webp"
           }
         ]
       },
@@ -335,12 +295,12 @@
         "scenario": "Outro exemplo · Bia consulta o prazo da proposta",
         "segments": [
           {
-            "pieceId": "kb-ask-with-proof-ludic-logos-r5-s1",
+            "pieceId": "kb-ask-with-proof-ludic-logos-standalone-r2-s1",
             "start": 13.5,
             "end": 28.4,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-knowly-verify-answer-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-knowly-verify-answer-0-standalone.webp"
           }
         ]
       },
@@ -351,12 +311,12 @@
         "scenario": "Outro exemplo · Permissões de Bia entre áreas",
         "segments": [
           {
-            "pieceId": "kb-who-reads-what-ludic-logos-r4-s1",
+            "pieceId": "kb-who-reads-what-ludic-logos-standalone-r2-s1",
             "start": 18.9,
             "end": 28.5,
-            "rate": 1,
-            "holdAfter": 3,
-            "poster": "/motion/posters/motion-knowly-respect-access-0.webp"
+            "rate": 1.2,
+            "holdAfter": 0.85,
+            "poster": "/motion/posters/motion-knowly-respect-access-0-standalone.webp"
           }
         ]
       }

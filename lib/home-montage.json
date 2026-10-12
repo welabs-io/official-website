@@ -11,8 +11,8 @@
       "segments": [
         {
           "kind": "relation",
-          "film": "welabs-chain-journey-define-logos-r6-s1",
-          "poster": "cut-4",
+          "film": "welabs-chain-journey-define-logos-standalone-r2-s1",
+          "poster": "cut-4-standalone",
           "products": ["relloo", "domus"],
           "start": 6.5,
           "end": 9.18,
@@ -32,8 +32,8 @@
       "segments": [
         {
           "kind": "relation",
-          "film": "welabs-chain-journey-define-logos-r6-s1",
-          "poster": "cut-9",
+          "film": "welabs-chain-journey-define-logos-standalone-r2-s1",
+          "poster": "cut-9-standalone",
           "products": ["knowly", "relloo"],
           "start": 12.7,
           "end": 15.68,
@@ -53,8 +53,8 @@
       "segments": [
         {
           "kind": "relation",
-          "film": "welabs-chain-journey-define-logos-r6-s1",
-          "poster": "cut-6",
+          "film": "welabs-chain-journey-define-logos-standalone-r2-s1",
+          "poster": "cut-6-standalone",
           "products": ["domus", "magneto", "tuner", "relloo"],
           "start": 25.3,
           "end": 30.79,

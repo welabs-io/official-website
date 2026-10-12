@@ -30,7 +30,7 @@ export function HeroStage() {
           <div className={styles.windowHeader}>
             <img
               src={productLogo("domus", "dark")}
-              alt="Domus by Welabs"
+              alt="Domus"
               width={110}
               height={60}
             />
@@ -62,7 +62,7 @@ export function HeroStage() {
           <div className={styles.windowHeader}>
             <img
               src={productLogo("relloo", "dark")}
-              alt="Relloo by Welabs"
+              alt="Relloo"
               width={110}
               height={60}
             />
@@ -93,7 +93,7 @@ export function HeroStage() {
         >
           <img
             src={productLogo(slug, "light")}
-            alt={`${slug[0].toUpperCase()}${slug.slice(1)} by Welabs`}
+            alt={`${slug[0].toUpperCase()}${slug.slice(1)}`}
             width={110}
             height={60}
           />

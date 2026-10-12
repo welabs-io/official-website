@@ -1,0 +1,46 @@
+// LINHA DO TEMPO DETERMINÍSTICA
+// Authored native layout dimensions own the motion coordinates; no frame-time measurements or input handlers.
+// The Player leaves timed wrappers mounted, so inner content opacity follows the same clock explicitly.
+window.__timelines=window.__timelines||{};
+var tl=gsap.timeline({paused:true});
+tl.set("#domus-business-overview-content", {opacity:1}, 0);
+tl.set("#domus-business-overview-content", {opacity:0}, 8.2);
+tl.set("#domus-monthly-billing-content", {opacity:1}, 8.2);
+tl.set("#domus-monthly-billing-content", {opacity:0}, 16.4);
+tl.set("#domus-inspection-screen-content", {opacity:1}, 16.4);
+tl.set("#domus-business-overview-dot",{"opacity":0},0.000);
+tl.fromTo("#domus-business-overview-dot",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},0.500);
+tl.to("#domus-business-overview-dot",{"y":4,"force3D":false,"duration":0.1,"ease":"power2.inOut"},0.500);
+tl.to("#domus-business-overview-node-0",{"borderColor":"#FFB020","duration":0.25},0.500);
+tl.to("#domus-business-overview-dot",{"y":140,"force3D":false,"duration":0.5,"ease":"power2.inOut"},1.500);
+tl.to("#domus-business-overview-node-1",{"borderColor":"#FFB020","duration":0.25},1.500);
+tl.to("#domus-business-overview-dot",{"y":276,"force3D":false,"duration":0.5,"ease":"power2.inOut"},2.500);
+tl.to("#domus-business-overview-node-2",{"borderColor":"#FFB020","duration":0.25},2.500);
+tl.to("#domus-business-overview-dot",{"y":412,"force3D":false,"duration":0.5,"ease":"power2.inOut"},3.500);
+tl.to("#domus-business-overview-node-3",{"borderColor":"#FFB020","duration":0.25},3.500);
+tl.to("#domus-business-overview-dot",{"y":548,"force3D":false,"duration":0.5,"ease":"power2.inOut"},4.500);
+tl.to("#domus-business-overview-node-4",{"borderColor":"#FFB020","duration":0.25},4.500);
+tl.set("#domus-business-overview-result-start",{"opacity":0},6.500);
+tl.set("#domus-business-overview-result-final",{"opacity":1},6.500);
+tl.set("#domus-monthly-billing-confirm",{"opacity":0},8.200);
+tl.fromTo("#domus-monthly-billing-confirm",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},11.200);
+tl.set("#domus-monthly-billing-dot",{"opacity":0},8.200);
+tl.fromTo("#domus-monthly-billing-dot",{"opacity":0,"y":20,"force3D":false},{"opacity":1,"y":0,"force3D":false,"duration":0.35,"ease":"power2.out","immediateRender":false},9.300);
+tl.to("#domus-monthly-billing-dot",{"y":0,"force3D":false,"duration":0.1,"ease":"power2.inOut"},9.300);
+tl.to("#domus-monthly-billing-node-0",{"borderColor":"#FFB020","duration":0.25},9.300);
+tl.to("#domus-monthly-billing-dot",{"y":116,"force3D":false,"duration":0.5,"ease":"power2.inOut"},10.400);
+tl.to("#domus-monthly-billing-node-1",{"borderColor":"#FFB020","duration":0.25},10.400);
+tl.to("#domus-monthly-billing-dot",{"y":232,"force3D":false,"duration":0.5,"ease":"power2.inOut"},13.300);
+tl.to("#domus-monthly-billing-node-2",{"borderColor":"#FFB020","duration":0.25},13.300);
+tl.to("#domus-monthly-billing-confirm",{"backgroundColor":"#FFB020","color":"#1C1A16","scale":0.97,"duration":0.15},12.600);
+tl.to("#domus-monthly-billing-confirm",{"scale":1,"duration":0.2},12.750);
+tl.set("#domus-monthly-billing-result-start",{"opacity":0},14.700);
+tl.set("#domus-monthly-billing-result-final",{"opacity":1},14.700);
+tl.fromTo("#domus-inspection-screen-drawing .field",{"opacity":0,"x":16,"force3D":false},{"opacity":1,"x":0,"force3D":false,"stagger":0.15,"duration":0.35,"immediateRender":false},16.700);
+tl.set("#domus-inspection-screen-drawing",{"opacity":0},19.700);
+tl.set("#domus-inspection-screen-screen",{"opacity":1},19.700);
+tl.fromTo("#domus-inspection-screen-record",{"y":24,"force3D":false},{"y":0,"force3D":false,"duration":0.4,"ease":"power2.out","immediateRender":false},19.700);
+tl.set("#domus-inspection-screen-result-start",{"opacity":0},22.900);
+tl.set("#domus-inspection-screen-result-final",{"opacity":1},22.900);
+tl.to({}, {duration:24.4}, 0);
+window.__timelines["domus-product-mobile-ludic-v1-r2-s1"]=tl;

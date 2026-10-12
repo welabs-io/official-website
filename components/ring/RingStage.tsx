@@ -254,7 +254,13 @@ export function RingStage({
                     hidden={index !== 0}
                   >
                     <h3>{product?.name ?? "Welabs"}</h3>
-                    <p>{kind === "products" ? product?.line : tile.label}</p>
+                    {!(
+                      kind === "products" &&
+                      tile.slug &&
+                      summaries?.[tile.slug]
+                    ) && (
+                      <p>{kind === "products" ? product?.line : tile.label}</p>
+                    )}
                     {kind === "products" &&
                       tile.slug &&
                       summaries?.[tile.slug] && (

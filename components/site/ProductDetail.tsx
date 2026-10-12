@@ -28,7 +28,7 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
           <nav className={styles.breadcrumb} aria-label="Você está aqui">
             <Link href="/#products">Produtos</Link>
             <span aria-hidden="true">/</span>
-            <span aria-current="page" aria-label={`${product.name} by Welabs`}>
+            <span aria-current="page" aria-label={`${product.name}`}>
               {product.name}
             </span>
           </nav>
@@ -37,16 +37,14 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
               <img
                 className={styles.productLogo}
                 src={productLogo(slug, "dark")}
-                alt={`${product.name} by Welabs`}
+                alt={`${product.name}`}
                 width={1005}
                 height={550}
                 style={{ "--logo-pad": LOGO_PAD[slug] } as CSSProperties}
               />
               <p className={styles.factualLine}>{product.line}</p>
               <h1>
-                <span className={styles.srOnly}>
-                  {product.name} by Welabs.{" "}
-                </span>
+                <span className={styles.srOnly}>{product.name}. </span>
                 {detail.headline}
               </h1>
               <div className={styles.benefits}>
@@ -171,11 +169,11 @@ export function ProductDetail({ slug }: { slug: ProductSlug }) {
                 <Link
                   href={`/products/${item.slug}`}
                   prefetch={false}
-                  aria-label={`Conhecer ${item.name} by Welabs: ${item.line}`}
+                  aria-label={`Conhecer ${item.name}: ${item.line}`}
                 >
                   <img
                     src={productLogo(item.slug, "light")}
-                    alt={`${item.name} by Welabs`}
+                    alt={`${item.name}`}
                     width={1005}
                     height={550}
                     loading="lazy"

@@ -2,7 +2,7 @@
 // Builds the slides of every ring from lib/motion-pieces.json (the list scripts/sync-motion.mjs copies). A slide is a
 // list of segments played back to back: a segment is a range of one piece. The home journey contains authored cuts
 // without an opening; its product carousel contains only complete identity openings. Product-page narratives use
-// authored chapter ranges with their complete opening, and standalone previews remain qualified product clips.
+// authored action ranges without an identity pre-roll; standalone previews use qualified product clips.
 import montage from "./home-montage.json";
 import pieces from "./motion-pieces.json";
 import { PRODUCTS, type ProductSlug } from "./products";
@@ -103,7 +103,7 @@ export const CUT_POSTERS: string[] = montage.steps.flatMap((step, i) =>
 
 // Additional reading hold after the complete opening when a sequence is allowed to advance. Manual identity
 // exploration keeps the formed mark until the reader selects another product or explicitly replays it.
-export const INTRO_HOLD = 0.95;
+export const INTRO_HOLD = 0.7;
 
 // ABERTURAS INDIVIDUAIS DO CARROSSEL
 // Show the entire identity formation; the settled mark has a reading hold, with no product-film segment or film cover.
@@ -118,6 +118,7 @@ export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
       {
         id: intro.id,
         range: [0, intro.duration] as const,
+        rate: 1.2,
         holdAfter: INTRO_HOLD,
       },
     ],

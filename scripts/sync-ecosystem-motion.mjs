@@ -18,7 +18,11 @@ const manifest = JSON.parse(
   readFileSync(join(root, "lib/ecosystem-motion-pieces.json"), "utf8"),
 );
 const round = join(homedir(), "code/control/portfolio/motion", manifest.round);
-const destination = join(root, "public/motion/chain-system");
+const destination = join(
+  root,
+  "public/motion",
+  manifest.directory ?? "chain-system",
+);
 const accepted = JSON.parse(readFileSync(join(round, "accepted.json"), "utf8"));
 const sha = (file) =>
   createHash("sha256").update(readFileSync(file)).digest("hex");

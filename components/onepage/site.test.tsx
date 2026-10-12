@@ -96,19 +96,22 @@ describe("home presentation", () => {
     expect(home).not.toContain('id="journey-ring"');
     expect(home).toContain('data-architecture-node="domus"');
     expect(home).toContain('data-architecture-node="relloo"');
+    expect(home).not.toMatch(/data-chain-select=|data-step=|data-select=/);
   });
-  it("lets visitors hold a product while reading its functional summary", () => {
+  it("advances complete product identities automatically with readable summaries", () => {
     const orbit = home.slice(
       home.indexOf('id="products-ring"'),
       home.indexOf('id="journey"'),
     );
-    expect(orbit).toContain('data-rotate="false"');
+    expect(orbit).toContain('data-rotate="true"');
+    expect(orbit).toContain('data-navigation="false"');
+    expect(orbit).not.toMatch(/<button\b/);
     expect(orbit).toContain('data-summaries="true"');
     expect(orbit).toContain("Finanças, vendas, compras, estoque e pessoas");
     expect(orbit).toContain("Contatos, oportunidades, conversas e campanhas");
     for (const { slug, name } of PRODUCTS) {
-      expect(orbit).toContain(`data-product="${slug}"`);
-      expect(orbit).toContain(`aria-label="Mostrar ${name}"`);
+      expect(orbit).toContain(`href="/products/${slug}"`);
+      expect(orbit).toContain(`<h3>${name}</h3>`);
     }
   });
   it("distinguishes portfolio brands from the technology base", () => {
@@ -128,6 +131,13 @@ describe("home presentation", () => {
     // Count all native text, including the inactive functional summaries.
     expect(visibleText(home).split(" ").length).toBeLessThanOrEqual(700);
   });
+  it("uses standalone product marks throughout native page content", () => {
+    for (const { html } of pages) {
+      expect(html).not.toMatch(
+        /by Welabs|by welabs|-(?:light|dark)-endorsed\.svg/,
+      );
+    }
+  });
 });
 
 describe("metadata", () => {
@@ -137,7 +147,7 @@ describe("metadata", () => {
       const meta = await generateMetadata({
         params: Promise.resolve({ slug }),
       });
-      expect(meta.title).toBe(`${name} by Welabs`);
+      expect(meta.title).toBe(name);
       expect(meta.description).toContain(category);
       expect(meta.keywords).toBeDefined();
     }
