@@ -389,33 +389,39 @@ test.describe("native chain behaviour", () => {
     await expect.poll(run).toBeUndefined();
   });
 
-  test("the loop starts on a phone on its side (740x360), where the stage is taller than the window can show", async ({
-    page,
-  }) => {
-    test.setTimeout(60000);
-    await page.setViewportSize({ width: 740, height: 360 });
-    await page.goto("/", { waitUntil: "load" });
-    // Put the stage under the fixed header: it fills the window, and half of it is far less than half of the stage
-    await centre(page).evaluate((el) => {
-      const top = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo(0, top - 80);
+  // 740x360 is a phone on its side; 540x360 is the case where the stage (7:10 below 560 px wide) is taller than the whole
+  // window, so the old limit (half of the stage) could never be reached
+  for (const [w, h] of [
+    [740, 360],
+    [540, 360],
+  ])
+    test(`the loop starts on a phone on its side (${w}x${h}), even where the stage is taller than the window`, async ({
+      page,
+    }) => {
+      test.setTimeout(60000);
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/", { waitUntil: "load" });
+      // Put the stage under the fixed header: it fills the window, and half of it is more than the window shows
+      await centre(page).evaluate((el) => {
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(0, top - 60);
+      });
+      const box = await centre(page).boundingBox();
+      console.log(`${w}x${h} stage height`, box?.height, "window", h);
+      await page.waitForFunction(
+        () => document.querySelector("#chain-ring .scn[data-phase='play']"),
+        undefined,
+        { timeout: 8000 },
+      );
+      // And it keeps going: the second scene takes the centre
+      await page.waitForFunction(
+        () =>
+          document.querySelector<HTMLElement>('#chain-ring [data-pos="0"]')
+            ?.dataset.tile === "s1",
+        undefined,
+        { timeout: 20000 },
+      );
     });
-    const box = await centre(page).boundingBox();
-    console.log("740x360 stage height", box?.height, "window", 360);
-    await page.waitForFunction(
-      () => document.querySelector("#chain-ring .scn[data-phase='play']"),
-      undefined,
-      { timeout: 8000 },
-    );
-    // And it keeps going: the second scene takes the centre
-    await page.waitForFunction(
-      () =>
-        document.querySelector<HTMLElement>('#chain-ring [data-pos="0"]')
-          ?.dataset.tile === "s1",
-      undefined,
-      { timeout: 20000 },
-    );
-  });
 
   test("no layout shift while the chain loads and plays", async ({ page }) => {
     test.setTimeout(60000);
