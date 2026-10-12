@@ -139,10 +139,30 @@
   inset: 0;
 }
 
+/* LEGENDA VIVA */
+/* One sentence under the ring that changes with the active tile. It has the colour of the band, so the thread of the
+   page behind it is hidden; two lines of height are reserved on a phone so the page does not jump when it changes. */
+.caption {
+  width: fit-content;
+  max-width: var(--tile-w);
+  margin: 0 auto;
+  padding: 0 8px;
+  background: var(--bg);
+  color: var(--mute);
+  font-size: clamp(15px, 1.3vw, 17px);
+  line-height: 1.4;
+  font-weight: 500;
+  text-align: center;
+  text-wrap: balance;
+}
+
 /* Phone: the tile takes the whole wrap (about 87% of the screen) */
 @media (max-width: 860px) {
   .screen {
     --tile-w: min(100%, 760px);
+  }
+  .caption {
+    min-height: 2.8em;
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -14,12 +14,7 @@ import {
   tieKey,
 } from "./home";
 import { PRODUCT_CONTENT } from "./products";
-
-export const words = (text: string) => text.trim().split(/\s+/).length;
-
-// Slogan verbs and brand-concept phrases (operator rule), plus banned words and maturity markers
-export const COPY_RULES =
-  /\b(domina|atende|automatiza|entrega|sabe|define|explica|conecta|transforma|ecossistema|cliente|clientes|erp|ficha|recibo|protocolo|tenant|fila|webhook|payload|beta|alpha|mvp|v2|roadmap|em breve|breve)\b|a empresa inteira numa casa|ele automatiza|todo canal, uma conversa só|não é só memória|os outros dão vida|ideias que viram|um só fluxo/i;
+import { COPY_RULES, words } from "./rules";
 
 const sentences = (): string[] => {
   const all: string[] = [

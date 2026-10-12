@@ -46,6 +46,12 @@
   --pb: 44px;
 }
 
+/* BLOCO DE TEXTO (PÁGINA DE PRODUTO): O QUE RESOLVE E CAPACIDADES */
+.block {
+  --pt: 48px;
+  --pb: 48px;
+}
+
 /* SEÇÃO 3: CONECTORES */
 .connectors {
   --pt: 40px;
@@ -69,7 +75,15 @@
 }
 .strips {
   display: grid;
-  gap: 0;
+  gap: 4px;
+}
+/* A title over its strip of logos; the first one clears the docks of the rails that arrive on the strip */
+.strip {
+  display: grid;
+  gap: 2px;
+}
+.strip:first-child {
+  padding-top: 12px;
 }
 .contact {
   display: flex;
@@ -109,6 +123,7 @@
   }
   .products,
   .productChain,
+  .block,
   .connectors {
     --pt: 40px;
     --pb: 40px;

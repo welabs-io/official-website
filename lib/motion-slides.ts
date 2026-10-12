@@ -13,6 +13,7 @@ import type {
   SegmentCore,
   Transition,
 } from "./manifest/types";
+import { PRODUCT_CONTENT } from "./content/products";
 import { PRODUCTS } from "./products";
 
 export type { ProductSlug };
@@ -42,6 +43,8 @@ export type Slide = {
   // Last frame the slide plays: what the tile shows as the dimmed previous neighbour once its player is gone
   endCover?: Cover;
   slug?: ProductSlug;
+  // Live caption shown under the ring while this slide is active (product page; lib/content/products.ts)
+  caption?: string;
   // Short value of the connection of the cut (chain), shown in the row of logos
   connection?: {
     from: ProductSlug;
@@ -101,18 +104,21 @@ export const productSlides = (): Slide[] =>
   PRODUCTS.map(({ slug }) => productSlide(slug));
 
 // PÁGINA DE PRODUTO
-// One ring: the opening and main film of the product, then each support film in full.
+// One ring: the opening and main film of the product, then each support film in full. Each tile carries the caption
+// the page shows while it is active (one per tile, in the same order).
 export function productPageSlides(slug: ProductSlug): Slide[] {
   const { films } = MANIFEST.products[slug];
+  const captions = PRODUCT_CONTENT[slug].filmCaptions;
   return [
-    productSlide(slug),
+    { ...productSlide(slug), caption: captions[0] },
     ...films
       .filter((film) => film.role === "support")
       .map(
-        (film): Slide => ({
+        (film, i): Slide => ({
           key: film.piece,
           label: film.title,
           slug,
+          caption: captions[i + 1],
           segments: film.segments.map((s) => segment(s)),
           cover: film.segments[0].covers.start,
           endCover: lastOf(film).covers.settled,

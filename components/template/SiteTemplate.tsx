@@ -7,17 +7,26 @@ import { ProductBlock } from "@/components/onepage/ProductBlock";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { RingStage } from "@/components/ring/RingStage";
+import { PAGE_HEADINGS } from "@/lib/content";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
+import { PRODUCTS } from "@/lib/products";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { Closing } from "./Closing";
+import {
+  BandTitle,
+  Capabilities,
+  HubText,
+  ProductCards,
+  Resolves,
+} from "./Content";
 import { CoreHub } from "./CoreHub";
 import { Section } from "./Section";
 
 function Body({ section }: { section: SectionConfig }) {
   switch (section.kind) {
     case "ring": {
-      const { ring, head, tone } = section;
+      const { ring, head, tone, cards } = section;
       const stage = (
         <RingStage
           id={ring.id}
@@ -26,6 +35,7 @@ function Body({ section }: { section: SectionConfig }) {
           eager={ring.eager}
           logos={ring.logos}
           tone={tone}
+          caption={ring.caption}
           label={ring.label}
         />
       );
@@ -38,22 +48,37 @@ function Body({ section }: { section: SectionConfig }) {
             link={false}
             heading="h1"
           />
+          <BandTitle>{PAGE_HEADINGS.how}</BandTitle>
           {stage}
         </div>
       ) : (
-        <div className={shell.wrap}>{stage}</div>
-      );
-    }
-    case "hub":
-      return (
         <div className={shell.wrap}>
-          <CoreHub
-            tone={section.tone}
-            ties={ties(MANIFEST)}
-            lit={section.lit}
-          />
+          {stage}
+          {cards && <ProductCards tone={tone} lit={PRODUCTS[0].slug} />}
         </div>
       );
+    }
+    case "resolves":
+      return (
+        <div className={shell.wrap}>
+          <Resolves slug={section.slug} />
+        </div>
+      );
+    case "capabilities":
+      return (
+        <div className={shell.wrap}>
+          <Capabilities slug={section.slug} />
+        </div>
+      );
+    case "hub": {
+      const tieList = ties(MANIFEST);
+      return (
+        <div className={shell.wrap}>
+          <HubText ties={tieList} lit={section.lit} />
+          <CoreHub tone={section.tone} ties={tieList} lit={section.lit} />
+        </div>
+      );
+    }
     case "closing":
       return <Closing />;
   }

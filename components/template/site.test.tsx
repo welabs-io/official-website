@@ -3,7 +3,16 @@
 // rendered on the server (the same HTML the first paint gets) and checked as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import {
+  HUB_NOTE,
+  PAGE_HEADINGS,
+  PRODUCT_CONTENT,
+  TIE_LINES,
+  tieKey,
+} from "@/lib/content";
+import { COPY_RULES } from "@/lib/content/rules";
 import { MANIFEST } from "@/lib/manifest";
+import { ties } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/page";
 import { generateMetadata } from "@/app/products/[slug]/page";
@@ -67,10 +76,11 @@ describe("pages carry little text and no slogan", () => {
     expect(all).not.toMatch(BANNED);
   });
 
-  it("the home stays under the word budget", () => {
-    const words = visibleText(home).split(" ").length;
-    // Measured at the time of writing: 75; the budget guards against text creeping back
-    expect(words).toBeLessThanOrEqual(85);
+  it("the home and a product page stay under the word budget of the content layer", () => {
+    // Measured when the content layer landed: see COUNT in the test below; the budgets guard against text creeping in
+    expect(visibleText(home).split(" ").length).toBeLessThanOrEqual(160);
+    for (const { html } of productPages)
+      expect(visibleText(html).split(" ").length).toBeLessThanOrEqual(260);
   });
 
   it("every product line has at most six words", () => {
@@ -92,15 +102,16 @@ describe("pages carry little text and no slogan", () => {
     expect(visibleText(home)).toContain("Conversar com a Welabs");
   });
 
-  it("the closing is one strip with the logos of clients and platforms together, then the button", () => {
+  it("the closing is two titled strips, one of the marks of who operates with us and one of the platforms, then the button", () => {
     const closing = home.slice(home.indexOf('id="platforms"'));
-    // One carousel only (the loop copy is aria-hidden), no visible label
-    expect(closing.match(/role="region"/g)).toHaveLength(1);
-    expect(visibleText(closing)).not.toMatch(/Quem atendemos|Infraestrutura/);
+    // Two carousels (the loop copy is aria-hidden), each under its title
+    expect(closing.match(/role="region"/g)).toHaveLength(2);
+    expect(visibleText(closing)).toContain("Quem já opera com a gente");
+    expect(visibleText(closing)).toContain("Onde rodamos");
     for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
       expect(closing).toContain(`alt="${name}"`);
     expect(closing).toMatch(/src="\/clients\//);
-    expect(closing.indexOf('role="region"')).toBeLessThan(
+    expect(closing.lastIndexOf('role="region"')).toBeLessThan(
       closing.indexOf('id="contact"'),
     );
   });
@@ -143,5 +154,66 @@ describe("the home has no sequential player and no opening on the chain", () => 
       });
       expect(meta.title).toBe(`${name} by Welabs`);
     }
+  });
+});
+
+describe("the content layer on the rendered pages", () => {
+  const text = (html: string) => visibleText(html);
+
+  it.each(pages)(
+    "$slug carries no slogan, banned word or maturity marker in what it shows or announces",
+    ({ html }) => {
+      const all = `${text(html)} ${hiddenText(html)}`;
+      expect(all).not.toMatch(COPY_RULES);
+    },
+  );
+
+  it("the home shows five product cards, the active one lit, each leading to its page", () => {
+    const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
+    expect(cards).toHaveLength(5);
+    expect(cards.filter((c) => c.includes('data-on="true"'))).toHaveLength(1);
+    for (const p of PRODUCTS) {
+      const card = cards.find((c) => c.includes(`data-card="${p.slug}"`))!;
+      expect(card).toContain(`href="/products/${p.slug}"`);
+    }
+    // Name (logo), one line and three capabilities per card
+    for (const p of PRODUCTS) {
+      expect(text(home)).toContain(p.line);
+      for (const cap of PRODUCT_CONTENT[p.slug].capabilities.slice(0, 3))
+        expect(text(home)).toContain(cap.text);
+    }
+  });
+
+  it("the home explains the core and the rails in one sentence and closes with the footer links", () => {
+    expect(text(home)).toContain(HUB_NOTE);
+    const footer = home.slice(home.indexOf("<footer"));
+    for (const p of PRODUCTS)
+      expect(footer).toContain(`href="/products/${p.slug}"`);
+  });
+
+  it.each(productPages)(
+    "$slug has the problems, the capabilities, the live caption and a line per connection",
+    ({ slug, html }) => {
+      const t = text(html);
+      for (const heading of Object.values(PAGE_HEADINGS))
+        expect(t).toContain(heading);
+      const c = PRODUCT_CONTENT[slug];
+      for (const r of c.resolves) {
+        expect(t).toContain(r.problem);
+        expect(t).toContain(r.does);
+      }
+      for (const cap of c.capabilities) expect(t).toContain(cap.text);
+      // The caption is a polite live region that starts on the first tile
+      expect(html).toMatch(/<p[^>]*data-caption[^>]*aria-live="polite"[^>]*>/);
+      expect(t).toContain(c.filmCaptions[0]);
+      for (const tie of ties(MANIFEST).filter(
+        (x) => x.a === slug || x.b === slug,
+      ))
+        expect(t).toContain(TIE_LINES[tieKey(tie.a, tie.b)]);
+    },
+  );
+
+  it("the home has no live caption: the chain section is not touched by this layer", () => {
+    expect(home).not.toContain("data-caption");
   });
 });

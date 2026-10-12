@@ -29,6 +29,8 @@ export type RingProps = {
   logos?: "lit" | "links" | "pinned" | null;
   // Theme of the logo files: the one of the band the stage sits on
   tone?: "dark" | "light";
+  // Show the live caption of the active tile under the ring (product page)
+  caption?: boolean;
   label: string;
 };
 
@@ -40,6 +42,7 @@ export function RingStage({
   eager = false,
   logos = null,
   tone = "dark",
+  caption = false,
   label,
 }: RingProps) {
   const slides = slidesOf(kind, slug);
@@ -125,6 +128,17 @@ export function RingStage({
           pinned={logos === "pinned" ? slug : undefined}
           links={logos !== "lit"}
         />
+      )}
+      {/* Live caption: the sentence of the active tile, rewritten by ring-run on every swap */}
+      {caption && data.captions[0] && (
+        <p
+          className={styles.caption}
+          data-caption
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {data.captions[0]}
+        </p>
       )}
       {/* What ring-run plays, so the lazy chunk reads the DOM instead of importing the manifest */}
       <script
