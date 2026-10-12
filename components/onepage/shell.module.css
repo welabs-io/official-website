@@ -315,7 +315,8 @@
 }
 .band[data-on="true"] .converge .pulse {
   animation: converge-run 4.8s linear infinite;
-  animation-delay: calc(var(--i) * 0.96s);
+  /* Takes the pulse of the rail node (3rd to 5th of the cycle) 0.7 s after it lights, when it reaches the bottom of the block */
+  animation-delay: calc((var(--i) + 2) * 0.96s + 0.7s);
 }
 @keyframes converge-run {
   0% {
