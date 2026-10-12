@@ -19,6 +19,12 @@
   overflow: hidden;
   background: #0b0e14;
 }
+/* The workbench has no band around it, so it brings the colours the row of logos reads from its band */
+.screen:not(.inline) {
+  --bg: #0b0e14;
+  --line: #262d3a;
+  --a: #ffb020;
+}
 /* Inline variant: the carousel sits in the flow of the page (the home) instead of filling the screen */
 .inline {
   position: relative;
@@ -27,48 +33,7 @@
   background: transparent;
 }
 
-/* FILEIRA DE PRODUTOS */
-/* Five logos in weight order. The ones the active cut shows are lit (full colour and opacity); the others are grey at
-   35%. The change uses the same duration and ease as the ring rotation. Not clickable. */
-.products {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(14px, 3vw, 36px);
-  width: var(--tile-w);
-  margin: 0;
-  padding: 0 16px;
-  list-style: none;
-}
-.product {
-  display: flex;
-  flex: 0 1 auto;
-  min-width: 0;
-  opacity: 0.35;
-  filter: grayscale(1);
-  transition:
-    opacity var(--swap-time, 0.4s) var(--ease, ease),
-    filter var(--swap-time, 0.4s) var(--ease, ease);
-}
-.product[data-on="true"] {
-  opacity: 1;
-  filter: none;
-}
-/* On the home each logo leads to the page of its product */
-.product a {
-  display: flex;
-  border-radius: 4px;
-}
-.product a:focus-visible {
-  outline: 3px solid #ffb020;
-  outline-offset: 4px;
-}
-.product img {
-  display: block;
-  height: clamp(16px, 1.7vw, 24px);
-  width: auto;
-  max-width: 100%;
-}
+/* The row of product logos under the stage is components/template/LogoRow (its own module) */
 .stage {
   position: relative;
   /* The stage is the centre tile (see --tile-w on .screen) */
@@ -165,8 +130,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tile,
-  .product {
+  .tile {
     transition: none;
   }
 }

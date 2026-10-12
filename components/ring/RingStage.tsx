@@ -2,7 +2,12 @@
 // The whole carousel is plain server markup: one tile per slide with its cover images, and the optional row of product
 // logos. Nothing here hydrates. RingDriver (the only client piece) finds the stage by id once it is near the screen and
 // moves the tiles by changing `data-pos`, so no player, no playback code and no state ship with the first paint.
-import Link from "next/link";
+import { LogoRow } from "@/components/template/LogoRow";
+import {
+  CHAIN_CONNECTIONS,
+  activeSpan,
+  connectionSpan,
+} from "@/lib/chain-connections";
 import {
   CUT_POSTERS,
   MONTAGE_SLIDES,
@@ -10,12 +15,7 @@ import {
   productFilms,
   type Slide,
 } from "@/lib/motion-slides";
-import {
-  PRODUCTS,
-  productAlt,
-  productLogo,
-  type ProductSlug,
-} from "@/lib/products";
+import { PRODUCTS, type ProductSlug } from "@/lib/products";
 import { isNear, placeOf, ringPosition } from "./positions";
 import { RingDriver, type RingKind } from "./RingDriver";
 import styles from "./ring.module.css";
@@ -116,42 +116,17 @@ export function RingStage({
         })}
       </div>
       {logos && (
-        <ul className={styles.products} aria-label="Produtos">
-          {PRODUCTS.map(({ slug: product }) => {
-            const logo = (
-              <img
-                src={productLogo(product, tone, "row")}
-                alt={
-                  logos === "lit" ? productAlt(product, "first-mention") : ""
-                }
-                height={28}
-                width={51}
-                loading="lazy"
-                decoding="async"
-              />
-            );
-            return (
-              <li
-                key={product}
-                className={styles.product}
-                data-slug={product}
-                data-on={lit.includes(product) ? "true" : "false"}
-              >
-                {logos === "links" ? (
-                  <Link
-                    href={`/products/${product}`}
-                    prefetch={false}
-                    aria-label={productAlt(product, "row")}
-                  >
-                    {logo}
-                  </Link>
-                ) : (
-                  logo
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <LogoRow
+          mode={logos === "lit" ? "connection" : "active"}
+          tone={tone}
+          lit={lit}
+          span={
+            logos === "lit"
+              ? connectionSpan(CHAIN_CONNECTIONS[0])
+              : activeSpan(PRODUCTS[0].slug)
+          }
+          links={logos === "links"}
+        />
       )}
       <RingDriver rootId={id} kind={kind} slug={slug} />
     </div>
