@@ -40,7 +40,8 @@ export function run(root: HTMLElement, kind: RingKind) {
   const perCut = kind === "chain";
 
   // Moves the ring to `active`: tile positions, accessibility and the lit logos
-  const show = (active: number) => {
+  // `label` is false when the ring is only put back (stop): the caption is written by a swap or when the playback starts
+  const show = (active: number, label = true) => {
     tiles.forEach((tile, i) => {
       const position = ringPosition(i, active, tiles.length);
       tile.dataset.pos = String(placeOf(position));
@@ -66,8 +67,8 @@ export function run(root: HTMLElement, kind: RingKind) {
       card.dataset.on = lit.includes(card.dataset.card ?? "")
         ? "true"
         : "false";
-    // The caption changes with the scene (aria-live="polite" announces it)
-    if (caption && data.captions?.[active])
+    // The caption changes with the scene (plain text, not a live region)
+    if (label && caption && data.captions?.[active])
       caption.textContent = data.captions[active];
   };
 
@@ -155,6 +156,8 @@ export function run(root: HTMLElement, kind: RingKind) {
   ensurePlayer().then(
     () => {
       if (dead) return;
+      // The ring starts over on its first tile: its caption is written here, since a stop does not rewrite it
+      if (caption && data.captions?.[0]) caption.textContent = data.captions[0];
       playback?.start();
       overview?.begin();
     },
@@ -167,7 +170,7 @@ export function run(root: HTMLElement, kind: RingKind) {
     playback?.destroy();
     playback = null;
     // The next run starts over on the first tile
-    show(0);
+    show(0, false);
     idle();
   };
 }

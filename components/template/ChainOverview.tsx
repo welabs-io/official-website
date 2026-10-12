@@ -89,13 +89,9 @@ export function ChainOverview({ tone }: { tone: Tone }) {
         ))}
         <span className={styles.token}>{TOKEN_LABEL}</span>
       </div>
-      <p
-        className={styles.legend}
-        data-legend
-        data-swap="idle"
-        aria-live="polite"
-        aria-atomic="true"
-      >
+      {/* Caption of the step: plain text updated by the follower, not a live region (the carousel changes by itself);
+          the scene is named by the aria-label of the active tile of the ring below */}
+      <p className={styles.legend} data-legend data-swap="idle">
         {first.label}
       </p>
       <div className={styles.drop} data-drop aria-hidden="true">

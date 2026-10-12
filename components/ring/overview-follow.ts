@@ -31,7 +31,9 @@ export function follow(ringId: string, section: Element | null) {
     el.dataset[name] = el.dataset[name] === "a" ? "b" : "a";
   };
 
-  const apply = (index: number, animate: boolean) => {
+  // `label` is false when the block is only put back (stop): the caption text is written by a swap or by `begin`, never by
+  // a reset
+  const apply = (index: number, animate: boolean, label = true) => {
     const step = data.steps[index];
     if (!step) return;
     for (const [name, value] of Object.entries(stepVars(step, count)))
@@ -48,7 +50,7 @@ export function follow(ringId: string, section: Element | null) {
             : "off";
     }
     if (legend) {
-      legend.textContent = step.label;
+      if (label) legend.textContent = step.label;
       if (animate) flip(legend, "swap");
       else legend.dataset.swap = "idle";
     }
@@ -68,7 +70,7 @@ export function follow(ringId: string, section: Element | null) {
   window.addEventListener("ring:swap", onSwap);
   const stop = () => {
     window.removeEventListener("ring:swap", onSwap);
-    apply(0, false);
+    apply(0, false, false);
   };
   // The first scene starts with no swap (the ring is already on it): `begin` plays its token when the playback starts
   return Object.assign(stop, { begin: () => apply(0, true) });

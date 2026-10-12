@@ -129,14 +129,11 @@ export function RingStage({
           links={logos !== "lit"}
         />
       )}
-      {/* Live caption: the sentence of the active tile, rewritten by ring-run on every swap */}
+      {/* Caption: the sentence of the active tile, rewritten by ring-run on every swap. Plain text, not a live region: a
+          carousel that changes by itself must not talk over the reader; the scene is named by the aria-label of the
+          active tile. */}
       {caption && data.captions[0] && (
-        <p
-          className={styles.caption}
-          data-caption
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <p className={styles.caption} data-caption>
           {data.captions[0]}
         </p>
       )}

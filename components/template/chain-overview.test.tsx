@@ -45,9 +45,10 @@ describe("overview data", () => {
 });
 
 describe("overview markup", () => {
-  it("shows the first caption in a polite live region, the token and a logo per product", () => {
+  it("shows the first caption as plain text, the token and a logo per product", () => {
     expect(html).toContain(MANIFEST.chain.steps[0].overview.label);
-    expect(html).toMatch(/aria-live="polite"/);
+    // Plain text, not a live region (the carousel changes by itself)
+    expect(html).not.toMatch(/aria-live/);
     expect(html).toContain("Pedido 1234");
     for (const slug of Object.keys(MANIFEST.products))
       expect(html).toContain(`${slug}-dark.svg`);
