@@ -12,7 +12,9 @@ import styles from "./ring.module.css";
 
 // Covers come in two widths (the manifest's 1280 and 640): a phone shows a tile of about 330 px and never needs 1280
 const coverSet = (c: Cover) => `${c.w640} 640w, ${c.w1280} 1280w`;
-const COVER_SIZES = "(max-width: 860px) 100vw, 760px";
+// On a desktop the cover is a still seen at the edge (neighbours at half scale) or for the instant before the player
+// paints, so 480 px picks the 640 px file on a 1x screen and the 1280 px one only from 2x; a phone takes the wrap
+const COVER_SIZES = "(max-width: 860px) 100vw, 480px";
 
 export type RingProps = {
   id: string;
