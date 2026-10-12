@@ -40,7 +40,7 @@ export default function RootLayout({
           rel="preload"
           as="font"
           type="font/woff2"
-          href="/motion/_shared/vendor/fonts/Inter-latin.woff2"
+          href="/motion/v5/_shared/vendor/fonts/Inter-latin.woff2"
           crossOrigin="anonymous"
         />
       </head>

@@ -14,8 +14,10 @@ export type PlayerElement = HTMLElement & {
   ready?: boolean;
 };
 
-export const PLAYER_SRC = "/motion/player.js";
-export const piece = (id: string) => `/motion/pieces/${id}/index.html`;
+// Addresses of the pinned player and of the site copy of a piece; a test keeps them equal to the motion manifest
+// (`player.src`, `pieces[id].src`), which the browser code cannot import
+export const PLAYER_SRC = "/motion/v5/player.js";
+export const piece = (id: string) => `/motion/v5/pieces/${id}/index.html`;
 
 // Attributes of every player of the page. `controls` is never part of them (a test guards it). A preloaded player is
 // created without `autoplay` and is started by the ring at the handoff.

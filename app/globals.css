@@ -6,7 +6,7 @@
    file once for the page and for every player (a second copy under a hashed name cost a second download). */
 @font-face {
   font-family: "Inter";
-  src: url("/motion/_shared/vendor/fonts/Inter-latin.woff2") format("woff2");
+  src: url("/motion/v5/_shared/vendor/fonts/Inter-latin.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
 }

@@ -55,11 +55,11 @@ export const productLogo = (
   place: LogoPlace = "row",
   height?: number,
 ) =>
-  `/brands/welabs/products/${slug}-${tone}${endorsePolicy(place, height) ? "-endorsed" : ""}.svg`;
+  `/brands/welabs/products/${slug}-${tone}${endorsePolicy(place, height, slug) ? "-endorsed" : ""}.svg`;
 
 // Accessible name of a product logo: "<Name> by Welabs" only where the policy allows the seal
 export const productAlt = (slug: ProductSlug, place: LogoPlace = "row") =>
-  endorsePolicy(place)
+  endorsePolicy(place, undefined, slug)
     ? `${productBySlug(slug)!.name} by Welabs`
     : productBySlug(slug)!.name;
 

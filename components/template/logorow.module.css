@@ -26,7 +26,8 @@
 .capsule {
   position: absolute;
   top: 10px;
-  bottom: 0;
+  /* The capsule wraps the two logos, not the label under the row */
+  height: calc(var(--logo-h) + 18px);
   left: 4px;
   width: calc(40% - 8px);
   border: 1px solid var(--line);
@@ -129,11 +130,48 @@
   width: auto;
   max-width: 100%;
 }
+
+/* VALOR DA LIGAÇÃO */
+/* One line under the row: the label of the connection of the cut (3 words at most), Inter 500 at 14 px, in the muted
+   colour of the band. It fades in on every swap (two identical keyframes with different names, flipped by ring-run);
+   the line has a fixed height, so a swap never moves the page. */
+.label {
+  min-height: 20px;
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--mute);
+}
+.label[data-swap="a"] {
+  animation: label-a 0.5s var(--ease) both;
+}
+.label[data-swap="b"] {
+  animation: label-b 0.5s var(--ease) both;
+}
+@keyframes label-a {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes label-b {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .item {
     transition: none;
   }
-  .fill {
+  .fill,
+  .label {
     animation: none !important;
   }
 }

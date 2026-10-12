@@ -2,9 +2,11 @@
 // The five products in weight order as the core-and-rails drawing in miniature: Domus and Relloo in a capsule with the
 // amber seam between them, Magneto, Tuner and Knowly hanging from the bus (the 2 px horizontal line behind the row)
 // by a short tick. The thread of the page meets the bus on the axis, at the middle slot. The five slots are equal
-// columns, so the stretch of the bus that fills with amber is plain percentages (`--lo`, `--hi`, `--origin`) the
-// server writes for the first state and ring-run rewrites on every swap, with no layout reading. Server markup only;
-// the logos are the standalone ones (endorsePolicy "row"), and `links` makes each one lead to its product page.
+// columns, so the stretch of the bus that fills with amber is plain numbers (`--lo`, `--hi`, `--origin`) the server
+// writes for the first state and ring-run rewrites on every swap, with no layout reading. Under the bus a line shows the
+// label of the connection of the cut (manifest `connection.label`), cross-faded on every swap. Server markup only; the
+// logos are the standalone ones (endorsePolicy "row"); `links` makes each one lead to its product page, except the
+// `pinned` product of a product page.
 import Link from "next/link";
 import {
   PRODUCTS,
@@ -12,17 +14,19 @@ import {
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
-import type { BusSpan } from "@/lib/chain-connections";
+import type { BusSpan } from "@/lib/bus";
 import type { Tone } from "@/lib/site-config";
 import styles from "./logorow.module.css";
 
-export type LogoRowMode = "connection" | "active";
+export type LogoRowMode = "connection" | "active" | "pinned";
 
 export function LogoRow({
   mode,
   tone,
   lit,
   span,
+  label,
+  pinned,
   links,
 }: {
   mode: LogoRowMode;
@@ -30,6 +34,9 @@ export function LogoRow({
   // Products lit in the first state, and the stretch of the bus filled in it
   lit: readonly ProductSlug[];
   span: BusSpan;
+  // Label of the connection in the first state (the chain only)
+  label?: string;
+  pinned?: ProductSlug;
   links: boolean;
 }) {
   return (
@@ -70,7 +77,7 @@ export function LogoRow({
               data-slug={slug}
               data-on={lit.includes(slug) ? "true" : "false"}
             >
-              {links ? (
+              {links && slug !== pinned ? (
                 <Link
                   href={`/products/${slug}`}
                   prefetch={false}
@@ -78,6 +85,8 @@ export function LogoRow({
                 >
                   {logo}
                 </Link>
+              ) : slug === pinned ? (
+                <span aria-current="page">{logo}</span>
               ) : (
                 logo
               )}
@@ -85,6 +94,11 @@ export function LogoRow({
           );
         })}
       </ul>
+      {mode === "connection" && (
+        <p className={styles.label} data-label data-swap="idle">
+          {label}
+        </p>
+      )}
     </div>
   );
 }

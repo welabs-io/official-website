@@ -19,6 +19,15 @@
   overflow: hidden;
   background: #0b0e14;
 }
+/* Fade of the neighbours: a dark cover at 30% reads well on graphite but washes to a flat grey on cream, where the cover
+   has to stay recognisable (the settled frame, with its content), so on a light band the neighbours are fainter only by
+   a little. */
+.screen {
+  --dim: 0.3;
+}
+.screen[data-tone="light"] {
+  --dim: 0.62;
+}
 /* The workbench has no band around it, so it brings the colours the row of logos reads from its band */
 .screen:not(.inline) {
   --bg: #0b0e14;
@@ -58,12 +67,12 @@
 }
 .tile[data-pos="1"] {
   z-index: 2;
-  opacity: 0.3;
+  opacity: var(--dim);
   transform: translateX(calc(-50% + 38%)) scale(0.5);
 }
 .tile[data-pos="-1"] {
   z-index: 2;
-  opacity: 0.3;
+  opacity: var(--dim);
   transform: translateX(calc(-50% - 38%)) scale(0.5);
 }
 .tile[data-pos="2"],
@@ -110,13 +119,15 @@
 .tile:not([data-near]) .posterEnd {
   display: none;
 }
-/* The cover of the last frame is only seen on the centre tile and the previous one: the tile at -2 is invisible and
-   comes back through +2, where it shows the cover of the first frame, so it never downloads this one */
-.tile[data-pos="1"] .posterEnd,
+/* Both neighbours show the settled frame (the cover of the last frame) when the tile has one: it is the frame with its
+   content on screen, which is what a faded neighbour must show (the formed logo of an opening is empty at the edge the
+   other tile leaves visible). The tiles at +2 and -2 are invisible and never download it; at +2 the tile shows the
+   cover of the first frame, ready for when it comes to the centre. */
 .tile[data-pos="2"] .posterEnd,
 .tile[data-pos="-2"] .posterEnd {
   display: none;
 }
+.tile[data-pos="1"] .posterEnd ~ .poster,
 .tile[data-pos="-1"] .posterEnd ~ .poster,
 .tile[data-pos="-2"] .posterEnd ~ .poster {
   display: none;

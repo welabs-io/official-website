@@ -1,20 +1,17 @@
 // TESTES DO CARROSSEL CIRCULAR
-// Positions around the ring, the flat segment list with its leads, and the shape of the slides: the chain montage has no
-// opening and runs at 2.5x, the product ring uses 1.5 to 2.5 s of each opening, nothing is a sequential player.
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+// Positions around the ring, the flat segment list with the hold and the transition of the manifest, and the shape of the
+// slides: the site decides no time, everything on screen comes from lib/motion-manifest.json.
 import { describe, expect, it } from "vitest";
-import pieces from "@/lib/motion-pieces.json";
-import montage from "@/lib/home-montage.json";
+import { MANIFEST } from "@/lib/manifest";
 import {
-  INTRO_HOLD,
-  MONTAGE_SLIDES,
-  PRODUCT_SLIDES,
-  productFilms,
+  chainSlides,
+  productPageSlides,
+  productSlides,
 } from "@/lib/motion-slides";
 import { PRODUCTS } from "@/lib/products";
+import { PLAYER_SRC, piece } from "./player";
 import { ringPosition } from "./positions";
-import { BLEND_SECONDS, SWAP_SECONDS, flatten } from "./ring-playback";
+import { flatten } from "./ring-playback";
 
 describe("ring positions", () => {
   it("five slides: centre, two neighbours, two behind", () => {
@@ -28,199 +25,134 @@ describe("ring positions", () => {
       0, 1, -2, -1,
     ]);
   });
-});
-
-describe("circular carousel of the workbench", () => {
-  it("nine cuts: the previous and the next sit beside the active one, the rest clamp behind", () => {
-    const positions = Array.from({ length: 9 }, (_, i) =>
-      ringPosition(i, 0, 9),
-    );
-    expect(positions).toEqual([0, 1, 2, 3, 4, -4, -3, -2, -1]);
-    // The last cut is the previous one of the first: the loop closes without a seam
-    expect(ringPosition(8, 0, 9)).toBe(-1);
-    expect(ringPosition(0, 8, 9)).toBe(1);
+  it("the last tile is the previous one of the first: the loop closes without a seam", () => {
+    expect(ringPosition(5, 0, 6)).toBe(-1);
+    expect(ringPosition(0, 5, 6)).toBe(1);
   });
-  it("the swap duration is the push duration of the leaving cut (0.4 s between products, 0.3 s inside one)", () => {
-    const flat = flatten(MONTAGE_SLIDES);
-    expect(new Set(flat.map((segment) => segment.lead))).toEqual(
-      new Set([0.4, 0.3]),
-    );
+  it("two tiles: the other tile always waits on the right", () => {
+    expect([0, 1].map((i) => ringPosition(i, 0, 2))).toEqual([0, 1]);
+    expect([0, 1].map((i) => ringPosition(i, 1, 2))).toEqual([1, 0]);
   });
 });
 
-describe("flat segments", () => {
-  it("swap lead between slides, blend lead inside a slide, never past 80%", () => {
-    const flat = flatten(PRODUCT_SLIDES);
-    expect(flat).toHaveLength(PRODUCTS.length * 2);
-    // opening tail -> film (same slide)
-    expect(flat[0].lead).toBeCloseTo(BLEND_SECONDS);
-    // film -> next product: the swap of the carousel (0.4 s)
-    expect(flat[1].lead).toBeCloseTo(0.4);
-    expect(SWAP_SECONDS).toBe(1);
-    for (const segment of flat)
-      expect(segment.lead).toBeLessThanOrEqual(
-        (segment.range[1] - segment.range[0]) * 0.8 + 1e-9,
-      );
+describe("flat segments follow the manifest", () => {
+  it("the lead of every segment is the duration of its transition, never past 80% of its real time", () => {
+    for (const slides of [
+      chainSlides(),
+      productSlides(),
+      ...PRODUCTS.map((p) => productPageSlides(p.slug)),
+    ])
+      for (const segment of flatten(slides)) {
+        const real = (segment.range[1] - segment.range[0]) / segment.rate;
+        expect(segment.lead).toBeCloseTo(
+          Math.min(segment.transition.duration, real * 0.8),
+        );
+      }
+  });
+  it("the hold of every segment is the holdAfter of the manifest", () => {
+    const flat = flatten(chainSlides());
+    expect(flat.map((s) => s.hold)).toEqual(
+      MANIFEST.chain.steps.map((s) => s.holdAfter),
+    );
+    expect(flat.every((s) => s.hold >= MANIFEST.defaults.holdAfter)).toBe(true);
+  });
+  it("the chain cycle is the one the manifest declares", () => {
+    const cycle = flatten(chainSlides()).reduce(
+      (sum, s) => sum + (s.range[1] - s.range[0]) / s.rate + s.hold,
+      0,
+    );
+    expect(cycle).toBeCloseTo(MANIFEST.chain.cycleSeconds!, 1);
+  });
+  it("the rate of every segment is the one of the manifest", () => {
+    const flat = flatten(chainSlides());
+    expect(flat.map((s) => s.rate)).toEqual(
+      MANIFEST.chain.steps.map((s) => s.rate),
+    );
   });
 });
 
 describe("slides of the home", () => {
-  it("the chain is a montage of product cuts and relation cuts, each at its own rate, no opening", () => {
-    expect(MONTAGE_SLIDES.map((s) => s.slug)).toEqual([
-      "tuner",
-      "relloo",
-      "domus",
-      "magneto",
-      "knowly",
-    ]);
-    for (const slide of MONTAGE_SLIDES) {
-      expect(slide.segments.length).toBeGreaterThan(0);
-      for (const { id, rate } of slide.segments) {
-        expect(id).not.toMatch(/intro/);
-        expect(rate).toBeGreaterThanOrEqual(1.25);
-        expect(rate).toBeLessThanOrEqual(2.5);
-      }
-    }
-    expect(montage.steps).toHaveLength(MONTAGE_SLIDES.length);
-  });
-  it("the loop lasts 20 to 26 s, every cut holds its last frame for 1 s and the pushes follow the product changes", () => {
-    let cycle = 0;
-    const cuts = MONTAGE_SLIDES.flatMap((slide, si) =>
-      slide.segments.map((segment) => ({ ...segment, si })),
-    );
-    cuts.forEach((cut, i) => {
-      const screen = (cut.range[1] - cut.range[0]) / (cut.rate ?? 1);
-      // The last frame stays still for the hold (1 s by default) before the push out starts
-      expect(cut.holdAfter).toBeGreaterThanOrEqual(1);
-      // 0.4 s between products, 0.3 s inside the same product
-      const next = cuts[(i + 1) % cuts.length];
-      expect(cut.transition?.duration).toBe(next.si === cut.si ? 0.3 : 0.4);
-      expect(cut.transition?.type).toBe(
-        next.si === cut.si ? "push-up" : "push-left",
-      );
-      cycle += screen + (cut.holdAfter ?? 0) - (cut.transition?.duration ?? 0);
+  it("the chain has one slide per step, each with the products and the label of its connection", () => {
+    const slides = chainSlides();
+    expect(slides).toHaveLength(MANIFEST.chain.steps.length);
+    slides.forEach((slide, i) => {
+      const step = MANIFEST.chain.steps[i];
+      expect(slide.label).toBe(step.srLabel);
+      expect(slide.segments).toHaveLength(1);
+      expect(slide.segments[0].products).toEqual(step.products);
+      expect(slide.connection?.label).toBe(step.connection.label);
+      expect(slide.cover.w1280).toBe(step.covers.settled.w1280);
     });
-    expect(cycle).toBeGreaterThanOrEqual(20);
-    expect(cycle).toBeLessThanOrEqual(26);
   });
-  it("product cuts and relation cuts alternate and the Domus house is never shown empty", () => {
-    const kinds = montage.steps.flatMap((s) => s.segments.map((c) => c.kind));
-    expect(kinds.filter((k) => k === "relation").length).toBeGreaterThanOrEqual(
-      4,
-    );
-    for (let i = 1; i < kinds.length; i++)
-      if (kinds[i] === "product") expect(kinds[i - 1]).toBe("relation");
-    // hub-defines-runs draws the house as an outline for its whole length: no cut may use it
-    for (const slide of MONTAGE_SLIDES)
-      for (const { id } of slide.segments)
-        expect(id).not.toMatch(/hub-defines-runs/);
-  });
-  it("the lead of a cut is the duration of its push", () => {
-    const flat = flatten(MONTAGE_SLIDES);
-    for (const segment of flat)
-      expect(segment.lead).toBe(segment.transition?.duration);
-  });
-  it("the lead never exceeds 80% of the real time of a clip", () => {
-    const flat = flatten(MONTAGE_SLIDES, montage.swap);
-    for (const segment of flat)
-      expect(segment.lead).toBeLessThanOrEqual(
-        ((segment.range[1] - segment.range[0]) / segment.rate) * 0.8 + 1e-9,
-      );
-  });
-  it("each product opens with the logo forming (no tagline) and its film holds the settled frame for the montage hold", () => {
-    const flat = flatten(PRODUCT_SLIDES);
-    PRODUCT_SLIDES.forEach((slide) => {
-      const entry = pieces.products[slide.slug as keyof typeof pieces.products];
-      const [tail, film] = slide.segments;
-      // Logo and seal settle at 3.9 s of every opening (pixel difference at 1x) and the tagline would start at 3.8 s;
-      // the player freezes 0.1 s before the range end, so the range ends just after the settle point and the settled
-      // frame holds for the montage hold before the blend into the film
-      expect(tail.range[1]).toBeGreaterThanOrEqual(3.95);
-      expect(tail.range[1]).toBeLessThanOrEqual(4.05);
-      expect(tail.holdAfter).toBe(INTRO_HOLD);
-      expect(film.holdAfter).toBe(montage.holdAfter);
-      expect(film.transition?.duration).toBe(montage.swap);
-      // The film ends just after its action settled (frozen frame is the settled one)
-      const settled = (entry.films[0] as { settledAt: number }).settledAt;
-      expect(film.range[1] - settled).toBeGreaterThanOrEqual(0.1 - 1e-9);
-      expect(film.range[1] - settled).toBeLessThanOrEqual(0.12);
-      expect(slide.poster).toBe(`/motion/posters/tail-${slide.slug}.webp`);
-    });
-    // Both the opening and the film hold their settled frame
-    expect(flat.map((segment) => segment.hold)).toEqual(
-      PRODUCT_SLIDES.flatMap(() => [INTRO_HOLD, montage.holdAfter]),
-    );
-  });
-  it("the site copy of every opening hides the tagline slot", () => {
-    for (const product of Object.values(pieces.products)) {
-      const html = readFileSync(
-        join(
-          process.cwd(),
-          "public/motion/pieces",
-          product.intro.id,
-          "index.html",
-        ),
-        "utf8",
-      );
-      expect(html).toContain(".role{display:none!important}");
+  it("narrowing the chain to a product keeps the steps that show it, in order", () => {
+    for (const { slug } of PRODUCTS) {
+      const slides = chainSlides(slug);
+      expect(slides.length).toBeGreaterThan(0);
+      for (const slide of slides)
+        expect(slide.segments[0].products).toContain(slug);
     }
   });
-  it("the products keep the weight order, each with a short opening tail and a 3 to 9 s clip", () => {
-    expect(PRODUCT_SLIDES.map((s) => s.slug)).toEqual(
-      PRODUCTS.map((p) => p.slug),
-    );
-    for (const slide of PRODUCT_SLIDES) {
-      const [tail, film] = slide.segments;
-      expect(tail.id).toMatch(/intro/);
-      expect(tail.range[1] - tail.range[0]).toBeGreaterThanOrEqual(1.5);
-      expect(tail.range[1] - tail.range[0]).toBeLessThanOrEqual(2.5);
-      expect(film.id).not.toMatch(/intro/);
-      expect(film.range[1] - film.range[0]).toBeGreaterThanOrEqual(3);
-      expect(film.range[1] - film.range[0]).toBeLessThanOrEqual(9);
+  it("each product opens with its opening piece (named for screen readers) and then plays its main film", () => {
+    const slides = productSlides();
+    expect(slides.map((s) => s.slug)).toEqual(PRODUCTS.map((p) => p.slug));
+    for (const slide of slides) {
+      const entry = MANIFEST.products[slide.slug!];
+      const main = entry.films.find((f) => f.role === "main")!;
+      expect(slide.label).toBe(entry.intro.title);
+      expect(slide.segments[0].id).toBe(entry.intro.piece);
+      expect(slide.segments[0].id).toMatch(/intro/);
+      expect(slide.segments.slice(1).map((s) => s.id)).toEqual(
+        main.segments.map((s) => s.piece),
+      );
+      // The intro blends into the film (manifest), the film hands off to the next product
+      expect(slide.segments[0].transition.type).toBe("blend");
+      expect(slide.cover.w1280).toBe(entry.intro.covers.settled.w1280);
+      expect(slide.endCover?.w1280).toBe(
+        main.segments[main.segments.length - 1].covers.settled.w1280,
+      );
     }
   });
   it("no range goes past the duration of its piece", () => {
-    const durations = new Map<string, number>();
-    for (const film of pieces.chain) durations.set(film.id, film.duration);
-    for (const product of Object.values(pieces.products)) {
-      durations.set(product.intro.id, product.intro.duration);
-      for (const film of product.films) durations.set(film.id, film.duration);
-    }
-    const all = [
-      ...MONTAGE_SLIDES,
-      ...PRODUCT_SLIDES,
-      ...PRODUCTS.flatMap((p) => productFilms(p.slug)),
-    ];
-    for (const slide of all)
-      for (const segment of slide.segments)
-        expect(segment.range[1]).toBeLessThanOrEqual(
-          durations.get(segment.id)!,
-        );
+    for (const slides of [
+      chainSlides(),
+      productSlides(),
+      ...PRODUCTS.map((p) => productPageSlides(p.slug)),
+    ])
+      for (const slide of slides)
+        for (const segment of slide.segments) {
+          const duration = MANIFEST.pieces[segment.id].duration;
+          expect(segment.range[0]).toBeGreaterThanOrEqual(0);
+          expect(segment.range[1]).toBeLessThanOrEqual(duration + 1e-9);
+        }
   });
 });
 
 describe("product page carousel", () => {
-  it("holds the other films in full, each with a last-frame cover, and never the opening", () => {
+  it("is one ring: the opening with the main film, then each support film in full, with its title", () => {
     for (const { slug } of PRODUCTS) {
-      const slides = productFilms(slug);
-      const films = pieces.products[slug].films;
-      expect(slides).toHaveLength(films.length - 1);
-      slides.forEach((slide, i) => {
-        expect(slide.segments).toHaveLength(1);
-        expect(slide.segments[0].id).toBe(films[i + 1].id);
-        expect(slide.segments[0].id).not.toMatch(/intro/);
-        expect(slide.segments[0].holdAfter).toBe(montage.holdAfter);
-        expect(slide.endPoster).toBe(
-          `/motion/posters/end-${films[i + 1].id}.webp`,
+      const slides = productPageSlides(slug);
+      const support = MANIFEST.products[slug].films.filter(
+        (f) => f.role === "support",
+      );
+      expect(slides).toHaveLength(1 + support.length);
+      expect(slides[0].segments[0].id).toMatch(/intro/);
+      support.forEach((film, i) => {
+        const slide = slides[i + 1];
+        expect(slide.label).toBe(film.title);
+        expect(slide.segments.map((s) => s.id)).toEqual(
+          film.segments.map((s) => s.piece),
         );
+        expect(slide.segments[0].id).not.toMatch(/intro/);
+        expect(slide.endCover?.w640).toMatch(/\.webp$/);
       });
     }
   });
 });
 
-describe("ring positions with two tiles", () => {
-  it("the other tile always waits on the right", () => {
-    expect([0, 1].map((i) => ringPosition(i, 0, 2))).toEqual([0, 1]);
-    expect([0, 1].map((i) => ringPosition(i, 1, 2))).toEqual([1, 0]);
+describe("player addresses", () => {
+  it("the player script and every piece address are the ones of the manifest", () => {
+    expect(PLAYER_SRC).toBe(MANIFEST.player.src);
+    for (const [id, p] of Object.entries(MANIFEST.pieces))
+      expect(piece(id)).toBe(p.src);
   });
 });
