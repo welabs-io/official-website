@@ -7,7 +7,8 @@ import { MANIFEST } from "@/lib/manifest";
 import { overviewData } from "@/lib/overview-data";
 import { colPercent, stepVars } from "@/lib/overview-geometry";
 import { SiteTemplate } from "./SiteTemplate";
-import { HOME_CONFIG } from "@/lib/site-config";
+import { PRODUCTS } from "@/lib/products";
+import { HOME_CONFIG, productConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
 
 const html = renderToStaticMarkup(<ChainOverview tone="dark" />);
@@ -51,6 +52,31 @@ describe("overview markup", () => {
     for (const slug of Object.keys(MANIFEST.products))
       expect(html).toContain(`${slug}-dark.svg`);
     expect(html).not.toContain("-endorsed");
+  });
+  it("names each product once, without 'by Welabs' where the file has no seal", () => {
+    for (const p of PRODUCTS)
+      expect(html.match(new RegExp(`alt="${p.name}"`, "g"))).toHaveLength(1);
+    expect(html).not.toMatch(/by Welabs/);
+  });
+  it("no section of any page reads the product names twice (one row of named logos per chain section)", () => {
+    const pages = [
+      page,
+      ...PRODUCTS.map((p) =>
+        renderToStaticMarkup(<SiteTemplate config={productConfig(p.slug)} />),
+      ),
+    ];
+    for (const html of pages) {
+      const chain = html.slice(
+        html.indexOf('id="chain"'),
+        html.indexOf('id="products"') > 0
+          ? html.indexOf('id="products"')
+          : html.indexOf('id="connectors"'),
+      );
+      for (const p of PRODUCTS)
+        expect(
+          chain.match(new RegExp(`alt="${p.name}"`, "g"))?.length ?? 0,
+        ).toBeLessThanOrEqual(1);
+    }
   });
   it("lights only the nodes of the first step", () => {
     const lit = MANIFEST.chain.steps[0].overview.nodes;

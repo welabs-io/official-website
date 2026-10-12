@@ -61,9 +61,8 @@ export function LogoRow({
           const logo = (
             <img
               src={productLogo(slug, tone, "row")}
-              alt={
-                mode === "connection" ? productAlt(slug, "first-mention") : ""
-              }
+              // Same place as the src: the name carries "by Welabs" only where the file carries the seal
+              alt={mode === "connection" ? productAlt(slug, "row") : ""}
               width={1005}
               height={550}
               loading="lazy"

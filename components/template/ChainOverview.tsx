@@ -65,7 +65,8 @@ export function ChainOverview({ tone }: { tone: Tone }) {
             ) : (
               <img
                 src={productLogo(end as ProductSlug, tone, "row")}
-                alt={productAlt(end as ProductSlug, "first-mention")}
+                // Same place as the src: no "by Welabs" where the standalone file has no seal
+                alt={productAlt(end as ProductSlug, "row")}
                 width={1005}
                 height={550}
                 decoding="async"
