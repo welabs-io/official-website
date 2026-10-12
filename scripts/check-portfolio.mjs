@@ -95,14 +95,28 @@ for (const slug of SLUGS)
     home.includes(`href="/products/${slug}"`),
     `the product row links to /products/${slug}`,
   );
-const order = [
+const logoOrder = (html) => [
   ...new Set(
     [
-      ...home.matchAll(/products\/(\w+)-(?:dark|light)(?:-endorsed)?\.svg/g),
+      ...html.matchAll(/products\/(\w+)-(?:dark|light)(?:-endorsed)?\.svg/g),
     ].map((m) => m[1]),
   ),
 ];
-assert.deepEqual(order, SLUGS, "products appear in weight order");
+// The overview of the chain lists the products in the order of the plot (manifest), the rest of the page in weight order
+const chainHtml = home.slice(
+  home.indexOf('id="chain"'),
+  home.indexOf('id="products"'),
+);
+assert.deepEqual(
+  logoOrder(chainHtml),
+  ["domus", "relloo", "tuner", "knowly", "magneto"],
+  "the overview of the chain lists the products in the order of the plot",
+);
+assert.deepEqual(
+  logoOrder(home.slice(home.indexOf('id="products"'))),
+  SLUGS,
+  "products appear in weight order",
+);
 assert(
   !/products\/\w+-(?:dark|light)-endorsed\.svg/.test(home),
   "the seal is only the identity highlight of the product page, not the home",
