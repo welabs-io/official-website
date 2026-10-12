@@ -30,6 +30,9 @@
   transition:
     transform var(--swap-time, 0.4s) var(--ease),
     opacity var(--swap-time, 0.4s) var(--ease);
+}
+/* Only the scenes that can be seen (the centre and its two neighbours) are promoted to their own layer */
+.tile:is([data-pos="0"], [data-pos="1"], [data-pos="-1"]) {
   will-change: transform, opacity;
 }
 .tile[data-pos="0"] {
@@ -48,6 +51,9 @@
   z-index: 1;
   opacity: 0;
   pointer-events: none;
+  /* The scenes behind (every one past the first neighbour) are invisible: the browser skips their layout, style and
+     paint until the swap brings one to +1. The tile keeps its size (aspect ratio), so nothing moves. */
+  content-visibility: hidden;
 }
 .tile[data-pos="2"] {
   transform: translateX(calc(-50% + 40%)) scale(0.4);
