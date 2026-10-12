@@ -47,6 +47,7 @@ export function run(root: HTMLElement) {
 
   let active = 0;
   let started = false;
+  let paused = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
   // Instant the current scene ends (performance.now), and what was left of it when paused
   let due = 0;
@@ -86,11 +87,17 @@ export function run(root: HTMLElement) {
         schedule(data.scenes[0] * 1000);
         return;
       }
-      if (left > 0) schedule(left);
-      left = 0;
+      // Only a paused runner reschedules (a running one is left alone), and it always does: a timer that was late past
+      // its deadline leaves nothing (left = 0), and the loop must still go on, with the swap due right now
+      if (paused) {
+        paused = false;
+        schedule(left);
+        left = 0;
+      }
     },
     pause() {
-      if (!started || root.dataset.run === "paused") return;
+      if (!started || paused) return;
+      paused = true;
       root.dataset.run = "paused";
       clearTimeout(timer);
       left = Math.max(0, due - performance.now());
