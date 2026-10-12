@@ -1,6 +1,6 @@
 /* FAIXAS DE LOGOS EM PRETO E BRANCO */
 /* A slow marquee that runs while it is on screen, graphite marks on the cream band. One strip is 64 px tall. Under
-   prefers-reduced-motion it is one wrapped row, nothing cut off. */
+   prefers-reduced-motion it is centred rows of equal cells, nothing cut off. */
 .carousel {
   display: flex;
   align-items: center;
@@ -79,13 +79,22 @@
     mask-image: none;
   }
   .track {
-    width: auto;
+    width: 100%;
     animation: none !important;
   }
+  /* Centred and regular: every mark gets a cell of the same width, rows fill from the middle and the last row is
+     centred too, so no row hangs to the left with a few marks over */
   .set {
     flex-wrap: wrap;
-    row-gap: 20px;
+    justify-content: center;
+    gap: 20px 12px;
+    width: 100%;
     padding-right: 0;
+  }
+  .set li {
+    display: flex;
+    flex: 0 0 7.5rem;
+    justify-content: center;
   }
   .set[aria-hidden="true"] {
     display: none;
