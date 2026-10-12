@@ -1,4 +1,6 @@
 // CONFIGURAÇÃO DAS PÁGINAS
+// Every band is the light (cream) theme of the brand: the home and the product pages have one theme, no alternating
+// graphite and cream bands. The products' openings and films are videos, shown as dark objects inside it.
 // One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
 // home and the five product pages are the same template with two configurations, so no section markup is copied between
 // routes: the home is ring, ring (with the product cards), connector block, closing; the product page is ring (films
@@ -76,7 +78,7 @@ export type PageConfig = {
 const hub = (srTitle: string, lit?: ProductSlug): SectionConfig => ({
   id: "connectors",
   kind: "hub",
-  tone: "dark",
+  tone: "light",
   pad: "connectors",
   srTitle,
   lit,
@@ -86,7 +88,7 @@ const hub = (srTitle: string, lit?: ProductSlug): SectionConfig => ({
 const closing: SectionConfig = {
   id: "platforms",
   kind: "closing",
-  tone: "dark",
+  tone: "light",
   pad: "closing",
   thread: "none",
 };
@@ -98,7 +100,7 @@ export const HOME_CONFIG: PageConfig = {
     {
       id: "chain",
       kind: "chain",
-      tone: "dark",
+      tone: "light",
       pad: "chain",
       thread: "tail",
       rail: "drop",
@@ -140,7 +142,7 @@ export function productConfig(slug: ProductSlug): PageConfig {
       {
         id: "product",
         kind: "ring",
-        tone: "dark",
+        tone: "light",
         pad: "productPage",
         head: { slug },
         rail: "drop",
@@ -166,7 +168,7 @@ export function productConfig(slug: ProductSlug): PageConfig {
         id: "capabilities",
         kind: "capabilities",
         slug,
-        tone: "dark",
+        tone: "light",
         pad: "block",
       },
       {
