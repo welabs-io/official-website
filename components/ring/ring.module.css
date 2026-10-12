@@ -110,8 +110,11 @@
 .tile:not([data-near]) .posterEnd {
   display: none;
 }
+/* The cover of the last frame is only seen on the centre tile and the previous one: the tile at -2 is invisible and
+   comes back through +2, where it shows the cover of the first frame, so it never downloads this one */
 .tile[data-pos="1"] .posterEnd,
-.tile[data-pos="2"] .posterEnd {
+.tile[data-pos="2"] .posterEnd,
+.tile[data-pos="-2"] .posterEnd {
   display: none;
 }
 .tile[data-pos="-1"] .posterEnd ~ .poster,

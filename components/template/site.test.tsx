@@ -112,13 +112,13 @@ describe("the home has no sequential player and no opening on the chain", () => 
     expect(home).not.toMatch(/welabs-intro/);
   });
   it("the chain section carries no opening and no chain film, only montage covers", () => {
-    const chain = home.slice(
-      home.indexOf('id="chain"'),
-      home.indexOf('id="products"'),
-    );
+    // The markup the viewer gets; the JSON of the ring (ids of the pieces it plays) is not markup
+    const chain = home
+      .slice(home.indexOf('id="chain"'), home.indexOf('id="products"'))
+      .replace(/<script[\s\S]*?<\/script>/g, "");
     expect(chain).not.toMatch(/intro|welabs-chain/);
     // One still per cut (nine cuts), no title text
-    expect(chain.match(/cut-\d\.webp/g)).toHaveLength(9);
+    expect(chain.match(/ src="[^"]*cut-\d\.webp"/g)).toHaveLength(9);
   });
   it("the title of the home is Welabs, without a suffix", () => {
     expect(homeMetadata.title).toBe("Welabs");

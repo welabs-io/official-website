@@ -38,7 +38,7 @@ export type FlatSegment = {
 // Flat list of every segment of every slide; the lead is the swap time when the next segment belongs to another slide
 // and the blend time when it belongs to the same one (never more than 80% of the segment).
 export function flatten(
-  slides: readonly Slide[],
+  slides: readonly Pick<Slide, "segments">[],
   swap = SWAP_SECONDS,
   blend = BLEND_SECONDS,
 ): FlatSegment[] {

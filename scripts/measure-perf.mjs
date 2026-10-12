@@ -30,8 +30,10 @@ async function firstLoadJs(path) {
 }
 
 async function run(browser, path) {
+  // VIEWPORT is "<width>x<height>", 1440x900 by default
+  const [vw, vh] = (process.env.VIEWPORT || "1440x900").split("x").map(Number);
   const context = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
+    viewport: { width: vw, height: vh },
   });
   const page = await context.newPage();
   await page.addInitScript(() => {

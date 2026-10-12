@@ -7,16 +7,15 @@
 // Everything is released on unmount: both observers, the listeners and the playback.
 import { useEffect } from "react";
 
+// Same union as RingKind of lib/ring-data (the client piece does not import the server lists)
 export type RingKind = "chain" | "products" | "films" | "hero";
 
 export function RingDriver({
   rootId,
   kind,
-  slug,
 }: {
   rootId: string;
   kind: RingKind;
-  slug?: string;
 }) {
   useEffect(() => {
     const root = document.getElementById(rootId);
@@ -43,7 +42,7 @@ export function RingDriver({
         (mod) => {
           pending = false;
           // The ring may have left the screen while the code was downloading
-          if (wanted() && !stop) stop = mod.run(root, kind, slug);
+          if (wanted() && !stop) stop = mod.run(root, kind);
         },
         () => {
           // The chunk failed to download: the covers stay, and the next visibility change tries again
@@ -86,7 +85,7 @@ export function RingDriver({
       stop?.();
       stop = null;
     };
-  }, [rootId, kind, slug]);
+  }, [rootId, kind]);
 
   return null;
 }

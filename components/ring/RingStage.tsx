@@ -16,11 +16,17 @@ import {
   type Slide,
 } from "@/lib/motion-slides";
 import { PRODUCTS, type ProductSlug } from "@/lib/products";
+import { ringData } from "@/lib/ring-data";
 import { isNear, placeOf, ringPosition } from "./positions";
 import { RingDriver, type RingKind } from "./RingDriver";
 import styles from "./ring.module.css";
 
 type Tile = { key: string; poster: string; endPoster?: string };
+
+// Covers come in two widths (scripts/poster-sizes.mjs): a phone shows a tile of about 330 px and never needs 960 px
+const coverSet = (src: string) =>
+  `${src.replace(/\.webp$/, "-640.webp")} 640w, ${src} 960w`;
+const COVER_SIZES = "(max-width: 860px) 100vw, 760px";
 
 // Products each cut of the chain shows (the same order as the tiles)
 export const CHAIN_LIT: readonly (readonly ProductSlug[])[] =
@@ -92,6 +98,8 @@ export function RingStage({
                   <img
                     className={styles.posterEnd}
                     src={tile.endPoster}
+                    srcSet={coverSet(tile.endPoster)}
+                    sizes={COVER_SIZES}
                     alt=""
                     width={960}
                     height={540}
@@ -102,6 +110,8 @@ export function RingStage({
                 <img
                   className={styles.poster}
                   src={tile.poster}
+                  srcSet={coverSet(tile.poster)}
+                  sizes={COVER_SIZES}
                   alt=""
                   width={960}
                   height={540}
@@ -128,7 +138,15 @@ export function RingStage({
           links={logos === "links"}
         />
       )}
-      <RingDriver rootId={id} kind={kind} slug={slug} />
+      {/* What ring-run plays, so the lazy chunk reads the DOM instead of importing the montage lists */}
+      <script
+        type="application/json"
+        data-ring-data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(ringData(kind, slug)).replace(/</g, "\\u003c"),
+        }}
+      />
+      <RingDriver rootId={id} kind={kind} />
     </div>
   );
 }

@@ -4,18 +4,7 @@
 // so React never re-renders. On every swap it also fills the bus of the row of logos and restarts the pulse of the
 // thread of the section (see `pulse` below). Only the active tile plays and the next one is parked, ready; every other tile is a cover
 // image. `run` returns the function that releases everything (players, timers) and puts the ring back on its first tile.
-import {
-  CHAIN_CONNECTIONS,
-  activeSpan,
-  connectionSpan,
-} from "@/lib/chain-connections";
-import {
-  MONTAGE_SLIDES,
-  PRODUCT_SLIDES,
-  productFilms,
-  type Slide,
-} from "@/lib/motion-slides";
-import type { ProductSlug } from "@/lib/products";
+import type { RingData } from "@/lib/ring-data";
 import { ensurePlayer } from "./player";
 import { Playback, flatten } from "./ring-playback";
 import { isNear, placeOf, ringPosition } from "./positions";
@@ -26,30 +15,21 @@ export const warm = () => {
   ensurePlayer().catch(() => {});
 };
 
-const slidesOf = (kind: RingKind, slug?: string): Slide[] =>
-  kind === "chain"
-    ? MONTAGE_SLIDES
-    : kind === "products"
-      ? PRODUCT_SLIDES
-      : kind === "films"
-        ? productFilms(slug as ProductSlug)
-        : PRODUCT_SLIDES.filter((slide) => slide.slug === slug);
-
-export function run(root: HTMLElement, kind: RingKind, slug?: string) {
+export function run(root: HTMLElement, kind: RingKind) {
   const stage = root.querySelector<HTMLElement>("[data-ring]");
-  if (!stage) return () => {};
+  // The server wrote what to play next to the stage (RingStage); nothing is imported from the montage lists
+  const source = root.querySelector("script[data-ring-data]")?.textContent;
+  if (!stage || !source) return () => {};
+  const data = JSON.parse(source) as RingData;
   const tiles = [...stage.children] as HTMLElement[];
   const layers = tiles.map((tile) =>
     tile.querySelector<HTMLElement>("[data-layers]"),
   );
   const logos = [...root.querySelectorAll<HTMLElement>("[data-slug]")];
-  const slides = slidesOf(kind, slug);
+  const slides = data.slides;
   const flat = flatten(slides);
   // The chain has one tile per cut; the other kinds have one tile per slide (opening tail and film share a tile)
   const perCut = kind === "chain";
-  const cutProducts = slides.flatMap((slide) =>
-    slide.segments.map((segment) => segment.products ?? []),
-  );
 
   // Moves the ring to `active`: tile positions, accessibility and the lit logos
   const show = (active: number) => {
@@ -61,9 +41,7 @@ export function run(root: HTMLElement, kind: RingKind, slug?: string) {
       if (position === 0) tile.removeAttribute("aria-hidden");
       else tile.setAttribute("aria-hidden", "true");
     });
-    const lit: readonly string[] = perCut
-      ? (cutProducts[active] ?? [])
-      : [slides[active]?.slug ?? ""];
+    const lit: readonly string[] = data.lit[active] ?? [];
     for (const logo of logos)
       logo.dataset.on = lit.includes(logo.dataset.slug ?? "")
         ? "true"
@@ -84,10 +62,8 @@ export function run(root: HTMLElement, kind: RingKind, slug?: string) {
   };
   const writeSpan = (active: number) => {
     if (!row) return;
-    const slug = slides[active]?.slug;
-    const span = perCut
-      ? connectionSpan(CHAIN_CONNECTIONS[active] ?? null)
-      : activeSpan(slug as ProductSlug);
+    const span = data.spans[active];
+    if (!span) return;
     row.style.setProperty("--lo", String(span.lo));
     row.style.setProperty("--hi", String(span.hi));
     row.style.setProperty(
