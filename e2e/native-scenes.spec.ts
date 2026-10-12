@@ -389,6 +389,34 @@ test.describe("native chain behaviour", () => {
     await expect.poll(run).toBeUndefined();
   });
 
+  test("the loop starts on a phone on its side (740x360), where the stage is taller than the window can show", async ({
+    page,
+  }) => {
+    test.setTimeout(60000);
+    await page.setViewportSize({ width: 740, height: 360 });
+    await page.goto("/", { waitUntil: "load" });
+    // Put the stage under the fixed header: it fills the window, and half of it is far less than half of the stage
+    await centre(page).evaluate((el) => {
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, top - 80);
+    });
+    const box = await centre(page).boundingBox();
+    console.log("740x360 stage height", box?.height, "window", 360);
+    await page.waitForFunction(
+      () => document.querySelector("#chain-ring .scn[data-phase='play']"),
+      undefined,
+      { timeout: 8000 },
+    );
+    // And it keeps going: the second scene takes the centre
+    await page.waitForFunction(
+      () =>
+        document.querySelector<HTMLElement>('#chain-ring [data-pos="0"]')
+          ?.dataset.tile === "s1",
+      undefined,
+      { timeout: 20000 },
+    );
+  });
+
   test("no layout shift while the chain loads and plays", async ({ page }) => {
     test.setTimeout(60000);
     await page.addInitScript(() => {

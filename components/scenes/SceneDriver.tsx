@@ -52,10 +52,15 @@ export function SceneDriver({ rootId }: { rootId: string }) {
     );
     const on = new IntersectionObserver(
       ([entry]) => {
-        visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        // Half of the stage, or half of the window when the stage is taller than the window (a phone on its side): a
+        // ratio of the stage alone would never reach 0.5 there and the loop would never start
+        const need =
+          Math.min(entry.boundingClientRect.height, window.innerHeight) * 0.5;
+        visible = entry.isIntersecting && entry.intersectionRect.height >= need;
         update();
       },
-      { threshold: [0, 0.5] },
+      // Fine steps: the condition is in pixels of the intersection, so the observer must report every few percent
+      { threshold: Array.from({ length: 21 }, (_, i) => i / 20) },
     );
     near.observe(root);
     on.observe(root);
