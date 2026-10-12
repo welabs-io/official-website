@@ -704,7 +704,7 @@
           "evidence": "audits/chain-detail/measure.json (S2); frames a 1/30 s da cópia do site"
         },
         "step": 2,
-        "srLabel": "No Relloo, o cartão \"Alteração de entrega, Pedido 1234\" nasce em Novo, ganha responsável, prazo, histórico e retorno e vai para Em análise.",
+        "srLabel": "No Relloo, o cartão do pedido 1234, com a troca de data, nasce em Novo, ganha responsável, prazo, histórico e retorno e vai para Em análise.",
         "products": [
           "relloo"
         ],
@@ -747,7 +747,7 @@
               "w640": "/motion/v5/posters/welabs-chain-detail-s1--14400-640.webp"
             }
           },
-          "srLabel": "No Relloo, o cartão \"Alteração de entrega, Pedido 1234\" nasce em Novo, ganha responsável, prazo, histórico e retorno e vai para Em análise.",
+          "srLabel": "No Relloo, o cartão do pedido 1234, com a troca de data, nasce em Novo, ganha responsável, prazo, histórico e retorno e vai para Em análise.",
           "story": "marina"
         }
       },
@@ -1016,7 +1016,7 @@
           "evidence": "audits/chain-detail/measure.json (S6); frames a 1/30 s da cópia do site"
         },
         "step": 6,
-        "srLabel": "O recibo volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
+        "srLabel": "O pedido atualizado volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
         "products": [
           "domus",
           "tuner"
@@ -1061,7 +1061,7 @@
               "w640": "/motion/v5/posters/welabs-chain-detail-s1--38667-640.webp"
             }
           },
-          "srLabel": "O recibo volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
+          "srLabel": "O pedido atualizado volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
           "story": "marina"
         }
       }
@@ -1188,7 +1188,7 @@
           "evidence": "plan-v5/out/measurements.md (chain step 3); frames at 1/30 s of the site copy"
         },
         "step": 3,
-        "srLabel": "O Knowly entrega a política de entregas, com a fonte, na resposta do Relloo.",
+        "srLabel": "O Knowly traz a regra de sábado, com a fonte, para a resposta do Relloo.",
         "products": [
           "knowly",
           "relloo"
@@ -1452,7 +1452,7 @@
         {
           "piece": "hub-whole-house-ludic-logos-r4-s1",
           "role": "support",
-          "title": "Domus: a empresa inteira numa casa",
+          "title": "Domus: cadastros, pedidos e financeiro juntos",
           "proves": "a empresa inteira numa casa: terceiro andar, um item passa de frente em frente, todas as frentes sob o mesmo teto",
           "segments": [
             {
@@ -1614,7 +1614,7 @@
         {
           "piece": "crm-agent-studio-ludic2-logos-r4-s1",
           "role": "support",
-          "title": "Relloo: o agente atende com o conhecimento da empresa",
+          "title": "Relloo: o agente responde com o conhecimento da empresa",
           "proves": "o agente atende com o conhecimento que vem do Knowly, com fonte, e passa a vez para a equipe na hora certa",
           "segments": [
             {
@@ -1694,7 +1694,7 @@
         {
           "piece": "flow-copilot-logos-r4-s1",
           "role": "main",
-          "title": "Magneto: do jeito que você explica, ele automatiza",
+          "title": "Magneto: o fluxo descrito em palavras vira blocos",
           "proves": "do jeito que você explica, ele automatiza: a frase vira blocos, a pessoa revisa e o processo já roda",
           "segments": [
             {
@@ -1856,7 +1856,7 @@
         {
           "piece": "channels-one-contract-ludic-logos-r5-s1",
           "role": "main",
-          "title": "Tuner: todo canal, uma conversa só",
+          "title": "Tuner: WhatsApp, voz e chat na mesma conversa",
           "proves": "todo canal, uma conversa só: tudo chega do mesmo jeito, a resposta sai do jeito de cada canal e o Relloo só conecta",
           "segments": [
             {
@@ -2059,7 +2059,7 @@
         {
           "piece": "kb-sources-to-knowledge-ludic-logos-r5-s1",
           "role": "support",
-          "title": "Knowly: o que a equipe sabe, num lugar só",
+          "title": "Knowly: o conhecimento da equipe num lugar só",
           "proves": "o que a equipe sabe, espalhado, vira um lugar só, atualizado na fonte e sem dado pessoal",
           "segments": [
             {

@@ -237,6 +237,11 @@ describe("what the site shows of the manifest", () => {
       }))
         if (COPY_RULES.test(text)) bad.push(`step ${i} ${where}: ${text}`);
     });
+    for (const [slug, p] of Object.entries(MANIFEST.products))
+      p.films.forEach((film, i) => {
+        if (COPY_RULES.test(film.title))
+          bad.push(`${slug} film ${i} title: ${film.title}`);
+      });
     expect(bad).toEqual([]);
   });
   it("the slug list of the reader is the list of products of the site, in weight order", () => {
