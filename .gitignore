@@ -1,6 +1,8 @@
 node_modules
 .next
 .next-*
+e2e/.snapshots
+e2e/.results
 # Retired legacy packs (cite an internal codename or a client agency); not served, not versioned
 public/presentations/malupe/
 public/presentations/autoinfracao/

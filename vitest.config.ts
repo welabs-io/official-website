@@ -5,5 +5,6 @@ import { defineConfig } from "vitest/config";
 // The "@/" alias mirrors tsconfig paths; JSX follows tsconfig (react-jsx), like Next.
 export default defineConfig({
   resolve: { alias: { "@": path.resolve(__dirname) } },
-  test: { environment: "node" },
+  // e2e/ belongs to Playwright, not to vitest
+  test: { environment: "node", exclude: ["e2e/**", "node_modules/**"] },
 });
