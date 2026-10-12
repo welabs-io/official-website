@@ -22,8 +22,8 @@ export function Section({
   pad: SectionPad;
   srTitle?: string;
   // "off" hides the hairline of the thread where the drawing of the section crosses the page axis; "none" also hides
-  // the dock on its top edge (the closing, whose docks sit on the strip)
-  thread?: "on" | "off" | "none";
+  // the dock on its top edge (the closing, whose docks sit on the strip); "tail" keeps only the stretch under the content
+  thread?: "on" | "off" | "tail" | "none";
   // Stretch of the thread at the bottom of the section, with the pulse that goes down to the next dock
   rail?: "drop" | "converge";
   railDelay?: number;

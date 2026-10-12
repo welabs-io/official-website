@@ -109,7 +109,8 @@ assert(
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
 const words = visibleText(home).split(" ").length;
-assert(words <= 160, `home has ${words} visible words`);
+// 160 before the opening and the overview of the chain entered the home (about 36 words); now 180
+assert(words <= 180, `home has ${words} visible words`);
 // Content layer: five product cards, the active one lit, each leading to its page
 const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
 assert.equal(cards.length, 5, "the home has five product cards");

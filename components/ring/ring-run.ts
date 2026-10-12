@@ -7,6 +7,7 @@
 // the next one is parked, ready; every other tile is a cover image. `run` returns the function that releases
 // everything (players, timers) and puts the ring back on its first tile.
 import type { RingData } from "@/lib/ring-data";
+import { follow } from "./overview-follow";
 import { ensurePlayer } from "./player";
 import { Playback, flatten } from "./ring-playback";
 import { coverShown, isNear, placeOf, ringPosition } from "./positions";
@@ -134,23 +135,35 @@ export function run(root: HTMLElement, kind: RingKind) {
       const active = perCut ? info.toIndex : info.to;
       show(active);
       pulse(active);
+      // `index` is the tile now in the centre: the block above the chain follows it (components/ring/overview-follow.ts)
       window.dispatchEvent(
         new CustomEvent("ring:swap", {
-          detail: { ring: root.id, from: info.from, to: info.to },
+          detail: {
+            ring: root.id,
+            from: info.from,
+            to: info.to,
+            index: active,
+          },
         }),
       );
     },
   });
 
+  // The block above the chain (home) follows the swaps of this ring; it has no clock of its own
+  const overview = perCut ? follow(root.id, root.closest("section")) : null;
+
   ensurePlayer().then(
     () => {
-      if (!dead) playback?.start();
+      if (dead) return;
+      playback?.start();
+      overview?.begin();
     },
     () => {},
   );
 
   return () => {
     dead = true;
+    overview?.();
     playback?.destroy();
     playback = null;
     // The next run starts over on the first tile

@@ -17,8 +17,8 @@ const kinds = (config: { sections: { kind: string }[] }) =>
   config.sections.map((s) => s.kind);
 
 describe("one template, same sequence", () => {
-  it("the home is ring, ring, connector block, closing; every product page adds the problems and the capabilities", () => {
-    expect(kinds(HOME_CONFIG)).toEqual(["ring", "ring", "hub", "closing"]);
+  it("the home is chain (two blocks), ring, connector block, closing; every product page adds the problems and the capabilities", () => {
+    expect(kinds(HOME_CONFIG)).toEqual(["chain", "ring", "hub", "closing"]);
     for (const config of slugs.map(productConfig))
       expect(kinds(config)).toEqual([
         "ring",

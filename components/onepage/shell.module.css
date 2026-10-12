@@ -224,8 +224,14 @@
 .band[data-thread="none"]::after {
   display: none;
 }
+/* "tail": only the stretch under the content (the bottom padding), from the foot of the ring to the next band; the
+   connector of the chain carries the axis from the overview to the ring */
+.band[data-thread="tail"]::before {
+  top: auto;
+  height: var(--pb, clamp(32px, 4vw, 48px));
+}
 /* The first band starts under the fixed header: the thread and its dock begin at the header's lower edge */
-.band:first-of-type::before {
+.band:first-of-type:not([data-thread="tail"])::before {
   top: var(--header-h);
 }
 .band:first-of-type::after {
