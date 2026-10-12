@@ -22,7 +22,7 @@ type Base = {
   // Heading for screen readers only (the site shows no visible titles)
   srTitle?: string;
   // Thread of the page: "off" where the drawing of the section crosses the axis itself
-  thread?: "on" | "off";
+  thread?: "on" | "off" | "none";
   // Stretch of the thread at the bottom of the section, with the pulse that goes down to the next dock; `railDelay`
   // is the wait (seconds) between the swap of the ring and the start of the pulse
   rail?: "drop" | "converge";
@@ -96,13 +96,14 @@ export const HOME_CONFIG: PageConfig = {
       pad: "connectors",
       srTitle: "Produtos ligados entre si",
       thread: "off",
+      rail: "converge",
     },
     {
       id: "platforms",
       kind: "closing",
       tone: "dark",
       pad: "closing",
-      thread: "off",
+      thread: "none",
     },
   ],
 };

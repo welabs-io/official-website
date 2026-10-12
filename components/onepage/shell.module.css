@@ -15,6 +15,8 @@
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;
   --logo-h: 42px;
+  /* Top padding of the closing: the stretches of the section above run down to the strip through it */
+  --closing-pt: clamp(32px, 4.5vh, 48px);
   background: var(--g);
   color: var(--c);
   overflow-x: clip;
@@ -96,6 +98,11 @@
   .page {
     --header-h: 56px;
     --logo-h: 34px;
+  }
+}
+@media (max-width: 860px) {
+  .page {
+    --closing-pt: 32px;
   }
 }
 .cta {
@@ -193,7 +200,9 @@
   pointer-events: none;
   background: var(--a);
 }
-.band[data-thread="off"]::before {
+.band[data-thread="off"]::before,
+.band[data-thread="none"]::before,
+.band[data-thread="none"]::after {
   display: none;
 }
 /* The first band starts under the fixed header: the thread and its dock begin at the header's lower edge */
@@ -260,6 +269,66 @@
   100% {
     opacity: 1;
     transform: translateY(var(--rail-h));
+  }
+}
+
+/* TRILHOS QUE CONVERGEM NO FECHAMENTO */
+/* Three stretches at 1/6, 1/2 and 5/6 of the content width run from the content of the section down through its bottom
+   padding and the top padding of the closing, and each ends in a 10 px amber dock on top of the strip of logos (the
+   rail's bottom edge). One pulse per stretch loops while the section is on screen (4.8 s, staggered by a fifth of it);
+   the 1 px border of the closing is counted in the offset. */
+.converge {
+  --total: calc(var(--rail-h) + var(--closing-pt) + 1px);
+  left: 50%;
+  bottom: calc((var(--closing-pt) + 1px) * -1);
+  width: min(1200px, 100% - 48px);
+  height: var(--total);
+  margin-left: calc(min(1200px, 100% - 48px) / -2);
+  overflow: visible;
+}
+.track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((2 * var(--i) + 1) / 6 * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--line);
+}
+.clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.converge .pulse {
+  left: -1px;
+}
+.dock {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--a);
+}
+.band[data-on="true"] .converge .pulse {
+  animation: converge-run 4.8s linear infinite;
+  animation-delay: calc(var(--i) * 0.96s);
+}
+@keyframes converge-run {
+  0% {
+    opacity: 1;
+    transform: translateY(-40px);
+  }
+  22% {
+    opacity: 1;
+    transform: translateY(var(--total));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(var(--total));
   }
 }
 @media (prefers-reduced-motion: reduce) {

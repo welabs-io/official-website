@@ -28,7 +28,7 @@ export function Closing() {
           seconds={70}
         />
       </div>
-      <div id="contact" className={styles.contact}>
+      <div id="contact" className={`${styles.contact} ${styles.thread}`}>
         <a href={CONTACT_HREF} className={`${shell.cta} ${shell.ctaBig}`}>
           {CTA_LABEL}
         </a>

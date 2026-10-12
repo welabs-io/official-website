@@ -62,9 +62,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  --pt: 48px;
-  --pb: 48px;
+  /* Gap and top padding are named: the stretches that converge on the strip (ConnectorRail, --closing-pt comes from
+     the page, as the stretches belong to the section above) and the thread between the strip and the button are drawn
+     from them */
+  --closing-gap: 24px;
+  gap: var(--closing-gap);
+  --pt: var(--closing-pt);
+  --pb: var(--closing-pt);
   /* Both this band and the connectors above it are graphite: a hairline tells them apart */
   border-top: 1px solid var(--line);
 }
@@ -76,6 +80,31 @@
   display: flex;
   justify-content: center;
   scroll-margin-top: 96px;
+}
+/* The thread keeps going alone from the strip to the button of the closing and ends in a dock on its top edge */
+.thread {
+  position: relative;
+}
+.thread::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(var(--closing-gap) * -1);
+  width: 2px;
+  height: var(--closing-gap);
+  margin-left: -1px;
+  background: var(--line);
+}
+.thread::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--a);
 }
 
 @media (max-width: 860px) {
@@ -89,8 +118,7 @@
     --pb: 40px;
   }
   .closing {
-    gap: 20px;
-    --pt: 32px;
+    --closing-gap: 20px;
     --pb: 32px;
   }
 }

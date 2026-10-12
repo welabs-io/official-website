@@ -35,11 +35,13 @@ for (const route of ROUTES)
         });
         expect(result.length).toBeGreaterThanOrEqual(4);
         for (const band of result) {
-          expect(
-            Math.abs(band.dock - band.axis),
-            `${band.id} dock`,
-          ).toBeLessThanOrEqual(1);
-          if (band.thread !== "off")
+          // The closing has no dock on its top edge: its docks sit on the strip (see closing.spec.ts)
+          if (band.thread !== "none")
+            expect(
+              Math.abs(band.dock - band.axis),
+              `${band.id} dock`,
+            ).toBeLessThanOrEqual(1);
+          if (band.thread === "on")
             expect(
               Math.abs(band.hairline - band.axis),
               `${band.id} hairline`,
