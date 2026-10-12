@@ -17,6 +17,8 @@ const SLUGS: readonly string[] = PRODUCT_SLUGS;
 const FORBIDDEN =
   /\b(recibo|protocolo|tenant|fila|erp|crm|cliente|clientes|webhook|payload)\b/i;
 
+const MECHANISM = /\b(recibo|protocolo|tenant|fila|erp|crm|webhook|payload)\b/i;
+
 const isObject = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
 
@@ -73,6 +75,91 @@ function checkLabel(label: unknown, where: string) {
     throw new ManifestError(where, `label has a forbidden word: ${label}`);
 }
 
+// OVERVIEW E DETAIL DE UM PASSO
+// The two blocks of a step (schema 1.2). The detail is the time of the step, so it must equal the flat fields; the
+// overview follows it and must stay inside its range. Invariant restored from the old check on `connection` ends: the
+// token (what the overview draws) walks between products (or to the outcome) and at least one of its ends is an active
+// node, the system whose detail is on screen. Both ends being active is not required: the data has the token leave a
+// product that is not on screen (Relloo opens the card, then the Domus is the lit one).
+function checkTwoBlocks(step: ChainStep, where: string) {
+  const { overview: o, detail: d } = step;
+  if (!isObject(o)) throw new ManifestError(where, "overview is missing");
+  if (!isObject(d)) throw new ManifestError(where, "detail is missing");
+  if (
+    !Array.isArray(o.nodes) ||
+    !o.nodes.length ||
+    o.nodes.some((n) => !SLUGS.includes(n)) ||
+    new Set(o.nodes).size !== o.nodes.length
+  )
+    throw new ManifestError(
+      `${where}/overview`,
+      "nodes must be distinct, known products",
+    );
+  const ends = [o.token?.from, o.token?.to];
+  if (ends.some((e) => e !== "outcome" && !SLUGS.includes(String(e))))
+    throw new ManifestError(
+      `${where}/overview`,
+      "token ends must be products or outcome",
+    );
+  if (!ends.some((e) => o.nodes.includes(e as never)))
+    throw new ManifestError(
+      `${where}/overview`,
+      "token touches no active node",
+    );
+  if (
+    typeof o.from !== "number" ||
+    typeof o.to !== "number" ||
+    !(o.to > o.from)
+  )
+    throw new ManifestError(`${where}/overview`, "from/to must be a range");
+  if (o.from < d.from || o.to > d.to)
+    throw new ManifestError(
+      `${where}/overview`,
+      "from/to must be inside the detail range",
+    );
+  if (typeof o.label !== "string" || !o.label)
+    throw new ManifestError(`${where}/overview`, "label is missing");
+  if (o.label.split(" ").length > 6 || o.label.length > 48)
+    throw new ManifestError(
+      `${where}/overview`,
+      `label has more than 6 words or 48 characters: ${o.label}`,
+    );
+  // "cliente" is left out here: in the overview it names the person of the story ("cliente avisada"), not a mechanism.
+  // The connection labels keep the full list.
+  if (MECHANISM.test(o.label))
+    throw new ManifestError(
+      `${where}/overview`,
+      `label has a forbidden word: ${o.label}`,
+    );
+  // The detail is the step: same piece, range, rate and covers; its hold is the holdAfter of the step
+  if (
+    d.piece !== step.piece ||
+    d.from !== step.from ||
+    d.to !== step.to ||
+    d.settledAt !== step.settledAt ||
+    d.rate !== step.rate
+  )
+    throw new ManifestError(
+      `${where}/detail`,
+      "must equal the flat fields of the step",
+    );
+  if (d.hold !== step.holdAfter)
+    throw new ManifestError(
+      `${where}/detail`,
+      "hold must equal holdAfter of the step",
+    );
+  if (typeof d.srLabel !== "string" || d.srLabel.length < 8)
+    throw new ManifestError(`${where}/detail`, "srLabel is too short");
+  if (
+    o.nodes.length !== step.products.length ||
+    o.nodes.some((n) => !step.products.includes(n))
+  )
+    throw new ManifestError(
+      `${where}/overview`,
+      "nodes must be the products of the step",
+    );
+}
+
 export function parseManifest(raw: unknown): Manifest {
   if (!isObject(raw)) throw new ManifestError("/", "is not an object");
   const m = raw as unknown as Manifest;
@@ -122,6 +209,7 @@ export function parseManifest(raw: unknown): Manifest {
       // light the product acting while the connection names the pair whose value it shows)
     }
     checkLabel(c.label, `${where}/connection/label`);
+    checkTwoBlocks(step, where);
     // The same unordered pair always carries the same label
     if (c.to !== "outcome") {
       const pair = [c.from, c.to].sort().join("-");

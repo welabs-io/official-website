@@ -71,11 +71,21 @@ const lastOf = (film: Film) => film.segments[film.segments.length - 1];
 // One slide per step of the chain, `only` narrows it to the steps that show one product. The cover is the settled
 // frame: the same still serves as the previous and the next neighbour and as the reduced-motion frame.
 export function chainSlides(only?: ProductSlug): Slide[] {
-  return chainSteps(MANIFEST, only).map((step: ChainStep) => ({
+  return chainSteps(MANIFEST, only).map(({ detail, ...step }: ChainStep) => ({
     key: `step-${step.step}`,
-    label: step.srLabel,
-    segments: [segment(step, { products: step.products })],
-    cover: step.covers.settled,
+    label: detail.srLabel,
+    // The time of the step is the time of its detail clip, hold included (schema 1.2)
+    segments: [
+      {
+        id: detail.piece,
+        range: [detail.from, detail.to] as const,
+        rate: detail.rate,
+        transition: step.transition,
+        holdAfter: detail.hold,
+        products: step.products,
+      },
+    ],
+    cover: detail.covers.settled,
     connection: {
       from: step.connection.from,
       to: step.connection.to,
@@ -113,16 +123,14 @@ export function productPageSlides(slug: ProductSlug): Slide[] {
     { ...productSlide(slug), caption: captions[0] },
     ...films
       .filter((film) => film.role === "support")
-      .map(
-        (film, i): Slide => ({
-          key: film.piece,
-          label: film.title,
-          slug,
-          caption: captions[i + 1],
-          segments: film.segments.map((s) => segment(s)),
-          cover: film.segments[0].covers.start,
-          endCover: lastOf(film).covers.settled,
-        }),
-      ),
+      .map((film, i): Slide => ({
+        key: film.piece,
+        label: film.title,
+        slug,
+        caption: captions[i + 1],
+        segments: film.segments.map((s) => segment(s)),
+        cover: film.segments[0].covers.start,
+        endCover: lastOf(film).covers.settled,
+      })),
   ];
 }

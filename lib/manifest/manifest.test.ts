@@ -8,7 +8,7 @@ import { PRODUCT_SLUGS } from "../product-slugs";
 import { PRODUCTS } from "../products";
 import { MANIFEST } from "./index";
 import { ManifestError, parseManifest } from "./parse";
-import { chainSteps, ties } from "./select";
+import { chainSteps, overviewOrder, ties } from "./select";
 
 const clone = () => JSON.parse(JSON.stringify(raw));
 
@@ -86,6 +86,59 @@ describe("parse", () => {
       /no duration/,
     ],
     [
+      "overview with an unknown node",
+      (m) => (m.chain.steps[0].overview.nodes = ["domus", "zeta"]),
+      /nodes must be distinct, known products/,
+    ],
+    [
+      "overview nodes that differ from the products of the step",
+      (m) => (m.chain.steps[1].products = ["relloo"]),
+      /nodes must be the products of the step/,
+    ],
+    [
+      "token that touches no active node",
+      (m) =>
+        (m.chain.steps[1].overview.token = { from: "domus", to: "relloo" }),
+      /token touches no active node/,
+    ],
+    [
+      "token end that is not a product",
+      (m) => (m.chain.steps[0].overview.token.to = "zeta"),
+      /token ends must be products or outcome/,
+    ],
+    [
+      "overview range outside the detail",
+      (m) => (m.chain.steps[0].overview.to = m.chain.steps[0].detail.to + 1),
+      /inside the detail range/,
+    ],
+    [
+      "overview label with seven words",
+      (m) =>
+        (m.chain.steps[0].overview.label =
+          "Um dois três quatro cinco seis sete"),
+      /more than 6 words/,
+    ],
+    [
+      "overview label with a mechanism name",
+      (m) => (m.chain.steps[0].overview.label = "Recibo do pedido"),
+      /forbidden word/,
+    ],
+    [
+      "detail that differs from the flat fields",
+      (m) => (m.chain.steps[2].detail.rate = 2),
+      /must equal the flat fields/,
+    ],
+    [
+      "detail hold that differs from holdAfter",
+      (m) => (m.chain.steps[2].detail.hold = 3),
+      /hold must equal holdAfter/,
+    ],
+    [
+      "step without overview",
+      (m) => delete m.chain.steps[3].overview,
+      /overview is missing/,
+    ],
+    [
       "brand version outside 1.x",
       (m) => (m.brandVersion = "2.0.0"),
       /not 1\.x/,
@@ -108,6 +161,29 @@ describe("select", () => {
     for (const slug of PRODUCT_SLUGS)
       for (const step of chainSteps(MANIFEST, slug))
         expect(step.products).toContain(slug);
+  });
+  it("orders the overview line by the plot, with the outcome last", () => {
+    expect(overviewOrder(MANIFEST)).toEqual([
+      "domus",
+      "relloo",
+      "tuner",
+      "knowly",
+      "magneto",
+      "outcome",
+    ]);
+  });
+  it("the overview of every step stays inside its detail and touches an active node", () => {
+    for (const { overview: o, detail: d } of MANIFEST.chain.steps) {
+      expect(o.from).toBeGreaterThanOrEqual(d.from);
+      expect(o.to).toBeLessThanOrEqual(d.to);
+      expect(
+        [o.token.from, o.token.to].some(
+          (e) => e !== "outcome" && o.nodes.includes(e),
+        ),
+        o.label,
+      ).toBe(true);
+      expect(o.label.split(" ").length).toBeLessThanOrEqual(6);
+    }
   });
   it("gives exactly the seam and the three rails, and the same pair never changes its label", () => {
     const list = ties(MANIFEST);

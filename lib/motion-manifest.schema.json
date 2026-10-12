@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://welabs.local/schemas/motion-manifest/1.1.json",
-  "title": "Welabs motion manifest v5 (schema 1.1.0)",
-  "description": "Additive revision of motion-manifest.schema.json (1.0): every 1.0 field is kept with the same meaning. Added for the site agent's requests: schemaVersion/round/brandVersion in the header, brand.endorse (default 'off') and piece.endorse, covers (start and settled frame, WebP at 1280 and 640 px) on every segment, transition on every segment (not only on chain steps), 'blend' as a transition type, variant 'site' on the intro, films[].title and intro title for screen readers, chain steps[].srLabel (one short sentence for screen readers) and connection.label (the short value the site may show: sentence case, at most 3 words and 24 characters; the same unordered pair always carries the same label). Times are seconds of piece time, three decimals; a segment plays [from, to] at `rate`, freezes on its last frame for `holdAfter` screen seconds and hands off; settledAt is the first piece time after which the frame is pixel-still (difference measured at 1/30 s); to = settledAt + 0.1.",
+  "$id": "https://welabs.local/schemas/motion-manifest/1.2.json",
+  "title": "Welabs motion manifest v5 (schema 1.2.0)",
+  "description": "Additive revision of motion-manifest.schema.v1.1.json: every 1.1 field is kept with the same meaning. The chain is drawn in two blocks. The top block (overview) is built by the site in SVG and CSS from the data of each step: the active nodes, the token (Pedido 1234) that travels from one node to another between overview.from and overview.to, and a label of at most 6 words. The bottom block (detail) is a clip of an accepted product piece, full tile, that shows what happens inside the product of the step. Each steps[] item gains `overview` and `detail` (both required); the flat fields piece/from/to/settledAt/rate/holdAfter/covers/poster/measure/srLabel stay and equal the detail, because the time of the step is the time of its detail and the overview follows it. overview.from and overview.to are seconds of piece time of the detail piece, inside [detail.from, detail.to]: the token leaves at the first motion of the detail and lands at settledAt. chain.fallback keeps the 1.1 step shape. Times are seconds of piece time, three decimals; a segment plays [from, to] at `rate`, freezes on its last frame for `holdAfter` screen seconds and hands off; settledAt is the first piece time after which the frame is pixel-still (difference measured at 1/30 s); to = settledAt + 0.1.",
   "type": "object",
   "required": [
     "schema",
@@ -39,7 +39,11 @@
     },
     "source": {
       "type": "object",
-      "required": ["round", "roundHead", "exportDir"],
+      "required": [
+        "round",
+        "roundHead",
+        "exportDir"
+      ],
       "additionalProperties": false,
       "properties": {
         "round": {
@@ -59,7 +63,11 @@
     },
     "brand": {
       "type": "object",
-      "required": ["welabs", "sealRule", "endorse"],
+      "required": [
+        "welabs",
+        "sealRule",
+        "endorse"
+      ],
       "additionalProperties": false,
       "properties": {
         "welabs": {
@@ -72,13 +80,20 @@
         },
         "endorse": {
           "description": "Default for the 'by welabs' seal on small logos inside pieces (data-endorse on the piece). Opening pieces that form the logo carry it regardless; see pieces[].endorse.",
-          "enum": ["on", "off"]
+          "enum": [
+            "on",
+            "off"
+          ]
         }
       }
     },
     "player": {
       "type": "object",
-      "required": ["package", "version", "src"],
+      "required": [
+        "package",
+        "version",
+        "src"
+      ],
       "additionalProperties": false,
       "properties": {
         "package": {
@@ -94,7 +109,11 @@
     },
     "defaults": {
       "type": "object",
-      "required": ["holdAfter", "transitionBetweenSteps", "minScreenSeconds"],
+      "required": [
+        "holdAfter",
+        "transitionBetweenSteps",
+        "minScreenSeconds"
+      ],
       "additionalProperties": false,
       "properties": {
         "holdAfter": {
@@ -120,11 +139,19 @@
     },
     "chain": {
       "type": "object",
-      "required": ["status", "loop", "variants", "steps"],
+      "required": [
+        "status",
+        "loop",
+        "variants",
+        "steps"
+      ],
       "additionalProperties": false,
       "properties": {
         "status": {
-          "enum": ["final", "fallback"]
+          "enum": [
+            "final",
+            "fallback"
+          ]
         },
         "loop": {
           "type": "boolean"
@@ -135,14 +162,22 @@
         },
         "variants": {
           "type": "object",
-          "required": ["desktop"],
+          "required": [
+            "desktop"
+          ],
           "additionalProperties": false,
           "properties": {
             "desktop": {
-              "type": ["string", "null"]
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "mobile": {
-              "type": ["string", "null"]
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         },
@@ -156,14 +191,20 @@
         "fallback": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/chainStep"
+            "$ref": "#/$defs/chainStepV11"
           }
         }
       }
     },
     "products": {
       "type": "object",
-      "required": ["domus", "relloo", "magneto", "tuner", "knowly"],
+      "required": [
+        "domus",
+        "relloo",
+        "magneto",
+        "tuner",
+        "knowly"
+      ],
       "additionalProperties": false,
       "properties": {
         "domus": {
@@ -186,18 +227,35 @@
   },
   "$defs": {
     "slug": {
-      "enum": ["domus", "relloo", "magneto", "tuner", "knowly"]
+      "enum": [
+        "domus",
+        "relloo",
+        "magneto",
+        "tuner",
+        "knowly"
+      ]
     },
     "measure": {
       "type": "object",
-      "required": ["method", "status"],
+      "required": [
+        "method",
+        "status"
+      ],
       "additionalProperties": false,
       "properties": {
         "method": {
-          "enum": ["pixel-diff-1/30s", "pixel-diff-0.5s", "authored-spec"]
+          "enum": [
+            "pixel-diff-1/30s",
+            "pixel-diff-0.5s",
+            "authored-spec"
+          ]
         },
         "status": {
-          "enum": ["measured", "provisional", "spec"]
+          "enum": [
+            "measured",
+            "provisional",
+            "spec"
+          ]
         },
         "evidence": {
           "type": "string"
@@ -206,11 +264,19 @@
     },
     "transition": {
       "type": "object",
-      "required": ["type", "duration"],
+      "required": [
+        "type",
+        "duration"
+      ],
       "additionalProperties": false,
       "properties": {
         "type": {
-          "enum": ["cut", "push-left", "push-up", "blend"]
+          "enum": [
+            "cut",
+            "push-left",
+            "push-up",
+            "blend"
+          ]
         },
         "duration": {
           "type": "number",
@@ -223,7 +289,11 @@
     },
     "cover": {
       "type": "object",
-      "required": ["t", "w1280", "w640"],
+      "required": [
+        "t",
+        "w1280",
+        "w640"
+      ],
       "additionalProperties": false,
       "properties": {
         "t": {
@@ -243,7 +313,10 @@
     },
     "covers": {
       "type": "object",
-      "required": ["start", "settled"],
+      "required": [
+        "start",
+        "settled"
+      ],
       "additionalProperties": false,
       "properties": {
         "start": {
@@ -309,11 +382,16 @@
         },
         "endorse": {
           "description": "State of the 'by welabs' seal in this accepted piece: on = sealed logos as accepted, off = standalone logos.",
-          "enum": ["on", "off"]
+          "enum": [
+            "on",
+            "off"
+          ]
         },
         "siteVariant": {
           "type": "object",
-          "required": ["hide"],
+          "required": [
+            "hide"
+          ],
           "additionalProperties": false,
           "properties": {
             "hide": {
@@ -333,7 +411,169 @@
         }
       }
     },
-    "chainStep": {
+    "connection": {
+      "type": "object",
+      "required": [
+        "from",
+        "to",
+        "value",
+        "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/slug"
+        },
+        "to": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/slug"
+            },
+            {
+              "const": "outcome"
+            }
+          ]
+        },
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "value": {
+          "description": "Internal value sentence: guides authoring and QA; never displayed.",
+          "type": "string"
+        },
+        "label": {
+          "description": "Short value the site may display: pt-BR, sentence case, at most 3 words and 24 characters, no mechanism name.",
+          "type": "string",
+          "maxLength": 24,
+          "pattern": "^[^ ]+( [^ ]+){0,2}$"
+        }
+      }
+    },
+    "overview": {
+      "description": "Top block, drawn by the site (SVG and CSS, not video): the product flow with the token that carries the order.",
+      "type": "object",
+      "required": [
+        "nodes",
+        "token",
+        "from",
+        "to",
+        "label"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "description": "Nodes lit while the step is active (the products the detail shows).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/slug"
+          }
+        },
+        "token": {
+          "description": "The token (Pedido 1234) walks from node `from` to node `to`; 'outcome' is the end of the chain.",
+          "type": "object",
+          "required": [
+            "from",
+            "to"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/slug"
+            },
+            "to": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/slug"
+                },
+                {
+                  "const": "outcome"
+                }
+              ]
+            }
+          }
+        },
+        "from": {
+          "description": "Piece time (seconds) of the detail piece at which the token leaves its node: the first motion of the detail.",
+          "type": "number",
+          "minimum": 0
+        },
+        "to": {
+          "description": "Piece time at which the token lands: the settledAt of the detail.",
+          "type": "number",
+          "minimum": 0
+        },
+        "label": {
+          "description": "Caption of the top block: pt-BR, sentence case, at most 6 words and 48 characters.",
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[^ ]+( [^ ]+){0,5}$"
+        }
+      }
+    },
+    "detail": {
+      "description": "Bottom block: a clip of an accepted piece of the product itself. Its time is the time of the step.",
+      "type": "object",
+      "required": [
+        "piece",
+        "from",
+        "to",
+        "settledAt",
+        "rate",
+        "hold",
+        "covers",
+        "srLabel"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "piece": {
+          "type": "string"
+        },
+        "from": {
+          "type": "number",
+          "minimum": 0
+        },
+        "to": {
+          "type": "number",
+          "minimum": 0
+        },
+        "settledAt": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rate": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 2.5
+        },
+        "hold": {
+          "description": "Screen seconds the last frame is held (same as the step's holdAfter).",
+          "type": "number",
+          "minimum": 1
+        },
+        "covers": {
+          "$ref": "#/$defs/covers"
+        },
+        "srLabel": {
+          "description": "One short sentence for screen readers describing what happens inside the product.",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 140
+        },
+        "story": {
+          "description": "Whether the clip carries the Marina and Pedido 1234 story or is a generic product film.",
+          "enum": [
+            "marina",
+            "generic"
+          ]
+        }
+      }
+    },
+    "chainStepV11": {
       "type": "object",
       "allOf": [
         {
@@ -367,40 +607,7 @@
               }
             },
             "connection": {
-              "type": "object",
-              "required": ["from", "to", "value", "label"],
-              "additionalProperties": false,
-              "properties": {
-                "from": {
-                  "$ref": "#/$defs/slug"
-                },
-                "to": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/$defs/slug"
-                    },
-                    {
-                      "const": "outcome"
-                    }
-                  ]
-                },
-                "input": {
-                  "type": "string"
-                },
-                "output": {
-                  "type": "string"
-                },
-                "value": {
-                  "description": "Internal value sentence: guides authoring and QA; never displayed.",
-                  "type": "string"
-                },
-                "label": {
-                  "description": "Short value the site may display: pt-BR, sentence case, at most 3 words and 24 characters, no mechanism name.",
-                  "type": "string",
-                  "maxLength": 24,
-                  "pattern": "^[^ ]+( [^ ]+){0,2}$"
-                }
-              }
+              "$ref": "#/$defs/connection"
             },
             "transition": {
               "$ref": "#/$defs/transition"
@@ -410,16 +617,77 @@
       ],
       "unevaluatedProperties": false
     },
+    "chainStep": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/segmentCore"
+        },
+        {
+          "type": "object",
+          "required": [
+            "step",
+            "srLabel",
+            "products",
+            "connection",
+            "transition",
+            "overview",
+            "detail"
+          ],
+          "properties": {
+            "step": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "srLabel": {
+              "description": "One short sentence for screen readers (accessible name of the active step).",
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 140
+            },
+            "products": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/slug"
+              }
+            },
+            "connection": {
+              "$ref": "#/$defs/connection"
+            },
+            "transition": {
+              "$ref": "#/$defs/transition"
+            },
+            "overview": {
+              "$ref": "#/$defs/overview"
+            },
+            "detail": {
+              "$ref": "#/$defs/detail"
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
     "film": {
       "type": "object",
-      "required": ["piece", "role", "title", "proves", "segments"],
+      "required": [
+        "piece",
+        "role",
+        "title",
+        "proves",
+        "segments"
+      ],
       "additionalProperties": false,
       "properties": {
         "piece": {
           "type": "string"
         },
         "role": {
-          "enum": ["main", "support"]
+          "enum": [
+            "main",
+            "support"
+          ]
         },
         "title": {
           "description": "Accessible name of the film (screen readers).",
@@ -447,7 +715,12 @@
     },
     "product": {
       "type": "object",
-      "required": ["order", "group", "intro", "films"],
+      "required": [
+        "order",
+        "group",
+        "intro",
+        "films"
+      ],
       "additionalProperties": false,
       "properties": {
         "order": {
@@ -456,7 +729,10 @@
           "maximum": 5
         },
         "group": {
-          "enum": ["core", "rail"]
+          "enum": [
+            "core",
+            "rail"
+          ]
         },
         "intro": {
           "$ref": "#/$defs/segment"
