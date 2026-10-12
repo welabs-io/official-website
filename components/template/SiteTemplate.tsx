@@ -2,16 +2,16 @@
 // Walks the section list of a PageConfig (lib/site-config.ts) and renders it inside the page frame: the same template
 // serves the home and the five product pages. `Sections` is the part without the frame (header and footer), which the
 // tests render on its own.
-import { Connectors } from "@/components/onepage/Connectors";
-import { CONTACT_HREF } from "@/components/onepage/contact";
 import { PageFrame } from "@/components/onepage/PageFrame";
 import { ProductBlock } from "@/components/onepage/ProductBlock";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { RingStage } from "@/components/ring/RingStage";
-import { CTA_LABEL } from "@/lib/products";
+import { MANIFEST } from "@/lib/manifest";
+import { ties } from "@/lib/manifest/select";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { Closing } from "./Closing";
+import { CoreHub } from "./CoreHub";
 import { Section } from "./Section";
 
 function Body({ section }: { section: SectionConfig }) {
@@ -47,19 +47,15 @@ function Body({ section }: { section: SectionConfig }) {
     case "hub":
       return (
         <div className={shell.wrap}>
-          <Connectors lit={section.lit} tone={section.tone} />
+          <CoreHub
+            tone={section.tone}
+            ties={ties(MANIFEST)}
+            lit={section.lit}
+          />
         </div>
       );
     case "closing":
       return <Closing />;
-    case "cta":
-      return (
-        <div className={home.contact}>
-          <a href={CONTACT_HREF} className={`${shell.cta} ${shell.ctaBig}`}>
-            {CTA_LABEL}
-          </a>
-        </div>
-      );
   }
 }
 

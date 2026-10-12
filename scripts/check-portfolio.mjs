@@ -30,8 +30,13 @@ const visibleText = (html) =>
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+// The names of the tiles (`role="group"`) are the step descriptions the motion manifest writes (srLabel, title)
 const hiddenText = (html) =>
-  [...html.matchAll(/(?:alt|aria-label)="([^"]*)"/g)]
+  [
+    ...html
+      .replace(/role="group" aria-label="[^"]*"/g, "")
+      .matchAll(/(?:alt|aria-label)="([^"]*)"/g),
+  ]
     .map((m) => m[1])
     .join(" ");
 
@@ -129,16 +134,18 @@ for (const slug of SLUGS) {
     /<title>[^<]* by Welabs<\/title>/.test(html),
     `${slug} title follows the "<Product> by Welabs" pattern`,
   );
-  // Template: opening, connectors with this product lit, other films, call to action
+  // Template: opening and films in one ring, the chain of the product, connectors with this product lit, closing
   const at = (id) => html.indexOf(`id="${id}"`);
   assert(
     at("product") > 0 &&
-      at("product") < at("connectors") &&
-      at("connectors") < at("films") &&
-      at("films") < at("contact"),
-    `${slug} page has the four blocks in order`,
+      at("product") < at("chain") &&
+      at("chain") < at("connectors") &&
+      at("connectors") < at("platforms") &&
+      at("platforms") < at("contact") &&
+      at("films") < 0,
+    `${slug} page has the same sections as the home, in order`,
   );
-  const block = html.slice(at("connectors"), at("films"));
+  const block = html.slice(at("connectors"), at("platforms"));
   assert(
     block.includes('aria-current="page"') &&
       !block.includes(`href="/products/${slug}"`),
@@ -165,7 +172,10 @@ for (const html of pages.values())
   ))
     assets.add(src);
 // The player and the manifest every reel needs (there is no sequential player any more)
-for (const src of ["/motion/player.js", "/motion/_shared/brand/manifest.json"])
+for (const src of [
+  "/motion/v5/player.js",
+  "/motion/v5/_shared/brand/manifest.json",
+])
   assets.add(src);
 for (const src of assets) await get(src);
 

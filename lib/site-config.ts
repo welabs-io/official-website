@@ -1,17 +1,18 @@
 // CONFIGURAÇÃO DAS PÁGINAS
 // One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
-// home and the five product pages are the same template with two configurations, so no section markup is copied between
-// routes. `pad` names the spacing class of the section (home.module.css).
+// home and the five product pages are the same template with two configurations and the same sequence of sections
+// (ring, ring, connector block, closing), so no section markup is copied between routes. `pad` names the spacing class
+// of the section (home.module.css).
 import { productBySlug, type ProductSlug } from "./products";
+import type { RingKind } from "./ring-data";
 
 export type Tone = "dark" | "light";
-export type RingKind = "chain" | "products" | "films" | "hero";
+export type { RingKind };
 export type SectionPad =
   | "chain"
   | "products"
   | "productPage"
-  | "films"
-  | "productCta"
+  | "productChain"
   | "connectors"
   | "closing";
 
@@ -35,8 +36,9 @@ export type SectionConfig =
       ring: {
         id: string;
         kind: RingKind;
+        // The product of the ring: the page's own (kind "product") or the one the chain is narrowed to
         slug?: ProductSlug;
-        logos?: "lit" | "links" | null;
+        logos?: "lit" | "links" | "pinned" | null;
         eager?: boolean;
         label: string;
       };
@@ -44,14 +46,32 @@ export type SectionConfig =
       head?: { slug: ProductSlug };
     })
   | (Base & { kind: "hub"; lit?: ProductSlug })
-  | (Base & { kind: "closing" })
-  | (Base & { kind: "cta" });
+  | (Base & { kind: "closing" });
 
 export type PageConfig = {
   home: boolean;
   // The home has no visible title: its h1 is for screen readers
   srH1?: string;
   sections: SectionConfig[];
+};
+
+// The connector block and the closing are the same on every route (the hub only lights the product of a product page)
+const hub = (srTitle: string, lit?: ProductSlug): SectionConfig => ({
+  id: "connectors",
+  kind: "hub",
+  tone: "dark",
+  pad: "connectors",
+  srTitle,
+  lit,
+  thread: "off",
+  rail: "converge",
+});
+const closing: SectionConfig = {
+  id: "platforms",
+  kind: "closing",
+  tone: "dark",
+  pad: "closing",
+  thread: "none",
 };
 
 export const HOME_CONFIG: PageConfig = {
@@ -89,22 +109,8 @@ export const HOME_CONFIG: PageConfig = {
         label: "Abertura e filme de cada produto",
       },
     },
-    {
-      id: "connectors",
-      kind: "hub",
-      tone: "dark",
-      pad: "connectors",
-      srTitle: "Produtos ligados entre si",
-      thread: "off",
-      rail: "converge",
-    },
-    {
-      id: "platforms",
-      kind: "closing",
-      tone: "dark",
-      pad: "closing",
-      thread: "none",
-    },
+    hub("Produtos ligados entre si"),
+    closing,
   ],
 };
 
@@ -119,39 +125,35 @@ export function productConfig(slug: ProductSlug): PageConfig {
         tone: "dark",
         pad: "productPage",
         head: { slug },
-        ring: {
-          id: "product-opening",
-          kind: "hero",
-          slug,
-          eager: true,
-          label: `Abertura do ${name}`,
-        },
-      },
-      {
-        id: "connectors",
-        kind: "hub",
-        tone: "light",
-        pad: "connectors",
-        srTitle: `${name} no núcleo e nos trilhos`,
-        lit: slug,
-        thread: "off",
-      },
-      {
-        id: "films",
-        kind: "ring",
-        tone: "dark",
-        pad: "films",
-        srTitle: `Outros filmes do ${name}`,
         rail: "drop",
         railDelay: 0.4,
         ring: {
-          id: "product-films",
-          kind: "films",
+          id: "product-ring",
+          kind: "product",
           slug,
-          label: `Filmes do ${name}`,
+          logos: "pinned",
+          eager: true,
+          label: `Abertura e filmes do ${name}`,
         },
       },
-      { id: "contact", kind: "cta", tone: "light", pad: "productCta" },
+      {
+        id: "chain",
+        kind: "ring",
+        tone: "light",
+        pad: "productChain",
+        srTitle: `${name} na cadeia`,
+        rail: "drop",
+        railDelay: 0.5,
+        ring: {
+          id: "chain-ring",
+          kind: "chain",
+          slug,
+          logos: "lit",
+          label: `Cortes da cadeia com o ${name}`,
+        },
+      },
+      hub(`${name} no núcleo e nos trilhos`, slug),
+      closing,
     ],
   };
 }

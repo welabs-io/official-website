@@ -40,21 +40,16 @@
   background: var(--bg);
 }
 
-/* BLOCOS DA PÁGINA DE PRODUTO */
-/* The films carousel and the closing call to action, as compact as the home's sections */
-.films {
+/* The chain narrowed to the product, as compact as the home's sections */
+.productChain {
   --pt: 56px;
   --pb: 56px;
-}
-.productCta {
-  --pt: 32px;
-  --pb: 32px;
 }
 
 /* SEÇÃO 3: CONECTORES */
 .connectors {
   --pt: 48px;
-  --pb: 56px;
+  --pb: 48px;
 }
 
 /* SEÇÃO 4: FECHAMENTO */
@@ -113,7 +108,8 @@
     --pb: 40px;
   }
   .products,
-  .films {
+  .productChain,
+  .connectors {
     --pt: 40px;
     --pb: 40px;
   }

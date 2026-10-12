@@ -3,6 +3,7 @@
 // rendered on the server (the same HTML the first paint gets) and checked as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { MANIFEST } from "@/lib/manifest";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/page";
 import { generateMetadata } from "@/app/products/[slug]/page";
@@ -25,9 +26,15 @@ const visibleText = (html: string) =>
     .replace(/&#x27;|&#39;/g, "'")
     .replace(/\s+/g, " ")
     .trim();
-// Text that only assistive technology gets
+// Text that only assistive technology gets. The names of the tiles (`role="group"`) are the sentences the motion manifest
+// writes to describe each step (`srLabel`, `title`): descriptions of what the film shows, checked by the manifest tests,
+// not brand copy, so they are out of the slogan check.
 const hiddenText = (html: string) =>
-  [...html.matchAll(/(?:alt|aria-label)="([^"]*)"/g)]
+  [
+    ...html
+      .replace(/role="group" aria-label="[^"]*"/g, "")
+      .matchAll(/(?:alt|aria-label)="([^"]*)"/g),
+  ]
     .map((m) => m[1])
     .join(" ");
 
@@ -111,14 +118,16 @@ describe("the home has no sequential player and no opening on the chain", () => 
     expect(home).not.toMatch(/sequence-player|SequencePlayer|sequence:ended/i);
     expect(home).not.toMatch(/welabs-intro/);
   });
-  it("the chain section carries no opening and no chain film, only montage covers", () => {
+  it("the chain section carries no opening, only the settled cover of each step of the manifest", () => {
     // The markup the viewer gets; the JSON of the ring (ids of the pieces it plays) is not markup
     const chain = home
       .slice(home.indexOf('id="chain"'), home.indexOf('id="products"'))
       .replace(/<script[\s\S]*?<\/script>/g, "");
-    expect(chain).not.toMatch(/intro|welabs-chain/);
-    // One still per cut (nine cuts), no title text
-    expect(chain.match(/ src="[^"]*cut-\d\.webp"/g)).toHaveLength(9);
+    expect(chain).not.toMatch(/intro/);
+    // One still per step, no title text
+    expect(chain.match(/ src="[^"]*\/posters\/[^"]*"/g)).toHaveLength(
+      MANIFEST.chain.steps.length,
+    );
   });
   it("the title of the home is Welabs, without a suffix", () => {
     expect(homeMetadata.title).toBe("Welabs");
