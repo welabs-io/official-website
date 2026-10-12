@@ -35,7 +35,8 @@ for (const vp of VIEWPORTS)
           };
         }),
       );
-      expect(rows).toHaveLength(2);
+      // The home has one row (under the carousel of products); the chain has its own overview (chain-blocks.spec.ts)
+      expect(rows).toHaveLength(1);
       for (const r of rows) {
         expect(r.slugs).toEqual([
           "domus",
