@@ -5,15 +5,18 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PRODUCTS } from "@/lib/products";
 import { productFilms } from "@/lib/motion-slides";
-import { ProductPageBody } from "./ProductPageBody";
+import { productConfig } from "@/lib/site-config";
+import { Sections } from "./SiteTemplate";
 
 const slugs = PRODUCTS.map((p) => p.slug);
+const render = (slug: (typeof slugs)[number]) =>
+  renderToStaticMarkup(<Sections config={productConfig(slug)} />);
 
 describe("product page template", () => {
   it.each(slugs)(
     "the %s page lights its own product and links the other four",
     (slug) => {
-      const html = renderToStaticMarkup(<ProductPageBody slug={slug} />);
+      const html = render(slug);
       const block = html.slice(
         html.indexOf('id="connectors"'),
         html.indexOf('id="films"'),
@@ -29,7 +32,7 @@ describe("product page template", () => {
   it.each(slugs)(
     "the %s page has the four blocks in order and one carousel tile per other film",
     (slug) => {
-      const html = renderToStaticMarkup(<ProductPageBody slug={slug} />);
+      const html = render(slug);
       const at = (id: string) => html.indexOf(`id="${id}"`);
       expect(at("product")).toBeLessThan(at("connectors"));
       expect(at("connectors")).toBeLessThan(at("films"));
@@ -44,7 +47,7 @@ describe("product page template", () => {
     },
   );
   it("every band of the pages is marked live, so the thread and the pulses pause off screen", () => {
-    const html = renderToStaticMarkup(<ProductPageBody slug="domus" />);
+    const html = render("domus");
     const bands = html.match(/<section[^>]*>/g) ?? [];
     expect(bands).toHaveLength(4);
     for (const band of bands) expect(band).toContain("data-live");

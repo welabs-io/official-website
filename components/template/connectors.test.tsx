@@ -13,8 +13,9 @@ import {
   stateOf,
 } from "@/lib/connectors";
 import { PRODUCTS } from "@/lib/products";
-import { Connectors } from "./Connectors";
-import { OnePage } from "./OnePage";
+import { Connectors } from "@/components/onepage/Connectors";
+import { SiteTemplate } from "@/components/template/SiteTemplate";
+import { HOME_CONFIG } from "@/lib/site-config";
 
 describe("graph geometry", () => {
   it.each([WIDE, TALL])(
@@ -92,7 +93,7 @@ describe("connectors markup", () => {
 
 describe("the thread and the live markers", () => {
   it("every band of the home is marked live, so the thread and the pulses pause off screen", () => {
-    const html = renderToStaticMarkup(<OnePage />);
+    const html = renderToStaticMarkup(<SiteTemplate config={HOME_CONFIG} />);
     const bands = html.match(/<section[^>]*>/g) ?? [];
     expect(bands).toHaveLength(4);
     for (const band of bands) expect(band).toContain("data-live");

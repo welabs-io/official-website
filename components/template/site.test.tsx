@@ -6,18 +6,13 @@ import { describe, expect, it } from "vitest";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/page";
 import { generateMetadata } from "@/app/products/[slug]/page";
-import { OnePage } from "./OnePage";
-import { PageFrame } from "./PageFrame";
-import { ProductPageBody } from "./ProductPageBody";
+import { SiteTemplate } from "@/components/template/SiteTemplate";
+import { HOME_CONFIG, productConfig } from "@/lib/site-config";
 
-const home = renderToStaticMarkup(<OnePage />);
+const home = renderToStaticMarkup(<SiteTemplate config={HOME_CONFIG} />);
 const productPages = PRODUCTS.map((p) => ({
   slug: p.slug,
-  html: renderToStaticMarkup(
-    <PageFrame>
-      <ProductPageBody slug={p.slug} />
-    </PageFrame>,
-  ),
+  html: renderToStaticMarkup(<SiteTemplate config={productConfig(p.slug)} />),
 }));
 const pages = [{ slug: "home", html: home }, ...productPages];
 

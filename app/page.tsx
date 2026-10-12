@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { OnePage } from "@/components/onepage/OnePage";
+import { SiteTemplate } from "@/components/template/SiteTemplate";
+import { HOME_CONFIG } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Welabs",
@@ -8,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <OnePage />;
+  return <SiteTemplate config={HOME_CONFIG} />;
 }

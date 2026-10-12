@@ -20,9 +20,18 @@ for (const route of ROUTES)
         }
         window.scrollTo(0, 0);
       });
-      // Every cover and logo must be decoded, or the capture races the lazy loading
-      await page.waitForFunction(() =>
-        [...document.images].every((img) => img.complete),
+      // Every image that is drawn must be decoded, or the capture races the lazy loading (images of hidden tiles are
+      // never loaded, so they do not count)
+      await page.evaluate(() => {
+        for (const img of document.images) img.loading = "eager";
+      });
+      await page.waitForFunction(
+        () =>
+          [...document.images]
+            .filter((img) => img.offsetParent !== null)
+            .every((img) => img.complete),
+        undefined,
+        { timeout: 15000 },
       );
       await page.waitForTimeout(600);
       await expect(page).toHaveScreenshot(`${route.name}-${vp.name}.png`, {
