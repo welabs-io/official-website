@@ -3,8 +3,9 @@
 // manifest: the columns of the line (products in the order of the plot, then the outcome), and per step the lit nodes,
 // the ends of the token, its delay and duration on screen and the caption. The server writes it next to the block as a
 // <script type="application/json">, and the browser code (components/ring/overview-follow.ts) reads the DOM, never the
-// manifest. No time here is decided by the site: delay and duration are the manifest's piece seconds over the rate.
+// manifest. Delay and duration of the token come from the script of the scenes (lib/scenes/script.ts).
 import { MANIFEST } from "./manifest";
+import { SCRIPT } from "./scenes/script";
 import { overviewOrder } from "./manifest/select";
 import type { Manifest, TokenEnd } from "./manifest/types";
 
@@ -32,13 +33,18 @@ export function overviewData(manifest: Manifest = MANIFEST): OverviewData {
   const col = (end: TokenEnd) => order.indexOf(end);
   return {
     order,
-    steps: manifest.chain.steps.map(({ overview: o, detail: d }) => ({
-      nodes: o.nodes.map(col),
-      from: col(o.token.from),
-      to: col(o.token.to),
-      delay: round((o.from - d.from) / d.rate),
-      dur: round((o.to - o.from) / d.rate),
-      label: o.label,
-    })),
+    // Nodes, ends and caption are the manifest's; the time the token walks is the script's (lib/scenes/script.ts), the
+    // clock of the native scenes
+    steps: manifest.chain.steps.map(({ overview: o }, index) => {
+      const scene = SCRIPT.find((s) => s.step === index);
+      return {
+        nodes: o.nodes.map(col),
+        from: col(o.token.from),
+        to: col(o.token.to),
+        delay: round(scene?.token.at ?? 0),
+        dur: round(scene?.token.dur ?? 0),
+        label: o.label,
+      };
+    }),
   };
 }

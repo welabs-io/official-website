@@ -40,8 +40,9 @@ const hiddenText = (html) =>
     .map((m) => m[1])
     .join(" ");
 
+// "entrega" is the slogan verb; "de entrega" (the order of the story, interface text of the scenes) is a noun
 const SLOGAN =
-  /\b(domina|atende|automatiza|entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
+  /\b(domina|atende|automatiza|(?<!\bde )entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
 const BANNED =
   /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|sandbox|em breve|roadmap|em desenvolvimento|coming soon)\b/i;
 const IMAGINE_SYSTEMS = /stant|tabe\.la|tabela|wego/i;
@@ -122,9 +123,26 @@ assert(
   "the seal is only the identity highlight of the product page, not the home",
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
-const words = visibleText(home).split(" ").length;
+// The words of the page copy: the text drawn inside the native scenes is product interface (a screen), not copy, so the
+// block between the stage and its data is left out of the count (the slogan and banned-word rules above still read it)
+const copyOnly = (html) => {
+  const at = html.indexOf("data-scenes");
+  const end = html.indexOf("data-scene-data");
+  return at < 0 || end < at
+    ? html
+    : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+};
+const words = visibleText(copyOnly(home)).split(" ").length;
 // 160 before the opening and the overview of the chain entered the home (about 36 words); now 180
 assert(words <= 180, `home has ${words} visible words`);
+assert(
+  !/<video|<hyperframes-player/i.test(chainHtml),
+  "the chain has no video",
+);
+assert(
+  (home.match(/data-tile="s\d"/g) ?? []).length === 7,
+  "the chain has seven native scenes",
+);
 // Content layer: five product cards, the active one lit, each leading to its page
 const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
 assert.equal(cards.length, 5, "the home has five product cards");

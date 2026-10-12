@@ -43,6 +43,19 @@ function runtimeGraph(entry: string): string[] {
   return [...seen];
 }
 
+describe("scene-run chunk", () => {
+  const graph = runtimeGraph(
+    path.join(root, "components/scenes/scene-run.ts"),
+  ).map((f) => path.relative(root, f));
+  it("imports no JSON, no manifest, no script and no player: the server writes the durations next to the stage", () => {
+    expect(graph.filter((f) => f.endsWith(".json"))).toEqual([]);
+    expect(graph).not.toContain("lib/motion-slides.ts");
+    expect(graph).not.toContain("lib/scenes/script.ts");
+    expect(graph).not.toContain("components/ring/player.ts");
+    expect(graph).not.toContain("components/ring/ring-playback.ts");
+  });
+});
+
 describe("ring-run chunk", () => {
   const graph = runtimeGraph(path.join(root, "components/ring/ring-run.ts"));
   it("imports no JSON and no montage list at runtime", () => {

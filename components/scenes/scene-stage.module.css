@@ -1,0 +1,101 @@
+/* PALCO DAS CENAS NATIVAS */
+/* The circular carousel of the chain, now made of live scenes instead of videos. Same swap of positions as before: the
+   centre scene is the one that plays; the previous and the next sit behind it at half scale, shifted by 38% of the width,
+   under a cream veil, so only a strip of each shows (on a phone, an edge); the ones further back are invisible. The
+   rotation is one CSS transition whose duration (--swap-time) is the swap of the script (0.4 s). The tile has a fixed
+   aspect ratio, so no scene ever moves the page. */
+.screen {
+  --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  /* Width of the centre scene: 920 px at most (2:1, so 460 px tall), never taller than 70% of the window, the whole wrap
+     on a phone */
+  --tile-w: min(100%, 920px, calc(70vh * 2));
+  display: grid;
+  place-items: center;
+  gap: 0;
+  position: relative;
+}
+.stage {
+  position: relative;
+  width: var(--tile-w);
+  margin: 0 auto;
+  aspect-ratio: 2 / 1;
+}
+.tile {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  transform: translateX(-50%);
+  transition:
+    transform var(--swap-time, 0.4s) var(--ease),
+    opacity var(--swap-time, 0.4s) var(--ease);
+  will-change: transform, opacity;
+}
+.tile[data-pos="0"] {
+  z-index: 3;
+}
+.tile[data-pos="1"] {
+  z-index: 2;
+  transform: translateX(calc(-50% + 38%)) scale(0.5);
+}
+.tile[data-pos="-1"] {
+  z-index: 2;
+  transform: translateX(calc(-50% - 38%)) scale(0.5);
+}
+.tile[data-pos="2"],
+.tile[data-pos="-2"] {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+.tile[data-pos="2"] {
+  transform: translateX(calc(-50% + 40%)) scale(0.4);
+}
+.tile[data-pos="-2"] {
+  transform: translateX(calc(-50% - 40%)) scale(0.4);
+}
+.tileFrame {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+/* Veil of the neighbours: the scene stays itself (a settled frame) and the cream of the page washes over it */
+.tileFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 0.875rem;
+  background: rgb(250 245 234 / 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--swap-time, 0.4s) var(--ease);
+}
+.tile[data-pos="1"] .tileFrame::after,
+.tile[data-pos="-1"] .tileFrame::after {
+  opacity: 1;
+}
+
+/* The scene is 2:1 on a desktop, 16:10 on a tablet and 7:10 on a phone, so the same words fit in rem at every width */
+@media (max-width: 860px) {
+  .stage,
+  .tile {
+    aspect-ratio: 16 / 10;
+  }
+}
+@media (max-width: 560px) {
+  .stage,
+  .tile {
+    aspect-ratio: 7 / 10;
+  }
+  .screen {
+    --tile-w: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tileFrame::after {
+    transition: none;
+  }
+}

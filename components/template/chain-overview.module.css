@@ -80,7 +80,7 @@
   right: calc(50% / var(--n));
   height: 2px;
   margin-top: -1px;
-  background: var(--line);
+  background: var(--thread, var(--line));
 }
 .node {
   position: absolute;
@@ -99,7 +99,7 @@
     transform 0.4s var(--ease);
 }
 .node[data-state="off"] {
-  border-color: var(--line);
+  border-color: var(--thread, var(--line));
 }
 .node[data-state="on"] {
   border-color: var(--a);
@@ -124,12 +124,12 @@
   top: 50%;
   left: var(--xf);
   z-index: 1;
-  padding: 0 8px;
-  border-radius: 11px;
+  padding: 0 9px;
+  border-radius: 12px;
   background: var(--a);
   color: #1c1a16;
-  font-size: 12px;
-  line-height: 22px;
+  font-size: 0.875rem;
+  line-height: 24px;
   font-weight: 600;
   white-space: nowrap;
   transform: translate(-50%, -50%);
@@ -319,23 +319,24 @@
 .right .sweep {
   transform-origin: 100% 50%;
 }
+/* The whole pulse takes 0.7 s (stem 0.25, bridge 0.2, landing 0.25), so it is over before the first action of a scene */
 .overview[data-pulse="a"] .stem[data-on="true"] .pulse {
-  animation: stem-a 0.35s ease-in both;
+  animation: stem-a 0.25s ease-in both;
 }
 .overview[data-pulse="b"] .stem[data-on="true"] .pulse {
-  animation: stem-b 0.35s ease-in both;
+  animation: stem-b 0.25s ease-in both;
 }
 .overview[data-pulse="a"] .sweep {
-  animation: sweep-a 0.3s 0.35s linear both;
+  animation: sweep-a 0.2s 0.25s linear both;
 }
 .overview[data-pulse="b"] .sweep {
-  animation: sweep-b 0.3s 0.35s linear both;
+  animation: sweep-b 0.2s 0.25s linear both;
 }
 .overview[data-pulse="a"] .axis .pulse {
-  animation: land-a 0.35s 0.65s ease-in both;
+  animation: land-a 0.25s 0.45s ease-in both;
 }
 .overview[data-pulse="b"] .axis .pulse {
-  animation: land-b 0.35s 0.65s ease-in both;
+  animation: land-b 0.25s 0.45s ease-in both;
 }
 @keyframes stem-a {
   from {
@@ -422,10 +423,6 @@
   .overview {
     --logo-h: 26px;
     --drop-h: 36px;
-  }
-  .token {
-    font-size: 11px;
-    padding: 0 7px;
   }
   .overview > .legend {
     font-size: 14px;

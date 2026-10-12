@@ -47,9 +47,20 @@ const hiddenText = (html: string) =>
     .map((m) => m[1])
     .join(" ");
 
-// Brand-concept words and phrases that are only allowed inside chain presentations
+// Text of the page copy: the native scenes of the chain draw product screens, whose words are interface (checked by the
+// slogan and banned-word rules, but out of the word budget of the copy). The block between the stage and its data goes.
+const copyOnly = (html: string) => {
+  const at = html.indexOf("data-scenes");
+  const end = html.indexOf("data-scene-data");
+  return at < 0 || end < at
+    ? html
+    : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+};
+
+// Brand-concept words and phrases that are only allowed inside chain presentations. "entrega" is the slogan verb; after
+// "de" it is the noun of the order of the story ("Alteração de entrega").
 const SLOGAN =
-  /\b(domina|atende|automatiza|entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
+  /\b(domina|atende|automatiza|(?<!\bde )entrega|sabe|define|explica|conecta|transforma|ideias que viram|um só fluxo|ecossistema)\b/i;
 // Words the operator ruled out of the site
 const BANNED =
   /\b(cliente|clientes|erp|ficha|beta|alpha|mvp|em breve|roadmap)\b/i;
@@ -79,7 +90,9 @@ describe("pages carry little text and no slogan", () => {
   it("the home and a product page stay under the word budget of the content layer", () => {
     // Measured when the content layer landed: see COUNT in the test below; the budgets guard against text creeping in
     // 160 before the opening (29 words) and the overview (token and caption, 7 words) entered the home; now 180
-    expect(visibleText(home).split(" ").length).toBeLessThanOrEqual(180);
+    expect(visibleText(copyOnly(home)).split(" ").length).toBeLessThanOrEqual(
+      180,
+    );
     for (const { html } of productPages)
       expect(visibleText(html).split(" ").length).toBeLessThanOrEqual(260);
   });
@@ -130,14 +143,14 @@ describe("the home has no sequential player and no opening on the chain", () => 
     expect(home).not.toMatch(/sequence-player|SequencePlayer|sequence:ended/i);
     expect(home).not.toMatch(/welabs-intro/);
   });
-  it("the chain section carries no opening, only the settled cover of each step of the manifest", () => {
-    // The markup the viewer gets; the JSON of the ring (ids of the pieces it plays) is not markup
+  it("the chain section is native: one scene per step of the manifest, no opening, no cover image and no video", () => {
+    // The markup the viewer gets; the JSON of the stage is not markup
     const chain = home
       .slice(home.indexOf('id="chain"'), home.indexOf('id="products"'))
       .replace(/<script[\s\S]*?<\/script>/g, "");
     expect(chain).not.toMatch(/intro/);
-    // One still per step, no title text
-    expect(chain.match(/ src="[^"]*\/posters\/[^"]*"/g)).toHaveLength(
+    expect(chain).not.toMatch(/\/posters\/|hyperframes-player|\.webm|\.mp4/);
+    expect(chain.match(/data-tile="s\d"/g)).toHaveLength(
       MANIFEST.chain.steps.length,
     );
   });
