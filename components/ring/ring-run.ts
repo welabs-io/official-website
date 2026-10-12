@@ -39,6 +39,23 @@ export function run(root: HTMLElement, kind: RingKind) {
   // The chain has one tile per cut; the other kinds have one tile per slide (opening and film share a tile)
   const perCut = kind === "chain";
 
+  // The tile one place behind the hidden one (position 3 of a long ring shares data-pos 2 with it) starts fetching its
+  // cover now, a full swap before it takes place +2, so the cover is decoded by the time the rotation brings it in.
+  // Without it the cover started loading at the swap itself and could still be in flight a few frames later. Runs for
+  // the first state too, which no swap ever draws.
+  const warmBehind = (active: number) =>
+    tiles.forEach((tile, i) => {
+      if (ringPosition(i, active, tiles.length) !== 3) return;
+      const covers = [
+        ...tile.querySelectorAll<HTMLImageElement>("[data-cover]"),
+      ];
+      const hasEnd = covers.some((img) => img.dataset.cover === "end");
+      for (const img of covers)
+        if (coverShown(2, img.dataset.cover as "start" | "end", hasEnd))
+          img.loading = "eager";
+    });
+  warmBehind(0);
+
   // Moves the ring to `active`: tile positions, accessibility and the lit logos
   // `label` is false when the ring is only put back (stop): the caption is written by a swap or when the playback starts
   const show = (active: number, label = true) => {
@@ -55,16 +72,10 @@ export function run(root: HTMLElement, kind: RingKind) {
       for (const img of covers)
         if (coverShown(position, img.dataset.cover as "start" | "end", hasEnd))
           img.loading = "eager";
-      // The tile one place behind the hidden one (position 3 of a long ring shares data-pos 2 with it) starts fetching now,
-      // a full swap before it takes place +2, so its cover is decoded by the time the rotation brings it in. Without this
-      // the cover started loading at the swap itself and could still be in flight a few frames later.
-      if (position === 3)
-        for (const img of covers)
-          if (coverShown(2, img.dataset.cover as "start" | "end", hasEnd))
-            img.loading = "eager";
       if (position === 0) tile.removeAttribute("aria-hidden");
       else tile.setAttribute("aria-hidden", "true");
     });
+    warmBehind(active);
     const lit: readonly string[] = data.lit[active] ?? [];
     for (const logo of logos)
       logo.dataset.on = lit.includes(logo.dataset.slug ?? "")
