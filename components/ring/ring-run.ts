@@ -55,6 +55,13 @@ export function run(root: HTMLElement, kind: RingKind) {
       for (const img of covers)
         if (coverShown(position, img.dataset.cover as "start" | "end", hasEnd))
           img.loading = "eager";
+      // The tile one place behind the hidden one (position 3 of a long ring shares data-pos 2 with it) starts fetching now,
+      // a full swap before it takes place +2, so its cover is decoded by the time the rotation brings it in. Without this
+      // the cover started loading at the swap itself and could still be in flight a few frames later.
+      if (position === 3)
+        for (const img of covers)
+          if (coverShown(2, img.dataset.cover as "start" | "end", hasEnd))
+            img.loading = "eager";
       if (position === 0) tile.removeAttribute("aria-hidden");
       else tile.setAttribute("aria-hidden", "true");
     });
