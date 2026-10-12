@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cadeia de valor</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* BASE DA PEÇA (fonte e palco; cores e logos vêm da marca, nunca de arquivo local) */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+html,body{margin:0;background:#10141C}
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--muted:#B9B9C4;--amber:var(--wl-amber)}
+*{box-sizing:border-box}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Inter",sans-serif;color:#fff;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%)}
+#world{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.isl{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.fx,.sk{position:absolute;left:0;top:0;right:0;bottom:0}
+.bar{position:absolute;display:block;border-radius:10px;background:#2A2A33}
+
+/* ILHA: TRILHOS, CASA E EMENDA (posições vêm da coreografia chain-value; aqui só a aparência) */
+.rail{position:absolute;z-index:1;background:rgba(255,176,32,.5);border-radius:3px}
+.rail.lit{background:var(--amber)}
+.svgwrap{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+.svgwrap path,.svgwrap polyline{fill:none;stroke-linecap:butt;stroke-linejoin:round}
+.roof{stroke:var(--amber);stroke-width:6}
+.body{stroke:var(--line);stroke-width:4}
+.seam{stroke:var(--amber);stroke-width:6}
+.room{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;border-radius:18px;background:var(--panel2);border:2px solid var(--line)}
+.rbase{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.room b{font-size:38px;font-weight:600;line-height:44px;white-space:nowrap}
+.ralt{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ralt b{font-size:34px;line-height:40px}
+
+/* RELLOO: FUNIL DE QUATRO FAIXAS E O CARTÃO (sem balões de conversa; o cartão guarda um emblema por fato) */
+.funnel{position:absolute;z-index:4;overflow:hidden;border-radius:24px;background:var(--panel);border:3px solid var(--line)}
+.fstripe{position:absolute;border-radius:14px;background:#17171B;border:2px solid var(--line)}
+.flab{position:absolute;display:flex;align-items:center;font-size:19px;line-height:22px;font-weight:700;color:var(--muted)}
+.cardw{position:absolute;z-index:4}
+.card{position:absolute;border-radius:14px;background:#262E38;border:2px solid #56626E}
+.ct{position:absolute;left:14px;top:8px;font-size:27px;line-height:31px;font-weight:700;white-space:nowrap}
+.ct+.ct{top:39px}
+.cb{position:absolute;width:26px;height:26px;border-radius:7px;border:2px solid #4A4A56;color:#6A6A76;display:grid;place-items:center}
+.cb svg{display:block}
+.sheet{position:absolute;z-index:30;border-radius:16px;background:#12161C;border:2px solid var(--amber)}
+.srow{position:absolute;display:flex;align-items:center;gap:12px;font-size:27px;line-height:32px;font-weight:600;color:#fff;white-space:nowrap}
+.si{display:flex;color:var(--amber)}
+.srow.empty .st{color:#9A9AA6}
+.sdash{flex:1;height:0;margin-left:8px;border-bottom:3px dashed #5A5A66}
+
+/* CELULAR DA MARINA: CABEÇALHO, CONVERSA (barras em repouso, balões em foco) E CAMPO */
+.phone{position:absolute;z-index:3;overflow:hidden;border-radius:40px;border:4px solid #4A4A56;background:#0E1418}
+.phead{position:absolute;left:0;right:0;top:0;height:66px;display:flex;align-items:center;gap:10px;padding:0 14px;background:#182026}
+.pav{flex:none;width:40px;height:40px;border-radius:50%;background:#3A2E5C;display:grid;place-items:center;font-size:22px;font-weight:700}
+.pav i{font-style:normal}
+.bar.pname{position:relative;width:120px;height:22px}
+.pchat{position:absolute;left:0;right:0;top:66px;bottom:74px;overflow:hidden;background-color:#0E1418;background-image:radial-gradient(rgba(255,255,255,.06) 2px,transparent 2.5px);background-size:22px 22px}
+.bar.out{background:#1E4D3A}
+.bar.in{background:#262E35}
+.pinput{position:absolute;left:0;right:0;bottom:0;height:74px;display:flex;align-items:center;gap:8px;padding:0 8px;background:#182026}
+.ifield{flex:1;height:52px;border-radius:26px;background:#262E35}
+.isend{flex:none;width:46px;height:46px;border-radius:50%;background:#1E4D3A}
+.bub{position:absolute;padding:8px 12px;border-radius:14px;color:#E9EEF1;font-weight:500}
+.bub.out{background:#1E4D3A;border-top-right-radius:3px}
+.bub.in{background:#262E35;border-top-left-radius:3px}
+.tx{display:block}
+.phone .bub{max-width:218px;font-size:31px;line-height:36px}
+.tp .bub{max-width:252px;font-size:38px;line-height:44px}
+
+/* TUNER: PAINEL DA CONVERSA (CHIPS DE CANAL, LIGAÇÃO E MENSAGEM NA MESMA THREAD) */
+.tp{position:absolute;z-index:3;overflow:hidden;border-radius:22px;background:var(--panel);border:3px solid var(--line)}
+.chip{position:absolute;height:38px;padding:0 14px;border:2px solid #4A4A56;border-radius:19px;background:#17171B;color:var(--muted);font-size:24px;font-weight:600;line-height:34px;white-space:nowrap}
+.brk{position:absolute;background:var(--amber);border-radius:2px}
+.callrow{position:absolute;display:flex;align-items:center;gap:8px;height:44px;padding:0 10px;border-radius:12px;background:#1E252C;font-size:26px;font-weight:600;color:#D5DDE2;white-space:nowrap}
+
+/* KNOWLY: PAINEL DO DOCUMENTO, LINHA DESTACADA E LINHA QUE SE DESPRENDE */
+.kp{position:absolute;z-index:3;overflow:hidden;border-radius:18px;background:var(--panel);border:3px solid var(--line)}
+.kt{position:absolute;font-size:25px;font-weight:700;line-height:30px;color:#fff;white-space:nowrap}
+.khl{position:absolute;border-radius:8px;background:rgba(255,176,32,.22);border-left:4px solid var(--amber)}
+.kl{position:absolute;font-size:28px;line-height:34px;font-weight:600;color:#fff}
+.kl span,.kdet span{display:block}
+.kdet{position:absolute;z-index:25;padding:6px 24px;border-radius:16px;background:#2B2210;border:3px solid var(--amber);font-size:60px;line-height:66px;font-weight:700;color:#fff;white-space:nowrap;text-align:center}
+
+/* MAGNETO: PAINEL DOS TRÊS PASSOS, BOTÃO DE APROVAR E GESTORA */
+.mp{position:absolute;z-index:3;overflow:hidden;border-radius:22px;background:var(--panel);border:3px solid var(--line)}
+.step{position:absolute;display:flex;align-items:center;padding:0 12px;border-radius:14px;background:#1E252C;border:2px solid var(--line)}
+.stx b{display:block;font-size:33px;line-height:35px;font-weight:600;white-space:nowrap}
+.step .sok{position:absolute;right:10px;top:50%;margin-top:-15px;color:#53D68A}
+.step.btn{background:var(--amber);border-color:var(--amber);color:#1C1A16}
+.step.btn .sok{display:none}
+.step.btn .big{font-size:52px;line-height:54px;font-weight:700}
+.step.btn .mid{font-size:40px;line-height:40px;font-weight:700}
+.receipt{position:absolute}
+.mgr{position:absolute;z-index:3;display:flex;align-items:center;gap:12px;padding:0 14px;border-radius:24px;background:var(--panel);border:3px solid var(--line);white-space:nowrap}
+.mgr .av{flex:none;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#3A2E5C;font-size:30px;font-weight:700}
+.mgr .av i{font-style:normal}
+.mgr .mt{display:flex;flex-direction:column}
+.mgr .mt b{font-size:36px;line-height:42px;font-weight:700}
+.mgr .mt .dm{color:var(--muted);font-weight:600}
+
+/* PACOTES, CHIPS EM VOO, DEDO E ONDA DO TOQUE */
+.packet{position:absolute;z-index:26;width:52px;height:52px;border-radius:50%;background:var(--amber);display:grid;place-items:center;box-shadow:0 0 22px rgba(255,176,32,.5)}
+.fchip{position:absolute;z-index:26;display:flex;align-items:center;gap:8px;height:52px;padding:0 18px;border-radius:26px;background:#2B2210;border:2px solid var(--amber);font-size:30px;font-weight:700;color:#fff;white-space:nowrap}
+.finger{position:absolute;z-index:27;width:34px;height:34px;border-radius:50%;background:#fff;border:4px solid var(--amber)}
+.packet.rc{width:40px;height:40px}
+.ripple{position:absolute;z-index:26;width:90px;height:90px;border-radius:50%;border:5px solid #1C1A16}
+img.logo{position:absolute;z-index:5;display:block}
+</style>
+</head>
+<body>
+<!-- data-endorse: "off" (padrão) usa o logo standalone; "on" usa o arquivo com o selo "by welabs" -->
+<div id="root" data-composition-id="welabs-chain-value-s5" data-brand="welabs" data-brand-scripts="welabs/welabs-brand.js" data-endorse="off" data-width="1920" data-height="1080" data-duration="49">
+  <!-- Ilha única: casa do Domus cheia, funil do Relloo colado, três trilhos (Tuner, Magneto, Knowly); a coreografia monta o resto -->
+  <div id="world">
+    <img id="lg-domus" class="logo" data-p="domus" alt="Domus" data-brand-src="welabs/domus-logo-on-dark.svg">
+    <img id="lg-relloo" class="logo" data-p="relloo" alt="Relloo" data-brand-src="welabs/relloo-logo-on-dark.svg">
+    <img id="lg-tuner" class="logo" data-p="tuner" alt="Tuner" data-brand-src="welabs/tuner-logo-on-dark.svg">
+    <img id="lg-magneto" class="logo" data-p="magneto" alt="Magneto" data-brand-src="welabs/magneto-logo-on-dark.svg">
+    <img id="lg-knowly" class="logo" data-p="knowly" alt="Knowly" data-brand-src="welabs/knowly-logo-on-dark.svg">
+  </div>
+</div>
+<script id="story" type="application/json">{"shop":"Loja · DEMO","card":{"title":["Alteração de entrega","Pedido 1234"],"owner":"Ana · DEMO","sla":"Prazo 2 h","history":"3 pedidos · 2 conversas","followup":"Retorno hoje 16h","delivery":""},"stages":["Novo","Em análise","Aguardando aprovação","Resolvido"],"channels":["Voz","WhatsApp"],"call":"Ligação · 0:42","chat":{"out":"Dá para entregar sábado?","in":"Confirmado: sábado ✓"},"kb":{"title":"Política de entregas","line1":"Sábado: entregas","line2":"até 12h"},"manager":["Gestora","DEMO"],"steps":[["Conferir","envio"],["Aprovar","alteração"],["Atualizar","pedido"]],"room":["Pedido 1234","sábado ✓"],"chips":{"address":"Rua das Flores · DEMO","order":"Pedido 1234","window":"Sábado disponível","rule":"Regra"}}</script>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script src="../../_shared/vendor/chain-value/1.4.0/choreography.js"></script>
+<script>
+// LINHA DO TEMPO DA PEÇA (coreografia chain-value 1.4.0; termina exatamente em data-duration)
+// Versão longa para apresentações: hold de 2,0 s por cena e 3,0 s de ilha acesa no fim (49,0 s); o site recorta as cenas pelo manifesto.
+window.__timelines = window.__timelines || {};
+(function () {
+  var root = document.getElementById('root');
+  var story = JSON.parse(document.getElementById('story').textContent);
+  var tl = ChainValue.build({ root: root, format: 'desktop', story: story, hold: 2.0, duration: 49 });
+  window.__timelines["welabs-chain-value-s5"] = tl;
+})();
+</script>
+</body>
+</html>

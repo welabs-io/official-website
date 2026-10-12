@@ -29,17 +29,24 @@ for (const vp of VIEWPORTS)
         const ring = document.querySelector("#chain-ring");
         if (!ring) return;
         w.__samples++;
-        for (const tile of ring.querySelectorAll<HTMLElement>("[data-pos]")) {
-          const pos = Number(tile.dataset.pos);
-          if (pos !== 1 && pos !== 2) continue;
-          // The displayed cover: the first image of the tile that is rendered (display is not none)
-          const shown = [...tile.querySelectorAll("img")].filter(
-            (img) => img.offsetParent !== null,
+        // `data-pos` is clamped to -2..2, so with an odd count (7 steps) two tiles share place 2: the real +2 and the
+        // one behind it at +3. The real one is the tile with a rendered cover; the place needs one decoded cover.
+        for (const pos of [1, 2]) {
+          const tiles = [
+            ...ring.querySelectorAll<HTMLElement>(`[data-pos="${pos}"]`),
+          ];
+          // The displayed cover: an image of the tile that is rendered (display is not none)
+          const ok = tiles.some((tile) =>
+            [...tile.querySelectorAll("img")].some(
+              (img) =>
+                img.offsetParent !== null &&
+                img.complete &&
+                img.naturalWidth > 0,
+            ),
           );
-          const ok = shown.some((img) => img.complete && img.naturalWidth > 0);
           if (!ok)
             w.__bad.push(
-              `swap ${w.__swaps} pos ${pos} ${tile.getAttribute("aria-label")}`,
+              `swap ${w.__swaps} pos ${pos} ${tiles.map((t) => t.getAttribute("aria-label")).join(" | ")}`,
             );
         }
       }, 50);

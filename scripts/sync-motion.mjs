@@ -109,7 +109,10 @@ for (const [id, piece] of Object.entries(manifest.pieces)) {
     fail(`${id}: no style block for the hide rule`);
   // Site copy: the hide rule goes before the first </style>, exactly the text the manifest hashed
   const rule = `/* Site variant v5: hidden slots, choreography untouched */\n${piece.siteVariant.hide.join(",")}{display:none!important}\n`;
-  const copy = text.replace("</style>", `${rule}</style>`);
+  // An empty hide list means no rule: the site copy is the accepted piece byte for byte (the hash check below still applies)
+  const copy = piece.siteVariant.hide.length
+    ? text.replace("</style>", `${rule}</style>`)
+    : text;
   if (sha(copy) !== piece.sha256)
     fail(`${id}: the site copy does not hash to the manifest sha256`);
   const target = join(motionRoot, "pieces", id);

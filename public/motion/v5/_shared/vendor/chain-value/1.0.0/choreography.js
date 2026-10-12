@@ -14,25 +14,26 @@
 
   // GEOMETRIA DO MUNDO (px a 1920x1080, câmera 1,0)
   var G = {
-    rail: {tuner: 300, magneto: 560, knowly: 820},
+    // The Magneto rail runs through the 14 px gap between the second and third room rows (566-580), never over a room
+    rail: {tuner: 300, magneto: 573, knowly: 820},
     phone: {x: 40, y: 340, w: 264, h: 460},
-    pills: {x: 320, right: 511, y: [322, 384, 446]},
+    pills: {x: 320, right: 511, y: [318, 374, 430]},
     annex: {x: 600, y: 340, w: 330, h: 460},
-    house: {x: 930, w: 574, roofY: 240, eaveY: 340, bodyY: 340, bodyH: 460},
-    room: {w: 250, h: 96, gapX: 20, gapY: 14, padX: 27, padY: 20},
-    manager: {x: 1550, y: 340, w: 340, h: 120},
-    // B1 framing: the whole house stays in frame. Window 1536 x 864 world px (scale 1.25) from x 0 and y 74: the house right
-    // edge (1504) keeps 32 world px, the Domus logo keeps 96 screen px from the top edge
-    camera: {s: 1.25, x: 0, y: -92.5}
+    house: {x: 930, w: 614, roofY: 240, eaveY: 340, bodyY: 340, bodyH: 460},
+    room: {w: 270, h: 96, gapX: 20, gapY: 14, padX: 27, padY: 20},
+    manager: {x: 1570, y: 340, w: 320, h: 130},
+    // B1 framing: the whole house stays in frame. Window 1600 x 900 world px (scale 1.2) from x 0 and y 71: the house right
+    // edge (1544) keeps 56 world px, the Domus logo keeps 96 screen px from the top edge
+    camera: {s: 1.2, x: 0, y: -85.2}
   };
   // Logo table: x-height based size (lx px), viewBox of the plain (wp x hp, top vy) and endorsed (he) files, x of the left
   // edge and base = world y of the text baseline (logo baseline sits at viewBox y 210); Tuner and Relloo share one baseline
   var LOGO = {
-    domus:   {K: 1.958,  wp: 864.66,  hp: 293.70, he: 426.63, vy: -4.80,  lx: 30, x: 1130, base: 194},
+    domus:   {K: 1.958,  wp: 864.66,  hp: 293.70, he: 426.63, vy: -4.80,  lx: 30, x: 1150, base: 194},
     relloo:  {K: 1.894,  wp: 640.92,  hp: 284.10, he: 421.83, vy: 0,      lx: 30, x: 701,  base: 264},
     tuner:   {K: 2.2569, wp: 772.57,  hp: 338.53, he: 466.96, vy: -45.13, lx: 30, x: 320,  base: 264},
-    magneto: {K: 2.014,  wp: 1155.84, hp: 302.10, he: 430.83, vy: -9,     lx: 30, x: 320,  base: 554},
-    knowly:  {K: 2.014,  wp: 916.20,  hp: 302.10, he: 430.83, vy: -9,     lx: 30, x: 320,  base: 812}
+    magneto: {K: 2.014,  wp: 1155.84, hp: 302.10, he: 430.83, vy: -9,     lx: 30, x: 320,  base: 549},
+    knowly:  {K: 2.014,  wp: 916.20,  hp: 302.10, he: 430.83, vy: -9,     lx: 30, x: 320,  base: 796}
   };
   var ICONS = {
     Pessoas: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
@@ -105,7 +106,7 @@
     d.annex = el(isl, 'div', 'annex', {left: a.x, top: a.y, width: a.w, height: a.h});
     d.annexHead = el(d.annex, 'div', 'ah', null, '<span>Conversas</span>');
     d.skel = el(d.annex, 'div', 'skel', null, '<i></i><i></i><i></i>');
-    d.row = el(d.annex, 'div', 'arow', null, '<span class="av"><i>M</i></span><b>' + story.person + '</b>');
+    d.row = el(d.annex, 'div', 'arow', null, '<b>' + story.person + '</b>');
     d.tag = el(d.annex, 'div', 'atag', null, '<span>' + story.channels[0] + '</span>');
     d.bubbleIn = el(d.annex, 'div', 'bub in', null, '<span>' + story.message + '</span>');
     d.seam = svg(isl, '<path class="seam" d="M930 450V548C902 548 902 592 930 592V690"/>', {left: 0, top: 0, zIndex: 4});
@@ -129,7 +130,7 @@
 
     // Manager card (right side of the island; used by the later beats)
     var m = G.manager;
-    d.manager = el(isl, 'div', 'mgr', {left: m.x, top: m.y, width: m.w, height: m.h}, '<span class="av"><i>G</i></span><div class="mt"><b>' + story.manager + '</b></div>');
+    d.manager = el(isl, 'div', 'mgr', {left: m.x, top: m.y, width: m.w, height: m.h}, '<span class="av"><i>G</i></span><div class="mt"><b>' + story.manager.split(' · ')[0] + '</b><b class="dm">' + (story.manager.split(' · ')[1] || '') + '</b></div>');
 
     // Logos: sized from the x-height; "on" swaps to the sealed file and gives the seal band back as negative margin
     d.logos = {};
@@ -191,6 +192,10 @@
     tl.to([d.logos.domus, d.outline].concat(d.rooms), {opacity: 0.7, duration: 0.4, ease: 'power1.out'}, T.b1);
     tl.to([d.logos.magneto, d.logos.knowly, d.rails.magneto, d.rails.knowly], {opacity: 0.45, duration: 0.4, ease: 'power1.out'}, T.b1);
     tl.to(d.manager, {opacity: 0, duration: 0.3, ease: 'power1.out'}, T.b1);
+    // The rails stop at world x 1560 (inside the 1600 px window) instead of bleeding through the right edge
+    tl.to([d.rails.tuner, d.rails.magneto, d.rails.knowly], {scaleX: (1560 - 64) / 1792, duration: T.camDur, ease: 'power2.inOut'}, T.b1);
+    // Header texts of the phone and of the conversation card appear with the camera, never as tiny text in the open shot
+    tl.fromTo([d.phone.querySelector('.ptop span'), d.annexHead.querySelector('span')], {opacity: 0}, {opacity: 1, duration: 0.4, ease: 'power1.out'}, T.b1 + 0.2);
     // Typed message: one word every wordStep seconds (opacity only, the bubble keeps its full layout)
     // The bubble grows downward while the words arrive (clip reveal, so it never shows empty at full height)
     tl.fromTo(d.bubbleOut, {opacity: 0, clipPath: 'inset(0px 0px 70% 0px)'}, {opacity: 1, clipPath: 'inset(0px 0px 0% 0px)', duration: d.words.length * T.wordStep, ease: 'none'}, T.typeAt - 0.02);
