@@ -1,11 +1,15 @@
-// SINCRONIZAÇÃO DOS FILMES DO SITE
-// Copies the pieces listed in lib/motion-pieces.json (five product openings and the product films;
-// the chain montage of lib/home-montage.json uses clips of those films) from the portfolio round (read only) into public/motion/pieces/<id>/, copies _shared the way the site
-// serves it (manifest, loader, vendor, Welabs brand version), copies the pinned HyperFrames player and
-// renders one cover frame per piece into public/motion/posters/<id>.jpg.
-// Usage: node scripts/sync-motion.mjs [--no-posters]
-import { createServer } from "node:http";
+// SINCRONIZAÇÃO DO MANIFESTO DE MOTION
+// Brings the motion round into the site from its manifest (plan-v5/out/motion-manifest.json), and nothing else:
+//  1. validates the manifest against its JSON Schema (draft 2020-12; ajv comes from AJV_DIR, a node_modules folder);
+//  2. copies the manifest to lib/motion-manifest.json (and the schema to lib/motion-manifest.schema.json), which the site
+//     reads at build time;
+//  3. builds the site copy of every referenced piece into public/motion/v5/pieces/<id>/ (the accepted piece plus the hide
+//     rule of `siteVariant`, sha256 checked against the manifest) with its assets;
+//  4. copies every referenced cover (public/motion/v5/posters/), the shared brand files and the pinned player.
+// The round is read only. Every path the manifest mentions must exist after the copy, or the script fails.
+// Usage: node scripts/sync-motion.mjs [--manifest <file>] [--covers <dir>] [--schema <file>]
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import {
   cpSync,
   existsSync,
@@ -13,112 +17,104 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
-  statSync,
   writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, extname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const publicRoot = join(siteRoot, "public");
-const motionRoot = join(publicRoot, "motion");
+const motionRoot = join(siteRoot, "public/motion/v5");
 const round = resolve(
   homedir(),
   "code/control/portfolio/motion/portfolio-20261002",
 );
-const PLAYER_VERSION = "0.8.104";
-const withPosters = !process.argv.includes("--no-posters");
-const pieces = JSON.parse(
-  readFileSync(join(siteRoot, "lib/motion-pieces.json"), "utf8"),
+const planOut = resolve(
+  homedir(),
+  "code/control/portfolio/site-redesign/plan-v5",
+);
+const arg = (name, fallback) => {
+  const at = process.argv.indexOf(name);
+  return at >= 0 ? resolve(process.argv[at + 1]) : fallback;
+};
+const manifestFile = arg(
+  "--manifest",
+  join(planOut, "out/motion-manifest.json"),
+);
+const coversDir = arg("--covers", join(planOut, "out/covers"));
+const schemaFile = arg(
+  "--schema",
+  join(planOut, "motion-manifest.schema.v1.1.json"),
 );
 
-// PEÇAS DA LISTA
-// `cover` is the time (s) of the still frame: the closing frame for openings, a frame inside the clip for films.
-const list = [];
-const add = (piece, cover) => list.push({ ...piece, cover });
-// Film covers sit half a second after the start of the played range (clip, or 1.2 s for a film played in full, which
-// skips the empty first frames): that is what a preloaded neighbour shows, so the cover and the player match.
-const FILM_START = 1.2;
-const filmCover = (film) => (film.clip?.[0] ?? FILM_START) + 0.5;
-// Chain films (the relation clips of the montage): copied whole, no cover of their own
-for (const film of pieces.chain ?? []) list.push({ ...film, cover: null });
-for (const product of Object.values(pieces.products)) {
-  add(product.intro, product.intro.duration - 0.04);
-  for (const film of product.films) add(film, filmCover(film));
-}
+const read = (file) => JSON.parse(readFileSync(file, "utf8"));
+const sha = (text) => createHash("sha256").update(text).digest("hex");
+const fail = (message) => {
+  process.stderr.write(`sync-motion: ${message}\n`);
+  process.exit(1);
+};
 
-// CAPAS DA MONTAGEM
-// The chain montage (lib/home-montage.json) plays clips of films already in the list; each step gets its own cover,
-// half a second into the clip, named montage-<n>.
-const montage = JSON.parse(
-  readFileSync(join(siteRoot, "lib/home-montage.json"), "utf8"),
+// VALIDAÇÃO CONTRA O SCHEMA
+const manifest = read(manifestFile);
+const schema = read(schemaFile);
+const require = createRequire(
+  `${process.env.AJV_DIR || "/home/douglas/code/a2ui/node_modules"}/`,
 );
-const listed = new Set(list.map((piece) => piece.id));
-const covers = [
-  ...list
-    .filter((piece) => piece.cover !== null)
-    .map((piece) => ({
-      id: piece.id,
-      name: piece.id,
-      cover: piece.cover,
-    })),
-  ...montage.steps.map((step, i) => {
-    for (const segment of step.segments)
-      if (!listed.has(segment.film))
-        throw new Error(`montage step ${i + 1}: ${segment.film} is not listed`);
-    const first = step.segments[0];
-    return {
-      id: first.film,
-      name: `montage-${i + 1}`,
-      cover: first.start + 0.5,
-    };
-  }),
-];
-
-// CONFERÊNCIA DE ACEITE
-const accepted = JSON.parse(readFileSync(join(round, "accepted.json"), "utf8"));
-const html = (id) => join(round, "pieces", id, "index.html");
-const sha = (file) =>
-  createHash("sha256").update(readFileSync(file)).digest("hex");
-const durationOf = (id) =>
-  Number(
-    readFileSync(html(id), "utf8").match(/data-duration="([0-9.]+)"/)?.[1],
+const Ajv2020 = require("ajv/dist/2020").default;
+// `format` words (date-time) are not checked: the manifest is machine written
+const ajv = new Ajv2020({
+  allErrors: true,
+  strict: false,
+  validateFormats: false,
+});
+const validate = ajv.compile(schema);
+if (!validate(manifest))
+  fail(
+    `manifest does not match the schema:\n${validate.errors
+      .slice(0, 12)
+      .map((e) => `  ${e.instancePath || "/"} ${e.message}`)
+      .join("\n")}`,
   );
-for (const piece of list) {
-  if (
-    !existsSync(html(piece.id)) ||
-    accepted[piece.id]?.sha256 !== sha(html(piece.id))
-  )
-    throw new Error(`${piece.id} is not accepted at its hash`);
-  if (durationOf(piece.id) !== piece.duration)
-    throw new Error(
-      `${piece.id}: duration ${durationOf(piece.id)} differs from lib/motion-pieces.json (${piece.duration})`,
-    );
-}
 
-// CÓPIA
-// The site never shows the tagline of an opening: its slot (.role) is hidden in the copy, in the exact text that
-// ring.test.ts looks for
-const openings = new Set(
-  Object.values(pieces.products).map((product) => product.intro.id),
-);
-const HIDE_TAGLINE =
-  "/* Site variant: the tagline slot stays out of the picture; the choreography is untouched */\n.role{display:none!important}\n";
+// CAMINHOS CITADOS
+// Every site path under /motion/v5/ the manifest mentions, collected by walking it.
+const paths = new Set();
+const walk = (node) => {
+  if (typeof node === "string") {
+    if (node.startsWith("/motion/v5/")) paths.add(node);
+  } else if (Array.isArray(node)) node.forEach(walk);
+  else if (node && typeof node === "object") Object.values(node).forEach(walk);
+};
+walk(manifest);
+
+// PEÇAS
+const accepted = read(join(round, "accepted.json"));
 rmSync(motionRoot, { recursive: true, force: true });
 mkdirSync(join(motionRoot, "pieces"), { recursive: true });
-for (const { id } of list) {
+mkdirSync(join(motionRoot, "posters"), { recursive: true });
+for (const [id, piece] of Object.entries(manifest.pieces)) {
+  const source = join(round, "pieces", id, "index.html");
+  if (!existsSync(source)) fail(`${id}: the piece is not in the round`);
+  const text = readFileSync(source, "utf8");
+  if (
+    sha(text) !== piece.sourceSha256 ||
+    accepted[id]?.sha256 !== piece.sourceSha256
+  )
+    fail(
+      `${id}: the piece in the round is not the accepted one of the manifest`,
+    );
+  if (Number(text.match(/data-duration="([0-9.]+)"/)?.[1]) !== piece.duration)
+    fail(`${id}: data-duration differs from the manifest`);
+  if (!text.includes("</style>"))
+    fail(`${id}: no style block for the hide rule`);
+  // Site copy: the hide rule goes before the first </style>, exactly the text the manifest hashed
+  const rule = `/* Site variant v5: hidden slots, choreography untouched */\n${piece.siteVariant.hide.join(",")}{display:none!important}\n`;
+  const copy = text.replace("</style>", `${rule}</style>`);
+  if (sha(copy) !== piece.sha256)
+    fail(`${id}: the site copy does not hash to the manifest sha256`);
   const target = join(motionRoot, "pieces", id);
   mkdirSync(target, { recursive: true });
-  cpSync(html(id), join(target, "index.html"));
-  // Site variant of the product openings: the tagline slot is hidden (the choreography is untouched)
-  if (openings.has(id)) {
-    const file = join(target, "index.html");
-    const source = readFileSync(file, "utf8");
-    if (!source.includes("</style>"))
-      throw new Error(`${id}: no style block to hide the tagline slot`);
-    writeFileSync(file, source.replace("</style>", `${HIDE_TAGLINE}</style>`));
-  }
+  writeFileSync(join(target, "index.html"), copy);
   const assets = join(round, "pieces", id, "assets");
   if (existsSync(assets))
     cpSync(assets, join(target, "assets"), {
@@ -126,23 +122,31 @@ for (const { id } of list) {
       dereference: true,
     });
 }
-const manifest = JSON.parse(
-  readFileSync(join(round, "_shared/brand/manifest.json"), "utf8"),
-);
-// The product openings of the manifest must be the ones this site lists
-for (const [slug, product] of Object.entries(pieces.products))
-  if (manifest.products[slug] !== product.intro.id)
-    throw new Error(
-      `manifest opening of ${slug} is ${manifest.products[slug]}`,
-    );
+
+// CAPAS
+let covers = 0;
+for (const path of paths) {
+  if (!path.includes("/posters/")) continue;
+  const source = join(coversDir, basename(path));
+  if (!existsSync(source)) fail(`missing cover ${basename(path)}`);
+  cpSync(source, join(motionRoot, "posters", basename(path)));
+  covers++;
+}
+
+// ARQUIVOS COMPARTILHADOS DA MARCA
+const brand = read(join(round, "_shared/brand/manifest.json"));
+if (brand.brands.welabs.version !== manifest.brand.welabs)
+  fail(
+    `brand ${brand.brands.welabs.version} in the round, ${manifest.brand.welabs} in the manifest`,
+  );
 const shared = join(motionRoot, "_shared");
 for (const rel of ["brand/manifest.json", "brand/loader.js"]) {
   mkdirSync(dirname(join(shared, rel)), { recursive: true });
   cpSync(join(round, "_shared", rel), join(shared, rel));
 }
 cpSync(
-  join(round, "_shared/brand/welabs", manifest.brands.welabs.version),
-  join(shared, "brand/welabs", manifest.brands.welabs.version),
+  join(round, "_shared/brand/welabs", manifest.brand.welabs),
+  join(shared, "brand/welabs", manifest.brand.welabs),
   { recursive: true },
 );
 cpSync(join(round, "_shared/vendor"), join(shared, "vendor"), {
@@ -150,101 +154,45 @@ cpSync(join(round, "_shared/vendor"), join(shared, "vendor"), {
 });
 
 // PLAYER FIXADO
-function findNpx(pkgPath, check) {
-  const cacheRoot = join(homedir(), ".npm/_npx");
-  for (const entry of readdirSync(cacheRoot)) {
-    const pkg = join(cacheRoot, entry, "node_modules", pkgPath);
-    try {
-      if (check(pkg)) return pkg;
-    } catch {
-      /* not this cache entry */
+const cache = join(homedir(), ".npm/_npx");
+let hyperframes = null;
+for (const entry of readdirSync(cache)) {
+  const dir = join(cache, entry, "node_modules/hyperframes");
+  try {
+    if (read(join(dir, "package.json")).version === manifest.player.version) {
+      hyperframes = dir;
+      break;
     }
+  } catch {
+    /* not this cache entry */
   }
-  return null;
 }
-const hyperframes = findNpx(
-  "hyperframes",
-  (p) =>
-    JSON.parse(readFileSync(join(p, "package.json"), "utf8")).version ===
-    PLAYER_VERSION,
-);
 if (!hyperframes)
-  throw new Error(`HyperFrames ${PLAYER_VERSION} not found in the npm cache`);
+  fail(`HyperFrames ${manifest.player.version} not found in the npm cache`);
 cpSync(
   join(hyperframes, "dist/hyperframes-player.global.js"),
   join(motionRoot, "player.js"),
 );
-process.stdout.write(`motion: ${list.length} pieces synced\n`);
-if (!withPosters) process.exit(0);
 
-// CAPAS
-// A still of each piece through the pinned player, served by a static server over public/ like the site does.
-const playwrightRoot = findNpx("playwright", (p) =>
-  existsSync(join(p, "index.mjs")),
+// MANIFESTO NO SITE
+writeFileSync(
+  join(siteRoot, "lib/motion-manifest.json"),
+  `${JSON.stringify(manifest, null, 2)}\n`,
 );
-if (!playwrightRoot) throw new Error("playwright not found in the npx cache");
-const { chromium } = await import(join(playwrightRoot, "index.mjs"));
-const types = {
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".webp": "image/webp",
-  ".woff2": "font/woff2",
-};
-const host = (src) =>
-  `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;background:#000;overflow:hidden}hyperframes-player{display:block;width:100vw;height:100vh}</style><script src="/motion/player.js"></script><hyperframes-player src="${src}" width="1920" height="1080"></hyperframes-player>`;
-const server = createServer((req, res) => {
-  const url = new URL(req.url, "http://x");
-  if (url.pathname === "/__poster") {
-    res.writeHead(200, { "content-type": types[".html"] });
-    return res.end(host(url.searchParams.get("src")));
-  }
-  const file = resolve(publicRoot, `.${decodeURIComponent(url.pathname)}`);
+writeFileSync(
+  join(siteRoot, "lib/motion-manifest.schema.json"),
+  `${JSON.stringify(schema, null, 2)}\n`,
+);
+
+// CONFERÊNCIA FINAL: tudo que o manifesto cita existe sob public/
+for (const path of paths)
   if (
-    file.startsWith(publicRoot + sep) &&
-    existsSync(file) &&
-    statSync(file).isFile()
-  ) {
-    res.writeHead(200, {
-      "content-type": types[extname(file)] ?? "application/octet-stream",
-    });
-    return res.end(readFileSync(file));
-  }
-  res.writeHead(404).end();
-});
-await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
-const base = `http://127.0.0.1:${server.address().port}`;
-mkdirSync(join(motionRoot, "posters"), { recursive: true });
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-for (const piece of covers) {
-  await page.goto(
-    `${base}/__poster?src=${encodeURIComponent(`/motion/pieces/${piece.id}/index.html`)}`,
-  );
-  await page.waitForFunction(
-    () => {
-      const el = document.querySelector("hyperframes-player");
-      return el && el.ready && el.duration > 0;
-    },
-    null,
-    { timeout: 30000 },
-  );
-  await page.evaluate((t) => {
-    const el = document.querySelector("hyperframes-player");
-    el.pause();
-    el.seek(t);
-  }, piece.cover);
-  await page.waitForTimeout(700);
-  await page.screenshot({
-    path: join(motionRoot, "posters", `${piece.name}.jpg`),
-    type: "jpeg",
-    quality: 78,
-  });
-}
-await browser.close();
-server.close();
-process.stdout.write(`motion: ${covers.length} posters written\n`);
+    !existsSync(join(siteRoot, "public", path)) &&
+    path !== manifest.player.src
+  )
+    fail(`the manifest mentions ${path}, which is not in public/`);
+if (!existsSync(join(siteRoot, "public", manifest.player.src)))
+  fail(`player ${manifest.player.src} is not in public/`);
+process.stdout.write(
+  `motion: manifest valid, ${Object.keys(manifest.pieces).length} pieces, ${covers} covers synced (round ${manifest.round})\n`,
+);

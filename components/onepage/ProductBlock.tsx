@@ -1,8 +1,10 @@
 // CABEÇALHO DE PRODUTO
-// Logo with the "by welabs" seal and one factual line. The logo links to the product page except on that page itself.
+// Large logo (the identity highlight, so it carries the seal per endorsePolicy) and one factual line. The logo links
+// to the product page except on that page itself.
 import Link from "next/link";
 import {
   LOGO_PAD,
+  productAlt,
   productBySlug,
   productLogo,
   type ProductSlug,
@@ -27,8 +29,8 @@ export function ProductBlock({
   const logo = (
     <img
       className={styles.logo}
-      src={productLogo(slug, tone)}
-      alt={`${product.name} by Welabs`}
+      src={productLogo(slug, tone, "hero", 64)}
+      alt={productAlt(slug, "hero")}
       width={1005}
       height={550}
       style={{ "--pad": LOGO_PAD[slug] } as React.CSSProperties}
@@ -37,14 +39,14 @@ export function ProductBlock({
   return (
     <div
       className={className}
-      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      style={{ display: "flex", flexDirection: "column", gap: 8 }}
     >
       <Heading style={{ margin: 0, fontSize: "inherit", lineHeight: 0 }}>
         {link ? (
           <Link
             className={styles.logoLink}
             href={`/products/${slug}`}
-            aria-label={`${product.name} by Welabs`}
+            aria-label={productAlt(slug, "hero")}
           >
             {logo}
           </Link>

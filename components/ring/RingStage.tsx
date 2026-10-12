@@ -2,31 +2,19 @@
 // The whole carousel is plain server markup: one tile per slide with its cover images, and the optional row of product
 // logos. Nothing here hydrates. RingDriver (the only client piece) finds the stage by id once it is near the screen and
 // moves the tiles by changing `data-pos`, so no player, no playback code and no state ship with the first paint.
-import Link from "next/link";
-import {
-  CUT_POSTERS,
-  MONTAGE_SLIDES,
-  PRODUCT_SLIDES,
-  productFilms,
-  type Slide,
-} from "@/lib/motion-slides";
-import { PRODUCTS, productLogo, type ProductSlug } from "@/lib/products";
-import { isNear, placeOf, ringPosition } from "./positions";
-import { RingDriver, type RingKind } from "./RingDriver";
+import { LogoRow } from "@/components/template/LogoRow";
+import type { Cover } from "@/lib/manifest/types";
+import { ringData, slidesOf, type RingKind } from "@/lib/ring-data";
+import type { ProductSlug } from "@/lib/products";
+import { coverShown, isNear, placeOf, ringPosition } from "./positions";
+import { RingDriver } from "./RingDriver";
 import styles from "./ring.module.css";
 
-type Tile = { key: string; poster: string; endPoster?: string };
-
-// Products each cut of the chain shows (the same order as the tiles)
-export const CHAIN_LIT: readonly (readonly ProductSlug[])[] =
-  MONTAGE_SLIDES.flatMap((slide) =>
-    slide.segments.map((segment) => segment.products ?? []),
-  );
-
-const chainTiles = (): Tile[] =>
-  CUT_POSTERS.map((poster, i) => ({ key: `cut-${i + 1}`, poster }));
-const slideTiles = (slides: Slide[]): Tile[] =>
-  slides.map(({ key, poster, endPoster }) => ({ key, poster, endPoster }));
+// Covers come in two widths (the manifest's 1280 and 640): a phone shows a tile of about 330 px and never needs 1280
+const coverSet = (c: Cover) => `${c.w640} 640w, ${c.w1280} 1280w`;
+// On a desktop the cover is a still seen at the edge (neighbours at half scale) or for the instant before the player
+// paints, so 480 px picks the 640 px file on a 1x screen and the 1280 px one only from 2x; a phone takes the wrap
+const COVER_SIZES = "(max-width: 860px) 100vw, 480px";
 
 export type RingProps = {
   id: string;
@@ -36,8 +24,9 @@ export type RingProps = {
   fullscreen?: boolean;
   // First paint: the active cover is the largest image of the page, so it loads at once; below the fold it is lazy
   eager?: boolean;
-  // Row of product logos under the stage: lit by the cut (chain) or by the product (links on the home)
-  logos?: "lit" | "links" | null;
+  // Row of product logos under the stage: lit by the cut (chain), by the product (links on the home) or pinned to the
+  // product of the page (links to the others)
+  logos?: "lit" | "links" | "pinned" | null;
   // Theme of the logo files: the one of the band the stage sits on
   tone?: "dark" | "light";
   label: string;
@@ -53,54 +42,64 @@ export function RingStage({
   tone = "dark",
   label,
 }: RingProps) {
-  const tiles =
-    kind === "chain"
-      ? chainTiles()
-      : kind === "products"
-        ? slideTiles(PRODUCT_SLIDES)
-        : kind === "films"
-          ? slideTiles(productFilms(slug!))
-          : slideTiles(PRODUCT_SLIDES.filter((slide) => slide.slug === slug));
-  const lit = kind === "chain" ? CHAIN_LIT[0] : [PRODUCTS[0].slug];
+  const slides = slidesOf(kind, slug);
+  const data = ringData(kind, slug);
   return (
     <div
       id={id}
       className={
         fullscreen ? styles.screen : `${styles.screen} ${styles.inline}`
       }
+      data-tone={tone}
       role="region"
       aria-label={label}
     >
       <div className={styles.stage} data-ring={kind}>
-        {tiles.map((tile, i) => {
-          const position = ringPosition(i, 0, tiles.length);
+        {slides.map((slide, i) => {
+          const position = ringPosition(i, 0, slides.length);
           return (
             <div
-              key={tile.key}
+              key={slide.key}
               className={styles.tile}
               data-pos={placeOf(position)}
               data-near={isNear(position) ? "" : undefined}
+              role="group"
+              aria-label={slide.label}
               aria-hidden={position === 0 ? undefined : true}
             >
               <div className={styles.tileFrame}>
-                {tile.endPoster && (
+                {slide.endCover && (
                   <img
                     className={styles.posterEnd}
-                    src={tile.endPoster}
+                    src={slide.endCover.w1280}
+                    srcSet={coverSet(slide.endCover)}
+                    sizes={COVER_SIZES}
                     alt=""
-                    width={960}
-                    height={540}
-                    loading="lazy"
+                    width={1280}
+                    height={720}
+                    data-cover="end"
+                    loading={
+                      eager && coverShown(position, "end", true)
+                        ? "eager"
+                        : "lazy"
+                    }
                     decoding="async"
                   />
                 )}
                 <img
                   className={styles.poster}
-                  src={tile.poster}
+                  src={slide.cover.w1280}
+                  srcSet={coverSet(slide.cover)}
+                  sizes={COVER_SIZES}
                   alt=""
-                  width={960}
-                  height={540}
-                  loading={eager && position === 0 ? "eager" : "lazy"}
+                  width={1280}
+                  height={720}
+                  data-cover="start"
+                  loading={
+                    eager && coverShown(position, "start", !!slide.endCover)
+                      ? "eager"
+                      : "lazy"
+                  }
                   fetchPriority={eager && position === 0 ? "high" : undefined}
                   decoding="async"
                 />
@@ -111,42 +110,31 @@ export function RingStage({
         })}
       </div>
       {logos && (
-        <ul className={styles.products} aria-label="Produtos">
-          {PRODUCTS.map(({ slug: product, name }) => {
-            const logo = (
-              <img
-                src={productLogo(product, tone)}
-                alt={logos === "lit" ? name : ""}
-                height={28}
-                width={51}
-                loading="lazy"
-                decoding="async"
-              />
-            );
-            return (
-              <li
-                key={product}
-                className={styles.product}
-                data-slug={product}
-                data-on={lit.includes(product) ? "true" : "false"}
-              >
-                {logos === "links" ? (
-                  <Link
-                    href={`/products/${product}`}
-                    prefetch={false}
-                    aria-label={`${name} by Welabs`}
-                  >
-                    {logo}
-                  </Link>
-                ) : (
-                  logo
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <LogoRow
+          mode={
+            logos === "lit"
+              ? "connection"
+              : logos === "pinned"
+                ? "pinned"
+                : "active"
+          }
+          tone={tone}
+          lit={data.lit[0] as ProductSlug[]}
+          span={data.spans[0]}
+          label={data.labels[0]}
+          pinned={logos === "pinned" ? slug : undefined}
+          links={logos !== "lit"}
+        />
       )}
-      <RingDriver rootId={id} kind={kind} slug={slug} />
+      {/* What ring-run plays, so the lazy chunk reads the DOM instead of importing the manifest */}
+      <script
+        type="application/json"
+        data-ring-data
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+        }}
+      />
+      <RingDriver rootId={id} kind={kind} />
     </div>
   );
 }

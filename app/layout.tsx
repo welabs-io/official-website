@@ -1,17 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 // Welabs package tokens (--wl-*)
 import "./brand/welabs.css";
 import "./globals.css";
-
-// TIPOGRAFIA
-// Inter is the only text face of the Welabs brand (the Ibrand lives in the logos).
-const sans = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans-face",
-  display: "swap",
-});
 
 // MARCA NO NAVEGADOR
 // Graphite browser chrome and the official favicon; themeColor mirrors --wl-graphite (metadata cannot read CSS variables).
@@ -42,7 +33,17 @@ export default function RootLayout({
 }) {
   // data-theme="dark" sits on <html>: the package's dark tokens only apply on the root element
   return (
-    <html lang="pt-BR" data-theme="dark" className={sans.variable}>
+    <html lang="pt-BR" data-theme="dark">
+      <head>
+        {/* Inter is the only text face of the brand (the Ibrand lives in the logos); see app/globals.css */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="/motion/v5/_shared/vendor/fonts/Inter-latin.woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <a className="skip-link" href="#main-content">
           Ir para o conteúdo

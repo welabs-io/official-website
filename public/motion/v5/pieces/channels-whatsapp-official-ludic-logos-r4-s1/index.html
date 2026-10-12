@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>Tuner · WhatsApp oficial</title>
+<style>
+/* TIPOGRAFIA, TOKENS E MOLDURA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+/* Same frame as the approved ludic Magneto films; --wait is the lilac pending state, never the brand amber */
+:root{--bg:#10141C;--panel:#17171B;--panel2:#202027;--line:#3A3A44;--coral:var(--wl-amber);--ink:var(--wl-ink-on-amber);--text:#FFFFFF;--muted:#B9B9C4;--ok:#3DD68C;--wait:var(--wl-wait);--wa:#25D366}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:var(--bg)}
+#root{position:relative;width:1920px;height:1080px;overflow:hidden;background:radial-gradient(1300px 760px at 50% 46%,#1A202B 0%,#10141C 72%);color:var(--text);font-family:"Inter",sans-serif}
+#root [data-wl-name]{color:inherit}
+#hd{position:absolute;left:64px;right:64px;top:40px;height:72px;opacity:0;z-index:8;display:flex;align-items:center}
+/* Header mark is now the official product logo; height only, name x-height ≈ 1.1 × the 56 px Inter it replaced */
+#wm{position:relative;flex:none;display:flex;align-items:center;height:72px}
+/* Raised 8 px (negative margin halves in the centered flex box) so the logo baseline sits on the kicker baseline */
+#wm img{display:block;height:76px;margin-top:-16px}
+.cap span,#close span{color:var(--coral)}
+#kick{position:relative;flex:none;margin-left:26px;height:44px;padding-left:24px;border-left:4px solid var(--coral);font-size:34px;font-weight:600;color:var(--muted);line-height:44px;white-space:nowrap}
+#demo{position:absolute;right:270px;top:16px;height:40px;padding:0 16px;border:2px solid var(--line);border-radius:999px;font-size:24px;font-weight:700;color:var(--muted);line-height:36px}
+#seal{position:absolute;right:0;top:12px;height:48px}
+.cap{position:absolute;left:0;top:906px;width:1920px;text-align:center;font-size:54px;font-weight:800;letter-spacing:-1px;line-height:64px;opacity:0;white-space:nowrap;z-index:8}
+
+/* A JANELA DE CONVERSA DA EMPRESA */
+#win{position:absolute;left:640px;top:150px;width:640px;height:720px;border-radius:30px;background:var(--panel);border:3px solid var(--line);overflow:hidden;opacity:0;z-index:2}
+#whd{position:absolute;left:0;top:0;width:100%;height:100px;background:#0F2A1D;display:flex;align-items:center;gap:18px;padding:0 24px}
+#whd .av{width:60px;height:60px;border-radius:50%;background:var(--wa);color:#0B0B0D;display:grid;place-items:center;font-size:24px;font-weight:800;flex:none}
+#whd b{display:block;font-size:30px;font-weight:800;white-space:nowrap}
+#whd span{display:block;font-size:24px;color:var(--muted);white-space:nowrap}
+.sc{position:absolute;right:22px;top:30px;height:40px;padding:0 16px;border-radius:20px;font-size:22px;font-weight:700;line-height:36px;border:2px solid currentColor;white-space:nowrap;opacity:0;z-index:3}
+#s0{color:var(--muted)}#s1{color:var(--wait)}#s2{color:var(--ok);background:#0F2A1D}
+#ph{position:absolute;left:640px;top:440px;width:640px;text-align:center;font-size:28px;font-weight:600;color:var(--muted);opacity:0;z-index:3}
+#ph2{position:absolute;left:640px;top:440px;width:640px;text-align:center;font-size:28px;font-weight:700;color:var(--ok);opacity:0;z-index:3}
+#cmp{position:absolute;left:664px;top:790px;width:592px;height:60px;border-radius:30px;background:var(--panel2);border:2px solid var(--line);opacity:0;z-index:3}
+#cmp .pl{position:absolute;left:24px;top:0;line-height:56px;font-size:24px;color:#8A8A96;white-space:nowrap}
+#typed{position:absolute;left:24px;top:0;line-height:56px;font-size:24px;font-weight:600;color:var(--text);white-space:nowrap;opacity:0}
+#lock{position:absolute;right:14px;top:8px;height:40px;padding:0 14px;border-radius:20px;background:var(--wl-wait-soft);border:2px solid var(--wait);color:var(--wait);font-size:22px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap;opacity:0}
+
+/* COMO A EMPRESA CONECTA O NÚMERO */
+#conn{position:absolute;left:150px;top:330px;width:420px;height:270px;border-radius:26px;background:var(--panel);border:3px solid var(--line);padding:28px;opacity:0;z-index:3}
+#conn b{display:block;font-size:30px;font-weight:800;line-height:38px}
+#go{position:relative;margin-top:24px;height:62px;border-radius:31px;background:var(--coral);color:var(--ink);font-size:28px;font-weight:800;display:grid;place-items:center}
+#gook{position:absolute;inset:0;border-radius:31px;background:var(--ok);color:#0B0B0D;display:grid;place-items:center;opacity:0}
+#dots{display:flex;gap:14px;justify-content:center;margin-top:22px}
+#dots i{width:22px;height:22px;border-radius:50%;background:var(--line)}
+
+/* O QUE A PESSOA MANDA */
+#pn{position:absolute;left:670px;top:262px;font-size:24px;font-weight:700;color:var(--wa);opacity:0;z-index:3}
+.in{position:absolute;left:670px;border-radius:22px 22px 22px 6px;background:var(--panel2);border:2px solid var(--line);opacity:0;z-index:3;overflow:hidden}
+#m1{top:298px;width:300px;height:180px}
+#m2{top:494px;width:300px;height:150px}
+#m3{top:662px;height:58px;padding:0 22px;line-height:54px;font-size:26px;font-weight:600;white-space:nowrap}
+.img{height:120px;background:linear-gradient(160deg,#2C3446,#1D2330);display:grid;place-items:center;color:#7A86A0}
+.map{height:94px;background-color:#1D2330;background-image:linear-gradient(#2C3446 3px,transparent 3px),linear-gradient(90deg,#2C3446 3px,transparent 3px);background-size:50px 40px;display:grid;place-items:center;color:var(--coral)}
+.in .lb{padding:0 18px;line-height:52px;font-size:24px;font-weight:600;white-space:nowrap}
+
+/* UM DIA DEPOIS: A MENSAGEM APROVADA */
+#day{position:absolute;left:820px;top:372px;width:280px;height:52px;border-radius:26px;background:var(--panel2);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;gap:10px;font-size:24px;font-weight:700;color:var(--muted);opacity:0;z-index:3}
+#clk{width:30px;height:30px;border-radius:50%;border:3px solid var(--muted);position:relative}
+#hand{position:absolute;left:10.5px;top:3px;width:3px;height:10px;border-radius:2px;background:var(--muted);transform-origin:50% 100%}
+#tpl{position:absolute;left:150px;top:300px;width:420px;height:330px;border-radius:26px;background:var(--panel);border:3px solid var(--line);padding:26px;opacity:0;z-index:3}
+#tpl > b{display:block;font-size:30px;font-weight:800}
+.ti{position:relative;margin-top:18px;height:96px;border-radius:18px;background:var(--panel2);border:3px solid var(--line);padding:14px 18px}
+.ti b{display:block;font-size:26px;font-weight:800;white-space:nowrap}
+.ti span{display:inline-block;margin-top:6px;height:32px;padding:0 12px;border-radius:16px;border:2px solid var(--ok);color:var(--ok);font-size:20px;font-weight:700;line-height:28px}
+#m4{position:absolute;left:830px;top:452px;width:426px;height:158px;border-radius:22px 22px 6px 22px;background:var(--wl-amber-soft);border:2px solid var(--coral);padding:16px 20px;opacity:0;z-index:3}
+#m4 p{font-size:26px;font-weight:600;line-height:34px}
+.tk{position:absolute;right:20px;bottom:12px;font-size:22px;font-weight:700;white-space:nowrap;opacity:0}
+#tk1,#tk2{color:var(--muted)}#tk3{color:var(--coral)}
+#m5{position:absolute;left:670px;top:640px;height:58px;padding:0 22px;line-height:54px;font-size:26px;font-weight:600;white-space:nowrap;border-radius:22px 22px 22px 6px;background:var(--panel2);border:2px solid var(--line);opacity:0;z-index:3}
+
+/* NADA SE PERDE */
+#hist{position:absolute;left:1350px;top:290px;width:430px;height:380px;border-radius:26px;background:var(--panel);border:3px solid var(--line);padding:26px;opacity:0;z-index:3}
+#hist > b{display:block;font-size:30px;font-weight:800}
+#hist > span{display:block;margin-top:4px;font-size:24px;color:var(--muted)}
+.hi{display:flex;align-items:center;gap:14px;height:56px;margin-top:10px;font-size:26px;font-weight:600;white-space:nowrap;opacity:0}
+.hi i{width:34px;height:34px;border-radius:50%;background:var(--ok);display:grid;place-items:center;flex:none}
+
+/* FECHO */
+#close{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;z-index:9}
+#close .l1{position:absolute;left:0;top:300px;width:1920px;text-align:center;font-size:76px;font-weight:800;letter-spacing:-2px;line-height:94px}
+#close .brand{position:absolute;left:0;top:620px;width:1920px;display:flex;justify-content:center;align-items:center}
+/* 06/10/2026: endorsed product logo (symbol + name + "by welabs") replaces the retired lockup; height only, name x-height 68 px */
+#close img{height:180px}
+#close .dm{position:absolute;left:0;top:850px;width:1920px;text-align:center;font-size:26px;font-weight:600;color:var(--muted)}
+/* PASSE DE MARCA R2 (tools/brand-pass.mjs sobre pieces/channels-whatsapp-official-ludic-logos, sha256 19b625c87862; medido pelo gate, nada à mão) */
+/* logo +11.3 vs #kick; moved -11.3 px (top 12px) */
+#seal{top:0.7px !important}
+/* PASSE DE MARCA R3 (tools/brand-pass.mjs sobre pieces/channels-whatsapp-official-ludic-logos-r2, sha256 2668257f5734; medido pelo gate, nada à mão) */
+/* pill centre +11.3 px vs #seal; moved -11.3 px (top 16px) */
+#demo{top:4.7px !important}
+/* PASSE DO SELO BY WELABS R4 (tools/endorse-pass.mjs sobre pieces/channels-whatsapp-official-ludic-logos-r3-s1, sha256 e17c32a31861; marca 1.5.0, medido, nada à mão) */
+/* tuner #0: x-height 33.7 px at t=0.5 s; seal band 28.759 px under the wordmark, taken back from the margins */
+img[data-es="0"]{width:173px !important;height:104.565px !important;margin-top:-15.903px !important;margin-bottom:-28.662px !important}
+/* Site variant v5: hidden slots, choreography untouched */
+#kick,#close{display:none!important}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="channels-whatsapp-official-ludic-logos-r4-s1" data-brand="welabs" data-brand-scripts="welabs/welabs-brand.js" data-width="1920" data-height="1080" data-start="0" data-duration="34">
+  <div id="hd">
+    <div id="wm"><img data-brand-src="welabs/tuner-endorsed-on-dark.svg" alt="Tuner by welabs" data-es="0"></div>
+    <div id="kick">Some a conversa perdida</div>
+    <div id="demo">DEMO</div>
+    <img id="seal" data-brand-src="welabs/welabs-logo-on-dark.svg" alt="Welabs">
+  </div>
+
+  <div id="win"><div id="whd"><div class="av">ED</div><div><b>Empresa DEMO</b><span>+55 11 4000-0000</span></div></div></div>
+  <div class="sc" id="s0" style="left:1090px;top:180px;right:auto">sem número</div>
+  <div class="sc" id="s1" style="left:1080px;top:180px;right:auto">conectando</div>
+  <div class="sc" id="s2" style="left:1110px;top:180px;right:auto">oficial</div>
+  <div id="ph">Nenhum número conectado</div>
+  <div id="ph2">Pronto para conversar</div>
+  <div id="cmp"><div class="pl" id="pl">Escreva uma mensagem…</div><div id="typed">Oi Paula, tudo certo?</div>
+    <div id="lock"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>fechado</div></div>
+
+  <div id="conn"><b>Seu número no<br>WhatsApp oficial</b><div id="go">Conectar número<div id="gook">Conectado</div></div><div id="dots"><i id="dt1"></i><i id="dt2"></i><i id="dt3"></i></div></div>
+
+  <div id="pn">Paula M.</div>
+  <div class="in" id="m1"><div class="img"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 18l6-7 4 5 3-3 5 5z"/><circle cx="16" cy="7" r="2"/></svg></div><div class="lb">Foto do pedido</div></div>
+  <div class="in" id="m2"><div class="map"><svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5A2.5 2.5 0 1 0 12 11.5 2.5 2.5 0 0 0 12 6.5z"/></svg></div><div class="lb">Rua DEMO, 100</div></div>
+  <div class="in" id="m3">Chegou assim, dá para trocar?</div>
+
+  <div id="day"><div id="clk"><div id="hand"></div></div>um dia depois</div>
+  <div id="tpl"><b>Mensagens aprovadas</b>
+    <div class="ti" id="ti1"><b>Retomar contato</b><span>aprovada</span></div>
+    <div class="ti" id="ti2"><b>Pedido pronto</b><span>aprovada</span></div></div>
+  <div id="m4"><p>Olá, Paula! Podemos continuar a troca do seu pedido?</p>
+    <div class="tk" id="tk1">✓ enviada</div><div class="tk" id="tk2">✓✓ entregue</div><div class="tk" id="tk3">✓✓ lida</div></div>
+  <div id="m5">Sim, pode continuar!</div>
+
+  <div id="hist"><b>Conversa da Paula</b><span>tudo no mesmo lugar</span>
+    <div class="hi"><i><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></i>Foto do pedido</div>
+    <div class="hi"><i><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></i>Localização</div>
+    <div class="hi"><i><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></i>Mensagem aprovada</div>
+    <div class="hi"><i><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" fill="none" stroke="#0B0B0D" stroke-width="3.4" stroke-linecap="round"/></svg></i>Resposta da Paula</div></div>
+
+  <div class="cap" id="c1">Seu próprio número, <span>no WhatsApp oficial</span></div>
+  <div class="cap" id="c2">Foto e localização <span>chegam inteiras</span></div>
+  <div class="cap" id="c3">Um dia depois, <span>a mensagem aprovada</span> retoma a conversa</div>
+  <div class="cap" id="c4">Ela lê, responde e <span>nada se perde</span></div>
+
+  <div id="close">
+    <div class="l1">Seu número, no WhatsApp oficial.<br><span>Nenhuma conversa se perde.</span></div>
+    <div class="brand"><img data-brand-src="welabs/tuner-endorsed-on-dark.svg" alt="Tuner by welabs"></div>
+    <div class="dm">Exemplo ilustrativo · DEMO</div>
+  </div>
+</div>
+<script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script>
+<script src="../../_shared/brand/loader.js"></script>
+<script>
+// LINHA DO TEMPO DETERMINÍSTICA (uma timeline pausada; só fromTo/to com tempos fixos)
+(function () {
+  var D = 34;
+  var tl = gsap.timeline({ paused: true });
+  function inn(sel, t, from, d) { var to = { opacity: 1, duration: d || 0.5, ease: 'power2.out' }; Object.keys(from || {}).forEach(function (k) { if (k !== 'opacity') to[k] = (k === 'scale') ? 1 : 0; }); tl.fromTo(sel, Object.assign({ opacity: 0 }, from || {}), to, t); }
+  function out(sel, t, d) { tl.to(sel, { opacity: 0, duration: d || 0.35, ease: 'power2.in' }, t); }
+
+  // Cabeçalho e janela
+  inn('#hd', 0.2, { y: -12 }, 0.6);
+  inn('#win', 0.5, { y: 20 }, 0.5);
+  inn('#cmp', 0.7, {}, 0.4);
+  inn('#s0', 0.8, { scale: 0.8 }, 0.3);
+  inn('#ph', 0.9, {}, 0.4);
+  inn('#conn', 0.9, { x: -30 }, 0.5);
+
+  // Batida 1: o próprio número no WhatsApp oficial (1,0–6,8 s)
+  inn('#c1', 1.0, { y: 16 });
+  tl.to('#go', { scale: 0.94, duration: 0.12 }, 3.3).to('#go', { scale: 1, duration: 0.15 }, 3.42);
+  out('#s0', 3.4, 0.2); inn('#s1', 3.5, { scale: 0.8 }, 0.3);
+  ['#dt1', '#dt2', '#dt3'].forEach(function (s, i) { tl.to(s, { backgroundColor: '#B3A6FF', duration: 0.2 }, 3.7 + 0.45 * i); });
+  out('#s1', 5.0, 0.2); inn('#s2', 5.1, { scale: 0.8 }, 0.3);
+  tl.to(['#dt1', '#dt2', '#dt3'], { backgroundColor: '#3DD68C', duration: 0.2 }, 5.1);
+  tl.fromTo('#gook', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.1);
+  out('#ph', 5.1, 0.2); inn('#ph2', 5.3, {}, 0.3);
+  out('#c1', 6.8);
+
+  // Batida 2: foto e localização chegam inteiras (7,0–12,6 s)
+  out(['#conn', '#ph2'], 6.9, 0.35);
+  inn('#c2', 7.1, { y: 16 });
+  inn('#pn', 7.3, {}, 0.3);
+  inn('#m1', 7.4, { y: 20, scale: 0.92 }, 0.45);
+  inn('#m2', 8.0, { y: 20, scale: 0.92 }, 0.45);
+  inn('#m3', 8.6, { y: 20 }, 0.4);
+  out('#c2', 12.6);
+
+  // Batida 3: um dia depois, a mensagem aprovada retoma (12,9–20,2 s)
+  inn('#c3', 12.9, { y: 16 });
+  out(['#pn', '#m1', '#m2'], 12.9, 0.35);
+  tl.to('#m3', { y: -392, duration: 0.5, ease: 'power2.inOut' }, 13.0);
+  inn('#day', 13.4, { scale: 0.85 }, 0.35);
+  tl.fromTo('#hand', { rotation: 0 }, { rotation: 720, duration: 1.2, ease: 'power1.inOut' }, 13.5);
+  out('#pl', 13.8, 0.2); inn('#typed', 13.9, { x: -10 }, 0.3);
+  inn('#lock', 14.1, { scale: 0.8 }, 0.3);
+  inn('#tpl', 15.6, { x: -30 }, 0.45);
+  tl.to('#ti1', { borderColor: '#FFB020', duration: 0.3 }, 16.0);
+  tl.to('#ti1', { scale: 1.04, duration: 0.2 }, 16.0).to('#ti1', { scale: 1, duration: 0.2 }, 16.2);
+  out(['#typed', '#lock'], 17.5, 0.25); tl.to('#pl', { opacity: 1, duration: 0.3 }, 17.8);
+  inn('#m4', 17.8, { y: 20, scale: 0.92 }, 0.4);
+  inn('#tk1', 18.0, {}, 0.3);
+  out('#c3', 20.2);
+
+  // Batida 4: ela lê, responde e nada se perde (20,5–27,9 s)
+  out('#tpl', 20.3, 0.35);
+  inn('#c4', 20.5, { y: 16 });
+  out('#tk1', 20.5, 0.15); inn('#tk2', 20.65, {}, 0.25);
+  out('#tk2', 22.0, 0.15); inn('#tk3', 22.15, {}, 0.25);
+  inn('#m5', 24.2, { y: 20 }, 0.35);
+  inn('#hist', 26.0, { x: 30 }, 0.4);
+  tl.fromTo('.hi', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.25, stagger: 0.12 }, 26.2);
+  out('#c4', 27.9);
+
+  // Fecho (28,1–34 s, parado de 29,0 s ao fim)
+  out(['#hd', '#win', '#s2', '#cmp', '#m3', '#day', '#m4', '#m5', '#hist'], 28.1, 0.4);
+  // Closing starts once the scene fade-out ends (28.1 + 0.4), so the two never overlap
+  tl.fromTo('#close', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 28.5);
+  tl.set('#close', { opacity: 1 }, D);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["channels-whatsapp-official-ludic-logos-r4-s1"] = tl;
+})();
+</script>
+</body>
+</html>

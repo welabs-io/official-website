@@ -5,18 +5,22 @@
 // (paused, preloaded) and, for about a second, the one that is leaving. In tiles mode (the carousels) nothing else is
 // kept: the neighbours are cover images.
 import { createPlayer, hideLoader, piece, type PlayerElement } from "./player";
-import type { PushTransition, Slide } from "@/lib/motion-slides";
+import type { Segment, Slide } from "@/lib/motion-slides";
 
-// Duration of the position swap of the ring (keep equal to the CSS transition in ring.module.css)
-export const SWAP_SECONDS = 1;
-// Crossfade between two segments of the same slide (opening tail into film)
-export const BLEND_SECONDS = 0.4;
+// Latency compensation only: the swap duration, the blend and the hold of every segment come from the motion manifest
+// (segment.transition and segment.holdAfter), never from a constant here
+type Transition = Segment["transition"];
+type PushTransition = Transition & { type: "push-left" | "push-up" };
+const isPush = (t?: Transition): t is PushTransition =>
+  t?.type === "push-left" || t?.type === "push-up";
 const FADE_MS = 400;
 const TICK_MS = 40;
 // Head start of the incoming clip over its push, in seconds (the start latency of a parked player is 20 to 110 ms)
 const PUSH_PRE = 0.12;
 // Reveal of a preloaded player waits for the seek to its first frame to settle
 const SETTLE_MS = 140;
+// Pause between mounting the current player and the parked next one (main thread only, not a screen time)
+const PRELOAD_DELAY_MS = 700;
 // A held segment freezes this many real seconds before its range end, so a slow tick can never run into the loop
 export const HOLD_EDGE = 0.1;
 
@@ -28,40 +32,36 @@ export type FlatSegment = {
   rate: number;
   // Real seconds before the end of this segment at which the next one is started
   lead: number;
-  // Push into the next segment (workbench montage); the lead equals its duration
-  transition?: PushTransition;
-  // Real seconds the last frame of the range stays still before the push starts (workbench montage; 0 = none)
+  // How the manifest leaves this segment for the next one; the lead equals its duration
+  transition: Transition;
+  // Real seconds the last frame of the range stays still before the hand-off (holdAfter of the manifest)
   hold: number;
 };
 
 // SEGMENTOS EM SEQUÊNCIA
-// Flat list of every segment of every slide; the lead is the swap time when the next segment belongs to another slide
-// and the blend time when it belongs to the same one (never more than 80% of the segment).
+// Flat list of every segment of every slide; the lead is the duration of the transition the manifest gives the segment
+// (a swap between slides, a blend inside one), never more than 80% of the segment.
 export function flatten(
-  slides: readonly Slide[],
-  swap = SWAP_SECONDS,
-  blend = BLEND_SECONDS,
+  slides: readonly Pick<Slide, "segments">[],
 ): FlatSegment[] {
-  const flat = slides.flatMap((slide, si) =>
-    slide.segments.map((segment) => ({
-      slide: si,
-      id: segment.id,
-      range: segment.range,
-      rate: segment.rate ?? 1,
-      lead: 0,
-      transition: segment.transition,
-      hold: segment.holdAfter ?? 0,
-    })),
-  );
-  return flat.map((segment, i) => {
-    const next = flat[(i + 1) % flat.length];
-    // A push transition sets its own lead (the overlap is exactly the push)
-    const wanted =
-      segment.transition?.duration ??
-      (next.slide === segment.slide ? blend : swap);
-    const length = (segment.range[1] - segment.range[0]) / segment.rate;
-    return { ...segment, lead: Math.min(wanted, length * 0.8) };
-  });
+  return slides
+    .flatMap((slide, si) =>
+      slide.segments.map((segment) => ({
+        slide: si,
+        id: segment.id,
+        range: segment.range,
+        rate: segment.rate,
+        transition: segment.transition,
+        hold: segment.holdAfter,
+      })),
+    )
+    .map((segment) => {
+      const length = (segment.range[1] - segment.range[0]) / segment.rate;
+      return {
+        ...segment,
+        lead: Math.min(segment.transition.duration, length * 0.8),
+      };
+    });
 }
 
 type Entry = {
@@ -133,7 +133,10 @@ export class Playback {
 
   start() {
     this.create(this.cursor, true);
-    this.preload();
+    // The parked next player is mounted after the current one has had its turn: two pieces booting in the same frame
+    // made a 100 to 150 ms task (each piece's own script is 20 to 60 ms), and the next one is not needed for seconds
+    // (the shortest segment is on screen 1.8 s plus its hold)
+    this.later(() => this.preload(), PRELOAD_DELAY_MS);
     this.timer = window.setInterval(() => this.tick(), TICK_MS);
   }
 
@@ -270,7 +273,22 @@ export class Playback {
     // The range is in piece time: a real lead of `lead` s is lead * rate seconds of the piece
     // A pushed cut starts its successor PUSH_PRE s early: the new player needs a moment before its timeline moves, and
     // the push only begins after that moment, so the incoming clip is already moving when it slides in
-    const pre = this.options.single && segment.transition ? PUSH_PRE : 0;
+    const pre =
+      this.options.single && isPush(segment.transition) ? PUSH_PRE : 0;
+    // A ring of one segment (a product that takes part in a single step of the chain) has no next one: it holds its
+    // last frame for the manifest hold and starts over
+    if (this.options.single && this.flat.length === 1) {
+      if (current.heldAt === undefined) {
+        if (t < segment.range[1] - HOLD_EDGE * segment.rate) return;
+        current.el.pause();
+        current.heldAt = performance.now();
+      }
+      if ((performance.now() - current.heldAt) / 1000 < segment.hold) return;
+      current.heldAt = undefined;
+      current.el.seek(segment.range[0]);
+      current.el.play();
+      return;
+    }
     // A segment with a hold plays to its range end, freezes there for `hold` s and only then starts the next one
     if (this.options.single && segment.hold > 0 && this.flat.length > 1) {
       if (current.heldAt === undefined) {
@@ -325,7 +343,10 @@ export class Playback {
     current.played = true;
     next.started = true;
     next.el.play();
-    const pushed = this.options.single ? from.transition : undefined;
+    const pushed =
+      this.options.single && isPush(from.transition)
+        ? from.transition
+        : undefined;
     const bring = () => {
       // Tiles: the page rotates the ring from onSwap, nothing to animate here
       if (this.options.tiles && !this.options.tileBySlide) {
@@ -364,7 +385,7 @@ export class Playback {
         },
         (from.lead + PUSH_PRE) * 1000 + 120,
       );
-      this.preload();
+      // The next player is mounted by trim() once the rotation is over, so a ring never holds three players at once
       return;
     }
     // The leaving player keeps running under the new one until its range closes, then fades and goes away

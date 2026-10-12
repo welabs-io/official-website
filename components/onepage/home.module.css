@@ -5,8 +5,8 @@
 /* SEÇÃO 1: CADEIA */
 /* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
 .chain {
-  --pt: calc(var(--header-h) + 56px);
-  --pb: 56px;
+  --pt: calc(var(--header-h) + 44px);
+  --pb: 44px;
 }
 
 .srOnly {
@@ -20,39 +20,36 @@
 
 /* SEÇÃO 2: PRODUTOS */
 .products {
-  --pt: 56px;
-  --pb: 56px;
+  --pt: 44px;
+  --pb: 44px;
 }
 
 /* PÁGINA DE PRODUTO */
 .productPage {
-  --pt: calc(var(--header-h) + 32px);
-  --pb: 48px;
+  --pt: calc(var(--header-h) + 16px);
+  --pb: 36px;
 }
 .productPageGrid {
   display: grid;
   justify-items: stretch;
-  gap: 16px;
+  gap: 8px;
 }
 .productPageGrid > :first-child {
   justify-self: start;
+  /* Covers the thread behind the block, which on a phone would cross the factual line */
+  background: var(--bg);
 }
 
-/* BLOCOS DA PÁGINA DE PRODUTO */
-/* The films carousel and the closing call to action, as compact as the home's sections */
-.films {
-  --pt: 56px;
-  --pb: 56px;
-}
-.productCta {
-  --pt: 32px;
-  --pb: 32px;
+/* The chain narrowed to the product, as compact as the home's sections */
+.productChain {
+  --pt: 44px;
+  --pb: 44px;
 }
 
 /* SEÇÃO 3: CONECTORES */
 .connectors {
-  --pt: 48px;
-  --pb: 56px;
+  --pt: 40px;
+  --pb: 40px;
 }
 
 /* SEÇÃO 4: FECHAMENTO */
@@ -60,9 +57,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  --pt: 48px;
-  --pb: 48px;
+  /* Gap and top padding are named: the stretches that converge on the strip (ConnectorRail, --closing-pt comes from
+     the page, as the stretches belong to the section above) and the thread between the strip and the button are drawn
+     from them */
+  --closing-gap: 16px;
+  gap: var(--closing-gap);
+  --pt: var(--closing-pt);
+  --pb: var(--closing-pt);
   /* Both this band and the connectors above it are graphite: a hairline tells them apart */
   border-top: 1px solid var(--line);
 }
@@ -75,6 +76,31 @@
   justify-content: center;
   scroll-margin-top: 96px;
 }
+/* The thread keeps going alone from the strip to the button of the closing and ends in a dock on its top edge */
+.thread {
+  position: relative;
+}
+.thread::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(var(--closing-gap) * -1);
+  width: 2px;
+  height: var(--closing-gap);
+  margin-left: -1px;
+  background: var(--line);
+}
+.thread::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--a);
+}
 
 @media (max-width: 860px) {
   .chain {
@@ -82,13 +108,13 @@
     --pb: 40px;
   }
   .products,
-  .films {
+  .productChain,
+  .connectors {
     --pt: 40px;
     --pb: 40px;
   }
   .closing {
-    gap: 20px;
-    --pt: 32px;
+    --closing-gap: 20px;
     --pb: 32px;
   }
 }

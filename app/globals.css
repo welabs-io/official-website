@@ -1,5 +1,15 @@
 /* BASE GLOBAL */
 /* Reset and the page colour only; every component brings its own CSS Module. */
+
+/* TIPOGRAFIA */
+/* Inter (latin, variable 100 to 900) from the same URL the motion pieces load it from, so the browser fetches the 48 KB
+   file once for the page and for every player (a second copy under a hashed name cost a second download). */
+@font-face {
+  font-family: "Inter";
+  src: url("/motion/v5/_shared/vendor/fonts/Inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
 *,
 *::before,
 *::after {
@@ -13,7 +23,7 @@ body {
   margin: 0;
   background: #10141c;
   color: #faf5ea;
-  font-family: var(--font-sans-face), "Inter", system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 img,
