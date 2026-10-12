@@ -17,9 +17,17 @@ const kinds = (config: { sections: { kind: string }[] }) =>
   config.sections.map((s) => s.kind);
 
 describe("one template, same sequence", () => {
-  it("the home and the five product pages are ring, ring, connector block, closing", () => {
-    for (const config of [HOME_CONFIG, ...slugs.map(productConfig)])
-      expect(kinds(config)).toEqual(["ring", "ring", "hub", "closing"]);
+  it("the home is ring, ring, connector block, closing; every product page adds the problems and the capabilities", () => {
+    expect(kinds(HOME_CONFIG)).toEqual(["ring", "ring", "hub", "closing"]);
+    for (const config of slugs.map(productConfig))
+      expect(kinds(config)).toEqual([
+        "ring",
+        "resolves",
+        "capabilities",
+        "ring",
+        "hub",
+        "closing",
+      ]);
   });
   it.each(slugs)("the %s page renders its sections in that order", (slug) => {
     const html = render(slug);
@@ -91,7 +99,7 @@ describe("product page", () => {
   it("every band of the pages is marked live, so the thread and the pulses pause off screen", () => {
     const html = render("domus");
     const bands = html.match(/<section[^>]*>/g) ?? [];
-    expect(bands).toHaveLength(4);
+    expect(bands).toHaveLength(6);
     for (const band of bands) expect(band).toContain("data-live");
   });
 });

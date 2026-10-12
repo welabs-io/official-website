@@ -21,6 +21,8 @@ export type RingData = {
   lit: string[][];
   spans: BusSpan[];
   labels: string[];
+  // Per tile: the live caption (empty where the ring shows none)
+  captions: string[];
 };
 
 export const slidesOf = (kind: RingKind, slug?: ProductSlug): Slide[] =>
@@ -49,5 +51,6 @@ export function ringData(kind: RingKind, slug?: ProductSlug): RingData {
         : activeSpan((slug ?? s.slug) as ProductSlug),
     ),
     labels: slides.map((s) => (perCut ? (s.connection?.label ?? "") : "")),
+    captions: slides.map((s) => s.caption ?? ""),
   };
 }

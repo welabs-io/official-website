@@ -1,32 +1,49 @@
 // FECHAMENTO
-// Logos of the companies we work with and of the infrastructure and development platforms, together in ONE continuous
-// strip, all in the same black-and-white theme (no labels), then the closing button. The section around it (id,
-// graphite band) comes from Section; the footer comes after it (PageFrame).
+// Two strips of black-and-white logos, each under a short title (who already operates with us, where we run), then the
+// closing button. The section around it (id, graphite band) comes from Section; the footer comes after it (PageFrame).
 import { Carousel } from "@/components/onepage/Carousel";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import styles from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
+import { CLOSING } from "@/lib/content";
 import { CLIENT_LOGOS, PLATFORM_LOGOS } from "@/lib/partners";
 import { CTA_LABEL } from "@/lib/products";
-
-// Both lists interleaved, so the strip alternates between the two kinds of mark
-const LOGOS = Array.from(
-  { length: Math.max(CLIENT_LOGOS.length, PLATFORM_LOGOS.length) },
-  (_, i) => [CLIENT_LOGOS[i], PLATFORM_LOGOS[i]],
-)
-  .flat()
-  .filter((logo) => logo !== undefined);
+import content from "./content.module.css";
 
 export function Closing() {
   return (
     <>
       <div className={`${shell.wrap} ${styles.strips}`}>
-        <Carousel
-          label="Marcas e plataformas"
-          logos={LOGOS}
-          kind="all"
-          seconds={70}
-        />
+        <div
+          role="group"
+          aria-labelledby="strip-clients"
+          className={styles.strip}
+        >
+          <h2 id="strip-clients" className={content.stripTitle}>
+            {CLOSING.clients}
+          </h2>
+          <Carousel
+            label="Marcas de quem opera com a Welabs"
+            logos={CLIENT_LOGOS}
+            kind="all"
+            seconds={45}
+          />
+        </div>
+        <div
+          role="group"
+          aria-labelledby="strip-platforms"
+          className={styles.strip}
+        >
+          <h2 id="strip-platforms" className={content.stripTitle}>
+            {CLOSING.platforms}
+          </h2>
+          <Carousel
+            label="Plataformas de infraestrutura e desenvolvimento"
+            logos={PLATFORM_LOGOS}
+            kind="all"
+            seconds={55}
+          />
+        </div>
       </div>
       <div id="contact" className={`${styles.contact} ${styles.thread}`}>
         <a href={CONTACT_HREF} className={`${shell.cta} ${shell.ctaBig}`}>

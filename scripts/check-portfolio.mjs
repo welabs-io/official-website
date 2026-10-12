@@ -109,7 +109,15 @@ assert(
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
 const words = visibleText(home).split(" ").length;
-assert(words <= 85, `home has ${words} visible words`);
+assert(words <= 160, `home has ${words} visible words`);
+// Content layer: five product cards, the active one lit, each leading to its page
+const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
+assert.equal(cards.length, 5, "the home has five product cards");
+assert.equal(
+  cards.filter((c) => c.includes('data-on="true"')).length,
+  1,
+  "one card is lit",
+);
 const clientLogos = [...home.matchAll(/src="\/clients\/[^"]+"/g)].length;
 assert(clientLogos >= 7, "clients carousel renders its logos");
 assert(
@@ -130,6 +138,17 @@ for (const slug of SLUGS) {
     /<meta name="keywords" content="[^"]+"/.test(html),
     `${slug} keywords`,
   );
+  // Content layer: problems, capabilities and the live caption, within the word budget
+  assert(
+    html.includes('id="resolves"') && html.includes('id="capabilities"'),
+    `${slug} page has the problems and the capabilities`,
+  );
+  assert(
+    /<p[^>]*data-caption[^>]*aria-live="polite"/.test(html),
+    `${slug} page has the live caption`,
+  );
+  const productWords = visibleText(html).split(" ").length;
+  assert(productWords <= 260, `${slug} has ${productWords} visible words`);
   assert(
     /<title>[^<]* by Welabs<\/title>/.test(html),
     `${slug} title follows the "<Product> by Welabs" pattern`,

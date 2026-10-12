@@ -28,6 +28,12 @@ export function run(root: HTMLElement, kind: RingKind) {
     tile.querySelector<HTMLElement>("[data-layers]"),
   );
   const logos = [...root.querySelectorAll<HTMLElement>("[data-slug]")];
+  // Product cards of the same section (the home), lit like the logos; and the live caption under the ring
+  const cards = [
+    ...(root.closest("section")?.querySelectorAll<HTMLElement>("[data-card]") ??
+      []),
+  ];
+  const caption = root.querySelector<HTMLElement>("[data-caption]");
   const flat = flatten(data.slides);
   // The chain has one tile per cut; the other kinds have one tile per slide (opening and film share a tile)
   const perCut = kind === "chain";
@@ -55,6 +61,13 @@ export function run(root: HTMLElement, kind: RingKind) {
       logo.dataset.on = lit.includes(logo.dataset.slug ?? "")
         ? "true"
         : "false";
+    for (const card of cards)
+      card.dataset.on = lit.includes(card.dataset.card ?? "")
+        ? "true"
+        : "false";
+    // The caption changes with the scene (aria-live="polite" announces it)
+    if (caption && data.captions?.[active])
+      caption.textContent = data.captions[active];
   };
 
   // On every swap: fill the stretch of the bus of the row of logos that belongs to the new tile (the connection of the

@@ -168,6 +168,25 @@
   font-size: 14px;
   color: var(--mute-d);
 }
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.footerLinks a {
+  display: inline-block;
+  padding: 10px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c);
+  text-decoration: none;
+}
+.footerLinks a:hover {
+  text-decoration: underline;
+}
 
 /* FIO ENTRE AS SEÇÕES */
 /* The thread runs down the centre axis of the page (x = 50%) through every band and joins them: a 2 px hairline behind

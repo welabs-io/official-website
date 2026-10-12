@@ -1,8 +1,10 @@
 // CONFIGURAÇÃO DAS PÁGINAS
 // One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
-// home and the five product pages are the same template with two configurations and the same sequence of sections
-// (ring, ring, connector block, closing), so no section markup is copied between routes. `pad` names the spacing class
-// of the section (home.module.css).
+// home and the five product pages are the same template with two configurations, so no section markup is copied between
+// routes: the home is ring, ring (with the product cards), connector block, closing; the product page is ring (films
+// with a live caption), resolves, capabilities, ring (the chain narrowed to the product), connector block, closing. The
+// connector block always comes right before the closing, because its rails run down into it. `pad` names the spacing
+// class of the section (home.module.css).
 import { productBySlug, type ProductSlug } from "./products";
 import type { RingKind } from "./ring-data";
 
@@ -13,6 +15,7 @@ export type SectionPad =
   | "products"
   | "productPage"
   | "productChain"
+  | "block"
   | "connectors"
   | "closing";
 
@@ -41,10 +44,18 @@ export type SectionConfig =
         logos?: "lit" | "links" | "pinned" | null;
         eager?: boolean;
         label: string;
+        // Live caption under the ring, from the content of the product (product page)
+        caption?: boolean;
       };
       // Product block (logo and factual line) above the stage, on the product page
       head?: { slug: ProductSlug };
+      // Grid of the five product cards under the ring, the active product lit (home)
+      cards?: boolean;
     })
+  // Three problems and what the product does about them (product page)
+  | (Base & { kind: "resolves"; slug: ProductSlug })
+  // Six capabilities in a grid (product page)
+  | (Base & { kind: "capabilities"; slug: ProductSlug })
   | (Base & { kind: "hub"; lit?: ProductSlug })
   | (Base & { kind: "closing" });
 
@@ -108,6 +119,7 @@ export const HOME_CONFIG: PageConfig = {
         logos: "links",
         label: "Abertura e filme de cada produto",
       },
+      cards: true,
     },
     hub("Produtos ligados entre si"),
     closing,
@@ -134,7 +146,22 @@ export function productConfig(slug: ProductSlug): PageConfig {
           logos: "pinned",
           eager: true,
           label: `Abertura e filmes do ${name}`,
+          caption: true,
         },
+      },
+      {
+        id: "resolves",
+        kind: "resolves",
+        slug,
+        tone: "light",
+        pad: "block",
+      },
+      {
+        id: "capabilities",
+        kind: "capabilities",
+        slug,
+        tone: "dark",
+        pad: "block",
       },
       {
         id: "chain",

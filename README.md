@@ -26,6 +26,10 @@ Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → 
 - `prefers-reduced-motion`: nenhum player é baixado ou montado, cada tile mostra a capa, os pulsos ficam parados e a faixa de logos vira uma linha quebrada.
 - Logos: `node scripts/optimize-logos.mjs` converte os PNGs de clientes e plataformas em WebP. `node scripts/measure-perf.mjs` mede peso, players simultâneos e bloqueio da thread principal contra um servidor em execução.
 
+## Conteúdo
+
+Todo texto visível mora em `lib/content/*.ts`, tipado (`types.ts`): `home.ts` (frase do núcleo e dos trilhos, linha de cada ligação, títulos do fechamento, títulos da página de produto; a abertura da home está só como dado, sem render, até a seção da cadeia ser redesenhada) e `products.ts` (por produto: 3 problemas, 6 capacidades e a legenda de cada filme). A home mostra cinco cartões de produto (o ativo no carrossel de produtos fica aceso, `data-on` reescrito pelo `ring-run`); a página de produto mostra como funciona (filmes com legenda viva, `aria-live="polite"`), o que resolve, capacidades e uma linha por ligação. `lib/content/rules.ts` guarda as palavras proibidas que o vitest aplica ao dado e ao HTML renderizado.
+
 ## Estrutura de pastas
 
 ```
@@ -54,7 +58,7 @@ O site abre em http://localhost:3000. Para um build de produção local: `npm ru
 
 ## Verificação
 
-`npm run check` executa lint, typecheck, testes e build. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas, os redirecionamentos, os arquivos referenciados e as regras de conteúdo (sem player com controles, sem barra, sem slogan, no máximo 85 palavras visíveis na home); `PORTFOLIO_PREVIEW_URL` aponta outro servidor.
+`npm run check` executa lint, typecheck, testes e build. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas, os redirecionamentos, os arquivos referenciados e as regras de conteúdo (sem player com controles, sem barra, sem slogan, no máximo 160 palavras visíveis na home e 260 numa página de produto); `PORTFOLIO_PREVIEW_URL` aponta outro servidor.
 
 ## Limites atuais
 

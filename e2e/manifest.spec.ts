@@ -179,7 +179,14 @@ test("the product page is one template: same sections, one ring for the opening 
   const ids = await page.evaluate(() =>
     [...document.querySelectorAll("section[data-live]")].map((s) => s.id),
   );
-  expect(ids).toEqual(["product", "chain", "connectors", "platforms"]);
+  expect(ids).toEqual([
+    "product",
+    "resolves",
+    "capabilities",
+    "chain",
+    "connectors",
+    "platforms",
+  ]);
   expect(await page.locator("#product-ring [data-layers]").count()).toBe(2);
   expect(await page.locator("h1").count()).toBe(1);
   expect(await page.locator("#chain-ring [data-layers]").count()).toBeLessThan(
