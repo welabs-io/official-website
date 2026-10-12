@@ -100,6 +100,14 @@ describe("the chain section of the home", () => {
     expect(at("data-overview")).toBeGreaterThan(at("Welabs desenvolve"));
     expect(at('id="chain-ring"')).toBeGreaterThan(at("data-overview"));
   });
+  it("the home has no row of logos at all: the products section keeps only its cards, which light the active product", () => {
+    expect(page).not.toMatch(/data-row=/);
+    const products = page.slice(
+      page.indexOf('id="products"'),
+      page.indexOf('id="connectors"'),
+    );
+    expect(products.match(/data-card=/g)).toHaveLength(5);
+  });
   it("the old row of logos and the old s5 piece are gone from the chain", () => {
     expect(chain).not.toMatch(/data-row=|chain-value-s5/);
   });

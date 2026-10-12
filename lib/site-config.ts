@@ -121,7 +121,8 @@ export const HOME_CONFIG: PageConfig = {
       ring: {
         id: "products-ring",
         kind: "products",
-        logos: "links",
+        // No row of logos: the five cards right below repeat it and already light the active product
+        logos: null,
         label: "Abertura e filme de cada produto",
       },
       cards: true,
