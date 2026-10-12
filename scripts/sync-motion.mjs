@@ -14,6 +14,7 @@ import {
   readdirSync,
   rmSync,
   statSync,
+  writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, extname, join, resolve, sep } from "node:path";
@@ -97,12 +98,27 @@ for (const piece of list) {
 }
 
 // CÓPIA
+// The site never shows the tagline of an opening: its slot (.role) is hidden in the copy, in the exact text that
+// ring.test.ts looks for
+const openings = new Set(
+  Object.values(pieces.products).map((product) => product.intro.id),
+);
+const HIDE_TAGLINE =
+  "/* Site variant: the tagline slot stays out of the picture; the choreography is untouched */\n.role{display:none!important}\n";
 rmSync(motionRoot, { recursive: true, force: true });
 mkdirSync(join(motionRoot, "pieces"), { recursive: true });
 for (const { id } of list) {
   const target = join(motionRoot, "pieces", id);
   mkdirSync(target, { recursive: true });
   cpSync(html(id), join(target, "index.html"));
+  // Site variant of the product openings: the tagline slot is hidden (the choreography is untouched)
+  if (openings.has(id)) {
+    const file = join(target, "index.html");
+    const source = readFileSync(file, "utf8");
+    if (!source.includes("</style>"))
+      throw new Error(`${id}: no style block to hide the tagline slot`);
+    writeFileSync(file, source.replace("</style>", `${HIDE_TAGLINE}</style>`));
+  }
   const assets = join(round, "pieces", id, "assets");
   if (existsSync(assets))
     cpSync(assets, join(target, "assets"), {

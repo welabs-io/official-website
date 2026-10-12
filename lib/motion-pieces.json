@@ -10,7 +10,7 @@
       "intro": {
         "id": "domus-intro-s2-r2",
         "duration": 5.4,
-        "tail": [1.7, 3.65]
+        "tail": [1.7, 4]
       },
       "films": [
         {
@@ -27,7 +27,7 @@
       "intro": {
         "id": "relloo-intro-s2-r3",
         "duration": 5.4,
-        "tail": [1.7, 3.65]
+        "tail": [1.7, 4]
       },
       "films": [
         {
@@ -45,7 +45,7 @@
       "intro": {
         "id": "magneto-intro-s3-r3",
         "duration": 5.4,
-        "tail": [1.7, 3.65]
+        "tail": [1.7, 4]
       },
       "films": [
         {
@@ -63,7 +63,7 @@
       "intro": {
         "id": "tuner-intro-s2",
         "duration": 5.4,
-        "tail": [1.7, 3.65]
+        "tail": [1.7, 4]
       },
       "films": [
         {
@@ -80,7 +80,7 @@
       "intro": {
         "id": "knowly-intro-s2",
         "duration": 5.4,
-        "tail": [1.7, 3.65]
+        "tail": [1.7, 4]
       },
       "films": [
         {

@@ -18,7 +18,7 @@
   width: 100%;
 }
 .wide {
-  max-width: 880px;
+  max-width: min(800px, 72vw);
 }
 .tall {
   display: none;

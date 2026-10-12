@@ -5,8 +5,8 @@
 /* SEÇÃO 1: CADEIA */
 /* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
 .chain {
-  --pt: calc(var(--header-h) + 48px);
-  --pb: 48px;
+  --pt: calc(var(--header-h) + 56px);
+  --pb: 56px;
 }
 
 .srOnly {
@@ -20,14 +20,14 @@
 
 /* SEÇÃO 2: PRODUTOS */
 .products {
-  --pt: 48px;
-  --pb: 48px;
+  --pt: 56px;
+  --pb: 56px;
 }
 
 /* PÁGINA DE PRODUTO */
 .productPage {
-  --pt: calc(var(--header-h) + 24px);
-  --pb: 32px;
+  --pt: calc(var(--header-h) + 32px);
+  --pb: 48px;
 }
 .productPageGrid {
   display: grid;
@@ -41,8 +41,8 @@
 /* BLOCOS DA PÁGINA DE PRODUTO */
 /* The films carousel and the closing call to action, as compact as the home's sections */
 .films {
-  --pt: 40px;
-  --pb: 40px;
+  --pt: 56px;
+  --pb: 56px;
 }
 .productCta {
   --pt: 32px;
@@ -51,8 +51,8 @@
 
 /* SEÇÃO 3: CONECTORES */
 .connectors {
-  --pt: 40px;
-  --pb: 48px;
+  --pt: 48px;
+  --pb: 56px;
 }
 
 /* SEÇÃO 4: FECHAMENTO */
@@ -79,11 +79,12 @@
 @media (max-width: 860px) {
   .chain {
     --pt: calc(var(--header-h) + 32px);
-    --pb: 32px;
+    --pb: 40px;
   }
-  .products {
-    --pt: 32px;
-    --pb: 32px;
+  .products,
+  .films {
+    --pt: 40px;
+    --pb: 40px;
   }
   .closing {
     gap: 20px;

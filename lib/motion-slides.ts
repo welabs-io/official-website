@@ -88,7 +88,12 @@ export const CUT_POSTERS: string[] = montage.steps.flatMap((step, i) =>
   step.segments.map((_, j) => poster(`cut-${cutNumber(i) + j}`)),
 );
 
-// Products section of the home: opening tail, then a clip of the first film
+// Seconds the settled logo of an opening stays still before the blend into the film. The player freezes up to 0.1 s
+// after the seal settles and the first frame of the blend lands about 0.1 s after the hold ends, so 0.95 s here is
+// measured as 1 s of still logo and seal on screen.
+export const INTRO_HOLD = 0.95;
+
+// Products section of the home: the opening until the logo and seal settle (1 s still), then a clip of the first film
 export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
   const { intro, films } = entry(slug);
   return {
@@ -96,8 +101,14 @@ export const PRODUCT_SLIDES: Slide[] = PRODUCTS.map(({ slug, name }) => {
     label: name,
     slug,
     segments: [
-      // The opening tail flows into the film (blend); it ends before the tagline of the opening appears
-      { id: intro.id, range: [intro.tail[0], intro.tail[1]] as const },
+      // The opening plays until the logo and the "by welabs" seal have settled (3.9 s; the player freezes 0.1 s
+      // before the range end at 4 s), holds that still frame for the montage hold and then blends into the film.
+      // The tagline slot of the piece is hidden in the site copy (public/motion), so no tagline ever shows.
+      {
+        id: intro.id,
+        range: [intro.tail[0], intro.tail[1]] as const,
+        holdAfter: INTRO_HOLD,
+      },
       {
         ...filmSegment(films[0] as Film),
         // The film holds its settled last frame, then the ring rotates to the next product
