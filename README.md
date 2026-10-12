@@ -18,26 +18,27 @@ Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → 
 
 ## Movimento
 
-- Os motions são as peças da rodada de filmes (`portfolio-20261002`): as aberturas dos cinco produtos, a abertura da Welabs, trechos dos filmes e o filme da cadeia. `node scripts/sync-motion.mjs` copia as peças listadas em `lib/motion-pieces.json`, o `_shared` (manifesto, carregador, player sequencial, vendor, marca) e o player HyperFrames fixado para `public/motion`, e gera uma capa por peça em `public/motion/posters`. A rodada é só leitura.
-- Os carrosséis circulares (cadeia, produtos, filmes do produto, abertura do produto) são marcação de servidor (`RingStage`): um tile por corte ou produto, cada um com capa WebP. Nada hidrata. O único pedaço de cliente é o `RingDriver`, que não renderiza nada: com o carrossel a 400 px da tela ele baixa o motor (`ring-run.ts`, por `import()`) e o script do player; com o carrossel na tela, a aba visível e sem `prefers-reduced-motion`, o motor toca. Os tiles mudam de lugar por `data-pos`, sem estado do React.
-- Só o tile ativo toca e só o próximo fica parado e pronto; os vizinhos são `<img>`. O vizinho anterior mostra a capa do último quadro (`end-<filme>.webp`), o próximo a do primeiro. Cada player é um `<hyperframes-player autoplay muted>` **sem** `controls`. Sem botão de pausa nem barra de progresso.
-- Bloco de conectores (`Connectors`): SVG e CSS, sem biblioteca. Núcleo Domus e Relloo, trilhos Magneto, Tuner e Knowly, pulsos âmbar que cruzam o núcleo por trás. Dois layouts (largo e alto, para celular) com os logos como links por cima. Na página de produto o produto da página fica aceso, os que se ligam a ele ficam ligados e os outros ficam em tom baixo, todos a um clique.
-- O fio entre as seções é o `::before` e o `::after` de cada faixa (`shell.module.css`): linha fina, ponto âmbar no início de cada seção e um pulso de 4 px no ritmo da faixa. Toda animação CSS (pulsos, fio, faixa de logos) roda só com `data-on="true"`, que o `LiveObserver` (um único `IntersectionObserver`) liga na tela e desliga fora dela.
+- Os motions vêm do **manifesto de motion** da rodada (`portfolio-20261002`, `plan-v5/out/motion-manifest.json`): ele diz quais peças, quais trechos, a taxa, o `holdAfter`, a transição, as capas, o texto para leitor de tela e o valor de cada ligação. O site não decide nenhum tempo. `node scripts/sync-motion.mjs` valida o manifesto contra o schema, copia-o para `lib/motion-manifest.json`, monta a cópia do site de cada peça referenciada (peça aceita mais a regra `siteVariant.hide`, conferida por `sha256`), as capas (1280 e 640 px), o `_shared` da marca e o player HyperFrames fixado para `public/motion/v5`. A rodada é só leitura. `lib/manifest/` lê e valida o manifesto no build e tem os seletores; `lib/motion-slides.ts` o transforma nos slides dos anéis.
+- Os carrosséis circulares (cadeia, produtos, anel da página de produto) são marcação de servidor (`RingStage`): um tile por passo, produto ou filme, cada um com capa WebP. Nada hidrata. O único pedaço de cliente é o `RingDriver`, que não renderiza nada: com o carrossel a 400 px da tela ele baixa o motor (`ring-run.ts`, por `import()`) e o script do player; com o carrossel na tela, a aba visível e sem `prefers-reduced-motion`, o motor toca. Os tiles mudam de lugar por `data-pos`, sem estado do React.
+- Só o tile ativo toca e só o próximo fica parado e pronto; os vizinhos são `<img>`. O vizinho anterior mostra a capa do quadro parado (`covers.settled` do manifesto), o próximo a de entrada. Cada player é um `<hyperframes-player autoplay muted>` **sem** `controls`. Sem botão de pausa nem barra de progresso.
+- Bloco de conectores (`CoreHub`): CSS puro, sem biblioteca, na vertical. Três trilhos em 1/6, 1/2 e 5/6 da largura (Magneto, Tuner, Knowly) cruzam a caixa do núcleo (Domus, a costura âmbar no eixo, Relloo) e continuam, abaixo da seção, como os trilhos que convergem no fechamento, sem ponta solta. Cada ligação mostra o `connection.label` do manifesto. Na página de produto o produto da página fica aceso e só os rótulos das ligações dele ficam.
+- O fio da página desce pelo eixo central (`shell.module.css`): linha de 2 px atrás do conteúdo, uma doca âmbar de 10 px no topo de cada seção e, no fundo da seção, o trecho (`ConnectorRail`) por onde desce o pulso de 4 px a cada troca do anel (`ring-run` alterna `data-pulse` entre `a` e `b`). A fileira de logos (`LogoRow`) é o núcleo e trilhos em miniatura: o trecho aceso do barramento e o valor da ligação mudam a cada troca. Toda animação CSS roda só com `data-on="true"`, que o `LiveObserver` (um único `IntersectionObserver`) liga na tela e desliga fora dela.
 - `prefers-reduced-motion`: nenhum player é baixado ou montado, cada tile mostra a capa, os pulsos ficam parados e a faixa de logos vira uma linha quebrada.
-- Capas e logos: `node scripts/optimize-posters.mjs` converte as capas JPG e os PNGs de clientes em WebP e gera as capas do último quadro; rode depois de `scripts/sync-motion.mjs`. `node scripts/measure-perf.mjs` mede peso, players simultâneos e bloqueio da thread principal contra um servidor em execução.
+- Logos: `node scripts/optimize-logos.mjs` converte os PNGs de clientes e plataformas em WebP. `node scripts/measure-perf.mjs` mede peso, players simultâneos e bloqueio da thread principal contra um servidor em execução.
 
 ## Estrutura de pastas
 
 ```
 app/                    rotas (home e /products/[slug]), layout raiz, estilos globais e imagem de compartilhamento
-components/onepage/     seções, bloco de conectores, template de produto, observador de movimento, cabeçalho e rodapé
+components/onepage/     cabeçalho e rodapé, bloco de produto, faixa de logos, observador de movimento e os estilos da página
+components/template/    template das páginas (seções declarativas), fileira de logos, bloco de conectores, trecho do fio e fechamento
 components/ring/        carrossel circular: palco (servidor), motor sob demanda, reprodução encadeada e player
-lib/                    produtos, slugs públicos, peças e slides de motion, geometria dos conectores, logos e ícones
+lib/                    produtos, slugs públicos, configuração das páginas, política do selo, manifesto de motion (lib/manifest) e slides
 public/brands/welabs/   logos da Welabs, logos dos produtos, favicons e selos
 public/clients/         logos de terceiros que o site Imagine já exibe
 public/platforms/       marcas de infra e dev (simple-icons, CC0; AWS e HostDime oficiais)
-public/motion/          peças, _shared, player e capas copiados da rodada por scripts/sync-motion.mjs
-scripts/                sincronização dos motions, capas em WebP, medição de peso e verificação do site contra o preview
+public/motion/v5/       peças, capas, _shared e player copiados da rodada por scripts/sync-motion.mjs
+scripts/                sincronização do manifesto de motion, logos em WebP, medição de peso e verificação do site contra o preview
 ```
 
 ## Como rodar
