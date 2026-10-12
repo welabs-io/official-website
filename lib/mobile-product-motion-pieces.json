@@ -58,9 +58,9 @@
       ]
     },
     "magneto": {
-      "id": "magneto-product-mobile-ludic-v1-r2-s1",
+      "id": "magneto-product-mobile-ludic-v1-r3-s1",
       "duration": 31.8,
-      "sha256": "830c028fc8ba4b3f7ac3f50b62fbc75a79854b46e134f9ffe83ba0e1ba764eb5",
+      "sha256": "de7486d88be395ff1dcc27090fb5a8ea253fc898490e80b0232be79a10eaba40",
       "chapters": [
         {
           "key": "draw-workflow",
