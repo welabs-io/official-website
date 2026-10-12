@@ -1,0 +1,186 @@
+/* UMA OPERAÇÃO EM UM QUADRO LEGÍVEL */
+.root {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 20px;
+  background: #10141c;
+  color: #faf5ea;
+  box-shadow: 0 20px 54px rgb(16 20 28 / 12%);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 26px;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+}
+.customer {
+  font-size: 17px;
+  font-weight: 500;
+}
+.example {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 3px;
+  color: #aab4c2;
+  font-size: 12px;
+}
+.owner {
+  color: #ffb020;
+  font-size: 14px;
+  font-weight: 500;
+}
+.navigation {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 12px 18px;
+  list-style: none;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+}
+.navigation button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #aab4c2;
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+.navigation button span {
+  font-size: 13px;
+  opacity: 0.65;
+}
+.navigation button[data-active="true"] {
+  background: rgb(255 176 32 / 12%);
+  color: #ffb020;
+}
+.navigation button:hover {
+  background: rgb(255 255 255 / 6%);
+}
+.navigation button:focus-visible {
+  outline: 2px solid #ffb020;
+  outline-offset: 2px;
+}
+.viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+.poster,
+.layer {
+  position: absolute;
+  inset: 0;
+}
+.poster img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.root[data-chain-ready="true"] .poster {
+  opacity: 0;
+}
+.caption {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 40px;
+  min-height: 188px;
+  box-sizing: border-box;
+  padding: 24px 30px 28px;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+}
+.caption h3 {
+  margin: 0 0 8px;
+  color: #faf5ea;
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.caption p {
+  margin: 0;
+  max-width: 65ch;
+  color: #aab4c2;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.caption .request {
+  align-self: center;
+  padding-left: 24px;
+  border-left: 2px solid #ffb020;
+  color: #faf5ea;
+  font-size: 19px;
+  line-height: 1.5;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* PROPORÇÃO PRÓPRIA PARA CELULAR */
+@media (max-width: 700px) {
+  .root {
+    border-radius: 14px;
+  }
+  .header {
+    padding: 16px;
+    gap: 12px;
+  }
+  .customer {
+    font-size: 15px;
+  }
+  .example {
+    max-width: 21ch;
+    font-size: 12px;
+    text-align: right;
+    line-height: 1.35;
+  }
+  .navigation {
+    gap: 0;
+    padding: 8px 4px;
+  }
+  .navigation button {
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 2px;
+    font-size: 14px;
+  }
+  .navigation button span {
+    font-size: 11px;
+  }
+  .viewport {
+    aspect-ratio: 4 / 5;
+  }
+  .caption {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    min-height: 316px;
+    padding: 20px;
+  }
+  .caption h3 {
+    font-size: 20px;
+  }
+  .caption p {
+    font-size: 16px;
+  }
+  .caption .request {
+    padding-left: 16px;
+    font-size: 16px;
+  }
+}

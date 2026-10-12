@@ -1,0 +1,278 @@
+{
+ "color": {
+  "amber": {
+   "value": "#FFB020",
+   "use": "brand signal; on cream only as area (block, dot, wave, button)"
+  },
+  "graphite": {
+   "value": "#10141C",
+   "use": "dark background (default theme)"
+  },
+  "cream": {
+   "value": "#FAF5EA",
+   "use": "light background"
+  },
+  "ink": {
+   "value": "#1C1A16",
+   "use": "text and strokes on cream and on amber"
+  },
+  "white": {
+   "value": "#FFFFFF",
+   "use": "text and strokes on graphite"
+  },
+  "surface-dark": {
+   "value": "#161B25",
+   "use": "raised surface on graphite"
+  },
+  "surface-light": {
+   "value": "#F3ECDD",
+   "use": "raised surface on cream"
+  },
+  "line-dark": {
+   "value": "#262D3A"
+  },
+  "line-light": {
+   "value": "#E2D8C3"
+  },
+  "mute-dark": {
+   "value": "#9DA3AE"
+  },
+  "mute-light": {
+   "value": "#625B4E"
+  }
+ },
+ "font": {
+  "family-text": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+  "weight": {
+   "text": 400,
+   "secondary": 500,
+   "title": 600
+  },
+  "size-px": {
+   "xs": 12,
+   "sm": 14,
+   "md": 16,
+   "lg": 18,
+   "xl": 22,
+   "2xl": 28,
+   "3xl": 36,
+   "4xl": 44
+  },
+  "line-height": {
+   "text": 1.6,
+   "title": 1.2
+  },
+  "logo": "Ibrand, only as outlines in the logo and product names; never as text"
+ },
+ "space-px": {
+  "1": 4,
+  "2": 8,
+  "3": 12,
+  "4": 16,
+  "5": 20,
+  "6": 24,
+  "8": 32,
+  "10": 40,
+  "14": 56,
+  "18": 72
+ },
+ "radius-px": {
+  "sm": 4,
+  "md": 6,
+  "pill": 999,
+  "app-icon": "22.5%"
+ },
+ "motion": {
+  "ui-fast-ms": 150,
+  "ui-base-ms": 250,
+  "logo-cycle-s": 4.8,
+  "ease-entrance": "cubic-bezier(.3,1.3,.5,1)",
+  "ease-reveal": "cubic-bezier(.6,0,.2,1)"
+ },
+ "logo": {
+  "clear-zone": "0.5X (built into every SVG)",
+  "min-name-x-height-px": 10,
+  "endorsement-hidden-below-px": 14
+ },
+ "scale": {
+  "amber": {
+   "50": "#FFF9F0",
+   "100": "#FFF1D8",
+   "200": "#FFE2B1",
+   "300": "#FFCC74",
+   "400": "#FFB020",
+   "500": "#E59C0C",
+   "600": "#B07B24",
+   "700": "#875F21",
+   "800": "#684A1D",
+   "900": "#443013",
+   "950": "#231808"
+  },
+  "sand": {
+   "50": "#FAF5EA",
+   "100": "#F3ECDD",
+   "200": "#E2D8C3",
+   "300": "#D4C7AB",
+   "400": "#BFB29A",
+   "500": "#A39883",
+   "600": "#827968",
+   "700": "#625B4E",
+   "800": "#4C473D",
+   "900": "#333029",
+   "950": "#1C1A16"
+  },
+  "slate": {
+   "50": "#F6F7F7",
+   "100": "#EEEFF0",
+   "200": "#DBDCDF",
+   "300": "#CACDD1",
+   "400": "#B7BBC2",
+   "500": "#9DA3AE",
+   "600": "#6C768A",
+   "700": "#434C5E",
+   "800": "#262D3A",
+   "900": "#161B25",
+   "950": "#10141C"
+  },
+  "success": {
+   "50": "#ECFCEE",
+   "100": "#D5FADB",
+   "200": "#8CF7A5",
+   "300": "#5CEC86",
+   "400": "#42D872",
+   "500": "#22BC5C",
+   "600": "#2D974F",
+   "700": "#2C7440",
+   "800": "#275934",
+   "900": "#1C3B23",
+   "950": "#0F1F12"
+  },
+  "warning": {
+   "50": "#FCF5F3",
+   "100": "#FAEBE5",
+   "200": "#F6D2C3",
+   "300": "#F6BBA3",
+   "400": "#F79E77",
+   "500": "#FB6D20",
+   "600": "#C85C27",
+   "700": "#984A26",
+   "800": "#733C22",
+   "900": "#4B2819",
+   "950": "#28150D"
+  },
+  "danger": {
+   "50": "#FCF5F5",
+   "100": "#FAEAEA",
+   "200": "#F6D0D0",
+   "300": "#F6B8B9",
+   "400": "#F7999C",
+   "500": "#FB6572",
+   "600": "#E1324E",
+   "700": "#AB3040",
+   "800": "#822B33",
+   "900": "#551E23",
+   "950": "#2D1012"
+  },
+  "info": {
+   "50": "#F4F7FC",
+   "100": "#E9EFFA",
+   "200": "#CDDBF6",
+   "300": "#B4CBF5",
+   "400": "#95B8F7",
+   "500": "#6A9CFA",
+   "600": "#3C79EF",
+   "700": "#225AC9",
+   "800": "#1F4897",
+   "900": "#173062",
+   "950": "#0B1A34"
+  }
+ },
+ "semantic": {
+  "light": {
+   "background": "sand-50",
+   "surface": "sand-100",
+   "card": "sand-100",
+   "muted": "sand-200",
+   "accent": "sand-200",
+   "border": "sand-200",
+   "input": "sand-600",
+   "ring": "sand-950",
+   "primary": "amber-400",
+   "primary-foreground": "sand-950",
+   "primary-soft": "amber-200",
+   "brand-accent": "sand-950",
+   "foreground": "sand-950",
+   "muted-foreground": "sand-700",
+   "success": "success-700",
+   "success-soft": "success-100",
+   "warning": "warning-700",
+   "warning-soft": "warning-100",
+   "destructive": "danger-700",
+   "destructive-soft": "danger-100",
+   "info": "info-700",
+   "info-soft": "info-100",
+   "action": "#25272A",
+   "action-foreground": "sand-50",
+   "action-hover": "amber-300",
+   "action-hover-foreground": "sand-950",
+   "action-hover-edge": "amber-300",
+   "action-pressed": "amber-400",
+   "destructive-fill": "danger-700",
+   "destructive-fill-foreground": "#FFFFFF",
+   "popover": "sand-50"
+  },
+  "dark": {
+   "background": "slate-950",
+   "surface": "slate-900",
+   "card": "slate-900",
+   "muted": "slate-800",
+   "accent": "slate-800",
+   "border": "slate-800",
+   "input": "slate-600",
+   "ring": "amber-400",
+   "primary": "amber-400",
+   "primary-foreground": "sand-950",
+   "primary-soft": "amber-900",
+   "brand-accent": "amber-400",
+   "foreground": "#FFFFFF",
+   "muted-foreground": "slate-500",
+   "success": "success-400",
+   "success-soft": "success-900",
+   "warning": "warning-400",
+   "warning-soft": "warning-900",
+   "destructive": "danger-400",
+   "destructive-soft": "danger-900",
+   "info": "info-400",
+   "info-soft": "info-900",
+   "action": "amber-400",
+   "action-foreground": "sand-950",
+   "action-hover": "mix:amber-400:14:background",
+   "action-hover-foreground": "amber-400",
+   "action-hover-edge": "amber-400",
+   "action-pressed": "amber-400",
+   "destructive-fill": "danger-700",
+   "destructive-fill-foreground": "#FFFFFF",
+   "popover": "slate-900"
+  }
+ },
+ "contrast": {
+  "light": {
+   "text-min": 4.75,
+   "text-pair": "muted-foreground/muted",
+   "ui-min": 3.66,
+   "ui-pair": "input/surface",
+   "border-on-background": 1.3,
+   "action-hover": "#FFCC74",
+   "action-hover-text": 11.7
+  },
+  "dark": {
+   "text-min": 4.94,
+   "text-pair": "muted-foreground/primary-soft",
+   "ui-min": 3.77,
+   "ui-pair": "input/surface",
+   "border-on-background": 1.33,
+   "action-hover": "#2C2724",
+   "action-hover-text": 8.07
+  }
+ }
+}

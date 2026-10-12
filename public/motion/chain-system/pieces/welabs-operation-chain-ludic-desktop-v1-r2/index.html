@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=1920, height=1080"><title>Welabs: Mudar entrega para sábado · DEMO</title><style>/* SUPERFÍCIE E HIERARQUIA NATIVA */
+@font-face{font-family:"Inter";src:url("../../_shared/vendor/fonts/Inter-latin.woff2") format("woff2");font-weight:100 900;font-display:block}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--wl-slate-950)}
+#root{position:relative;width:100%;height:100%;overflow:hidden;color:var(--wl-foreground);font-family:"Inter",sans-serif;font-weight:400}
+p,h1,h2,h3{margin:0}img,svg{display:block;max-width:100%}
+.backdrop{position:absolute;inset:0;background:var(--wl-slate-950)}
+.context{position:absolute;left:72px;right:72px;top:52px;display:flex;align-items:center;gap:30px;min-height:100px;font-size:48px;line-height:1.2;font-weight:500}
+.identity{white-space:nowrap}
+.context .demo{margin-left:auto;color:var(--wl-muted-foreground);font-size:40px}
+.context img{width:190px;height:78px;object-fit:contain;margin-left:40px}
+.conversation{position:absolute;left:72px;top:202px;width:630px;height:696px;padding:40px;border:2px solid var(--wl-border);border-radius:30px;background:var(--wl-slate-900)}
+.channel{font-size:40px;line-height:1.3;color:var(--wl-muted-foreground);margin-bottom:32px}
+.messageStack{position:relative;display:grid;gap:28px}
+.request{position:relative;padding:30px;background:var(--wl-slate-800);border-radius:26px 26px 26px 7px;color:var(--wl-foreground);font-size:44px;line-height:1.3;letter-spacing:-.02em}
+.reply{position:relative;padding:30px;background:var(--wl-primary);color:var(--wl-primary-foreground);border-radius:26px 26px 7px 26px;font-size:44px;line-height:1.3;letter-spacing:-.02em;opacity:0}
+.workArea{position:absolute;left:750px;right:72px;top:202px;height:696px;border:2px solid var(--wl-border);border-radius:30px;background:var(--wl-slate-900);overflow:hidden}
+.statePanel{position:absolute;inset:0;padding:48px;display:flex;flex-direction:column;justify-content:center;gap:32px}
+.statePanel h2{font-size:56px;line-height:1.16;font-weight:600;letter-spacing:-.03em}
+.statePanel p{font-size:46px;line-height:1.3;letter-spacing:-.015em}
+.statePanel .muted{color:var(--wl-muted-foreground);font-size:40px}
+.arrivalSymbol{width:144px;height:100px;border:3px solid var(--wl-primary);border-radius:24px;background:var(--wl-primary-soft);display:grid;place-items:center;color:var(--wl-primary);font-size:64px;line-height:1}
+.contextPanel{opacity:0}
+.objectGrid{display:grid;grid-template-columns:1fr 1.1fr;gap:24px}
+.context-object{min-width:0;padding:24px;border:2px solid var(--wl-border);border-radius:22px;background:var(--wl-slate-950)}
+.objectHeader{display:flex;align-items:center;gap:20px;margin-bottom:18px}
+.avatar{flex:none;width:82px;height:82px;display:grid;place-items:center;border-radius:50%;background:var(--wl-slate-800);font-size:48px;font-weight:500}
+.objectTitle{font-weight:600}
+.objectState{color:var(--wl-muted-foreground)}
+.fieldObject{display:grid;gap:8px}
+.fieldLabel{color:var(--wl-muted-foreground)}
+.context-object p{font-size:46px;line-height:1.25}
+.knowledgePanel,.executionPanel{opacity:0}
+.documentObject{padding:32px;border:2px solid var(--wl-border);border-radius:22px;background:var(--wl-slate-950);display:grid;gap:26px}
+.documentHeader{display:flex;align-items:center;gap:22px}
+.documentGlyph{width:68px;height:84px;border:3px solid var(--wl-muted-foreground);border-radius:8px;position:relative;flex:none}
+.documentGlyph::before,.documentGlyph::after{content:"";position:absolute;left:14px;right:14px;height:3px;background:var(--wl-muted-foreground)}
+.documentGlyph::before{top:24px}.documentGlyph::after{top:44px}
+.documentTitle{font-weight:600}
+.policyExcerpt{padding:24px;border-left:5px solid var(--wl-primary);background:var(--wl-primary-soft);border-radius:0 14px 14px 0}
+.policySource{color:var(--wl-muted-foreground)}
+.workflowGrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch;position:relative}
+.workflowCard{padding:28px;border:2px solid var(--wl-border);border-radius:22px;background:var(--wl-slate-950);position:relative;min-width:0;display:grid;align-content:start;gap:22px}
+.ownerLabel{font-weight:600;color:var(--wl-primary)}
+.statusSlot{position:relative;min-height:60px}
+.statusText{position:absolute;inset:0;margin:0}
+.statusApproved{opacity:0;color:var(--wl-success)}
+.managerDecision{position:relative;min-height:60px}
+.decisionWaiting{color:var(--wl-muted-foreground)}
+.decisionApproved{opacity:0;color:var(--wl-success);position:absolute;inset:0}
+.decisionCheck{display:inline-block}
+.requestRoute{position:relative;height:90px;display:flex;align-items:center;justify-content:center;gap:22px}
+.routeLine{height:3px;position:absolute;left:25%;right:25%;top:43px;background:var(--wl-border)}
+.transportToken{position:absolute;left:25%;top:13px;width:80px;height:60px;display:grid;place-items:center;border:3px solid var(--wl-primary);border-radius:12px;background:var(--wl-primary-soft);color:var(--wl-primary);font-size:44px;opacity:0;z-index:2}
+.transportToken::before,.transportToken::after{content:"";position:absolute;top:14px;width:32px;height:3px;background:var(--wl-primary)}
+.transportToken::before{left:6px;transform:rotate(28deg)}.transportToken::after{right:6px;transform:rotate(-28deg)}
+.participantRail{position:absolute;left:72px;right:72px;top:934px;height:108px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;align-items:center}
+.participant{display:grid;align-items:center;justify-items:center;gap:0;min-width:0}
+.participant img{width:238px;height:64px;object-fit:contain}
+.participant p{font-size:40px;line-height:1.15;color:var(--wl-muted-foreground)}
+.participantFocus{position:absolute;inset:-8px -12px;border:2px solid var(--wl-primary);border-radius:18px;opacity:0;pointer-events:none}
+.participant{position:relative}
+.timeTrack{position:absolute;left:72px;right:72px;top:916px;height:5px;background:var(--wl-border);border-radius:4px;overflow:hidden}
+.timeProgress{width:100%;height:100%;background:var(--wl-primary);transform-origin:left center}
+/* VARIANTE VERTICAL AUTORADA */
+#root[data-variant="mobile"] .context{left:48px;right:48px;top:48px;min-height:88px;gap:24px;font-size:64px}
+#root[data-variant="mobile"] .context .demo{font-size:64px}
+#root[data-variant="mobile"] .context img{display:none}
+#root[data-variant="mobile"] .conversation{left:48px;right:48px;top:176px;width:auto;height:500px;padding:32px;border-radius:26px}
+#root[data-variant="mobile"] .channel{font-size:64px;line-height:1.2;margin-bottom:16px}
+#root[data-variant="mobile"] .messageStack{gap:16px}
+#root[data-variant="mobile"] .request,#root[data-variant="mobile"] .reply{padding:20px;font-size:64px;line-height:1.2;letter-spacing:-.025em}
+#root[data-variant="mobile"] .workArea{left:48px;right:48px;top:708px;height:456px;border-radius:26px}
+#root[data-variant="mobile"] .statePanel{padding:32px;gap:24px}
+#root[data-variant="mobile"] .statePanel h2,#root[data-variant="mobile"] .statePanel p,#root[data-variant="mobile"] .statePanel .muted{font-size:64px;line-height:1.2}
+#root[data-variant="mobile"] .arrivalSymbol{width:120px;height:96px;font-size:64px}
+#root[data-variant="mobile"] .contextPanel{padding:24px}
+#root[data-variant="mobile"] .objectGrid{gap:16px}
+#root[data-variant="mobile"] .context-object{padding:16px;border-radius:18px}
+#root[data-variant="mobile"] .context-object p{font-size:64px;line-height:1.2;letter-spacing:-.025em}
+#root[data-variant="mobile"] .objectHeader{gap:12px;margin-bottom:8px}
+#root[data-variant="mobile"] .avatar{width:72px;height:72px;font-size:64px}
+#root[data-variant="mobile"] .knowledgePanel,#root[data-variant="mobile"] .executionPanel{padding:24px;gap:16px}
+#root[data-variant="mobile"] .executionPanel{gap:4px}
+#root[data-variant="mobile"] .documentObject{padding:20px;gap:10px}
+#root[data-variant="mobile"] .documentHeader{gap:16px}
+#root[data-variant="mobile"] .documentGlyph{width:52px;height:70px}
+#root[data-variant="mobile"] .documentTitle,#root[data-variant="mobile"] .policyExcerpt,#root[data-variant="mobile"] .policySource{font-size:64px;line-height:1.1;letter-spacing:-.025em}
+#root[data-variant="mobile"] .policyExcerpt{padding:12px 16px}
+#root[data-variant="mobile"] .workflowGrid{gap:16px}
+#root[data-variant="mobile"] .workflowCard{padding:16px;gap:8px;border-radius:18px}
+#root[data-variant="mobile"] .workflowCard p{font-size:64px;line-height:1.12;letter-spacing:-.025em}
+#root[data-variant="mobile"] .statusSlot{min-height:144px}
+#root[data-variant="mobile"] .managerDecision{min-height:72px}
+#root[data-variant="mobile"] .requestRoute{height:60px;flex:none}
+#root[data-variant="mobile"] .routeLine{top:30px}
+#root[data-variant="mobile"] .transportToken{top:4px;width:72px;height:56px;font-size:64px}
+#root[data-variant="mobile"] .participantRail{left:48px;right:48px;top:1194px;height:108px;gap:12px}
+#root[data-variant="mobile"] .participant img{width:180px;height:96px}
+#root[data-variant="mobile"] .participant p{display:none}
+#root[data-variant="mobile"] .timeTrack{left:48px;right:48px;top:1180px;height:6px}
+/* PASSE DE MARCA R2 (brand-pass.mjs sobre welabs-operation-chain-ludic-desktop-v1, sha256 efc89b3d5007; medido pelo gate, nada à mão) */
+/* logo +4.8 vs #root > header.context > span.demo:nth-of-type(2); moved -4.8 px */
+#root > header.context > img{position:relative !important;top:-4.8px !important}
+</style></head>
+<body><div id="root" data-composition-id="welabs-operation-chain-ludic-desktop-v1-r2" data-brand="welabs" data-brand-scripts="welabs/tokens.js" data-variant="desktop" data-width="1920" data-height="1080" data-duration="24">
+<div class="backdrop" aria-hidden="true"></div>
+<header class="context" aria-label="Contexto editorial da demonstração"><span class="identity"><span id="person-anchor">Marina</span> · <span id="order-anchor">Pedido 1234</span></span><span class="demo">DEMO</span><img data-brand-src="welabs/welabs-logo-dark.svg" alt="Welabs"></header>
+<section class="conversation" id="conversation"><p class="channel" id="channel-label">WhatsApp · Loja DEMO</p><div class="messageStack" id="message-stack"><p class="request" id="request">Oi! Dá para mudar a entrega do meu pedido para sábado?</p><p class="reply" id="reply">Dá sim. Já abri o pedido de mudança para você.</p></div></section>
+<section class="workArea" id="work-area" aria-label="Painel de trabalho da mesma solicitação">
+<div class="statePanel" id="arrival-panel"><div class="arrivalSymbol" aria-hidden="true">↗</div><h2 id="arrival-title">Mensagem recebida</h2><p class="muted">A solicitação começa no canal.</p></div>
+<div class="statePanel contextPanel" id="context-panel"><div class="objectGrid">
+<div class="context-object" id="customer-object"><div class="objectHeader"><div class="avatar" aria-hidden="true">M</div><p class="objectTitle" id="recognized-person">Marina</p></div><p class="objectState">Reconhecida</p></div>
+<div class="context-object" id="order-object"><div class="objectHeader"><p class="objectTitle" id="matched-order">Pedido 1234</p></div><p class="objectState">Localizado</p></div>
+<div class="context-object fieldObject" id="address-object"><p class="fieldLabel">Endereço</p><p id="known-address">Cadastrado</p></div>
+<div class="context-object fieldObject" id="history-object"><p class="fieldLabel">Histórico</p><p id="known-history">Disponível</p></div>
+</div></div>
+<div class="statePanel knowledgePanel" id="knowledge-panel"><div class="documentObject" id="policy-document"><div class="documentHeader"><div class="documentGlyph" aria-hidden="true"></div><p class="documentTitle" id="policy-title">Política de entregas</p></div><p class="policyExcerpt" id="policy-excerpt">A data de entrega pode ser mudada antes do envio.</p><p class="policySource" id="policy-source">Seção 3 · DEMO</p></div></div>
+<div class="statePanel executionPanel" id="execution-panel"><div class="workflowGrid"><div class="workflowCard" id="order-task"><p class="ownerLabel" id="order-owner">Domus</p><p class="objectTitle" id="task-order">Pedido 1234</p><div class="statusSlot"><p class="statusText" id="status-waiting">Aguarda aprovação</p><p class="statusText statusApproved" id="status-approved">Aprovado · sábado</p></div></div><div class="workflowCard" id="manager-task"><p class="ownerLabel" id="rule-owner">Regra</p><p id="approval-rule">Mudança de entrega</p><div class="managerDecision"><p class="decisionWaiting" id="manager-waiting">Gestora</p><p class="decisionApproved" id="manager-approved"><span class="decisionCheck" aria-hidden="true">✓</span> Gestora</p></div></div></div><div class="requestRoute" id="request-route" aria-label="Magneto encaminha a solicitação e devolve a decisão"><div class="routeLine" aria-hidden="true"></div><div class="transportToken" id="transport-token" aria-label="Solicitação de aprovação em trânsito"></div></div></div>
+</section>
+<div class="timeTrack" aria-hidden="true"><div class="timeProgress" id="time-progress"></div></div><div class="participantRail" aria-label="Cinco participantes da demonstração"><div class="participant" data-participant="tuner"><div class="participantFocus" id="focus-tuner" aria-hidden="true"></div><img data-brand-src="welabs/products/tuner-dark-endorsed.svg" alt="Tuner by Welabs: Canais"><p>Canais</p></div>
+<div class="participant" data-participant="relloo"><div class="participantFocus" id="focus-relloo" aria-hidden="true"></div><img data-brand-src="welabs/products/relloo-dark-endorsed.svg" alt="Relloo by Welabs: Relacionamento"><p>Relacionamento</p></div>
+<div class="participant" data-participant="domus"><div class="participantFocus" id="focus-domus" aria-hidden="true"></div><img data-brand-src="welabs/products/domus-dark-endorsed.svg" alt="Domus by Welabs: Gestão"><p>Gestão</p></div>
+<div class="participant" data-participant="knowly"><div class="participantFocus" id="focus-knowly" aria-hidden="true"></div><img data-brand-src="welabs/products/knowly-dark-endorsed.svg" alt="Knowly by Welabs: Conhecimento"><p>Conhecimento</p></div>
+<div class="participant" data-participant="magneto"><div class="participantFocus" id="focus-magneto" aria-hidden="true"></div><img data-brand-src="welabs/products/magneto-dark-endorsed.svg" alt="Magneto by Welabs: Workflow"><p>Workflow</p></div></div>
+</div><script src="../../_shared/vendor/gsap/3.14.2/gsap.min.js"></script><script src="../../_shared/brand/loader.js"></script><script>// LINHA DO TEMPO DA MESMA SOLICITAÇÃO
+// Source-grounded objects retain their identity through the editorial reconstruction.
+window.__timelines = window.__timelines || {};
+document.fonts.ready.then(function () {
+// Resolve the travel endpoints once in the authored root coordinate space after font layout settles.
+var tokenBox = document.querySelector("#transport-token").getBoundingClientRect();
+var orderBox = document.querySelector("#order-task").getBoundingClientRect();
+var managerBox = document.querySelector("#manager-task").getBoundingClientRect();
+var routeOriginX = orderBox.left + orderBox.width / 2 - tokenBox.left - tokenBox.width / 2;
+var routeTargetX = managerBox.left + managerBox.width / 2 - tokenBox.left - tokenBox.width / 2;
+var nativeTokens = getComputedStyle(document.querySelector("#root"));
+var actionColor = nativeTokens.getPropertyValue("--wl-primary").trim();
+var successColor = nativeTokens.getPropertyValue("--wl-success").trim();
+var operationTimeline = gsap.timeline({ paused: true });
+operationTimeline.addLabel("arrival", 0);
+operationTimeline.fromTo("#request", { opacity: 0, x: 28, force3D: false }, { opacity: 1, x: 0, force3D: false, duration: 0.5, ease: "power2.out" }, 0.25);
+operationTimeline.addLabel("context", 3.8);
+operationTimeline.to("#arrival-panel", { opacity: 0, y: -18, force3D: false, duration: 0.28, ease: "power2.in" }, 3.8);
+operationTimeline.fromTo("#context-panel", { opacity: 0, y: 24, force3D: false }, { opacity: 1, y: 0, force3D: false, duration: 0.55, ease: "power2.out" }, 3.95);
+operationTimeline.fromTo(".context-object", { opacity: 0, x: 18, force3D: false }, { opacity: 1, x: 0, force3D: false, stagger: 0.13, duration: 0.35, ease: "power2.out" }, 4.05);
+operationTimeline.set("#focus-tuner", { opacity: 1 }, 0);
+operationTimeline.to("#focus-tuner", { opacity: 0, duration: 0.25 }, 3.8);
+operationTimeline.to("#focus-relloo,#focus-domus", { opacity: 1, duration: 0.25 }, 4.05);
+operationTimeline.addLabel("knowledge", 8.5);
+operationTimeline.to("#context-panel", { opacity: 0, y: -18, force3D: false, duration: 0.25, ease: "power2.in" }, 8.5);
+operationTimeline.fromTo("#knowledge-panel", { opacity: 0, y: 24, force3D: false }, { opacity: 1, y: 0, force3D: false, duration: 0.45, ease: "power2.out" }, 8.7);
+operationTimeline.fromTo("#policy-excerpt", { opacity: 0, x: 18, force3D: false }, { opacity: 1, x: 0, force3D: false, duration: 0.4, ease: "power2.out" }, 9.05);
+operationTimeline.to("#focus-relloo,#focus-domus", { opacity: 0, duration: 0.25 }, 8.5);
+operationTimeline.to("#focus-knowly", { opacity: 1, duration: 0.25 }, 8.7);
+
+operationTimeline.fromTo("#reply", { opacity: 0, x: -24, force3D: false }, { opacity: 1, x: 0, force3D: false, duration: 0.45, ease: "power2.out" }, 9.75);
+operationTimeline.addLabel("execution", 13.3);
+operationTimeline.to("#knowledge-panel", { opacity: 0, y: -18, force3D: false, duration: 0.25, ease: "power2.in" }, 13.3);
+operationTimeline.fromTo("#execution-panel", { opacity: 0, y: 24, force3D: false }, { opacity: 1, y: 0, force3D: false, duration: 0.5, ease: "power2.out" }, 13.5);
+operationTimeline.to("#focus-knowly", { opacity: 0, duration: 0.25 }, 13.3);
+operationTimeline.to("#focus-domus", { opacity: 1, duration: 0.25 }, 13.5);
+operationTimeline.to("#order-task", { borderColor: actionColor, duration: 0.25 }, 14.1);
+operationTimeline.to("#focus-magneto", { opacity: 1, duration: 0.25 }, 14.7);
+operationTimeline.fromTo("#transport-token", { opacity: 0, x: routeOriginX, force3D: false }, { opacity: 1, x: routeOriginX, force3D: false, duration: 0.2 }, 14.85);
+operationTimeline.to("#transport-token", { x: routeTargetX, force3D: false, duration: 1.0, ease: "power2.inOut" }, 15.05);
+operationTimeline.to("#transport-token", { opacity: 0, duration: 0.2 }, 16.05);
+operationTimeline.to("#manager-task", { borderColor: actionColor, duration: 0.25 }, 16.05);
+operationTimeline.addLabel("return", 18.9);
+operationTimeline.to("#manager-waiting", { opacity: 0, duration: 0.15 }, 18.9);
+operationTimeline.to("#manager-approved", { opacity: 1, duration: 0.2 }, 19.05);
+operationTimeline.to("#manager-task", { borderColor: successColor, duration: 0.2 }, 19.05);
+operationTimeline.to("#transport-token", { opacity: 1, duration: 0.15 }, 19.25);
+operationTimeline.to("#transport-token", { x: routeOriginX, force3D: false, duration: 0.8, ease: "power2.inOut" }, 19.4);
+operationTimeline.to("#transport-token", { opacity: 0, duration: 0.15 }, 20.2);
+operationTimeline.to("#status-waiting", { opacity: 0, duration: 0.1 }, 20.25);
+operationTimeline.to("#status-approved", { opacity: 1, duration: 0.1 }, 20.35);
+operationTimeline.to("#order-task", { borderColor: successColor, duration: 0.1 }, 20.35);
+operationTimeline.to("#focus-magneto", { opacity: 0, duration: 0.2 }, 20.35);
+operationTimeline.to("#focus-domus", { opacity: 1, duration: 0.1 }, 20.35);
+operationTimeline.fromTo("#time-progress", { scaleX: 0 }, { scaleX: 1, duration: 24, ease: "none" }, 0);
+window.__timelines["welabs-operation-chain-ludic-desktop-v1-r2"] = operationTimeline;
+});
+</script></body></html>

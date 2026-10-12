@@ -85,7 +85,15 @@ describe("home presentation", () => {
       "Dá para mudar a entrega do meu pedido para sábado?",
     );
     expect(visibleText(home)).toContain("Fonte: Política de entregas, seção 3");
-    expect(home.match(/data-journey-detail/g)).toHaveLength(3);
+    expect(home.match(/data-chain-caption=/g)).toHaveLength(5);
+    expect(home.match(/data-ecosystem-demo=/g)).toHaveLength(1);
+    expect(home.match(/data-motion-viewport=/g)).toHaveLength(1);
+    expect(home.indexOf("data-ecosystem-demo")).toBeLessThan(
+      home.indexOf('id="products-ring"'),
+    );
+    expect(home).not.toContain('id="hero-domus"');
+    expect(home).not.toContain('id="hero-relloo"');
+    expect(home).not.toContain('id="journey-ring"');
     expect(home).toContain('data-architecture-node="domus"');
     expect(home).toContain('data-architecture-node="relloo"');
   });

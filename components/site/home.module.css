@@ -1,8 +1,113 @@
 /* COMPOSIÇÕES DA HOME */
 /* One architecture, one orbit and one persistent journey provide distinct reading and motion surfaces. */
 .hero {
-  padding: 134px 0 64px;
+  padding: 128px 0 72px;
   background: #faf5ea;
+}
+/* UMA HISTÓRIA PRINCIPAL ANTES DAS MARCAS */
+.operationHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 64px;
+  margin-bottom: 42px;
+}
+.operationEyebrow {
+  margin: 0 0 16px;
+  color: #686357;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.operationCopy h1 {
+  margin: 0;
+  font-size: clamp(42px, 4.7vw, 68px);
+  font-weight: 600;
+  line-height: 1.07;
+  letter-spacing: -0.05em;
+}
+.operationIntroduction > p {
+  margin: 0;
+  max-width: 43ch;
+  color: #686357;
+  font-size: 19px;
+  line-height: 1.6;
+}
+.operationIntroduction .heroActions {
+  margin-top: 24px;
+  gap: 18px;
+}
+.operationDemo {
+  scroll-margin-top: 100px;
+}
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+}
+.roleCard {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 28px;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 14px;
+  background: #171d27;
+  color: #faf5ea;
+  text-decoration: none;
+  transition: border-color 180ms ease;
+}
+.roleCard:nth-child(-n + 2) {
+  grid-column: span 3;
+  background: #1b2432;
+}
+.roleCard:hover {
+  border-color: #ffb020;
+}
+.roleCard:focus-visible {
+  outline: 2px solid #ffb020;
+  outline-offset: 4px;
+}
+.roleHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  min-height: 48px;
+  width: 100%;
+}
+.roleHeader img {
+  width: 120px;
+  height: 48px;
+  object-fit: contain;
+  object-position: left center;
+}
+.roleHeader > span {
+  margin-left: auto;
+  font-size: 12px;
+  color: #aab4c2;
+}
+.roleCard h3 {
+  margin: 28px 0 12px;
+  font-size: 23px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.roleCard p {
+  margin: 0 0 28px;
+  color: #aab4c2;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.roleLink {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  margin-top: auto;
+  font-size: 15px;
 }
 .heroGrid {
   display: grid;
@@ -442,6 +547,28 @@
   }
 }
 @media (max-width: 900px) {
+  .operationHeading {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  .operationIntroduction > p {
+    max-width: 58ch;
+    font-size: 18px;
+  }
+  .operationIntroduction .heroActions {
+    justify-content: start;
+  }
+  .roleGrid {
+    gap: 16px;
+  }
+  .roleCard {
+    padding: 22px;
+  }
+  .roleHeader > span {
+    margin-left: 0;
+  }
   .hero {
     padding-top: 120px;
     padding-bottom: 40px;
@@ -490,6 +617,30 @@
   }
 }
 @media (max-width: 600px) {
+  .operationEyebrow {
+    font-size: 13px;
+  }
+  .operationCopy h1 {
+    font-size: clamp(36px, 9.5vw, 46px);
+  }
+  .operationIntroduction > p {
+    font-size: 17px;
+  }
+  .operationIntroduction .heroActions {
+    gap: 14px;
+  }
+  .roleGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .roleCard,
+  .roleCard:nth-child(-n + 2) {
+    grid-column: auto;
+  }
+  .roleHeader > span {
+    margin-left: auto;
+  }
   .hero {
     padding-top: 112px;
   }

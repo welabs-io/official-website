@@ -1,13 +1,13 @@
 // PÁGINA COMPLETA DE APRESENTAÇÃO
-// The opening shows architecture, the orbit supports exploration and one persistent story proves the product relationship.
+// A single operational story demonstrates the whole chain before individual identities and factual product roles.
 import Link from "next/link";
 import { RingStage } from "@/components/ring/RingStage";
 import { Carousel } from "@/components/onepage/Carousel";
 import { CLIENT_LOGOS, PLATFORM_LOGOS } from "@/lib/partners";
 import { productLogo, type ProductSlug } from "@/lib/products";
 import { SiteFrame } from "./SiteFrame";
-import { HeroStage } from "./HeroStage";
-import { JourneySignals } from "./JourneySignals";
+import { EcosystemDemo } from "./EcosystemDemo";
+import { ECOSYSTEM_ROLES } from "@/lib/ecosystem-motion";
 import { ContactSection } from "./ContactSection";
 import base from "./site.module.css";
 import styles from "./home.module.css";
@@ -30,27 +30,36 @@ export function CompleteHome() {
         className={styles.hero}
         aria-labelledby="hero-heading"
       >
-        <div className={`${base.wrap} ${styles.heroGrid}`}>
-          <div className={styles.heroCopy}>
-            <h1 id="hero-heading">
-              Sua empresa,
-              <br />
-              conectada por dentro.
-            </h1>
-            <p>
-              Domus e Relloo no núcleo. Workflows, canais e conhecimento em toda
-              a operação.
-            </p>
-            <div className={styles.heroActions}>
-              <a href="#products" className={base.primary}>
-                Explorar produtos
-              </a>
-              <a href="#journey" className={base.textLink}>
-                Veja como funciona
-              </a>
+        <div className={base.wrap}>
+          <div className={styles.operationHeading}>
+            <div className={styles.operationCopy}>
+              <p className={styles.operationEyebrow}>
+                Domus · Relloo · Magneto · Tuner · Knowly
+              </p>
+              <h1 id="hero-heading">
+                Uma solicitação.
+                <br />
+                Cinco produtos, juntos.
+              </h1>
+            </div>
+            <div className={styles.operationIntroduction}>
+              <p>
+                Gestão e relacionamento conectados por canais, conhecimento e
+                workflows. Do pedido à decisão, o contexto acompanha.
+              </p>
+              <div className={styles.heroActions}>
+                <a href="#operation-demo" className={base.primary}>
+                  Ver a operação
+                </a>
+                <a href="#products" className={base.textLink}>
+                  Conhecer os produtos
+                </a>
+              </div>
             </div>
           </div>
-          <HeroStage />
+          <div id="operation-demo" className={styles.operationDemo}>
+            <EcosystemDemo />
+          </div>
         </div>
       </section>
       <section
@@ -65,7 +74,8 @@ export function CompleteHome() {
             <h2 id="products-heading">Conheça cada produto.</h2>
             <p>
               Gestão, relacionamento, workflows, canais e conhecimento. <br />
-              Escolha um produto e conheça o que ele faz.
+              Cada marca se forma ao entrar em cena. Escolha um produto e
+              conheça seu papel.
             </p>
           </div>
           <RingStage
@@ -93,128 +103,43 @@ export function CompleteHome() {
           <div className={styles.journeyHeading}>
             <div className={`${base.sectionHeading} ${base.darkHeading}`}>
               <h2 id="journey-heading">
-                Uma conversa.
-                <br />O contexto acompanha.
+                Cada produto cuida de uma parte.
+                <br />O contexto permanece.
               </h2>
               <p>
-                A pessoa, o pedido e a decisão permanecem juntos,
-                <br />
-                mesmo quando o trabalho passa de um produto para outro.
+                Domus e Relloo no núcleo da operação. Workflows, canais e
+                conhecimento acompanham o trabalho entre as áreas.
               </p>
             </div>
-            <div className={styles.contextAnchor}>
-              <span>Demonstração da operação</span>
-              <strong>Marina</strong>
-              <p>Pedido 1234</p>
-            </div>
           </div>
-          <JourneySignals className={styles.journeyGrid}>
-            <div className={styles.journeyWindow}>
-              <div className={styles.journeyWindowHeader}>
-                <span className={styles.stageDot} />
-                <span>A mesma pessoa. O mesmo pedido.</span>
-              </div>
-              <div className={styles.journeyTask}>
-                <div className={styles.journeyRequest}>
-                  <span>Marina · Pedido 1234</span>
-                  <p>“Dá para mudar a entrega do meu pedido para sábado?”</p>
-                </div>
-                <div className={styles.journeyResult}>
-                  <div data-journey-detail>
-                    <h3>Pessoa reconhecida</h3>
-                    <p>
-                      Pedido, endereço e conversas anteriores no mesmo contexto.
-                    </p>
-                  </div>
-                  <div data-journey-detail hidden>
-                    <h3>Política de entregas</h3>
-                    <p>A data pode ser alterada antes do envio.</p>
-                    <span>
-                      Fonte: Política de entregas, seção 3 · demonstração
-                    </span>
-                  </div>
-                  <div data-journey-detail hidden>
-                    <h3>Aprovação pela gestora</h3>
-                    <p>
-                      A regra sai do Domus, passa pelo Magneto e retorna ao
-                      pedido.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <RingStage
-                id="journey-ring"
-                kind="chain"
-                presentation="single"
-                clean
-                caption={false}
-                navigation={false}
-                label="Jornada contínua do pedido de Marina entre os produtos"
-              />
-            </div>
-            <div className={styles.journeySteps}>
-              <div data-journey-step data-active="true" aria-current="step">
-                <span>Contexto</span>
-                <h3>O relacionamento tem história.</h3>
-                <p>
-                  Relloo encontra a pessoa e o pedido que já fazem parte do
-                  Domus.
-                </p>
-                <div>
+          <div className={styles.roleGrid}>
+            {ECOSYSTEM_ROLES.map(({ slug, title, body }, index) => (
+              <Link
+                key={slug}
+                href={`/products/${slug}`}
+                prefetch={false}
+                className={styles.roleCard}
+                data-architecture-node={slug}
+              >
+                <div className={styles.roleHeader}>
                   <img
-                    src={productLogo("relloo", "dark")}
-                    alt="Relloo by Welabs"
-                    width={85}
-                    height={46}
+                    src={productLogo(slug, "dark")}
+                    alt={`${slug[0].toUpperCase()}${slug.slice(1)} by Welabs`}
+                    width={120}
+                    height={66}
                   />
-                  <img
-                    src={productLogo("domus", "dark")}
-                    alt="Domus by Welabs"
-                    width={85}
-                    height={46}
-                  />
+                  <span>
+                    {index < 2 ? "Núcleo da operação" : "Conecta o trabalho"}
+                  </span>
                 </div>
-              </div>
-              <div data-journey-step data-active="false">
-                <span>Conhecimento</span>
-                <h3>A resposta tem uma fonte.</h3>
-                <p>
-                  Knowly traz a informação que sustenta a conversa, sem perder o
-                  contexto.
-                </p>
-                <div>
-                  <img
-                    src={productLogo("knowly", "dark")}
-                    alt="Knowly by Welabs"
-                    width={85}
-                    height={46}
-                  />
-                </div>
-              </div>
-              <div data-journey-step data-active="false">
-                <span>Operação</span>
-                <h3>A decisão vira trabalho.</h3>
-                <p>
-                  O workflow segue a regra da operação e o resultado volta à
-                  conversa.
-                </p>
-                <div>
-                  <img
-                    src={productLogo("magneto", "dark")}
-                    alt="Magneto by Welabs"
-                    width={85}
-                    height={46}
-                  />
-                  <img
-                    src={productLogo("tuner", "dark")}
-                    alt="Tuner by Welabs"
-                    width={85}
-                    height={46}
-                  />
-                </div>
-              </div>
-            </div>
-          </JourneySignals>
+                <h3>{title}</h3>
+                <p>{body}</p>
+                <span className={styles.roleLink}>
+                  Conhecer o produto <span aria-hidden="true">↗</span>
+                </span>
+              </Link>
+            ))}
+          </div>
           <div className={styles.journeyFoot}>
             <p>Conheça os produtos que fazem essa jornada acontecer.</p>
             <Link href="/products/domus" prefetch={false}>

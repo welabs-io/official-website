@@ -1,0 +1,24 @@
+{
+  "round": "site-chain-20261011",
+  "variants": {
+    "desktop": {
+      "id": "welabs-operation-chain-ludic-desktop-v1-r2",
+      "width": 1920,
+      "height": 1080,
+      "duration": 24
+    },
+    "mobile": {
+      "id": "welabs-operation-chain-ludic-mobile-v1",
+      "width": 1080,
+      "height": 1350,
+      "duration": 24
+    }
+  },
+  "posters": {
+    "arrival": 2.4,
+    "context": 7,
+    "knowledge": 11.8,
+    "execution": 17.6,
+    "return": 22.6
+  }
+}

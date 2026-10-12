@@ -26,7 +26,7 @@ function fixture(top: number, bottom: number, reduced = false) {
     matchMedia: () => ({ matches: reduced }),
   });
   return {
-    root: { querySelector: () => viewport } as unknown as HTMLElement,
+    root: { querySelector: vi.fn(() => viewport) } as unknown as HTMLElement,
     scrollTo,
   };
 }
@@ -37,6 +37,18 @@ describe("manual narrative framing", () => {
     revealSelectedMotion(root);
     expect(scrollTo).toHaveBeenCalledExactlyOnceWith({
       top: 630.6,
+      behavior: "smooth",
+    });
+  });
+
+  it("also locates a product ring without the narrative-only viewport attribute", () => {
+    const { root, scrollTo } = fixture(-115.375, 199.625);
+    revealSelectedMotion(root);
+    expect(root.querySelector).toHaveBeenCalledWith(
+      "[data-motion-viewport], [data-ring]",
+    );
+    expect(scrollTo).toHaveBeenCalledExactlyOnceWith({
+      top: 636.625,
       behavior: "smooth",
     });
   });

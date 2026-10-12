@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "brandVersion": "1.8.0",
+  "duration": 24,
+  "sourcePiece": "welabs-chain-journey-define-logos-r6-s1",
+  "variants": [
+    {
+      "variant": "desktop",
+      "id": "welabs-operation-chain-ludic-desktop-v1-r2",
+      "src": "/motion/chain-system/pieces/welabs-operation-chain-ludic-desktop-v1-r2/index.html",
+      "width": 1920,
+      "height": 1080,
+      "minimumText": 40,
+      "indexSha256": "5c73d87225a227c21ff4400ec60367a8092c80d2377d4429d5f31d7d612afa3c",
+      "gateSamples": 38,
+      "nativeSamples": 18,
+      "posters": [
+        {
+          "beat": "arrival",
+          "time": 2.4,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-desktop-v1-r2-arrival.webp",
+          "webpSha256": "1c8737e224e4ebc0c0df764f5b1ae60e0810db40cd20bd51637950e658e700b3"
+        },
+        {
+          "beat": "context",
+          "time": 7,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-desktop-v1-r2-context.webp",
+          "webpSha256": "2ce7ff1ab7dd1559d91b612bc1aa1d305581504614b94525eb7ef0af6e59e463"
+        },
+        {
+          "beat": "knowledge",
+          "time": 11.8,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-desktop-v1-r2-knowledge.webp",
+          "webpSha256": "87975d678cf0547fdc6a2a7f12c244625a20f9e72474b9e2de64d5de8dd8ffd0"
+        },
+        {
+          "beat": "execution",
+          "time": 17.6,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-desktop-v1-r2-execution.webp",
+          "webpSha256": "e8533d21faa072e93675ba80f3a2f2cf7a127ed3a1a3e7d62f119e7583505bea"
+        },
+        {
+          "beat": "return",
+          "time": 22.6,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-desktop-v1-r2-return.webp",
+          "webpSha256": "99c5c33ef2206879a4fcf276bf08d64df426d405fca3804b041d668bb2d8f724"
+        }
+      ]
+    },
+    {
+      "variant": "mobile",
+      "id": "welabs-operation-chain-ludic-mobile-v1",
+      "src": "/motion/chain-system/pieces/welabs-operation-chain-ludic-mobile-v1/index.html",
+      "width": 1080,
+      "height": 1350,
+      "minimumText": 64,
+      "indexSha256": "857df019253ce54b5d162cf239bb2b856f08b45eee92b177328250add0367696",
+      "gateSamples": 40,
+      "nativeSamples": 18,
+      "posters": [
+        {
+          "beat": "arrival",
+          "time": 2.4,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-mobile-v1-arrival.webp",
+          "webpSha256": "fb23c590b839eebdf701762ae0d2d498631e40bed42ff00074c6214a6c0037d1"
+        },
+        {
+          "beat": "context",
+          "time": 7,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-mobile-v1-context.webp",
+          "webpSha256": "65ef7e2d8094a47e3a59e8fbd3173ca17e68e01b1f204a32f127c7288f3f474e"
+        },
+        {
+          "beat": "knowledge",
+          "time": 11.8,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-mobile-v1-knowledge.webp",
+          "webpSha256": "122c47c51f88af471a28f4d24aab79a43171bab992df31b0992cded35de7c6bd"
+        },
+        {
+          "beat": "execution",
+          "time": 17.6,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-mobile-v1-execution.webp",
+          "webpSha256": "eb7059c28e46e7d9f45d28ae7ff7099c8197b05394e6d7221c5f8b7cd9695334"
+        },
+        {
+          "beat": "return",
+          "time": 22.6,
+          "webp": "/motion/posters/welabs-operation-chain-ludic-mobile-v1-return.webp",
+          "webpSha256": "b7216ea357071e2e7834ca206db5d31124a6e78874988b8e2c4b3129d3ebcd08"
+        }
+      ]
+    }
+  ],
+  "acceptance": "accepted"
+}

@@ -401,8 +401,8 @@ export function run(
   // NAVEGAÇÃO POR CONTEÚDO
   const select = (index: number) => {
     const next = ((index % tiles.length) + tiles.length) % tiles.length;
-    // Re-selecting a chapter reveals its frame without resetting the narrative clock.
-    if (kind === "story") revealSelectedMotion(root);
+    // Native controls may scroll their own row into view; restore the chosen frame before its opening or chapter plays.
+    if (kind === "story" || kind === "products") revealSelectedMotion(root);
     // Selecting the current identity explicitly replays its complete formation.
     if (next === active && !manualIdentity) return;
     generation++;

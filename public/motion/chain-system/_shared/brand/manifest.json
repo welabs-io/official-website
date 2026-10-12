@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "brands": {
+    "welabs": {
+      "version": "1.8.0",
+      "intro": null
+    }
+  }
+}

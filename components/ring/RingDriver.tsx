@@ -1,10 +1,13 @@
 "use client";
 // NAVEGAÇÃO IMEDIATA E MÍDIA SOB DEMANDA
-// Hydration binds content intentions immediately; observers govern only media warming and playback.
+// Hydration binds content intentions immediately; the readable frame governs media warming and playback.
 // Reduced motion keeps navigation available without downloading the player; unmount releases every listener.
 import { useEffect } from "react";
 import type { RingController } from "./ring-run";
 import { bootstrapNavigation } from "./navigation-bootstrap";
+import { motionOcclusion } from "./scroll-selected-motion";
+
+export const READABLE_FRAME_RATIO = 0.55;
 
 export type RingKind =
   "chain" | "products" | "films" | "hero" | "preview" | "story" | "overview";
@@ -74,15 +77,23 @@ export function RingDriver({
       },
       { rootMargin: "400px 0px" },
     );
-    const on = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      update();
-    });
-    // Story controls can remain visible after their frame leaves the viewport; only the frame owns playback visibility.
+    const on = new IntersectionObserver(
+      ([entry]) => {
+        visible =
+          entry.isIntersecting &&
+          entry.intersectionRatio >= READABLE_FRAME_RATIO;
+        update();
+      },
+      {
+        // A title, caption or single bottom pixel must not consume a once-only opening before the reader sees it.
+        rootMargin: `-${Math.ceil(motionOcclusion())}px 0px 0px`,
+        threshold: [0, READABLE_FRAME_RATIO],
+      },
+    );
+    // Observe the media itself in every surface; surrounding navigation can be visible while the frame is unreadable.
     const playbackTarget =
-      kind === "story"
-        ? (root.querySelector<HTMLElement>("[data-motion-viewport]") ?? root)
-        : root;
+      root.querySelector<HTMLElement>("[data-motion-viewport], [data-ring]") ??
+      root;
     near.observe(playbackTarget);
     on.observe(playbackTarget);
     // Bind navigation independently of IntersectionObserver delivery and preserve any first pending intention.
