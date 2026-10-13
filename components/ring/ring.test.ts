@@ -149,6 +149,66 @@ describe("product page carousel", () => {
   });
 });
 
+// Time on screen of each tile of the video rings (intro and film, holds included) before the faster-rotation round, from
+// the manifest of that day (portfolio-20261002, 12/10): the new time must be at least 35% shorter
+const TILE_SECONDS_BEFORE: Record<string, number> = {
+  domus: 24.07,
+  relloo: 32.93,
+  magneto: 23.81,
+  tuner: 23.44,
+  knowly: 25.65,
+  "hub-whole-house-ludic-logos-r4-s1": 10.98,
+  "crm-campaigns-journey-ludic2-logos-r4-s1": 25.8,
+  "crm-agent-studio-ludic2-logos-r4-s1": 25.72,
+  "flow-canvas-build-logos-r4-s1": 20.6,
+  "flow-lifecycle-logos-r4-s1": 18.9,
+  "channels-call-center-ludic-logos-r4-s1": 19.9,
+  "channels-whatsapp-official-ludic-logos-r4-s1": 18.3,
+  "kb-sources-to-knowledge-ludic-logos-r5-s1": 22.2,
+  "kb-who-reads-what-ludic-logos-r4-s1": 18.4,
+};
+const tileSeconds = (segments: ReturnType<typeof flatten>) =>
+  segments.reduce(
+    (sum, s) => sum + (s.range[1] - s.range[0]) / s.rate + s.hold,
+    0,
+  );
+
+describe("faster rotation of the video rings", () => {
+  const tiles = [
+    ...productSlides(),
+    ...PRODUCTS.flatMap((p) => productPageSlides(p.slug).slice(1)),
+  ];
+  it("every tile is at least 35% shorter than before", () => {
+    for (const slide of tiles) {
+      // A product tile is keyed by its slug, a support film by its piece
+      const key = slide.key;
+      const before = TILE_SECONDS_BEFORE[key];
+      expect(before, key).toBeGreaterThan(0);
+      const now = tileSeconds(flatten([slide]));
+      expect(now, key).toBeLessThanOrEqual(before * 0.65 + 1e-9);
+    }
+  });
+  it("the tail of each opening is about 1.6 s and every hold about 0.8 s", () => {
+    for (const { slug } of PRODUCTS) {
+      const { intro } = MANIFEST.products[slug];
+      expect((intro.to - intro.from) / intro.rate).toBeCloseTo(1.6, 1);
+      expect(intro.holdAfter).toBeCloseTo(0.8, 2);
+    }
+    for (const slide of tiles)
+      for (const segment of slide.segments)
+        expect(segment.holdAfter).toBeLessThanOrEqual(0.8 + 1e-9);
+  });
+  it("films run at 2x or less (the reading limit) and the swap between tiles is a rotation of 0.6 to 0.8 s", () => {
+    for (const slide of tiles) {
+      for (const segment of slide.segments)
+        expect(segment.rate).toBeLessThanOrEqual(2 + 1e-9);
+      const last = slide.segments[slide.segments.length - 1];
+      expect(last.transition.duration).toBeGreaterThanOrEqual(0.6);
+      expect(last.transition.duration).toBeLessThanOrEqual(0.8);
+    }
+  });
+});
+
 describe("player addresses", () => {
   it("the player script and every piece address are the ones of the manifest", () => {
     expect(PLAYER_SRC).toBe(MANIFEST.player.src);

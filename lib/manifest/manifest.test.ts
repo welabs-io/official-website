@@ -32,8 +32,8 @@ describe("parse", () => {
     ],
     ["rate zero", (m) => (m.chain.steps[1].rate = 0), /rate must be > 0/],
     [
-      "hold under one second",
-      (m) => (m.chain.steps[1].holdAfter = 0.5),
+      "hold under half a second",
+      (m) => (m.chain.steps[1].holdAfter = 0.3),
       /holdAfter must be/,
     ],
     [

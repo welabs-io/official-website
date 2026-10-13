@@ -39,11 +39,7 @@
     },
     "source": {
       "type": "object",
-      "required": [
-        "round",
-        "roundHead",
-        "exportDir"
-      ],
+      "required": ["round", "roundHead", "exportDir"],
       "additionalProperties": false,
       "properties": {
         "round": {
@@ -63,11 +59,7 @@
     },
     "brand": {
       "type": "object",
-      "required": [
-        "welabs",
-        "sealRule",
-        "endorse"
-      ],
+      "required": ["welabs", "sealRule", "endorse"],
       "additionalProperties": false,
       "properties": {
         "welabs": {
@@ -80,20 +72,13 @@
         },
         "endorse": {
           "description": "Default for the 'by welabs' seal on small logos inside pieces (data-endorse on the piece). Opening pieces that form the logo carry it regardless; see pieces[].endorse.",
-          "enum": [
-            "on",
-            "off"
-          ]
+          "enum": ["on", "off"]
         }
       }
     },
     "player": {
       "type": "object",
-      "required": [
-        "package",
-        "version",
-        "src"
-      ],
+      "required": ["package", "version", "src"],
       "additionalProperties": false,
       "properties": {
         "package": {
@@ -109,11 +94,7 @@
     },
     "defaults": {
       "type": "object",
-      "required": [
-        "holdAfter",
-        "transitionBetweenSteps",
-        "minScreenSeconds"
-      ],
+      "required": ["holdAfter", "transitionBetweenSteps", "minScreenSeconds"],
       "additionalProperties": false,
       "properties": {
         "holdAfter": {
@@ -139,19 +120,11 @@
     },
     "chain": {
       "type": "object",
-      "required": [
-        "status",
-        "loop",
-        "variants",
-        "steps"
-      ],
+      "required": ["status", "loop", "variants", "steps"],
       "additionalProperties": false,
       "properties": {
         "status": {
-          "enum": [
-            "final",
-            "fallback"
-          ]
+          "enum": ["final", "fallback"]
         },
         "loop": {
           "type": "boolean"
@@ -162,22 +135,14 @@
         },
         "variants": {
           "type": "object",
-          "required": [
-            "desktop"
-          ],
+          "required": ["desktop"],
           "additionalProperties": false,
           "properties": {
             "desktop": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             },
             "mobile": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           }
         },
@@ -198,13 +163,7 @@
     },
     "products": {
       "type": "object",
-      "required": [
-        "domus",
-        "relloo",
-        "magneto",
-        "tuner",
-        "knowly"
-      ],
+      "required": ["domus", "relloo", "magneto", "tuner", "knowly"],
       "additionalProperties": false,
       "properties": {
         "domus": {
@@ -227,35 +186,18 @@
   },
   "$defs": {
     "slug": {
-      "enum": [
-        "domus",
-        "relloo",
-        "magneto",
-        "tuner",
-        "knowly"
-      ]
+      "enum": ["domus", "relloo", "magneto", "tuner", "knowly"]
     },
     "measure": {
       "type": "object",
-      "required": [
-        "method",
-        "status"
-      ],
+      "required": ["method", "status"],
       "additionalProperties": false,
       "properties": {
         "method": {
-          "enum": [
-            "pixel-diff-1/30s",
-            "pixel-diff-0.5s",
-            "authored-spec"
-          ]
+          "enum": ["pixel-diff-1/30s", "pixel-diff-0.5s", "authored-spec"]
         },
         "status": {
-          "enum": [
-            "measured",
-            "provisional",
-            "spec"
-          ]
+          "enum": ["measured", "provisional", "spec"]
         },
         "evidence": {
           "type": "string"
@@ -264,19 +206,11 @@
     },
     "transition": {
       "type": "object",
-      "required": [
-        "type",
-        "duration"
-      ],
+      "required": ["type", "duration"],
       "additionalProperties": false,
       "properties": {
         "type": {
-          "enum": [
-            "cut",
-            "push-left",
-            "push-up",
-            "blend"
-          ]
+          "enum": ["cut", "push-left", "push-up", "blend"]
         },
         "duration": {
           "type": "number",
@@ -289,11 +223,7 @@
     },
     "cover": {
       "type": "object",
-      "required": [
-        "t",
-        "w1280",
-        "w640"
-      ],
+      "required": ["t", "w1280", "w640"],
       "additionalProperties": false,
       "properties": {
         "t": {
@@ -313,10 +243,7 @@
     },
     "covers": {
       "type": "object",
-      "required": [
-        "start",
-        "settled"
-      ],
+      "required": ["start", "settled"],
       "additionalProperties": false,
       "properties": {
         "start": {
@@ -382,16 +309,11 @@
         },
         "endorse": {
           "description": "State of the 'by welabs' seal in this accepted piece: on = sealed logos as accepted, off = standalone logos.",
-          "enum": [
-            "on",
-            "off"
-          ]
+          "enum": ["on", "off"]
         },
         "siteVariant": {
           "type": "object",
-          "required": [
-            "hide"
-          ],
+          "required": ["hide"],
           "additionalProperties": false,
           "properties": {
             "hide": {
@@ -413,12 +335,7 @@
     },
     "connection": {
       "type": "object",
-      "required": [
-        "from",
-        "to",
-        "value",
-        "label"
-      ],
+      "required": ["from", "to", "value", "label"],
       "additionalProperties": false,
       "properties": {
         "from": {
@@ -455,13 +372,7 @@
     "overview": {
       "description": "Top block, drawn by the site (SVG and CSS, not video): the product flow with the token that carries the order.",
       "type": "object",
-      "required": [
-        "nodes",
-        "token",
-        "from",
-        "to",
-        "label"
-      ],
+      "required": ["nodes", "token", "from", "to", "label"],
       "additionalProperties": false,
       "properties": {
         "nodes": {
@@ -476,10 +387,7 @@
         "token": {
           "description": "The token (Pedido 1234) walks from node `from` to node `to`; 'outcome' is the end of the chain.",
           "type": "object",
-          "required": [
-            "from",
-            "to"
-          ],
+          "required": ["from", "to"],
           "additionalProperties": false,
           "properties": {
             "from": {
@@ -566,10 +474,7 @@
         },
         "story": {
           "description": "Whether the clip carries the Marina and Pedido 1234 story or is a generic product film.",
-          "enum": [
-            "marina",
-            "generic"
-          ]
+          "enum": ["marina", "generic"]
         }
       }
     },
@@ -671,23 +576,14 @@
     },
     "film": {
       "type": "object",
-      "required": [
-        "piece",
-        "role",
-        "title",
-        "proves",
-        "segments"
-      ],
+      "required": ["piece", "role", "title", "proves", "segments"],
       "additionalProperties": false,
       "properties": {
         "piece": {
           "type": "string"
         },
         "role": {
-          "enum": [
-            "main",
-            "support"
-          ]
+          "enum": ["main", "support"]
         },
         "title": {
           "description": "Accessible name of the film (screen readers).",
@@ -715,12 +611,7 @@
     },
     "product": {
       "type": "object",
-      "required": [
-        "order",
-        "group",
-        "intro",
-        "films"
-      ],
+      "required": ["order", "group", "intro", "films"],
       "additionalProperties": false,
       "properties": {
         "order": {
@@ -729,10 +620,7 @@
           "maximum": 5
         },
         "group": {
-          "enum": [
-            "core",
-            "rail"
-          ]
+          "enum": ["core", "rail"]
         },
         "intro": {
           "$ref": "#/$defs/segment"
@@ -791,7 +679,7 @@
         },
         "holdAfter": {
           "type": "number",
-          "minimum": 1
+          "minimum": 0.5
         },
         "poster": {
           "description": "Settled cover at 1280 px (same as covers.settled.w1280).",

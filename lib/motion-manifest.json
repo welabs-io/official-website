@@ -39,9 +39,7 @@
       "height": 1080,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          ".role"
-        ]
+        "hide": [".role"]
       },
       "posters": [
         "/motion/v5/posters/domus-intro-s2-r2--2067-1280.webp",
@@ -60,10 +58,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--1500-1280.webp",
@@ -90,10 +85,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--14300-1280.webp",
@@ -115,9 +107,7 @@
       "height": 1080,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          ".role"
-        ]
+        "hide": [".role"]
       },
       "posters": [
         "/motion/v5/posters/relloo-intro-s2-r3--2067-1280.webp",
@@ -136,11 +126,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#op",
-          ".pos",
-          "#close"
-        ]
+        "hide": ["#op", ".pos", "#close"]
       },
       "posters": [
         "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--5100-1280.webp",
@@ -163,12 +149,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#op",
-          ".pos",
-          "#close",
-          ".adv"
-        ]
+        "hide": ["#op", ".pos", "#close", ".adv"]
       },
       "posters": [
         "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--5100-1280.webp",
@@ -187,11 +168,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#op",
-          ".pos",
-          "#close"
-        ]
+        "hide": ["#op", ".pos", "#close"]
       },
       "posters": [
         "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--5100-1280.webp",
@@ -209,9 +186,7 @@
       "height": 1080,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          ".role"
-        ]
+        "hide": [".role"]
       },
       "posters": [
         "/motion/v5/posters/magneto-intro-s3-r3--2067-1280.webp",
@@ -230,10 +205,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/flow-copilot-logos-r4-s1--1000-1280.webp",
@@ -252,10 +224,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/flow-canvas-build-logos-r4-s1--1100-1280.webp",
@@ -274,10 +243,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/flow-lifecycle-logos-r4-s1--1100-1280.webp",
@@ -295,9 +261,7 @@
       "height": 1080,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          ".role"
-        ]
+        "hide": [".role"]
       },
       "posters": [
         "/motion/v5/posters/tuner-intro-s2--2067-1280.webp",
@@ -316,10 +280,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--1500-1280.webp",
@@ -342,10 +303,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--1500-1280.webp",
@@ -364,10 +322,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--1500-1280.webp",
@@ -385,9 +340,7 @@
       "height": 1080,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          ".role"
-        ]
+        "hide": [".role"]
       },
       "posters": [
         "/motion/v5/posters/knowly-intro-s2--2067-1280.webp",
@@ -406,10 +359,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--1000-1280.webp",
@@ -428,10 +378,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--1000-1280.webp",
@@ -450,10 +397,7 @@
       "minDisplayWidth": 800,
       "endorse": "on",
       "siteVariant": {
-        "hide": [
-          "#kick",
-          "#close"
-        ]
+        "hide": ["#kick", "#close"]
       },
       "posters": [
         "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--1000-1280.webp",
@@ -547,10 +491,7 @@
         },
         "step": 0,
         "srLabel": "O Domus mostra a casa cheia, com os oito cômodos, e o funil do Relloo encaixa colado à parede.",
-        "products": [
-          "domus",
-          "relloo"
-        ],
+        "products": ["domus", "relloo"],
         "connection": {
           "from": "domus",
           "to": "relloo",
@@ -560,10 +501,7 @@
           "label": "Dados no cartão"
         },
         "overview": {
-          "nodes": [
-            "domus",
-            "relloo"
-          ],
+          "nodes": ["domus", "relloo"],
           "token": {
             "from": "domus",
             "to": "relloo"
@@ -627,9 +565,7 @@
         },
         "step": 1,
         "srLabel": "No Tuner, a ligação e a mensagem \"Dá para entregar sábado?\" da Marina caem na mesma conversa.",
-        "products": [
-          "tuner"
-        ],
+        "products": ["tuner"],
         "connection": {
           "from": "tuner",
           "to": "relloo",
@@ -639,9 +575,7 @@
           "label": "Canais juntos"
         },
         "overview": {
-          "nodes": [
-            "tuner"
-          ],
+          "nodes": ["tuner"],
           "token": {
             "from": "tuner",
             "to": "relloo"
@@ -705,9 +639,7 @@
         },
         "step": 2,
         "srLabel": "No Relloo, o cartão do pedido 1234, com a troca de data, nasce em Novo, ganha responsável, prazo, histórico e retorno e vai para Em análise.",
-        "products": [
-          "relloo"
-        ],
+        "products": ["relloo"],
         "connection": {
           "from": "relloo",
           "to": "domus",
@@ -717,9 +649,7 @@
           "label": "Dados no cartão"
         },
         "overview": {
-          "nodes": [
-            "relloo"
-          ],
+          "nodes": ["relloo"],
           "token": {
             "from": "relloo",
             "to": "domus"
@@ -783,9 +713,7 @@
         },
         "step": 3,
         "srLabel": "Os cômodos Pessoas, Pedidos e Entregas do Domus mandam endereço, pedido e janela de sábado para o cartão.",
-        "products": [
-          "domus"
-        ],
+        "products": ["domus"],
         "connection": {
           "from": "domus",
           "to": "relloo",
@@ -795,9 +723,7 @@
           "label": "Dados no cartão"
         },
         "overview": {
-          "nodes": [
-            "domus"
-          ],
+          "nodes": ["domus"],
           "token": {
             "from": "domus",
             "to": "relloo"
@@ -861,9 +787,7 @@
         },
         "step": 4,
         "srLabel": "No Knowly, a linha \"Sábado: entregas até 12h\" da política vira a resposta, com a pílula da fonte.",
-        "products": [
-          "knowly"
-        ],
+        "products": ["knowly"],
         "connection": {
           "from": "knowly",
           "to": "relloo",
@@ -873,9 +797,7 @@
           "label": "Fonte no cartão"
         },
         "overview": {
-          "nodes": [
-            "knowly"
-          ],
+          "nodes": ["knowly"],
           "token": {
             "from": "knowly",
             "to": "relloo"
@@ -939,9 +861,7 @@
         },
         "step": 5,
         "srLabel": "No Magneto, a regra vira três passos, a gestora aprova a alteração e o cartão vai para Resolvido.",
-        "products": [
-          "magneto"
-        ],
+        "products": ["magneto"],
         "connection": {
           "from": "domus",
           "to": "magneto",
@@ -951,9 +871,7 @@
           "label": "Regra que roda"
         },
         "overview": {
-          "nodes": [
-            "magneto"
-          ],
+          "nodes": ["magneto"],
           "token": {
             "from": "domus",
             "to": "magneto"
@@ -1017,10 +935,7 @@
         },
         "step": 6,
         "srLabel": "O pedido atualizado volta ao cômodo Pedidos do Domus e o Tuner avisa a Marina com a confirmação \"Confirmado: sábado\".",
-        "products": [
-          "domus",
-          "tuner"
-        ],
+        "products": ["domus", "tuner"],
         "connection": {
           "from": "domus",
           "to": "outcome",
@@ -1030,10 +945,7 @@
           "label": "Tudo ligado"
         },
         "overview": {
-          "nodes": [
-            "domus",
-            "tuner"
-          ],
+          "nodes": ["domus", "tuner"],
           "token": {
             "from": "domus",
             "to": "outcome"
@@ -1099,10 +1011,7 @@
         },
         "step": 1,
         "srLabel": "A mensagem chega pelo WhatsApp e cai inteira na conversa do Relloo.",
-        "products": [
-          "tuner",
-          "relloo"
-        ],
+        "products": ["tuner", "relloo"],
         "connection": {
           "from": "tuner",
           "to": "relloo",
@@ -1144,10 +1053,7 @@
         },
         "step": 2,
         "srLabel": "Os dados da casa do Domus chegam ao Relloo e a pessoa é reconhecida, com o pedido.",
-        "products": [
-          "relloo",
-          "domus"
-        ],
+        "products": ["relloo", "domus"],
         "connection": {
           "from": "domus",
           "to": "relloo",
@@ -1189,10 +1095,7 @@
         },
         "step": 3,
         "srLabel": "O Knowly traz a regra de sábado, com a fonte, para a resposta do Relloo.",
-        "products": [
-          "knowly",
-          "relloo"
-        ],
+        "products": ["knowly", "relloo"],
         "connection": {
           "from": "knowly",
           "to": "relloo",
@@ -1234,10 +1137,7 @@
         },
         "step": 4,
         "srLabel": "A regra cadastrada no Domus vira um fluxo que roda no Magneto.",
-        "products": [
-          "domus",
-          "magneto"
-        ],
+        "products": ["domus", "magneto"],
         "connection": {
           "from": "domus",
           "to": "magneto",
@@ -1279,10 +1179,7 @@
         },
         "step": 5,
         "srLabel": "O fluxo conclui, o pedido volta atualizado ao Domus e a pessoa é avisada.",
-        "products": [
-          "magneto",
-          "domus"
-        ],
+        "products": ["magneto", "domus"],
         "connection": {
           "from": "magneto",
           "to": "domus",
@@ -1324,10 +1221,7 @@
         },
         "step": 6,
         "srLabel": "Tudo fecha no Domus: as regras moram dentro da casa.",
-        "products": [
-          "domus",
-          "magneto"
-        ],
+        "products": ["domus", "magneto"],
         "connection": {
           "from": "domus",
           "to": "outcome",
@@ -1350,8 +1244,8 @@
         "from": 1.567,
         "to": 3.967,
         "settledAt": 3.867,
-        "rate": 1,
-        "holdAfter": 1,
+        "rate": 1.5,
+        "holdAfter": 0.8,
         "covers": {
           "start": {
             "t": 2.067,
@@ -1385,16 +1279,16 @@
           "segments": [
             {
               "piece": "hub-draw-born-ludic-v2-logos-r5-s1",
-              "from": 1,
+              "from": 6,
               "to": 20.167,
               "settledAt": 20.067,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1.5,
-                  "w1280": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--1500-1280.webp",
-                  "w640": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--1500-640.webp"
+                  "t": 6.5,
+                  "w1280": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--6500-1280.webp",
+                  "w640": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--6500-640.webp"
                 },
                 "settled": {
                   "t": 20.067,
@@ -1405,7 +1299,7 @@
               "poster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--20067-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1419,8 +1313,8 @@
               "from": 22.6,
               "to": 26.767,
               "settledAt": 26.667,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
                   "t": 23.1,
@@ -1436,7 +1330,7 @@
               "poster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--26667-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1446,7 +1340,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--1500-1280.webp",
+          "poster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--6500-1280.webp",
           "endPoster": "/motion/v5/posters/hub-draw-born-ludic-v2-logos-r5-s1--26667-1280.webp"
         },
         {
@@ -1457,16 +1351,16 @@
           "segments": [
             {
               "piece": "hub-whole-house-ludic-logos-r4-s1",
-              "from": 13.8,
+              "from": 16.5,
               "to": 28.767,
               "settledAt": 28.667,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 14.3,
-                  "w1280": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--14300-1280.webp",
-                  "w640": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--14300-640.webp"
+                  "t": 17,
+                  "w1280": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--17000-1280.webp",
+                  "w640": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--17000-640.webp"
                 },
                 "settled": {
                   "t": 28.667,
@@ -1477,7 +1371,7 @@
               "poster": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--28667-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1487,7 +1381,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--14300-1280.webp",
+          "poster": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--17000-1280.webp",
           "endPoster": "/motion/v5/posters/hub-whole-house-ludic-logos-r4-s1--28667-1280.webp"
         }
       ]
@@ -1502,8 +1396,8 @@
         "from": 1.567,
         "to": 3.967,
         "settledAt": 3.867,
-        "rate": 1,
-        "holdAfter": 1,
+        "rate": 1.5,
+        "holdAfter": 0.8,
         "covers": {
           "start": {
             "t": 2.067,
@@ -1537,16 +1431,16 @@
           "segments": [
             {
               "piece": "crm-omnichannel-inbox-ludic2-logos-r4-s1",
-              "from": 4.6,
+              "from": 6.6,
               "to": 40.267,
               "settledAt": 40.167,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 5.1,
-                  "w1280": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--5100-1280.webp",
-                  "w640": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--5100-640.webp"
+                  "t": 7.1,
+                  "w1280": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--7100-1280.webp",
+                  "w640": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--7100-640.webp"
                 },
                 "settled": {
                   "t": 40.167,
@@ -1557,7 +1451,7 @@
               "poster": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--40167-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1567,7 +1461,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--5100-1280.webp",
+          "poster": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--7100-1280.webp",
           "endPoster": "/motion/v5/posters/crm-omnichannel-inbox-ludic2-logos-r4-s1--40167-1280.webp"
         },
         {
@@ -1578,16 +1472,16 @@
           "segments": [
             {
               "piece": "crm-campaigns-journey-ludic2-logos-r4-s1",
-              "from": 4.6,
+              "from": 10.6,
               "to": 41.767,
               "settledAt": 41.667,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 5.1,
-                  "w1280": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--5100-1280.webp",
-                  "w640": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--5100-640.webp"
+                  "t": 11.1,
+                  "w1280": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--11100-1280.webp",
+                  "w640": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--11100-640.webp"
                 },
                 "settled": {
                   "t": 41.667,
@@ -1598,7 +1492,7 @@
               "poster": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--41667-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1608,7 +1502,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--5100-1280.webp",
+          "poster": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--11100-1280.webp",
           "endPoster": "/motion/v5/posters/crm-campaigns-journey-ludic2-logos-r4-s1--41667-1280.webp"
         },
         {
@@ -1619,16 +1513,16 @@
           "segments": [
             {
               "piece": "crm-agent-studio-ludic2-logos-r4-s1",
-              "from": 4.6,
+              "from": 11.1,
               "to": 41.7,
               "settledAt": 41.6,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 5.1,
-                  "w1280": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--5100-1280.webp",
-                  "w640": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--5100-640.webp"
+                  "t": 11.6,
+                  "w1280": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--11600-1280.webp",
+                  "w640": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--11600-640.webp"
                 },
                 "settled": {
                   "t": 41.6,
@@ -1639,7 +1533,7 @@
               "poster": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--41600-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1649,7 +1543,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--5100-1280.webp",
+          "poster": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--11600-1280.webp",
           "endPoster": "/motion/v5/posters/crm-agent-studio-ludic2-logos-r4-s1--41600-1280.webp"
         }
       ]
@@ -1664,8 +1558,8 @@
         "from": 1.567,
         "to": 3.967,
         "settledAt": 3.867,
-        "rate": 1,
-        "holdAfter": 1,
+        "rate": 1.5,
+        "holdAfter": 0.8,
         "covers": {
           "start": {
             "t": 2.067,
@@ -1699,16 +1593,16 @@
           "segments": [
             {
               "piece": "flow-copilot-logos-r4-s1",
-              "from": 0.5,
+              "from": 3.6,
               "to": 24.767,
               "settledAt": 24.667,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1,
-                  "w1280": "/motion/v5/posters/flow-copilot-logos-r4-s1--1000-1280.webp",
-                  "w640": "/motion/v5/posters/flow-copilot-logos-r4-s1--1000-640.webp"
+                  "t": 4.1,
+                  "w1280": "/motion/v5/posters/flow-copilot-logos-r4-s1--4100-1280.webp",
+                  "w640": "/motion/v5/posters/flow-copilot-logos-r4-s1--4100-640.webp"
                 },
                 "settled": {
                   "t": 24.667,
@@ -1719,7 +1613,7 @@
               "poster": "/motion/v5/posters/flow-copilot-logos-r4-s1--24667-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1729,7 +1623,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/flow-copilot-logos-r4-s1--1000-1280.webp",
+          "poster": "/motion/v5/posters/flow-copilot-logos-r4-s1--4100-1280.webp",
           "endPoster": "/motion/v5/posters/flow-copilot-logos-r4-s1--24667-1280.webp"
         },
         {
@@ -1740,16 +1634,16 @@
           "segments": [
             {
               "piece": "flow-canvas-build-logos-r4-s1",
-              "from": 0.6,
+              "from": 4.8,
               "to": 25.067,
               "settledAt": 24.967,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1.1,
-                  "w1280": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--1100-1280.webp",
-                  "w640": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--1100-640.webp"
+                  "t": 5.3,
+                  "w1280": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--5300-1280.webp",
+                  "w640": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--5300-640.webp"
                 },
                 "settled": {
                   "t": 24.967,
@@ -1760,7 +1654,7 @@
               "poster": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--24967-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1770,7 +1664,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--1100-1280.webp",
+          "poster": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--5300-1280.webp",
           "endPoster": "/motion/v5/posters/flow-canvas-build-logos-r4-s1--24967-1280.webp"
         },
         {
@@ -1781,16 +1675,16 @@
           "segments": [
             {
               "piece": "flow-lifecycle-logos-r4-s1",
-              "from": 0.6,
+              "from": 7.1,
               "to": 27.467,
               "settledAt": 27.367,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1.1,
-                  "w1280": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--1100-1280.webp",
-                  "w640": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--1100-640.webp"
+                  "t": 7.6,
+                  "w1280": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--7600-1280.webp",
+                  "w640": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--7600-640.webp"
                 },
                 "settled": {
                   "t": 27.367,
@@ -1801,7 +1695,7 @@
               "poster": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--27367-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1811,7 +1705,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--1100-1280.webp",
+          "poster": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--7600-1280.webp",
           "endPoster": "/motion/v5/posters/flow-lifecycle-logos-r4-s1--27367-1280.webp"
         }
       ]
@@ -1826,8 +1720,8 @@
         "from": 1.567,
         "to": 3.967,
         "settledAt": 3.867,
-        "rate": 1,
-        "holdAfter": 1,
+        "rate": 1.5,
+        "holdAfter": 0.8,
         "covers": {
           "start": {
             "t": 2.067,
@@ -1861,16 +1755,16 @@
           "segments": [
             {
               "piece": "channels-one-contract-ludic-logos-r5-s1",
-              "from": 1,
+              "from": 6,
               "to": 29.567,
               "settledAt": 29.467,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1.5,
-                  "w1280": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--1500-1280.webp",
-                  "w640": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--1500-640.webp"
+                  "t": 6.5,
+                  "w1280": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--6500-1280.webp",
+                  "w640": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--6500-640.webp"
                 },
                 "settled": {
                   "t": 29.467,
@@ -1881,7 +1775,7 @@
               "poster": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--29467-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1891,7 +1785,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--1500-1280.webp",
+          "poster": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--6500-1280.webp",
           "endPoster": "/motion/v5/posters/channels-one-contract-ludic-logos-r5-s1--29467-1280.webp"
         },
         {
@@ -1902,16 +1796,16 @@
           "segments": [
             {
               "piece": "channels-call-center-ludic-logos-r4-s1",
-              "from": 1,
+              "from": 2,
               "to": 24.567,
               "settledAt": 24.467,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1.5,
-                  "w1280": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--1500-1280.webp",
-                  "w640": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--1500-640.webp"
+                  "t": 2.5,
+                  "w1280": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--2500-1280.webp",
+                  "w640": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--2500-640.webp"
                 },
                 "settled": {
                   "t": 24.467,
@@ -1922,7 +1816,7 @@
               "poster": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--24467-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1932,7 +1826,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--1500-1280.webp",
+          "poster": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--2500-1280.webp",
           "endPoster": "/motion/v5/posters/channels-call-center-ludic-logos-r4-s1--24467-1280.webp"
         },
         {
@@ -1943,16 +1837,16 @@
           "segments": [
             {
               "piece": "channels-whatsapp-official-ludic-logos-r4-s1",
-              "from": 1,
+              "from": 5.6,
               "to": 26.967,
               "settledAt": 26.867,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1.5,
-                  "w1280": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--1500-1280.webp",
-                  "w640": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--1500-640.webp"
+                  "t": 6.1,
+                  "w1280": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--6100-1280.webp",
+                  "w640": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--6100-640.webp"
                 },
                 "settled": {
                   "t": 26.867,
@@ -1963,7 +1857,7 @@
               "poster": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--26867-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -1973,7 +1867,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--1500-1280.webp",
+          "poster": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--6100-1280.webp",
           "endPoster": "/motion/v5/posters/channels-whatsapp-official-ludic-logos-r4-s1--26867-1280.webp"
         }
       ]
@@ -1988,8 +1882,8 @@
         "from": 1.567,
         "to": 3.967,
         "settledAt": 3.867,
-        "rate": 1,
-        "holdAfter": 1,
+        "rate": 1.5,
+        "holdAfter": 0.8,
         "covers": {
           "start": {
             "t": 2.067,
@@ -2023,16 +1917,16 @@
           "segments": [
             {
               "piece": "kb-ask-with-proof-ludic-logos-r5-s1",
-              "from": 0.5,
+              "from": 2.6,
               "to": 27.067,
               "settledAt": 26.967,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1,
-                  "w1280": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--1000-1280.webp",
-                  "w640": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--1000-640.webp"
+                  "t": 3.1,
+                  "w1280": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--3100-1280.webp",
+                  "w640": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--3100-640.webp"
                 },
                 "settled": {
                   "t": 26.967,
@@ -2043,7 +1937,7 @@
               "poster": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--26967-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -2053,7 +1947,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--1000-1280.webp",
+          "poster": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--3100-1280.webp",
           "endPoster": "/motion/v5/posters/kb-ask-with-proof-ludic-logos-r5-s1--26967-1280.webp"
         },
         {
@@ -2064,16 +1958,16 @@
           "segments": [
             {
               "piece": "kb-sources-to-knowledge-ludic-logos-r5-s1",
-              "from": 0.5,
+              "from": 2.4,
               "to": 26.967,
               "settledAt": 26.867,
-              "rate": 1.25,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1,
-                  "w1280": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--1000-1280.webp",
-                  "w640": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--1000-640.webp"
+                  "t": 2.9,
+                  "w1280": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--2900-1280.webp",
+                  "w640": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--2900-640.webp"
                 },
                 "settled": {
                   "t": 26.867,
@@ -2084,7 +1978,7 @@
               "poster": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--26867-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -2094,7 +1988,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--1000-1280.webp",
+          "poster": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--2900-1280.webp",
           "endPoster": "/motion/v5/posters/kb-sources-to-knowledge-ludic-logos-r5-s1--26867-1280.webp"
         },
         {
@@ -2105,16 +1999,16 @@
           "segments": [
             {
               "piece": "kb-who-reads-what-ludic-logos-r4-s1",
-              "from": 0.5,
+              "from": 5,
               "to": 26.567,
               "settledAt": 26.467,
-              "rate": 1.5,
-              "holdAfter": 1,
+              "rate": 2,
+              "holdAfter": 0.8,
               "covers": {
                 "start": {
-                  "t": 1,
-                  "w1280": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--1000-1280.webp",
-                  "w640": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--1000-640.webp"
+                  "t": 5.5,
+                  "w1280": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--5500-1280.webp",
+                  "w640": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--5500-640.webp"
                 },
                 "settled": {
                   "t": 26.467,
@@ -2125,7 +2019,7 @@
               "poster": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--26467-1280.webp",
               "transition": {
                 "type": "push-left",
-                "duration": 0.4,
+                "duration": 0.7,
                 "ease": "power2.inOut"
               },
               "measure": {
@@ -2135,7 +2029,7 @@
               }
             }
           ],
-          "poster": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--1000-1280.webp",
+          "poster": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--5500-1280.webp",
           "endPoster": "/motion/v5/posters/kb-who-reads-what-ludic-logos-r4-s1--26467-1280.webp"
         }
       ]

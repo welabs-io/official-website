@@ -71,7 +71,15 @@ describe.skipIf(!existsSync(round))("sync-motion", () => {
   it("a missing cover, found after the pieces were built, also leaves them intact", () => {
     const before = [snapshot(live), readFileSync(manifestPath, "utf8")];
     const empty = mkdtempSync(join(tmpdir(), "covers-"));
-    const result = run(["--manifest", manifestPath, "--covers", empty]);
+    // The site copy of the schema: it lowers the floor of holdAfter to 0.5 s (docs/motion-contract-requests.md)
+    const result = run([
+      "--manifest",
+      manifestPath,
+      "--schema",
+      join(site, "lib/motion-manifest.schema.json"),
+      "--covers",
+      empty,
+    ]);
     expect(result.status).not.toBe(0);
     expect(result.stderr).toMatch(/missing cover/);
     expect([snapshot(live), readFileSync(manifestPath, "utf8")]).toEqual(
