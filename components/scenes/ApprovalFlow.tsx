@@ -2,6 +2,7 @@
 // The rule in three steps. The first and the third are done by the flow (a check), the second waits for the Gestora,
 // who taps the button; the amber bar between steps fills as each one is done. `rule` brings the rule and step 1 in,
 // `approve` is the tap and step 2, `finish` is step 3.
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import type { Act } from "@/lib/scenes/types";
 import styles from "./scenes.module.css";
 
@@ -12,7 +13,7 @@ const CHECK = (
     height="18"
     fill="none"
     stroke="currentColor"
-    strokeWidth="3"
+    strokeWidth={ICON_STROKE}
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden="true"
@@ -47,7 +48,7 @@ export function ApprovalFlow({
           height="18"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth={ICON_STROKE}
           strokeLinecap="round"
           aria-hidden="true"
         >

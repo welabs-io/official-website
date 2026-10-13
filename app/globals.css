@@ -45,9 +45,17 @@ svg {
 a {
   color: inherit;
 }
+/* FOCO VISÍVEL */
+/* One focus ring for every control: a 3 px amber ring (area, as the brand asks) inside a 2 px graphite outline. Amber
+   alone on cream is 1.7:1, so the graphite line carries the contrast (WCAG 2.2 asks 3:1) and the amber carries the brand. */
 :focus-visible {
-  outline: 3px solid #ffb020;
+  outline: 2px solid #1c1a16;
   outline-offset: 3px;
+  box-shadow: 0 0 0 3px #ffb020;
+}
+/* On a graphite band (the footer) the outline turns cream */
+footer :focus-visible {
+  outline-color: #faf5ea;
 }
 .skip-link {
   position: absolute;

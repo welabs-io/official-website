@@ -1,6 +1,7 @@
 // CASA DO DOMUS COM OS CÔMODOS
 // The house: a roof, a body and eight rooms in two columns. Rooms come in staggered (`enter`), some light up with a
 // 4 px amber bar (`lit`, staggered in the order given) and one can swap its name for a two-line result (`result`).
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import type { Act, ActProps } from "@/lib/scenes/types";
 import styles from "./scenes.module.css";
 
@@ -82,7 +83,7 @@ export function HouseRooms({
                 height="22"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="1.8"
+                strokeWidth={ICON_STROKE}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 aria-hidden="true"

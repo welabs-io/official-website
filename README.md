@@ -6,11 +6,11 @@ Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em port
 
 ## Rotas
 
-| Rota               | Conteúdo                                                                                                                                                                                                                                                                       |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/`                | Abertura e cadeia em dois blocos, um pedido do começo ao fim, produtos, o que muda na operação, para quem, integrações e infraestrutura, perguntas frequentes, conectores, faixa de marcas e plataformas, contato e rodapé                                                     |
+| Rota               | Conteúdo                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/`                | Abertura e cadeia em dois blocos, um pedido do começo ao fim, produtos, o que muda na operação, para quem, integrações e infraestrutura, perguntas frequentes, conectores, faixa de marcas e plataformas, contato e rodapé                                                                                                           |
 | `/products/[slug]` | Abertura com o caminho "Welabs / Produto" e a cena nativa do produto, o que resolve, como funciona (a cadeia nativa só com as cenas do produto e, abaixo, os filmes), capacidades em grupos, para quem, perguntas, conectores com o produto aceso, fechamento e os outros produtos (`domus`, `relloo`, `magneto`, `tuner`, `knowly`) |
-| `/lab/chain`       | Bancada da cadeia em tela cheia (`noindex`, sem link)                                                                                                                                                                                                                          |
+| `/lab/chain`       | Bancada da cadeia em tela cheia (`noindex`, sem link)                                                                                                                                                                                                                                                                                |
 
 Blocos da home e âncoras, na ordem: `#chain` (cadeia, logo abaixo do topo `#top`), `#how` (um pedido do começo ao fim), `#products`, `#operation` (o que muda), `#audience` (para quem), `#integrations`, `#faq`, `#connectors`, `#platforms` e `#contact` (fechamento com o contato). Páginas de produto: `#product` (abertura), `#resolves`, `#how` (cadeia nativa do produto e filmes), `#capabilities`, `#audience`, `#faq`, `#connectors`, `#platforms`, `#contact` e `#others` (os outros quatro produtos, no fim).
 
@@ -40,6 +40,10 @@ Seções de leitura (direção do operador de 2026-10-12: mais conteúdo e mais 
 - Cenas paradas: `components/scenes/MiniScene.tsx` desenha o quadro final de uma cena da cadeia fora do carrossel (as vitrines do "o que muda" e a abertura de cada página de produto), sem relógio e sem código de cliente; o texto de interface dessas cenas fica fora da contagem de palavras (`data-mini` até `data-mini-end`).
 - "Como trabalhamos" (diagnóstico, implantação, operação e evolução) ficou de fora: o portfólio não traz fonte para etapas de trabalho. O contato é o botão e a linha que o operador definiu em 09/10/2026: nenhum e-mail ou WhatsApp foi dado.
 - Orçamento de palavras visíveis (cenas não contam): de 700 a 1000 na home e de 400 a 700 por produto (eram 180 e 260 antes da expansão). O piso trava a seção que perde o texto; o teto, o texto que cresce sem decisão. Valem em `components/template/site.test.tsx` e em `scripts/check-portfolio.mjs`.
+
+## Sistema visual
+
+Os tokens ficam em `.page` (`components/onepage/shell.module.css`) e as folhas dos componentes só os leem: escala de texto `--text-xs` (14 px, o piso do site) a `--text-display`, alturas de linha `--lh-*`, entreletra `--ls-*`, largura de linha `--measure` (66ch), grade de 4 px `--sp-1` a `--sp-9`, raios `--r-ctl` (6), `--r-card` (12) e `--r-win` (16), sombras `--shadow-card` e `--shadow-pop`. O traço de todo ícone é `ICON_STROKE` (`lib/icon-stroke.ts`). O foco visível é um só (`app/globals.css`: anel âmbar dentro de contorno grafite). `components/template/polish.test.tsx` reprova valor solto nas folhas, fonte fora da escala, raio fora da escala e traço diferente.
 
 ## Estrutura de pastas
 

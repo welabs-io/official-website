@@ -2,6 +2,7 @@
 // Small line glyphs on a 24 px grid, drawn in the colour of the text (never amber: amber is an area only). Server
 // markup, decorative: the capability text next to each one carries the meaning.
 import type { IconName } from "@/lib/content/types";
+import { ICON_STROKE } from "@/lib/icon-stroke";
 
 const PATHS: Record<IconName, string> = {
   bank: "M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18",
@@ -46,7 +47,7 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.75"
+      strokeWidth={ICON_STROKE}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

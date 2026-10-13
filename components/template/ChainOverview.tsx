@@ -5,6 +5,7 @@
 // components/ring/overview-follow.ts rewrites data attributes and custom properties on the `ring:swap` event, so the
 // caption and the lit node change with the scene. The first state drawn here is the first step; the script next to the
 // block carries the rest of the steps.
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import { overviewData, type OverviewStep } from "@/lib/overview-data";
 import { stepVars } from "@/lib/overview-geometry";
 import { productAlt, productLogo, type ProductSlug } from "@/lib/products";
@@ -65,7 +66,7 @@ export function ChainOverview({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth={ICON_STROKE}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 aria-hidden="true"

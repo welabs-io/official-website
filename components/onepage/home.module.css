@@ -5,8 +5,8 @@
 /* SEÇÃO 1: CADEIA */
 /* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
 .chain {
-  --pt: calc(var(--header-h) + 44px);
-  --pb: 44px;
+  --pt: calc(var(--header-h) + var(--sp-7));
+  --pb: var(--sp-7);
 }
 
 /* ABERTURA DA HOME */
@@ -14,29 +14,30 @@
 .lede {
   display: grid;
   justify-items: center;
-  gap: 6px;
-  margin-bottom: 20px;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
   text-align: center;
 }
 .ledeTitle {
+  /* The opening title is the top step of the type scale, one above the section titles */
   max-width: 28ch;
-  font-size: clamp(24px, 2.8vw, 36px);
-  line-height: 1.12;
+  font-size: var(--text-display);
+  line-height: var(--lh-display);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--ls-display);
   text-wrap: balance;
 }
 .ledeLine {
-  max-width: 64ch;
-  font-size: clamp(16px, 1.3vw, 18px);
-  line-height: 1.4;
+  max-width: min(var(--measure), 100%);
+  font-size: var(--text-lg);
+  line-height: var(--lh-lead);
   font-weight: 500;
   color: var(--mute);
   text-wrap: balance;
 }
 @media (min-width: 1100px) {
   .ledeTitle {
-    max-width: none;
+    max-width: 24ch;
   }
 }
 
@@ -52,19 +53,19 @@
 /* Under the native chain: a small title and the ring of films, 40 px apart. */
 .films {
   display: grid;
-  gap: 16px;
-  margin-top: 48px;
+  gap: var(--sp-4);
+  margin-top: var(--sp-7);
 }
 .filmsTitle {
   justify-self: center;
   position: relative;
   z-index: 2;
-  padding: 0 12px;
+  padding: 0 var(--sp-3);
   background: var(--bg);
-  font-size: clamp(20px, 1.8vw, 24px);
-  line-height: 1.2;
+  font-size: var(--text-2xl);
+  line-height: var(--lh-heading);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--ls-heading);
 }
 
 .srOnly {
@@ -78,33 +79,33 @@
 
 /* SEÇÃO 2: PRODUTOS */
 .products {
-  --pt: 44px;
-  --pb: 44px;
+  --pt: var(--sp-7);
+  --pb: var(--sp-7);
 }
 
 /* ABERTURA DA PÁGINA DE PRODUTO */
 .productPage {
-  --pt: calc(var(--header-h) + 32px);
-  --pb: 64px;
+  --pt: calc(var(--header-h) + var(--sp-6));
+  --pb: var(--sp-8);
 }
 
 /* BLOCO DE TEXTO (PÁGINA DE PRODUTO): O QUE RESOLVE E COMO FUNCIONA */
 .block {
-  --pt: 64px;
-  --pb: 64px;
+  --pt: var(--sp-8);
+  --pb: var(--sp-8);
 }
 
 /* SEÇÕES DE LEITURA E VITRINES DE CENA */
 /* The bands that carry the length of the page: 48 to 80 px above and below, so each one is about a window high. */
 .read {
-  --pt: clamp(48px, 5.5vw, 80px);
-  --pb: clamp(48px, 5.5vw, 80px);
+  --pt: clamp(var(--sp-7), 5.5vw, var(--sp-9));
+  --pb: clamp(var(--sp-7), 5.5vw, var(--sp-9));
 }
 
 /* SEÇÃO 3: CONECTORES */
 .connectors {
-  --pt: 40px;
-  --pb: 40px;
+  --pt: var(--sp-6);
+  --pb: var(--sp-6);
 }
 
 /* SEÇÃO 4: FECHAMENTO */
@@ -115,7 +116,7 @@
   /* Gap and top padding are named: the stretches that converge on the strip (ConnectorRail, --closing-pt comes from
      the page, as the stretches belong to the section above) and the thread between the strip and the button are drawn
      from them */
-  --closing-gap: clamp(32px, 4vw, 56px);
+  --closing-gap: clamp(var(--sp-6), 4vw, var(--sp-7));
   gap: var(--closing-gap);
   --pt: var(--closing-pt);
   --pb: var(--closing-pt);
@@ -125,7 +126,7 @@
 .strips {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 4px;
+  gap: var(--sp-1);
 }
 /* A title over its strip of logos; the first one clears the docks of the rails that arrive on the strip. min-width 0
    keeps the width of the moving track from widening the column. */
@@ -133,10 +134,10 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   min-width: 0;
-  gap: 2px;
+  gap: var(--sp-1);
 }
 .strip:first-child {
-  padding-top: 12px;
+  padding-top: var(--sp-3);
 }
 .contact {
   display: flex;
@@ -148,7 +149,7 @@
   justify-items: center;
 }
 .contactBox > :first-child {
-  margin-bottom: clamp(20px, 3vw, 32px);
+  margin-bottom: clamp(var(--sp-5), 3vw, var(--sp-6));
 }
 /* The thread keeps going alone from the strip to the button of the closing and ends in a dock on its top edge */
 .thread {
@@ -178,20 +179,20 @@
 
 @media (max-width: 860px) {
   .chain {
-    --pt: calc(var(--header-h) + 32px);
-    --pb: 40px;
+    --pt: calc(var(--header-h) + var(--sp-6));
+    --pb: var(--sp-6);
   }
   .products,
   .block,
   .connectors {
-    --pt: 40px;
-    --pb: 40px;
+    --pt: var(--sp-6);
+    --pb: var(--sp-6);
   }
   .productPage {
-    --pb: 40px;
+    --pb: var(--sp-6);
   }
   .closing {
-    --closing-gap: 32px;
-    --pb: 32px;
+    --closing-gap: var(--sp-6);
+    --pb: var(--sp-6);
   }
 }

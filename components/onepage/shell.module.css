@@ -14,11 +14,49 @@
   --mute-l: #625b4e;
   /* Structural lines of the light theme (thread, rails, bus): darker than the hairlines of the cards, so the drawing reads */
   --thread-l: #d2c6ae;
+  /* ESCALA TIPOGRÁFICA, ESPAÇAMENTO E FORMAS */
+  /* The one system every component reads (no loose value in the component sheets). Type: seven steps, 14 px the smallest
+     text of the site; weights 400 (text), 500 (lead and labels) and 600 (titles); line heights 1.08 for display, 1.25
+     for headings, 1.4 for lead and 1.5 for body; tracking only from 24 px up. Line width: paragraphs stay between 60 and
+     75 characters (--measure). Space: a 4 px grid, steps of 4, 8, 12, 16, 24, 32, 48, 64 and 80. Shapes: 6 px for controls
+     and chips, 12 px for cards, 16 px for windows; one hairline colour (--line) for cards, a darker one (--thread) for
+     structure. */
+  --text-xs: 14px;
+  --text-sm: 15px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: clamp(22px, 2vw, 26px);
+  --text-title: clamp(28px, 3.2vw, 40px);
+  --text-display: clamp(32px, 3.8vw, 48px);
+  --lh-display: 1.08;
+  --lh-heading: 1.25;
+  --lh-lead: 1.4;
+  --lh-body: 1.5;
+  --ls-display: -0.02em;
+  --ls-heading: -0.01em;
+  --measure: 66ch;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 80px;
+  --r-ctl: 6px;
+  --r-card: 12px;
+  --r-win: 16px;
+  --shadow-card:
+    0 1px 2px rgb(28 26 22 / 0.05), 0 12px 24px -18px rgb(28 26 22 / 0.28);
+  --shadow-pop: 0 16px 32px -20px rgb(28 26 22 / 0.4);
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;
   --logo-h: 42px;
   /* Top padding of the closing: the stretches of the section above run down to the strip through it */
-  --closing-pt: clamp(28px, 3.5vh, 40px);
+  --closing-pt: clamp(var(--sp-5), 3.5vh, var(--sp-6));
   background: var(--c);
   color: var(--ink);
   overflow-x: clip;
@@ -32,7 +70,8 @@
 .band {
   position: relative;
   /* 48 px between sections on desktop, 32 px on a phone; a section may set --pt and --pb */
-  padding: var(--pt, clamp(32px, 4vw, 48px)) 0 var(--pb, clamp(32px, 4vw, 48px));
+  padding: var(--pt, clamp(var(--sp-6), 4vw, var(--sp-7))) 0
+    var(--pb, clamp(var(--sp-6), 4vw, var(--sp-7)));
 }
 .dark {
   background: var(--g);
@@ -59,14 +98,15 @@
 /* TÍTULO E LINHA FACTUAL */
 /* Short title (3 to 8 words) and one supporting line, never a slogan. */
 .title {
-  font-size: clamp(28px, 3.6vw, 48px);
-  line-height: 1.08;
+  font-size: var(--text-title);
+  line-height: var(--lh-display);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--ls-display);
 }
 .line {
-  font-size: clamp(17px, 1.5vw, 21px);
-  line-height: 1.4;
+  max-width: var(--measure);
+  font-size: var(--text-lg);
+  line-height: var(--lh-lead);
   font-weight: 500;
   color: var(--mute);
 }
@@ -83,7 +123,7 @@
 .headerInner {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--sp-4);
   width: min(1200px, 100% - 48px);
   height: var(--header-h);
   margin: 0 auto;
@@ -112,27 +152,34 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 0 20px;
-  border-radius: 6px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-ctl);
   background: var(--a);
   color: var(--ink);
-  font-size: 15px;
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
+  transition:
+    background-color 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
 }
 .cta:hover {
   background: #ffc04d;
 }
+.cta:active {
+  transform: translateY(1px);
+}
 .ctaBig {
   min-height: 56px;
-  padding: 0 32px;
-  font-size: 18px;
+  padding: 0 var(--sp-6);
+  font-size: var(--text-lg);
 }
 @media (max-width: 520px) {
+  /* The compact header button keeps the 14 px floor of the type scale */
   .cta:not(.ctaBig) {
-    padding: 0 12px;
-    font-size: 13px;
+    padding: 0 var(--sp-3);
+    font-size: var(--text-xs);
   }
 }
 
@@ -151,7 +198,7 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -160,12 +207,13 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 0 14px;
-  border-radius: 6px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-ctl);
   color: var(--ink);
-  font-size: 15px;
+  font-size: var(--text-sm);
   font-weight: 500;
   text-decoration: none;
+  transition: background-color 0.2s var(--ease-out);
 }
 .navLink:hover,
 .navLink[aria-current] {
@@ -182,12 +230,12 @@
   display: none;
   min-width: 300px;
   margin: 0;
-  padding: 8px;
+  padding: var(--sp-2);
   list-style: none;
   background: var(--c);
   border: 1px solid var(--cl);
-  border-radius: 8px;
-  box-shadow: 0 16px 32px -20px rgb(28 26 22 / 0.4);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-pop);
 }
 /* The list stays open while the pointer crosses the 1 px gap, because the item itself holds the hover */
 .hasMenu:hover .menu,
@@ -196,22 +244,23 @@
 }
 .menuLink {
   display: grid;
-  gap: 2px;
-  padding: 10px 12px;
-  border-radius: 6px;
+  gap: var(--sp-1);
+  padding: var(--sp-3);
+  border-radius: var(--r-ctl);
   color: var(--ink);
   text-decoration: none;
+  transition: background-color 0.2s var(--ease-out);
 }
 .menuLink:hover,
 .menuLink[aria-current] {
   background: var(--soft);
 }
 .menuLink b {
-  font-size: 15px;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 .menuLink span {
-  font-size: 13.5px;
+  font-size: var(--text-xs);
   color: var(--mute-l);
 }
 .menuButton,
@@ -219,7 +268,7 @@
   display: none;
 }
 .headerCta {
-  margin-left: 4px;
+  margin-left: var(--sp-1);
 }
 @media (max-width: 860px) {
   .menuButton {
@@ -267,10 +316,10 @@
     display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: var(--sp-3);
     max-height: calc(100dvh - var(--header-h));
     overflow-y: auto;
-    padding: 8px 24px 24px;
+    padding: var(--sp-2) var(--sp-5) var(--sp-5);
     background: var(--c);
     border-bottom: 1px solid var(--cl);
   }
@@ -284,21 +333,21 @@
   }
   .navLink {
     min-height: 48px;
-    padding: 0 8px;
-    font-size: 16px;
+    padding: 0 var(--sp-2);
+    font-size: var(--text-md);
   }
   /* The products are always listed in the panel */
   .menu {
     position: static;
     display: block;
     min-width: 0;
-    padding: 0 0 8px 8px;
+    padding: 0 0 var(--sp-2) var(--sp-2);
     border: 0;
     box-shadow: none;
     background: transparent;
   }
   .menuLink {
-    padding: 8px;
+    padding: var(--sp-2);
   }
   .headerCta {
     margin-left: 0;
@@ -313,7 +362,7 @@
     justify-content: center;
   }
   .headerInner {
-    gap: 8px;
+    gap: var(--sp-2);
   }
 }
 
@@ -328,20 +377,20 @@
 }
 .logoLink {
   display: inline-block;
-  border-radius: 4px;
+  border-radius: var(--r-ctl);
 }
 
 /* RODAPÉ */
 .footer {
   background: var(--g);
   border-top: 1px solid var(--g3);
-  padding: 18px 0;
+  padding: var(--sp-4) 0;
 }
 .footerGrid {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--sp-4);
   flex-wrap: wrap;
 }
 .footerGrid img {
@@ -349,24 +398,25 @@
   width: auto;
 }
 .footerGrid p {
-  font-size: 14px;
+  font-size: var(--text-xs);
   color: var(--mute-d);
 }
 .footerLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 20px;
+  gap: var(--sp-1) var(--sp-5);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .footerLinks a {
   display: inline-block;
-  padding: 10px 0;
-  font-size: 15px;
+  padding: var(--sp-3) 0;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--c);
   text-decoration: none;
+  text-underline-offset: 4px;
 }
 .footerLinks a:hover {
   text-decoration: underline;
@@ -412,7 +462,7 @@
    connector of the chain carries the axis from the overview to the ring */
 .band[data-thread="tail"]::before {
   top: auto;
-  height: var(--pb, clamp(32px, 4vw, 48px));
+  height: var(--pb, clamp(var(--sp-6), 4vw, var(--sp-7)));
 }
 /* The first band starts under the fixed header: the thread and its dock begin at the header's lower edge */
 .band:first-of-type:not([data-thread="tail"])::before {
@@ -437,7 +487,7 @@
   left: 50%;
   bottom: 0;
   width: 4px;
-  --rail-h: var(--pb, clamp(32px, 4vw, 48px));
+  --rail-h: var(--pb, clamp(var(--sp-6), 4vw, var(--sp-7)));
   height: var(--rail-h);
   margin-left: -2px;
   overflow: hidden;
