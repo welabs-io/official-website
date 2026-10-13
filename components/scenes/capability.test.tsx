@@ -27,8 +27,10 @@ import {
 } from "@/lib/scenes/script";
 import {
   HOME_PRODUCT_SCENE,
+  HOME_SHOWN_CAPABILITY,
   homeProductScenes,
 } from "@/lib/scenes/home-products";
+import { ProductCards } from "@/components/template/Content";
 import { CapabilityBody } from "./CapabilityBody";
 import { CapabilityStage, ProductsStage } from "./SceneStage";
 
@@ -229,5 +231,21 @@ describe("products stage of the home", () => {
     expect(data.steps).toBeUndefined();
     const { name, detail } = capabilityOf(scenes[0]);
     expect(stage).toContain(`aria-label="Domus, ${name}: ${detail}"`);
+  });
+  it("each card under the carousel marks the capability its scene shows, one per card, among the three it lists", () => {
+    const cards = renderToStaticMarkup(
+      <ProductCards tone="light" lit="domus" shown={HOME_SHOWN_CAPABILITY} />,
+    );
+    for (const scene of scenes) {
+      const card = cards.slice(
+        cards.indexOf(`data-card="${scene.product}"`),
+        cards.indexOf("</a>", cards.indexOf(`data-card="${scene.product}"`)),
+      );
+      expect(card.match(/data-shown/g), scene.product).toHaveLength(1);
+      expect(scene.cap).toBeLessThan(3);
+      expect(card).toMatch(
+        new RegExp(`data-shown=""[^>]*>[\\s\\S]*?${capabilityOf(scene).name}`),
+      );
+    }
   });
 });

@@ -17,7 +17,7 @@
 /* CARTÕES DE PRODUTO */
 .cards {
   list-style: none;
-  margin: var(--sp-5) 0 0;
+  margin: var(--sp-6) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -82,12 +82,30 @@
   border-top: 1px solid var(--line);
 }
 .cap {
+  position: relative;
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
   gap: var(--sp-2);
   align-items: start;
   font-size: var(--text-xs);
   line-height: var(--lh-lead);
+}
+/* The capability the scene of the carousel shows: a 4 px amber bar on the left edge of the card (an area, never a line
+   of text), in place while the card is lit; nothing else in the card moves, so the swap shifts no layout */
+.cap[data-shown]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: calc(var(--sp-4) * -1);
+  width: 4px;
+  border-radius: 1px;
+  background: var(--a);
+  transform: scaleY(0);
+  transition: transform 0.3s var(--ease-out);
+}
+.card[data-on="true"] .cap[data-shown]::before {
+  transform: none;
 }
 .cap svg {
   margin-top: 0;
@@ -185,6 +203,9 @@
 @media (prefers-reduced-motion: reduce) {
   .card:hover {
     transform: none;
+  }
+  .cap[data-shown]::before {
+    transition: none;
   }
 }
 @media (max-width: 999px) {

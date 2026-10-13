@@ -9,6 +9,7 @@ import { ProductsStage, SceneStage } from "@/components/scenes/SceneStage";
 import { HOME_INTRO } from "@/lib/content";
 import { ties } from "@/lib/chain";
 import { PRODUCTS, productBySlug } from "@/lib/products";
+import { HOME_SHOWN_CAPABILITY } from "@/lib/scenes/home-products";
 import { scenesOfProduct } from "@/lib/scenes/product-scenes";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
@@ -58,7 +59,11 @@ function Body({ section }: { section: SectionConfig }) {
       return (
         <div className={shell.wrap}>
           <ProductsStage id={stage.id} label={stage.label} />
-          <ProductCards tone={tone} lit={PRODUCTS[0].slug} />
+          <ProductCards
+            tone={tone}
+            lit={PRODUCTS[0].slug}
+            shown={HOME_SHOWN_CAPABILITY}
+          />
         </div>
       );
     }

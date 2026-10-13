@@ -25,3 +25,9 @@ export const homeProductScenes = (): CapabilityScript[] =>
   PRODUCTS.map(({ slug }) =>
     CAPABILITY_SCRIPT[slug].find((s) => s.id === HOME_PRODUCT_SCENE[slug])!,
   );
+
+// Index of the capability each product's scene shows (PRODUCT_CONTENT[slug].capabilities); the card of the product marks
+// it while the scene is on screen
+export const HOME_SHOWN_CAPABILITY = Object.fromEntries(
+  homeProductScenes().map((scene) => [scene.product, scene.cap]),
+) as Record<ProductSlug, number>;
