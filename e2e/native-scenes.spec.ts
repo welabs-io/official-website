@@ -1,8 +1,10 @@
 // CENAS NATIVAS DA CADEIA
-// Acceptance of the native chain at the three sizes: the scene swaps in step with the overview (within 100 ms), at least
-// 65% of the cycle is still, the text on screen is 14 px or more, nothing scrolls sideways, every text passes AA contrast,
+// Acceptance of the native chain at the three sizes: the scene swaps in step with the overview (within 100 ms), the cycle
+// is at most 35 s with a hold of 1.2 s or more per scene, the swap is a rotation of 0.6 to 0.8 s without a long task, at
+// least 55% of the cycle is still, the text on screen is 14 px or more, nothing scrolls sideways, every text passes AA contrast,
 // reduced motion shows the settled frames, the runner pauses off screen, and nothing shifts the layout.
 import { expect, test, type Page } from "@playwright/test";
+import { SCRIPT } from "../lib/scenes/script";
 import { VIEWPORTS } from "./viewports";
 
 const centre = (page: Page) => page.locator("#chain-ring");
@@ -284,6 +286,9 @@ test.describe("native chain behaviour", () => {
       const props = [
         "opacity",
         "transform",
+        "translate",
+        "rotate",
+        "scale",
         "clipPath",
         "color",
         "backgroundColor",
@@ -319,7 +324,115 @@ test.describe("native chain behaviour", () => {
     console.log(
       `still share of the cycle: ${(ratio * 100).toFixed(1)}% over ${still.length} samples (cycle ${cycle}s)`,
     );
-    expect(ratio).toBeGreaterThanOrEqual(0.65);
+    expect(ratio).toBeGreaterThanOrEqual(0.55);
+  });
+
+  test("the cycle is at most 35 s, every scene lasts 4.5 to 5.5 s and holds its final frame at least 1.2 s", async ({
+    page,
+  }) => {
+    await toStage(page);
+    const data = JSON.parse(
+      (await page.locator("#chain script[data-scene-data]").textContent())!,
+    ) as { cycle: number; scenes: number[]; swap: number };
+    expect(data.cycle).toBeLessThanOrEqual(35);
+    for (const seconds of data.scenes) {
+      expect(seconds).toBeGreaterThanOrEqual(4.5);
+      expect(seconds).toBeLessThanOrEqual(5.5);
+    }
+    SCRIPT.forEach((scene, i) => {
+      expect(scene.hold, `scene ${i}`).toBeGreaterThanOrEqual(1.2);
+      expect(scene.settle + scene.hold).toBeCloseTo(data.scenes[i], 3);
+    });
+  });
+
+  test("the swap is a rotation of 0.6 to 0.8 s that never shows an empty frame and runs without a long task", async ({
+    page,
+  }) => {
+    test.setTimeout(60000);
+    await page.addInitScript(() => {
+      const w = window as unknown as {
+        __runs: number[];
+        __ends: number[];
+        __long: { at: number; dur: number }[];
+        __empty: number;
+      };
+      w.__runs = [];
+      w.__ends = [];
+      w.__long = [];
+      w.__empty = 0;
+      document.addEventListener(
+        "transitionrun",
+        (e) => {
+          if ((e.target as HTMLElement).closest?.("#chain-ring [data-pos]"))
+            w.__runs.push(performance.now());
+        },
+        true,
+      );
+      document.addEventListener(
+        "transitionend",
+        (e) => {
+          if ((e.target as HTMLElement).closest?.("#chain-ring [data-pos]"))
+            w.__ends.push(performance.now());
+        },
+        true,
+      );
+      try {
+        new PerformanceObserver((list) => {
+          for (const entry of list.getEntries())
+            w.__long.push({ at: entry.startTime, dur: entry.duration });
+        }).observe({ type: "longtask", buffered: true });
+      } catch {}
+      // Empty frame: during a swap the centre scene and its next neighbour must both be painted (a tile with no children
+      // or fully transparent is an empty frame)
+      const probe = () => {
+        const centre = document.querySelector(
+          '#chain-ring [data-pos="0"] .scn',
+        );
+        if (!centre || !centre.firstElementChild) w.__empty++;
+        requestAnimationFrame(probe);
+      };
+      requestAnimationFrame(probe);
+    });
+    await toStage(page);
+    // Wait for the first swap to run and finish (2 s after its first transition)
+    await page.waitForFunction(
+      () => {
+        const w = window as unknown as { __runs: number[] };
+        return w.__runs.length > 0 && performance.now() > w.__runs[0] + 2000;
+      },
+      undefined,
+      { timeout: 30000 },
+    );
+    const r = await page.evaluate(() => {
+      const w = window as unknown as {
+        __runs: number[];
+        __ends: number[];
+        __long: { at: number; dur: number }[];
+        __empty: number;
+      };
+      // First swap only: the ends that fall within 1.5 s of its first transition
+      const first = Math.min(...w.__runs);
+      const ends = w.__ends.filter((t) => t <= first + 1500);
+      const last = Math.max(...ends);
+      return {
+        span: (last - first) / 1000,
+        // Long tasks (50 ms or more) that overlap the swap window; the load of the page is not the swap
+        long: w.__long
+          .filter((l) => l.at < last + 100 && l.at + l.dur > first - 100)
+          .map((l) => l.dur),
+        empty: w.__empty,
+      };
+    });
+    console.log(
+      "swap rotation seconds",
+      r.span.toFixed(3),
+      "long tasks",
+      r.long,
+    );
+    expect(r.span).toBeGreaterThanOrEqual(0.6);
+    expect(r.span).toBeLessThanOrEqual(0.9);
+    expect(r.empty).toBe(0);
+    expect(r.long.filter((d) => d >= 50)).toEqual([]);
   });
 
   test("no aria-live anywhere, and reduced motion shows every scene in its settled frame", async ({

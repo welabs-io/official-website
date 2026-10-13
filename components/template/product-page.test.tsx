@@ -11,7 +11,7 @@ import {
   PRODUCT_MIN_CYCLE,
   scenesOfProduct,
 } from "@/lib/scenes/product-scenes";
-import { cycleSeconds, stillRatio } from "@/lib/scenes/script";
+import { STILL_TARGET, cycleSeconds, stillRatio } from "@/lib/scenes/script";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
 import { HERO_SCENE } from "./Reading";
 import { Sections } from "./SiteTemplate";
@@ -169,10 +169,10 @@ describe("product page", () => {
     expect(ids("magneto")).toEqual(["s5"]);
   });
   it.each(slugs)(
-    "the %s scenes keep at least 65% of the cycle still",
+    "the %s scenes keep at least the still share of the script",
     (slug) => {
       const scenes = scenesOfProduct(slug);
-      expect(stillRatio(scenes)).toBeGreaterThanOrEqual(0.65);
+      expect(stillRatio(scenes)).toBeGreaterThanOrEqual(STILL_TARGET);
     },
   );
   it("only the labels of the connections of the product stay in the block", () => {

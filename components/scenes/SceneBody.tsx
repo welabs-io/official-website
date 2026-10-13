@@ -130,11 +130,11 @@ export function SceneBody({
                 </p>
                 <CardSheet
                   act={act}
-                  offset={0.25}
+                  offset={0.1}
                   rows={STORY.handed.map(({ label, value }) => ({
                     label,
                     value,
-                    action: "handoff",
+                    action: "card",
                   }))}
                 />
               </div>

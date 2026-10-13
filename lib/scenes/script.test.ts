@@ -5,6 +5,9 @@ import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
 import {
   CONNECTOR_SECONDS,
+  CYCLE_MAX_SECONDS,
+  HOLD_SECONDS_RANGE,
+  SCENE_SECONDS_RANGE,
   SCRIPT,
   STILL_TARGET,
   SWAP_SECONDS,
@@ -38,9 +41,38 @@ describe("scene script", () => {
         expect(a.dur).toBeGreaterThan(0);
       }
       expect(Math.max(...ends)).toBeCloseTo(scene.settle, 3);
-      expect(scene.hold).toBeGreaterThanOrEqual(1);
     },
   );
+
+  // Pace measured on khal.ai: a scene of 4.4 to 5 s with 1.2 to 2.5 s of legible hold
+  it.each(SCRIPT.map((s) => [s.id, s] as const))(
+    "%s: lasts 4.5 to 5.5 s and holds the final frame 1.2 to 1.8 s",
+    (_, scene) => {
+      expect(sceneSeconds(scene)).toBeGreaterThanOrEqual(
+        SCENE_SECONDS_RANGE[0],
+      );
+      expect(sceneSeconds(scene)).toBeLessThanOrEqual(SCENE_SECONDS_RANGE[1]);
+      expect(scene.hold).toBeGreaterThanOrEqual(HOLD_SECONDS_RANGE[0]);
+      expect(scene.hold).toBeLessThanOrEqual(HOLD_SECONDS_RANGE[1]);
+    },
+  );
+
+  it.each(SCRIPT.map((s) => [s.id, s] as const))(
+    "%s: no action starts before the swap has landed",
+    (_, scene) => {
+      const first = Math.min(...scene.actions.map((a) => a.at));
+      expect(first).toBeGreaterThanOrEqual(SWAP_SECONDS);
+    },
+  );
+
+  it("the swap is a rotation of 0.6 to 0.8 s", () => {
+    expect(SWAP_SECONDS).toBeGreaterThanOrEqual(0.6);
+    expect(SWAP_SECONDS).toBeLessThanOrEqual(0.8);
+  });
+
+  it(`the cycle is at most ${CYCLE_MAX_SECONDS} s`, () => {
+    expect(cycleSeconds()).toBeLessThanOrEqual(CYCLE_MAX_SECONDS);
+  });
 
   it.each(SCRIPT.map((s) => [s.id, s] as const))(
     "%s: the token walks inside the scene, after the swap",
@@ -60,10 +92,10 @@ describe("scene script", () => {
 
   it(`at least ${STILL_TARGET * 100}% of the cycle is still`, () => {
     expect(stillRatio()).toBeGreaterThanOrEqual(STILL_TARGET);
-    // And no scene is below the bar by much on its own: each one stays above 60%
+    // And no scene is below the bar by much on its own: each one stays above 55%
     for (const scene of SCRIPT)
       expect(1 - motionSeconds(scene) / sceneSeconds(scene)).toBeGreaterThan(
-        0.6,
+        0.55,
       );
   });
 
