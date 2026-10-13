@@ -1,6 +1,7 @@
 // AVISO DE CONFIRMAÇÃO
 // The notification that lands on Marina's phone: an amber check, the confirmation and, under it, the line that says it
 // arrived. Server markup; the two actions come from the script.
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import type { Act } from "@/lib/scenes/types";
 import styles from "./scenes.module.css";
 
@@ -27,7 +28,7 @@ export function ConfirmToast({
             height="18"
             fill="none"
             stroke="currentColor"
-            strokeWidth="3"
+            strokeWidth={ICON_STROKE}
             strokeLinecap="round"
             strokeLinejoin="round"
           >

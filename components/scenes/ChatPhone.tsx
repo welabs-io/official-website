@@ -3,6 +3,7 @@
 // close it. An item with an `action` comes in with that action of the script; one without it is simply there (history).
 // Server markup, no state.
 import type { ReactNode } from "react";
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import type { Act, ActProps } from "@/lib/scenes/types";
 import styles from "./scenes.module.css";
 
@@ -66,7 +67,7 @@ export function ChatPhone({
                   height="18"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth={ICON_STROKE}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   aria-hidden="true"

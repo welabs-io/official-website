@@ -10,7 +10,8 @@ import { SceneStage } from "@/components/scenes/SceneStage";
 import { HOME_INTRO } from "@/lib/content";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, productBySlug } from "@/lib/products";
+import { scenesOfProduct } from "@/lib/scenes/product-scenes";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
 import { Closing } from "./Closing";
@@ -66,6 +67,39 @@ function Body({ section }: { section: SectionConfig }) {
             label={ring.label}
           />
           {cards && <ProductCards tone={tone} lit={PRODUCTS[0].slug} />}
+        </div>
+      );
+    }
+    // Native chain narrowed to the scenes of the product, joined by the connector of the overview, then the films
+    case "how": {
+      const { ring, title, tone, films } = section;
+      const slug = ring.slug!;
+      const scenes = scenesOfProduct(slug);
+      return (
+        <div className={shell.wrap}>
+          <SectionHead title={title} />
+          <div className={home.chainBlock} data-chain>
+            <ChainOverview tone={tone} step={scenes[0].step} self={slug} />
+            <SceneStage
+              id="product-chain"
+              tone={tone}
+              label={`Cenas do ${productBySlug(slug)!.name} na cadeia`}
+              scenes={scenes}
+            />
+          </div>
+          <div className={home.films}>
+            <h3 className={home.filmsTitle}>{films}</h3>
+            <RingStage
+              id={ring.id}
+              kind={ring.kind}
+              slug={ring.slug}
+              eager={ring.eager}
+              logos={ring.logos}
+              tone={tone}
+              caption={ring.caption}
+              label={ring.label}
+            />
+          </div>
         </div>
       );
     }

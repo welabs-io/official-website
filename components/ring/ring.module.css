@@ -86,7 +86,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: var(--r-win, 16px);
   background: #10141c;
   box-shadow:
     0 24px 56px -24px rgb(0 0 0 / 0.6),
@@ -146,11 +146,11 @@
   width: fit-content;
   max-width: var(--tile-w);
   margin: 0 auto;
-  padding: 0 8px;
+  padding: 0 var(--sp-2);
   background: var(--bg);
   color: var(--mute);
-  font-size: clamp(15px, 1.3vw, 17px);
-  line-height: 1.4;
+  font-size: var(--text-md);
+  line-height: var(--lh-lead);
   font-weight: 500;
   text-align: center;
   text-wrap: balance;

@@ -110,3 +110,74 @@ describe("scene runner", () => {
     expect(centre(tiles)).toBe(1);
   });
 });
+
+// PÁGINA DE PRODUTO: CENAS EM SUBCONJUNTO
+describe("scene runner on a product page", () => {
+  // Builds a stage of `steps.length` tiles whose data carries the step each one plays
+  function subset(steps: number[], seconds: number[]) {
+    const events: { index: number; to: number }[] = [];
+    const phases: string[] = [];
+    const tiles = steps.map(() => {
+      const scn = {
+        dataset: {
+          set phase(v: string) {
+            phases.push(v);
+          },
+        } as unknown as Record<string, string>,
+        getBoundingClientRect: () => ({}),
+      };
+      return {
+        dataset: {} as Record<string, string>,
+        removeAttribute: () => {},
+        setAttribute: () => {},
+        querySelector: () => scn,
+      };
+    });
+    const root = {
+      id: "product-chain",
+      dataset: {} as Record<string, string>,
+      style: { setProperty: () => {} },
+      closest: () => null,
+      querySelector: (sel: string) =>
+        sel === "[data-ring]"
+          ? { children: tiles }
+          : sel.startsWith("script")
+            ? {
+                textContent: JSON.stringify({ scenes: seconds, steps }),
+              }
+            : null,
+    };
+    vi.stubGlobal("window", {
+      dispatchEvent: (event: CustomEvent) => {
+        events.push(event.detail);
+        return true;
+      },
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    });
+    return { root, tiles, events, phases };
+  }
+
+  it("tells the overview the step of the scene, not its position", () => {
+    const { root, events } = subset([1, 6], [2, 3]);
+    const runner = run(root as unknown as HTMLElement);
+    runner.resume();
+    vi.advanceTimersByTime(2001);
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ to: 1, index: 6 });
+    vi.advanceTimersByTime(3000);
+    expect(events[1]).toMatchObject({ to: 0, index: 1 });
+  });
+
+  it("a stage of one scene replays it at every boundary", () => {
+    const { root, events, phases } = subset([4], [2]);
+    const runner = run(root as unknown as HTMLElement);
+    runner.resume();
+    phases.length = 0;
+    vi.advanceTimersByTime(2001);
+    // First frame, then play again
+    expect(phases).toEqual(["start", "play"]);
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ to: 0, index: 4 });
+  });
+});

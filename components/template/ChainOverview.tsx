@@ -5,6 +5,7 @@
 // components/ring/overview-follow.ts rewrites data attributes and custom properties on the `ring:swap` event, so the
 // caption and the lit node change with the scene. The first state drawn here is the first step; the script next to the
 // block carries the rest of the steps.
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import { overviewData, type OverviewStep } from "@/lib/overview-data";
 import { stepVars } from "@/lib/overview-geometry";
 import { productAlt, productLogo, type ProductSlug } from "@/lib/products";
@@ -24,10 +25,20 @@ const stateOf = (col: number, step: OverviewStep): NodeState =>
       ? "touch"
       : "off";
 
-export function ChainOverview({ tone }: { tone: Tone }) {
+// `step` is the step drawn first (a product page starts on the first step the product takes part in); `self` marks the
+// product of the page, which keeps a bar under its logo whatever the step lights
+export function ChainOverview({
+  tone,
+  step = 0,
+  self,
+}: {
+  tone: Tone;
+  step?: number;
+  self?: ProductSlug;
+}) {
   const data = overviewData();
   const count = data.order.length;
-  const first = data.steps[0];
+  const first = data.steps[step];
   const style = {
     "--n": count,
     ...stepVars(first, count),
@@ -47,6 +58,7 @@ export function ChainOverview({ tone }: { tone: Tone }) {
             className={styles.col}
             data-col={col}
             data-state={stateOf(col, first)}
+            data-self={end === self ? "true" : undefined}
           >
             {end === "outcome" ? (
               <svg
@@ -54,7 +66,7 @@ export function ChainOverview({ tone }: { tone: Tone }) {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth={ICON_STROKE}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 aria-hidden="true"

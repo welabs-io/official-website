@@ -63,6 +63,9 @@ export type SectionConfig =
       // Grid of the five product cards under the ring, the active product lit (home)
       cards?: boolean;
     })
+  // "How it works" of a product page: the native chain narrowed to the scenes of the product (overview on top, scenes
+  // below), then the films of the product as video where they are the only demonstration
+  | (Base & { kind: "how"; ring: RingConfig; title: string; films: string })
   // Opening of a product page: trail, logo, line and the native scene of the product
   | (Base & { kind: "hero"; slug: ProductSlug })
   // Three problems and what the product does about them (product page)
@@ -170,10 +173,11 @@ export function productConfig(slug: ProductSlug): PageConfig {
       { id: "resolves", kind: "resolves", slug, tone: "light", pad: "block" },
       {
         id: "how",
-        kind: "ring",
+        kind: "how",
         tone: "light",
         pad: "block",
         title: PAGE_HEADINGS.how,
+        films: PAGE_HEADINGS.films,
         rail: "drop",
         railDelay: 0.4,
         ring: {

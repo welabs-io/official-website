@@ -7,6 +7,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
 import { PRODUCTS } from "@/lib/products";
+import {
+  PRODUCT_MIN_CYCLE,
+  scenesOfProduct,
+} from "@/lib/scenes/product-scenes";
+import { cycleSeconds, stillRatio } from "@/lib/scenes/script";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
 import { HERO_SCENE } from "./Reading";
 import { Sections } from "./SiteTemplate";
@@ -36,7 +41,7 @@ describe("one template, same sequence", () => {
       expect(kinds(config)).toEqual([
         "hero",
         "resolves",
-        "ring",
+        "how",
         "capabilities",
         "audience",
         "faq",
@@ -113,6 +118,61 @@ describe("product page", () => {
       expect(ring).toContain("Como funciona");
       expect(ring).toContain('data-row="pinned"');
       expect(ring.match(/aria-current="page"/g)).toHaveLength(1);
+    },
+  );
+  it.each(slugs)(
+    "the %s page plays the native chain narrowed to the scenes it takes part in, with its logo marked",
+    (slug) => {
+      const html = render(slug);
+      const at = (id: string) => html.indexOf(`id="${id}"`);
+      const how = html.slice(at("how"), at("capabilities"));
+      const scenes = scenesOfProduct(slug);
+      expect(scenes.length).toBeGreaterThan(0);
+      // The product is the protagonist or an end of the connection of every scene it plays
+      for (const scene of scenes) {
+        const { connection } = MANIFEST.chain.steps[scene.step];
+        expect(
+          scene.products.includes(slug) ||
+            connection.from === slug ||
+            connection.to === slug,
+        ).toBe(true);
+      }
+      const tiles = how.match(/data-tile="s\d"/g) ?? [];
+      expect(tiles).toHaveLength(scenes.length);
+      for (const scene of scenes)
+        expect(how).toContain(`data-tile="${scene.id}"`);
+      expect(how).toContain('id="product-chain"');
+      expect(how.match(/data-self="true"/g)).toHaveLength(1);
+      // The overview starts on the first step of the product and the runner is told the steps
+      expect(how).toContain(
+        MANIFEST.chain.steps[scenes[0].step].overview.label,
+      );
+      expect(how).toContain(`"steps":[${scenes.map((s) => s.step).join(",")}]`);
+      // The scenes are native: the only video of the section is the ring of films
+      expect(how.slice(0, how.indexOf('id="product-ring"'))).not.toMatch(
+        /hyperframes-player|\/posters\/|<video|data-layers/,
+      );
+    },
+  );
+  it.each(slugs)("the %s cycle is at least the product minimum", (slug) => {
+    expect(cycleSeconds(scenesOfProduct(slug))).toBeGreaterThanOrEqual(
+      PRODUCT_MIN_CYCLE - 1e-9,
+    );
+  });
+  it("the scenes of each product, in the plot's order", () => {
+    const ids = (slug: (typeof slugs)[number]) =>
+      scenesOfProduct(slug).map((s) => s.id);
+    expect(ids("domus")).toEqual(["s0", "s2", "s3", "s5", "s6"]);
+    expect(ids("relloo")).toEqual(["s0", "s1", "s2", "s3", "s4"]);
+    expect(ids("tuner")).toEqual(["s1", "s6"]);
+    expect(ids("knowly")).toEqual(["s4"]);
+    expect(ids("magneto")).toEqual(["s5"]);
+  });
+  it.each(slugs)(
+    "the %s scenes keep at least 65% of the cycle still",
+    (slug) => {
+      const scenes = scenesOfProduct(slug);
+      expect(stillRatio(scenes)).toBeGreaterThanOrEqual(0.65);
     },
   );
   it("only the labels of the connections of the product stay in the block", () => {

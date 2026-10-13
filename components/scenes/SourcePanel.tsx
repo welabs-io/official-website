@@ -1,6 +1,7 @@
 // PAINEL DE FONTE (KNOWLY)
 // The question, the document of the policy, the line that answers it highlighted, and the answer it becomes with the
 // pill of its source. `hit` highlights one line (a wipe), `answer` brings the answer and the pill in.
+import { ICON_STROKE } from "@/lib/icon-stroke";
 import type { Act } from "@/lib/scenes/types";
 import styles from "./scenes.module.css";
 
@@ -35,7 +36,7 @@ export function SourcePanel({
           height="18"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth={ICON_STROKE}
           strokeLinecap="round"
           aria-hidden="true"
         >
@@ -74,7 +75,7 @@ export function SourcePanel({
             height="16"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth={ICON_STROKE}
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden="true"

@@ -1,26 +1,27 @@
 /* BLOCOS DE CONTEÚDO */
 /* Compact text blocks that sit on the bands (colours come from the band: --bg, --line, --mute, --soft, --a). Every block
    that crosses the axis of the page has the colour of the band, so the thread behind it is hidden. Amber appears only
-   as an area: the 4 px bar on the lit product card. */
+   as an area: the 4 px bar on the lit product card. Sizes, spaces, radii and shadows read the tokens of the page
+   (`.page` in shell.module.css). */
 .heading {
   width: fit-content;
   max-width: 100%;
-  padding-right: 12px;
+  padding-right: var(--sp-3);
   background: var(--bg);
-  font-size: clamp(22px, 2.2vw, 28px);
-  line-height: 1.15;
+  font-size: var(--text-2xl);
+  line-height: var(--lh-heading);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--ls-heading);
 }
 
 /* CARTÕES DE PRODUTO */
 .cards {
   list-style: none;
-  margin: 20px 0 0;
+  margin: var(--sp-5) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .cards[data-count="4"] {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -33,17 +34,19 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px 14px 16px;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
   color: inherit;
   text-decoration: none;
   background: var(--bg);
   border: 1px solid var(--line);
   border-top: 4px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-card);
   transition:
-    border-color 0.3s ease,
-    background-color 0.3s ease;
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
 }
 .card[data-on="true"] {
   border-top-color: var(--a);
@@ -52,6 +55,11 @@
 .card:hover {
   border-color: var(--mute);
   border-top-color: var(--a);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+.card:active {
+  transform: none;
 }
 .cardLogo {
   --h: 44px;
@@ -61,25 +69,25 @@
   margin-left: calc(var(--h) * var(--pad, 0) * -1);
 }
 .cardLine {
-  font-size: 14.5px;
-  line-height: 1.35;
+  font-size: var(--text-sm);
+  line-height: var(--lh-lead);
   font-weight: 500;
   color: var(--mute);
 }
 .caps {
   display: grid;
-  gap: 8px;
+  gap: var(--sp-2);
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: var(--sp-3);
   border-top: 1px solid var(--line);
 }
 .cap {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
-  gap: 8px;
+  gap: var(--sp-2);
   align-items: start;
-  font-size: 13.5px;
-  line-height: 1.3;
+  font-size: var(--text-xs);
+  line-height: var(--lh-lead);
 }
 .cap svg {
   margin-top: 0;
@@ -89,52 +97,52 @@
 /* O QUE RESOLVE */
 .resolves {
   list-style: none;
-  margin: 20px 0 0;
+  margin: var(--sp-5) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--sp-4);
 }
 .resolve {
   display: grid;
-  gap: 8px;
+  gap: var(--sp-2);
   align-content: start;
-  padding: 14px 16px 18px;
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-card);
 }
 .problem {
-  font-size: 15px;
-  line-height: 1.35;
+  font-size: var(--text-sm);
+  line-height: var(--lh-lead);
   color: var(--mute);
 }
 .does {
-  font-size: clamp(17px, 1.5vw, 19px);
-  line-height: 1.35;
+  font-size: var(--text-lg);
+  line-height: var(--lh-lead);
   font-weight: 500;
 }
 
 /* CAPACIDADES */
 .capabilities {
   list-style: none;
-  margin: 20px 0 0;
+  margin: var(--sp-5) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .capItem {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   min-height: 60px;
-  padding: 10px 14px;
+  padding: var(--sp-3);
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
-  font-size: 16px;
-  line-height: 1.3;
+  border-radius: var(--r-card);
+  font-size: var(--text-md);
+  line-height: var(--lh-heading);
   font-weight: 500;
 }
 .capIcon {
@@ -143,7 +151,7 @@
   place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 6px;
+  border-radius: var(--r-ctl);
   background: var(--soft);
   color: var(--mute);
 }
@@ -152,12 +160,12 @@
 .hubNoteWrap {
   display: flex;
   justify-content: center;
-  padding-bottom: 20px;
+  padding-bottom: var(--sp-5);
 }
 .hubNote {
-  max-width: 100%;
-  font-size: clamp(16px, 1.4vw, 18px);
-  line-height: 1.4;
+  max-width: min(var(--measure), 100%);
+  font-size: var(--text-lg);
+  line-height: var(--lh-lead);
   font-weight: 500;
   color: var(--mute);
   text-align: center;
@@ -165,8 +173,8 @@
 }
 .hubTies {
   display: grid;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
 }
 .ties {
   list-style: none;
@@ -174,17 +182,17 @@
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .ties li {
   display: grid;
-  gap: 4px;
-  padding: 12px 14px;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4);
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
-  font-size: 15px;
-  line-height: 1.35;
+  border-radius: var(--r-card);
+  font-size: var(--text-sm);
+  line-height: var(--lh-lead);
 }
 .ties strong {
   font-weight: 600;
@@ -196,13 +204,18 @@
 /* TÍTULOS DAS FAIXAS DE LOGOS (FECHAMENTO) */
 .stripTitle {
   margin: 0;
-  font-size: 16px;
-  line-height: 1.3;
+  font-size: var(--text-md);
+  line-height: var(--lh-heading);
   font-weight: 500;
   color: var(--mute);
   text-align: center;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
+}
 @media (max-width: 999px) {
   .cards,
   .cards[data-count="4"] {
@@ -229,9 +242,9 @@
     --h: 40px;
   }
   .capItem {
-    gap: 10px;
-    padding: 8px 10px;
-    font-size: 14.5px;
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    font-size: var(--text-sm);
   }
   .capIcon {
     width: 32px;

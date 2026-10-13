@@ -16,6 +16,7 @@ export const HUB_NOTE =
 // Headings of the product page
 export const PAGE_HEADINGS = {
   how: "Como funciona",
+  films: "Em filmes",
   resolves: "O que resolve",
   capabilities: "Capacidades",
   ties: "Com quem trabalha junto",

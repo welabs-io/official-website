@@ -1,7 +1,8 @@
 /* SEÇÕES DE LEITURA */
 /* Light-theme bands of text and cards between the visual bands. Colours come from the band (--bg, --line, --mute, --soft,
    --a, --thread). Everything that crosses the axis of the page has the colour of the band, so the thread shows only in
-   the gaps. Amber is an area only: the nodes of the timeline and the 4 px bar of the cards. */
+   the gaps. Amber is an area only: the nodes of the timeline, the 4 px bar of the cards and of the open question.
+   Every size, space, radius and shadow reads the tokens of the page (`.page` in shell.module.css). */
 .wrap {
   width: min(1200px, 100% - 48px);
   margin: 0 auto;
@@ -18,10 +19,10 @@
 .head {
   display: grid;
   justify-items: center;
-  gap: 10px;
+  gap: var(--sp-3);
   width: fit-content;
   max-width: 100%;
-  margin: 0 auto clamp(24px, 3vw, 40px);
+  margin: 0 auto clamp(var(--sp-5), 3vw, var(--sp-7));
   /* The whole head has the colour of the band, so the thread does not show between the title and the line */
   background: var(--bg);
   text-align: center;
@@ -29,21 +30,21 @@
 .headTitle {
   width: fit-content;
   max-width: 100%;
-  padding: 4px 18px;
+  padding: var(--sp-1) var(--sp-4);
   background: var(--bg);
-  font-size: clamp(30px, 3.6vw, 46px);
-  line-height: 1.08;
+  font-size: var(--text-title);
+  line-height: var(--lh-display);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--ls-display);
   text-wrap: balance;
 }
 .headLead {
   width: fit-content;
-  max-width: min(60ch, 100%);
-  padding: 2px 14px;
+  max-width: min(var(--measure), 100%);
+  padding: var(--sp-1) var(--sp-3);
   background: var(--bg);
-  font-size: clamp(16px, 1.4vw, 19px);
-  line-height: 1.4;
+  font-size: var(--text-lg);
+  line-height: var(--lh-lead);
   font-weight: 500;
   color: var(--mute);
   text-wrap: balance;
@@ -54,7 +55,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 14px;
+  gap: var(--sp-1) var(--sp-3);
   min-height: 30px;
 }
 .mark {
@@ -74,9 +75,9 @@
 .step {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) var(--sp-8) minmax(0, 1fr);
   align-items: center;
-  padding: 10px 0;
+  padding: var(--sp-2) 0;
   counter-increment: step;
 }
 /* The cards alternate sides, so the rows overlap vertically: the nodes sit closer than the cards are tall */
@@ -96,21 +97,21 @@
   border-radius: 50%;
   background: var(--a);
   color: #1c1a16;
-  font-size: 17px;
+  font-size: var(--text-lg);
   font-weight: 600;
 }
 .stepCard {
   grid-column: 1;
   grid-row: 1;
   display: grid;
-  gap: 10px;
+  gap: var(--sp-3);
   justify-items: end;
   max-width: 500px;
   justify-self: end;
-  padding: 16px 20px 18px;
+  padding: var(--sp-4) var(--sp-5);
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-card);
   text-align: right;
 }
 .step:nth-child(even) .stepCard {
@@ -123,8 +124,8 @@
   justify-content: flex-end;
 }
 .stepCard p {
-  font-size: clamp(16px, 1.3vw, 18px);
-  line-height: 1.4;
+  font-size: var(--text-lg);
+  line-height: var(--lh-lead);
   font-weight: 500;
 }
 
@@ -133,32 +134,34 @@
 .benefits {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: var(--sp-5);
 }
 .benefit {
   display: grid;
   align-content: start;
-  gap: 16px;
-  padding: 16px 16px 20px;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-4) var(--sp-5);
   background: var(--bg);
   border: 1px solid var(--line);
   border-top: 4px solid var(--a);
-  border-radius: 6px;
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
 }
 .benefitText {
   display: grid;
-  gap: 6px;
-  padding: 0 4px;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-1);
 }
 .benefitText h3 {
-  font-size: clamp(19px, 1.7vw, 22px);
-  line-height: 1.2;
+  font-size: var(--text-xl);
+  line-height: var(--lh-heading);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--ls-heading);
 }
 .benefitText p {
-  font-size: 16px;
-  line-height: 1.45;
+  max-width: var(--measure);
+  font-size: var(--text-md);
+  line-height: var(--lh-body);
   color: var(--mute);
 }
 
@@ -166,75 +169,77 @@
 .audience {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--sp-4);
 }
 .profile {
   display: grid;
   align-content: start;
-  gap: 12px;
-  padding: 20px 20px 24px;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
   background: var(--bg);
   border: 1px solid var(--line);
   border-top: 4px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-card);
 }
 .profile h3 {
-  font-size: 20px;
-  line-height: 1.22;
+  font-size: var(--text-xl);
+  line-height: var(--lh-heading);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: var(--ls-heading);
 }
 .profile p {
-  font-size: 16px;
-  line-height: 1.45;
+  max-width: var(--measure);
+  font-size: var(--text-md);
+  line-height: var(--lh-body);
   color: var(--mute);
 }
 
 /* INTEGRAÇÕES E INFRAESTRUTURA */
 .groups {
   display: grid;
-  gap: 16px;
+  gap: var(--sp-4);
 }
 .group {
   display: grid;
   grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
-  gap: 20px 32px;
+  gap: var(--sp-5) var(--sp-6);
   align-items: center;
-  padding: 20px 24px;
+  padding: var(--sp-4) var(--sp-5);
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-card);
 }
 .groupHead {
   display: grid;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 .groupHead h3 {
-  font-size: 20px;
-  line-height: 1.2;
+  font-size: var(--text-xl);
+  line-height: var(--lh-heading);
   font-weight: 600;
+  letter-spacing: var(--ls-heading);
 }
 .groupHead p {
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: var(--text-sm);
+  line-height: var(--lh-lead);
   color: var(--mute);
 }
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--sp-3);
 }
 .chip,
 .logoChip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 0 14px;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: 0 var(--sp-3);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-ctl);
   background: var(--bg);
-  font-size: 15px;
+  font-size: var(--text-sm);
   font-weight: 500;
 }
 .chip svg {
@@ -246,25 +251,40 @@
 }
 
 /* PERGUNTAS FREQUENTES */
+/* A question is a 56 px row; the open one gets a 4 px amber bar on its left edge and a darker line, so the eye finds the
+   answer that is being read. The row answers to hover and to keyboard focus. */
 .faq {
   display: grid;
-  gap: 10px;
+  gap: var(--sp-3);
   max-width: 820px;
   margin: 0 auto;
 }
 .qa {
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-card);
+  transition:
+    border-color 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out);
+}
+.qa:hover {
+  border-color: var(--thread);
+}
+.qa[open] {
+  border-color: var(--thread);
+  box-shadow:
+    inset 4px 0 0 var(--a),
+    var(--shadow-card);
 }
 .qa summary {
   position: relative;
   display: flex;
   align-items: center;
   min-height: 56px;
-  padding: 10px 56px 10px 20px;
-  font-size: clamp(16px, 1.4vw, 18px);
-  line-height: 1.3;
+  padding: var(--sp-3) var(--sp-8) var(--sp-3) var(--sp-5);
+  border-radius: var(--r-card);
+  font-size: var(--text-lg);
+  line-height: var(--lh-heading);
   font-weight: 600;
   cursor: pointer;
   list-style: none;
@@ -278,12 +298,13 @@
   content: "";
   position: absolute;
   top: 50%;
-  right: 22px;
+  right: var(--sp-5);
   width: 14px;
   height: 2px;
   margin-top: -1px;
   border-radius: 1px;
   background: currentcolor;
+  transition: transform 0.2s var(--ease-out);
 }
 .qa summary::after {
   transform: rotate(90deg);
@@ -292,9 +313,10 @@
   transform: none;
 }
 .qa p {
-  padding: 0 56px 18px 20px;
-  font-size: 16px;
-  line-height: 1.5;
+  max-width: var(--measure);
+  padding: 0 var(--sp-8) var(--sp-5) var(--sp-5);
+  font-size: var(--text-md);
+  line-height: var(--lh-body);
   color: var(--mute);
 }
 
@@ -302,28 +324,29 @@
 .capGroups {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-  gap: 16px;
+  gap: var(--sp-4);
 }
 .capGroup {
   display: grid;
   align-content: start;
-  gap: 8px;
-  padding: 20px 20px 12px;
+  gap: var(--sp-2);
+  padding: var(--sp-5) var(--sp-5) var(--sp-3);
   background: var(--bg);
   border: 1px solid var(--line);
   border-top: 4px solid var(--a);
-  border-radius: 6px;
+  border-radius: var(--r-card);
 }
 .capGroup h3 {
-  font-size: 20px;
-  line-height: 1.2;
+  font-size: var(--text-xl);
+  line-height: var(--lh-heading);
   font-weight: 600;
+  letter-spacing: var(--ls-heading);
 }
 .capRow {
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr);
-  gap: 14px;
-  padding: 14px 0;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
   border-top: 1px solid var(--line);
 }
 .capGroup > ul > li:first-child {
@@ -334,18 +357,18 @@
   place-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 6px;
+  border-radius: var(--r-ctl);
   background: var(--soft);
   color: var(--mute);
 }
 .capText {
   display: grid;
-  gap: 2px;
-  font-size: 15px;
-  line-height: 1.4;
+  gap: var(--sp-1);
+  font-size: var(--text-sm);
+  line-height: var(--lh-lead);
 }
 .capText b {
-  font-size: 16px;
+  font-size: var(--text-md);
   font-weight: 600;
 }
 .capText span {
@@ -358,24 +381,24 @@
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-  gap: 40px;
+  gap: var(--sp-7);
   align-items: center;
 }
 .heroText {
   display: grid;
-  gap: 20px;
+  gap: var(--sp-5);
   justify-items: start;
   background: var(--bg);
 }
 .heroChips {
   display: grid;
-  gap: 10px;
+  gap: var(--sp-3);
 }
 .heroChips li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 16px;
+  gap: var(--sp-3);
+  font-size: var(--text-md);
   font-weight: 500;
 }
 .heroChips svg {
@@ -390,16 +413,16 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 15px;
+  font-size: var(--text-sm);
   font-weight: 500;
 }
 .trail li + li::before {
   content: "/";
-  margin-right: 4px;
+  margin-right: var(--sp-1);
   color: var(--mute);
 }
 .trail a {
@@ -410,6 +433,7 @@
   color: var(--mute);
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: color 0.2s var(--ease-out);
 }
 .trail a:hover {
   color: inherit;
@@ -418,7 +442,7 @@
 @media (max-width: 999px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
+    gap: var(--sp-5);
   }
 }
 @media (max-width: 1099px) {
@@ -448,7 +472,7 @@
   /* One column; the node moves to the left edge, on a line of its own */
   .step {
     grid-template-columns: 40px minmax(0, 1fr);
-    gap: 0 16px;
+    gap: 0 var(--sp-4);
     align-items: start;
   }
   .step::before {
@@ -491,7 +515,7 @@
   }
   .group {
     grid-template-columns: minmax(0, 1fr);
-    padding: 16px;
+    padding: var(--sp-4);
   }
 }
 @media (max-width: 599px) {
@@ -499,10 +523,15 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .qa summary {
-    padding-left: 16px;
+    padding-left: var(--sp-4);
+    padding-right: var(--sp-8);
   }
   .qa p {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: var(--sp-4);
+    padding-right: var(--sp-4);
+  }
+  .qa summary::before,
+  .qa summary::after {
+    right: var(--sp-4);
   }
 }

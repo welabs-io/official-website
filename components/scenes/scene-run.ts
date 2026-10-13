@@ -9,7 +9,14 @@
 import { follow } from "@/components/ring/overview-follow";
 import { placeOf, ringPosition } from "@/components/ring/positions";
 
-type SceneData = { version: number; cycle: number; scenes: number[] };
+// `steps` maps each scene of the stage to the step of the chain it plays (identity on the home; a product page plays a
+// subset, so the overview must be told the step, not the position)
+type SceneData = {
+  version: number;
+  cycle: number;
+  scenes: number[];
+  steps?: number[];
+};
 
 export function run(root: HTMLElement) {
   const stage = root.querySelector<HTMLElement>("[data-ring]");
@@ -22,7 +29,8 @@ export function run(root: HTMLElement) {
   const count = tiles.length;
 
   // The block above (the overview) follows this stage through the swap event; it has no clock of its own
-  const overview = follow(root.id, root.closest("section"));
+  const stepOf = (scene: number) => data.steps?.[scene] ?? scene;
+  const overview = follow(root.id, root.closest("section"), stepOf(0));
   const rail = root
     .closest("section")
     ?.querySelector<HTMLElement>(":scope > [data-rail]");
@@ -45,6 +53,15 @@ export function run(root: HTMLElement) {
     });
   };
 
+  // Replays the only scene: first frame, a forced style flush so the animations restart, then play
+  const restart = () => {
+    const scene = scenes[0];
+    if (!scene) return;
+    scene.dataset.phase = "start";
+    scene.getBoundingClientRect();
+    scene.dataset.phase = "play";
+  };
+
   let active = 0;
   let started = false;
   let paused = false;
@@ -64,11 +81,18 @@ export function run(root: HTMLElement) {
     const from = active;
     active = (active + 1) % count;
     root.style.setProperty("--swap-time", "0.4s");
-    show(active);
+    // A stage of one scene has nothing to swap to: the scene goes back to its first frame and plays again
+    if (count === 1) restart();
+    else show(active);
     flipRail();
     window.dispatchEvent(
       new CustomEvent("ring:swap", {
-        detail: { ring: root.id, from, to: active, index: active },
+        detail: {
+          ring: root.id,
+          from,
+          to: active,
+          index: stepOf(active),
+        },
       }),
     );
     clearTimeout(timer);
