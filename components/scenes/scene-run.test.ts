@@ -18,19 +18,31 @@ function stage() {
       scn,
     };
   });
+  const ring = { children: tiles, dataset: {} as Record<string, string> };
+  const props: Record<string, string> = {};
   const root = {
     id: "chain-ring",
     dataset: {} as Record<string, string>,
-    style: { setProperty: () => {} },
+    style: {
+      setProperty: (name: string, value: string) => {
+        props[name] = value;
+      },
+    },
     closest: () => null,
     querySelector: (sel: string) =>
       sel === "[data-ring]"
-        ? { children: tiles }
+        ? ring
         : sel.startsWith("script")
-          ? { textContent: JSON.stringify({ scenes: SCENES, cycle: 28 }) }
+          ? {
+              textContent: JSON.stringify({
+                scenes: SCENES,
+                cycle: 28,
+                swap: 0.7,
+              }),
+            }
           : null,
   };
-  return { root, tiles };
+  return { root, tiles, ring, props };
 }
 
 beforeEach(() => {
@@ -61,6 +73,20 @@ describe("scene runner", () => {
     expect(centre(tiles)).toBe(1);
     vi.advanceTimersByTime(2000);
     expect(centre(tiles)).toBe(2);
+  });
+
+  it("every swap sets the rotation time of the script and restarts the arc", () => {
+    const { root, ring, props } = stage();
+    const runner = run(root as unknown as HTMLElement);
+    runner.resume();
+    expect(ring.dataset.turn).toBeUndefined();
+    vi.advanceTimersByTime(1001);
+    expect(props["--swap-time"]).toBe("0.7s");
+    expect(ring.dataset.turn).toBe("a");
+    vi.advanceTimersByTime(2000);
+    expect(ring.dataset.turn).toBe("b");
+    runner.destroy();
+    expect(ring.dataset.turn).toBeUndefined();
   });
 
   it("pause freezes the scene and resume continues with what was left", () => {
@@ -140,10 +166,14 @@ describe("scene runner on a product page", () => {
       closest: () => null,
       querySelector: (sel: string) =>
         sel === "[data-ring]"
-          ? { children: tiles }
+          ? { children: tiles, dataset: {} }
           : sel.startsWith("script")
             ? {
-                textContent: JSON.stringify({ scenes: seconds, steps }),
+                textContent: JSON.stringify({
+                  scenes: seconds,
+                  steps,
+                  swap: 0.7,
+                }),
               }
             : null,
     };

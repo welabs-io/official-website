@@ -36,8 +36,9 @@ function checkSegment(s: unknown, where: string): asserts s is SegmentCore {
     throw new ManifestError(where, "to must be at most settledAt + 0.1");
   if (settledAt > to) throw new ManifestError(where, "settledAt must be ≤ to");
   if (!(num("rate") > 0)) throw new ManifestError(where, "rate must be > 0");
-  if (num("holdAfter") < 1)
-    throw new ManifestError(where, "holdAfter must be ≥ 1");
+  // The site copy of the schema lowers the floor from 1 s to 0.5 s (docs/motion-contract-requests.md, request 1)
+  if (num("holdAfter") < 0.5)
+    throw new ManifestError(where, "holdAfter must be ≥ 0.5");
   if (typeof s.piece !== "string" || !s.piece)
     throw new ManifestError(where, "piece is missing");
   const t = s.transition;

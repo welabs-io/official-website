@@ -2,8 +2,8 @@
 /* The circular carousel of the chain, now made of live scenes instead of videos. Same swap of positions as before: the
    centre scene is the one that plays; the previous and the next sit behind it at half scale, shifted by 38% of the width,
    under a cream veil, so only a strip of each shows (on a phone, an edge); the ones further back are invisible. The
-   rotation is one CSS transition whose duration (--swap-time) is the swap of the script (0.4 s). The tile has a fixed
-   aspect ratio, so no scene ever moves the page. */
+   rotation (a turn with depth along an arc, components/ring/rotation.css) lasts --swap-time, the swap of the script
+   (0.7 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
 .screen {
   --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
   /* Width of the centre scene: 920 px at most (2:1, so 460 px tall), never taller than 70% of the window, the whole wrap
@@ -26,40 +26,25 @@
   left: 50%;
   width: 100%;
   aspect-ratio: 2 / 1;
-  transform: translateX(-50%);
-  transition:
-    transform var(--swap-time, 0.4s) var(--ease),
-    opacity var(--swap-time, 0.4s) var(--ease);
+  /* Place, depth, turn and the transitions of the swap: components/ring/rotation.css (selects on data-ring/data-pos) */
 }
 /* Only the scenes that can be seen (the centre and its two neighbours) are promoted to their own layer */
 .tile:is([data-pos="0"], [data-pos="1"], [data-pos="-1"]) {
-  will-change: transform, opacity;
+  will-change: translate, transform, rotate, scale, opacity;
 }
 .tile[data-pos="0"] {
   z-index: 3;
 }
-.tile[data-pos="1"] {
-  z-index: 2;
-  transform: translateX(calc(-50% + 38%)) scale(0.5);
-}
+.tile[data-pos="1"],
 .tile[data-pos="-1"] {
   z-index: 2;
-  transform: translateX(calc(-50% - 38%)) scale(0.5);
 }
 .tile[data-pos="2"],
 .tile[data-pos="-2"] {
   z-index: 1;
-  opacity: 0;
-  pointer-events: none;
   /* The scenes behind (every one past the first neighbour) are invisible: the browser skips their layout, style and
      paint until the swap brings one to +1. The tile keeps its size (aspect ratio), so nothing moves. */
   content-visibility: hidden;
-}
-.tile[data-pos="2"] {
-  transform: translateX(calc(-50% + 40%)) scale(0.4);
-}
-.tile[data-pos="-2"] {
-  transform: translateX(calc(-50% - 40%)) scale(0.4);
 }
 .tileFrame {
   position: absolute;
@@ -76,7 +61,7 @@
   background: rgb(250 245 234 / 0.55);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--swap-time, 0.4s) var(--ease);
+  transition: opacity var(--swap-time, 0.7s) var(--ease);
 }
 .tile[data-pos="1"] .tileFrame::after,
 .tile[data-pos="-1"] .tileFrame::after {

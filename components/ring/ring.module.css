@@ -2,8 +2,8 @@
 /* Full-screen workbench for the chain carousel. The stage is the centre tile (760 px at most, centred). Neighbours are
    shifted by 38% of the centre width, scaled to 0.5 and darkened by a veil (--veil), tucked behind it so only a strip of each shows (on
    a phone only an edge of each stays in view); the cuts at the back (position 2 and -2) are invisible. The
-   rotation is one CSS transition whose duration (--swap-time) the page sets per swap: 0.4 s between products, 0.3 s
-   inside one. */
+   rotation (a turn with depth along an arc, components/ring/rotation.css) lasts --swap-time, which the page sets per
+   swap from the transition of the manifest (0.7 s between products). */
 .screen {
   --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
   /* Width of the centre tile: proportional to the window on a desktop (56% of the width, and never taller than 52% of
@@ -53,34 +53,19 @@
   left: 50%;
   width: 100%;
   aspect-ratio: 16 / 9;
-  transform: translateX(-50%);
-  transition:
-    transform var(--swap-time, 0.4s) var(--ease),
-    opacity var(--swap-time, 0.4s) var(--ease);
-  will-change: transform, opacity;
+  /* Place, depth, turn and the transitions of the swap: components/ring/rotation.css (selects on data-ring/data-pos) */
+  will-change: translate, transform, rotate, scale, opacity;
 }
 .tile[data-pos="0"] {
   z-index: 3;
 }
-.tile[data-pos="1"] {
-  z-index: 2;
-  transform: translateX(calc(-50% + 38%)) scale(0.5);
-}
+.tile[data-pos="1"],
 .tile[data-pos="-1"] {
   z-index: 2;
-  transform: translateX(calc(-50% - 38%)) scale(0.5);
 }
 .tile[data-pos="2"],
 .tile[data-pos="-2"] {
   z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-}
-.tile[data-pos="2"] {
-  transform: translateX(calc(-50% + 40%)) scale(0.4);
-}
-.tile[data-pos="-2"] {
-  transform: translateX(calc(-50% - 40%)) scale(0.4);
 }
 .tileFrame {
   position: absolute;
@@ -94,7 +79,7 @@
   isolation: isolate;
 }
 .tileFrame > * {
-  transition: filter var(--swap-time, 0.4s) var(--ease);
+  transition: filter var(--swap-time, 0.7s) var(--ease);
 }
 .tile[data-pos="1"] .tileFrame > *,
 .tile[data-pos="-1"] .tileFrame > * {

@@ -51,7 +51,7 @@ const manifestFile = arg(
 const coversDir = arg("--covers", join(planOut, "out/covers"));
 const schemaFile = arg(
   "--schema",
-  join(planOut, "motion-manifest.schema.v1.2.json"),
+  join(planOut, "motion-manifest.schema.v1.2.1.json"),
 );
 
 const read = (file) => JSON.parse(readFileSync(file, "utf8"));

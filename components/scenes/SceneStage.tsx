@@ -8,11 +8,13 @@
 import { MANIFEST } from "@/lib/manifest";
 import {
   SCRIPT,
+  SWAP_SECONDS,
   cycleSeconds,
   sceneSeconds,
   type SceneScript,
 } from "@/lib/scenes/script";
 import { placeOf, ringPosition } from "@/components/ring/positions";
+import "@/components/ring/rotation.css";
 import { SceneBody } from "./SceneBody";
 import { SceneDriver } from "./SceneDriver";
 import "./fx.css";
@@ -34,6 +36,7 @@ export function SceneStage({
   const data = {
     version: 1,
     cycle: cycleSeconds(scenes),
+    swap: SWAP_SECONDS,
     scenes: scenes.map((scene) => sceneSeconds(scene)),
     steps: scenes.map((scene) => scene.step),
   };
