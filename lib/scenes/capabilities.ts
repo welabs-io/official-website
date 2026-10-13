@@ -51,9 +51,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "fields", at: 0.75, dur: 0.4 },
         { id: "screen", at: 1.7, dur: 0.4 },
-        { id: "ready", at: 2.6, dur: 0.25 },
+        { id: "ready", at: 3.0, dur: 0.25 },
       ],
-      settle: 2.85,
+      settle: 3.25,
       hold: 1.8,
     },
     {
@@ -64,9 +64,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "pix", at: 0.75, dur: 0.3 },
         { id: "match", at: 1.65, dur: 0.3 },
-        { id: "paid", at: 2.5, dur: 0.3 },
+        { id: "paid", at: 2.9, dur: 0.3 },
       ],
-      settle: 2.8,
+      settle: 3.2,
       hold: 1.8,
     },
     {
@@ -77,9 +77,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "sign", at: 0.75, dur: 0.3 },
         { id: "signed", at: 1.6, dur: 0.25 },
-        { id: "links", at: 2.4, dur: 0.4 },
+        { id: "links", at: 2.8, dur: 0.4 },
       ],
-      settle: 2.8,
+      settle: 3.2,
       hold: 1.8,
     },
   ],
@@ -92,9 +92,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "history", at: 0.75, dur: 0.45 },
         { id: "domus", at: 1.75, dur: 0.3 },
-        { id: "card", at: 2.5, dur: 0.3 },
+        { id: "card", at: 2.9, dur: 0.3 },
       ],
-      settle: 2.8,
+      settle: 3.2,
       hold: 1.8,
     },
     {
@@ -105,9 +105,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "steps", at: 0.75, dur: 0.45 },
         { id: "coupon", at: 1.7, dur: 0.3 },
-        { id: "cash", at: 2.5, dur: 0.3 },
+        { id: "cash", at: 2.9, dur: 0.3 },
       ],
-      settle: 2.8,
+      settle: 3.2,
       hold: 1.8,
     },
     {
@@ -118,9 +118,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "answer", at: 0.75, dur: 0.3 },
         { id: "ask", at: 1.6, dur: 0.25 },
-        { id: "handoff", at: 2.4, dur: 0.35 },
+        { id: "handoff", at: 2.8, dur: 0.35 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
   ],
@@ -133,9 +133,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "blocks", at: 0.85, dur: 0.5 },
         { id: "links", at: 1.65, dur: 0.3 },
-        { id: "active", at: 2.45, dur: 0.3 },
+        { id: "active", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
     {
@@ -146,9 +146,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "run", at: 0.75, dur: 0.6 },
         { id: "branch", at: 1.75, dur: 0.3 },
-        { id: "done", at: 2.45, dur: 0.3 },
+        { id: "done", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
     {
@@ -159,9 +159,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "test", at: 0.75, dur: 0.4 },
         { id: "activate", at: 1.7, dur: 0.3 },
-        { id: "log", at: 2.45, dur: 0.3 },
+        { id: "log", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
   ],
@@ -174,9 +174,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "type", at: 0.75, dur: 0.35 },
         { id: "arrive", at: 1.65, dur: 0.3 },
-        { id: "reply", at: 2.45, dur: 0.3 },
+        { id: "reply", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
     {
@@ -187,9 +187,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "route", at: 0.75, dur: 0.35 },
         { id: "take", at: 1.65, dur: 0.3 },
-        { id: "note", at: 2.45, dur: 0.3 },
+        { id: "note", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
     {
@@ -200,9 +200,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "media", at: 0.75, dur: 0.4 },
         { id: "later", at: 1.7, dur: 0.3 },
-        { id: "checks", at: 2.45, dur: 0.35 },
+        { id: "checks", at: 2.85, dur: 0.35 },
       ],
-      settle: 2.8,
+      settle: 3.2,
       hold: 1.8,
     },
   ],
@@ -215,9 +215,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "answer", at: 0.75, dur: 0.4 },
         { id: "sources", at: 1.65, dur: 0.35 },
-        { id: "missing", at: 2.45, dur: 0.3 },
+        { id: "missing", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
     {
@@ -228,9 +228,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "search", at: 0.75, dur: 0.3 },
         { id: "found", at: 1.55, dur: 0.45 },
-        { id: "fresh", at: 2.45, dur: 0.3 },
+        { id: "fresh", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
     {
@@ -241,9 +241,9 @@ export const CAPABILITY_SCRIPT: Record<
       actions: [
         { id: "open", at: 0.75, dur: 0.35 },
         { id: "ask", at: 1.6, dur: 0.3 },
-        { id: "reply", at: 2.45, dur: 0.3 },
+        { id: "reply", at: 2.85, dur: 0.3 },
       ],
-      settle: 2.75,
+      settle: 3.15,
       hold: 1.8,
     },
   ],
