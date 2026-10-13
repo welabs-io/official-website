@@ -1,9 +1,9 @@
 // TESTES DA VISÃO GERAL DA CADEIA
-// The top block of the chain is server markup built from the manifest: the order of the plot, the first step lit, one
-// caption per step in the data the browser follows, and a time that is the manifest's own (piece seconds over the rate).
+// The top block of the chain is server markup built from the data of the chain: the order of the plot, the first step
+// lit, one caption per step in the data the browser follows, and a time that is the script's own.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { MANIFEST } from "@/lib/manifest";
+import { CHAIN_STEPS } from "@/lib/chain";
 import { overviewData } from "@/lib/overview-data";
 import { SCRIPT, sceneSeconds } from "@/lib/scenes/script";
 import { colPercent, stepVars } from "@/lib/overview-geometry";
@@ -18,7 +18,7 @@ const page = renderToStaticMarkup(<SiteTemplate config={HOME_CONFIG} />);
 describe("overview data", () => {
   const data = overviewData();
   it("has one step per step of the chain and every column is known", () => {
-    expect(data.steps).toHaveLength(MANIFEST.chain.steps.length);
+    expect(data.steps).toHaveLength(CHAIN_STEPS.length);
     for (const s of data.steps)
       for (const c of [...s.nodes, s.from, s.to]) {
         expect(c).toBeGreaterThanOrEqual(0);
@@ -46,11 +46,11 @@ describe("overview data", () => {
 
 describe("overview markup", () => {
   it("shows the first caption as plain text, the token and a logo per product", () => {
-    expect(html).toContain(MANIFEST.chain.steps[0].overview.label);
+    expect(html).toContain(CHAIN_STEPS[0].overview.label);
     // Plain text, not a live region (the carousel changes by itself)
     expect(html).not.toMatch(/aria-live/);
     expect(html).toContain("Pedido 1234");
-    for (const slug of Object.keys(MANIFEST.products))
+    for (const { slug } of PRODUCTS)
       expect(html).toContain(`${slug}-light.svg`);
     expect(html).not.toContain("-endorsed");
   });
@@ -81,7 +81,7 @@ describe("overview markup", () => {
     }
   });
   it("lights only the nodes of the first step", () => {
-    const lit = MANIFEST.chain.steps[0].overview.nodes;
+    const lit = CHAIN_STEPS[0].overview.nodes;
     const on = [...html.matchAll(/<li[^>]*data-state="on"/g)];
     expect(on).toHaveLength(lit.length);
   });

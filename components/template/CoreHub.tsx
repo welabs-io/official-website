@@ -3,12 +3,12 @@
 // 1/2 and 5/6 of the content width (Magneto, Tuner, Knowly) and cross a horizontal core box (Domus, the amber seam on
 // the axis, Relloo); they come out below it and go on, past the bottom of the section, as the converging rails of the
 // closing (ConnectorRail "converge"), so no line ends loose and the drawing is symmetric. Each connection carries its
-// label from the motion manifest (`ties`): the seam between the two core products and one per rail. The logos are real
+// label from the chain (`ties` of lib/chain.ts): the seam between the two core products and one per rail. The logos are real
 // links; on a product page `lit` is the product of the page: it stays lit with a 4 px amber bar, only the labels of its
 // own connections stay and a rail it is not tied to dims. While the section is on screen (data-on, LiveObserver) one node
 // lights at a time in weight order (0.96 s each, a 4.8 s cycle) and a pulse goes down the rail of the lit rail node.
 import Link from "next/link";
-import type { Tie } from "@/lib/manifest/select";
+import type { Tie } from "@/lib/chain";
 import {
   PRODUCTS,
   productAlt,

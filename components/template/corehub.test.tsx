@@ -1,20 +1,19 @@
 // TESTES DO BLOCO DE CONECTORES
-// The vertical block of the home: the four labels of the manifest (the seam and one per rail), the five logos as links, no
-// loose end (no end-point dots, rails continue as converging rails), and the content of the labels follows the manifest.
+// The vertical block of the home: the four labels of the chain (the seam and one per rail), the five logos as links, no
+// loose end (no end-point dots, rails continue as converging rails), and the content of the labels follows the chain.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { MANIFEST } from "@/lib/manifest";
-import { ties } from "@/lib/manifest/select";
+import { ties } from "@/lib/chain";
 import { PRODUCTS } from "@/lib/products";
 import { HOME_CONFIG } from "@/lib/site-config";
 import { CoreHub } from "./CoreHub";
 import { Sections } from "./SiteTemplate";
 
-const hub = renderToStaticMarkup(<CoreHub tone="dark" ties={ties(MANIFEST)} />);
+const hub = renderToStaticMarkup(<CoreHub tone="dark" ties={ties()} />);
 
 describe("core hub", () => {
-  it("shows the four labels of the manifest, once each", () => {
-    const labels = ties(MANIFEST).map((t) => t.label);
+  it("shows the four labels of the chain, once each", () => {
+    const labels = ties().map((t) => t.label);
     expect(labels).toHaveLength(4);
     for (const label of labels) expect(hub.split(`>${label}<`)).toHaveLength(2);
   });

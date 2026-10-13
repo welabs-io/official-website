@@ -9,7 +9,7 @@
 // shows its settled frame. The scene is an illustration: the tile is an image with a sentence as its name, and the
 // screen content is hidden from assistive technology so nothing is read twice.
 import type { ReactNode } from "react";
-import { MANIFEST } from "@/lib/manifest";
+import { CHAIN_STEPS } from "@/lib/chain";
 import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import {
   SCRIPT,
@@ -119,7 +119,6 @@ export function SceneStage({
   // The scenes the stage plays: the whole script on the home, the ones a product takes part in on its page
   scenes?: readonly SceneScript[];
 }) {
-  const steps = MANIFEST.chain.steps;
   return (
     <Stage
       id={id}
@@ -128,7 +127,7 @@ export function SceneStage({
       steps={scenes.map((scene) => scene.step)}
       tiles={scenes.map((scene) => ({
         scene,
-        label: steps[scene.step].detail.srLabel,
+        label: CHAIN_STEPS[scene.step].srLabel,
         body: <SceneBody scene={scene} />,
       }))}
     />

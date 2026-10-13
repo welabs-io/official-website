@@ -7,8 +7,7 @@ import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { ProductsStage, SceneStage } from "@/components/scenes/SceneStage";
 import { HOME_INTRO } from "@/lib/content";
-import { MANIFEST } from "@/lib/manifest";
-import { ties } from "@/lib/manifest/select";
+import { ties } from "@/lib/chain";
 import { PRODUCTS, productBySlug } from "@/lib/products";
 import { scenesOfProduct } from "@/lib/scenes/product-scenes";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
@@ -105,7 +104,7 @@ function Body({ section }: { section: SectionConfig }) {
     case "others":
       return <OtherProducts slug={section.slug} />;
     case "hub": {
-      const tieList = ties(MANIFEST);
+      const tieList = ties();
       return (
         <div className={shell.wrap}>
           <HubText ties={tieList} lit={section.lit} />

@@ -1,13 +1,11 @@
 // DADOS DA VISÃO GERAL DA CADEIA
-// What the top block of the chain (components/template/ChainOverview) needs, built on the server from the motion
-// manifest: the columns of the line (products in the order of the plot, then the outcome), and per step the lit nodes,
-// the ends of the token, its delay and duration on screen and the caption. The server writes it next to the block as a
-// <script type="application/json">, and the browser code (components/ring/overview-follow.ts) reads the DOM, never the
-// manifest. Delay and duration of the token come from the script of the scenes (lib/scenes/script.ts).
-import { MANIFEST } from "./manifest";
+// What the top block of the chain (components/template/ChainOverview) needs, built on the server from the data of the
+// chain (lib/chain.ts): the columns of the line (products in the order of the plot, then the outcome), and per step the
+// lit nodes, the ends of the token, its delay and duration on screen and the caption. The server writes it next to the
+// block as a <script type="application/json">, and the browser code (components/ring/overview-follow.ts) reads the DOM,
+// never the chain itself. Delay and duration of the token come from the script of the scenes (lib/scenes/script.ts).
+import { CHAIN_STEPS, overviewOrder, type TokenEnd } from "./chain";
 import { SCRIPT } from "./scenes/script";
-import { overviewOrder } from "./manifest/select";
-import type { Manifest, TokenEnd } from "./manifest/types";
 
 export type OverviewStep = {
   // Columns of the lit nodes (index in `order`)
@@ -28,14 +26,14 @@ export type OverviewData = {
 
 const round = (n: number) => Math.round(n * 1000) / 1000;
 
-export function overviewData(manifest: Manifest = MANIFEST): OverviewData {
-  const order = overviewOrder(manifest);
+export function overviewData(): OverviewData {
+  const order = overviewOrder();
   const col = (end: TokenEnd) => order.indexOf(end);
   return {
     order,
-    // Nodes, ends and caption are the manifest's; the time the token walks is the script's (lib/scenes/script.ts), the
-    // clock of the native scenes
-    steps: manifest.chain.steps.map(({ overview: o }, index) => {
+    // Nodes, ends and caption are the chain's (lib/chain.ts); the time the token walks is the script's
+    // (lib/scenes/script.ts), the clock of the native scenes
+    steps: CHAIN_STEPS.map(({ overview: o }, index) => {
       const scene = SCRIPT.find((s) => s.step === index);
       return {
         nodes: o.nodes.map(col),

@@ -1,8 +1,8 @@
 // CENAS DE UM PRODUTO NA CADEIA
 // The product page replays the native chain, narrowed to the scenes the product takes part in: the scenes it stars in
-// (`products` of the script) and the ones where it is an end of the connection of the step (the manifest's
-// `connection.from` / `connection.to`). Order is the plot's. A product with a single scene gets a stage of one.
-import { MANIFEST } from "@/lib/manifest";
+// (`products` of the script) and the ones where it is an end of the connection of the step (`connection.from` /
+// `connection.to` of lib/chain.ts). Order is the plot's. A product with a single scene gets a stage of one.
+import { CHAIN_STEPS } from "@/lib/chain";
 import type { ProductSlug } from "@/lib/products";
 import { SCRIPT, cycleSeconds, type SceneScript } from "./script";
 
@@ -14,7 +14,7 @@ export const PRODUCT_MIN_CYCLE = 12;
 
 export function scenesOfProduct(slug: ProductSlug): SceneScript[] {
   const own = SCRIPT.filter((scene) => {
-    const { connection } = MANIFEST.chain.steps[scene.step];
+    const { connection } = CHAIN_STEPS[scene.step];
     return (
       scene.products.includes(slug) ||
       connection.from === slug ||

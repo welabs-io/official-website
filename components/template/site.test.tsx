@@ -11,8 +11,7 @@ import {
   tieKey,
 } from "@/lib/content";
 import { copyViolation } from "@/lib/content/rules";
-import { MANIFEST } from "@/lib/manifest";
-import { ties } from "@/lib/manifest/select";
+import { CHAIN_STEPS, ties } from "@/lib/chain";
 import { PRODUCTS } from "@/lib/products";
 import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import { metadata as homeMetadata } from "@/app/page";
@@ -36,15 +35,9 @@ const visibleText = (html: string) =>
     .replace(/&#x27;|&#39;/g, "'")
     .replace(/\s+/g, " ")
     .trim();
-// Text that only assistive technology gets. The names of the tiles (`role="group"`) are the sentences the motion manifest
-// writes to describe each step (`srLabel`, `title`): descriptions of what the film shows, checked by the manifest tests,
-// not brand copy, so they are out of the slogan check.
+// Text that only assistive technology gets: every alt and accessible name, the names of the scene tiles included
 const hiddenText = (html: string) =>
-  [
-    ...html
-      .replace(/role="group" aria-label="[^"]*"/g, "")
-      .matchAll(/(?:alt|aria-label)="([^"]*)"/g),
-  ]
+  [...html.matchAll(/(?:alt|aria-label)="([^"]*)"/g)]
     .map((m) => m[1])
     .join(" ");
 
@@ -263,16 +256,14 @@ describe("the home has no sequential player and no opening on the chain", () => 
     expect(home).not.toMatch(/sequence-player|SequencePlayer|sequence:ended/i);
     expect(home).not.toMatch(/welabs-intro/);
   });
-  it("the chain section is native: one scene per step of the manifest, no opening, no cover image and no video", () => {
+  it("the chain section is native: one scene per step of the chain, no opening, no cover image and no video", () => {
     // The markup the viewer gets; the JSON of the stage is not markup
     const chain = home
       .slice(home.indexOf('id="chain"'), home.indexOf('id="products"'))
       .replace(/<script[\s\S]*?<\/script>/g, "");
     expect(chain).not.toMatch(/intro/);
     expect(chain).not.toMatch(/\/posters\/|hyperframes-player|\.webm|\.mp4/);
-    expect(chain.match(/data-tile="s\d"/g)).toHaveLength(
-      MANIFEST.chain.steps.length,
-    );
+    expect(chain.match(/data-tile="s\d"/g)).toHaveLength(CHAIN_STEPS.length);
   });
   it("the title of the home is Welabs, without a suffix", () => {
     expect(homeMetadata.title).toBe("Welabs");
@@ -341,9 +332,7 @@ describe("the content layer on the rendered pages", () => {
       expect(html).toMatch(/<p[^>]*data-caption[^>]*>/);
       expect(html).not.toMatch(/aria-live/);
       expect(t).toContain(capabilityOf(capabilityScenes(slug)[0]).detail);
-      for (const tie of ties(MANIFEST).filter(
-        (x) => x.a === slug || x.b === slug,
-      ))
+      for (const tie of ties().filter((x) => x.a === slug || x.b === slug))
         expect(t).toContain(TIE_LINES[tieKey(tie.a, tie.b)]);
     },
   );

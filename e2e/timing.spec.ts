@@ -1,13 +1,13 @@
-// O SITE SEGUE O MANIFESTO
-// Acceptance of the manifest units, at the three sizes: the time between two swaps of the chain is the screen time plus the
-// hold of the manifest (the site decides no time), the label of the row is the one of the step on screen, the connector
-// block has its four labels without overlap and no rail ends loose, and under reduced motion no video and no animation
-// runs.
+// O SITE SEGUE O ROTEIRO
+// Acceptance of the timing of the chain and of the connector block, at the three sizes: the time between two swaps of
+// the chain is the time of the scene in the script (settle plus hold), the caption of the overview is the one of the
+// step on screen, the connector block has its four labels without overlap and no rail ends loose, and under reduced
+// motion no video and no animation runs.
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 
 for (const vp of VIEWPORTS)
-  test.describe(`manifest at ${vp.name}`, () => {
+  test.describe(`timing at ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
 
     test("swap intervals follow the time of each scene and labels follow the step", async ({

@@ -10,7 +10,7 @@ import {
   TIE_LINES,
   tieKey,
 } from "@/lib/content";
-import type { Tie } from "@/lib/manifest/select";
+import type { Tie } from "@/lib/chain";
 import {
   LOGO_PAD,
   PRODUCTS,
@@ -83,7 +83,7 @@ export function ProductCards({
 
 // FRASES DO BLOCO DE CONECTORES
 // Home: one sentence on the core and the rails. Product page: a heading and one line per connection of the product
-// (the label of each connection is drawn in the block itself and comes from the motion manifest).
+// (the label of each connection is drawn in the block itself and comes from lib/chain.ts).
 export function HubText({
   ties,
   lit,

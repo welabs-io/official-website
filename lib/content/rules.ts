@@ -1,5 +1,5 @@
 // REGRAS DO TEXTO
-// What the visible copy may not contain, shared by the content tests, the tests of the rendered pages and the manifest.
+// What the visible copy may not contain, shared by the content tests, the tests of the rendered pages and of the chain.
 // The lists live in copy-rules.json, the single source also read by scripts/check-portfolio.mjs.
 import rules from "./copy-rules.json";
 

@@ -1,8 +1,8 @@
 // TESTES DO ROTEIRO DAS CENAS
-// The script is the clock of the native chain: seven scenes that follow the seven steps of the manifest, actions that fit
+// The script is the clock of the native chain: seven scenes that follow the seven steps of the chain, actions that fit
 // inside their scene, a token that walks inside it and at least STILL_TARGET of the cycle with nothing moving.
 import { describe, expect, it } from "vitest";
-import { MANIFEST } from "@/lib/manifest";
+import { CHAIN_STEPS } from "@/lib/chain";
 import {
   CONNECTOR_SECONDS,
   CYCLE_MAX_SECONDS,
@@ -19,13 +19,11 @@ import {
 import { SCENE_IDS } from "./types";
 
 describe("scene script", () => {
-  it("has the seven scenes in order, one per step of the motion manifest", () => {
+  it("has the seven scenes in order, one per step of the chain", () => {
     expect(SCRIPT.map((s) => s.id)).toEqual([...SCENE_IDS]);
-    expect(SCRIPT.map((s) => s.step)).toEqual(
-      MANIFEST.chain.steps.map((s) => s.step),
-    );
+    expect(SCRIPT.map((s) => s.step)).toEqual(CHAIN_STEPS.map((s) => s.step));
     SCRIPT.forEach((scene) =>
-      expect(scene.products).toEqual(MANIFEST.chain.steps[scene.step].products),
+      expect(scene.products).toEqual(CHAIN_STEPS[scene.step].products),
     );
   });
 

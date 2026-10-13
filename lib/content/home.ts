@@ -39,7 +39,7 @@ export const NAV = {
 } as const;
 
 // One line per connection of the connector block (key: the two slugs, sorted). The label of the connection comes from
-// the motion manifest; this line says what travels over it.
+// lib/chain.ts; this line says what travels over it.
 export const TIE_LINES: Record<string, string> = {
   "domus-relloo":
     "O Relloo já abre cada cartão com os dados que o Domus guarda.",

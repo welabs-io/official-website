@@ -129,7 +129,7 @@ export function ChainOverview({
         </i>
         <b className={styles.dock} />
       </div>
-      {/* What overview-follow plays, so the lazy chunk reads the DOM instead of importing the manifest */}
+      {/* What overview-follow plays, so the lazy chunk reads the DOM instead of importing the chain */}
       <script
         type="application/json"
         data-overview-data

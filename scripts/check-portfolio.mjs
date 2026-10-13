@@ -141,7 +141,7 @@ const logoOrder = (html) => [
     ].map((m) => m[1]),
   ),
 ];
-// The overview of the chain lists the products in the order of the plot (manifest), the rest of the page in weight order
+// The overview of the chain lists the products in the order of the plot (lib/chain.ts), the rest of the page in weight order
 const chainHtml = home.slice(
   home.indexOf('id="chain"'),
   home.indexOf('id="how"'),
