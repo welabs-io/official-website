@@ -38,6 +38,23 @@ export const GLYPHS = {
   spark:
     "M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18",
   book: "M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM8 7h7",
+  // Glyphs of the capability scenes of the product pages
+  lock: "M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3",
+  pin: "M12 21s-6-5.4-6-10.5a6 6 0 0 1 12 0C18 15.6 12 21 12 21zM12 8a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z",
+  image: "M4 5h16v14H4zM4 15l4.5-4.5 4 4L15 12l5 5M15.5 8.5h.01",
+  bot: "M6 9h12v9H6zM12 5v4M9.5 13h.01M14.5 13h.01M9 18v2M15 18v2",
+  bank: "M3 9l9-5 9 5M5 9v8M9.5 9v8M14.5 9v8M19 9v8M3 20h18",
+  pen: "M4 20l4-1 11-11-3-3L5 16l-1 4zM14 6l3 3",
+  plus: "M12 5v14M5 12h14",
+  globe:
+    "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.6 3.5 5.6 3.5 9s-1 6.4-3.5 9c-2.5-2.6-3.5-5.6-3.5-9s1-6.4 3.5-9z",
+  team: "M9 4a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.5a3.2 3.2 0 0 1 0 6.3M18 14.3c2 .8 3.5 2.8 3.5 5.7",
+  bolt: "M13 3L5 13h6l-1 8 8-10h-6l1-8z",
+  bell: "M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16zM10 20a2 2 0 0 0 4 0",
+  tag: "M3 12V4h8l10 10-8 8L3 12zM7.5 7.5h.01",
+  refresh:
+    "M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4",
+  mic: "M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3",
 } as const;
 
 export function Glyph({ d, size }: { d: string; size: number }) {

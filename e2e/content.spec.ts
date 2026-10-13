@@ -1,9 +1,10 @@
 // CAMADA DE CONTEÚDO
-// Acceptance of the content layer: the live caption of the product page changes together with the scene (it is rewritten
-// on every `ring:swap` of the film ring), the home lights the card of the active product, and no page scrolls
-// sideways at 375 px. The caption test needs the player, so it runs without reduced motion and waits for real swaps.
+// Acceptance of the content layer: the caption and the lit name under the opening of a product page change together
+// with the capability scene (rewritten on every `ring:swap` of the stage, before the event), the home lights the card of
+// the active product, and no page scrolls sideways at 375 px. The caption test runs without reduced motion and waits for
+// real swaps.
 import { expect, test } from "@playwright/test";
-import { PRODUCT_CONTENT } from "../lib/content/products";
+import { capabilityOf, capabilityScenes } from "../lib/scenes/capabilities";
 import { VIEWPORTS } from "./viewports";
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
@@ -21,21 +22,25 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024"))
       w.__caption = [];
       window.addEventListener("ring:swap", (event) => {
         const detail = (event as CustomEvent).detail;
-        if (detail.ring !== "product-ring") return;
-        // The caption is written in the same task as the event, before it
+        if (detail.ring !== "product-scenes") return;
+        // The caption and the lit name are written in the same task as the event, before it
         const text = document.querySelector("[data-caption]")!.textContent!;
-        w.__caption.push({ to: detail.to, text });
+        const on = document.querySelector('[data-cap][data-on="true"]');
+        w.__caption.push({
+          to: detail.to,
+          text: `${on?.getAttribute("data-cap")}|${text}`,
+        });
       });
     });
     await page.goto("/products/domus", { waitUntil: "load" });
-    // The films are under the opening (the native scene) now, and the ring plays only while it is on screen
-    await page.locator("#product-ring").scrollIntoViewIfNeeded();
-    const caption = page.locator("[data-caption]");
+    const caption = page.locator("#product-scenes [data-caption]");
     // Plain text: a carousel that changes by itself is not a live region
     await expect(caption).not.toHaveAttribute("aria-live", /.*/);
-    const captions = PRODUCT_CONTENT.domus.filmCaptions;
+    const captions = capabilityScenes("domus").map(
+      (scene) => capabilityOf(scene).detail,
+    );
     await expect(caption).toHaveText(captions[0]);
-    // Two swaps: opening and main film to the support film, and back
+    // Two swaps: the first scene to the second, then to the third
     await page.waitForFunction(
       () =>
         (window as unknown as { __caption: unknown[] }).__caption.length >= 2,
@@ -47,7 +52,7 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024"))
         (window as unknown as { __caption: { to: number; text: string }[] })
           .__caption,
     );
-    for (const { to, text } of seen) expect(text).toBe(captions[to]);
+    for (const { to, text } of seen) expect(text).toBe(`${to}|${captions[to]}`);
     expect(new Set(seen.map((s) => s.text)).size).toBeGreaterThan(1);
   });
 

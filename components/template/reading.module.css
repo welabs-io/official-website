@@ -320,92 +320,33 @@
   color: var(--mute);
 }
 
-/* CAPACIDADES EM GRUPOS (PRODUTO) */
-.capGroups {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-  gap: var(--sp-4);
-}
-.capGroup {
-  display: grid;
-  align-content: start;
-  gap: var(--sp-2);
-  padding: var(--sp-5) var(--sp-5) var(--sp-3);
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-top: 4px solid var(--a);
-  border-radius: var(--r-card);
-}
-.capGroup h3 {
-  font-size: var(--text-xl);
-  line-height: var(--lh-heading);
-  font-weight: 600;
-  letter-spacing: var(--ls-heading);
-}
-.capRow {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
-  gap: var(--sp-3);
-  padding: var(--sp-3) 0;
-  border-top: 1px solid var(--line);
-}
-.capGroup > ul > li:first-child {
-  border-top: 0;
-}
-.capIcon {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--r-ctl);
-  background: var(--soft);
-  color: var(--mute);
-}
-.capText {
-  display: grid;
-  gap: var(--sp-1);
-  font-size: var(--text-sm);
-  line-height: var(--lh-lead);
-}
-.capText b {
-  font-size: var(--text-md);
-  font-weight: 600;
-}
-.capText span {
-  color: var(--mute);
-}
-
 /* ABERTURA DA PÁGINA DE PRODUTO */
-/* Text at the left (trail, logo, line, three capabilities), the native scene at the right; stacked on a tablet and a
-   phone. The text column covers the thread when the layout is stacked. */
+/* One column on the axis of the page, like the opening of the home: the trail, the logo with its line, then the stage of
+   the capability scenes. The text block has the colour of the band, so the thread does not cross it. */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-  gap: var(--sp-7);
-  align-items: center;
+  justify-items: center;
+  gap: var(--sp-6);
 }
 .heroText {
   display: grid;
-  gap: var(--sp-5);
-  justify-items: start;
+  justify-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
   background: var(--bg);
+  text-align: center;
 }
-.heroChips {
-  display: grid;
-  gap: var(--sp-3);
-}
-.heroChips li {
-  display: flex;
+.heroBlock {
   align-items: center;
-  gap: var(--sp-3);
-  font-size: var(--text-md);
-  font-weight: 500;
 }
-.heroChips svg {
-  color: var(--mute);
+/* The logo is the h1 of the page: a step above the lockup of the cards, centred on its own box (the shift that aligns it
+   to a left edge does not apply on the axis) */
+.heroBlock img {
+  --h: clamp(64px, 6vw, 88px);
+  margin-left: 0;
 }
-.heroScene {
-  min-width: 0;
+.hero > :not(.heroText) {
+  justify-self: stretch;
 }
 
 /* CAMINHO "WELABS / DOMUS" */
@@ -439,12 +380,6 @@
   color: inherit;
 }
 
-@media (max-width: 999px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-5);
-  }
-}
 @media (max-width: 1099px) {
   .benefits {
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -3,11 +3,7 @@
 // slides: the site decides no time, everything on screen comes from lib/motion-manifest.json.
 import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
-import {
-  chainSlides,
-  productPageSlides,
-  productSlides,
-} from "@/lib/motion-slides";
+import { chainSlides, productSlides } from "@/lib/motion-slides";
 import { PRODUCTS } from "@/lib/products";
 import { PLAYER_SRC, piece } from "./player";
 import { ringPosition } from "./positions";
@@ -37,11 +33,7 @@ describe("ring positions", () => {
 
 describe("flat segments follow the manifest", () => {
   it("the lead of every segment is the duration of its transition, never past 80% of its real time", () => {
-    for (const slides of [
-      chainSlides(),
-      productSlides(),
-      ...PRODUCTS.map((p) => productPageSlides(p.slug)),
-    ])
+    for (const slides of [chainSlides(), productSlides()])
       for (const segment of flatten(slides)) {
         const real = (segment.range[1] - segment.range[0]) / segment.rate;
         expect(segment.lead).toBeCloseTo(
@@ -113,11 +105,7 @@ describe("slides of the home", () => {
     }
   });
   it("no range goes past the duration of its piece", () => {
-    for (const slides of [
-      chainSlides(),
-      productSlides(),
-      ...PRODUCTS.map((p) => productPageSlides(p.slug)),
-    ])
+    for (const slides of [chainSlides(), productSlides()])
       for (const slide of slides)
         for (const segment of slide.segments) {
           const duration = MANIFEST.pieces[segment.id].duration;
@@ -127,45 +115,15 @@ describe("slides of the home", () => {
   });
 });
 
-describe("product page carousel", () => {
-  it("is one ring: the opening with the main film, then each support film in full, with its title", () => {
-    for (const { slug } of PRODUCTS) {
-      const slides = productPageSlides(slug);
-      const support = MANIFEST.products[slug].films.filter(
-        (f) => f.role === "support",
-      );
-      expect(slides).toHaveLength(1 + support.length);
-      expect(slides[0].segments[0].id).toMatch(/intro/);
-      support.forEach((film, i) => {
-        const slide = slides[i + 1];
-        expect(slide.label).toBe(film.title);
-        expect(slide.segments.map((s) => s.id)).toEqual(
-          film.segments.map((s) => s.piece),
-        );
-        expect(slide.segments[0].id).not.toMatch(/intro/);
-        expect(slide.endCover?.w640).toMatch(/\.webp$/);
-      });
-    }
-  });
-});
-
-// Time on screen of each tile of the video rings (intro and film, holds included) before the faster-rotation round, from
-// the manifest of that day (portfolio-20261002, 12/10): the new time must be at least 35% shorter
+// Time on screen of each tile of the products ring of the home (intro and film, holds included) before the
+// faster-rotation round, from the manifest of that day (portfolio-20261002, 12/10): the new time must be at least 35%
+// shorter. The support films of the product pages are no longer played by the site (native scenes since 13/10).
 const TILE_SECONDS_BEFORE: Record<string, number> = {
   domus: 24.07,
   relloo: 32.93,
   magneto: 23.81,
   tuner: 23.44,
   knowly: 25.65,
-  "hub-whole-house-ludic-logos-r4-s1": 10.98,
-  "crm-campaigns-journey-ludic2-logos-r4-s1": 25.8,
-  "crm-agent-studio-ludic2-logos-r4-s1": 25.72,
-  "flow-canvas-build-logos-r4-s1": 20.6,
-  "flow-lifecycle-logos-r4-s1": 18.9,
-  "channels-call-center-ludic-logos-r4-s1": 19.9,
-  "channels-whatsapp-official-ludic-logos-r4-s1": 18.3,
-  "kb-sources-to-knowledge-ludic-logos-r5-s1": 22.2,
-  "kb-who-reads-what-ludic-logos-r4-s1": 18.4,
 };
 const tileSeconds = (segments: ReturnType<typeof flatten>) =>
   segments.reduce(
@@ -174,10 +132,7 @@ const tileSeconds = (segments: ReturnType<typeof flatten>) =>
   );
 
 describe("faster rotation of the video rings", () => {
-  const tiles = [
-    ...productSlides(),
-    ...PRODUCTS.flatMap((p) => productPageSlides(p.slug).slice(1)),
-  ];
+  const tiles = productSlides();
   it("every tile is at least 35% shorter than before", () => {
     for (const slide of tiles) {
       // A product tile is keyed by its slug, a support film by its piece

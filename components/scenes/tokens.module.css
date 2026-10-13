@@ -1,0 +1,51 @@
+/* TOKENS DAS CENAS */
+/* The one set of tokens of the native scenes, shared by the scenes themselves (`.scene` composes it, scenes.module.css)
+   and by the reading bands of a product page that follow them (components/template/product-reading.module.css): ink and
+   two greys of text, the hairline and the panel edge, three surfaces, amber only as an area, the semantic colours of the
+   brand 1.8.0, the type scale (meta 11, label 12, body 13, one key of 18 to 22), three radii and two elevations. */
+.tokens {
+  /* Ink and text */
+  --s-ink: #1c1a16;
+  --s-mute: #625b4e;
+  --s-faint: #a39883;
+  /* Edges: hairline divider (sand-200) and panel/card edge (sand-300) */
+  --s-hair: #e2d8c3;
+  --s-edge: #d4c7ab;
+  --s-wall: #bfb29a;
+  /* Surfaces */
+  --s-win: #ffffff;
+  --s-panel: #faf5ea;
+  --s-chip: #f3ecdd;
+  /* Amber, only as area */
+  --s-amber: #ffb020;
+  --s-amber-50: #fff9f0;
+  --s-amber-100: #fff1d8;
+  --s-amber-200: #ffe2b1;
+  /* Semantic colours (text on soft fill passes 5:1, the dot is an area) */
+  --s-ok: #2c7440;
+  --s-ok-soft: #d5fadb;
+  --s-ok-dot: #22bc5c;
+  --s-warn: #984a26;
+  --s-warn-soft: #faebe5;
+  --s-warn-dot: #fb6d20;
+  --s-info: #225ac9;
+  --s-info-soft: #e9effa;
+  --s-info-dot: #3c79ef;
+  --s-action: #25272a;
+  --s-action-fg: #faf5ea;
+  /* Type scale */
+  --s-t-meta: 0.6875rem;
+  --s-t-label: 0.75rem;
+  --s-t-body: 0.8125rem;
+  --s-t-key: 1.25rem;
+  /* Shape and depth */
+  --s-r-ctl: 6px;
+  --s-r-card: 12px;
+  --s-r-win: 16px;
+  --s-elev-1: 0 1px 2px rgb(28 26 22 / 0.06), 0 1px 1px rgb(28 26 22 / 0.03);
+  --s-elev-2:
+    0 10px 24px -12px rgb(28 26 22 / 0.28), 0 2px 4px rgb(28 26 22 / 0.05);
+  /* Rhythm */
+  --s-pad: 1.25rem;
+  --s-gap: 1rem;
+}

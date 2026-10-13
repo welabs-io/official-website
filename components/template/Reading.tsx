@@ -1,11 +1,13 @@
 // SEÇÕES DE LEITURA
 // The reading sections between the visual ones (chain, product ring, connectors): the order from start to end, what changes
-// in the operation, who it is for, integrations and questions on the home; the capabilities in groups, the audience and the
-// questions of a product on its page. Server markup, no state, all text read from lib/content. Each section has a centred
-// head (title and one line) that covers the thread of the page behind it, and cards that do the same.
+// in the operation, who it is for, integrations and questions on the home; the opening, the trail and the other products
+// of a product page (its reading bands, in the tokens of the scenes, are ProductReading.tsx). Server markup, no state, all
+// text read from lib/content. Each section has a centred head (title and one line) that covers the thread of the page
+// behind it, and cards that do the same.
 import Link from "next/link";
 import { ProductBlock } from "@/components/onepage/ProductBlock";
 import { MiniScene } from "@/components/scenes/MiniScene";
+import { CapabilityStage } from "@/components/scenes/SceneStage";
 import {
   AUDIENCE,
   BENEFITS,
@@ -15,8 +17,6 @@ import {
   JOURNEY,
   NAV,
   PAGE_HEADINGS,
-  PRODUCT_CONTENT,
-  PRODUCT_DEPTH,
 } from "@/lib/content";
 import type { Audience, Faq } from "@/lib/content";
 import { PLATFORM_LOGOS } from "@/lib/partners";
@@ -27,7 +27,6 @@ import {
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
-import type { SceneId } from "@/lib/scenes/types";
 import { ProductCards } from "./Content";
 import { Icon } from "./Icon";
 import styles from "./reading.module.css";
@@ -142,14 +141,6 @@ export const HomeAudience = () => (
   />
 );
 
-export const ProductAudience = ({ slug }: { slug: ProductSlug }) => (
-  <AudienceGrid
-    items={PRODUCT_DEPTH[slug].audience}
-    title={PAGE_HEADINGS.audience}
-    count={3}
-  />
-);
-
 // INTEGRAÇÕES E INFRAESTRUTURA (HOME)
 // Four groups: channels, data, cloud and AI. Chips with an icon where the thing is a capability, marks where the site
 // already has the logo (lib/partners.ts).
@@ -229,44 +220,6 @@ export const HomeFaq = () => (
   <FaqList items={HOME_FAQ} title={HOME_SECTIONS.faq.title} />
 );
 
-export const ProductFaq = ({ slug }: { slug: ProductSlug }) => (
-  <FaqList items={PRODUCT_DEPTH[slug].faq} title={PAGE_HEADINGS.faq} />
-);
-
-// CAPACIDADES EM GRUPOS (PRODUTO)
-// The six capabilities of the product (same icon and text as the cards of the home) in groups, each with one sentence.
-export function CapabilityGroups({ slug }: { slug: ProductSlug }) {
-  const { capabilities } = PRODUCT_CONTENT[slug];
-  return (
-    <div className={styles.wrap}>
-      <SectionHead title={PAGE_HEADINGS.capabilities} />
-      <ul className={styles.capGroups}>
-        {PRODUCT_DEPTH[slug].groups.map((group) => (
-          <li key={group.title} className={styles.capGroup}>
-            <h3>{group.title}</h3>
-            <ul>
-              {group.items.map(({ cap, detail }) => {
-                const item = capabilities[cap];
-                return (
-                  <li key={item.text} className={styles.capRow}>
-                    <span className={styles.capIcon}>
-                      <Icon name={item.icon} size={20} />
-                    </span>
-                    <span className={styles.capText}>
-                      <b>{item.text}</b>
-                      <span>{detail}</span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 // OUTROS PRODUTOS (PRODUTO)
 // The way on, at the end of the page: the other four products as cards that lead to their pages.
 export function OtherProducts({ slug }: { slug: ProductSlug }) {
@@ -279,32 +232,27 @@ export function OtherProducts({ slug }: { slug: ProductSlug }) {
 }
 
 // ABERTURA DA PÁGINA DE PRODUTO
-// Trail, logo (the h1), the factual line, three capabilities and, beside them, the native scene of the chain in which the
-// product is the protagonist (the first product of the scene in lib/scenes/script.ts), in its settled frame.
-export const HERO_SCENE: Record<ProductSlug, SceneId> = {
-  domus: "s3",
-  relloo: "s2",
-  magneto: "s5",
-  tuner: "s1",
-  knowly: "s4",
-};
-
+// Same column as the opening of the home, centred on the axis of the page: the trail, the logo (the h1) with its factual
+// line, and the stage that plays three capability scenes of the product, with their names and the sentence about the one
+// on screen under it. Native and animated: no video, no still frame.
 export function ProductHero({ slug }: { slug: ProductSlug }) {
   return (
     <div className={`${styles.wrap} ${styles.hero}`}>
       <div className={styles.heroText}>
         <Trail slug={slug} />
-        <ProductBlock slug={slug} tone="light" link={false} heading="h1" />
-        <ul className={styles.heroChips}>
-          {PRODUCT_CONTENT[slug].capabilities.slice(0, 3).map((cap) => (
-            <li key={cap.text}>
-              <Icon name={cap.icon} size={18} />
-              {cap.text}
-            </li>
-          ))}
-        </ul>
+        <ProductBlock
+          slug={slug}
+          tone="light"
+          link={false}
+          heading="h1"
+          className={styles.heroBlock}
+        />
       </div>
-      <MiniScene id={HERO_SCENE[slug]} className={styles.heroScene} />
+      <CapabilityStage
+        id="product-scenes"
+        slug={slug}
+        label={`${PAGE_HEADINGS.capabilities} do ${productBySlug(slug)!.name}`}
+      />
     </div>
   );
 }

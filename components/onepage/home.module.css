@@ -49,25 +49,6 @@
   justify-items: stretch;
 }
 
-/* FILMES DA PÁGINA DE PRODUTO */
-/* Under the native chain: a small title and the ring of films, 40 px apart. */
-.films {
-  display: grid;
-  gap: var(--sp-4);
-  margin-top: var(--sp-7);
-}
-.filmsTitle {
-  justify-self: center;
-  position: relative;
-  z-index: 2;
-  padding: 0 var(--sp-3);
-  background: var(--bg);
-  font-size: var(--text-2xl);
-  line-height: var(--lh-heading);
-  font-weight: 600;
-  letter-spacing: var(--ls-heading);
-}
-
 .srOnly {
   position: absolute;
   width: 1px;

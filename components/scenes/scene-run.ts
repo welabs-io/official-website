@@ -2,7 +2,8 @@
 // Loaded on demand by SceneDriver. The whole runner is a timer over the scene durations the server wrote next to the
 // stage (lib/scenes/script.ts: settle + hold). On every boundary it moves the tiles to their new places (`data-pos`),
 // writes the phase of each scene (`play` for the centre, `start` for the ones that come next, `end` for the ones behind),
-// flips the pulse of the thread and tells the overview with the `ring:swap` event. The animations themselves are CSS
+// flips the pulse of the thread, lights the name and writes the caption of the scene where the stage has them (the
+// capability stage of a product page) and tells the overview with the `ring:swap` event. The animations themselves are CSS
 // (components/scenes/fx.css) and nothing here reads layout. `pause` stops the timer and freezes the CSS animations
 // (`data-run="paused"`); `resume` continues from the same instant; `destroy` puts the stage back on its settled first
 // scene.
@@ -19,6 +20,8 @@ type SceneData = {
   swap: number;
   scenes: number[];
   steps?: number[];
+  // The caption of each scene (the capability stage of a product page)
+  captions?: string[];
 };
 
 export function run(root: HTMLElement) {
@@ -42,10 +45,21 @@ export function run(root: HTMLElement) {
   const flipRail = () => {
     if (rail) rail.dataset.pulse = rail.dataset.pulse === "a" ? "b" : "a";
   };
+  // The names of the capabilities under the stage and the caption of the one on screen (capability stage only)
+  const names = [...root.querySelectorAll<HTMLElement>("[data-cap]")];
+  const caption = root.querySelector<HTMLElement>("[data-caption]");
+  const label = (active: number) => {
+    names.forEach((name, i) => {
+      name.dataset.on = i === active ? "true" : "false";
+    });
+    const text = data.captions?.[active];
+    if (caption && text) caption.textContent = text;
+  };
 
   // Places and phases for the scene `active` at the centre. A scene ahead waits on its first frame, one behind keeps its
   // settled frame, so a neighbour is always a scene standing still.
   const show = (active: number) => {
+    label(active);
     tiles.forEach((tile, i) => {
       const position = ringPosition(i, active, count);
       tile.dataset.pos = String(placeOf(position));
@@ -140,6 +154,7 @@ export function run(root: HTMLElement) {
       delete root.dataset.run;
       overview();
       active = 0;
+      label(0);
       delete arena.dataset.turn;
       tiles.forEach((tile, i) => {
         const position = ringPosition(i, 0, count);

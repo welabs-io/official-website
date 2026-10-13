@@ -169,14 +169,19 @@ assert(
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
 // The words of the page copy: the text drawn inside the native scenes is product interface (a screen), not copy, so the
 // block between the stage and its data is left out of the count (the slogan and banned-word rules above still read it)
-// The still scenes (data-mini ... data-mini-end) of the benefits and of the product opening are interface as well
+// Every stage goes (the chain, and the capability scenes of a product opening); the still scenes (data-mini ...
+// data-mini-end) of the benefits are interface as well
 const copyOnly = (html) => {
-  const at = html.indexOf("data-scenes");
-  const end = html.indexOf("data-scene-data");
-  const withoutStage =
-    at < 0 || end < at
-      ? html
-      : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+  let withoutStage = html;
+  for (;;) {
+    // The attributes of the markup only (`="`), never their names inside the payload of the page's own scripts
+    const at = withoutStage.indexOf('data-scenes="');
+    const end = withoutStage.indexOf('data-scene-data="', at);
+    if (at < 0 || end < 0) break;
+    withoutStage =
+      withoutStage.slice(0, withoutStage.lastIndexOf("<div", at)) +
+      withoutStage.slice(end);
+  }
   return withoutStage.replace(
     /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
     "",
@@ -245,8 +250,8 @@ for (const slug of SLUGS) {
     /<title>[^<]* by Welabs<\/title>/.test(html),
     `${slug} title follows the "<Product> by Welabs" pattern`,
   );
-  // Template: opening with the native scene, what it solves, the films, capabilities in groups, profiles, questions,
-  // connectors with this product lit, the closing and the other products
+  // Template: opening with the capability scenes, what it solves, the chain, capabilities in groups, profiles,
+  // questions, connectors with this product lit, the closing and the other products
   const at = (id) => html.indexOf(`id="${id}"`);
   const PRODUCT_ORDER = [
     "product",
@@ -266,9 +271,15 @@ for (const slug of SLUGS) {
     ) && at("films") < 0,
     `${slug} page has its sections in order: ${PRODUCT_ORDER.join(", ")}`,
   );
+  const opening = html.slice(at("product"), at("resolves"));
   assert(
-    /data-mini="s\d"/.test(html.slice(at("product"), at("resolves"))),
-    `${slug} opens with a native scene`,
+    (opening.match(new RegExp(`data-tile="${slug}-`, "g")) ?? []).length ===
+      3 && !/<video|<hyperframes-player|data-mini=/.test(opening),
+    `${slug} opens with three native capability scenes, no video, no still`,
+  );
+  assert(
+    !/<video|<hyperframes-player|data-layers/.test(html),
+    `${slug} page plays no film`,
   );
   const block = html.slice(at("connectors"), at("platforms"));
   assert(

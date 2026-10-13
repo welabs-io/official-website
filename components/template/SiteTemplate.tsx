@@ -15,18 +15,21 @@ import { scenesOfProduct } from "@/lib/scenes/product-scenes";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
 import { Closing } from "./Closing";
-import { HubText, ProductCards, Resolves } from "./Content";
+import { HubText, ProductCards } from "./Content";
 import { CoreHub } from "./CoreHub";
 import {
+  ProductAudience,
+  ProductCapabilities,
+  ProductFaq,
+  ProductResolves,
+} from "./ProductReading";
+import {
   Benefits,
-  CapabilityGroups,
   HomeAudience,
   HomeFaq,
   Integrations,
   Journey,
   OtherProducts,
-  ProductAudience,
-  ProductFaq,
   ProductHero,
 } from "./Reading";
 import { Section } from "./Section";
@@ -63,17 +66,15 @@ function Body({ section }: { section: SectionConfig }) {
             eager={ring.eager}
             logos={ring.logos}
             tone={tone}
-            caption={ring.caption}
             label={ring.label}
           />
           {cards && <ProductCards tone={tone} lit={PRODUCTS[0].slug} />}
         </div>
       );
     }
-    // Native chain narrowed to the scenes of the product, joined by the connector of the overview, then the films
+    // Native chain narrowed to the scenes of the product, joined by the connector of the overview
     case "how": {
-      const { ring, title, tone, films } = section;
-      const slug = ring.slug!;
+      const { slug, title, tone } = section;
       const scenes = scenesOfProduct(slug);
       return (
         <div className={shell.wrap}>
@@ -87,32 +88,15 @@ function Body({ section }: { section: SectionConfig }) {
               scenes={scenes}
             />
           </div>
-          <div className={home.films}>
-            <h3 className={home.filmsTitle}>{films}</h3>
-            <RingStage
-              id={ring.id}
-              kind={ring.kind}
-              slug={ring.slug}
-              eager={ring.eager}
-              logos={ring.logos}
-              tone={tone}
-              caption={ring.caption}
-              label={ring.label}
-            />
-          </div>
         </div>
       );
     }
     case "hero":
       return <ProductHero slug={section.slug} />;
     case "resolves":
-      return (
-        <div className={shell.wrap}>
-          <Resolves slug={section.slug} />
-        </div>
-      );
+      return <ProductResolves slug={section.slug} />;
     case "capabilities":
-      return <CapabilityGroups slug={section.slug} />;
+      return <ProductCapabilities slug={section.slug} />;
     case "journey":
       return <Journey />;
     case "benefits":

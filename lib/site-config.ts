@@ -1,12 +1,13 @@
 // CONFIGURAÇÃO DAS PÁGINAS
 // Every band is the light (cream) theme of the brand: the home and the product pages have one theme, no alternating
-// graphite and cream bands. The products' openings and films are videos, shown as dark objects inside it.
+// graphite and cream bands. The openings and films of the products ring of the home are videos, shown as dark objects
+// inside it; a product page has no video: its opening and its chain are native scenes.
 // One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
 // home and the five product pages are the same template with two configurations, so no section markup is copied between
 // routes. The rhythm alternates visual bands (the chain, the product ring, the benefits with their scenes, the connector
 // block) and reading bands (the order from start to end, who it is for, integrations, questions): the home is chain,
 // order, products, benefits, audience, integrations, questions, connector block, closing; the product page is opening
-// (with the native scene), what it solves, how it works (the films), capabilities in groups, audience, questions,
+// (with the capability scenes), what it solves, how it works (the chain), capabilities in groups, audience, questions,
 // connector block, closing and the other products. The connector block always comes right before the closing, because
 // its rails run down into it. `pad` names the spacing class of the section (home.module.css).
 import { PAGE_HEADINGS } from "./content";
@@ -42,13 +43,11 @@ type Base = {
 export type RingConfig = {
   id: string;
   kind: RingKind;
-  // The product of the ring (kind "product")
+  // The chain narrowed to one product (the scenes it takes part in)
   slug?: ProductSlug;
-  logos?: "lit" | "links" | "pinned" | null;
+  logos?: "lit" | "links" | null;
   eager?: boolean;
   label: string;
-  // Live caption under the ring, from the content of the product (product page)
-  caption?: boolean;
 };
 
 export type SectionConfig =
@@ -64,9 +63,9 @@ export type SectionConfig =
       cards?: boolean;
     })
   // "How it works" of a product page: the native chain narrowed to the scenes of the product (overview on top, scenes
-  // below), then the films of the product as video where they are the only demonstration
-  | (Base & { kind: "how"; ring: RingConfig; title: string; films: string })
-  // Opening of a product page: trail, logo, line and the native scene of the product
+  // below)
+  | (Base & { kind: "how"; slug: ProductSlug; title: string })
+  // Opening of a product page: trail, logo, line and the stage of the capability scenes of the product
   | (Base & { kind: "hero"; slug: ProductSlug })
   // Three problems and what the product does about them (product page)
   | (Base & { kind: "resolves"; slug: ProductSlug })
@@ -174,20 +173,12 @@ export function productConfig(slug: ProductSlug): PageConfig {
       {
         id: "how",
         kind: "how",
+        slug,
         tone: "light",
         pad: "block",
         title: PAGE_HEADINGS.how,
-        films: PAGE_HEADINGS.films,
         rail: "drop",
         railDelay: 0.4,
-        ring: {
-          id: "product-ring",
-          kind: "product",
-          slug,
-          logos: "pinned",
-          label: `Abertura e filmes do ${name}`,
-          caption: true,
-        },
       },
       {
         id: "capabilities",

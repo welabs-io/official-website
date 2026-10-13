@@ -68,6 +68,67 @@
   opacity: 1;
 }
 
+/* NOMES E LEGENDA DAS CAPACIDADES */
+/* Under the capability stage of a product page: the three names, the one on screen lit by a 4 px amber bar under it (an
+   area, never a line of text), and the sentence about it. Everything has the colour of the band, so the thread of the
+   page does not show through; the caption keeps two lines of height so the page never jumps when it changes. */
+.legend {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  width: var(--tile-w);
+  margin-top: var(--sp-5);
+}
+.names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-1) var(--sp-5);
+  margin: 0;
+  padding: 0 var(--sp-3);
+  background: var(--bg);
+  list-style: none;
+}
+.names li {
+  position: relative;
+  padding: var(--sp-2) 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--mute);
+  transition: color var(--swap-time, 0.7s) var(--ease);
+}
+.names li::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--a);
+  transform: scaleX(0);
+  transition: transform var(--swap-time, 0.7s) var(--ease);
+}
+.names li[data-on="true"] {
+  color: var(--ink);
+}
+.names li[data-on="true"]::after {
+  transform: none;
+}
+.caption {
+  max-width: min(var(--measure), 100%);
+  min-height: 2.8em;
+  margin: 0;
+  padding: 0 var(--sp-2);
+  background: var(--bg);
+  font-size: var(--text-md);
+  line-height: var(--lh-lead);
+  font-weight: 500;
+  color: var(--mute);
+  text-align: center;
+  text-wrap: balance;
+}
+
 /* The scene is 2:1 on a desktop, 16:10 on a tablet and 7:10 on a phone, so the same words fit in rem at every width */
 @media (max-width: 860px) {
   .stage,
@@ -83,10 +144,16 @@
   .screen {
     --tile-w: 100%;
   }
+  /* A phone shows the name of the capability on screen only, over its sentence */
+  .names li[data-on="false"] {
+    display: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .tile,
-  .tileFrame::after {
+  .tileFrame::after,
+  .names li,
+  .names li::after {
     transition: none;
   }
 }

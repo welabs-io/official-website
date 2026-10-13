@@ -8,7 +8,7 @@
 import { useEffect } from "react";
 
 // Same union as RingKind of lib/ring-data (the client piece does not import the server lists)
-export type RingKind = "chain" | "products" | "product";
+export type RingKind = "chain" | "products";
 
 export function RingDriver({
   rootId,

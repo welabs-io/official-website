@@ -1,7 +1,7 @@
 // BLOCOS DE CONTEÚDO DO TEMPLATE
 // The static text of the site, in server markup, all of it read from lib/content (no sentence lives in a component):
-// the five product cards of the home, the three problems and the six capabilities of a product page, and the sentences
-// of the connector block. The motion stays the protagonist: these blocks only say what the films do not.
+// the five product cards of the home (also the other products of a product page) and the sentences of the connector
+// block. The motion stays the protagonist: these blocks only say what the scenes do not.
 import Link from "next/link";
 import {
   HUB_NOTE,
@@ -78,23 +78,6 @@ export function ProductCards({
         </li>
       ))}
     </ul>
-  );
-}
-
-// O QUE RESOLVE (PÁGINA DE PRODUTO)
-export function Resolves({ slug }: { slug: ProductSlug }) {
-  return (
-    <>
-      <SectionHead title={PAGE_HEADINGS.resolves} />
-      <ul className={styles.resolves}>
-        {PRODUCT_CONTENT[slug].resolves.map((item) => (
-          <li key={item.problem} className={styles.resolve}>
-            <p className={styles.problem}>{item.problem}</p>
-            <p className={styles.does}>{item.does}</p>
-          </li>
-        ))}
-      </ul>
-    </>
   );
 }
 
