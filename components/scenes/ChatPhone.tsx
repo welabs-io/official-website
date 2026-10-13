@@ -1,26 +1,31 @@
 // TELEFONE COM CONVERSA
-// A phone with a chat: the call row, bubbles that pop in, the typing dots that come before a bubble and the ticks that
-// close it. An item with an `action` comes in with that action of the script; one without it is simply there (history).
-// Server markup, no state.
+// Marina's phone with the chat of the business: a header with the contact and the channel, and the conversation anchored
+// at the bottom like a messaging app (a day stamp, the call as a system line, bubbles with their time and ticks). An
+// item with an `action` comes in with that action of the script; one without it is simply there (history). The typing
+// dots come before a bubble that has `typing`; `readAction` turns the ticks of a bubble to the read colour. Server
+// markup, no state.
 import type { ReactNode } from "react";
-import { ICON_STROKE } from "@/lib/icon-stroke";
 import type { Act, ActProps } from "@/lib/scenes/types";
+import { Glyph, GLYPHS, TICK_DOUBLE } from "./icons";
 import styles from "./scenes.module.css";
 
 export type ChatItem =
-  | { kind: "call"; text: string; chip: string; action?: string }
+  | { kind: "day"; text: string }
+  | { kind: "call"; text: string; time: string; action?: string }
   | {
       kind: "bubble";
       side: "in" | "out";
       text: string;
+      time: string;
       action?: string;
       // Seconds of typing dots before the bubble takes their place
       typing?: number;
       ticks?: boolean;
-      focal?: boolean;
+      // Action that turns the ticks to "read"
+      readAction?: string;
     };
 
-const still = (
+const maybe = (
   act: Act,
   action: string | undefined,
   fx: "in" | "pop" | "blink",
@@ -29,54 +34,56 @@ const still = (
 
 export function ChatPhone({
   act,
-  person,
+  contact,
   channel,
   items,
   children,
 }: {
   act: Act;
-  person: string;
+  // The contact at the top of the chat
+  contact: string;
   channel: string;
   items: readonly ChatItem[];
-  // Overlay on the screen (the confirmation toast)
+  // Overlay on the screen (the notification)
   children?: ReactNode;
 }) {
   return (
-    <div className={styles.phone}>
+    <div className={styles.phone} data-edge="">
       <div className={styles.phoneHead}>
-        <span className={styles.avatar} aria-hidden="true">
-          {person[0]}
+        <span
+          className={styles.avatarSm}
+          data-tone="contact"
+          aria-hidden="true"
+        >
+          <Glyph d={GLYPHS.bag} size={14} />
         </span>
-        <span>
-          <b>{person}</b>
-          <i>{channel}</i>
+        <span className={styles.who}>
+          <b>{contact}</b>
+          <span>
+            <i className={styles.dot} data-tone="ok" />
+            {channel}
+          </span>
         </span>
       </div>
       <div className={styles.chat}>
         {items.map((item, i) => {
+          if (item.kind === "day")
+            return (
+              <p key={i} className={styles.day}>
+                {item.text}
+              </p>
+            );
           if (item.kind === "call")
             return (
-              <div
+              <p
                 key={i}
-                className={styles.call}
-                {...still(act, item.action, "in")}
+                className={styles.sysLine}
+                {...maybe(act, item.action, "in")}
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={ICON_STROKE}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />
-                </svg>
+                <Glyph d={GLYPHS.phone} size={12} />
                 <span>{item.text}</span>
-                <b className={styles.chip}>{item.chip}</b>
-              </div>
+                <time>{item.time}</time>
+              </p>
             );
           const delay = item.typing ?? 0;
           return (
@@ -95,16 +102,26 @@ export function ChatPhone({
                 </span>
               ) : null}
               <p
-                className={`${styles.bubble} ${item.side === "out" ? styles.bubbleOut : styles.bubbleIn} ${item.focal ? styles.focal : ""}`}
-                data-focal={item.focal ? "" : undefined}
-                {...still(act, item.action, "pop", { offset: delay })}
+                className={`${styles.bubble} ${item.side === "out" ? styles.bubbleOut : styles.bubbleIn}`}
+                {...maybe(act, item.action, "pop", { offset: delay })}
               >
-                {item.text}
-                {item.ticks ? (
-                  <span className={styles.ticks} aria-hidden="true">
-                    ✓✓
-                  </span>
-                ) : null}
+                <span>{item.text}</span>
+                <span className={styles.stamp}>
+                  <time>{item.time}</time>
+                  {item.ticks ? (
+                    <span className={styles.ticks} aria-hidden="true">
+                      <Glyph d={TICK_DOUBLE} size={14} />
+                      {item.readAction ? (
+                        <span
+                          className={styles.ticksRead}
+                          {...act(item.readAction, "in")}
+                        >
+                          <Glyph d={TICK_DOUBLE} size={14} />
+                        </span>
+                      ) : null}
+                    </span>
+                  ) : null}
+                </span>
               </p>
             </div>
           );

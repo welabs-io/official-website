@@ -1,26 +1,64 @@
 /* CENAS NATIVAS DA CADEIA */
-/* Product screens drawn in HTML and CSS. Everything is in rem (1 rem = 16 px) at its real size: the smallest text is
-   0.875 rem (14 px) and the scene never scales like a video would. A scene fills its tile and answers to the width of the
-   tile (container query `scn`): wide from 34 rem, narrow below it (a phone). The colours are the brand's light theme:
-   cream surfaces, graphite ink, and amber only as an area (the 4 px bars, the dots, the filled button). The motion is in
-   fx.css; here every element is drawn in its settled state. */
+/* Product screens drawn in HTML and CSS, at their real size (the scene never scales like a video would). Interface text
+   is small and the hierarchy comes from weight and colour before size: meta 11 px, label 12 px, body 13 px, and one key
+   element of 18 to 22 px per scene (`.key`). Three radii (6 item, 12 panel, 16 window), two edges (hairline divider and
+   panel edge), two elevations, three surfaces (window white, panel cream, item white) and the semantic colours of the
+   brand 1.8.0 (success, warning, information) for state and channel. Amber is only an area: the 3 px bars, the dots,
+   the pale fills of what is "of the moment". The scene answers to the size of its tile (container `scn`, inline and
+   block): wide from 52 rem, narrow below 34 rem, and lower blocks drop their extra rows. The motion is in fx.css; here
+   every element is drawn in its settled state. */
 .scene {
+  /* Ink and text */
   --s-ink: #1c1a16;
   --s-mute: #625b4e;
-  --s-line: #e2d8c3;
-  --s-surface: var(--surface);
-  --s-band: var(--surface-band);
-  --s-wash: var(--surface-accent);
+  --s-faint: #a39883;
+  /* Edges: hairline divider (sand-200) and panel/card edge (sand-300) */
+  --s-hair: #e2d8c3;
+  --s-edge: #d4c7ab;
+  --s-wall: #bfb29a;
+  /* Surfaces */
+  --s-win: #ffffff;
+  --s-panel: #faf5ea;
+  --s-chip: #f3ecdd;
+  /* Amber, only as area */
   --s-amber: #ffb020;
-  --s-amber-wash: #ffeab8;
-  --row: 3.25rem;
-  --room: 3.5rem;
+  --s-amber-50: #fff9f0;
+  --s-amber-100: #fff1d8;
+  --s-amber-200: #ffe2b1;
+  /* Semantic colours (text on soft fill passes 5:1, the dot is an area) */
+  --s-ok: #2c7440;
+  --s-ok-soft: #d5fadb;
+  --s-ok-dot: #22bc5c;
+  --s-warn: #984a26;
+  --s-warn-soft: #faebe5;
+  --s-warn-dot: #fb6d20;
+  --s-info: #225ac9;
+  --s-info-soft: #e9effa;
+  --s-info-dot: #3c79ef;
+  --s-action: #25272a;
+  --s-action-fg: #faf5ea;
+  /* Type scale */
+  --s-t-meta: 0.6875rem;
+  --s-t-label: 0.75rem;
+  --s-t-body: 0.8125rem;
+  --s-t-key: 1.25rem;
+  /* Shape and depth */
+  --s-r-ctl: 6px;
+  --s-r-card: 12px;
+  --s-r-win: 16px;
+  --s-elev-1: 0 1px 2px rgb(28 26 22 / 0.06), 0 1px 1px rgb(28 26 22 / 0.03);
+  --s-elev-2:
+    0 10px 24px -12px rgb(28 26 22 / 0.28), 0 2px 4px rgb(28 26 22 / 0.05);
+  /* Rhythm */
+  --s-pad: 1.25rem;
+  --s-gap: 1rem;
   position: absolute;
   inset: 0;
-  container: scn / inline-size;
+  container: scn / size;
   color: var(--s-ink);
-  font-size: 1rem;
-  line-height: 1.3;
+  font-size: var(--s-t-body);
+  line-height: 1.38;
+  font-feature-settings: "cv11";
 }
 /* Resets with the weight of an element selector, so any class below wins over them */
 :where(.scene) :is(p, ul, ol, dl, dd) {
@@ -30,6 +68,28 @@
 :where(.scene) :is(ul, ol) {
   list-style: none;
 }
+:where(.scene) :is(b, strong) {
+  font-weight: 600;
+}
+:where(.scene) :is(i, em) {
+  font-style: normal;
+}
+:where(.scene) time {
+  font-variant-numeric: tabular-nums;
+}
+:where(.scene) svg {
+  flex: none;
+  display: block;
+}
+
+/* ELEMENTO-CHAVE: one per scene, the only text above 13 px */
+.key {
+  font-size: var(--s-t-key);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--s-ink);
+}
 
 /* JANELA */
 .win {
@@ -38,10 +98,9 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--s-surface);
-  border: 1px solid var(--s-line);
-  /* Window radius is the 16 px of the page's shape scale; the shadow is a 1 px ring, a long soft drop and a short contact */
-  border-radius: 1rem;
+  background: var(--s-win);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-win);
   box-shadow:
     0 0 0 1px rgb(28 26 22 / 0.03),
     0 1.5rem 3rem -1.75rem rgb(28 26 22 / 0.35),
@@ -51,170 +110,260 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  height: 2.75rem;
-  padding: 0 1rem;
-  background: var(--s-band);
-  border-bottom: 1px solid var(--s-line);
+  height: 2rem;
+  padding: 0 0.875rem;
+  background: var(--s-panel);
+  border-bottom: 1px solid var(--s-hair);
+  font-size: var(--s-t-label);
+  color: var(--s-mute);
 }
 .dots {
   display: flex;
   gap: 0.375rem;
 }
 .dots i {
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 50%;
-  background: #e2d8c3;
-  box-shadow: inset 0 0 0 1px rgb(28 26 22 / 0.12);
-}
-.name {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-}
-.name::before {
-  content: "";
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: var(--s-amber);
+  background: var(--s-edge);
 }
-.where {
+.path {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  white-space: nowrap;
+}
+.path b {
+  color: var(--s-ink);
+}
+/* The separator is drawn, not text: a 1 px slash in the sand of the edges */
+.path b::after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 0.75rem;
+  margin-left: 0.5rem;
+  background: var(--s-edge);
+  transform: rotate(18deg);
+  vertical-align: -0.0625rem;
+}
+.barMeta {
   margin-left: auto;
-  font-size: 0.875rem;
-  color: var(--s-mute);
+  font-size: var(--s-t-meta);
+  font-weight: 500;
 }
 .body {
   display: grid;
   min-height: 0;
-  padding: 1rem;
+  padding: var(--s-pad);
+}
+
+/* PEÇAS COMUNS: dot of state, avatars, icon box, pills, name over meta */
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--s-wall);
+}
+.dot[data-tone="info"] {
+  background: var(--s-info-dot);
+}
+.dot[data-tone="warn"] {
+  background: var(--s-warn-dot);
+}
+.dot[data-tone="ok"] {
+  background: var(--s-ok-dot);
+}
+.avatarXs,
+.avatarSm {
+  display: grid;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--s-amber-200);
+  color: var(--s-ink);
+  font-weight: 600;
+  line-height: 1;
+}
+.avatarXs {
+  width: 1.25rem;
+  height: 1.25rem;
+  font-size: var(--s-t-meta);
+  letter-spacing: -0.02em;
+}
+.avatarSm {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: var(--s-t-label);
+}
+.avatarSm[data-tone="contact"] {
+  background: var(--s-ink);
+  color: var(--s-amber);
+}
+.iconBox {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--s-r-ctl);
+  background: var(--s-chip);
+  color: var(--s-mute);
+}
+.who {
+  display: grid;
+  min-width: 0;
+  line-height: 1.3;
+}
+.who > b {
+  font-size: var(--s-t-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.who > span {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
+  white-space: nowrap;
+}
+.pillOk,
+.pillInfo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  justify-self: start;
+  height: 1.375rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  font-size: var(--s-t-meta);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.pillOk {
+  background: var(--s-ok-soft);
+  color: var(--s-ok);
+}
+.pillInfo {
+  background: var(--s-info-soft);
+  color: var(--s-info);
+}
+/* Head of a panel: the name in 13/600 and its context in 11 */
+.panelHead {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+}
+.panelHead > b {
+  font-size: var(--s-t-body);
+}
+.panelHead > span:not([class]) {
+  margin-left: auto;
+  font-size: var(--s-t-meta);
+  font-weight: 500;
+  color: var(--s-mute);
 }
 
 /* COMPOSIÇÕES */
+.page {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.875rem;
+  min-height: 0;
+}
+.pageTitle {
+  align-self: end;
+}
+.full {
+  display: grid;
+  min-height: 0;
+}
 .duo {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-gap);
   min-height: 0;
 }
 .duoHouse {
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.duoHousePhone {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
 }
 .duoFunnel {
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
 }
-.stack {
-  display: grid;
-  grid-template-rows: auto auto;
-  align-content: start;
-  gap: 1.25rem;
-  min-height: 0;
-}
-
-/* TEXTO FOCAL */
-.focal {
-  font-size: clamp(1.0625rem, 3.2cqi, 1.375rem);
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-/* CHIPS */
-.chip {
-  display: inline-block;
-  padding: 0.125rem 0.5rem;
-  border: 1px solid var(--s-line);
-  border-radius: 999px;
-  background: var(--s-wash);
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-.chipLit {
-  position: relative;
-  overflow: hidden;
-  border-color: transparent;
-  background: var(--s-amber-wash);
-}
-.chipLit::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 4px;
-  background: var(--s-amber);
-  transform-origin: 0 100%;
+.duoFlow {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
 }
 
 /* TELEFONE */
 .phone {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
-  border: 1px solid var(--s-line);
-  border-radius: 1.25rem;
-  background: var(--s-band);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-card);
+  background: var(--s-panel);
 }
 .phoneHead {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.625rem 0.875rem;
-  background: var(--s-surface);
-  border-bottom: 1px solid var(--s-line);
+  height: 3rem;
+  padding: 0 0.875rem;
+  background: var(--s-win);
+  border-bottom: 1px solid var(--s-hair);
 }
-.phoneHead b {
-  display: block;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-.phoneHead i {
-  font-size: 0.875rem;
-  font-style: normal;
-  color: var(--s-mute);
-}
-.avatar {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background: var(--s-amber);
-  font-size: 0.9375rem;
-  font-weight: 600;
-}
+/* The conversation sits on the bottom of the screen, newest last */
 .chat {
   display: flex;
-  flex: 1;
   flex-direction: column;
-  gap: 0.625rem;
-  padding: 0.875rem 0.75rem;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  min-height: 0;
+  padding: 0.75rem;
 }
-.call {
+.day {
+  align-self: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--s-chip);
+  font-size: var(--s-t-meta);
+  font-weight: 500;
+  color: var(--s-mute);
+}
+.sysLine {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  align-self: stretch;
-  padding: 0.5rem 0.75rem;
-  background: var(--s-surface);
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
+  justify-content: center;
+  gap: 0.375rem;
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
 }
-.call .chip {
-  margin-left: auto;
+.sysLine time::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin: 0 0.375rem 0.1875rem 0;
+  border-radius: 50%;
+  background: var(--s-faint);
+  vertical-align: middle;
 }
 .slot {
   position: relative;
   display: flex;
-  max-width: 88%;
+  max-width: 86%;
 }
 .slotOut {
   align-self: flex-end;
@@ -223,26 +372,44 @@
   align-self: flex-start;
 }
 .bubble {
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  line-height: 1.3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-end;
+  column-gap: 0.5rem;
+  padding: 0.4375rem 0.625rem 0.375rem;
+  border-radius: var(--s-r-card);
+  font-size: var(--s-t-body);
+  line-height: 1.35;
+  box-shadow: var(--s-elev-1);
+}
+.bubble > span:first-child {
+  flex: 1 1 auto;
 }
 .bubbleOut {
-  background: var(--s-amber-wash);
-  border-bottom-right-radius: 0.25rem;
+  background: var(--s-amber-100);
+  border-bottom-right-radius: 4px;
 }
 .bubbleIn {
-  background: var(--s-surface);
-  border: 1px solid var(--s-line);
-  border-bottom-left-radius: 0.25rem;
+  background: var(--s-win);
+  border-bottom-left-radius: 4px;
+}
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: -1px;
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
 }
 .ticks {
-  margin-left: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--s-mute);
-  white-space: nowrap;
+  position: relative;
+  color: var(--s-faint);
+}
+.ticksRead {
+  position: absolute;
+  inset: 0;
+  color: var(--s-info-dot);
 }
 .typing {
   position: absolute;
@@ -250,351 +417,680 @@
   bottom: 0;
   display: flex;
   gap: 0.25rem;
-  padding: 0.75rem 0.875rem;
-  background: var(--s-amber-wash);
-  border-radius: 0.75rem;
-  border-bottom-right-radius: 0.25rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--s-amber-100);
+  border-radius: var(--s-r-card);
+  border-bottom-right-radius: 4px;
   opacity: 0;
 }
 .typing i {
-  width: 0.4375rem;
-  height: 0.4375rem;
+  width: 0.375rem;
+  height: 0.375rem;
   border-radius: 50%;
   background: var(--s-mute);
+}
+
+/* AVISO DE CONFIRMAÇÃO: a notification over the top of the chat */
+.toast {
+  position: absolute;
+  top: 3.625rem;
+  left: 0.625rem;
+  right: 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  background: var(--s-win);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-card);
+  box-shadow: var(--s-elev-2);
+}
+.toastIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--s-ok-dot);
+  color: var(--s-win);
+}
+.toastText {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.toastText > span {
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
 }
 
 /* CAIXA DE ENTRADA */
 .inbox {
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr);
+  grid-template-columns: 15rem minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-card);
+  background: var(--s-win);
 }
 .inboxList {
   display: grid;
-  align-content: start;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  background: var(--s-band);
-  border-right: 1px solid var(--s-line);
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  background: var(--s-panel);
+  border-right: 1px solid var(--s-hair);
 }
-.inboxList li {
+.listHead {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
+  justify-content: space-between;
+  height: 2.75rem;
+  padding: 0 0.875rem;
+  border-bottom: 1px solid var(--s-hair);
+  font-size: var(--s-t-label);
+}
+.listHead span {
+  min-width: 1.25rem;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 999px;
+  background: var(--s-chip);
+  font-size: var(--s-t-meta);
+  font-weight: 600;
+  text-align: center;
+  color: var(--s-mute);
+}
+.inboxList ul {
+  display: grid;
+  align-content: start;
+  gap: 0.125rem;
   padding: 0.375rem;
-  border-radius: 0.5rem;
+}
+.inboxList li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.625rem;
+  border-radius: var(--s-r-ctl);
+}
+.inboxList li > time {
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
+  white-space: nowrap;
 }
 .inboxList li.inboxOn {
-  background: var(--s-surface);
+  background: var(--s-amber-50);
+  box-shadow: inset 0 0 0 1px var(--s-amber-200);
 }
-.inboxList i {
-  flex: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: #d8cdb6;
+.inboxList li.inboxOn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--s-amber);
 }
-.inboxList span {
+.entry {
   display: grid;
-  gap: 0.25rem;
   flex: 1;
+  min-width: 0;
+  line-height: 1.3;
 }
-.inboxList b,
-.inboxList em {
-  display: block;
-  height: 0.375rem;
-  border-radius: 999px;
-  background: #d8cdb6;
+.entry b {
+  font-size: var(--s-t-label);
 }
-.inboxList em {
-  width: 60%;
+.entry span {
+  overflow: hidden;
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .thread {
   display: grid;
-  align-content: start;
-  gap: 0.625rem;
-  padding: 0.75rem;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   min-width: 0;
+  min-height: 0;
 }
 .threadHead {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
+  height: 2.75rem;
+  padding: 0 0.875rem;
+  border-bottom: 1px solid var(--s-hair);
 }
-.threadHead b {
-  font-size: 1rem;
-  font-weight: 600;
+.threadHead .pillOk {
+  margin-left: auto;
 }
-.chips {
-  display: flex;
-  gap: 0.375rem;
-}
-.threadItems {
+/* Timeline: a 1 px line through the channel marks */
+.timeline {
+  --tl-gap: 1.375rem;
+  position: relative;
   display: grid;
-  gap: 0.5rem;
+  align-content: start;
+  gap: var(--tl-gap);
+  padding: 1.25rem 1.25rem 0.75rem;
 }
-.threadItems li {
+.timeline li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+}
+/* A 1 px line from each channel mark to the next one: it ends at the last item */
+.timeline li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: calc(0.8125rem - 0.5px);
+  top: 1.625rem;
+  bottom: calc(-1 * var(--tl-gap));
+  width: 1px;
+  background: var(--s-hair);
+}
+.channelMark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+.channelMark[data-tone="info"] {
+  background: var(--s-info-soft);
+  color: var(--s-info);
+}
+.channelMark[data-tone="ok"] {
+  background: var(--s-ok-soft);
+  color: var(--s-ok);
+}
+.itemBody {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding-top: 0.125rem;
+}
+.itemMeta {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-  padding: 0.5rem 0.625rem;
-  background: var(--s-wash);
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
 }
-.mark {
-  justify-self: start;
-  padding: 0.25rem 0.625rem;
-  background: var(--s-amber);
-  border-radius: 0.375rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
+.itemMeta b {
+  font-size: var(--s-t-label);
+  font-weight: 500;
+  color: var(--s-ink);
+}
+.itemText {
+  font-size: var(--s-t-body);
+}
+/* History reads quieter than what arrives in the scene */
+.timeline li[data-quiet] .itemText {
+  color: var(--s-mute);
+}
+/* The typing dots and the text share one cell, so the text takes the place of the dots */
+.itemSlot {
+  display: grid;
+  justify-items: start;
+}
+.itemSlot > * {
+  grid-area: 1 / 1;
+}
+.typingInline {
+  display: flex;
+  align-self: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--s-r-card);
+  background: var(--s-chip);
+  opacity: 0;
+}
+.typingInline i {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--s-mute);
+}
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 11rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+}
+.wave i {
+  flex: 1;
+  border-radius: 1px;
+  background: var(--s-info-dot);
+  opacity: 0.45;
+}
+.replyBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0 0.875rem 0.875rem;
+  height: 2.25rem;
+  padding: 0 0.375rem 0 0.75rem;
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-ctl);
+  font-size: var(--s-t-label);
+  color: var(--s-mute);
+}
+.replyBox i {
+  display: grid;
+  place-items: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  border-radius: 4px;
+  background: var(--s-chip);
+  color: var(--s-mute);
 }
 
 /* FUNIL */
+.funnel,
+.sheet,
+.flow,
+.status,
+.doc {
+  min-width: 0;
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-card);
+  background: var(--s-panel);
+}
 .funnel {
   position: relative;
-  align-self: start;
-  min-width: 0;
-}
-.stages {
   display: grid;
-  gap: 0;
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
+  grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
 }
-.stages li {
-  display: flex;
-  align-items: center;
-  height: var(--row);
-  padding: 0 0.75rem;
-  background: var(--s-surface);
-  border-top: 1px solid var(--s-line);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--s-mute);
+.funnel > .panelHead,
+.sheet > .panelHead {
+  height: 2.75rem;
+  padding: 0 0.875rem;
+  border-bottom: 1px solid var(--s-hair);
 }
-.stages li:first-child {
+/* Four lanes of equal height share the panel: the pitch is the same for every lane, which is what the slide of the card
+   counts on */
+.lanes {
+  display: grid;
+  grid-auto-rows: minmax(0, 1fr);
+}
+.lane {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--lane-head, 8.5rem) minmax(0, 1fr);
+  align-items: center;
+  min-height: 0;
+  border-top: 1px solid var(--s-hair);
+}
+.lane:first-child {
   border-top: 0;
 }
-.stages li:nth-child(even) {
-  background: var(--s-band);
+.laneHead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  padding: 0 0.875rem;
+  font-size: var(--s-t-label);
+  font-weight: 500;
+  line-height: 1.25;
 }
-.stages span {
-  width: 6.5rem;
-  line-height: 1.15;
+.laneHead em {
+  margin-left: auto;
+  font-size: var(--s-t-meta);
+  font-weight: 500;
+  color: var(--s-mute);
+  font-variant-numeric: tabular-nums;
 }
-.cardLayer {
-  position: absolute;
-  top: calc(var(--stage, 0) * var(--row) + 1px);
-  left: 7.5rem;
-  right: 0.25rem;
-  height: var(--row);
-  pointer-events: none;
-}
-.layer {
-  height: 100%;
-}
-.deal {
+.laneBody {
+  position: relative;
   display: grid;
   align-content: center;
-  height: calc(var(--row) - 0.5rem);
-  margin-top: 0.25rem;
-  padding: 0 0.625rem 0 0.875rem;
-  position: relative;
-  overflow: hidden;
-  background: var(--s-amber-wash);
-  border: 1px solid var(--s-line);
-  border-radius: 0.5rem;
-  line-height: 1.15;
+  padding: 0 0.625rem 0 0;
 }
+.emptySlot {
+  height: 3.25rem;
+  border: 1px dashed var(--s-edge);
+  border-radius: var(--s-r-ctl);
+}
+/* The card of the story floats over its lane: the host is exactly one lane tall (its top border included), so each layer
+   inside it slides by whole lanes */
+.layerHost {
+  position: absolute;
+  z-index: 2;
+  top: -1px;
+  bottom: 0;
+  left: var(--lane-head, 8.5rem);
+  right: 0;
+  display: grid;
+}
+.layer {
+  display: grid;
+  min-height: 0;
+}
+.layer {
+  align-content: center;
+}
+.layerHost .deal {
+  margin: 1px 0.625rem 0 0;
+}
+.deal,
+.other {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem 0.375rem 0.875rem;
+  overflow: hidden;
+  background: var(--s-win);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-ctl);
+  box-shadow: var(--s-elev-1);
+  line-height: 1.25;
+}
+.deal {
+  background: var(--s-amber-50);
+  box-shadow: var(--s-elev-2);
+}
+/* The card of the story is the one of the moment: a 3 px amber bar on its left */
 .deal::before {
   content: "";
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 3px;
   background: var(--s-amber);
 }
-.deal b {
-  font-size: 0.9375rem;
-  font-weight: 600;
+.deal > b:not(.key) {
+  font-size: var(--s-t-body);
   white-space: nowrap;
 }
-.deal span {
-  font-size: 0.875rem;
+.deal > b.key {
+  white-space: nowrap;
+}
+.dealFoot {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--s-t-meta);
   color: var(--s-mute);
 }
+.emblems {
+  display: flex;
+  gap: 0.3125rem;
+  margin-left: auto;
+}
+.emblem {
+  position: relative;
+  color: var(--s-wall);
+}
+.emblemOn {
+  position: absolute;
+  inset: 0;
+  color: var(--s-ink);
+}
+.other b {
+  font-size: var(--s-t-label);
+  font-weight: 500;
+}
+.other span {
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
+}
+
+/* PAINEL DE DADOS DO CARTÃO */
 .sheet {
   display: grid;
-  align-content: start;
-  gap: 0.5rem;
-  min-width: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
 }
-.sheetRow {
+/* The rows share the height of the panel, so the panel ends with the one beside it */
+.facts {
+  display: grid;
+  grid-auto-rows: minmax(2rem, 1fr);
+  background: var(--s-win);
+}
+.fact {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--s-wash);
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
+  padding: 0 0.875rem;
+  border-top: 1px solid var(--s-hair);
 }
-.sheetRow dt {
+.fact:first-child {
+  border-top: 0;
+}
+.fact dt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--s-t-label);
+  color: var(--s-mute);
+  white-space: nowrap;
+}
+.fact dt svg {
+  color: var(--s-faint);
+}
+.fact dd {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  font-size: var(--s-t-body);
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+.fact dd em {
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  background: var(--s-chip);
+  font-size: var(--s-t-meta);
+  font-weight: 500;
   color: var(--s-mute);
 }
-.sheetRow dd {
-  font-weight: 600;
-  text-align: right;
-}
-.handed {
-  display: grid;
-  align-content: start;
-  gap: 0.75rem;
-  min-width: 0;
-}
-.handedCard {
-  display: grid;
-  gap: 0.125rem;
-  padding: 0.625rem 0.75rem 0.625rem 1rem;
+/* A row that arrived in this scene: pale amber and a 3 px amber bar */
+.fact[data-fresh] {
   position: relative;
-  overflow: hidden;
-  background: var(--s-amber-wash);
-  border: 1px solid var(--s-line);
-  border-radius: 0.5rem;
+  background: var(--s-amber-50);
 }
-.handedCard::before {
+.fact[data-fresh]::before {
   content: "";
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 3px;
   background: var(--s-amber);
 }
-.handedCard b {
-  font-size: 1rem;
-  font-weight: 600;
+.fact[data-fresh] dt svg {
+  color: var(--s-ink);
 }
-.handedCard span {
-  font-size: 0.875rem;
+.pending {
+  display: block;
+  width: 6rem;
+  border-top: 1px dashed var(--s-wall);
+}
+.cardHead {
+  display: grid;
+  gap: 0.375rem;
+  padding: 0.875rem;
+  border-bottom: 1px solid var(--s-hair);
+}
+.cardHeadMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--s-t-meta);
   color: var(--s-mute);
 }
 
-/* ESTADO DO CARTÃO (UMA LINHA) */
+/* REGISTRO DO CARTÃO (ESTÁGIO E PROGRESSO) */
 .status {
   display: grid;
-  gap: 0.5rem;
-  padding: 0.75rem 0.875rem;
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
-  background: var(--s-surface);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  overflow: hidden;
 }
 .statusCard {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.25rem 0.75rem;
+  gap: 0.625rem;
+  padding: 0.875rem 0.875rem 0;
 }
 .statusCard b {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: var(--s-t-body);
 }
 .statusCard span {
-  font-size: 0.9375rem;
+  font-size: var(--s-t-meta);
   color: var(--s-mute);
 }
 .statusStack {
   display: grid;
-  font-size: 1.0625rem;
-  font-weight: 600;
+  padding: 0.5rem 0.875rem 0;
 }
 .statusStack > span {
   grid-area: 1 / 1;
 }
+.statusStack > span > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.statusStack .dot {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+.statusStack > [data-tone="ok"] {
+  color: var(--s-ok);
+}
+.statusStack > [data-tone="warn"] {
+  color: var(--s-warn);
+}
+.statusStack > [data-tone="info"] {
+  color: var(--s-info);
+}
 .statusPrev {
   opacity: 0;
 }
-.segments {
+.track {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.375rem;
+  padding: 0.875rem 0.875rem 1rem;
 }
-.segments li {
+.track li {
+  display: grid;
+  gap: 0.375rem;
+  min-width: 0;
+  font-size: var(--s-t-meta);
+  color: var(--s-mute);
+  line-height: 1.25;
+}
+.trackBar {
+  display: block;
   height: 4px;
   overflow: hidden;
   border-radius: 2px;
-  background: var(--s-line);
+  background: var(--s-hair);
 }
-.segments i {
+.trackBar i {
   display: block;
   height: 100%;
-  background: var(--s-amber);
+  background: var(--s-ok-dot);
+}
+.status .facts {
+  border-top: 1px solid var(--s-hair);
 }
 
 /* CASA */
 .house {
   position: relative;
   display: grid;
-  align-content: start;
+  grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
+  min-height: 0;
 }
 .roof {
+  display: block;
   width: 100%;
   height: 1.75rem;
+  overflow: visible;
   fill: none;
-  stroke: var(--s-mute);
-  stroke-width: 2px;
-  vector-effect: non-scaling-stroke;
+  stroke: var(--s-wall);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
 }
 .roof polyline {
   vector-effect: non-scaling-stroke;
 }
+/* Two columns of four rooms that share the height of the house; a tall room is a tile (icon box on top, name under it),
+   a low one a row (icon box beside the name, see the queries at the end) */
 .rooms {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
   gap: 0.5rem;
+  min-height: 0;
   padding: 0.75rem;
-  border: 2px solid var(--s-mute);
+  background: var(--s-panel);
+  border: 1.5px solid var(--s-wall);
   border-top: 0;
-  border-radius: 0 0 0.75rem 0.75rem;
+  border-radius: 0 0 var(--s-r-card) var(--s-r-card);
 }
 .room {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  height: var(--room);
-  padding: 0 0.625rem 0 0.75rem;
-  overflow: hidden;
-  background: var(--s-surface);
-  border: 1px solid var(--s-line);
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
+  gap: 0.625rem;
+  min-height: 0;
+  padding: 0 0.625rem 0 0.5rem;
+  background: var(--s-win);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-ctl);
+  box-shadow: var(--s-elev-1);
+  font-size: var(--s-t-label);
   font-weight: 500;
 }
-.room svg {
+.roomIcon {
+  display: grid;
   flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--s-r-ctl);
+  background: var(--s-chip);
+  color: var(--s-mute);
 }
+/* The room of the moment: pale amber, a 3 px amber bar and the icon box in amber */
 .roomLit {
-  background: var(--s-amber-wash);
+  background: var(--s-amber-50);
+  box-shadow: var(--s-elev-2);
 }
 .roomLit::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  border-radius: var(--s-r-ctl) 0 0 var(--s-r-ctl);
   background: var(--s-amber);
   transform-origin: 50% 0;
+}
+.roomLit .roomIcon {
+  background: var(--s-amber-200);
+  color: var(--s-ink);
 }
 .roomName {
   display: grid;
@@ -602,62 +1098,93 @@
 }
 .roomName > span {
   grid-area: 1 / 1;
+  align-self: center;
 }
 .roomOld {
   opacity: 0;
 }
 .roomNew {
   display: grid;
-  line-height: 1.1;
+  gap: 0.0625rem;
+  line-height: 1.25;
 }
 .roomNew b {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--s-t-label);
+  font-weight: 500;
+}
+.roomNew span {
+  font-size: var(--s-t-meta);
+  font-weight: 400;
+  color: var(--s-mute);
+}
+.roomNew em {
+  font-size: var(--s-t-meta);
+  font-weight: 500;
+  color: var(--s-ok);
+}
+/* The room that received the result: success edge and a check seal on its corner */
+.roomDone {
+  position: absolute;
+  inset: -1px;
+  border: 1.5px solid var(--s-ok-dot);
+  border-radius: var(--s-r-ctl);
+  pointer-events: none;
+}
+.roomDone svg {
+  position: absolute;
+  top: -0.4375rem;
+  right: -0.4375rem;
+  box-sizing: content-box;
+  padding: 2px;
+  border-radius: 50%;
+  background: var(--s-ok-dot);
+  color: var(--s-win);
 }
 
 /* PAINEL DE FONTE */
 .source {
   display: grid;
-  align-content: start;
-  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 2rem;
   min-height: 0;
 }
-.query {
+.doc {
+  display: grid;
+  align-self: start;
+  align-content: start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--s-win);
+  box-shadow: var(--s-elev-1);
+}
+.docHead {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--s-wash);
-  border: 1px solid var(--s-line);
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  gap: 0.625rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--s-hair);
 }
-.doc {
-  padding: 0.75rem 0.875rem;
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
-}
-.docTitle {
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--s-mute);
-}
-.doc ul {
+.docLines {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.125rem;
 }
-.doc li {
+.docLines li {
   position: relative;
-  padding: 0.3125rem 0.625rem 0.3125rem 0.875rem;
-  border-radius: 0.375rem;
-  font-size: 1rem;
+  padding: 0.375rem 0.625rem 0.375rem 0.75rem;
+  border-radius: var(--s-r-ctl);
+  font-size: var(--s-t-body);
+}
+.docLines li > span:not(.hitMark):not(.wire) {
+  position: relative;
+}
+.docLines li[data-hit] {
+  font-weight: 600;
 }
 .hitMark {
   position: absolute;
   inset: 0;
-  background: var(--s-amber-wash);
-  border-radius: 0.375rem;
+  background: var(--s-amber-100);
+  border-radius: var(--s-r-ctl);
 }
 .hitMark::before {
   content: "";
@@ -665,363 +1192,523 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
-  border-radius: 2px;
+  width: 3px;
+  border-radius: var(--s-r-ctl) 0 0 var(--s-r-ctl);
   background: var(--s-amber);
 }
-.doc li > span:not(.hitMark) {
-  position: relative;
+/* Dashed connector from the marked line to the answer card, across the gap */
+.wire {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1rem);
+  width: 2.125rem;
+  border-top: 1px dashed var(--s-info-dot);
+}
+.wire::after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -3.5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--s-info-dot);
+}
+.skeleton {
+  display: grid;
+  gap: 0.4375rem;
+  padding: 0 0.75rem;
+}
+.skeleton i {
+  display: block;
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--s-hair);
+}
+.skeleton i:nth-child(1) {
+  width: 88%;
+}
+.skeleton i:nth-child(2) {
+  width: 64%;
+}
+.skeleton i:nth-child(3) {
+  width: 76%;
+}
+.docMore {
+  display: grid;
+  gap: 0.625rem;
+}
+.docSection {
+  padding: 0.25rem 0.75rem 0;
+  font-size: var(--s-t-label);
+  font-weight: 600;
+  color: var(--s-mute);
+}
+/* Question on top and the answer card under it, down to the floor of the pane */
+.ask {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  min-width: 0;
+}
+.query {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  background: var(--s-win);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-ctl);
+  color: var(--s-mute);
+}
+.query span {
+  color: var(--s-ink);
 }
 .answer {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.875rem;
-  padding: 0.75rem 0.875rem;
-  background: var(--s-surface);
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
-  box-shadow: 0 0.5rem 1.25rem -0.875rem rgb(28 26 22 / 0.4);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  min-height: 0;
+  padding: 1rem 1.125rem;
+  background: var(--s-win);
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-card);
+  box-shadow: var(--s-elev-2);
 }
-.answer b {
-  font-size: clamp(1.0625rem, 3.2cqi, 1.375rem);
-  font-weight: 600;
-}
-.pill {
-  display: inline-flex;
+.answerLabel {
+  display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.25rem 0.625rem;
-  background: var(--s-wash);
-  border: 1px solid var(--s-line);
-  border-radius: 999px;
-  font-size: 0.875rem;
+  font-size: var(--s-t-meta);
   font-weight: 600;
+  color: var(--s-mute);
+}
+/* The mark of the answer sits on an amber area: amber is never a thin line on white */
+.answerLabel svg {
+  box-sizing: content-box;
+  padding: 2px;
+  border-radius: 4px;
+  background: var(--s-amber-200);
+  color: var(--s-ink);
+}
+.answerDetail {
+  margin-bottom: 0.375rem;
+  font-size: var(--s-t-body);
+  color: var(--s-mute);
+}
+.related {
+  display: grid;
+  gap: 0.5rem;
+  align-self: stretch;
+  margin-top: auto;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--s-hair);
+}
+.related p {
+  font-size: var(--s-t-meta);
+  font-weight: 500;
+  color: var(--s-mute);
+}
+.related ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+.related li {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--s-edge);
+  border-radius: 999px;
+  background: var(--s-win);
+  font-size: var(--s-t-label);
 }
 
 /* FLUXO DE APROVAÇÃO */
 .flow {
   display: grid;
-  gap: 1rem;
-  min-width: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--s-win);
+  box-shadow: var(--s-elev-1);
 }
-.ruleChip {
-  display: inline-flex;
-  justify-self: start;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.375rem 0.75rem;
-  background: var(--s-wash);
-  border: 1px solid var(--s-line);
-  border-radius: 999px;
-  font-size: 0.9375rem;
-  font-weight: 600;
+.flow > .panelHead {
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--s-hair);
 }
+/* The steps share the height of the panel (auto rows stretch), and each link reaches the node below it whatever the
+   height of its row */
 .steps {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto auto;
+  align-content: stretch;
+  padding: 0.25rem 0.875rem 0.75rem;
 }
 .step {
   position: relative;
   display: grid;
-  justify-items: center;
-  gap: 0.5rem;
-  text-align: center;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  column-gap: 0.75rem;
+  align-items: start;
+  padding: 0.75rem 0 0.5rem;
 }
+/* The vertical line from this node to the next: behind the nodes, filling in success */
 .stepLink {
   position: absolute;
-  top: 1.0625rem;
-  right: 50%;
-  width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--s-line);
+  z-index: 0;
+  left: calc(0.75rem - 1px);
+  top: 2.25rem;
+  bottom: -0.75rem;
+  width: 2px;
   overflow: hidden;
-}
-.step:first-child .stepLink {
-  display: none;
+  background: var(--s-hair);
 }
 .stepLink i {
   display: block;
+  width: 100%;
   height: 100%;
-  background: var(--s-amber);
+  background: var(--s-ok-dot);
 }
-.stepDot {
+.stepNode {
   position: relative;
+  z-index: 1;
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--s-win);
+  box-shadow: inset 0 0 0 1.5px var(--s-edge);
+}
+.stepDone {
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
   border-radius: 50%;
-  background: var(--s-amber);
+  background: var(--s-ok-dot);
+  color: var(--s-win);
 }
-.stepName {
-  font-size: 0.9375rem;
-  font-weight: 500;
-}
-.manager {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.625rem 0.75rem;
-  background: var(--s-wash);
-  border-radius: 0.75rem;
-}
-.manager b {
-  font-size: 1rem;
-  font-weight: 600;
-}
-.tap {
-  position: relative;
-  margin-left: auto;
-  padding: 0.625rem 1rem;
-  min-height: 2.75rem;
-  display: inline-flex;
-  align-items: center;
-  background: var(--s-amber);
-  border: 1px solid transparent;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-/* AVISO DE CONFIRMAÇÃO */
-.toast {
-  position: absolute;
-  left: 0.75rem;
-  right: 0.75rem;
-  bottom: 0.875rem;
+.stepText {
   display: grid;
-  gap: 0.375rem;
+  line-height: 1.3;
+  padding-top: 0.125rem;
 }
-.toastBox {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.625rem 0.75rem;
-  background: var(--s-surface);
-  border: 1px solid var(--s-line);
-  border-radius: 0.75rem;
-  box-shadow: 0 0.75rem 1.5rem -1rem rgb(28 26 22 / 0.45);
+.stepText b {
+  font-size: var(--s-t-body);
 }
-.toastBox b {
-  font-size: clamp(1.0625rem, 3.2cqi, 1.375rem);
-  font-weight: 600;
-}
-.toastCheck {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background: var(--s-amber);
-}
-.received {
-  justify-self: end;
-  font-size: 0.875rem;
-  font-weight: 600;
+.stepText span {
+  font-size: var(--s-t-meta);
   color: var(--s-mute);
 }
-
-/* TELA LARGA (DESKTOP): a janela de 920 px ganha linhas mais altas e texto um passo maior */
-@container scn (min-width: 52rem) {
-  /* A container cannot style itself: the sizes are set on the window inside it */
-  .win {
-    --row: 3.75rem;
-    --room: 3.875rem;
-  }
-  .roof {
-    height: 2.25rem;
-  }
-  .body {
-    padding: 1.25rem;
-  }
-  .duo,
-  .duoHouse,
-  .duoFunnel {
-    gap: 1.5rem;
-  }
-  .rooms {
-    gap: 0.625rem;
-    padding: 0.875rem;
-  }
-  .room,
-  .stages li,
-  .sheetRow {
-    font-size: 1rem;
-  }
-  .roomNew b,
-  .deal b,
-  .statusCard b {
-    font-size: 1rem;
-  }
-  .sheetRow {
-    padding: 0.625rem 0.875rem;
-  }
-  .stages span {
-    width: 8rem;
-  }
-  .cardLayer {
-    left: 9rem;
-  }
-  .bubble,
-  .threadItems li,
-  .doc li,
-  .query {
-    font-size: 1.0625rem;
-  }
-  .chat {
-    padding: 1rem;
-  }
-  .call {
-    font-size: 1rem;
-  }
-  .thread {
-    padding: 1rem;
-    gap: 0.75rem;
-  }
-  .flow {
-    gap: 1.5rem;
-  }
-  .stepName {
-    font-size: 1rem;
-  }
-  .stack {
-    gap: 1.5rem;
-  }
+/* The Gestora's row under step 2: avatar, name, and the button that becomes a pill */
+.approval {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 0.625rem;
+  padding: 0.625rem 0.625rem 0.625rem 0.75rem;
+  background: var(--s-panel);
+  border: 1px solid var(--s-hair);
+  border-radius: var(--s-r-ctl);
+}
+.decide {
+  display: grid;
+  margin-left: auto;
+}
+.decide > * {
+  grid-area: 1 / 1;
+  justify-self: end;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  height: 1.875rem;
+  padding: 0 0.75rem;
+  border-radius: var(--s-r-ctl);
+  background: var(--s-action);
+  color: var(--s-action-fg);
+  font-size: var(--s-t-label);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+}
+.decide .pillOk {
+  align-self: center;
 }
 
-/* TELA ESTREITA (CELULAR): uma coluna, linhas mais baixas, mesmos textos */
-@container scn (max-width: 34rem) {
+/* TELA BAIXA: any tile under 27 rem of height (the 16:10 opening of a product page at 1024, the cards of the benefits)
+   tightens its rhythm and drops the extra sections */
+@container scn (max-height: 27rem) {
   .win {
-    --row: 2.75rem;
-    --room: 2.5rem;
+    --s-pad: 0.875rem;
+    --s-gap: 0.75rem;
   }
-  .bar {
-    height: 2.5rem;
-  }
-  .body {
-    padding: 0.625rem;
+  .page {
+    gap: 0.5rem;
   }
   .roof {
     height: 1.25rem;
-  }
-  /* The empty funnel next to the house is lower, so both fit the phone */
-  .duoHouse .funnel {
-    --row: 2.25rem;
-  }
-  .phoneHead {
-    padding: 0.375rem 0.75rem;
-  }
-  .phone {
-    min-height: 10rem;
-  }
-  .toast {
-    bottom: 0.5rem;
-  }
-  .call {
-    padding: 0.375rem 0.625rem;
-  }
-  .bubble {
-    padding: 0.375rem 0.625rem;
-  }
-  .thread {
-    padding: 0.625rem;
-    gap: 0.5rem;
-  }
-  .threadItems {
-    gap: 0.375rem;
-  }
-  .threadItems li {
-    padding: 0.375rem 0.5rem;
-  }
-  .sheet {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.375rem;
-  }
-  .sheetRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    padding: 0.3125rem 0.625rem;
-  }
-  .sheetRow dd {
-    text-align: left;
-  }
-  .handed .sheet {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .handed .sheetRow {
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-  .handed .sheetRow dd {
-    text-align: right;
-  }
-  .duo,
-  .duoHouse,
-  .duoFunnel {
-    grid-template-columns: minmax(0, 1fr);
-    align-content: start;
-    gap: 0.75rem;
   }
   .rooms {
     gap: 0.375rem;
     padding: 0.5rem;
   }
   .room {
-    padding: 0 0.5rem;
-    font-size: 0.875rem;
+    gap: 0.5rem;
+    padding: 0 0.5rem 0 0.375rem;
   }
-  .roomNew b {
-    font-size: 0.875rem;
+  .roomIcon {
+    width: 1.5rem;
+    height: 1.5rem;
   }
+  .funnel > .panelHead,
+  .sheet > .panelHead,
+  .listHead,
+  .threadHead {
+    height: 2.25rem;
+  }
+  .phoneHead {
+    height: 2.5rem;
+  }
+  .toast {
+    top: 3rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .facts {
+    grid-auto-rows: minmax(1.75rem, 1fr);
+  }
+  .emptySlot {
+    height: 2.25rem;
+  }
+  .deal,
+  .other {
+    padding-block: 0.25rem;
+  }
+  .cardHead {
+    padding: 0.625rem 0.75rem;
+  }
+  .timeline {
+    --tl-gap: 0.625rem;
+    padding: 0.625rem 0.75rem 0.5rem;
+  }
+  .step {
+    padding: 0.5rem 0 0.25rem;
+  }
+  .stepLink {
+    top: 2rem;
+    bottom: -0.5rem;
+  }
+  .approval {
+    margin-top: 0.375rem;
+    padding: 0.375rem 0.5rem;
+  }
+  .doc {
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  .docHead {
+    padding-bottom: 0.5rem;
+  }
+  .answer {
+    margin-top: 0;
+    padding: 0.75rem;
+  }
+  .track {
+    padding: 0.625rem 0.875rem 0.75rem;
+  }
+  .docMore {
+    display: none;
+  }
+}
+
+/* TELA ESTREITA (CELULAR): one column of panels at their natural height; each scene keeps its protagonist and the
+   context that fits */
+@container scn (max-width: 34rem) {
+  .win {
+    --s-pad: 0.75rem;
+    --s-gap: 0.625rem;
+    --s-t-key: 1.125rem;
+    --lane-head: 6.75rem;
+  }
+  .bar {
+    padding: 0 0.75rem;
+  }
+  .barMeta {
+    display: none;
+  }
+  .duo,
+  .duoHouse,
+  .duoHousePhone,
+  .duoFunnel,
+  .duoFlow,
+  .source {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    align-content: start;
+    gap: var(--s-gap);
+  }
+  .page {
+    align-content: start;
+    grid-template-rows: auto auto;
+  }
+  /* House: rows of a fixed height, the roof lower */
+  .house {
+    grid-template-rows: auto auto;
+  }
+  .rooms {
+    grid-auto-rows: 2.25rem;
+    gap: 0.375rem;
+    padding: 0.5rem;
+  }
+  .room {
+    gap: 0.5rem;
+    padding: 0 0.5rem 0 0.375rem;
+  }
+  .roomNew span {
+    display: none;
+  }
+  .roomNew em {
+    display: block;
+  }
+  .roof {
+    height: 1rem;
+  }
+  .roomIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  /* Tuner: the inbox drops its list */
   .inbox {
     grid-template-columns: minmax(0, 1fr);
   }
   .inboxList {
     display: none;
   }
-  .cardLayer {
-    left: 7.25rem;
+  .timeline {
+    --tl-gap: 0.875rem;
+    padding: 0.875rem 0.75rem 0.5rem;
   }
-  .chat {
-    padding: 0.625rem 0.5rem;
-    gap: 0.5rem;
+  .wave {
+    width: 8rem;
   }
-  .stages span {
-    width: 6.25rem;
+  /* Funnel: lanes of a fixed height, the quiet cards and the emblems go; next to the house, the lanes are only names */
+  .lanes {
+    grid-auto-rows: 3.25rem;
   }
-  .steps {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.625rem;
-  }
-  .step {
-    grid-template-columns: 2.25rem minmax(0, 1fr);
-    justify-items: start;
-    align-items: center;
-    column-gap: 0.75rem;
-    text-align: left;
-  }
-  .stepLink {
+  .other,
+  .emblems {
     display: none;
   }
-  .flow {
-    gap: 0.75rem;
+  .duoHouse .lanes {
+    grid-auto-rows: 1.875rem;
   }
-  .stack {
-    gap: 0.75rem;
+  .duoHouse .lane {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .source {
-    gap: 0.5rem;
+  .duoHouse .laneBody {
+    display: none;
   }
-  .doc li {
-    padding-block: 0.25rem;
+  .duoFunnel {
+    --lane-head: 5.75rem;
   }
-  .sheetRow {
-    padding: 0.375rem 0.625rem;
+  .duoFunnel .laneHead {
+    padding: 0 0.5rem 0 0.75rem;
+  }
+  .duoFunnel .laneHead em {
+    display: none;
+  }
+  .roomNew > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .emptySlot {
+    height: 2.25rem;
+  }
+  .duoFunnel .fact:nth-child(n + 4) {
+    display: none;
+  }
+  /* The card of the house shows only the rows the rooms handed over */
+  .cardHead ~ .facts .fact:not([data-fresh]) {
+    display: none;
+  }
+  .fact dd em {
+    display: none;
+  }
+  /* Knowly: the document keeps its lines, the connector and the extras go */
+  .doc {
+    align-self: auto;
+  }
+  .wire,
+  .skeleton,
+  .docMore,
+  .related {
+    display: none;
+  }
+  /* Magneto: the Gestora's row keeps the decision, the record keeps stage and progress */
+  .approval > .who,
+  .approval > .avatarSm {
+    display: none;
+  }
+  .approval {
+    margin-top: 0.375rem;
+    padding: 0.375rem 0.5rem;
+  }
+  .decide {
+    margin-left: 0;
+  }
+  .status .facts {
+    display: none;
+  }
+  .step {
+    padding: 0.5rem 0 0.25rem;
+  }
+  .stepLink {
+    top: 2rem;
+    bottom: -0.5rem;
+  }
+  /* Phone next to the house: the header and the notification, the chat behind it out */
+  .duoHousePhone > .phone {
+    grid-template-rows: auto auto;
+  }
+  .duoHousePhone .chat {
+    display: none;
+  }
+  .duoHousePhone .toast {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    margin: 0.625rem;
+  }
+}
+
+/* TELA ESTREITA E BAIXA (os cartões dos benefícios): the protagonist pane alone */
+@container scn (max-width: 34rem) and (max-height: 28.5rem) {
+  .duoFunnel .fact:nth-child(n + 3),
+  .duoHouse > .house:has(+ .sheet),
+  .duoFlow .flow > .panelHead,
+  .track li > span:last-child,
+  .ask > .query,
+  .docHead {
+    display: none;
+  }
+  /* Funnel: the two lanes of the story (Novo and Em análise), tall enough for the title of the card on two lines */
+  .duoFunnel .lanes {
+    grid-auto-rows: 4.5rem;
+  }
+  .duoFunnel .lane:nth-child(n + 3) {
+    display: none;
+  }
+  .deal > b.key {
+    white-space: normal;
+  }
+}
+
+/* TELA MÉDIA: under 52 rem of width the rows of facts drop the tag of their origin and the Gestora keeps only her face */
+@container scn (max-width: 52rem) {
+  .fact dd em,
+  .approval > .who {
+    display: none;
   }
 }

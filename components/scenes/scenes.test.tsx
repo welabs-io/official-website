@@ -65,10 +65,18 @@ describe("scene components", () => {
       "Política de entregas",
       "Sábado: entregas até 12h",
       "Aprovar alteração",
-      "Confirmado: sábado ✓",
+      "Confirmado: sábado",
       "Aguardando aprovação",
     ])
       expect(all, text).toContain(text);
+  });
+
+  it("every scene marks exactly one key element and repeats no check mark in its text", () => {
+    SCRIPT.forEach((_, i) => {
+      const markup = html(i);
+      expect(markup.match(/data-key=""/g), `scene ${i}`).toHaveLength(1);
+      expect(markup, `scene ${i}`).not.toMatch(/✓/);
+    });
   });
 });
 

@@ -96,8 +96,8 @@
 }
 @keyframes fx-light {
   from {
-    background-color: var(--s-surface);
-    border-color: var(--s-line);
+    background-color: var(--s-win);
+    border-color: var(--s-edge);
   }
 }
 @keyframes fx-bar {
