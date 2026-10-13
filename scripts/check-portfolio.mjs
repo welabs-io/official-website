@@ -83,12 +83,52 @@ for (const id of [
 ])
   assert(home.includes(`id="${id}"`), `home has section #${id}`);
 assert(!home.includes('id="logos"'), "the old logos strip is gone");
-assert(
-  home.indexOf('id="chain"') < home.indexOf('id="products"') &&
-    home.indexOf('id="products"') < home.indexOf('id="connectors"') &&
-    home.indexOf('id="connectors"') < home.indexOf('id="platforms"'),
-  "sections come in order: chain, products, connectors, closing",
-);
+// The depth work (2026-10-12): visual and reading bands alternate, the connector block stays right before the closing
+const HOME_ORDER = [
+  "chain",
+  "how",
+  "products",
+  "operation",
+  "audience",
+  "integrations",
+  "faq",
+  "connectors",
+  "platforms",
+  "contact",
+];
+for (const id of HOME_ORDER)
+  assert(home.includes(`id="${id}"`), `home has section #${id}`);
+for (let i = 1; i < HOME_ORDER.length; i++)
+  assert(
+    home.indexOf(`id="${HOME_ORDER[i - 1]}"`) <
+      home.indexOf(`id="${HOME_ORDER[i]}"`),
+    `sections come in order: ${HOME_ORDER.join(", ")}`,
+  );
+{
+  const faq = home.slice(
+    home.indexOf('id="faq"'),
+    home.indexOf('id="connectors"'),
+  );
+  const n = (faq.match(/<details/g) ?? []).length;
+  assert(n >= 6 && n <= 8, `the home has ${n} questions (6 to 8)`);
+  assert(
+    (home.slice(home.indexOf('id="operation"')).match(/data-mini="s\d"/g) ?? [])
+      .length >= 6,
+    "the benefits show six still native scenes",
+  );
+  assert(!/mailto:|wa\.me/.test(home), "no contact address that was not given");
+}
+// The menu is on every page: the five products, "Como funciona" and "Contato"; the logo leads to the home
+const hasMenu = (html) => {
+  const header = html.slice(html.indexOf("<header"), html.indexOf("</header>"));
+  return (
+    header.includes('href="/"') &&
+    header.includes('href="/#how"') &&
+    header.includes('href="/#contact"') &&
+    SLUGS.every((s) => header.includes(`href="/products/${s}"`))
+  );
+};
+assert(hasMenu(home), "the home header has the menu and the logo link");
 assert(
   (home.match(/<section[^>]*>/g) ?? []).every((s) => s.includes("data-live")),
   "every band is marked live (the thread and the pulses pause off screen)",
@@ -108,7 +148,7 @@ const logoOrder = (html) => [
 // The overview of the chain lists the products in the order of the plot (manifest), the rest of the page in weight order
 const chainHtml = home.slice(
   home.indexOf('id="chain"'),
-  home.indexOf('id="products"'),
+  home.indexOf('id="how"'),
 );
 assert.deepEqual(
   logoOrder(chainHtml),
@@ -116,7 +156,9 @@ assert.deepEqual(
   "the overview of the chain lists the products in the order of the plot",
 );
 assert.deepEqual(
-  logoOrder(home.slice(home.indexOf('id="products"'))),
+  logoOrder(
+    home.slice(home.indexOf('id="products"'), home.indexOf('id="operation"')),
+  ),
   SLUGS,
   "products appear in weight order",
 );
@@ -127,16 +169,22 @@ assert(
 assert(/href="\/#contact"/.test(home), "CTA points to the closing section");
 // The words of the page copy: the text drawn inside the native scenes is product interface (a screen), not copy, so the
 // block between the stage and its data is left out of the count (the slogan and banned-word rules above still read it)
+// The still scenes (data-mini ... data-mini-end) of the benefits and of the product opening are interface as well
 const copyOnly = (html) => {
   const at = html.indexOf("data-scenes");
   const end = html.indexOf("data-scene-data");
-  return at < 0 || end < at
-    ? html
-    : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+  const withoutStage =
+    at < 0 || end < at
+      ? html
+      : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+  return withoutStage.replace(
+    /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
+    "",
+  );
 };
 const words = visibleText(copyOnly(home)).split(" ").length;
-// 160 before the opening and the overview of the chain entered the home (about 36 words); now 180
-assert(words <= 180, `home has ${words} visible words`);
+// 700 to 1000 words since the depth work of 2026-10-12 (180 before it: more content and more scroll was the direction)
+assert(words >= 700 && words <= 1000, `home has ${words} visible words`);
 assert(
   !/<video|<hyperframes-player/i.test(chainHtml),
   "the chain has no video",
@@ -183,22 +231,44 @@ for (const slug of SLUGS) {
     /<p[^>]*data-caption/.test(html) && !/aria-live/.test(html),
     `${slug} page has the caption, without a live region`,
   );
-  const productWords = visibleText(html).split(" ").length;
-  assert(productWords <= 260, `${slug} has ${productWords} visible words`);
+  const productWords = visibleText(copyOnly(html)).split(" ").length;
+  assert(
+    productWords >= 400 && productWords <= 700,
+    `${slug} has ${productWords} visible words`,
+  );
+  assert(hasMenu(html), `${slug} header has the menu and the logo link`);
+  assert(
+    html.includes('aria-label="Você está em"') && html.includes('id="others"'),
+    `${slug} has the trail and the other products`,
+  );
   assert(
     /<title>[^<]* by Welabs<\/title>/.test(html),
     `${slug} title follows the "<Product> by Welabs" pattern`,
   );
-  // Template: opening and films in one ring, the chain of the product, connectors with this product lit, closing
+  // Template: opening with the native scene, what it solves, the films, capabilities in groups, profiles, questions,
+  // connectors with this product lit, the closing and the other products
   const at = (id) => html.indexOf(`id="${id}"`);
+  const PRODUCT_ORDER = [
+    "product",
+    "resolves",
+    "how",
+    "capabilities",
+    "audience",
+    "faq",
+    "connectors",
+    "platforms",
+    "contact",
+    "others",
+  ];
   assert(
-    at("product") > 0 &&
-      at("product") < at("chain") &&
-      at("chain") < at("connectors") &&
-      at("connectors") < at("platforms") &&
-      at("platforms") < at("contact") &&
-      at("films") < 0,
-    `${slug} page has the same sections as the home, in order`,
+    PRODUCT_ORDER.every(
+      (id, i) => at(id) >= 0 && (i === 0 || at(PRODUCT_ORDER[i - 1]) < at(id)),
+    ) && at("films") < 0,
+    `${slug} page has its sections in order: ${PRODUCT_ORDER.join(", ")}`,
+  );
+  assert(
+    /data-mini="s\d"/.test(html.slice(at("product"), at("resolves"))),
+    `${slug} opens with a native scene`,
   );
   const block = html.slice(at("connectors"), at("platforms"));
   assert(

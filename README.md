@@ -1,18 +1,20 @@
 # Welabs — site da empresa e dos produtos
 
-Site da Welabs, empresa que desenvolve produtos próprios de software: Domus, Relloo, Magneto, Tuner e Knowly. Uma página única de quatro blocos, compacta, com as nossas aberturas e filmes tocando sozinhos em carrosséis sem interface de player, um bloco de conectores que mostra como os produtos se ligam, e uma página por produto no mesmo template.
+Site da Welabs, empresa que desenvolve produtos próprios de software: Domus, Relloo, Magneto, Tuner e Knowly. Uma página única de nove faixas, que alternam cenas e conectores com seções de leitura (cerca de 8 telas a 1440 px), com as nossas aberturas e filmes tocando sozinhos em carrosséis sem interface de player, um bloco de conectores que mostra como os produtos se ligam, e uma página por produto no mesmo template (cerca de 5 telas).
 
 Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em português, sem banco de dados. A identidade é a da marca Welabs (âmbar, grafite, creme, Inter), num tema único: o tema claro (creme) em todas as faixas, com o rodapé em grafite. As aberturas e filmes dos produtos seguem em vídeo, como objeto escuro dentro do tema claro.
 
 ## Rotas
 
-| Rota               | Conteúdo                                                                                                                                  |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                | Abertura e cadeia em dois blocos, produtos, conectores, faixa de marcas e plataformas com o botão final, e rodapé                         |
-| `/products/[slug]` | Abertura, conectores com o produto aceso, os outros filmes em carrossel e o botão final (`domus`, `relloo`, `magneto`, `tuner`, `knowly`) |
-| `/lab/chain`       | Bancada da cadeia em tela cheia (`noindex`, sem link)                                                                                     |
+| Rota               | Conteúdo                                                                                                                                                                                                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/`                | Abertura e cadeia em dois blocos, um pedido do começo ao fim, produtos, o que muda na operação, para quem, integrações e infraestrutura, perguntas frequentes, conectores, faixa de marcas e plataformas, contato e rodapé                                                     |
+| `/products/[slug]` | Abertura com o caminho "Welabs / Produto" e a cena nativa do produto, o que resolve, como funciona (os filmes), capacidades em grupos, para quem, perguntas, conectores com o produto aceso, fechamento e os outros produtos (`domus`, `relloo`, `magneto`, `tuner`, `knowly`) |
+| `/lab/chain`       | Bancada da cadeia em tela cheia (`noindex`, sem link)                                                                                                                                                                                                                          |
 
-Blocos da home e âncoras: `#chain` (cadeia, logo abaixo do topo `#top`), `#products`, `#connectors`, `#platforms` e `#contact` (fechamento). Páginas de produto: `#product` (abertura), `#connectors`, `#films`, `#contact`.
+Blocos da home e âncoras, na ordem: `#chain` (cadeia, logo abaixo do topo `#top`), `#how` (um pedido do começo ao fim), `#products`, `#operation` (o que muda), `#audience` (para quem), `#integrations`, `#faq`, `#connectors`, `#platforms` e `#contact` (fechamento com o contato). Páginas de produto: `#product` (abertura), `#resolves`, `#how` (filmes), `#capabilities`, `#audience`, `#faq`, `#connectors`, `#platforms`, `#contact` e `#others` (os outros quatro produtos, no fim).
+
+O menu do cabeçalho (`components/onepage/SiteNav.tsx`) está em todas as páginas: Produtos (os cinco, numa lista que abre ao passar o mouse ou ao focar; num celular, um painel aberto por botão que fecha com Esc, com um toque num link e ao mudar de página), Como funciona (`/#how`) e Contato (`/#contact`). O logo leva à home em toda página.
 
 Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → `/`; `/produtos`, `/products`, `/solucoes` e `/solutions` → `/#products`; `/sobre` e `/about` → `/#chain`; `/produtos/<slug>` → `/products/<slug>`; ids internos (`erp`, `flow`…) e slugs anteriores (`rello`, `hub-de-dominio`) vão direto ao slug atual; `/welabs/*` e `/portfolio-preview/*` do site compartilhado também. A query string é mantida. O produto oculto (`ecossistema-monitoramento`) volta para `/#products` (temporário). A lista está em `next.config.mjs`; `lib/routes.test.ts` trava segmento de rota em português e redirecionamento em mais de um salto.
 
@@ -30,6 +32,14 @@ Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → 
 ## Conteúdo
 
 Todo texto visível mora em `lib/content/*.ts`, tipado (`types.ts`): `home.ts` (frase do núcleo e dos trilhos, linha de cada ligação, títulos do fechamento, títulos da página de produto; a abertura da home, título e linha de apoio, abre a seção da cadeia) e `products.ts` (por produto: 3 problemas, 6 capacidades e a legenda de cada filme). A home mostra cinco cartões de produto (o ativo no carrossel de produtos fica aceso, `data-on` reescrito pelo `ring-run`); a página de produto mostra como funciona (filmes com legenda que acompanha a cena, texto comum sem `aria-live`; o rótulo da cena está no `aria-label` do tile ativo), o que resolve, capacidades e uma linha por ligação. `lib/content/rules.ts` guarda as palavras proibidas que o vitest aplica ao dado e ao HTML renderizado.
+
+Seções de leitura (direção do operador de 2026-10-12: mais conteúdo e mais rolagem), também em dados tipados, sem cliente, métrica, case nem funcionalidade que o portfólio não sustente:
+
+- `lib/content/sections.ts` (home): `JOURNEY` (os sete passos da cadeia, uma frase e os produtos de cada um), `BENEFITS` (seis mudanças concretas, cada uma com a cena nativa que a mostra), `AUDIENCE` (quatro perfis de operação, sem nome de empresa), `INTEGRATIONS` (canais, dados, nuvem e IA, com os logos que o site já tem), `HOME_FAQ` (oito perguntas) e `HOME_SECTIONS` (títulos, linhas de apoio e o contato).
+- `lib/content/product-depth.ts` (produto): as seis capacidades em grupos, com uma frase cada, três perfis e de três a quatro perguntas por produto.
+- Cenas paradas: `components/scenes/MiniScene.tsx` desenha o quadro final de uma cena da cadeia fora do carrossel (as vitrines do "o que muda" e a abertura de cada página de produto), sem relógio e sem código de cliente; o texto de interface dessas cenas fica fora da contagem de palavras (`data-mini` até `data-mini-end`).
+- "Como trabalhamos" (diagnóstico, implantação, operação e evolução) ficou de fora: o portfólio não traz fonte para etapas de trabalho. O contato é o botão e a linha que o operador definiu em 09/10/2026: nenhum e-mail ou WhatsApp foi dado.
+- Orçamento de palavras visíveis (cenas não contam): de 700 a 1000 na home e de 400 a 700 por produto (eram 180 e 260 antes da expansão). O piso trava a seção que perde o texto; o teto, o texto que cresce sem decisão. Valem em `components/template/site.test.tsx` e em `scripts/check-portfolio.mjs`.
 
 ## Estrutura de pastas
 
@@ -61,7 +71,16 @@ O site abre em http://localhost:3000. Para um build de produção local: `npm ru
 
 ## Verificação
 
-`npm run check` executa lint, typecheck, testes e build. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas, os redirecionamentos, os arquivos referenciados e as regras de conteúdo (sem player com controles, sem barra, sem slogan, no máximo 180 palavras visíveis na home e 260 numa página de produto); `PORTFOLIO_PREVIEW_URL` aponta outro servidor.
+`npm run check` executa lint, typecheck, testes e build. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas, os redirecionamentos, os arquivos referenciados e as regras de conteúdo (sem player com controles, sem barra, sem slogan, de 700 a 1000 palavras visíveis na home e de 400 a 700 numa página de produto, o menu em toda página, a ordem das seções); `PORTFOLIO_PREVIEW_URL` aponta outro servidor.
+
+### Navegação (causa medida e especificações)
+
+O relato do operador, "ao clicar num produto a página come o bloco inicial e não tem como voltar", tem duas causas medidas em 2026-10-12 (Playwright, 1440 e 375):
+
+1. `html { scroll-behavior: smooth }` em `app/globals.css`. O Next 16 deixou de desligar a rolagem suave na troca de rota, então o clique num cartão chegava à página do produto por uma rolagem de 0,5 s que atravessava o corpo da página (760, 235, 78, 18 e 0 px em quadros sucessivos) e a restauração do navegador no avançar virava animação (num celular a página do produto ficou parada em 2867 px, a rolagem da home de onde veio). Corrigido tirando a rolagem suave da página inteira: todo salto, troca de rota, voltar e avançar é instantâneo.
+2. O cabeçalho só tinha o logo e o botão: sem menu e sem caminho. Agora há o menu em toda página, o caminho "Welabs / Produto" no topo de cada produto e "Outros produtos" no fim.
+
+`e2e/navigation.spec.ts` trava o clique (nenhum quadro da página do produto fora do topo; o logo visível e abaixo do cabeçalho), o voltar (volta à mesma posição, ±2 px), o menu a 1440 e a 375, e `e2e/sections-nav.spec.ts` trava as âncoras, o caminho, o logo e "Outros produtos". Sem a correção, a primeira especificação reprova nos dois tamanhos, com quadros da página do produto no meio da rolagem.
 
 ## Limites atuais
 
