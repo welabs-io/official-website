@@ -55,8 +55,8 @@ const hiddenText = (html: string) =>
 const copyOnly = (html: string) => {
   let withoutStage = html;
   for (;;) {
-    const at = withoutStage.indexOf("data-scenes");
-    const end = withoutStage.indexOf("data-scene-data", at);
+    const at = withoutStage.indexOf('data-scenes="');
+    const end = withoutStage.indexOf('data-scene-data="', at);
     if (at < 0 || end < 0) break;
     withoutStage =
       withoutStage.slice(0, withoutStage.lastIndexOf("<div", at)) +

@@ -169,7 +169,7 @@ for (const vp of VIEWPORTS)
     });
   });
 
-test("the product page is one template: an opening with the native scene, one ring for the films, the reading bands and the other products", async ({
+test("the product page is one template: a native opening with the capability scenes, the reading bands and the other products, no film", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -188,9 +188,10 @@ test("the product page is one template: an opening with the native scene, one ri
     "platforms",
     "others",
   ]);
-  expect(await page.locator("#product-ring [data-layers]").count()).toBe(2);
   expect(await page.locator("h1").count()).toBe(1);
-  // The opening is native: a still scene and no player above the films
-  expect(await page.locator("#product [data-mini]").count()).toBe(1);
-  expect(await page.locator("#product hyperframes-player").count()).toBe(0);
+  // The opening is native and plays: three capability scenes, no still frame, and no player or ring of films anywhere
+  expect(await page.locator("#product-scenes [data-tile]").count()).toBe(3);
+  expect(await page.locator("#product [data-mini]").count()).toBe(0);
+  expect(await page.locator("hyperframes-player, video").count()).toBe(0);
+  expect(await page.locator("[data-layers], #product-ring").count()).toBe(0);
 });
