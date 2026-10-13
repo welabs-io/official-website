@@ -9,10 +9,14 @@
    (0.7 s by default, the site's manifest sets it per ring); the curves start fast, so nothing waits before it moves.
    Reduced motion: no turn, no depth, no transition (the tiles change place at once, flat). */
 
+/* The perspective of the stage reaches each tile by itself; the tiles are NOT a shared 3D context (flat, not preserve-3d),
+   so they stack by z-index (the centre always on top) instead of being depth-sorted. Measured on 2026-10-13: with
+   preserve-3d Chromium cut a neighbour (at the side, behind) into the centre scene and left part of the centre unpainted,
+   on the settled frame, in the screenshot and in the recorded video alike. */
 [data-ring] {
   perspective: 1600px;
   perspective-origin: 50% 42%;
-  transform-style: preserve-3d;
+  transform-style: flat;
 }
 
 /* Places. The tile is centred by `translate` (left 50% in the module); x is the shift from the centre, z the depth,
