@@ -71,7 +71,7 @@ for (const vp of VIEWPORTS)
         expect(
           Math.abs(measured - expected),
           `step ${swaps[i - 1].to}`,
-        ).toBeLessThanOrEqual(0.6);
+        ).toBeLessThanOrEqual(0.3);
       }
     });
 

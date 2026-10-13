@@ -43,8 +43,8 @@
   opacity: 0.32;
   filter: grayscale(1);
   transition:
-    opacity 0.4s var(--ease),
-    filter 0.4s var(--ease);
+    opacity 0.2s var(--ease),
+    filter 0.2s var(--ease);
 }
 /* The product of the page: never fully receded, and a 4 px amber bar under its logo */
 .col[data-self="true"] {
@@ -112,9 +112,9 @@
   border-radius: 50%;
   background: var(--bg);
   transition:
-    background-color 0.4s var(--ease),
-    border-color 0.4s var(--ease),
-    transform 0.4s var(--ease);
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    transform 0.2s var(--ease);
 }
 .node[data-state="off"] {
   border-color: var(--thread, var(--line));
@@ -218,10 +218,10 @@
   text-overflow: ellipsis;
 }
 .overview > .legend[data-swap="a"] {
-  animation: legend-a 0.4s var(--ease) both;
+  animation: legend-a 0.2s var(--ease) both;
 }
 .overview > .legend[data-swap="b"] {
-  animation: legend-b 0.4s var(--ease) both;
+  animation: legend-b 0.2s var(--ease) both;
 }
 @keyframes legend-a {
   from {
@@ -263,7 +263,7 @@
   left: calc((var(--c) + 0.5) / var(--n) * 100%);
   height: var(--stem-h);
   opacity: 0;
-  transition: opacity 0.4s var(--ease);
+  transition: opacity 0.2s var(--ease);
 }
 .stem[data-on="true"] {
   opacity: 1;
@@ -294,8 +294,8 @@
   height: 4px;
   overflow: hidden;
   transition:
-    left 0.5s var(--ease),
-    width 0.5s var(--ease);
+    left 0.25s var(--ease),
+    width 0.25s var(--ease);
 }
 .half::before {
   top: 1px;
@@ -337,24 +337,25 @@
 .right .sweep {
   transform-origin: 100% 50%;
 }
-/* The whole pulse takes 0.7 s (stem 0.25, bridge 0.2, landing 0.25), so it is over before the first action of a scene */
+/* The whole pulse takes 0.35 s at the 2x pace (stem 0.125, bridge 0.1, landing 0.125; it was 0.7 s), so it is over
+   before the first action of a scene (0.45 s) */
 .overview[data-pulse="a"] .stem[data-on="true"] .pulse {
-  animation: stem-a 0.25s ease-in both;
+  animation: stem-a 0.125s ease-in both;
 }
 .overview[data-pulse="b"] .stem[data-on="true"] .pulse {
-  animation: stem-b 0.25s ease-in both;
+  animation: stem-b 0.125s ease-in both;
 }
 .overview[data-pulse="a"] .sweep {
-  animation: sweep-a 0.2s 0.25s linear both;
+  animation: sweep-a 0.1s 0.125s linear both;
 }
 .overview[data-pulse="b"] .sweep {
-  animation: sweep-b 0.2s 0.25s linear both;
+  animation: sweep-b 0.1s 0.125s linear both;
 }
 .overview[data-pulse="a"] .axis .pulse {
-  animation: land-a 0.25s 0.45s ease-in both;
+  animation: land-a 0.125s 0.225s ease-in both;
 }
 .overview[data-pulse="b"] .axis .pulse {
-  animation: land-b 0.25s 0.45s ease-in both;
+  animation: land-b 0.125s 0.225s ease-in both;
 }
 @keyframes stem-a {
   from {

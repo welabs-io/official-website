@@ -6,7 +6,7 @@
 // label from the chain (`ties` of lib/chain.ts): the seam between the two core products and one per rail. The logos are real
 // links; on a product page `lit` is the product of the page: it stays lit with a 4 px amber bar, only the labels of its
 // own connections stay and a rail it is not tied to dims. While the section is on screen (data-on, LiveObserver) one node
-// lights at a time in weight order (0.96 s each, a 4.8 s cycle) and a pulse goes down the rail of the lit rail node.
+// lights at a time in weight order (0.48 s each, a 2.4 s cycle) and a pulse goes down the rail of the lit rail node.
 import Link from "next/link";
 import type { Tie } from "@/lib/chain";
 import {
