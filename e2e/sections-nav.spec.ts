@@ -1,7 +1,8 @@
 // CAMINHO DE VOLTA E ÂNCORAS DAS SEÇÕES
 // What a visitor uses to get around once the pages are long: the menu entry "Como funciona" lands on the order from start
-// to end right under the fixed header, every product page has the trail "Welabs / <product>" at the top and "Outros
-// produtos" at the end, and the logo of the header leads home from any page.
+// to end right under the fixed header, every product page has the product switcher at the top ("Voltar" and the five
+// products, the one of the page current) and "Outros produtos" at the end, and the logo of the header leads home from any
+// page. The transitions and the way back are in e2e/route-motion.spec.ts.
 import { expect, test } from "@playwright/test";
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
@@ -38,16 +39,21 @@ test("'Como funciona' and 'Contato' land on their sections under the header", as
 });
 
 for (const slug of SLUGS)
-  test(`the ${slug} page has the trail "Welabs / ${NAMES[slug]}", the logo to the home and the other four products at the end`, async ({
+  test(`the ${slug} page has the product switcher with ${NAMES[slug]} current, the logo to the home and the other four products at the end`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/products/${slug}`, { waitUntil: "load" });
-    const trail = page.getByRole("navigation", { name: "Você está em" });
-    await expect(trail.getByRole("link", { name: "Welabs" })).toBeVisible();
-    await expect(trail.locator('[aria-current="page"]')).toHaveText(
-      NAMES[slug],
-    );
+    const switcher = page.getByRole("navigation", {
+      name: "Trocar de produto",
+    });
+    await expect(
+      switcher.getByRole("link", { name: "Voltar para a página inicial" }),
+    ).toBeVisible();
+    await expect(
+      switcher.locator('[aria-current="page"] img'),
+    ).toHaveAttribute("alt", NAMES[slug]);
+    await expect(switcher.locator('a[data-nav="switch"]')).toHaveCount(4);
     const others = page.locator("#others");
     await others.scrollIntoViewIfNeeded();
     await expect(others.locator("a[data-card]")).toHaveCount(4);

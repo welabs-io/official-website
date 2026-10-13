@@ -44,10 +44,7 @@ function declarations(css: string) {
 
 // Raw lengths that stay out of the 4 px grid by design: hairlines, the overlap of the timeline cards, the optical padding
 // of a link and the fixed height of a mark. Everything else must be a token.
-const SPACE_ALLOWED = new Set([
-  ".step + .step|margin-top|-44px",
-  ".trail a|padding|0 2px",
-]);
+const SPACE_ALLOWED = new Set([".step + .step|margin-top|-44px"]);
 
 describe("space and type tokens", () => {
   it.each(SHEETS)("%s has no loose space value", (file) => {

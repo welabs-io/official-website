@@ -1,6 +1,6 @@
 // TESTES DO TEMPLATE DAS PÁGINAS
 // The home and the five product pages are one template: the same band structure with two lists of sections. The product
-// pages open with the trail, the logo and the stage of three capability scenes, then what it solves, how it works (the
+// pages open with the product switcher, the logo and the stage of three capability scenes, then what it solves, how it works (the
 // native chain), the capabilities in groups, who it is for, the questions, the connector block lit on the product, the
 // closing and the other products. No video anywhere. Rendered on the server and read as text.
 import { renderToStaticMarkup } from "react-dom/server";

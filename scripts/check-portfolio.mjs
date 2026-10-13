@@ -245,8 +245,10 @@ for (const slug of SLUGS) {
   );
   assert(hasMenu(html), `${slug} header has the menu and the logo link`);
   assert(
-    html.includes('aria-label="Você está em"') && html.includes('id="others"'),
-    `${slug} has the trail and the other products`,
+    html.includes('aria-label="Trocar de produto"') &&
+      html.includes('data-nav="back"') &&
+      html.includes('id="others"'),
+    `${slug} has the product switcher, the way back and the other products`,
   );
   assert(
     /<title>[^<]* by Welabs<\/title>/.test(html),

@@ -234,12 +234,16 @@ describe("navigation on every page", () => {
     },
   );
   it.each(productPages)(
-    "$slug has the trail 'Welabs / product' and the other four products at the end",
+    "$slug has the product switcher (the way back, the product current) and the other four products at the end",
     ({ slug, html }) => {
       const name = PRODUCTS.find((p) => p.slug === slug)!.name;
-      const trail = html.slice(html.indexOf('aria-label="Você está em"'));
-      expect(trail.slice(0, 400)).toContain(">Welabs<");
-      expect(trail.slice(0, 600)).toContain(`aria-current="page">${name}<`);
+      const start = html.indexOf('aria-label="Trocar de produto"');
+      const switcher = html.slice(start, html.indexOf("</nav>", start));
+      expect(switcher).toContain('data-nav="back"');
+      expect(switcher.match(/data-nav="switch"/g)).toHaveLength(4);
+      expect(switcher).toMatch(
+        new RegExp(`aria-current="page"><img[^>]*alt="${name}"`),
+      );
       const others = html.slice(
         html.indexOf('id="others"'),
         html.indexOf("<footer"),
