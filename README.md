@@ -74,6 +74,13 @@ npm run dev
 
 O site abre em http://localhost:3000. Para um build de produção local: `npm run build` e `npm start`. `NEXT_DIST_DIR` usa outra pasta de build, útil para um segundo servidor ao lado de outro já em execução (alterne `.next-a` e `.next-b`).
 
+### Ciclo de trabalho: `iterate` e `gate`
+
+- `npm run iterate`: ciclo rápido de ajuste. Compila na pasta de build que a prévia NÃO está usando (`.next-a` ou `.next-b`) e, só com o build pronto, troca o `next start` da porta 5176 (`PORT` muda a porta). A prévia não sai do ar e nenhum teste roda. Lê do processo em execução só a variável `NEXT_DIST_DIR`, nunca o ambiente inteiro (que tem token), e só encerra servidor cuja pasta seja este checkout.
+- `npm run gate`: validação completa, uma vez, antes do merge. Lint, typecheck, vitest, `iterate`, `check-portfolio` e a suíte Playwright inteira contra a prévia.
+
+Ajuste visual se itera com `iterate`; `gate` não roda a cada ajuste.
+
 ## Verificação
 
 `npm run check` executa lint, typecheck, testes e build. Com o site rodando, `node scripts/check-portfolio.mjs` confere as páginas, os redirecionamentos, os arquivos referenciados e as regras de conteúdo (sem vídeo, `<iframe>` ou player, sem barra, sem slogan, de 700 a 1000 palavras visíveis na home e de 400 a 700 numa página de produto, o menu em toda página, a ordem das seções); `PORTFOLIO_PREVIEW_URL` aponta outro servidor.
