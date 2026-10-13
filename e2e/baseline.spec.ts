@@ -1,6 +1,6 @@
 // CAPTURA DE REFERÊNCIA
-// Full-page screenshots of the home and of one product page at the three sizes, under reduced motion so the covers are
-// static and the result is deterministic. First run (or --update-snapshots) writes the reference; later runs compare
+// Full-page screenshots of the home and of one product page at the three sizes, under reduced motion so every scene is
+// in its settled frame and the result is deterministic. First run (or --update-snapshots) writes the reference; later runs compare
 // against it with a 0.5% pixel budget.
 import { expect, test } from "@playwright/test";
 import { ROUTES, VIEWPORTS } from "./viewports";
@@ -12,7 +12,7 @@ for (const route of ROUTES)
     test(`${route.name} at ${vp.name}`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto(route.path, { waitUntil: "load" });
-      // Let lazy covers settle before the capture
+      // Let the lazy logos of the page settle before the capture
       await page.evaluate(async () => {
         for (let y = 0; y < document.body.scrollHeight; y += 400) {
           window.scrollTo(0, y);

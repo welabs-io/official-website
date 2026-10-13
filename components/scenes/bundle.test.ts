@@ -1,6 +1,7 @@
 // TESTE DO PACOTE SOB DEMANDA
-// ring-run.ts is the lazy chunk of every ring. Its runtime imports (type-only imports are erased) must not reach the
-// montage or piece lists nor any JSON: the server writes what to play into the page, so those lists never ship in the chunk.
+// scene-run.ts is the lazy chunk of every carousel of native scenes. Its runtime imports (type-only imports are erased)
+// must not reach the script, the copy nor any JSON: the server writes the durations into the page, so those lists never
+// ship in the chunk.
 import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -47,26 +48,10 @@ describe("scene-run chunk", () => {
   const graph = runtimeGraph(
     path.join(root, "components/scenes/scene-run.ts"),
   ).map((f) => path.relative(root, f));
-  it("imports no JSON, no manifest, no script and no player: the server writes the durations next to the stage", () => {
+  it("imports no JSON, no script and no content: the server writes the durations next to the stage", () => {
     expect(graph.filter((f) => f.endsWith(".json"))).toEqual([]);
-    expect(graph).not.toContain("lib/motion-slides.ts");
     expect(graph).not.toContain("lib/scenes/script.ts");
-    expect(graph).not.toContain("components/ring/player.ts");
-    expect(graph).not.toContain("components/ring/ring-playback.ts");
-  });
-});
-
-describe("ring-run chunk", () => {
-  const graph = runtimeGraph(path.join(root, "components/ring/ring-run.ts"));
-  it("imports no JSON and no montage list at runtime", () => {
-    const rel = graph.map((f) => path.relative(root, f));
-    expect(rel.filter((f) => f.endsWith(".json"))).toEqual([]);
-    expect(rel).not.toContain("lib/motion-slides.ts");
-    expect(rel).not.toContain("lib/chain-connections.ts");
-  });
-  it("still reaches the player and the playback", () => {
-    const rel = graph.map((f) => path.relative(root, f));
-    expect(rel).toContain("components/ring/ring-playback.ts");
-    expect(rel).toContain("components/ring/player.ts");
+    expect(graph).not.toContain("lib/scenes/capabilities.ts");
+    expect(graph.filter((f) => f.startsWith("lib/content/"))).toEqual([]);
   });
 });

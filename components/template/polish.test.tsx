@@ -74,9 +74,7 @@ describe("space and type tokens", () => {
     ...SHEETS,
     "components/template/chain-overview.module.css",
     "components/template/corehub.module.css",
-    "components/template/logorow.module.css",
     "components/onepage/logos.module.css",
-    "components/ring/ring.module.css",
   ])("%s sets font sizes only from the type scale", (file) => {
     const loose = declarations(strip(read(file)))
       .filter(({ prop }) => prop === "font-size")

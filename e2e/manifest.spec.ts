@@ -1,8 +1,8 @@
 // O SITE SEGUE O MANIFESTO
 // Acceptance of the manifest units, at the three sizes: the time between two swaps of the chain is the screen time plus the
-// hold of the manifest (the site decides no time), the label of the row is the one of the step on screen, at most two
-// players are mounted per ring, the connector block has its four labels without overlap and no rail ends loose, and under
-// reduced motion no player and no animation runs.
+// hold of the manifest (the site decides no time), the label of the row is the one of the step on screen, the connector
+// block has its four labels without overlap and no rail ends loose, and under reduced motion no video and no animation
+// runs.
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 
@@ -10,17 +10,15 @@ for (const vp of VIEWPORTS)
   test.describe(`manifest at ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
 
-    test("swap intervals follow screen time plus hold, labels follow the step, at most two players per ring", async ({
+    test("swap intervals follow the time of each scene and labels follow the step", async ({
       page,
     }) => {
       test.setTimeout(90000);
       await page.addInitScript(() => {
         const w = window as unknown as {
           __swaps: { at: number; to: number; label: string }[];
-          __maxPlayers: number;
         };
         w.__swaps = [];
-        w.__maxPlayers = 0;
         window.addEventListener("ring:swap", (event) => {
           const d = (event as CustomEvent).detail;
           if (d.ring !== "chain-ring") return;
@@ -35,11 +33,6 @@ for (const vp of VIEWPORTS)
             }),
           );
         });
-        setInterval(() => {
-          const ring = document.querySelector("#chain-ring");
-          const n = ring?.querySelectorAll("hyperframes-player").length ?? 0;
-          w.__maxPlayers = Math.max(w.__maxPlayers, n);
-        }, 100);
       });
       await page.goto("/", { waitUntil: "load" });
       // The durations are the script's (settle + hold of each native scene), written next to the stage
@@ -59,14 +52,14 @@ for (const vp of VIEWPORTS)
         undefined,
         { timeout: 80000 },
       );
-      const { swaps, max } = await page.evaluate(() => {
-        const w = window as unknown as {
-          __swaps: { at: number; to: number; label: string }[];
-          __maxPlayers: number;
-        };
-        return { swaps: w.__swaps, max: w.__maxPlayers };
-      });
-      expect(max).toBeLessThanOrEqual(2);
+      const swaps = await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              __swaps: { at: number; to: number; label: string }[];
+            }
+          ).__swaps,
+      );
       for (const swap of swaps)
         expect(swap.label, "label of the step on screen").toBe(
           overview.steps[swap.to].label,
@@ -140,7 +133,7 @@ for (const vp of VIEWPORTS)
       expect(m.hub.h / vp.height).toBeLessThanOrEqual(0.5);
     });
 
-    test("under reduced motion no player is mounted and nothing animates", async ({
+    test("under reduced motion no video is mounted and nothing animates", async ({
       browser,
     }) => {
       const context = await browser.newContext({
@@ -157,7 +150,7 @@ for (const vp of VIEWPORTS)
       });
       await page.waitForTimeout(1500);
       const state = await page.evaluate(() => ({
-        players: document.querySelectorAll("hyperframes-player").length,
+        players: document.querySelectorAll("video, iframe").length,
         running: document
           .getAnimations()
           .filter((a) => a.playState === "running")
@@ -169,7 +162,7 @@ for (const vp of VIEWPORTS)
     });
   });
 
-test("the product page is one template: a native opening with the capability scenes, the reading bands and the other products, no film", async ({
+test("the product page is one template: a native opening with the capability scenes, the reading bands and the other products", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -189,9 +182,8 @@ test("the product page is one template: a native opening with the capability sce
     "others",
   ]);
   expect(await page.locator("h1").count()).toBe(1);
-  // The opening is native and plays: three capability scenes, no still frame, and no player or ring of films anywhere
+  // The opening is native and plays: three capability scenes, no still frame, and no video or frame anywhere
   expect(await page.locator("#product-scenes [data-tile]").count()).toBe(3);
   expect(await page.locator("#product [data-mini]").count()).toBe(0);
-  expect(await page.locator("hyperframes-player, video").count()).toBe(0);
-  expect(await page.locator("[data-layers], #product-ring").count()).toBe(0);
+  expect(await page.locator("video, iframe").count()).toBe(0);
 });

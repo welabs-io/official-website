@@ -1,5 +1,5 @@
 // PALCO DAS CENAS NATIVAS (SERVIDOR)
-// Replaces the ring of videos with live product screens. One tile per scene, in the same circular swap of positions: the
+// Live product screens in a circular carousel. One tile per scene, in a circular swap of positions: the
 // centre plays, the previous and the next neighbours are the same scenes standing still. Three stages share the markup:
 // SceneStage plays the chain (lib/scenes/script.ts) under the overview of the home or of a product page; CapabilityStage
 // plays the three capability scenes of a product (lib/scenes/capabilities.ts) at the opening of its page, with the names

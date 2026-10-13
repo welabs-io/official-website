@@ -6,7 +6,7 @@ import { productConfig } from "@/lib/site-config";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 
 // PÁGINA DE PRODUTO
-// One template for the five products (see SiteTemplate): opening, connectors, other films, call to action. Slugs
+// One template for the five products (see SiteTemplate): opening, connectors, other products, call to action. Slugs
 // are the current public ones; older slugs and ids are redirected by next.config.mjs. Any other slug is a 404 that
 // is decided at build time (dynamicParams off), so no unknown page is ever rendered on demand.
 export const dynamicParams = false;

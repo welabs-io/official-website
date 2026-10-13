@@ -66,9 +66,9 @@ test("the card of the active product is lit on the home and follows the ring", a
   await expect(lit).toHaveCount(1);
   await expect(lit).toHaveAttribute("data-card", "domus");
   await page.locator("#products").scrollIntoViewIfNeeded();
-  // The products ring swaps after the opening and film of the first product
+  // The products carousel swaps after the scene of the first product (about 5 s)
   await expect(lit).not.toHaveAttribute("data-card", "domus", {
-    timeout: 100000,
+    timeout: 20000,
   });
   await expect(lit).toHaveCount(1);
 });

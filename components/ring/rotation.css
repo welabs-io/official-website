@@ -1,5 +1,6 @@
 /* GIRO DO CARROSSEL CIRCULAR */
-/* One stylesheet for every circular carousel (the native scenes of the chain and the rings of films): the stage is
+/* One stylesheet for every circular carousel of native scenes (the chain, the products of the home, the capabilities of
+   a product page): the stage is
    `[data-ring]`, each tile `[data-pos]`. The swap is a turn, not a slide. Measured on khal.ai (hero, 25 fps): the window
    that comes forward flips its stacking at once and then settles over 0.5 s on an exponential ease-out, scale 0.98 to
    1.03 and 8 px of lift, while the one it replaces falls back with the same curve. Here the same idea gets depth: the

@@ -2,7 +2,7 @@
 // The stretch of the page thread between the content of a section and its bottom edge, where the pulse of the section
 // goes down to the dock of the next one. Two variants, server markup only, hidden from assistive technology:
 //  - "drop": one stretch on the axis; the pulse restarts when `data-pulse` flips between "a" and "b" (two identical
-//    keyframes with different names), which ring-run does on every swap of the ring of the section;
+//    keyframes with different names), which scene-run does on every swap of the stage of the section;
 //  - "converge": three stretches at 1/6, 1/2 and 5/6 of the content width (the columns of the vertical connector block)
 //    that run down past the section and end in a dock each on top of the strip of the closing; a loop of its own, with
 //    one pulse per stretch, runs while the section is on screen.

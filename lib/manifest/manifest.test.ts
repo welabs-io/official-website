@@ -269,23 +269,6 @@ describe("what the site shows of the manifest", () => {
     expect([...PRODUCT_SLUGS]).toEqual(PRODUCTS.map((p) => p.slug));
     expect(Object.keys(MANIFEST.products)).toEqual(PRODUCTS.map((p) => p.slug));
   });
-  it("every cover and piece the manifest names exists in the site, and every piece hashes as declared", async () => {
-    const { existsSync, readFileSync } = await import("node:fs");
-    const { createHash } = await import("node:crypto");
-    const { join } = await import("node:path");
-    const root = join(__dirname, "../../public");
-    for (const [id, piece] of Object.entries(MANIFEST.pieces)) {
-      const file = join(root, piece.src);
-      expect(existsSync(file), id).toBe(true);
-      expect(
-        createHash("sha256").update(readFileSync(file)).digest("hex"),
-        id,
-      ).toBe(piece.sha256);
-      for (const poster of piece.posters)
-        expect(existsSync(join(root, poster)), poster).toBe(true);
-    }
-    expect(existsSync(join(root, MANIFEST.player.src))).toBe(true);
-  });
   it("the chain runs on the declared status and no segment is shorter on screen than the floor of the manifest", () => {
     expect(["final", "fallback"]).toContain(MANIFEST.chain.status);
     for (const step of MANIFEST.chain.steps)

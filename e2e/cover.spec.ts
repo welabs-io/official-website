@@ -6,7 +6,7 @@ import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 
 for (const vp of VIEWPORTS)
-  test(`no entering tile without its cover in 3 swaps at ${vp.name}`, async ({
+  test(`no entering tile without its drawn scene in 3 swaps at ${vp.name}`, async ({
     page,
   }) => {
     test.setTimeout(90000);
@@ -24,13 +24,13 @@ for (const vp of VIEWPORTS)
         if ((event as CustomEvent).detail.ring === "chain-ring") w.__swaps++;
       });
       setInterval(() => {
-        // Sampling starts with the first swap: before it the ring is still loading its first paint
+        // Sampling starts with the first swap
         if (w.__swaps < 1) return;
         const ring = document.querySelector("#chain-ring");
         if (!ring) return;
         w.__samples++;
         // `data-pos` is clamped to -2..2, so with an odd count (7 steps) two tiles share place 2: the real +2 and the
-        // one behind it at +3. The real one is the tile with a rendered cover; the place needs one decoded cover.
+        // one behind it at +3; the place needs one drawn scene.
         for (const pos of [1, 2]) {
           const tiles = [
             ...ring.querySelectorAll<HTMLElement>(`[data-pos="${pos}"]`),

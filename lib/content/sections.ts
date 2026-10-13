@@ -217,6 +217,6 @@ export const HOME_FAQ: readonly Faq[] = [
   },
   {
     q: "A Marina e o Pedido 1234 existem?",
-    a: "Não. Eles são um exemplo para mostrar a cadeia, e os dados das cenas e dos filmes são fictícios.",
+    a: "Não. Eles são um exemplo para mostrar a cadeia, e os dados das cenas são fictícios.",
   },
 ];

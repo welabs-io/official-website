@@ -37,7 +37,7 @@ export function SceneWindow({
         </span>
         <span className={styles.path}>
           <b>
-            {/* Same standalone file as the LogoRow (light tone for the light bar); the scene label already names the product */}
+            {/* The standalone file of the product cards (light tone for the light bar); the scene label already names the product */}
             <img
               className={styles.barLogo}
               src={productLogo(product, "light", "row", BAR_LOGO_HEIGHT)}

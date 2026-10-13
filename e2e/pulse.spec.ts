@@ -1,7 +1,7 @@
 // PULSO DA TROCA
 // Acceptance of the pulse unit: on every `ring:swap` of the chain the pulse of the section restarts within 50 ms, the
-// connector of the overview takes the reach of the new step and the page never reads the layout for it. Needs the player to
-// play, so it runs without reduced motion and waits for real swaps (a cut of the chain lasts a few seconds).
+// connector of the overview takes the reach of the new step and the page never reads the layout for it. Needs the scenes to
+// play, so it runs without reduced motion and waits for real swaps (a scene of the chain lasts about 5 s).
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 

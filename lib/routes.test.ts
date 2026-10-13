@@ -30,12 +30,12 @@ describe("route segments are in English", () => {
   const pageFiles = walk(path.join(root, "app")).filter((f) =>
     /\/(page|route)\.tsx?$/.test(f),
   );
-  // lab/chain is the workbench of the chain montage (noindex, no link)
-  it("has the home, the product page and the workbench", () => {
+  // The workbench of the video montage (lab/chain) left with the videos: the native chain is measured on the home itself
+  it("has the home and the product page", () => {
     const routes = pageFiles.map((f) =>
       path.relative(path.join(root, "app"), path.dirname(f)),
     );
-    expect(routes.sort()).toEqual(["", "lab/chain", "products/[slug]"]);
+    expect(routes.sort()).toEqual(["", "products/[slug]"]);
   });
   it.each(pageFiles)("%s has no Portuguese segment", (file) => {
     const segments = path
@@ -120,34 +120,25 @@ describe("redirects", () => {
   });
 });
 
-describe("the repository plays only our own pieces, without a player interface", () => {
+describe("the site is 100% native: no video, no player, no frame of another page", () => {
   const files = [
     ...walk(path.join(root, "app")),
     ...walk(path.join(root, "components")),
     ...walk(path.join(root, "lib")),
     ...walk(path.join(root, "public")),
   ];
-  it("has no video file and no <video> element", () => {
+  it("serves no video file and no folder of motion pieces", () => {
     expect(files.filter((f) => /\.(mp4|webm|mov)$/i.test(f))).toEqual([]);
+    expect(files.filter((f) => f.includes("/public/motion/"))).toEqual([]);
+  });
+  it("draws no <video>, <iframe> or player element", () => {
     const offenders = files
       .filter(
         (f) =>
           /\.(tsx?|jsx?|css|html|mjs)$/.test(f) && !/\.test\.tsx?$/.test(f),
       )
-      .filter((f) => /<video\b/i.test(fs.readFileSync(f, "utf8")));
-    expect(offenders).toEqual([]);
-  });
-  it("never turns the player controls on", () => {
-    // The pieces copied from the round (public/motion) are not site code; the site mounts them with controls off
-    const offenders = files
-      .filter(
-        (f) =>
-          /\.(tsx?|jsx?|html|mjs)$/.test(f) &&
-          !/\.test\.tsx?$/.test(f) &&
-          !f.includes("/public/motion/"),
-      )
       .filter((f) =>
-        /setAttribute\(\s*["']controls["']|\bcontrols\s*[:=]\s*(true|\{true\})|<hyperframes-player[^>]*\bcontrols\b/.test(
+        /<video\b|<iframe\b|hyperframes-player|createElement\(\s*["'](video|iframe)["']/i.test(
           fs.readFileSync(f, "utf8"),
         ),
       );
