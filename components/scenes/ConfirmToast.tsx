@@ -1,45 +1,33 @@
 // AVISO DE CONFIRMAÇÃO
-// The notification that lands on Marina's phone: an amber check, the confirmation and, under it, the line that says it
-// arrived. Server markup; the two actions come from the script.
-import { ICON_STROKE } from "@/lib/icon-stroke";
+// The notification that lands on Marina's phone, over the top of the chat: a success icon, the confirmation (the key
+// element of the closing scene, with no check repeated in the text) and who sent it. Server markup; the action comes
+// from the script.
 import type { Act } from "@/lib/scenes/types";
+import { Glyph, GLYPHS } from "./icons";
 import styles from "./scenes.module.css";
 
 export function ConfirmToast({
   act,
   text,
-  received,
+  meta,
   action,
-  receivedAction,
 }: {
   act: Act;
   text: string;
-  received: string;
+  meta: string;
   action: string;
-  receivedAction: string;
 }) {
   return (
-    <div className={styles.toast}>
-      <div className={styles.toastBox} {...act(action, "pop")}>
-        <span className={styles.toastCheck} aria-hidden="true">
-          <svg
-            viewBox="0 0 24 24"
-            width="18"
-            height="18"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={ICON_STROKE}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M5 12.5l4.5 4.5L19 7" />
-          </svg>
-        </span>
-        <b data-focal="">{text}</b>
-      </div>
-      <p className={styles.received} {...act(receivedAction, "in")}>
-        {received}
-      </p>
+    <div className={styles.toast} data-edge="" {...act(action, "pop")}>
+      <span className={styles.toastIcon} aria-hidden="true">
+        <Glyph d={GLYPHS.check} size={14} />
+      </span>
+      <span className={styles.toastText}>
+        <b className={styles.key} data-key="">
+          {text}
+        </b>
+        <span>{meta}</span>
+      </span>
     </div>
   );
 }
