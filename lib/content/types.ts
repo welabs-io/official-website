@@ -58,3 +58,50 @@ export type ProductContent = {
 };
 
 export type ProductContentMap = Record<ProductSlug, ProductContent>;
+
+// AMPLIAÇÃO DO CONTEÚDO (HOME E PÁGINA DE PRODUTO)
+// Types of the reading sections added by the depth work. All text is data here; the components only draw it.
+
+// One question with a short answer (a <details> on the page)
+export type Faq = { q: string; a: string };
+
+// A profile of operation and the products that serve it
+export type Audience = {
+  title: string;
+  text: string;
+  products: readonly ProductSlug[];
+};
+
+// One step of the order, from start to end: the products involved and one sentence
+export type JourneyStep = { products: readonly ProductSlug[]; text: string };
+
+// One concrete change in the operation, drawn with the settled frame of a native scene
+export type Benefit = {
+  scene: "s0" | "s1" | "s2" | "s3" | "s4" | "s5" | "s6";
+  title: string;
+  text: string;
+};
+
+// A group of integrations: chips with an icon and/or the marks (by name in lib/partners.ts)
+export type IntegrationGroup = {
+  id: "channels" | "data" | "cloud" | "ai";
+  title: string;
+  text: string;
+  chips: readonly { icon: IconName; text: string }[];
+  marks: readonly string[];
+};
+
+// Capabilities of a product page in groups: `cap` indexes ProductContent.capabilities, `detail` is one sentence
+export type CapabilityGroup = {
+  title: string;
+  items: readonly { cap: number; detail: string }[];
+};
+
+// What a product page adds to the content of ProductContent
+export type ProductDepth = {
+  groups: readonly CapabilityGroup[];
+  audience: readonly Audience[];
+  faq: readonly Faq[];
+};
+
+export type ProductDepthMap = Record<ProductSlug, ProductDepth>;

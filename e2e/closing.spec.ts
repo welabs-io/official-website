@@ -17,7 +17,9 @@ for (const vp of VIEWPORTS)
       const closing = document.querySelector("#platforms")!;
       const wrap = document.querySelector("#connectors > div")!;
       // The first titled group (title and strip): the docks land on its top edge, above the title
-      const strip = closing.querySelector("[role=group]")!;
+      const groups = closing.querySelectorAll("[role=group]");
+      const strip = groups[0]!;
+      const lastStrip = groups[groups.length - 1]!;
       const contact = document.querySelector("#contact")!;
       const dock = getComputedStyle(contact, "::after");
       return {
@@ -26,6 +28,7 @@ for (const vp of VIEWPORTS)
         closing: box(closing),
         wrap: box(wrap),
         strip: box(strip),
+        lastStrip: box(lastStrip),
         contact: box(contact),
         docks: [...document.querySelectorAll("[data-rail=converge] b")].map(
           box,
@@ -54,6 +57,10 @@ for (const vp of VIEWPORTS)
       Math.abs(m.contact.x + m.contact.w / 2 - m.innerWidth / 2),
     ).toBeLessThanOrEqual(1);
     expect(m.buttonDock).toEqual({ top: -5, width: 10 });
-    // Two titled strips (measured 0.36 to 0.41 of the window at the three sizes; was 0.28 with one untitled strip)
-    expect(m.closing.h / m.innerHeight).toBeLessThanOrEqual(0.42);
+    // Two titled strips, from the top of the closing to the foot of the second one (measured 0.36 to 0.41 of the window
+    // at the three sizes; was 0.28 with one untitled strip), and then the contact block (title, line and button) under
+    // them, which the depth work added and which has its own, larger, budget
+    const stripsEnd = m.lastStrip.y + m.lastStrip.h - m.closing.y;
+    expect(stripsEnd / m.innerHeight).toBeLessThanOrEqual(0.42);
+    expect(m.contact.h / m.innerHeight).toBeLessThanOrEqual(0.55);
   });

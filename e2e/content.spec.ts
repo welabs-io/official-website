@@ -28,6 +28,8 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024"))
       });
     });
     await page.goto("/products/domus", { waitUntil: "load" });
+    // The films are under the opening (the native scene) now, and the ring plays only while it is on screen
+    await page.locator("#product-ring").scrollIntoViewIfNeeded();
     const caption = page.locator("[data-caption]");
     // Plain text: a carousel that changes by itself is not a live region
     await expect(caption).not.toHaveAttribute("aria-live", /.*/);

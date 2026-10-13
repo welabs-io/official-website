@@ -19,6 +19,9 @@ export const PAGE_HEADINGS = {
   resolves: "O que resolve",
   capabilities: "Capacidades",
   ties: "Com quem trabalha junto",
+  audience: "Para quem",
+  faq: "Perguntas frequentes",
+  others: "Outros produtos",
 } as const;
 
 // MENU DO CABEÇALHO E CAMINHO

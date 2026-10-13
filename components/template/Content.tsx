@@ -22,14 +22,31 @@ import {
 import type { Tone } from "@/lib/site-config";
 import { Icon } from "./Icon";
 import styles from "./content.module.css";
+import { SectionHead } from "./SectionHead";
 
 // CARTÕES DE PRODUTO (HOME)
 // Name (the official logo), one line and the first three capabilities. The card of the product active in the ring above
 // is lit (`data-on`, rewritten by ring-run on every swap); each card leads to its page.
-export function ProductCards({ tone, lit }: { tone: Tone; lit: ProductSlug }) {
+export function ProductCards({
+  tone,
+  lit,
+  exclude,
+  label = "Produtos",
+}: {
+  tone: Tone;
+  // The product lit by the ring above (home); none on the "other products" of a product page
+  lit?: ProductSlug;
+  // The product of the page, left out of the list ("Outros produtos")
+  exclude?: ProductSlug;
+  label?: string;
+}) {
   return (
-    <ul className={styles.cards} aria-label="Produtos">
-      {PRODUCTS.map(({ slug, line }) => (
+    <ul
+      className={styles.cards}
+      data-count={exclude ? 4 : 5}
+      aria-label={label}
+    >
+      {PRODUCTS.filter((p) => p.slug !== exclude).map(({ slug, line }) => (
         <li key={slug}>
           <Link
             href={`/products/${slug}`}
@@ -68,31 +85,12 @@ export function ProductCards({ tone, lit }: { tone: Tone; lit: ProductSlug }) {
 export function Resolves({ slug }: { slug: ProductSlug }) {
   return (
     <>
-      <h2 className={styles.heading}>{PAGE_HEADINGS.resolves}</h2>
+      <SectionHead title={PAGE_HEADINGS.resolves} />
       <ul className={styles.resolves}>
         {PRODUCT_CONTENT[slug].resolves.map((item) => (
           <li key={item.problem} className={styles.resolve}>
             <p className={styles.problem}>{item.problem}</p>
             <p className={styles.does}>{item.does}</p>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-}
-
-// CAPACIDADES (PÁGINA DE PRODUTO)
-export function Capabilities({ slug }: { slug: ProductSlug }) {
-  return (
-    <>
-      <h2 className={styles.heading}>{PAGE_HEADINGS.capabilities}</h2>
-      <ul className={styles.capabilities}>
-        {PRODUCT_CONTENT[slug].capabilities.map((cap) => (
-          <li key={cap.text} className={styles.capItem}>
-            <span className={styles.capIcon}>
-              <Icon name={cap.icon} size={20} />
-            </span>
-            {cap.text}
           </li>
         ))}
       </ul>
@@ -119,7 +117,7 @@ export function HubText({
   const own = ties.filter((tie) => tie.a === lit || tie.b === lit);
   return (
     <div className={styles.hubTies}>
-      <h2 className={styles.heading}>{PAGE_HEADINGS.ties}</h2>
+      <SectionHead title={PAGE_HEADINGS.ties} />
       <ul className={styles.ties}>
         {own.map((tie) => (
           <li key={tieKey(tie.a, tie.b)}>
@@ -132,10 +130,4 @@ export function HubText({
       </ul>
     </div>
   );
-}
-
-// TÍTULO DE FAIXA
-// Short heading on a band (the product page's "how it works" and the titles of the closing strips).
-export function BandTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className={styles.heading}>{children}</h2>;
 }

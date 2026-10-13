@@ -3,27 +3,33 @@
 // serves the home and the five product pages. `Sections` is the part without the frame (header and footer), which the
 // tests render on its own.
 import { PageFrame } from "@/components/onepage/PageFrame";
-import { ProductBlock } from "@/components/onepage/ProductBlock";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { RingStage } from "@/components/ring/RingStage";
 import { SceneStage } from "@/components/scenes/SceneStage";
-import { HOME_INTRO, PAGE_HEADINGS } from "@/lib/content";
+import { HOME_INTRO } from "@/lib/content";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
 import { Closing } from "./Closing";
-import {
-  BandTitle,
-  Capabilities,
-  HubText,
-  ProductCards,
-  Resolves,
-} from "./Content";
+import { HubText, ProductCards, Resolves } from "./Content";
 import { CoreHub } from "./CoreHub";
+import {
+  Benefits,
+  CapabilityGroups,
+  HomeAudience,
+  HomeFaq,
+  Integrations,
+  Journey,
+  OtherProducts,
+  ProductAudience,
+  ProductFaq,
+  ProductHero,
+} from "./Reading";
 import { Section } from "./Section";
+import { SectionHead } from "./SectionHead";
 
 function Body({ section }: { section: SectionConfig }) {
   switch (section.kind) {
@@ -45,38 +51,26 @@ function Body({ section }: { section: SectionConfig }) {
       );
     }
     case "ring": {
-      const { ring, head, tone, cards } = section;
-      const stage = (
-        <RingStage
-          id={ring.id}
-          kind={ring.kind}
-          slug={ring.slug}
-          eager={ring.eager}
-          logos={ring.logos}
-          tone={tone}
-          caption={ring.caption}
-          label={ring.label}
-        />
-      );
-      // With a product block the stage goes under it, in a grid that keeps the block at the left edge
-      return head ? (
-        <div className={`${shell.wrap} ${home.productPageGrid}`}>
-          <ProductBlock
-            slug={head.slug}
-            tone={tone}
-            link={false}
-            heading="h1"
-          />
-          <BandTitle>{PAGE_HEADINGS.how}</BandTitle>
-          {stage}
-        </div>
-      ) : (
+      const { ring, title, tone, cards } = section;
+      return (
         <div className={shell.wrap}>
-          {stage}
+          {title && <SectionHead title={title} />}
+          <RingStage
+            id={ring.id}
+            kind={ring.kind}
+            slug={ring.slug}
+            eager={ring.eager}
+            logos={ring.logos}
+            tone={tone}
+            caption={ring.caption}
+            label={ring.label}
+          />
           {cards && <ProductCards tone={tone} lit={PRODUCTS[0].slug} />}
         </div>
       );
     }
+    case "hero":
+      return <ProductHero slug={section.slug} />;
     case "resolves":
       return (
         <div className={shell.wrap}>
@@ -84,11 +78,23 @@ function Body({ section }: { section: SectionConfig }) {
         </div>
       );
     case "capabilities":
-      return (
-        <div className={shell.wrap}>
-          <Capabilities slug={section.slug} />
-        </div>
+      return <CapabilityGroups slug={section.slug} />;
+    case "journey":
+      return <Journey />;
+    case "benefits":
+      return <Benefits />;
+    case "audience":
+      return section.slug ? (
+        <ProductAudience slug={section.slug} />
+      ) : (
+        <HomeAudience />
       );
+    case "integrations":
+      return <Integrations />;
+    case "faq":
+      return section.slug ? <ProductFaq slug={section.slug} /> : <HomeFaq />;
+    case "others":
+      return <OtherProducts slug={section.slug} />;
     case "hub": {
       const tieList = ties(MANIFEST);
       return (

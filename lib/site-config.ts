@@ -3,10 +3,13 @@
 // graphite and cream bands. The products' openings and films are videos, shown as dark objects inside it.
 // One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
 // home and the five product pages are the same template with two configurations, so no section markup is copied between
-// routes: the home is ring, ring (with the product cards), connector block, closing; the product page is ring (films
-// with a live caption), resolves, capabilities, ring (the chain narrowed to the product), connector block, closing. The
-// connector block always comes right before the closing, because its rails run down into it. `pad` names the spacing
-// class of the section (home.module.css).
+// routes. The rhythm alternates visual bands (the chain, the product ring, the benefits with their scenes, the connector
+// block) and reading bands (the order from start to end, who it is for, integrations, questions): the home is chain,
+// order, products, benefits, audience, integrations, questions, connector block, closing; the product page is opening
+// (with the native scene), what it solves, how it works (the films), capabilities in groups, audience, questions,
+// connector block, closing and the other products. The connector block always comes right before the closing, because
+// its rails run down into it. `pad` names the spacing class of the section (home.module.css).
+import { PAGE_HEADINGS } from "./content";
 import { productBySlug, type ProductSlug } from "./products";
 import type { RingKind } from "./ring-data";
 
@@ -16,8 +19,8 @@ export type SectionPad =
   | "chain"
   | "products"
   | "productPage"
-  | "productChain"
   | "block"
+  | "read"
   | "connectors"
   | "closing";
 
@@ -25,7 +28,7 @@ type Base = {
   id: string;
   tone: Tone;
   pad: SectionPad;
-  // Heading for screen readers only (the site shows no visible titles)
+  // Heading for screen readers only (a visual band that shows no title of its own)
   srTitle?: string;
   // Thread of the page: "off" where the drawing of the section crosses the axis itself; "tail" draws only the stretch
   // under the content (the chain of the home, whose own connector carries the axis down to the ring)
@@ -39,7 +42,7 @@ type Base = {
 export type RingConfig = {
   id: string;
   kind: RingKind;
-  // The product of the ring: the page's own (kind "product") or the one the chain is narrowed to
+  // The product of the ring (kind "product")
   slug?: ProductSlug;
   logos?: "lit" | "links" | "pinned" | null;
   eager?: boolean;
@@ -55,15 +58,28 @@ export type SectionConfig =
   | (Base & {
       kind: "ring";
       ring: RingConfig;
-      // Product block (logo and factual line) above the stage, on the product page
-      head?: { slug: ProductSlug };
+      // Visible title over the stage (the product page's "how it works")
+      title?: string;
       // Grid of the five product cards under the ring, the active product lit (home)
       cards?: boolean;
     })
+  // Opening of a product page: trail, logo, line and the native scene of the product
+  | (Base & { kind: "hero"; slug: ProductSlug })
   // Three problems and what the product does about them (product page)
   | (Base & { kind: "resolves"; slug: ProductSlug })
-  // Six capabilities in a grid (product page)
+  // Six capabilities in groups with one sentence each (product page)
   | (Base & { kind: "capabilities"; slug: ProductSlug })
+  // Profiles and questions: the home's own (no slug) or a product's
+  | (Base & { kind: "audience"; slug?: ProductSlug })
+  | (Base & { kind: "faq"; slug?: ProductSlug })
+  // The order from start to end, in seven steps (home)
+  | (Base & { kind: "journey" })
+  // What changes in the operation, with a native scene each (home)
+  | (Base & { kind: "benefits" })
+  // Channels, data, cloud and AI (home)
+  | (Base & { kind: "integrations" })
+  // The other four products (product page)
+  | (Base & { kind: "others"; slug: ProductSlug })
   | (Base & { kind: "hub"; lit?: ProductSlug })
   | (Base & { kind: "closing" });
 
@@ -112,6 +128,7 @@ export const HOME_CONFIG: PageConfig = {
         label: "Cenas de cada sistema da cadeia",
       },
     },
+    { id: "how", kind: "journey", tone: "light", pad: "read" },
     {
       id: "products",
       kind: "ring",
@@ -129,6 +146,10 @@ export const HOME_CONFIG: PageConfig = {
       },
       cards: true,
     },
+    { id: "operation", kind: "benefits", tone: "light", pad: "read" },
+    { id: "audience", kind: "audience", tone: "light", pad: "read" },
+    { id: "integrations", kind: "integrations", tone: "light", pad: "read" },
+    { id: "faq", kind: "faq", tone: "light", pad: "read" },
     hub("Produtos ligados entre si"),
     closing,
   ],
@@ -141,10 +162,18 @@ export function productConfig(slug: ProductSlug): PageConfig {
     sections: [
       {
         id: "product",
-        kind: "ring",
+        kind: "hero",
+        slug,
         tone: "light",
         pad: "productPage",
-        head: { slug },
+      },
+      { id: "resolves", kind: "resolves", slug, tone: "light", pad: "block" },
+      {
+        id: "how",
+        kind: "ring",
+        tone: "light",
+        pad: "block",
+        title: PAGE_HEADINGS.how,
         rail: "drop",
         railDelay: 0.4,
         ring: {
@@ -152,43 +181,28 @@ export function productConfig(slug: ProductSlug): PageConfig {
           kind: "product",
           slug,
           logos: "pinned",
-          eager: true,
           label: `Abertura e filmes do ${name}`,
           caption: true,
         },
-      },
-      {
-        id: "resolves",
-        kind: "resolves",
-        slug,
-        tone: "light",
-        pad: "block",
       },
       {
         id: "capabilities",
         kind: "capabilities",
         slug,
         tone: "light",
-        pad: "block",
+        pad: "read",
       },
       {
-        id: "chain",
-        kind: "ring",
+        id: "audience",
+        kind: "audience",
+        slug,
         tone: "light",
-        pad: "productChain",
-        srTitle: `${name} na cadeia`,
-        rail: "drop",
-        railDelay: 0.5,
-        ring: {
-          id: "chain-ring",
-          kind: "chain",
-          slug,
-          logos: "lit",
-          label: `Cortes da cadeia com o ${name}`,
-        },
+        pad: "read",
       },
+      { id: "faq", kind: "faq", slug, tone: "light", pad: "read" },
       hub(`${name} no núcleo e nos trilhos`, slug),
       closing,
+      { id: "others", kind: "others", slug, tone: "light", pad: "read" },
     ],
   };
 }
