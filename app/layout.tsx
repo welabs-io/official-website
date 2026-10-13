@@ -8,7 +8,7 @@ import "./globals.css";
 // Cream browser chrome (the light theme of the brand) and the official favicon; themeColor mirrors --wl-cream (metadata
 // cannot read CSS variables).
 export const viewport: Viewport = {
-  themeColor: "#FAF5EA",
+  themeColor: "#FFFDF8",
   colorScheme: "light",
 };
 export const metadata: Metadata = {

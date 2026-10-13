@@ -32,7 +32,7 @@ html {
 }
 body {
   margin: 0;
-  background: #faf5ea;
+  background: #fffdf8;
   color: #1c1a16;
   font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -55,7 +55,7 @@ a {
 }
 /* On a graphite band (the footer) the outline turns cream */
 footer :focus-visible {
-  outline-color: #faf5ea;
+  outline-color: #fffdf8;
 }
 .skip-link {
   position: absolute;
