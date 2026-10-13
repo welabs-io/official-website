@@ -129,6 +129,8 @@
   background: color-mix(in srgb, var(--c) 92%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--cl);
+  /* Held still while the page under it changes (app/globals.css, page transition) */
+  view-transition-name: site-header;
 }
 .headerInner {
   display: flex;

@@ -24,9 +24,10 @@ export const PAGE_HEADINGS = {
   others: "Outros produtos",
 } as const;
 
-// MENU DO CABEÇALHO E CAMINHO
-// Labels of the navigation: the three entries of the header menu, the name of the menu on a phone, and the trail of
-// a product page ("Welabs / Domus"). The anchors are the sections of the home.
+// MENU DO CABEÇALHO E SELETOR DE PRODUTOS
+// Labels of the navigation: the three entries of the header menu, the name of the menu on a phone, and the top of a
+// product page (the way back to the home and the row of the five products, which replaced the trail "Welabs / Domus").
+// The anchors are the sections of the home.
 export const NAV = {
   label: "Principal",
   products: "Produtos",
@@ -34,8 +35,9 @@ export const NAV = {
   contact: "Contato",
   open: "Abrir o menu",
   close: "Fechar o menu",
-  trail: "Você está em",
-  home: "Welabs",
+  switcher: "Trocar de produto",
+  back: "Voltar",
+  backLabel: "Voltar para a página inicial",
 } as const;
 
 // One line per connection of the connector block (key: the two slugs, sorted). The label of the connection comes from
