@@ -53,4 +53,19 @@ export type Fx =
   // slide down by --dy
   | "drop"
   // dots that appear, stay and vanish
-  | "blink";
+  | "blink"
+  // Component motion of the ludic pilot (S1 and S2; see components/scenes/fx.css, "MOVIMENTO DE COMPONENTE"):
+  // born with a spring (scale from 0.6, overshoot, settle) about --origin
+  | "spring"
+  // rise 10 px with a small overshoot
+  | "rise"
+  // grow from the bottom (a bar of the waveform), with overshoot
+  | "grow"
+  // fly in from --fx/--fy (another component of the screen) and land
+  | "fly"
+  // travel from --dy lanes above, lifted and tilted on the way, and land with a bounce
+  | "lift"
+  // receive: a short swell of the element and a ring that leaves it
+  | "pulse"
+  // a column of digits rolls one row up (a counter that counts)
+  | "roll";

@@ -3,6 +3,7 @@
 // 12 px, with an optional piece of context on the right). No amber in the bar: the only amber dot at the top of the
 // stage is the connector of the overview. Server markup; the body is whatever the scene draws.
 import type { ReactNode } from "react";
+import type { ActProps } from "@/lib/scenes/types";
 import { productLogo } from "@/lib/products";
 import { WINDOW_TITLES } from "@/lib/scenes/story";
 import styles from "./scenes.module.css";
@@ -16,9 +17,12 @@ export function SceneWindow({
   product,
   meta,
   place,
+  receive,
   children,
 }: {
   product: WindowProduct;
+  // Props of the action in which the product receives something: its logo swells and sends a ring (ludic pilot)
+  receive?: ActProps;
   // Context on the right of the bar (the order the screen is about)
   meta?: string;
   // The place in the product, when it is not the one of the chain (the capability scenes of a product page)
@@ -37,15 +41,18 @@ export function SceneWindow({
         </span>
         <span className={styles.path}>
           <b>
-            {/* The standalone file of the product cards (light tone for the light bar); the scene label already names the product */}
-            <img
-              className={styles.barLogo}
-              src={productLogo(product, "light", "row", BAR_LOGO_HEIGHT)}
-              alt=""
-              aria-hidden="true"
-              height={BAR_LOGO_HEIGHT}
-              decoding="async"
-            />
+            {/* The logo swells and sends a pale amber ring when the product receives (ludic pilot) */}
+            <span className={styles.barReceive} {...receive}>
+              {/* The standalone file of the product cards (light tone for the light bar); the scene label already names the product */}
+              <img
+                className={styles.barLogo}
+                src={productLogo(product, "light", "row", BAR_LOGO_HEIGHT)}
+                alt=""
+                aria-hidden="true"
+                height={BAR_LOGO_HEIGHT}
+                decoding="async"
+              />
+            </span>
           </b>
           <span>{where}</span>
         </span>

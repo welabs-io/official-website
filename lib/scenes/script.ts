@@ -83,27 +83,32 @@ export const SCRIPT: readonly SceneScript[] = [
     id: "s1",
     step: 1,
     products: ["tuner"],
+    // Ludic pilot: the gestures need room for a spring, so the actions are longer and the reading pauses shorter; the
+    // scene keeps the 2x length (call: the call rises and its waveform grows; ask: Marina types, the bubble springs on
+    // her phone and flies into the inbox; merge: the two channels join, the pill pops and the Tuner logo swells)
     actions: [
-      { id: "call", at: 0.45, dur: 0.1 },
-      { id: "ask", at: 0.825, dur: 0.2 },
-      { id: "merge", at: 1.525, dur: 0.15 },
+      { id: "call", at: 0.45, dur: 0.3 },
+      { id: "ask", at: 0.8, dur: 0.45 },
+      { id: "merge", at: 1.3, dur: 0.375 },
     ],
     settle: 1.675,
     hold: 0.9,
-    token: { at: 1.525, dur: 0.15 },
+    token: { at: 1.3, dur: 0.375 },
   },
   {
     id: "s2",
     step: 2,
     products: ["relloo"],
+    // Ludic pilot: the card springs into Novo and the counter rolls; the facts rise one after the other while the emblems
+    // of the card pop; the card travels to Em análise lifted and tilted, and both counters roll
     actions: [
-      { id: "born", at: 0.45, dur: 0.1 },
-      { id: "facts", at: 0.825, dur: 0.225 },
-      { id: "review", at: 1.525, dur: 0.15 },
+      { id: "born", at: 0.45, dur: 0.3 },
+      { id: "facts", at: 0.8, dur: 0.45 },
+      { id: "review", at: 1.3, dur: 0.375 },
     ],
     settle: 1.675,
     hold: 0.9,
-    token: { at: 1.525, dur: 0.15 },
+    token: { at: 1.3, dur: 0.375 },
   },
   {
     id: "s3",
