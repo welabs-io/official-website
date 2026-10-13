@@ -1,26 +1,29 @@
 // MOLDURA DA PÁGINA
-// Fixed header (logo and the single call to action) and the footer. The call to action always points to the contact
-// section of the home; the contact destination is still to be decided by the operator.
+// Fixed header (logo that leads to the home, the menu and the call to action) and the footer. The call to action always
+// points to the contact section of the home; the contact destination is still to be decided by the operator.
 import Link from "next/link";
 import { FOOTER_NAV_LABEL } from "@/lib/content";
 import { CTA_LABEL, PRODUCTS, WELABS_LOGO } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
 import { LiveObserver } from "./LiveObserver";
+import { SiteNav } from "./SiteNav";
 import styles from "./shell.module.css";
 
-function Header({ home }: { home: boolean }) {
+function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
+        {/* The logo leads to the home on every page, the home itself included */}
         <Link
-          href={home ? "#top" : "/"}
+          href="/"
           prefetch={false}
           className={styles.brand}
           aria-label="Welabs, início"
         >
           <img src={WELABS_LOGO.light} alt="Welabs" height={42} />
         </Link>
-        <a href={CONTACT_HREF} className={styles.cta}>
+        <SiteNav />
+        <a href={CONTACT_HREF} className={`${styles.cta} ${styles.headerCta}`}>
           {CTA_LABEL}
         </a>
       </div>
@@ -51,16 +54,10 @@ function Footer() {
   );
 }
 
-export function PageFrame({
-  home = false,
-  children,
-}: {
-  home?: boolean;
-  children: React.ReactNode;
-}) {
+export function PageFrame({ children }: { children: React.ReactNode }) {
   return (
     <div id="top" className={styles.page}>
-      <Header home={home} />
+      <Header />
       {children}
       <Footer />
       <LiveObserver />

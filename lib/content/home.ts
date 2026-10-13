@@ -21,6 +21,20 @@ export const PAGE_HEADINGS = {
   ties: "Com quem trabalha junto",
 } as const;
 
+// MENU DO CABEÇALHO E CAMINHO
+// Labels of the navigation: the three entries of the header menu, the name of the menu on a phone, and the trail of
+// a product page ("Welabs / Domus"). The anchors are the sections of the home.
+export const NAV = {
+  label: "Principal",
+  products: "Produtos",
+  how: "Como funciona",
+  contact: "Contato",
+  open: "Abrir o menu",
+  close: "Fechar o menu",
+  trail: "Você está em",
+  home: "Welabs",
+} as const;
+
 // One line per connection of the connector block (key: the two slugs, sorted). The label of the connection comes from
 // the motion manifest; this line says what travels over it.
 export const TIE_LINES: Record<string, string> = {

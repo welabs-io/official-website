@@ -122,7 +122,7 @@ export function Sections({ config }: { config: PageConfig }) {
 
 export function SiteTemplate({ config }: { config: PageConfig }) {
   return (
-    <PageFrame home={config.home}>
+    <PageFrame>
       {/* Page heading for screen readers and SEO; the home shows no visible title */}
       {config.srH1 && <h1 className={home.srOnly}>{config.srH1}</h1>}
       <Sections config={config} />

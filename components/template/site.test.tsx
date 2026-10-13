@@ -81,12 +81,12 @@ describe("pages carry little text and no slogan", () => {
 
   it("the home and a product page stay under the word budget of the content layer", () => {
     // Measured when the content layer landed: see COUNT in the test below; the budgets guard against text creeping in
-    // 160 before the opening (29 words) and the overview (token and caption, 7 words) entered the home; now 180
+    // 160 before the opening (29 words) and the overview (token and caption, 7 words) entered the home; the menu of the header (about 40 words on every page) took it to 230
     expect(visibleText(copyOnly(home)).split(" ").length).toBeLessThanOrEqual(
-      180,
+      230,
     );
     for (const { html } of productPages)
-      expect(visibleText(html).split(" ").length).toBeLessThanOrEqual(260);
+      expect(visibleText(html).split(" ").length).toBeLessThanOrEqual(300);
   });
 
   it("every product line has at most six words", () => {
