@@ -53,8 +53,6 @@ export type ProductContent = {
     Capability,
     Capability,
   ];
-  // Live caption of each tile of the film ring of the page (opening plus main film, then each support film)
-  filmCaptions: readonly string[];
 };
 
 export type ProductContentMap = Record<ProductSlug, ProductContent>;

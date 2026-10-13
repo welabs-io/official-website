@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
+import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import {
   CLOSING,
   HOME_INTRO,
@@ -54,7 +55,6 @@ const sentences = (): string[] => {
   for (const content of Object.values(PRODUCT_CONTENT)) {
     for (const r of content.resolves) all.push(r.problem, r.does);
     for (const c of content.capabilities) all.push(c.text);
-    all.push(...content.filmCaptions);
   }
   for (const p of PRODUCTS) all.push(p.line);
   return all;
@@ -84,15 +84,14 @@ describe("every product has the required content", () => {
   });
 
   it.each(PRODUCTS.map((p) => p.slug))(
-    "%s has one live caption per tile of its film ring, at most 14 words",
+    "%s has one caption per scene of its opening (the sentence of the capability), at most 20 words",
     (slug) => {
-      const support = MANIFEST.products[slug].films.filter(
-        (f) => f.role === "support",
-      ).length;
-      const captions = PRODUCT_CONTENT[slug].filmCaptions;
-      expect(captions).toHaveLength(1 + support);
+      const captions = capabilityScenes(slug).map(
+        (scene) => capabilityOf(scene).detail,
+      );
+      expect(captions).toHaveLength(3);
       for (const caption of captions)
-        expect(words(caption)).toBeLessThanOrEqual(14);
+        expect(words(caption)).toBeLessThanOrEqual(20);
     },
   );
 });

@@ -25,13 +25,10 @@ export type RingProps = {
   fullscreen?: boolean;
   // First paint: the active cover is the largest image of the page, so it loads at once; below the fold it is lazy
   eager?: boolean;
-  // Row of product logos under the stage: lit by the cut (chain), by the product (links on the home) or pinned to the
-  // product of the page (links to the others)
-  logos?: "lit" | "links" | "pinned" | null;
+  // Row of product logos under the stage: lit by the cut (chain) or by the product, with links (products)
+  logos?: "lit" | "links" | null;
   // Theme of the logo files: the one of the band the stage sits on
   tone?: "dark" | "light";
-  // Show the live caption of the active tile under the ring (product page)
-  caption?: boolean;
   label: string;
 };
 
@@ -43,7 +40,6 @@ export function RingStage({
   eager = false,
   logos = null,
   tone = "dark",
-  caption = false,
   label,
 }: RingProps) {
   const slides = slidesOf(kind, slug);
@@ -115,28 +111,13 @@ export function RingStage({
       </div>
       {logos && (
         <LogoRow
-          mode={
-            logos === "lit"
-              ? "connection"
-              : logos === "pinned"
-                ? "pinned"
-                : "active"
-          }
+          mode={logos === "lit" ? "connection" : "active"}
           tone={tone}
           lit={data.lit[0] as ProductSlug[]}
           span={data.spans[0]}
           label={data.labels[0]}
-          pinned={logos === "pinned" ? slug : undefined}
           links={logos !== "lit"}
         />
-      )}
-      {/* Caption: the sentence of the active tile, rewritten by ring-run on every swap. Plain text, not a live region: a
-          carousel that changes by itself must not talk over the reader; the scene is named by the aria-label of the
-          active tile. */}
-      {caption && data.captions[0] && (
-        <p className={styles.caption} data-caption>
-          {data.captions[0]}
-        </p>
       )}
       {/* What ring-run plays, so the lazy chunk reads the DOM instead of importing the manifest */}
       <script

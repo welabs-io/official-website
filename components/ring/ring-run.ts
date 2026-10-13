@@ -30,12 +30,11 @@ export function run(root: HTMLElement, kind: RingKind) {
     tile.querySelector<HTMLElement>("[data-layers]"),
   );
   const logos = [...root.querySelectorAll<HTMLElement>("[data-slug]")];
-  // Product cards of the same section (the home), lit like the logos; and the live caption under the ring
+  // Product cards of the same section (the home), lit like the logos
   const cards = [
     ...(root.closest("section")?.querySelectorAll<HTMLElement>("[data-card]") ??
       []),
   ];
-  const caption = root.querySelector<HTMLElement>("[data-caption]");
   const flat = flatten(data.slides);
   // The chain has one tile per cut; the other kinds have one tile per slide (opening and film share a tile)
   const perCut = kind === "chain";
@@ -58,8 +57,7 @@ export function run(root: HTMLElement, kind: RingKind) {
   warmBehind(0);
 
   // Moves the ring to `active`: tile positions, accessibility and the lit logos
-  // `label` is false when the ring is only put back (stop): the caption is written by a swap or when the playback starts
-  const show = (active: number, label = true) => {
+  const show = (active: number) => {
     tiles.forEach((tile, i) => {
       const position = ringPosition(i, active, tiles.length);
       tile.dataset.pos = String(placeOf(position));
@@ -86,9 +84,6 @@ export function run(root: HTMLElement, kind: RingKind) {
       card.dataset.on = lit.includes(card.dataset.card ?? "")
         ? "true"
         : "false";
-    // The caption changes with the scene (plain text, not a live region)
-    if (label && caption && data.captions?.[active])
-      caption.textContent = data.captions[active];
   };
 
   // On every swap: fill the stretch of the bus of the row of logos that belongs to the new tile (the connection of the
@@ -177,8 +172,6 @@ export function run(root: HTMLElement, kind: RingKind) {
   ensurePlayer().then(
     () => {
       if (dead) return;
-      // The ring starts over on its first tile: its caption is written here, since a stop does not rewrite it
-      if (caption && data.captions?.[0]) caption.textContent = data.captions[0];
       playback?.start();
       overview?.begin();
     },
@@ -192,7 +185,7 @@ export function run(root: HTMLElement, kind: RingKind) {
     playback = null;
     // The next run starts over on the first tile, with no arc left running
     delete stage.dataset.turn;
-    show(0, false);
+    show(0);
     idle();
   };
 }

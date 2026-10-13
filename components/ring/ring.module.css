@@ -124,23 +124,6 @@
   inset: 0;
 }
 
-/* LEGENDA VIVA */
-/* One sentence under the ring that changes with the active tile. It has the colour of the band, so the thread of the
-   page behind it is hidden; two lines of height are reserved on a phone so the page does not jump when it changes. */
-.caption {
-  width: fit-content;
-  max-width: var(--tile-w);
-  margin: 0 auto;
-  padding: 0 var(--sp-2);
-  background: var(--bg);
-  color: var(--mute);
-  font-size: var(--text-md);
-  line-height: var(--lh-lead);
-  font-weight: 500;
-  text-align: center;
-  text-wrap: balance;
-}
-
 /* Phone: the tile takes the whole wrap (about 87% of the screen) */
 /* The openings and films of the home are dark objects on the cream page: their carousel is 0.75 of the tile of the chain
    (570 px at most, 42% of the window, 87% of the wrap on a phone), so the dark frame does not outweigh the scenes above */
@@ -153,9 +136,6 @@
   }
   .screen:has([data-ring="products"]) {
     --tile-w: 87%;
-  }
-  .caption {
-    min-height: 2.8em;
   }
 }
 @media (prefers-reduced-motion: reduce) {

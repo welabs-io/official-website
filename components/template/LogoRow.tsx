@@ -5,8 +5,7 @@
 // columns, so the stretch of the bus that fills with amber is plain numbers (`--lo`, `--hi`, `--origin`) the server
 // writes for the first state and ring-run rewrites on every swap, with no layout reading. Under the bus a line shows the
 // label of the connection of the cut (manifest `connection.label`), cross-faded on every swap. Server markup only; the
-// logos are the standalone ones (endorsePolicy "row"); `links` makes each one lead to its product page, except the
-// `pinned` product of a product page.
+// logos are the standalone ones (endorsePolicy "row"); `links` makes each one lead to its product page.
 import Link from "next/link";
 import {
   PRODUCTS,
@@ -18,7 +17,7 @@ import type { BusSpan } from "@/lib/bus";
 import type { Tone } from "@/lib/site-config";
 import styles from "./logorow.module.css";
 
-export type LogoRowMode = "connection" | "active" | "pinned";
+export type LogoRowMode = "connection" | "active";
 
 export function LogoRow({
   mode,
@@ -26,7 +25,6 @@ export function LogoRow({
   lit,
   span,
   label,
-  pinned,
   links,
 }: {
   mode: LogoRowMode;
@@ -36,7 +34,6 @@ export function LogoRow({
   span: BusSpan;
   // Label of the connection in the first state (the chain only)
   label?: string;
-  pinned?: ProductSlug;
   links: boolean;
 }) {
   return (
@@ -76,7 +73,7 @@ export function LogoRow({
               data-slug={slug}
               data-on={lit.includes(slug) ? "true" : "false"}
             >
-              {links && slug !== pinned ? (
+              {links ? (
                 <Link
                   href={`/products/${slug}`}
                   prefetch={false}
@@ -84,8 +81,6 @@ export function LogoRow({
                 >
                   {logo}
                 </Link>
-              ) : slug === pinned ? (
-                <span aria-current="page">{logo}</span>
               ) : (
                 logo
               )}
