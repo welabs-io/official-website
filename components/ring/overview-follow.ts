@@ -15,7 +15,8 @@ export type RingSwapDetail = {
   index: number;
 };
 
-export function follow(ringId: string, section: Element | null) {
+// `base` is the step the block rests on (0 on the home; the first step of the product on a product page)
+export function follow(ringId: string, section: Element | null, base = 0) {
   const overview = section?.querySelector<HTMLElement>("[data-overview]");
   const source = overview?.querySelector(
     "script[data-overview-data]",
@@ -70,8 +71,8 @@ export function follow(ringId: string, section: Element | null) {
   window.addEventListener("ring:swap", onSwap);
   const stop = () => {
     window.removeEventListener("ring:swap", onSwap);
-    apply(0, false, false);
+    apply(base, false, false);
   };
   // The first scene starts with no swap (the ring is already on it): `begin` plays its token when the playback starts
-  return Object.assign(stop, { begin: () => apply(0, true) });
+  return Object.assign(stop, { begin: () => apply(base, true) });
 }

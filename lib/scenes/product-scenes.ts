@@ -1,0 +1,33 @@
+// CENAS DE UM PRODUTO NA CADEIA
+// The product page replays the native chain, narrowed to the scenes the product takes part in: the scenes it stars in
+// (`products` of the script) and the ones where it is an end of the connection of the step (the manifest's
+// `connection.from` / `connection.to`). Order is the plot's. A product with a single scene gets a stage of one.
+import { MANIFEST } from "@/lib/manifest";
+import type { ProductSlug } from "@/lib/products";
+import { SCRIPT, cycleSeconds, type SceneScript } from "./script";
+
+// A stage of one or two short scenes would replay every few seconds, and the motion of each replay (swap, connector pulse,
+// token) weighs too much in the cycle: measured at 64% still for a single scene of 7.1 s. The last scene of a short cycle
+// holds longer, up to this many seconds in all (the measured 10-point gap between the script's still share and the
+// browser's is what this margin pays for).
+export const PRODUCT_MIN_CYCLE = 18;
+
+export function scenesOfProduct(slug: ProductSlug): SceneScript[] {
+  const own = SCRIPT.filter((scene) => {
+    const { connection } = MANIFEST.chain.steps[scene.step];
+    return (
+      scene.products.includes(slug) ||
+      connection.from === slug ||
+      connection.to === slug
+    );
+  });
+  const short = PRODUCT_MIN_CYCLE - cycleSeconds(own);
+  if (short <= 0) return own;
+  // The last scene stays longer; the others are the script's own
+  return own.map((scene, i) =>
+    i === own.length - 1 ? { ...scene, hold: scene.hold + short } : scene,
+  );
+}
+
+// Index of the step of the first scene of the product: where its overview starts
+export const firstStepOf = (slug: ProductSlug) => scenesOfProduct(slug)[0].step;

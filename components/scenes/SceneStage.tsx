@@ -6,7 +6,12 @@
 // motion, every scene shows its settled frame. The scene is an illustration: the tile is an image with the sentence of
 // the step as its name, and the screen content is hidden from assistive technology so nothing is read twice.
 import { MANIFEST } from "@/lib/manifest";
-import { SCRIPT, cycleSeconds, sceneSeconds } from "@/lib/scenes/script";
+import {
+  SCRIPT,
+  cycleSeconds,
+  sceneSeconds,
+  type SceneScript,
+} from "@/lib/scenes/script";
 import { placeOf, ringPosition } from "@/components/ring/positions";
 import { SceneBody } from "./SceneBody";
 import { SceneDriver } from "./SceneDriver";
@@ -17,16 +22,20 @@ export function SceneStage({
   id,
   label,
   tone = "light",
+  scenes = SCRIPT,
 }: {
   id: string;
   label: string;
   tone?: "dark" | "light";
+  // The scenes the stage plays: the whole script on the home, the ones a product takes part in on its page
+  scenes?: readonly SceneScript[];
 }) {
   const steps = MANIFEST.chain.steps;
   const data = {
     version: 1,
-    cycle: cycleSeconds(),
-    scenes: SCRIPT.map((scene) => sceneSeconds(scene)),
+    cycle: cycleSeconds(scenes),
+    scenes: scenes.map((scene) => sceneSeconds(scene)),
+    steps: scenes.map((scene) => scene.step),
   };
   return (
     <div
@@ -37,8 +46,8 @@ export function SceneStage({
       aria-label={label}
     >
       <div className={styles.stage} data-ring="chain" data-scenes>
-        {SCRIPT.map((scene, i) => {
-          const position = ringPosition(i, 0, SCRIPT.length);
+        {scenes.map((scene, i) => {
+          const position = ringPosition(i, 0, scenes.length);
           return (
             <div
               key={scene.id}

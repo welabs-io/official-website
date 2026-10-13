@@ -46,6 +46,24 @@
     opacity 0.4s var(--ease),
     filter 0.4s var(--ease);
 }
+/* The product of the page: never fully receded, and a 4 px amber bar under its logo */
+.col[data-self="true"] {
+  position: relative;
+}
+.col[data-self="true"]::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -6px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--a);
+}
+.col[data-self="true"][data-state="off"] {
+  opacity: 0.7;
+  filter: grayscale(0.4);
+}
 .col[data-state="touch"] {
   opacity: 0.6;
   filter: grayscale(0.6);

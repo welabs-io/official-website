@@ -24,10 +24,20 @@ const stateOf = (col: number, step: OverviewStep): NodeState =>
       ? "touch"
       : "off";
 
-export function ChainOverview({ tone }: { tone: Tone }) {
+// `step` is the step drawn first (a product page starts on the first step the product takes part in); `self` marks the
+// product of the page, which keeps a bar under its logo whatever the step lights
+export function ChainOverview({
+  tone,
+  step = 0,
+  self,
+}: {
+  tone: Tone;
+  step?: number;
+  self?: ProductSlug;
+}) {
   const data = overviewData();
   const count = data.order.length;
-  const first = data.steps[0];
+  const first = data.steps[step];
   const style = {
     "--n": count,
     ...stepVars(first, count),
@@ -47,6 +57,7 @@ export function ChainOverview({ tone }: { tone: Tone }) {
             className={styles.col}
             data-col={col}
             data-state={stateOf(col, first)}
+            data-self={end === self ? "true" : undefined}
           >
             {end === "outcome" ? (
               <svg
