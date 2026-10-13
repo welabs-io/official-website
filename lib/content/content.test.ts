@@ -13,8 +13,17 @@ import {
   TIE_LINES,
   tieKey,
 } from "./home";
+import { PRODUCT_DEPTH } from "./product-depth";
 import { PRODUCT_CONTENT } from "./products";
 import { copyViolation, words } from "./rules";
+import {
+  AUDIENCE,
+  BENEFITS,
+  HOME_FAQ,
+  HOME_SECTIONS,
+  INTEGRATIONS,
+  JOURNEY,
+} from "./sections";
 
 const sentences = (): string[] => {
   const all: string[] = [
@@ -25,7 +34,23 @@ const sentences = (): string[] => {
     CLOSING.platforms,
     ...Object.values(PAGE_HEADINGS),
     ...Object.values(TIE_LINES),
+    ...Object.values(HOME_SECTIONS).flatMap((s) => Object.values(s)),
+    ...JOURNEY.map((s) => s.text),
+    ...BENEFITS.flatMap((b) => [b.title, b.text]),
+    ...AUDIENCE.flatMap((a) => [a.title, a.text]),
+    ...INTEGRATIONS.flatMap((g) => [
+      g.title,
+      g.text,
+      ...g.chips.map((c) => c.text),
+    ]),
+    ...HOME_FAQ.flatMap((f) => [f.q, f.a]),
   ];
+  for (const depth of Object.values(PRODUCT_DEPTH)) {
+    for (const g of depth.groups)
+      all.push(g.title, ...g.items.map((i) => i.detail));
+    for (const a of depth.audience) all.push(a.title, a.text);
+    for (const f of depth.faq) all.push(f.q, f.a);
+  }
   for (const content of Object.values(PRODUCT_CONTENT)) {
     for (const r of content.resolves) all.push(r.problem, r.does);
     for (const c of content.capabilities) all.push(c.text);
@@ -87,6 +112,60 @@ describe("the common sentences respect their limits", () => {
       expect(words(line)).toBeLessThanOrEqual(14);
     }
   });
+});
+
+describe("the reading sections of the home", () => {
+  it("the order from start to end has the seven steps of the chain, one sentence of at most 22 words each", () => {
+    expect(JOURNEY).toHaveLength(MANIFEST.chain.steps.length);
+    for (const step of JOURNEY) {
+      expect(step.products.length).toBeGreaterThan(0);
+      expect(words(step.text)).toBeLessThanOrEqual(22);
+    }
+  });
+  it("there are six benefits, each on a distinct scene, and four profiles", () => {
+    expect(BENEFITS).toHaveLength(6);
+    expect(new Set(BENEFITS.map((b) => b.scene)).size).toBe(6);
+    expect(AUDIENCE).toHaveLength(4);
+    for (const a of AUDIENCE) expect(words(a.text)).toBeLessThanOrEqual(24);
+  });
+  it("the integrations are the four groups asked for, in order", () => {
+    expect(INTEGRATIONS.map((g) => g.id)).toEqual([
+      "channels",
+      "data",
+      "cloud",
+      "ai",
+    ]);
+  });
+  it("there are six to eight questions, each answer at most 40 words", () => {
+    expect(HOME_FAQ.length).toBeGreaterThanOrEqual(6);
+    expect(HOME_FAQ.length).toBeLessThanOrEqual(8);
+    for (const f of HOME_FAQ) expect(words(f.a)).toBeLessThanOrEqual(40);
+  });
+});
+
+describe("the depth of every product page", () => {
+  it.each(PRODUCTS.map((p) => p.slug))(
+    "%s places each of its six capabilities in exactly one group, with one sentence of at most 20 words",
+    (slug) => {
+      const used = PRODUCT_DEPTH[slug].groups.flatMap((g) =>
+        g.items.map((i) => i.cap),
+      );
+      expect([...used].sort()).toEqual([0, 1, 2, 3, 4, 5]);
+      for (const g of PRODUCT_DEPTH[slug].groups)
+        for (const item of g.items)
+          expect(words(item.detail)).toBeLessThanOrEqual(20);
+    },
+  );
+  it.each(PRODUCTS.map((p) => p.slug))(
+    "%s has three profiles and three or four questions",
+    (slug) => {
+      expect(PRODUCT_DEPTH[slug].audience).toHaveLength(3);
+      expect(PRODUCT_DEPTH[slug].faq.length).toBeGreaterThanOrEqual(3);
+      expect(PRODUCT_DEPTH[slug].faq.length).toBeLessThanOrEqual(4);
+      for (const f of PRODUCT_DEPTH[slug].faq)
+        expect(words(f.a)).toBeLessThanOrEqual(30);
+    },
+  );
 });
 
 describe("no slogan, banned word or maturity marker in any sentence", () => {

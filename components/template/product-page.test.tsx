@@ -1,13 +1,14 @@
 // TESTES DO TEMPLATE DAS PÁGINAS
-// The home and the five product pages are one template: the same sequence of sections (ring, ring, connector block,
-// closing). The product pages light their own product in the block and the row, take one ring for the opening and the
-// films, and narrow the chain to the steps that show the product. Rendered on the server and read as text.
+// The home and the five product pages are one template: the same band structure with two lists of sections. The product
+// pages open with the trail, the logo and the native scene of the product, then what it solves, how it works (the films),
+// the capabilities in groups, who it is for, the questions, the connector block lit on the product, the closing and the
+// other products. Rendered on the server and read as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
-import { chainSteps } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
+import { HERO_SCENE } from "./Reading";
 import { Sections } from "./SiteTemplate";
 
 const slugs = PRODUCTS.map((p) => p.slug);
@@ -17,26 +18,51 @@ const kinds = (config: { sections: { kind: string }[] }) =>
   config.sections.map((s) => s.kind);
 
 describe("one template, same sequence", () => {
-  it("the home is chain (two blocks), ring, connector block, closing; every product page adds the problems and the capabilities", () => {
-    expect(kinds(HOME_CONFIG)).toEqual(["chain", "ring", "hub", "closing"]);
+  it("the home alternates visual and reading bands and ends in the connector block and the closing", () => {
+    expect(kinds(HOME_CONFIG)).toEqual([
+      "chain",
+      "journey",
+      "ring",
+      "benefits",
+      "audience",
+      "integrations",
+      "faq",
+      "hub",
+      "closing",
+    ]);
+  });
+  it("every product page has the same ten bands, the connector block right before the closing", () => {
     for (const config of slugs.map(productConfig))
       expect(kinds(config)).toEqual([
-        "ring",
+        "hero",
         "resolves",
-        "capabilities",
         "ring",
+        "capabilities",
+        "audience",
+        "faq",
         "hub",
         "closing",
+        "others",
       ]);
   });
   it.each(slugs)("the %s page renders its sections in that order", (slug) => {
     const html = render(slug);
+    const order = [
+      "product",
+      "resolves",
+      "how",
+      "capabilities",
+      "audience",
+      "faq",
+      "connectors",
+      "platforms",
+      "contact",
+      "others",
+    ];
     const at = (id: string) => html.indexOf(`id="${id}"`);
-    expect(at("product")).toBeGreaterThanOrEqual(0);
-    expect(at("product")).toBeLessThan(at("chain"));
-    expect(at("chain")).toBeLessThan(at("connectors"));
-    expect(at("connectors")).toBeLessThan(at("platforms"));
-    expect(at("platforms")).toBeLessThan(at("contact"));
+    for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);
+    for (let i = 1; i < order.length; i++)
+      expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
     expect(html).not.toContain('id="films"');
   });
 });
@@ -58,33 +84,35 @@ describe("product page", () => {
     },
   );
   it.each(slugs)(
-    "the %s page has one ring for the opening and the films, one tile each",
+    "the %s page opens with its logo as the only h1 and a still native scene in which the product is the protagonist",
+    (slug) => {
+      const html = render(slug);
+      const hero = html.slice(
+        html.indexOf('id="product"'),
+        html.indexOf('id="resolves"'),
+      );
+      expect(hero.match(/<h1\b/g)).toHaveLength(1);
+      expect(html.match(/<h1\b/g)).toHaveLength(1);
+      const scene = HERO_SCENE[slug];
+      expect(hero).toContain(`data-mini="${scene}"`);
+      // No video, no cover: the opening is native
+      expect(hero).not.toMatch(/hyperframes-player|\/posters\/|<video/);
+    },
+  );
+  it.each(slugs)(
+    "the %s page has one ring for the opening and the films, one tile each, under 'Como funciona'",
     (slug) => {
       const html = render(slug);
       const at = (id: string) => html.indexOf(`id="${id}"`);
-      const ring = html.slice(at("product"), at("chain"));
+      const ring = html.slice(at("how"), at("capabilities"));
       const films = MANIFEST.products[slug].films;
       // The opening and the main film share the first tile; every support film has its own
       expect(ring.match(/data-layers/g)).toHaveLength(
         1 + films.filter((f) => f.role === "support").length,
       );
-      // One h1 per page, the product logo, with its row pinned to the product
-      expect(ring.match(/<h1\b/g)).toHaveLength(1);
+      expect(ring).toContain("Como funciona");
       expect(ring).toContain('data-row="pinned"');
       expect(ring.match(/aria-current="page"/g)).toHaveLength(1);
-    },
-  );
-  it.each(slugs)(
-    "the %s page narrows the chain to the steps that show it",
-    (slug) => {
-      const html = render(slug);
-      const chain = html.slice(
-        html.indexOf('id="chain"'),
-        html.indexOf('id="connectors"'),
-      );
-      expect(chain.match(/data-layers/g)).toHaveLength(
-        chainSteps(MANIFEST, slug).length,
-      );
     },
   );
   it("only the labels of the connections of the product stay in the block", () => {
@@ -99,7 +127,7 @@ describe("product page", () => {
   it("every band of the pages is marked live, so the thread and the pulses pause off screen", () => {
     const html = render("domus");
     const bands = html.match(/<section[^>]*>/g) ?? [];
-    expect(bands).toHaveLength(6);
+    expect(bands).toHaveLength(9);
     for (const band of bands) expect(band).toContain("data-live");
   });
 });

@@ -49,12 +49,19 @@ const hiddenText = (html: string) =>
 
 // Text of the page copy: the native scenes of the chain draw product screens, whose words are interface (checked by the
 // slogan and banned-word rules, but out of the word budget of the copy). The block between the stage and its data goes.
+// The same goes for the still scenes (MiniScene) of the benefits and of the opening of a product page: each one is a block
+// that starts at its `data-mini` holder and ends at the marker `data-mini-end` right after it.
 const copyOnly = (html: string) => {
   const at = html.indexOf("data-scenes");
   const end = html.indexOf("data-scene-data");
-  return at < 0 || end < at
-    ? html
-    : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+  const withoutStage =
+    at < 0 || end < at
+      ? html
+      : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+  return withoutStage.replace(
+    /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
+    "",
+  );
 };
 
 describe("pages carry no player interface", () => {
@@ -79,14 +86,19 @@ describe("pages carry little text and no slogan", () => {
     expect(copyViolation(all)).toBeNull();
   });
 
-  it("the home and a product page stay under the word budget of the content layer", () => {
-    // Measured when the content layer landed: see COUNT in the test below; the budgets guard against text creeping in
-    // 160 before the opening (29 words) and the overview (token and caption, 7 words) entered the home; now 180
-    expect(visibleText(copyOnly(home)).split(" ").length).toBeLessThanOrEqual(
-      180,
-    );
-    for (const { html } of productPages)
-      expect(visibleText(html).split(" ").length).toBeLessThanOrEqual(260);
+  it("the home and a product page stay inside the word budget of the depth work", () => {
+    // Operator direction of 2026-10-12: more content and more scroll. The home carries 700 to 1000 words (it was 180: the
+    // order from start to end, the benefits, the profiles, the integrations, the questions and the contact entered it) and
+    // a product page 400 to 700 (it was 260: the groups, the profiles and the questions entered it). The floor guards
+    // against a section losing its text as much as the ceiling guards against text creeping in.
+    const homeWords = visibleText(copyOnly(home)).split(" ").length;
+    expect(homeWords).toBeGreaterThanOrEqual(700);
+    expect(homeWords).toBeLessThanOrEqual(1000);
+    for (const { html } of productPages) {
+      const n = visibleText(copyOnly(html)).split(" ").length;
+      expect(n).toBeGreaterThanOrEqual(400);
+      expect(n).toBeLessThanOrEqual(700);
+    }
   });
 
   it("every product line has at most six words", () => {
@@ -94,8 +106,20 @@ describe("pages carry little text and no slogan", () => {
       expect(p.line.split(" ").length).toBeLessThanOrEqual(6);
   });
 
-  it("the home has its three sections and the call to action", () => {
-    for (const id of ["top", "chain", "products", "platforms", "contact"])
+  it("the home has its sections and the call to action", () => {
+    for (const id of [
+      "top",
+      "chain",
+      "how",
+      "products",
+      "operation",
+      "audience",
+      "integrations",
+      "faq",
+      "connectors",
+      "platforms",
+      "contact",
+    ])
       expect(home).toContain(`id="${id}"`);
     // The old strip and the second products-like section are gone
     expect(home).not.toContain('id="logos"');
@@ -122,12 +146,112 @@ describe("pages carry little text and no slogan", () => {
     );
   });
 
-  it("the sections come in order: chain, products, closing", () => {
+  it("the sections alternate visual and reading bands: chain, order, products, operation, audience, integrations, questions, connectors, closing", () => {
     const at = (id: string) => home.indexOf(`id="${id}"`);
-    expect(at("chain")).toBeLessThan(at("products"));
-    expect(at("products")).toBeLessThan(at("platforms"));
-    expect(at("platforms")).toBeLessThan(at("contact"));
+    const order = [
+      "chain",
+      "how",
+      "products",
+      "operation",
+      "audience",
+      "integrations",
+      "faq",
+      "connectors",
+      "platforms",
+      "contact",
+    ];
+    for (let i = 1; i < order.length; i++)
+      expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
   });
+});
+
+describe("the new sections of the home", () => {
+  it("the order from start to end has the seven steps of the chain, each with its products and one sentence", () => {
+    const section = home.slice(
+      home.indexOf('id="how"'),
+      home.indexOf('id="products"'),
+    );
+    expect(section.match(/<li[^>]*>/g)).toHaveLength(7);
+    expect(visibleText(section)).toContain("Um pedido, do começo ao fim");
+  });
+  it("the benefits are six, each with a still native scene and no company", () => {
+    const section = home.slice(
+      home.indexOf('id="operation"'),
+      home.indexOf('id="audience"'),
+    );
+    expect(section.match(/data-mini="s\d"/g)).toHaveLength(6);
+    expect(section).not.toMatch(/hyperframes-player|<video|\/posters\//);
+  });
+  it("the audience has four profiles, the integrations four groups and the questions are native details", () => {
+    const part = (from: string, to: string) =>
+      home.slice(home.indexOf(`id="${from}"`), home.indexOf(`id="${to}"`));
+    expect(part("audience", "integrations").match(/<h3>/g)).toHaveLength(4);
+    expect(part("integrations", "faq").match(/data-group="/g)).toHaveLength(4);
+    const faq = part("faq", "connectors");
+    const questions = faq.match(/<details/g) ?? [];
+    expect(questions.length).toBeGreaterThanOrEqual(6);
+    expect(questions.length).toBeLessThanOrEqual(8);
+    // Closed by default and no script: the answers are in the markup
+    expect(faq).not.toContain("<details open");
+  });
+  it("names no company: the portfolio has no scope confirmed to attribute a case", () => {
+    const body = visibleText(
+      copyOnly(home.slice(0, home.indexOf('id="platforms"'))),
+    );
+    for (const company of [
+      "Light",
+      "Neoenergia",
+      "Enel",
+      "Ecoenel",
+      "Kiosk",
+      "IMA",
+      "AVSI",
+      "Stant",
+      "WeGO",
+    ])
+      expect(body).not.toMatch(new RegExp(`\\b${company}\\b`));
+  });
+  it("the contact is a real section: a title, the line the operator chose and the button, and no address that was not given", () => {
+    const contact = home.slice(home.indexOf('id="contact"'));
+    expect(visibleText(contact)).toContain("Contato");
+    expect(visibleText(contact)).toContain("Conversar com a Welabs");
+    expect(contact).not.toMatch(/mailto:|wa\.me/);
+  });
+});
+
+describe("navigation on every page", () => {
+  it.each(pages)(
+    "$slug has the menu (the five products, Como funciona, Contato) and the logo that leads to the home",
+    ({ html }) => {
+      const header = html.slice(
+        html.indexOf("<header"),
+        html.indexOf("</header>"),
+      );
+      expect(header).toContain('href="/"');
+      expect(header).toContain('aria-label="Welabs, início"');
+      for (const p of PRODUCTS)
+        expect(header).toContain(`href="/products/${p.slug}"`);
+      expect(header).toContain('href="/#how"');
+      expect(header).toContain('href="/#contact"');
+      expect(header).toContain('aria-controls="site-nav"');
+    },
+  );
+  it.each(productPages)(
+    "$slug has the trail 'Welabs / product' and the other four products at the end",
+    ({ slug, html }) => {
+      const name = PRODUCTS.find((p) => p.slug === slug)!.name;
+      const trail = html.slice(html.indexOf('aria-label="Você está em"'));
+      expect(trail.slice(0, 400)).toContain(">Welabs<");
+      expect(trail.slice(0, 600)).toContain(`aria-current="page">${name}<`);
+      const others = html.slice(
+        html.indexOf('id="others"'),
+        html.indexOf("<footer"),
+      );
+      expect(others.match(/data-card="[a-z]+"/g)).toHaveLength(4);
+      expect(others).not.toContain(`href="/products/${slug}"`);
+      expect(visibleText(others)).toContain("Outros produtos");
+    },
+  );
 });
 
 describe("the home has no sequential player and no opening on the chain", () => {

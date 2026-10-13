@@ -15,9 +15,20 @@
 *::after {
   box-sizing: border-box;
 }
+/* NAVEGAÇÃO: SEM ROLAGEM SUAVE */
+/* `scroll-behavior: smooth` on <html> was the cause of the reported navigation bug (measured 2026-10-12): Next 16 no
+   longer switches it off during a route change, so a click on a product card reached the new page by a 0.5 s scroll
+   through its body, and the browser's own restoration on back and forward became an animation too (on a phone the
+   product page stayed at the scroll of the home it came from). The page has no smooth scroll at all: jumps are instant. */
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  /* An anchor lands under the fixed header (72 px, 56 px on a small phone), never beneath it */
+  scroll-padding-top: 72px;
+}
+@media (max-width: 520px) {
+  html {
+    scroll-padding-top: 56px;
+  }
 }
 body {
   margin: 0;
@@ -50,9 +61,4 @@ a {
 }
 .skip-link:focus {
   top: 8px;
-}
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
 }

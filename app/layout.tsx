@@ -32,7 +32,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // data-theme="light" sits on <html>: it pins the package's light tokens against the system dark preference
+  // data-theme="light" sits on <html>: it pins the package's light tokens against the system dark preference. There is
+  // no smooth scroll on the page (see app/globals.css): every jump, route change and back or forward is instant
   return (
     <html lang="pt-BR" data-theme="light">
       <head>

@@ -67,11 +67,12 @@ describe("overview markup", () => {
       ),
     ];
     for (const html of pages) {
+      // Only the home has a chain section now (the product pages open with the native scene of the product); it ends where
+      // the order from start to end begins
+      if (html.indexOf('id="chain"') < 0) continue;
       const chain = html.slice(
         html.indexOf('id="chain"'),
-        html.indexOf('id="products"') > 0
-          ? html.indexOf('id="products"')
-          : html.indexOf('id="connectors"'),
+        html.indexOf('id="how"'),
       );
       for (const p of PRODUCTS)
         expect(
@@ -92,7 +93,7 @@ describe("overview markup", () => {
 describe("the chain section of the home", () => {
   const chain = page.slice(
     page.indexOf('id="chain"'),
-    page.indexOf('id="products"'),
+    page.indexOf('id="how"'),
   );
   it("opens with the title and the line of the home, then the overview, then the ring, in that order", () => {
     const at = (s: string) => chain.indexOf(s);

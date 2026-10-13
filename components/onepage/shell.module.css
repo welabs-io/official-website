@@ -136,6 +136,187 @@
   }
 }
 
+/* MENU DO CABEÇALHO */
+/* Desktop: three entries in a row between the logo and the call to action; the list of products opens under "Produtos"
+   on hover and on keyboard focus. Phone (860 px and below): a button opens a panel under the header with the same
+   entries, the products always listed. */
+.navWrap {
+  display: flex;
+  align-items: center;
+}
+.nav {
+  display: flex;
+  align-items: center;
+}
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.navLink:hover,
+.navLink[aria-current] {
+  background: var(--soft);
+}
+.hasMenu {
+  position: relative;
+}
+.menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 60;
+  display: none;
+  min-width: 300px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  background: var(--c);
+  border: 1px solid var(--cl);
+  border-radius: 8px;
+  box-shadow: 0 16px 32px -20px rgb(28 26 22 / 0.4);
+}
+/* The list stays open while the pointer crosses the 1 px gap, because the item itself holds the hover */
+.hasMenu:hover .menu,
+.hasMenu:focus-within .menu {
+  display: block;
+}
+.menuLink {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.menuLink:hover,
+.menuLink[aria-current] {
+  background: var(--soft);
+}
+.menuLink b {
+  font-size: 15px;
+  font-weight: 600;
+}
+.menuLink span {
+  font-size: 13.5px;
+  color: var(--mute-l);
+}
+.menuButton,
+.navCta {
+  display: none;
+}
+.headerCta {
+  margin-left: 4px;
+}
+@media (max-width: 860px) {
+  .menuButton {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--cl);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  /* Three bars drawn by one element and its two pseudo-elements */
+  .burger,
+  .burger::before,
+  .burger::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 1px;
+    background: currentcolor;
+  }
+  .burger {
+    position: relative;
+  }
+  .burger::before,
+  .burger::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+  .burger::before {
+    top: -6px;
+  }
+  .burger::after {
+    top: 6px;
+  }
+  .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    max-height: calc(100dvh - var(--header-h));
+    overflow-y: auto;
+    padding: 8px 24px 24px;
+    background: var(--c);
+    border-bottom: 1px solid var(--cl);
+  }
+  .nav[data-open="true"] {
+    display: flex;
+  }
+  .navList {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .navLink {
+    min-height: 48px;
+    padding: 0 8px;
+    font-size: 16px;
+  }
+  /* The products are always listed in the panel */
+  .menu {
+    position: static;
+    display: block;
+    min-width: 0;
+    padding: 0 0 8px 8px;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  .menuLink {
+    padding: 8px;
+  }
+  .headerCta {
+    margin-left: 0;
+  }
+}
+@media (max-width: 520px) {
+  .headerCta {
+    display: none;
+  }
+  .navCta {
+    display: inline-flex;
+    justify-content: center;
+  }
+  .headerInner {
+    gap: 8px;
+  }
+}
+
 /* LOGO DE PRODUTO */
 /* The logo file has built-in left padding; --pad (share of the height) aligns the wordmark with the line below. */
 .logo {

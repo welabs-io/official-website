@@ -1,0 +1,28 @@
+/* CENA NATIVA PARADA */
+/* The holder is the container the frame measures itself against: wide (2:1) from 52 rem of width, tablet (16:10) up to it
+   and a phone (7:10) below 34 rem, the three layouts the scenes already have. `data-phone` forces the phone layout for
+   the narrow cards of the benefits (they are never wider than 34 rem). No content-visibility: a skipped block takes an
+   estimated height, and the page below it would move by a few pixels when the block is drawn, which is exactly what the
+   back button must not do. */
+.holder {
+  container: mini / inline-size;
+}
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+}
+@container mini (max-width: 34rem) {
+  .frame {
+    aspect-ratio: 7 / 10;
+  }
+}
+@container mini (min-width: 52rem) {
+  .frame {
+    aspect-ratio: 2 / 1;
+  }
+}
+/* 4:5 holds the tallest of the scenes (the house and the card) in the phone layout at 20 to 34 rem of width */
+.frame[data-phone] {
+  aspect-ratio: 4 / 5;
+}
