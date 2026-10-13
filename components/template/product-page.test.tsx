@@ -1,8 +1,8 @@
 // TESTES DO TEMPLATE DAS PÁGINAS
 // The home and the five product pages are one template: the same band structure with two lists of sections. The product
-// pages open with the trail, the logo and the native scene of the product, then what it solves, how it works (the films),
-// the capabilities in groups, who it is for, the questions, the connector block lit on the product, the closing and the
-// other products. Rendered on the server and read as text.
+// pages open with the trail, the logo and the stage of three capability scenes, then what it solves, how it works (the
+// native chain), the capabilities in groups, who it is for, the questions, the connector block lit on the product, the
+// closing and the other products. No video anywhere. Rendered on the server and read as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { MANIFEST } from "@/lib/manifest";
@@ -13,7 +13,7 @@ import {
 } from "@/lib/scenes/product-scenes";
 import { STILL_TARGET, cycleSeconds, stillRatio } from "@/lib/scenes/script";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
-import { HERO_SCENE } from "./Reading";
+import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import { Sections } from "./SiteTemplate";
 
 const slugs = PRODUCTS.map((p) => p.slug);
@@ -89,7 +89,7 @@ describe("product page", () => {
     },
   );
   it.each(slugs)(
-    "the %s page opens with its logo as the only h1 and a still native scene in which the product is the protagonist",
+    "the %s page opens with its logo as the only h1 and the stage of its three capability scenes, animated and native",
     (slug) => {
       const html = render(slug);
       const hero = html.slice(
@@ -98,26 +98,37 @@ describe("product page", () => {
       );
       expect(hero.match(/<h1\b/g)).toHaveLength(1);
       expect(html.match(/<h1\b/g)).toHaveLength(1);
-      const scene = HERO_SCENE[slug];
-      expect(hero).toContain(`data-mini="${scene}"`);
-      // No video, no cover: the opening is native
-      expect(hero).not.toMatch(/hyperframes-player|\/posters\/|<video/);
+      const scenes = capabilityScenes(slug);
+      expect(scenes).toHaveLength(3);
+      expect(hero).toContain('id="product-scenes"');
+      for (const scene of scenes) {
+        expect(scene.product).toBe(slug);
+        expect(hero).toContain(`data-tile="${scene.id}"`);
+        // The name of the capability and the sentence of the page about it
+        const { name, detail } = capabilityOf(scene);
+        expect(hero).toContain(name);
+        expect(hero).toContain(detail);
+      }
+      // One capability per scene, never the same twice
+      expect(new Set(scenes.map((s) => s.cap)).size).toBe(3);
+      // The runner gets the times and the captions; the first caption is in the markup, as plain text
+      expect(hero).toContain(
+        `"captions":${JSON.stringify(scenes.map((s) => capabilityOf(s).detail))}`,
+      );
+      expect(hero.match(/data-on="true"/g)).toHaveLength(1);
+      // No video, no cover, no still frame: the opening is native and plays
+      expect(hero).not.toMatch(
+        /hyperframes-player|\/posters\/|<video|data-mini=/,
+      );
     },
   );
   it.each(slugs)(
-    "the %s page has one ring for the opening and the films, one tile each, under 'Como funciona'",
+    "the %s page has no film: no player, no cover and no ring of videos anywhere",
     (slug) => {
       const html = render(slug);
-      const at = (id: string) => html.indexOf(`id="${id}"`);
-      const ring = html.slice(at("how"), at("capabilities"));
-      const films = MANIFEST.products[slug].films;
-      // The opening and the main film share the first tile; every support film has its own
-      expect(ring.match(/data-layers/g)).toHaveLength(
-        1 + films.filter((f) => f.role === "support").length,
+      expect(html).not.toMatch(
+        /hyperframes-player|\/posters\/|<video|data-layers|id="product-ring"/,
       );
-      expect(ring).toContain("Como funciona");
-      expect(ring).toContain('data-row="pinned"');
-      expect(ring.match(/aria-current="page"/g)).toHaveLength(1);
     },
   );
   it.each(slugs)(
@@ -148,8 +159,8 @@ describe("product page", () => {
         MANIFEST.chain.steps[scenes[0].step].overview.label,
       );
       expect(how).toContain(`"steps":[${scenes.map((s) => s.step).join(",")}]`);
-      // The scenes are native: the only video of the section is the ring of films
-      expect(how.slice(0, how.indexOf('id="product-ring"'))).not.toMatch(
+      // The scenes are native: no video in the section
+      expect(how).not.toMatch(
         /hyperframes-player|\/posters\/|<video|data-layers/,
       );
     },

@@ -14,6 +14,7 @@ import { copyViolation } from "@/lib/content/rules";
 import { MANIFEST } from "@/lib/manifest";
 import { ties } from "@/lib/manifest/select";
 import { PRODUCTS } from "@/lib/products";
+import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import { metadata as homeMetadata } from "@/app/page";
 import { generateMetadata } from "@/app/products/[slug]/page";
 import { SiteTemplate } from "@/components/template/SiteTemplate";
@@ -47,17 +48,20 @@ const hiddenText = (html: string) =>
     .map((m) => m[1])
     .join(" ");
 
-// Text of the page copy: the native scenes of the chain draw product screens, whose words are interface (checked by the
-// slogan and banned-word rules, but out of the word budget of the copy). The block between the stage and its data goes.
-// The same goes for the still scenes (MiniScene) of the benefits and of the opening of a product page: each one is a block
-// that starts at its `data-mini` holder and ends at the marker `data-mini-end` right after it.
+// Text of the page copy: the native scenes draw product screens, whose words are interface (checked by the slogan and
+// banned-word rules, but out of the word budget of the copy). The block between each stage and its data goes: the chain,
+// and on a product page also the capability scenes of the opening. The same goes for the still scenes (MiniScene) of the
+// benefits: each one is a block that starts at its `data-mini` holder and ends at the marker `data-mini-end` right after it.
 const copyOnly = (html: string) => {
-  const at = html.indexOf("data-scenes");
-  const end = html.indexOf("data-scene-data");
-  const withoutStage =
-    at < 0 || end < at
-      ? html
-      : html.slice(0, html.lastIndexOf("<div", at)) + html.slice(end);
+  let withoutStage = html;
+  for (;;) {
+    const at = withoutStage.indexOf("data-scenes");
+    const end = withoutStage.indexOf("data-scene-data", at);
+    if (at < 0 || end < 0) break;
+    withoutStage =
+      withoutStage.slice(0, withoutStage.lastIndexOf("<div", at)) +
+      withoutStage.slice(end);
+  }
   return withoutStage.replace(
     /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
     "",
@@ -336,7 +340,7 @@ describe("the content layer on the rendered pages", () => {
       // The caption starts on the first tile and is plain text: no live region on a carousel that changes by itself
       expect(html).toMatch(/<p[^>]*data-caption[^>]*>/);
       expect(html).not.toMatch(/aria-live/);
-      expect(t).toContain(c.filmCaptions[0]);
+      expect(t).toContain(capabilityOf(capabilityScenes(slug)[0]).detail);
       for (const tie of ties(MANIFEST).filter(
         (x) => x.a === slug || x.b === slug,
       ))
