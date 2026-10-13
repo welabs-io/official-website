@@ -25,8 +25,8 @@ import styles from "./content.module.css";
 import { SectionHead } from "./SectionHead";
 
 // CARTÕES DE PRODUTO (HOME)
-// Name (the official logo), one line and the first three capabilities. The card of the product active in the ring above
-// is lit (`data-on`, rewritten by ring-run on every swap); each card leads to its page.
+// Name (the official logo), one line and the first three capabilities. The card of the product on screen in the carousel
+// above is lit (`data-on`, rewritten by components/scenes/scene-run.ts on every swap); each card leads to its page.
 export function ProductCards({
   tone,
   lit,

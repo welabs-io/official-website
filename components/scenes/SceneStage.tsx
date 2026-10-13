@@ -1,9 +1,10 @@
 // PALCO DAS CENAS NATIVAS (SERVIDOR)
 // Replaces the ring of videos with live product screens. One tile per scene, in the same circular swap of positions: the
-// centre plays, the previous and the next neighbours are the same scenes standing still. Two stages share the markup:
+// centre plays, the previous and the next neighbours are the same scenes standing still. Three stages share the markup:
 // SceneStage plays the chain (lib/scenes/script.ts) under the overview of the home or of a product page; CapabilityStage
 // plays the three capability scenes of a product (lib/scenes/capabilities.ts) at the opening of its page, with the names
-// of the capabilities and the caption of the active one under it. All server markup; SceneDriver (the only client piece,
+// of the capabilities and the caption of the active one under it; ProductsStage plays one capability scene per product
+// in the products section of the home and lights the card of the product on screen. All server markup; SceneDriver (the only client piece,
 // it renders nothing) starts the runner when the stage is on screen. Without script, or under reduced motion, every scene
 // shows its settled frame. The scene is an illustration: the tile is an image with a sentence as its name, and the
 // screen content is hidden from assistive technology so nothing is read twice.
@@ -18,7 +19,8 @@ import {
   type SceneScript,
   type TimedScene,
 } from "@/lib/scenes/script";
-import type { ProductSlug } from "@/lib/products";
+import { homeProductScenes } from "@/lib/scenes/home-products";
+import { productBySlug, type ProductSlug } from "@/lib/products";
 import { placeOf, ringPosition } from "@/components/ring/positions";
 import "@/components/ring/rotation.css";
 import { CapabilityBody } from "./CapabilityBody";
@@ -38,6 +40,7 @@ function Stage({
   tiles,
   steps,
   captions,
+  lit,
   children,
 }: {
   id: string;
@@ -48,6 +51,8 @@ function Stage({
   steps?: readonly number[];
   // The caption of each scene, rewritten by the runner on every swap
   captions?: readonly string[];
+  // The product card each scene lights in its section (the products carousel of the home)
+  lit?: readonly string[];
   children?: ReactNode;
 }) {
   const scenes = tiles.map((tile) => tile.scene);
@@ -58,6 +63,7 @@ function Stage({
     scenes: scenes.map((scene) => sceneSeconds(scene)),
     ...(steps ? { steps } : {}),
     ...(captions ? { captions } : {}),
+    ...(lit ? { lit } : {}),
   };
   return (
     <div
@@ -173,5 +179,29 @@ export function CapabilityStage({
         </p>
       </div>
     </Stage>
+  );
+}
+
+// PALCO DOS PRODUTOS (HOME)
+// The carousel of the products section of the home: one capability scene per product (lib/scenes/home-products.ts), the
+// logo of the product in the bar of its window, in the same turn and at the same pace as the chain. The five cards under
+// it are the legend: the runner lights the card of the product on screen (`lit`), and each card leads to its page.
+export function ProductsStage({ id, label }: { id: string; label: string }) {
+  const scenes = homeProductScenes();
+  return (
+    <Stage
+      id={id}
+      label={label}
+      tone="light"
+      lit={scenes.map((scene) => scene.product)}
+      tiles={scenes.map((scene) => {
+        const cap = capabilityOf(scene);
+        return {
+          scene,
+          label: `${productBySlug(scene.product)!.name}, ${cap.name}: ${cap.detail}`,
+          body: <CapabilityBody scene={scene} />,
+        };
+      })}
+    />
   );
 }

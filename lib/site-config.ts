@@ -1,7 +1,7 @@
 // CONFIGURAÇÃO DAS PÁGINAS
 // Every band is the light (cream) theme of the brand: the home and the product pages have one theme, no alternating
-// graphite and cream bands. The openings and films of the products ring of the home are videos, shown as dark objects
-// inside it; a product page has no video: its opening and its chain are native scenes.
+// graphite and cream bands. The site has no video: the chain, the products carousel of the home and the opening of a
+// product page are native scenes.
 // One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
 // home and the five product pages are the same template with two configurations, so no section markup is copied between
 // routes. The rhythm alternates visual bands (the chain, the product ring, the benefits with their scenes, the connector
@@ -12,10 +12,8 @@
 // its rails run down into it. `pad` names the spacing class of the section (home.module.css).
 import { PAGE_HEADINGS } from "./content";
 import { productBySlug, type ProductSlug } from "./products";
-import type { RingKind } from "./ring-data";
 
 export type Tone = "dark" | "light";
-export type { RingKind };
 export type SectionPad =
   | "chain"
   | "products"
@@ -40,28 +38,19 @@ type Base = {
   railDelay?: number;
 };
 
-export type RingConfig = {
+// A carousel of native scenes: the id of its stage (the runner and the `ring:swap` event name it) and its accessible name
+export type StageConfig = {
   id: string;
-  kind: RingKind;
-  // The chain narrowed to one product (the scenes it takes part in)
-  slug?: ProductSlug;
-  logos?: "lit" | "links" | null;
-  eager?: boolean;
   label: string;
 };
 
 export type SectionConfig =
   // The chain of the home in two blocks: opening, overview (top) and the ring of detail scenes (bottom), joined by the
   // connector that drops from the lit node
-  | (Base & { kind: "chain"; ring: RingConfig })
-  | (Base & {
-      kind: "ring";
-      ring: RingConfig;
-      // Visible title over the stage (the product page's "how it works")
-      title?: string;
-      // Grid of the five product cards under the ring, the active product lit (home)
-      cards?: boolean;
-    })
+  | (Base & { kind: "chain"; stage: StageConfig })
+  // The products of the home: the carousel of one native scene per product, then the five cards, the one of the product
+  // on screen lit
+  | (Base & { kind: "products"; stage: StageConfig })
   // "How it works" of a product page: the native chain narrowed to the scenes of the product (overview on top, scenes
   // below)
   | (Base & { kind: "how"; slug: ProductSlug; title: string })
@@ -123,30 +112,24 @@ export const HOME_CONFIG: PageConfig = {
       thread: "tail",
       rail: "drop",
       railDelay: 1,
-      ring: {
+      stage: {
         id: "chain-ring",
-        kind: "chain",
-        eager: true,
         label: "Cenas de cada sistema da cadeia",
       },
     },
     { id: "how", kind: "journey", tone: "light", pad: "read" },
     {
       id: "products",
-      kind: "ring",
+      kind: "products",
       tone: "light",
       pad: "products",
       srTitle: "Produtos",
       rail: "drop",
       railDelay: 0.4,
-      ring: {
+      stage: {
         id: "products-ring",
-        kind: "products",
-        // No row of logos: the five cards right below repeat it and already light the active product
-        logos: null,
-        label: "Abertura e filme de cada produto",
+        label: "Uma tela de cada produto",
       },
-      cards: true,
     },
     { id: "operation", kind: "benefits", tone: "light", pad: "read" },
     { id: "audience", kind: "audience", tone: "light", pad: "read" },

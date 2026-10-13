@@ -27,7 +27,7 @@ describe("one template, same sequence", () => {
     expect(kinds(HOME_CONFIG)).toEqual([
       "chain",
       "journey",
-      "ring",
+      "products",
       "benefits",
       "audience",
       "integrations",
