@@ -8,6 +8,13 @@
   --c: #faf5ea;
   --c2: #f3ecdd;
   --cl: #e2d8c3;
+  /* SUPERFÍCIES DO TEMA CREME (CRM) */
+  /* The one place of the surface palette, same roles as the CRM: page (--c), card, window, menu and popover (--surface),
+     wide strips such as window title bars (--surface-band), highlight, selected and chips (--surface-accent), hairline
+     (--cl). Components read these names; none carries its own cream. */
+  --surface: #fffdf8;
+  --surface-band: #f9f4eb;
+  --surface-accent: var(--c2);
   --a: #ffb020;
   --ink: #1c1a16;
   --mute-d: #9da3ae;
@@ -79,6 +86,7 @@
   --bg: var(--g);
   --line: var(--g3);
   --mute: var(--mute-d);
+  --card: var(--g);
   --soft: rgb(250 245 234 / 0.1);
 }
 .light {
@@ -88,7 +96,8 @@
   --line: var(--cl);
   --thread: var(--thread-l);
   --mute: var(--mute-l);
-  --soft: rgb(28 26 22 / 0.08);
+  --card: var(--surface);
+  --soft: var(--surface-accent);
 }
 .wrap {
   width: min(1200px, 100% - 48px);
@@ -232,7 +241,7 @@
   margin: 0;
   padding: var(--sp-2);
   list-style: none;
-  background: var(--c);
+  background: var(--surface);
   border: 1px solid var(--cl);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-pop);

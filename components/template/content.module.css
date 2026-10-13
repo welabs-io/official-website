@@ -38,7 +38,7 @@
   padding: var(--sp-4);
   color: inherit;
   text-decoration: none;
-  background: var(--bg);
+  background: var(--card);
   border: 1px solid var(--line);
   border-top: 4px solid var(--line);
   border-radius: var(--r-card);
@@ -50,7 +50,7 @@
 }
 .card[data-on="true"] {
   border-top-color: var(--a);
-  background: color-mix(in srgb, var(--bg) 92%, currentcolor);
+  background: var(--soft);
 }
 .card:hover {
   border-color: var(--mute);

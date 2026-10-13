@@ -24,7 +24,7 @@
   width: 100%;
 }
 .hub[data-tone="light"] {
-  --panel: #fff;
+  --panel: var(--surface);
   --rail: #d2c6ae;
 }
 

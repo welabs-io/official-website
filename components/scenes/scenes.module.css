@@ -8,8 +8,9 @@
   --s-ink: #1c1a16;
   --s-mute: #625b4e;
   --s-line: #e2d8c3;
-  --s-surface: #ffffff;
-  --s-wash: #f3ecdd;
+  --s-surface: var(--surface);
+  --s-band: var(--surface-band);
+  --s-wash: var(--surface-accent);
   --s-amber: #ffb020;
   --s-amber-wash: #ffeab8;
   --row: 3.25rem;
@@ -52,7 +53,7 @@
   gap: 0.75rem;
   height: 2.75rem;
   padding: 0 1rem;
-  background: var(--s-wash);
+  background: var(--s-band);
   border-bottom: 1px solid var(--s-line);
 }
 .dots {
@@ -156,7 +157,7 @@
   overflow: hidden;
   border: 1px solid var(--s-line);
   border-radius: 1.25rem;
-  background: var(--s-wash);
+  background: var(--s-band);
 }
 .phoneHead {
   display: flex;
@@ -276,7 +277,7 @@
   align-content: start;
   gap: 0.25rem;
   padding: 0.5rem;
-  background: var(--s-wash);
+  background: var(--s-band);
   border-right: 1px solid var(--s-line);
 }
 .inboxList li {
@@ -382,7 +383,7 @@
   border-top: 0;
 }
 .stages li:nth-child(even) {
-  background: #fdfaf3;
+  background: var(--s-band);
 }
 .stages span {
   width: 6.5rem;
