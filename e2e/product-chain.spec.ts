@@ -1,7 +1,8 @@
 // CADEIA NATIVA NAS PÁGINAS DE PRODUTO
 // Acceptance of the "how it works" band of a product page: the native chain narrowed to the scenes the product takes part
 // in. The scene swaps in step with the overview (within 100 ms, with the step of the scene, not its position), at least
-// 55% of the cycle is still, the text of every scene is 14 px or more, nothing scrolls sideways at the three sizes, and
+// 55% of the cycle is still, every scene keeps the legibility rule (text of 11 px or more, one key element of 18 to 22 px),
+// nothing scrolls sideways at the three sizes, and
 // reduced motion shows the settled frames.
 import { expect, test, type Page } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
@@ -31,7 +32,7 @@ for (const vp of VIEWPORTS)
     test.use({ viewport: { width: vp.width, height: vp.height } });
 
     for (const slug of Object.keys(SCENES) as Slug[]) {
-      test(`${slug}: one tile per scene it takes part in, no sideways scroll, text of 14 px or more in every scene`, async ({
+      test(`${slug}: one tile per scene it takes part in, no sideways scroll, text of 11 px or more and one key element in every scene`, async ({
         browser,
       }) => {
         const context = await browser.newContext({
@@ -77,17 +78,26 @@ for (const vp of VIEWPORTS)
                 if (Number(getComputedStyle(el).opacity) === 0) continue;
                 px.push(parseFloat(getComputedStyle(el).fontSize));
               }
-              return px;
+              // The key element of the scene (the legibility rule of e2e/native-scenes.spec.ts)
+              const keys = [...scn.querySelectorAll("[data-key]")].map((k) =>
+                parseFloat(getComputedStyle(k).fontSize),
+              );
+              return { px, keys };
             },
             [STAGE, i, tiles.length] as const,
           );
-          expect(sizes.length, `${slug} ${tiles[i]} has text`).toBeGreaterThan(
-            0,
-          );
           expect(
-            Math.min(...sizes),
+            sizes.px.length,
+            `${slug} ${tiles[i]} has text`,
+          ).toBeGreaterThan(0);
+          // Interface text is 11 px or more, and the scene has one key element of 18 to 22 px
+          expect(
+            Math.min(...sizes.px),
             `${slug} ${tiles[i]}`,
-          ).toBeGreaterThanOrEqual(14);
+          ).toBeGreaterThanOrEqual(11);
+          expect(sizes.keys, `${slug} ${tiles[i]} key`).toHaveLength(1);
+          expect(sizes.keys[0]).toBeGreaterThanOrEqual(18);
+          expect(sizes.keys[0]).toBeLessThanOrEqual(22);
           const overflow = await page.evaluate(
             () =>
               document.documentElement.scrollWidth -

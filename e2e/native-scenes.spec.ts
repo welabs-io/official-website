@@ -1,8 +1,10 @@
 // CENAS NATIVAS DA CADEIA
 // Acceptance of the native chain at the three sizes: the scene swaps in step with the overview (within 100 ms), the cycle
 // is at most 35 s with a hold of 1.2 s or more per scene, the swap is a rotation of 0.6 to 0.8 s without a long task, at
-// least 55% of the cycle is still, the text on screen is 14 px or more, nothing scrolls sideways, every text passes AA contrast,
-// reduced motion shows the settled frames, the runner pauses off screen, and nothing shifts the layout.
+// least 55% of the cycle is still, the text follows the legibility rule of the scenes (interface text of 11 to 13 px, one key
+// element of 18 to 22 px, at most four sizes and three colours), the edges of panels and cards stand out from what is behind
+// them, nothing scrolls sideways, every text passes AA contrast, reduced motion shows the settled frames, the runner pauses
+// off screen, and nothing shifts the layout.
 import { expect, test, type Page } from "@playwright/test";
 import { SCRIPT } from "../lib/scenes/script";
 import { VIEWPORTS } from "./viewports";
@@ -32,7 +34,11 @@ for (const vp of VIEWPORTS)
   test.describe(`native chain at ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
 
-    test("focal text and every text of the centre scene are 14 px or more, in all seven scenes", async ({
+    // REGRA DE LEGIBILIDADE DAS CENAS
+    // Interface is small text and the scene has one large element: body 13 px, label 12, meta 11, never under 11; exactly
+    // one `data-key` of 18 to 22 px (18 on a phone, 20 on the wide tile: 1.38 to 1.54 times the body); at most four sizes and
+    // three colours of text, so the hierarchy comes from weight and colour before size.
+    test("the centre scene follows the legibility rule: 11 to 13 px of interface, one key of 18 to 22 px, four sizes and three colours at most", async ({
       browser,
     }) => {
       const context = await browser.newContext({
@@ -41,39 +47,120 @@ for (const vp of VIEWPORTS)
       });
       const page = await context.newPage();
       await toStage(page);
-      const smallest: number[] = [];
       for (let i = 0; i < 7; i++) {
         await showScene(page, i);
-        const sizes = await page.evaluate(() => {
-          const tile = document.querySelector(
+        const text = await page.evaluate(() => {
+          const scene = document.querySelector(
             '#chain-ring [data-pos="0"] .scn',
           )!;
-          const walker = document.createTreeWalker(tile, NodeFilter.SHOW_TEXT);
-          const all: number[] = [];
-          const focal: number[] = [];
+          // On screen: no ancestor inside the scene faded out (the stacks of stages and names keep the old ones at 0)
+          const shown = (el: Element) => {
+            for (
+              let a: Element | null = el;
+              a && a !== scene;
+              a = a.parentElement
+            ) {
+              const cs = getComputedStyle(a);
+              if (Number(cs.opacity) === 0 || cs.display === "none")
+                return false;
+            }
+            return el.getBoundingClientRect().width > 0;
+          };
+          const sizes: number[] = [];
+          const colours = new Set<string>();
+          const walker = document.createTreeWalker(scene, NodeFilter.SHOW_TEXT);
           for (let n = walker.nextNode(); n; n = walker.nextNode()) {
             if (!n.textContent?.trim()) continue;
             const el = n.parentElement!;
-            // Hidden stacks (opacity 0 or collapsed) are not on screen
-            if (Number(getComputedStyle(el).opacity) === 0) continue;
-            const px = parseFloat(getComputedStyle(el).fontSize);
-            all.push(px);
-            if (el.closest("[data-focal]")) focal.push(px);
+            if (!shown(el)) continue;
+            const cs = getComputedStyle(el);
+            sizes.push(parseFloat(cs.fontSize));
+            colours.add(cs.color);
           }
-          return { all, focal };
+          const keys = [...scene.querySelectorAll("[data-key]")]
+            .filter(shown)
+            .map((k) => parseFloat(getComputedStyle(k).fontSize));
+          return { sizes, colours: [...colours], keys };
         });
-        // Scene 0 has no focal sentence (the house and the funnel carry only names); the others have one
-        if (i > 0) {
-          expect(
-            sizes.focal.length,
-            `scene ${i} has focal text`,
-          ).toBeGreaterThan(0);
-          expect(Math.min(...sizes.focal)).toBeGreaterThanOrEqual(14);
-          smallest.push(Math.min(...sizes.focal));
-        }
-        expect(Math.min(...sizes.all)).toBeGreaterThanOrEqual(14);
+        const where = `scene ${i} at ${vp.name}`;
+        expect(Math.min(...text.sizes), where).toBeGreaterThanOrEqual(11);
+        expect(text.keys, `${where}: one key element`).toHaveLength(1);
+        const [key] = text.keys;
+        expect(key, where).toBeGreaterThanOrEqual(18);
+        expect(key, where).toBeLessThanOrEqual(22);
+        // Every other text is interface text, at most the body size, and the key stands 1.5 times over it
+        const rest = text.sizes.filter((px) => px !== key);
+        expect(Math.max(...rest), where).toBeLessThanOrEqual(13);
+        expect(key / 13, where).toBeGreaterThanOrEqual(1.38);
+        expect(new Set(text.sizes).size, `${where}: sizes`).toBeLessThanOrEqual(
+          4,
+        );
+        expect(text.colours.length, `${where}: colours`).toBeLessThanOrEqual(3);
       }
-      console.log(`${vp.name}: smallest focal text`, Math.min(...smallest));
+      await context.close();
+    });
+
+    test("the edge of every panel and card of the centre scene stands out from the surface behind it (1.5:1 or more)", async ({
+      browser,
+    }) => {
+      const context = await browser.newContext({
+        viewport: { width: vp.width, height: vp.height },
+        reducedMotion: "reduce",
+      });
+      const page = await context.newPage();
+      await toStage(page);
+      const weak: string[] = [];
+      for (let i = 0; i < 7; i++) {
+        await showScene(page, i);
+        const bad = await page.evaluate(() => {
+          const lum = (c: number[]) => {
+            const [r, g, b] = c.map((v) => {
+              const s = v / 255;
+              return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+            });
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          };
+          const rgb = (s: string) =>
+            s
+              .match(/[\d.]+/g)!
+              .slice(0, 3)
+              .map(Number);
+          const alpha = (s: string) => Number(s.match(/[\d.]+/g)![3] ?? 1);
+          // The surface behind an element: the first opaque background among its ancestors
+          const behind = (el: Element) => {
+            for (let n = el.parentElement; n; n = n.parentElement) {
+              const bg = getComputedStyle(n).backgroundColor;
+              if (alpha(bg) === 1) return rgb(bg);
+            }
+            return [250, 245, 234];
+          };
+          const scene = document.querySelector(
+            '#chain-ring [data-pos="0"] .scn',
+          )!;
+          const out: string[] = [];
+          for (const el of scene.querySelectorAll(
+            "[data-edge]:not([data-lit])",
+          )) {
+            if (!el.getBoundingClientRect().width) continue;
+            const cs = getComputedStyle(el);
+            if (
+              parseFloat(cs.borderTopWidth) < 1 ||
+              cs.borderTopStyle === "none"
+            )
+              continue;
+            const a = lum(rgb(cs.borderTopColor));
+            const b = lum(behind(el));
+            const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+            if (ratio < 1.5)
+              out.push(
+                `${ratio.toFixed(2)} ${el.className.toString().slice(0, 40)}`,
+              );
+          }
+          return out;
+        });
+        weak.push(...bad.map((b) => `scene ${i}: ${b}`));
+      }
+      expect([...new Set(weak)]).toEqual([]);
       await context.close();
     });
 
