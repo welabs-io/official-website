@@ -5,15 +5,16 @@
   --g: #10141c;
   --g2: #161b25;
   --g3: #262d3a;
-  --c: #faf5ea;
+  --c: #fffdf8;
   --c2: #f3ecdd;
   --cl: #e2d8c3;
   /* SUPERFÍCIES DO TEMA CREME (CRM) */
-  /* The one place of the surface palette, same roles as the CRM: page (--c), card, window, menu and popover (--surface),
-     wide strips such as window title bars (--surface-band), highlight, selected and chips (--surface-accent), hairline
-     (--cl). Components read these names; none carries its own cream. */
-  --surface: #fffdf8;
-  --surface-band: #f9f4eb;
+  /* The one place of the surface palette: the soft cream is the page (--c, #fffdf8); cards, windows, menu and popover
+     are white (--surface) and stand out by the hairline (--cl); wide strips such as window title bars and even rows
+     take the old page cream (--surface-band); highlight, selected and chips stay --surface-accent. Components read
+     these names; none carries its own cream. */
+  --surface: #ffffff;
+  --surface-band: #faf5ea;
   --surface-accent: var(--c2);
   --a: #ffb020;
   --ink: #1c1a16;
