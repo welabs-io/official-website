@@ -183,7 +183,7 @@ test.describe("product chain behaviour", () => {
     expect(Math.abs(gap - data.scenes[1])).toBeLessThan(0.25);
   });
 
-  for (const slug of ["domus", "tuner", "knowly"] as const)
+  for (const slug of ["domus", "relloo", "tuner", "knowly", "magneto"] as const)
     test(`${slug}: at least 65% of the cycle is still (computed styles sampled every 100 ms)`, async ({
       page,
     }) => {
