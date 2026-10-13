@@ -4,15 +4,25 @@
 // Como funciona and Contato. On a desktop the list opens on hover and on keyboard focus (no state); on a phone the whole
 // menu is a panel under the header, opened by a button. The panel closes on any link, on Escape and when the page
 // changes, so it never stays open over a page the visitor already reached.
+// The texts and the products come as props from the server (PageFrame): a client module that imported lib/products would
+// drag the whole motion manifest (60 KB) into the first load of every page.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { NAV } from "@/lib/content";
-import { CTA_LABEL, PRODUCTS } from "@/lib/products";
-import { CONTACT_HREF } from "./contact";
+import type { NAV as NavLabels } from "@/lib/content/home";
 import styles from "./shell.module.css";
 
-export function SiteNav() {
+export function SiteNav({
+  NAV,
+  products,
+  cta,
+  contactHref,
+}: {
+  NAV: typeof NavLabels;
+  products: readonly { slug: string; name: string; line: string }[];
+  cta: string;
+  contactHref: string;
+}) {
   // Null outside the App Router (the tests render the page on its own)
   const pathname = usePathname() ?? "";
   // The panel is open for one path only: a change of page closes it without an effect
@@ -54,7 +64,7 @@ export function SiteNav() {
               {NAV.products}
             </Link>
             <ul className={styles.menu}>
-              {PRODUCTS.map(({ slug, name, line }) => (
+              {products.map(({ slug, name, line }) => (
                 <li key={slug}>
                   <Link
                     href={`/products/${slug}`}
@@ -84,7 +94,7 @@ export function SiteNav() {
           </li>
           <li>
             <Link
-              href={CONTACT_HREF}
+              href={contactHref}
               prefetch={false}
               className={styles.navLink}
               onClick={close}
@@ -94,8 +104,8 @@ export function SiteNav() {
           </li>
         </ul>
         {/* On a very narrow phone the call to action of the header moves into the panel */}
-        <a href={CONTACT_HREF} className={`${styles.cta} ${styles.navCta}`}>
-          {CTA_LABEL}
+        <a href={contactHref} className={`${styles.cta} ${styles.navCta}`}>
+          {cta}
         </a>
       </nav>
     </div>

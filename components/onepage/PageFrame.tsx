@@ -2,7 +2,7 @@
 // Fixed header (logo that leads to the home, the menu and the call to action) and the footer. The call to action always
 // points to the contact section of the home; the contact destination is still to be decided by the operator.
 import Link from "next/link";
-import { FOOTER_NAV_LABEL } from "@/lib/content";
+import { FOOTER_NAV_LABEL, NAV } from "@/lib/content";
 import { CTA_LABEL, PRODUCTS, WELABS_LOGO } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
 import { LiveObserver } from "./LiveObserver";
@@ -22,7 +22,16 @@ function Header() {
         >
           <img src={WELABS_LOGO.light} alt="Welabs" height={42} />
         </Link>
-        <SiteNav />
+        <SiteNav
+          NAV={NAV}
+          products={PRODUCTS.map(({ slug, name, line }) => ({
+            slug,
+            name,
+            line,
+          }))}
+          cta={CTA_LABEL}
+          contactHref={CONTACT_HREF}
+        />
         <a href={CONTACT_HREF} className={`${styles.cta} ${styles.headerCta}`}>
           {CTA_LABEL}
         </a>
