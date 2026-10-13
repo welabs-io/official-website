@@ -3,8 +3,8 @@
 // Magneto, Tuner, Knowly). Each is the strongest of the three capability scenes of its product page
 // (lib/scenes/capabilities.ts), picked for what the product is at first sight: the money of the Domus settling itself,
 // the campaign of the Relloo that brings the sale back, the flow of the Magneto running with its branch, the unified
-// inbox of the Tuner and the answer of the Knowly with its sources. The clock is the scene's own script (about 5 s, a
-// hold of 1.8 s, the swap of 0.7 s), so the home and the product page play the very same screen at the very same pace.
+// inbox of the Tuner and the answer of the Knowly with its sources. The clock is the scene's own script (about 2.5 s, a
+// hold of 0.9 s, the swap of 0.45 s), so the home and the product page play the very same screen at the very same pace.
 import { PRODUCTS, type ProductSlug } from "@/lib/products";
 import {
   CAPABILITY_SCRIPT,

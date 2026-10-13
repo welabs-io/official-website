@@ -2,8 +2,8 @@
 // The fifteen capability scenes of the product pages follow the rules of the chain: each one renders on the server in
 // its settled frame, uses every action of its script and only those, marks exactly one key element, draws no image but
 // the logo of its bar, no video and no live region, and keeps its words inside the copy rules. Their script has the
-// pace of the chain (actions after the swap, the last one ending at `settle`, 4.5 to 5.5 s per scene, a hold of 1.2 to
-// 1.8 s) and the opening of every product is still most of the time. Each scene shows a capability the content already
+// pace of the chain (actions after the swap, the last one ending at `settle`, 2.3 to 2.8 s per scene, a hold of 0.8 to
+// 1.0 s) and the opening of every product is still most of the time. Each scene shows a capability the content already
 // lists, named by its sentence.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -207,15 +207,15 @@ describe("products stage of the home", () => {
       );
     expect(stage).not.toMatch(/<video|<iframe|hyperframes-player|\.mp4|\.webm/);
   });
-  it("keeps the accelerated pace: scenes of about 5 s, a legible hold, the swap of the script, still most of the time", () => {
+  it("keeps the 2x pace: scenes of about 2.5 s, a legible hold, the swap of the script, still most of the time", () => {
     for (const scene of scenes) {
-      expect(sceneSeconds(scene)).toBeGreaterThanOrEqual(4.8);
-      expect(sceneSeconds(scene)).toBeLessThanOrEqual(5.2);
-      expect(scene.hold).toBeGreaterThanOrEqual(1.2);
-      expect(scene.hold).toBeLessThanOrEqual(1.8);
+      expect(sceneSeconds(scene)).toBeGreaterThanOrEqual(2.4);
+      expect(sceneSeconds(scene)).toBeLessThanOrEqual(2.6);
+      expect(scene.hold).toBeGreaterThanOrEqual(0.8);
+      expect(scene.hold).toBeLessThanOrEqual(1.0);
     }
-    expect(SWAP_SECONDS).toBe(0.7);
-    expect(stillRatio(scenes)).toBeGreaterThanOrEqual(0.55);
+    expect(SWAP_SECONDS).toBe(0.45);
+    expect(stillRatio(scenes)).toBeGreaterThanOrEqual(STILL_TARGET);
   });
   it("writes for the runner the card each scene lights, and names each tile by product and capability", () => {
     const json = stage.match(

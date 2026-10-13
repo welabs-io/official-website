@@ -3,7 +3,7 @@
    centre scene is the one that plays; the previous and the next sit behind it at half scale, shifted by 38% of the width,
    under a cream veil, so only a strip of each shows (on a phone, an edge); the ones further back are invisible. The
    rotation (a turn with depth along an arc, components/ring/rotation.css) lasts --swap-time, the swap of the script
-   (0.7 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
+   (0.45 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
 .screen {
   --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
   /* Width of the centre scene: 920 px at most (2:1, so 460 px tall), never taller than 70% of the window, the whole wrap
@@ -61,7 +61,7 @@
   background: rgb(250 245 234 / 0.55);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--swap-time, 0.7s) var(--ease);
+  transition: opacity var(--swap-time, 0.45s) var(--ease);
 }
 .tile[data-pos="1"] .tileFrame::after,
 .tile[data-pos="-1"] .tileFrame::after {
@@ -95,7 +95,7 @@
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--mute);
-  transition: color var(--swap-time, 0.7s) var(--ease);
+  transition: color var(--swap-time, 0.45s) var(--ease);
 }
 .names li::after {
   content: "";
@@ -107,7 +107,7 @@
   border-radius: 2px;
   background: var(--a);
   transform: scaleX(0);
-  transition: transform var(--swap-time, 0.7s) var(--ease);
+  transition: transform var(--swap-time, 0.45s) var(--ease);
 }
 .names li[data-on="true"] {
   color: var(--ink);

@@ -15,8 +15,9 @@
   --seam-top: 184px;
   --hub-h: 212px;
   --rail-len: calc(var(--hub-h) - var(--line-top));
-  --dur: 4.8s;
-  --step: 0.96s;
+  /* 2x pace: 2.4 s per lap, 0.48 s per node (it was 4.8 s and 0.96 s) */
+  --dur: 2.4s;
+  --step: 0.48s;
   --panel: #161b25;
   --rail: #323a4c;
   position: relative;
@@ -158,8 +159,8 @@
 }
 
 /* MOVIMENTO */
-/* One node lights at a time in weight order (Domus, Relloo, Magneto, Tuner, Knowly: 0.96 s each over a 4.8 s cycle);
-   the pulse of a rail node goes down its rail in 0.7 s right after it lights, and the rail of the closing takes it from
+/* One node lights at a time in weight order (Domus, Relloo, Magneto, Tuner, Knowly: 0.48 s each over a 2.4 s cycle);
+   the pulse of a rail node goes down its rail in 0.35 s right after it lights, and the rail of the closing takes it from
    the bottom of the block. Everything runs only while the block is on screen (data-on, set by LiveObserver); under reduced
    motion nothing runs and every node stays lit, the state of the first step. */
 .hub[data-on="true"] .node[data-order],

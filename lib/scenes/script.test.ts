@@ -42,9 +42,9 @@ describe("scene script", () => {
     },
   );
 
-  // Pace measured on khal.ai: a scene of 4.4 to 5 s with 1.2 to 2.5 s of legible hold
+  // Twice the pace measured on khal.ai (a scene of 4.4 to 5 s there): about 2.5 s per scene with 0.8 to 1.0 s of hold
   it.each(SCRIPT.map((s) => [s.id, s] as const))(
-    "%s: lasts 4.5 to 5.5 s and holds the final frame 1.2 to 1.8 s",
+    `%s: lasts ${SCENE_SECONDS_RANGE[0]} to ${SCENE_SECONDS_RANGE[1]} s and holds the final frame ${HOLD_SECONDS_RANGE[0]} to ${HOLD_SECONDS_RANGE[1]} s`,
     (_, scene) => {
       expect(sceneSeconds(scene)).toBeGreaterThanOrEqual(
         SCENE_SECONDS_RANGE[0],
@@ -63,9 +63,9 @@ describe("scene script", () => {
     },
   );
 
-  it("the swap is a rotation of 0.6 to 0.8 s", () => {
-    expect(SWAP_SECONDS).toBeGreaterThanOrEqual(0.6);
-    expect(SWAP_SECONDS).toBeLessThanOrEqual(0.8);
+  it("the swap is a rotation of 0.4 to 0.5 s (2x pace)", () => {
+    expect(SWAP_SECONDS).toBeGreaterThanOrEqual(0.4);
+    expect(SWAP_SECONDS).toBeLessThanOrEqual(0.5);
   });
 
   it(`the cycle is at most ${CYCLE_MAX_SECONDS} s`, () => {

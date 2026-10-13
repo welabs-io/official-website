@@ -1,7 +1,7 @@
 // CENAS NATIVAS DA CADEIA
 // Acceptance of the native chain at the three sizes: the scene swaps in step with the overview (within 100 ms), the cycle
-// is at most 35 s with a hold of 1.2 s or more per scene, the swap is a rotation of 0.6 to 0.8 s without a long task, at
-// least 55% of the cycle is still, the text follows the legibility rule of the scenes (interface text of 11 to 13 px, one key
+// is at most 18 s with a hold of 0.8 s or more per scene (2x pace), the swap is a rotation of 0.4 to 0.65 s without a long
+// task, at least 35% of the cycle is still, the text follows the legibility rule of the scenes (interface text of 11 to 13 px, one key
 // element of 18 to 22 px, at most four sizes and three colours), the edges of panels and cards stand out from what is behind
 // them, nothing scrolls sideways, every text passes AA contrast, reduced motion shows the settled frames, the runner pauses
 // off screen, and nothing shifts the layout.
@@ -358,7 +358,9 @@ test.describe("native chain behaviour", () => {
     expect(Math.abs(gap - data.scenes[1])).toBeLessThan(0.25);
   });
 
-  test("at least 65% of the cycle is still (computed styles sampled every 100 ms)", async ({
+  // 35% at the 2x pace: measured 41.9% and 42.5% on 2026-10-13 (56.5% at 1x, against a bar of 55%); a chain stage also
+  // moves its overview, token and connector on every swap (see e2e/product-chain.spec.ts)
+  test("at least 35% of the cycle is still (computed styles sampled every 100 ms)", async ({
     page,
   }) => {
     test.setTimeout(180000);
@@ -411,28 +413,28 @@ test.describe("native chain behaviour", () => {
     console.log(
       `still share of the cycle: ${(ratio * 100).toFixed(1)}% over ${still.length} samples (cycle ${cycle}s)`,
     );
-    expect(ratio).toBeGreaterThanOrEqual(0.55);
+    expect(ratio).toBeGreaterThanOrEqual(0.35);
   });
 
-  test("the cycle is at most 35 s, every scene lasts 4.5 to 5.5 s and holds its final frame at least 1.2 s", async ({
+  test("the cycle is at most 18 s, every scene lasts 2.3 to 2.8 s and holds its final frame at least 0.8 s", async ({
     page,
   }) => {
     await toStage(page);
     const data = JSON.parse(
       (await page.locator("#chain script[data-scene-data]").textContent())!,
     ) as { cycle: number; scenes: number[]; swap: number };
-    expect(data.cycle).toBeLessThanOrEqual(35);
+    expect(data.cycle).toBeLessThanOrEqual(18);
     for (const seconds of data.scenes) {
-      expect(seconds).toBeGreaterThanOrEqual(4.5);
-      expect(seconds).toBeLessThanOrEqual(5.5);
+      expect(seconds).toBeGreaterThanOrEqual(2.3);
+      expect(seconds).toBeLessThanOrEqual(2.8);
     }
     SCRIPT.forEach((scene, i) => {
-      expect(scene.hold, `scene ${i}`).toBeGreaterThanOrEqual(1.2);
+      expect(scene.hold, `scene ${i}`).toBeGreaterThanOrEqual(0.8);
       expect(scene.settle + scene.hold).toBeCloseTo(data.scenes[i], 3);
     });
   });
 
-  test("the swap is a rotation of 0.6 to 0.8 s that never shows an empty frame and runs without a long task", async ({
+  test("the swap is a rotation of 0.4 to 0.65 s that never shows an empty frame and runs without a long task", async ({
     page,
   }) => {
     test.setTimeout(60000);
@@ -516,8 +518,8 @@ test.describe("native chain behaviour", () => {
       "long tasks",
       r.long,
     );
-    expect(r.span).toBeGreaterThanOrEqual(0.6);
-    expect(r.span).toBeLessThanOrEqual(0.9);
+    expect(r.span).toBeGreaterThanOrEqual(0.4);
+    expect(r.span).toBeLessThanOrEqual(0.65);
     expect(r.empty).toBe(0);
     expect(r.long.filter((d) => d >= 50)).toEqual([]);
   });

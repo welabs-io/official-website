@@ -514,11 +514,12 @@
   opacity: 0;
   transform: translateY(-40px);
 }
+/* 0.35 s per drop at the 2x pace (it was 0.7 s) */
 .band[data-on="true"] .rail[data-pulse="a"] .pulse {
-  animation: drop-a var(--rail-dur, 0.7s) var(--rail-delay, 0s) ease-in both;
+  animation: drop-a var(--rail-dur, 0.35s) var(--rail-delay, 0s) ease-in both;
 }
 .band[data-on="true"] .rail[data-pulse="b"] .pulse {
-  animation: drop-b var(--rail-dur, 0.7s) var(--rail-delay, 0s) ease-in both;
+  animation: drop-b var(--rail-dur, 0.35s) var(--rail-delay, 0s) ease-in both;
 }
 @keyframes drop-a {
   0% {
@@ -544,7 +545,7 @@
 /* TRILHOS QUE CONVERGEM NO FECHAMENTO */
 /* Three stretches at 1/6, 1/2 and 5/6 of the content width run from the content of the section down through its bottom
    padding and the top padding of the closing, and each ends in a 10 px amber dock on top of the strip of logos (the
-   rail's bottom edge). One pulse per stretch loops while the section is on screen (4.8 s, staggered by a fifth of it);
+   rail's bottom edge). One pulse per stretch loops while the section is on screen (2.4 s, staggered by a fifth of it);
    the 1 px border of the closing is counted in the offset. */
 .converge {
   --total: calc(var(--rail-h) + var(--closing-pt) + 1px);
@@ -583,9 +584,10 @@
   background: var(--a);
 }
 .band[data-on="true"] .converge .pulse {
-  animation: converge-run 4.8s linear infinite;
-  /* Takes the pulse of the rail node (3rd to 5th of the cycle) 0.7 s after it lights, when it reaches the bottom of the block */
-  animation-delay: calc((var(--i) + 2) * 0.96s + 0.7s);
+  animation: converge-run 2.4s linear infinite;
+  /* Takes the pulse of the rail node (3rd to 5th of the cycle) 0.35 s after it lights, when it reaches the bottom of the
+     block (the CoreHub loop of corehub.module.css, at the same 2x pace) */
+  animation-delay: calc((var(--i) + 2) * 0.48s + 0.35s);
 }
 @keyframes converge-run {
   0% {

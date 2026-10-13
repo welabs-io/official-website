@@ -8,9 +8,9 @@ import { SCRIPT, cycleSeconds, type SceneScript } from "./script";
 
 // A stage of one or two short scenes would replay every few seconds, and the motion of each replay (swap, connector pulse,
 // token) weighs too much in the cycle: measured at 64% still for a single scene of 7.1 s. The last scene of a short cycle
-// holds longer, up to this many seconds in all. 12 s is the same 35% of the home's cycle (34 s) that 18 s was of the
-// previous 51 s, so a product page keeps the proportion; it is the one place where a hold goes past 1.8 s.
-export const PRODUCT_MIN_CYCLE = 12;
+// holds longer, up to this many seconds in all. 6 s is the same 34% of the home's cycle (17.6 s at the 2x pace) that
+// 12 s was of the previous 34 s, so a product page keeps the proportion; it is the one place where a hold goes past 1 s.
+export const PRODUCT_MIN_CYCLE = 6;
 
 export function scenesOfProduct(slug: ProductSlug): SceneScript[] {
   const own = SCRIPT.filter((scene) => {

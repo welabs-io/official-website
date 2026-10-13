@@ -111,7 +111,7 @@ export const HOME_CONFIG: PageConfig = {
       pad: "chain",
       thread: "tail",
       rail: "drop",
-      railDelay: 1,
+      railDelay: 0.5,
       stage: {
         id: "chain-ring",
         label: "Cenas de cada sistema da cadeia",
@@ -125,7 +125,7 @@ export const HOME_CONFIG: PageConfig = {
       pad: "products",
       srTitle: "Produtos",
       rail: "drop",
-      railDelay: 0.4,
+      railDelay: 0.2,
       stage: {
         id: "products-ring",
         label: "Uma tela de cada produto",
@@ -161,7 +161,7 @@ export function productConfig(slug: ProductSlug): PageConfig {
         pad: "block",
         title: PAGE_HEADINGS.how,
         rail: "drop",
-        railDelay: 0.4,
+        railDelay: 0.2,
       },
       {
         id: "capabilities",

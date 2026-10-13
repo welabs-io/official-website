@@ -7,7 +7,7 @@
    stage has a perspective, a tile at the side sits behind the centre and is turned about 28 degrees, and a swap moves the
    tile along an arc (each of x, depth, turn and scale has its own curve, so the path bends), with a lift on the way in and
    a dip on the way out. Only transform properties and opacity move (composited, no layout). The duration is --swap-time
-   (0.7 s by default; the runner sets the swap of the script on every turn); the curves start fast, so nothing waits
+   (0.45 s by default since the 2x pace; the runner sets the swap of the script on every turn); the curves start fast, so nothing waits
    before it moves.
    Reduced motion: no turn, no depth, no transition (the tiles change place at once, flat). */
 
@@ -24,7 +24,7 @@
 /* Places. The tile is centred by `translate` (left 50% in the module); x is the shift from the centre, z the depth,
    ry the turn about the vertical axis (the outer edge goes away) and s the scale; each has its own transition below */
 [data-ring] > [data-pos] {
-  --t: var(--swap-time, 0.7s);
+  --t: var(--swap-time, 0.45s);
   --x: 0%;
   --z: 0px;
   --ry: 0deg;
