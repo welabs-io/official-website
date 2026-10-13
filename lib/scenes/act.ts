@@ -3,14 +3,14 @@
 // returns `data-act`, `data-fx` and the custom properties CSS reads. The numbers are the script's; asking for an action
 // the script does not list throws, so a scene can never animate with a time nobody wrote down.
 import type { Act, ActProps } from "./types";
-import type { SceneScript } from "./script";
+import type { TimedScene } from "./script";
 
 const sec = (n: number) => `${Math.round(n * 1000) / 1000}s`;
 
 // Longest length of one item of a staggered action
 const ITEM = 0.3;
 
-export function actFor(scene: SceneScript): Act {
+export function actFor(scene: TimedScene): Act {
   return (id, fx, options = {}): ActProps => {
     const action = scene.actions.find((a) => a.id === id);
     if (!action) throw new Error(`scene ${scene.id} has no action "${id}"`);

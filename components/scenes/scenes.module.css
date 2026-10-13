@@ -8,50 +8,8 @@
    block): wide from 52 rem, narrow below 34 rem, and lower blocks drop their extra rows. The motion is in fx.css; here
    every element is drawn in its settled state. */
 .scene {
-  /* Ink and text */
-  --s-ink: #1c1a16;
-  --s-mute: #625b4e;
-  --s-faint: #a39883;
-  /* Edges: hairline divider (sand-200) and panel/card edge (sand-300) */
-  --s-hair: #e2d8c3;
-  --s-edge: #d4c7ab;
-  --s-wall: #bfb29a;
-  /* Surfaces */
-  --s-win: #ffffff;
-  --s-panel: #faf5ea;
-  --s-chip: #f3ecdd;
-  /* Amber, only as area */
-  --s-amber: #ffb020;
-  --s-amber-50: #fff9f0;
-  --s-amber-100: #fff1d8;
-  --s-amber-200: #ffe2b1;
-  /* Semantic colours (text on soft fill passes 5:1, the dot is an area) */
-  --s-ok: #2c7440;
-  --s-ok-soft: #d5fadb;
-  --s-ok-dot: #22bc5c;
-  --s-warn: #984a26;
-  --s-warn-soft: #faebe5;
-  --s-warn-dot: #fb6d20;
-  --s-info: #225ac9;
-  --s-info-soft: #e9effa;
-  --s-info-dot: #3c79ef;
-  --s-action: #25272a;
-  --s-action-fg: #faf5ea;
-  /* Type scale */
-  --s-t-meta: 0.6875rem;
-  --s-t-label: 0.75rem;
-  --s-t-body: 0.8125rem;
-  --s-t-key: 1.25rem;
-  /* Shape and depth */
-  --s-r-ctl: 6px;
-  --s-r-card: 12px;
-  --s-r-win: 16px;
-  --s-elev-1: 0 1px 2px rgb(28 26 22 / 0.06), 0 1px 1px rgb(28 26 22 / 0.03);
-  --s-elev-2:
-    0 10px 24px -12px rgb(28 26 22 / 0.28), 0 2px 4px rgb(28 26 22 / 0.05);
-  /* Rhythm */
-  --s-pad: 1.25rem;
-  --s-gap: 1rem;
+  /* Every --s-* token comes from the one shared set (tokens.module.css) */
+  composes: tokens from "./tokens.module.css";
   position: absolute;
   inset: 0;
   container: scn / size;
@@ -238,6 +196,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* The key element can be the name itself (a team, a space): it keeps the key size */
+.who > b.key {
+  font-size: var(--s-t-key);
 }
 .who > span {
   display: flex;

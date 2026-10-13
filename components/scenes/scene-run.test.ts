@@ -29,6 +29,7 @@ function stage() {
       },
     },
     closest: () => null,
+    querySelectorAll: () => [],
     querySelector: (sel: string) =>
       sel === "[data-ring]"
         ? ring
@@ -164,6 +165,7 @@ describe("scene runner on a product page", () => {
       dataset: {} as Record<string, string>,
       style: { setProperty: () => {} },
       closest: () => null,
+      querySelectorAll: () => [],
       querySelector: (sel: string) =>
         sel === "[data-ring]"
           ? { children: tiles, dataset: {} }
@@ -209,5 +211,62 @@ describe("scene runner on a product page", () => {
     expect(phases).toEqual(["start", "play"]);
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({ to: 0, index: 4 });
+  });
+});
+
+describe("scene runner on the capability stage", () => {
+  it("lights the name and writes the caption of the scene on screen, before the swap event", () => {
+    const captions = ["Primeira.", "Segunda.", "Terceira."];
+    const names = captions.map(() => ({
+      dataset: {} as Record<string, string>,
+    }));
+    const caption = { textContent: captions[0] };
+    const seen: string[] = [];
+    const tiles = captions.map(() => ({
+      dataset: {} as Record<string, string>,
+      removeAttribute: () => {},
+      setAttribute: () => {},
+      querySelector: () => ({ dataset: {} }),
+    }));
+    const root = {
+      id: "product-scenes",
+      dataset: {} as Record<string, string>,
+      style: { setProperty: () => {} },
+      closest: () => null,
+      querySelectorAll: (sel: string) => (sel === "[data-cap]" ? names : []),
+      querySelector: (sel: string) =>
+        sel === "[data-ring]"
+          ? { children: tiles, dataset: {} }
+          : sel === "[data-caption]"
+            ? caption
+            : sel.startsWith("script")
+              ? {
+                  textContent: JSON.stringify({
+                    scenes: [2, 2, 2],
+                    swap: 0.7,
+                    captions,
+                  }),
+                }
+              : null,
+    };
+    vi.stubGlobal("window", {
+      dispatchEvent: () => {
+        seen.push(caption.textContent);
+        return true;
+      },
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    });
+    const runner = run(root as unknown as HTMLElement);
+    runner.resume();
+    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
+    vi.advanceTimersByTime(2001);
+    expect(names.map((n) => n.dataset.on)).toEqual(["false", "true", "false"]);
+    expect(seen).toEqual(["Segunda."]);
+    vi.advanceTimersByTime(4000);
+    expect(seen).toEqual(["Segunda.", "Terceira.", "Primeira."]);
+    runner.destroy();
+    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
+    expect(caption.textContent).toBe("Primeira.");
   });
 });

@@ -42,18 +42,25 @@ export type Action = {
   dur: number;
 };
 
-export type SceneScript = {
-  id: SceneId;
-  // Index of the step of the motion manifest this scene plays
-  step: number;
-  // Products the scene is about (the first is the protagonist)
-  products: readonly string[];
+// The clock of any native scene, of the chain or of a product page (lib/scenes/capabilities.ts): the stage, the runner and
+// the still share only read these fields
+export type TimedScene = {
+  id: string;
   actions: readonly Action[];
   // End of the last action: from here the frame is final
   settle: number;
   // Seconds the final frame stays before the swap
   hold: number;
-  // The token of the overview: when it starts walking and how long it walks, inside the scene
+  // The token of the overview, where the stage has one: when it starts walking and how long it walks, inside the scene
+  token?: { at: number; dur: number };
+};
+
+export type SceneScript = TimedScene & {
+  id: SceneId;
+  // Index of the step of the motion manifest this scene plays
+  step: number;
+  // Products the scene is about (the first is the protagonist)
+  products: readonly string[];
   token: { at: number; dur: number };
 };
 
@@ -153,24 +160,26 @@ export const SCRIPT: readonly SceneScript[] = [
 
 const round = (n: number) => Math.round(n * 1000) / 1000;
 
-export const sceneSeconds = (scene: SceneScript) =>
+export const sceneSeconds = (scene: TimedScene) =>
   round(scene.settle + scene.hold);
 
-export const cycleSeconds = (script: readonly SceneScript[] = SCRIPT) =>
+export const cycleSeconds = (script: readonly TimedScene[] = SCRIPT) =>
   round(script.reduce((sum, scene) => sum + sceneSeconds(scene), 0));
 
 // Moving intervals of a scene, relative to its start: the swap and the connector pulse that follow it, the actions and
-// the walk of the token
-function motionIntervals(scene: SceneScript): [number, number][] {
+// the walk of the token (a stage without an overview has none)
+function motionIntervals(scene: TimedScene): [number, number][] {
   return [
     [0, Math.max(SWAP_SECONDS, CONNECTOR_SECONDS)],
     ...scene.actions.map((a): [number, number] => [a.at, a.at + a.dur]),
-    [scene.token.at, scene.token.at + scene.token.dur],
+    ...(scene.token
+      ? [[scene.token.at, scene.token.at + scene.token.dur] as [number, number]]
+      : []),
   ];
 }
 
 // Seconds of the scene in which something moves (union of the intervals)
-export function motionSeconds(scene: SceneScript): number {
+export function motionSeconds(scene: TimedScene): number {
   const sorted = motionIntervals(scene).sort((a, b) => a[0] - b[0]);
   let total = 0;
   let [from, to] = sorted[0];
@@ -184,7 +193,7 @@ export function motionSeconds(scene: SceneScript): number {
 }
 
 // Share of the cycle that is still, from the script alone (the browser test measures the same thing on the page)
-export const stillRatio = (script: readonly SceneScript[] = SCRIPT) =>
+export const stillRatio = (script: readonly TimedScene[] = SCRIPT) =>
   round(
     1 -
       script.reduce((sum, scene) => sum + motionSeconds(scene), 0) /

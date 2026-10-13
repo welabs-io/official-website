@@ -15,14 +15,18 @@ export type WindowProduct = keyof typeof WINDOW_TITLES;
 export function SceneWindow({
   product,
   meta,
+  place,
   children,
 }: {
   product: WindowProduct;
   // Context on the right of the bar (the order the screen is about)
   meta?: string;
+  // The place in the product, when it is not the one of the chain (the capability scenes of a product page)
+  place?: string;
   children: ReactNode;
 }) {
-  const { where } = WINDOW_TITLES[product];
+  // The place of the chain unless the scene names its own
+  const where = place ?? WINDOW_TITLES[product].where;
   return (
     <div className={styles.win} data-product={product} data-edge="">
       <div className={styles.bar} data-frame-bar="">
