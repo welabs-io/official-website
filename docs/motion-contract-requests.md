@@ -2,8 +2,11 @@
 
 O site decide nenhum tempo: tudo vem de `lib/motion-manifest.json`. Quando um ajuste de ritmo exige algo que o manifesto de origem
 (`plan-v5/out/motion-manifest.json`, schema 1.2.0) não permite, o ajuste é feito na cópia do site e registrado aqui, para a rodada de motion
-incorporar na próxima versão. Enquanto não incorporar, um `node scripts/sync-motion.mjs` com o manifesto de origem **desfaz** estes ajustes:
-ele precisa ser rodado com `--schema lib/motion-manifest.schema.json` e com o manifesto do site como base.
+incorporar na próxima versão.
+
+Estado em 13/10/2026: os ajustes abaixo já estão **na origem** (`plan-v5/out/motion-manifest.json` com os mesmos recortes, rates e holds, e o
+schema `plan-v5/motion-manifest.schema.v1.2.1.json`, revisão aditiva que guarda o `v1.2` intacto). `scripts/sync-motion.mjs` valida contra o 1.2.1
+e, rodado a partir da origem, deixa `lib/` igual ao que está commitado (as capas novas de entrada vivem em `plan-v5/out/covers`).
 
 ## Pedido 1: `holdAfter` mínimo de 0,5 s nos segmentos de produto (12/10/2026, rodada `feat/faster-rotation`)
 
@@ -13,7 +16,8 @@ ele precisa ser rodado com `--schema lib/motion-manifest.schema.json` e com o ma
   filmes o quadro final parado é o mesmo da capa, então 0,8 s basta para o olho assentar antes do giro.
 - **Ajuste feito na cópia do site**: `lib/motion-manifest.schema.json` (`segment.holdAfter` com `minimum: 0.5`) e `lib/manifest/parse.ts`
   (`holdAfter >= 0.5`). Os passos da cadeia (`chain.steps[]`) e `defaults.holdAfter` seguem em 1 s.
-- **Pedido à rodada**: baixar o piso de `holdAfter` para 0,5 nos segmentos de `products` no schema 1.3.
+- **Origem**: o schema 1.2.1 da origem leva o mesmo piso de 0,5 s nos segmentos de `products`; o `holdAfter` de `defaults` e dos passos da cadeia segue em 1 s.
+- **Pedido à rodada**: manter o piso de 0,5 s no próximo schema.
 
 ## Pedido 2: recortes, taxas e duração da troca dos filmes (mesma rodada)
 
