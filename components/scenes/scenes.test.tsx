@@ -31,9 +31,19 @@ describe("scene components", () => {
     },
   );
 
-  it("draws no image, no video and no live region", () => {
+  it("draws no image in the body (only the logo in the bar), no video and no live region", () => {
     for (let i = 0; i < SCRIPT.length; i++) {
-      expect(html(i)).not.toMatch(/<img|<video|<canvas|aria-live/);
+      const markup = html(i);
+      expect(markup).not.toMatch(/<video|<canvas|aria-live/);
+      // Every image is the product logo inside the frame bar: cut the bars out and none is left
+      const withoutBars = markup.replace(
+        /<div class="[^"]*" data-frame-bar="">.*?<\/b>/g,
+        "",
+      );
+      expect(withoutBars).not.toMatch(/<img/);
+      expect(markup).toMatch(
+        /data-frame-bar="">.*?<img[^>]*alt=""[^>]*aria-hidden="true"/,
+      );
     }
   });
 
