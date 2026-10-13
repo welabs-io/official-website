@@ -135,7 +135,22 @@
   white-space: nowrap;
 }
 .path b {
+  display: inline-flex;
+  align-items: center;
   color: var(--s-ink);
+}
+/* Logo file has padding around the mark: 1.8rem of file shows a mark about 14 px tall; Tuner's file is taller */
+.barLogo {
+  display: block;
+  height: 1.8rem;
+  width: auto;
+  max-width: none;
+  /* The mark sits above the middle of its padded file: nudge it onto the line of the "/ Place" text */
+  position: relative;
+  top: 2px;
+}
+[data-product="tuner"] .barLogo {
+  height: 1.95rem;
 }
 /* The separator is drawn, not text: a 1 px slash in the sand of the edges */
 .path b::after {
