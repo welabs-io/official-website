@@ -8,6 +8,7 @@ import { ringData, slidesOf, type RingKind } from "@/lib/ring-data";
 import type { ProductSlug } from "@/lib/products";
 import { coverShown, isNear, placeOf, ringPosition } from "./positions";
 import { RingDriver } from "./RingDriver";
+import "./rotation.css";
 import styles from "./ring.module.css";
 
 // Covers come in two widths (the manifest's 1280 and 640): a phone shows a tile of about 330 px and never needs 1280

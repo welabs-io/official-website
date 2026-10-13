@@ -12,6 +12,7 @@ import { ensurePlayer } from "./player";
 import { Playback, flatten } from "./ring-playback";
 import { coverShown, isNear, placeOf, ringPosition } from "./positions";
 import type { RingKind } from "./RingDriver";
+import { turn } from "./turn";
 
 // Download the player script ahead of the first play
 export const warm = () => {
@@ -153,6 +154,8 @@ export function run(root: HTMLElement, kind: RingKind) {
       root.style.setProperty("--swap-time", `${info.duration}s`);
       const active = perCut ? info.toIndex : info.to;
       show(active);
+      // Starts the arc (lift in, dip out) of the rotation
+      turn(stage);
       pulse(active);
       // `index` is the tile now in the centre: the block above the chain follows it (components/ring/overview-follow.ts)
       window.dispatchEvent(
@@ -187,7 +190,8 @@ export function run(root: HTMLElement, kind: RingKind) {
     overview?.();
     playback?.destroy();
     playback = null;
-    // The next run starts over on the first tile
+    // The next run starts over on the first tile, with no arc left running
+    delete stage.dataset.turn;
     show(0, false);
     idle();
   };

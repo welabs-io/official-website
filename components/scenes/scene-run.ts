@@ -8,12 +8,15 @@
 // scene.
 import { follow } from "@/components/ring/overview-follow";
 import { placeOf, ringPosition } from "@/components/ring/positions";
+import { turn } from "@/components/ring/turn";
 
 // `steps` maps each scene of the stage to the step of the chain it plays (identity on the home; a product page plays a
 // subset, so the overview must be told the step, not the position)
 type SceneData = {
   version: number;
   cycle: number;
+  // Seconds the rotation of a swap takes (the script's SWAP_SECONDS)
+  swap: number;
   scenes: number[];
   steps?: number[];
 };
@@ -24,6 +27,8 @@ export function run(root: HTMLElement) {
   const noop = { pause() {}, resume() {}, destroy() {} };
   if (!stage || !source) return noop;
   const data = JSON.parse(source) as SceneData;
+  // The stage element, kept as a plain const so the closures below see it as non-null
+  const arena: HTMLElement = stage;
   const tiles = [...stage.children] as HTMLElement[];
   const scenes = tiles.map((tile) => tile.querySelector<HTMLElement>(".scn"));
   const count = tiles.length;
@@ -80,10 +85,14 @@ export function run(root: HTMLElement) {
     const planned = due;
     const from = active;
     active = (active + 1) % count;
-    root.style.setProperty("--swap-time", "0.4s");
+    root.style.setProperty("--swap-time", `${data.swap}s`);
     // A stage of one scene has nothing to swap to: the scene goes back to its first frame and plays again
     if (count === 1) restart();
-    else show(active);
+    else {
+      show(active);
+      // Starts the arc (lift in, dip out) of the rotation
+      turn(arena);
+    }
     flipRail();
     window.dispatchEvent(
       new CustomEvent("ring:swap", {
@@ -131,6 +140,7 @@ export function run(root: HTMLElement) {
       delete root.dataset.run;
       overview();
       active = 0;
+      delete arena.dataset.turn;
       tiles.forEach((tile, i) => {
         const position = ringPosition(i, 0, count);
         tile.dataset.pos = String(placeOf(position));
