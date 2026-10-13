@@ -2,11 +2,11 @@
 /* Reset and the page colour only; every component brings its own CSS Module. */
 
 /* TIPOGRAFIA */
-/* Inter (latin, variable 100 to 900) from the same URL the motion pieces load it from, so the browser fetches the 48 KB
-   file once for the page and for every player (a second copy under a hashed name cost a second download). */
+/* Inter (latin, variable 100 to 900), one 48 KB file at a fixed URL, so the preload of app/layout.tsx and this face
+   are the same request. */
 @font-face {
   font-family: "Inter";
-  src: url("/motion/v5/_shared/vendor/fonts/Inter-latin.woff2") format("woff2");
+  src: url("/fonts/Inter-latin.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
 }

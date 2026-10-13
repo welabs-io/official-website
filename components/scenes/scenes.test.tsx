@@ -5,7 +5,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { copyViolation } from "@/lib/content/rules";
-import { MANIFEST } from "@/lib/manifest";
+import { CHAIN_STEPS } from "@/lib/chain";
 import { SCRIPT } from "@/lib/scenes/script";
 import { STORY } from "@/lib/scenes/story";
 import { SceneBody } from "./SceneBody";
@@ -94,15 +94,10 @@ describe("scene stage", () => {
   const stage = renderToStaticMarkup(
     <SceneStage id="chain-ring" label="Cenas" tone="light" />,
   );
-  it("has one tile per step, named by the sentence of the manifest, the centre one first", () => {
-    expect(stage.match(/data-tile="s\d"/g)).toHaveLength(
-      MANIFEST.chain.steps.length,
-    );
+  it("has one tile per step, named by the sentence of the chain, the centre one first", () => {
+    expect(stage.match(/data-tile="s\d"/g)).toHaveLength(CHAIN_STEPS.length);
     // Quotes are escaped in the markup
-    const label = MANIFEST.chain.steps[0].detail.srLabel.replace(
-      /"/g,
-      "&quot;",
-    );
+    const label = CHAIN_STEPS[0].srLabel.replace(/"/g, "&quot;");
     expect(stage).toContain(`aria-label="${label}"`);
     expect(stage).toMatch(/data-pos="0"[^>]*data-tile="s0"/);
     expect(stage).toMatch(/data-pos="1"[^>]*data-tile="s1"/);

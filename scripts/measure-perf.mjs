@@ -5,7 +5,7 @@ import { gzipSync } from "node:zlib";
 // Cold-cache run of the home and of a product page against a running server (PORTFOLIO_PREVIEW_URL). Prints JSON:
 //  - firstLoadJs: gzip bytes of the <script src> chunks the route's HTML references (what the page needs to hydrate)
 //  - transferred bytes per resource type after the initial load and after a slow scroll of the whole page
-//  - players and iframes alive at the same time (sampled every 250 ms)
+//  - videos and iframes alive at the same time (sampled every 250 ms; the site is native, so both must stay at 0)
 //  - main-thread blocking: long tasks (PerformanceObserver) and the browser's TaskDuration over the run
 // Playwright is resolved from PLAYWRIGHT_DIR (a node_modules folder that contains it).
 const base = process.env.PORTFOLIO_PREVIEW_URL || "http://127.0.0.1:3000";
@@ -60,27 +60,16 @@ async function run(browser, path) {
       (m) => m.name === "TaskDuration",
     ).value;
 
-  let maxPlayers = 0;
+  let maxVideos = 0;
   let maxIframes = 0;
-  let samples = 0;
-  let playerSum = 0;
   const sampler = setInterval(async () => {
     try {
-      const r = await page.evaluate(() => {
-        const players = [...document.querySelectorAll("hyperframes-player")];
-        return {
-          p: players.length,
-          f: players.reduce(
-            (n, el) =>
-              n + (el.shadowRoot?.querySelectorAll("iframe").length || 0),
-            0,
-          ),
-        };
-      });
-      maxPlayers = Math.max(maxPlayers, r.p);
+      const r = await page.evaluate(() => ({
+        v: document.querySelectorAll("video").length,
+        f: document.querySelectorAll("iframe").length,
+      }));
+      maxVideos = Math.max(maxVideos, r.v);
       maxIframes = Math.max(maxIframes, r.f);
-      playerSum += r.p;
-      samples++;
     } catch {
       /* navigation in progress */
     }
@@ -116,9 +105,8 @@ async function run(browser, path) {
     pageHeight: height,
     initialKb: { total: kb(total(initial)), ...kinds(initial) },
     afterScrollKb: { total: kb(total(scrolled)), ...kinds(scrolled) },
-    maxPlayers,
+    maxVideos,
     maxIframes,
-    avgPlayers: +(playerSum / Math.max(samples, 1)).toFixed(2),
     longTasksInitial: longInitial.length,
     longTasks: long.length,
     totalBlockingMs: Math.round(blocking(long)),

@@ -1,13 +1,13 @@
 // SEGUE O ANEL: BLOCO DE CIMA DA CADEIA
-// Bound by ring-run to the chain ring. The overview (components/template/ChainOverview) has no clock of its own: it
-// listens to the `ring:swap` event the ring dispatches on every scene change and rewrites, in the same task, the lit
-// nodes, the caption, the path of the token and the reach of the connector. Everything lives in the DOM (data
-// attributes and custom properties); the server wrote the steps next to the block, so nothing is imported from the
-// manifest. `follow` returns the function that puts the block back on its first step.
+// Bound by components/scenes/scene-run.ts to the stage of the chain. The overview (components/template/ChainOverview)
+// has no clock of its own: it listens to the `ring:swap` event the stage dispatches on every scene change and rewrites,
+// in the same task, the lit nodes, the caption, the path of the token and the reach of the connector. Everything lives
+// in the DOM (data attributes and custom properties); the server wrote the steps next to the block, so nothing is
+// imported from lib/chain.ts. `follow` returns the function that puts the block back on its first step.
 import { stepVars } from "@/lib/overview-geometry";
 import type { OverviewData } from "@/lib/overview-data";
 
-// Detail of the event ring-run dispatches
+// Detail of the event scene-run dispatches
 export type RingSwapDetail = {
   ring: string;
   from: number;

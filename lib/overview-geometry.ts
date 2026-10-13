@@ -1,7 +1,7 @@
 // GEOMETRIA DA VISÃO GERAL
 // Pure numbers shared by the server (first state of the block) and the browser (every later step): where the token
-// walks, which stretch of the line it lights and how far the bridge of the connector reaches. No manifest import, so
-// the lazy chunk of the ring can use it. Everything is a percent of the width of the block, whose columns are equal.
+// walks, which stretch of the line it lights and how far the bridge of the connector reaches. No data import, so the
+// lazy chunk of the scenes can use it. Everything is a percent of the width of the block, whose columns are equal.
 import type { OverviewStep } from "./overview-data";
 
 // Centre of a column, in percent of the width of the block

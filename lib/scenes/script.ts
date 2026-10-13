@@ -2,8 +2,8 @@
 // The script is the clock of the native chain. Per scene: the actions with a time relative to the start of the scene,
 // the instant everything is settled (`settle`) and how long the settled frame stays (`hold`). The scene lasts
 // settle + hold; the runner (components/scenes/scene-run.ts) swaps to the next scene at that instant and nothing else
-// moves in between. The seven scenes follow the seven steps of the motion manifest, one to one (the manifest keeps the
-// caption, the lit nodes and the accessible name; the time is decided here). Seconds everywhere.
+// moves in between. The seven scenes follow the seven steps of the chain, one to one (lib/chain.ts keeps the caption,
+// the lit nodes and the accessible name; the time is decided here). Seconds everywhere.
 //
 // Version 1.1 follows the pace measured on khal.ai (hero: four scenes of 4.4 to 5 s, one action each, 1.2 to 2.5 s of
 // legible hold, the swap as the only large movement): scenes of 4.5 to 5.5 s, a swap of 0.7 s (a turn with depth, see
@@ -57,7 +57,7 @@ export type TimedScene = {
 
 export type SceneScript = TimedScene & {
   id: SceneId;
-  // Index of the step of the motion manifest this scene plays
+  // Index of the step of the chain (lib/chain.ts) this scene plays
   step: number;
   // Products the scene is about (the first is the protagonist)
   products: readonly string[];

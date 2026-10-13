@@ -5,12 +5,11 @@
 import { PageFrame } from "@/components/onepage/PageFrame";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
-import { RingStage } from "@/components/ring/RingStage";
-import { SceneStage } from "@/components/scenes/SceneStage";
+import { ProductsStage, SceneStage } from "@/components/scenes/SceneStage";
 import { HOME_INTRO } from "@/lib/content";
-import { MANIFEST } from "@/lib/manifest";
-import { ties } from "@/lib/manifest/select";
+import { ties } from "@/lib/chain";
 import { PRODUCTS, productBySlug } from "@/lib/products";
+import { HOME_SHOWN_CAPABILITY } from "@/lib/scenes/home-products";
 import { scenesOfProduct } from "@/lib/scenes/product-scenes";
 import type { PageConfig, SectionConfig } from "@/lib/site-config";
 import { ChainOverview } from "./ChainOverview";
@@ -40,7 +39,7 @@ function Body({ section }: { section: SectionConfig }) {
     // Opening, then the chain in two blocks: the overview on top and, joined to it by the connector, the ring that plays
     // the scene of the system the overview lights
     case "chain": {
-      const { ring, tone } = section;
+      const { stage, tone } = section;
       return (
         <div className={shell.wrap}>
           <div className={home.lede}>
@@ -49,26 +48,22 @@ function Body({ section }: { section: SectionConfig }) {
           </div>
           <div className={home.chainBlock} data-chain>
             <ChainOverview tone={tone} />
-            <SceneStage id={ring.id} tone={tone} label={ring.label} />
+            <SceneStage id={stage.id} tone={tone} label={stage.label} />
           </div>
         </div>
       );
     }
-    case "ring": {
-      const { ring, title, tone, cards } = section;
+    // The products carousel of the home: one native scene per product, then the cards (the one on screen lit)
+    case "products": {
+      const { stage, tone } = section;
       return (
         <div className={shell.wrap}>
-          {title && <SectionHead title={title} />}
-          <RingStage
-            id={ring.id}
-            kind={ring.kind}
-            slug={ring.slug}
-            eager={ring.eager}
-            logos={ring.logos}
+          <ProductsStage id={stage.id} label={stage.label} />
+          <ProductCards
             tone={tone}
-            label={ring.label}
+            lit={PRODUCTS[0].slug}
+            shown={HOME_SHOWN_CAPABILITY}
           />
-          {cards && <ProductCards tone={tone} lit={PRODUCTS[0].slug} />}
         </div>
       );
     }
@@ -114,7 +109,7 @@ function Body({ section }: { section: SectionConfig }) {
     case "others":
       return <OtherProducts slug={section.slug} />;
     case "hub": {
-      const tieList = ties(MANIFEST);
+      const tieList = ties();
       return (
         <div className={shell.wrap}>
           <HubText ties={tieList} lit={section.lit} />

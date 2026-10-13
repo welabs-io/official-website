@@ -2,7 +2,7 @@
 // Acceptance of the last unit of the home, at the three sizes: the overview (top) follows the ring (bottom) with no
 // clock of its own (caption and lit node change within 100 ms of the scene), the connector stays aligned to the lit
 // node and to the tile (2 px), the page has no horizontal scroll while it plays, the overview keeps its height budget
-// and the centre tile is never empty across a swap. Needs the player, so it waits for real swaps.
+// and the centre tile is never empty across a swap. Needs the scenes to play, so it waits for real swaps.
 import { expect, test } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 

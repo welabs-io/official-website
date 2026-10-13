@@ -2,8 +2,7 @@
 // Every product has the required fields, every field respects its word limit and no sentence carries a slogan, a
 // banned word or a maturity marker. The same word lists guard the rendered pages (components/template/site.test.tsx).
 import { describe, expect, it } from "vitest";
-import { MANIFEST } from "@/lib/manifest";
-import { ties } from "@/lib/manifest/select";
+import { CHAIN_STEPS, ties } from "@/lib/chain";
 import { PRODUCTS } from "@/lib/products";
 import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import {
@@ -104,8 +103,8 @@ describe("the common sentences respect their limits", () => {
   it("the connector sentence has at most 12 words", () => {
     expect(words(HUB_NOTE)).toBeLessThanOrEqual(12);
   });
-  it("there is a line of at most 14 words for every connection of the manifest", () => {
-    for (const tie of ties(MANIFEST)) {
+  it("there is a line of at most 14 words for every connection of the chain", () => {
+    for (const tie of ties()) {
       const line = TIE_LINES[tieKey(tie.a, tie.b)];
       expect(line, `${tie.a}-${tie.b}`).toBeTruthy();
       expect(words(line)).toBeLessThanOrEqual(14);
@@ -115,7 +114,7 @@ describe("the common sentences respect their limits", () => {
 
 describe("the reading sections of the home", () => {
   it("the order from start to end has the seven steps of the chain, one sentence of at most 22 words each", () => {
-    expect(JOURNEY).toHaveLength(MANIFEST.chain.steps.length);
+    expect(JOURNEY).toHaveLength(CHAIN_STEPS.length);
     for (const step of JOURNEY) {
       expect(step.products.length).toBeGreaterThan(0);
       expect(words(step.text)).toBeLessThanOrEqual(22);

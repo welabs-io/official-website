@@ -1,6 +1,25 @@
 # Pedidos de mudança ao contrato do manifesto de motion
 
-O site decide nenhum tempo: tudo vem de `lib/motion-manifest.json`. Quando um ajuste de ritmo exige algo que o manifesto de origem
+## Encerrado em 13/10/2026: o site passou a ser 100% nativo
+
+O site não usa mais o manifesto de motion. O carrossel de produtos da home, último lugar com vídeo, passou a tocar uma cena nativa de
+capacidade por produto (`components/scenes/SceneStage.tsx`, `ProductsStage`), no mesmo padrão da cadeia e das páginas de produto. Saíram
+junto o player HyperFrames, as peças, capas e o `_shared` em `public/motion`, a cópia do manifesto e do schema (`lib/motion-manifest.json`,
+`lib/motion-manifest.schema.json`), o leitor `lib/manifest`, os slides do anel (`lib/motion-slides.ts`, `lib/ring-data.ts`), o motor do anel
+de vídeo (`components/ring/RingStage.tsx`, `ring-run.ts`, `ring-playback.ts`, `player.ts`) e `scripts/sync-motion.mjs` com o teste dele.
+
+O que o site ainda lia do manifesto virou dado tipado do próprio site, com os mesmos valores:
+
+- os sete passos da cadeia (produtos, frase do leitor de tela, ligação com rótulo e a visão geral): `lib/chain.ts`, com as regras do antigo
+  leitor em `lib/chain.test.ts`;
+- o padrão do selo para logos pequenos (`brand.endorse`, "off"): `BRAND_ENDORSE` em `lib/brand-config.ts`.
+
+O tempo de tudo que se move vem dos roteiros das cenas (`lib/scenes/script.ts` e `lib/scenes/capabilities.ts`). Nenhum pedido abaixo está
+aberto; o registro fica como histórico da rodada `portfolio-20261002`.
+
+## Histórico
+
+O site decidia nenhum tempo: tudo vinha de `lib/motion-manifest.json`. Quando um ajuste de ritmo exige algo que o manifesto de origem
 (`plan-v5/out/motion-manifest.json`, schema 1.2.0) não permite, o ajuste é feito na cópia do site e registrado aqui, para a rodada de motion
 incorporar na próxima versão.
 
@@ -8,7 +27,7 @@ Estado em 13/10/2026: os ajustes abaixo já estão **na origem** (`plan-v5/out/m
 schema `plan-v5/motion-manifest.schema.v1.2.1.json`, revisão aditiva que guarda o `v1.2` intacto). `scripts/sync-motion.mjs` valida contra o 1.2.1
 e, rodado a partir da origem, deixa `lib/` igual ao que está commitado (as capas novas de entrada vivem em `plan-v5/out/covers`).
 
-## Pedido 1: `holdAfter` mínimo de 0,5 s nos segmentos de produto (12/10/2026, rodada `feat/faster-rotation`)
+### Pedido 1: `holdAfter` mínimo de 0,5 s nos segmentos de produto (12/10/2026, rodada `feat/faster-rotation`)
 
 - **O que o schema diz**: `holdAfter >= 1` em `defaults`, em `chain.steps[]` e em cada segmento de abertura e filme de `products`.
 - **O que o site precisa**: o operador pediu o anel de vídeo dos produtos mais rápido (tempo por tile 35% menor), com o rabo da abertura em cerca de
@@ -19,7 +38,7 @@ e, rodado a partir da origem, deixa `lib/` igual ao que está commitado (as capa
 - **Origem**: o schema 1.2.1 da origem leva o mesmo piso de 0,5 s nos segmentos de `products`; o `holdAfter` de `defaults` e dos passos da cadeia segue em 1 s.
 - **Pedido à rodada**: manter o piso de 0,5 s no próximo schema.
 
-## Pedido 2: recortes, taxas e duração da troca dos filmes (mesma rodada)
+### Pedido 2: recortes, taxas e duração da troca dos filmes (mesma rodada)
 
 Tudo dentro dos campos já previstos (`from`, `to`, `rate`, `holdAfter`, `transition.duration`), sem mudar o schema:
 
@@ -38,4 +57,5 @@ Tudo dentro dos campos já previstos (`from`, `to`, `rate`, `holdAfter`, `transi
 | Abertura e filme do Tuner   | 23,44     | 14,98      |
 | Abertura e filme do Knowly  | 25,65     | 15,43      |
 
-Os filmes de apoio das páginas de produto caíram entre 36% e 47% pelo mesmo critério (`components/ring/ring.test.ts` guarda o limite de 35%).
+Os filmes de apoio das páginas de produto caíram entre 36% e 47% pelo mesmo critério (o antigo `components/ring/ring.test.ts`, removido com o
+anel de vídeo, guardava o limite de 35%).

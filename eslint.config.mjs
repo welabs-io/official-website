@@ -1,15 +1,14 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals';
-import nextTypeScript from 'eslint-config-next/typescript';
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTypeScript from "eslint-config-next/typescript";
 
 export default defineConfig([
   ...nextVitals,
   ...nextTypeScript,
   {
     rules: {
-      '@next/next/no-img-element': 'off',
+      "@next/next/no-img-element": "off",
     },
   },
-  // public/motion holds generated third-party bundles (HyperFrames player and compositions).
-  globalIgnores(['.next/**', '.next-*/**', 'node_modules/**', 'next-env.d.ts', 'public/motion/**']),
+  globalIgnores([".next/**", ".next-*/**", "node_modules/**", "next-env.d.ts"]),
 ]);

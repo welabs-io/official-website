@@ -31,13 +31,9 @@ const visibleText = (html) =>
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-// The names of the tiles (`role="group"`) are the step descriptions the motion manifest writes (srLabel, title)
+// Text a screen reader reads: every alt and accessible name, the names of the scene tiles included
 const hiddenText = (html) =>
-  [
-    ...html
-      .replace(/role="group" aria-label="[^"]*"/g, "")
-      .matchAll(/(?:alt|aria-label)="([^"]*)"/g),
-  ]
+  [...html.matchAll(/(?:alt|aria-label)="([^"]*)"/g)]
     .map((m) => m[1])
     .join(" ");
 
@@ -60,12 +56,12 @@ const pages = new Map();
 const page = async (url) => {
   const html = await (await get(url)).text();
   pages.set(url, html);
-  assert(
-    !/<hyperframes-player[^>]*\bcontrols\b/i.test(html),
-    `${url} has a player with controls`,
-  );
   assert(!/role="progressbar"|Pausar|Retomar/i.test(html), `${url} has a bar`);
   assert(!/<video|<iframe|<audio/i.test(html), `${url} has a video element`);
+  assert(
+    !/hyperframes-player|\.mp4|\.webm|\/motion\//i.test(html),
+    `${url} references a player, a video file or a motion piece`,
+  );
   const all = `${visibleText(html)} ${hiddenText(html)}`;
   assert(!violation(all), `${url} breaks the copy rules: ${violation(all)}`);
   return html;
@@ -145,7 +141,7 @@ const logoOrder = (html) => [
     ].map((m) => m[1]),
   ),
 ];
-// The overview of the chain lists the products in the order of the plot (manifest), the rest of the page in weight order
+// The overview of the chain lists the products in the order of the plot (lib/chain.ts), the rest of the page in weight order
 const chainHtml = home.slice(
   home.indexOf('id="chain"'),
   home.indexOf('id="how"'),
@@ -191,12 +187,18 @@ const words = visibleText(copyOnly(home)).split(" ").length;
 // 700 to 1000 words since the depth work of 2026-10-12 (180 before it: more content and more scroll was the direction)
 assert(words >= 700 && words <= 1000, `home has ${words} visible words`);
 assert(
-  !/<video|<hyperframes-player/i.test(chainHtml),
-  "the chain has no video",
-);
-assert(
   (home.match(/data-tile="s\d"/g) ?? []).length === 7,
   "the chain has seven native scenes",
+);
+// The products carousel: one native capability scene per product, in weight order
+const productsHtml = home.slice(
+  home.indexOf('id="products"'),
+  home.indexOf('id="operation"'),
+);
+assert.deepEqual(
+  [...productsHtml.matchAll(/data-tile="([a-z]+)-[a-z]+"/g)].map((m) => m[1]),
+  SLUGS,
+  "the products carousel plays one native scene per product, in order",
 );
 // Content layer: five product cards, the active one lit, each leading to its page
 const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
@@ -274,12 +276,8 @@ for (const slug of SLUGS) {
   const opening = html.slice(at("product"), at("resolves"));
   assert(
     (opening.match(new RegExp(`data-tile="${slug}-`, "g")) ?? []).length ===
-      3 && !/<video|<hyperframes-player|data-mini=/.test(opening),
-    `${slug} opens with three native capability scenes, no video, no still`,
-  );
-  assert(
-    !/<video|<hyperframes-player|data-layers/.test(html),
-    `${slug} page plays no film`,
+      3 && !/data-mini=/.test(opening),
+    `${slug} opens with three native capability scenes, no still`,
   );
   const block = html.slice(at("connectors"), at("platforms"));
   assert(
@@ -293,26 +291,16 @@ for (const slug of SLUGS) {
       `${slug} connectors link to ${other}`,
     );
 }
-// /lab/chain is a workbench: it must stay out of the index
-const lab = await (await get("/lab/chain")).text();
-assert(
-  /<meta name="robots" content="noindex/.test(lab),
-  "/lab/chain is noindex",
-);
+// The workbench of the video montage left with the videos
+await get("/lab/chain", 404);
 
-// ARQUIVOS REFERENCIADOS (logos, marcas, favicons) respondem 200
+// ARQUIVOS REFERENCIADOS (logos, marcas, favicons, a fonte) respondem 200
 const assets = new Set();
 for (const html of pages.values())
   for (const [, src] of html.matchAll(
-    /(?:src|href)="(\/(?:brands|clients|platforms|motion)\/[^"]+)"/g,
+    /(?:src|href)="(\/(?:brands|clients|platforms|fonts)\/[^"]+)"/g,
   ))
     assets.add(src);
-// The player and the manifest every reel needs (there is no sequential player any more)
-for (const src of [
-  "/motion/v5/player.js",
-  "/motion/v5/_shared/brand/manifest.json",
-])
-  assets.add(src);
 for (const src of assets) await get(src);
 
 // REDIRECIONAMENTOS: um salto, 308, destino final com 200

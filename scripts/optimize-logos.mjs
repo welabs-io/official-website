@@ -5,8 +5,7 @@ import sharp from "sharp";
 
 // LOGOS EM WEBP
 // The marquee of the closing draws each mark at most 34 px tall; 68 px is enough for a 2x screen. Converts the PNG marks
-// of public/clients and public/platforms to WebP, keeping alpha. (The covers of the films are not made here any more:
-// they come from the motion manifest through scripts/sync-motion.mjs.)
+// of public/clients and public/platforms to WebP, keeping alpha.
 const publicRoot = join(
   resolve(dirname(fileURLToPath(import.meta.url)), ".."),
   "public",

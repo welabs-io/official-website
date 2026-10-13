@@ -1,12 +1,14 @@
 /* GIRO DO CARROSSEL CIRCULAR */
-/* One stylesheet for every circular carousel (the native scenes of the chain and the rings of films): the stage is
+/* One stylesheet for every circular carousel of native scenes (the chain, the products of the home, the capabilities of
+   a product page): the stage is
    `[data-ring]`, each tile `[data-pos]`. The swap is a turn, not a slide. Measured on khal.ai (hero, 25 fps): the window
    that comes forward flips its stacking at once and then settles over 0.5 s on an exponential ease-out, scale 0.98 to
    1.03 and 8 px of lift, while the one it replaces falls back with the same curve. Here the same idea gets depth: the
    stage has a perspective, a tile at the side sits behind the centre and is turned about 28 degrees, and a swap moves the
    tile along an arc (each of x, depth, turn and scale has its own curve, so the path bends), with a lift on the way in and
    a dip on the way out. Only transform properties and opacity move (composited, no layout). The duration is --swap-time
-   (0.7 s by default, the site's manifest sets it per ring); the curves start fast, so nothing waits before it moves.
+   (0.7 s by default; the runner sets the swap of the script on every turn); the curves start fast, so nothing waits
+   before it moves.
    Reduced motion: no turn, no depth, no transition (the tiles change place at once, flat). */
 
 /* The perspective of the stage reaches each tile by itself; the tiles are NOT a shared 3D context (flat, not preserve-3d),

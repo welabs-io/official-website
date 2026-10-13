@@ -10,7 +10,7 @@ import {
   TIE_LINES,
   tieKey,
 } from "@/lib/content";
-import type { Tie } from "@/lib/manifest/select";
+import type { Tie } from "@/lib/chain";
 import {
   LOGO_PAD,
   PRODUCTS,
@@ -25,17 +25,21 @@ import styles from "./content.module.css";
 import { SectionHead } from "./SectionHead";
 
 // CARTÕES DE PRODUTO (HOME)
-// Name (the official logo), one line and the first three capabilities. The card of the product active in the ring above
-// is lit (`data-on`, rewritten by ring-run on every swap); each card leads to its page.
+// Name (the official logo), one line and the first three capabilities. The card of the product on screen in the carousel
+// above is lit (`data-on`, rewritten by components/scenes/scene-run.ts on every swap), with a 4 px amber bar on the
+// capability the scene shows (`shown`); each card leads to its page.
 export function ProductCards({
   tone,
   lit,
+  shown,
   exclude,
   label = "Produtos",
 }: {
   tone: Tone;
-  // The product lit by the ring above (home); none on the "other products" of a product page
+  // The product lit by the carousel above (home); none on the "other products" of a product page
   lit?: ProductSlug;
+  // Per product, the index of the capability its scene in the carousel shows: marked in the card while it is lit (home)
+  shown?: Partial<Record<ProductSlug, number>>;
   // The product of the page, left out of the list ("Outros produtos")
   exclude?: ProductSlug;
   label?: string;
@@ -67,8 +71,12 @@ export function ProductCards({
             />
             <span className={styles.cardLine}>{line}</span>
             <span className={styles.caps}>
-              {PRODUCT_CONTENT[slug].capabilities.slice(0, 3).map((cap) => (
-                <span key={cap.text} className={styles.cap}>
+              {PRODUCT_CONTENT[slug].capabilities.slice(0, 3).map((cap, i) => (
+                <span
+                  key={cap.text}
+                  className={styles.cap}
+                  data-shown={shown?.[slug] === i ? "" : undefined}
+                >
                   <Icon name={cap.icon} size={18} />
                   {cap.text}
                 </span>
@@ -83,7 +91,7 @@ export function ProductCards({
 
 // FRASES DO BLOCO DE CONECTORES
 // Home: one sentence on the core and the rails. Product page: a heading and one line per connection of the product
-// (the label of each connection is drawn in the block itself and comes from the motion manifest).
+// (the label of each connection is drawn in the block itself and comes from lib/chain.ts).
 export function HubText({
   ties,
   lit,

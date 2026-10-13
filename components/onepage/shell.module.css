@@ -1,6 +1,6 @@
 /* BASE DA PÁGINA */
 /* Welabs light theme (cream): one theme for the whole page, amber only as an area (dot, block, 4 px+ bar), Inter text.
-   Only the footer is graphite. The products' videos are dark objects inside the cream. */
+   Only the footer is graphite. */
 .page {
   --g: #10141c;
   --g2: #161b25;

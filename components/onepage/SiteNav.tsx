@@ -4,8 +4,8 @@
 // Como funciona and Contato. On a desktop the list opens on hover and on keyboard focus (no state); on a phone the whole
 // menu is a panel under the header, opened by a button. The panel closes on any link, on Escape and when the page
 // changes, so it never stays open over a page the visitor already reached.
-// The texts and the products come as props from the server (PageFrame): a client module that imported lib/products would
-// drag the whole motion manifest (60 KB) into the first load of every page.
+// The texts and the products come as props from the server (PageFrame), so no list of the site ships in this client
+// module.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";

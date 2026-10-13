@@ -1,5 +1,5 @@
 /* PALCO DAS CENAS NATIVAS */
-/* The circular carousel of the chain, now made of live scenes instead of videos. Same swap of positions as before: the
+/* The circular carousel of native scenes (the chain, the products of the home, the capabilities of a product page): the
    centre scene is the one that plays; the previous and the next sit behind it at half scale, shifted by 38% of the width,
    under a cream veil, so only a strip of each shows (on a phone, an edge); the ones further back are invisible. The
    rotation (a turn with depth along an arc, components/ring/rotation.css) lasts --swap-time, the swap of the script

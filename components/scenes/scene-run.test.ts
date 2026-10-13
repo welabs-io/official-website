@@ -270,3 +270,52 @@ describe("scene runner on the capability stage", () => {
     expect(caption.textContent).toBe("Primeira.");
   });
 });
+
+describe("scene runner on the products carousel of the home", () => {
+  it("lights the card of the product on screen and puts the first one back on destroy", () => {
+    const lit = ["domus", "relloo", "magneto"];
+    const cards = lit.map((slug) => ({
+      dataset: { card: slug } as Record<string, string>,
+    }));
+    const section = {
+      querySelectorAll: (sel: string) => (sel === "[data-card]" ? cards : []),
+      querySelector: () => null,
+    };
+    const tiles = lit.map(() => ({
+      dataset: {} as Record<string, string>,
+      removeAttribute: () => {},
+      setAttribute: () => {},
+      querySelector: () => ({ dataset: {} }),
+    }));
+    const root = {
+      id: "products-ring",
+      dataset: {} as Record<string, string>,
+      style: { setProperty: () => {} },
+      closest: () => section,
+      querySelectorAll: () => [],
+      querySelector: (sel: string) =>
+        sel === "[data-ring]"
+          ? { children: tiles, dataset: {} }
+          : sel.startsWith("script")
+            ? {
+                textContent: JSON.stringify({
+                  scenes: [5, 5, 5],
+                  swap: 0.7,
+                  lit,
+                }),
+              }
+            : null,
+    };
+    const on = () => cards.map((c) => c.dataset.on);
+    const runner = run(root as unknown as HTMLElement);
+    runner.resume();
+    expect(on()).toEqual(["true", "false", "false"]);
+    vi.advanceTimersByTime(5001);
+    expect(on()).toEqual(["false", "true", "false"]);
+    vi.advanceTimersByTime(10000);
+    expect(on()).toEqual(["true", "false", "false"]);
+    vi.advanceTimersByTime(5000);
+    runner.destroy();
+    expect(on()).toEqual(["true", "false", "false"]);
+  });
+});

@@ -3,7 +3,8 @@
 // stage (lib/scenes/script.ts: settle + hold). On every boundary it moves the tiles to their new places (`data-pos`),
 // writes the phase of each scene (`play` for the centre, `start` for the ones that come next, `end` for the ones behind),
 // flips the pulse of the thread, lights the name and writes the caption of the scene where the stage has them (the
-// capability stage of a product page) and tells the overview with the `ring:swap` event. The animations themselves are CSS
+// capability stage of a product page), lights the product card of the scene where the section has cards (the products
+// carousel of the home) and tells the overview with the `ring:swap` event. The animations themselves are CSS
 // (components/scenes/fx.css) and nothing here reads layout. `pause` stops the timer and freezes the CSS animations
 // (`data-run="paused"`); `resume` continues from the same instant; `destroy` puts the stage back on its settled first
 // scene.
@@ -22,6 +23,8 @@ type SceneData = {
   steps?: number[];
   // The caption of each scene (the capability stage of a product page)
   captions?: string[];
+  // The product card each scene lights in its section (the products carousel of the home)
+  lit?: string[];
 };
 
 export function run(root: HTMLElement) {
@@ -48,12 +51,23 @@ export function run(root: HTMLElement) {
   // The names of the capabilities under the stage and the caption of the one on screen (capability stage only)
   const names = [...root.querySelectorAll<HTMLElement>("[data-cap]")];
   const caption = root.querySelector<HTMLElement>("[data-caption]");
+  // The product cards of the section (the home), the one of the scene on screen lit
+  const cards = data.lit
+    ? [
+        ...(root
+          .closest("section")
+          ?.querySelectorAll<HTMLElement>("[data-card]") ?? []),
+      ]
+    : [];
   const label = (active: number) => {
     names.forEach((name, i) => {
       name.dataset.on = i === active ? "true" : "false";
     });
     const text = data.captions?.[active];
     if (caption && text) caption.textContent = text;
+    const product = data.lit?.[active];
+    for (const card of cards)
+      card.dataset.on = card.dataset.card === product ? "true" : "false";
   };
 
   // Places and phases for the scene `active` at the centre. A scene ahead waits on its first frame, one behind keeps its

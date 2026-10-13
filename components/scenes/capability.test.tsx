@@ -25,8 +25,14 @@ import {
   sceneSeconds,
   stillRatio,
 } from "@/lib/scenes/script";
+import {
+  HOME_PRODUCT_SCENE,
+  HOME_SHOWN_CAPABILITY,
+  homeProductScenes,
+} from "@/lib/scenes/home-products";
+import { ProductCards } from "@/components/template/Content";
 import { CapabilityBody } from "./CapabilityBody";
-import { CapabilityStage } from "./SceneStage";
+import { CapabilityStage, ProductsStage } from "./SceneStage";
 
 const ALL: CapabilityScript[] = PRODUCTS.flatMap(
   ({ slug }) => CAPABILITY_SCRIPT[slug],
@@ -170,5 +176,76 @@ describe("capability stage", () => {
     expect(data.steps).toBeUndefined();
     const caption = stage.match(/<p[^>]*data-caption[^>]*>([^<]*)<\/p>/)![1];
     expect(caption).toBe(data.captions[0]);
+  });
+});
+
+describe("products stage of the home", () => {
+  const scenes = homeProductScenes();
+  const stage = renderToStaticMarkup(
+    <ProductsStage id="products-ring" label="Produtos" />,
+  );
+  it("plays one capability scene per product, in the order of the site, each from its own product", () => {
+    expect(scenes.map((s) => s.product)).toEqual(PRODUCTS.map((p) => p.slug));
+    for (const scene of scenes) {
+      expect(CAPABILITY_SCRIPT[scene.product]).toContain(scene);
+      expect(scene.id).toBe(HOME_PRODUCT_SCENE[scene.product]);
+    }
+    const order = [...stage.matchAll(/data-tile="([a-z-]+)"/g)].map(
+      (m) => m[1],
+    );
+    expect(order).toEqual(scenes.map((s) => s.id));
+    expect(stage).toMatch(
+      new RegExp(`data-pos="0"[^>]*data-tile="${scenes[0].id}"`),
+    );
+  });
+  it("draws the logo of the product in the bar of each window and no video", () => {
+    for (const scene of scenes)
+      expect(stage).toMatch(
+        new RegExp(
+          `data-tile="${scene.id}"[\\s\\S]*?data-product="${scene.product}"`,
+        ),
+      );
+    expect(stage).not.toMatch(/<video|<iframe|hyperframes-player|\.mp4|\.webm/);
+  });
+  it("keeps the accelerated pace: scenes of about 5 s, a legible hold, the swap of the script, still most of the time", () => {
+    for (const scene of scenes) {
+      expect(sceneSeconds(scene)).toBeGreaterThanOrEqual(4.8);
+      expect(sceneSeconds(scene)).toBeLessThanOrEqual(5.2);
+      expect(scene.hold).toBeGreaterThanOrEqual(1.2);
+      expect(scene.hold).toBeLessThanOrEqual(1.8);
+    }
+    expect(SWAP_SECONDS).toBe(0.7);
+    expect(stillRatio(scenes)).toBeGreaterThanOrEqual(0.55);
+  });
+  it("writes for the runner the card each scene lights, and names each tile by product and capability", () => {
+    const json = stage.match(
+      /<script type="application\/json" data-scene-data(?:="[^"]*")?>([^<]*)<\/script>/,
+    )![1];
+    const data = JSON.parse(json.replace(/&quot;/g, '"')) as {
+      scenes: number[];
+      lit: string[];
+      steps?: number[];
+    };
+    expect(data.lit).toEqual(PRODUCTS.map((p) => p.slug));
+    expect(data.scenes).toEqual(scenes.map(sceneSeconds));
+    expect(data.steps).toBeUndefined();
+    const { name, detail } = capabilityOf(scenes[0]);
+    expect(stage).toContain(`aria-label="Domus, ${name}: ${detail}"`);
+  });
+  it("each card under the carousel marks the capability its scene shows, one per card, among the three it lists", () => {
+    const cards = renderToStaticMarkup(
+      <ProductCards tone="light" lit="domus" shown={HOME_SHOWN_CAPABILITY} />,
+    );
+    for (const scene of scenes) {
+      const card = cards.slice(
+        cards.indexOf(`data-card="${scene.product}"`),
+        cards.indexOf("</a>", cards.indexOf(`data-card="${scene.product}"`)),
+      );
+      expect(card.match(/data-shown/g), scene.product).toHaveLength(1);
+      expect(scene.cap).toBeLessThan(3);
+      expect(card).toMatch(
+        new RegExp(`data-shown=""[^>]*>[\\s\\S]*?${capabilityOf(scene).name}`),
+      );
+    }
   });
 });

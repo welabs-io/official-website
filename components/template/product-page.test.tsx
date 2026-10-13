@@ -5,7 +5,7 @@
 // closing and the other products. No video anywhere. Rendered on the server and read as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { MANIFEST } from "@/lib/manifest";
+import { CHAIN_STEPS } from "@/lib/chain";
 import { PRODUCTS } from "@/lib/products";
 import {
   PRODUCT_MIN_CYCLE,
@@ -27,7 +27,7 @@ describe("one template, same sequence", () => {
     expect(kinds(HOME_CONFIG)).toEqual([
       "chain",
       "journey",
-      "ring",
+      "products",
       "benefits",
       "audience",
       "integrations",
@@ -141,7 +141,7 @@ describe("product page", () => {
       expect(scenes.length).toBeGreaterThan(0);
       // The product is the protagonist or an end of the connection of every scene it plays
       for (const scene of scenes) {
-        const { connection } = MANIFEST.chain.steps[scene.step];
+        const { connection } = CHAIN_STEPS[scene.step];
         expect(
           scene.products.includes(slug) ||
             connection.from === slug ||
@@ -155,9 +155,7 @@ describe("product page", () => {
       expect(how).toContain('id="product-chain"');
       expect(how.match(/data-self="true"/g)).toHaveLength(1);
       // The overview starts on the first step of the product and the runner is told the steps
-      expect(how).toContain(
-        MANIFEST.chain.steps[scenes[0].step].overview.label,
-      );
+      expect(how).toContain(CHAIN_STEPS[scenes[0].step].overview.label);
       expect(how).toContain(`"steps":[${scenes.map((s) => s.step).join(",")}]`);
       // The scenes are native: no video in the section
       expect(how).not.toMatch(
