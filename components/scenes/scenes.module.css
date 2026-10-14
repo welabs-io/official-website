@@ -110,6 +110,25 @@
 [data-product="tuner"] .barLogo {
   height: 1.95rem;
 }
+/* The logo that receives (ludic pilot): it swells about its centre and a pale amber disc grows out of it and fades. At
+   rest the disc is invisible. */
+.barReceive {
+  position: relative;
+  display: block;
+}
+.barReceive::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: -1.125rem 0 0 -1.25rem;
+  border-radius: 50%;
+  background: var(--s-amber-200);
+  opacity: 0;
+}
 /* The separator is drawn, not text: a 1 px slash in the sand of the edges */
 .path b::after {
   content: "";

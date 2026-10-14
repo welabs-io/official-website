@@ -40,9 +40,9 @@ export type Act = (
 // Entrance kinds (components/scenes/fx.css defines each one). All of them animate FROM a state to the natural one, so
 // the settled frame is plain CSS with no animation.
 export type Fx =
-  // fade and rise
+  // fade and rise, with a small overshoot (same keyframes as "rise" since the ludic pass)
   | "in"
-  // scale from 0.9 with a fade
+  // born with a spring, its glyph drawing itself after (same keyframes as "spring" since the ludic pass)
   | "pop"
   // clip reveal from the left
   | "wipe"
@@ -50,7 +50,22 @@ export type Fx =
   | "out"
   // colour change to the lit state
   | "light"
-  // slide down by --dy
+  // travel down from --dy, lifted and tilted on the way (same keyframes as "lift" since the ludic pass)
   | "drop"
   // dots that appear, stay and vanish
-  | "blink";
+  | "blink"
+  // Component motion of the ludic pilot (S1 and S2; see components/scenes/fx.css, "MOVIMENTO DE COMPONENTE"):
+  // born with a spring (scale from 0.6, overshoot, settle) about --origin
+  | "spring"
+  // rise 10 px with a small overshoot
+  | "rise"
+  // grow from the bottom (a bar of the waveform), with overshoot
+  | "grow"
+  // fly in from --fx/--fy (another component of the screen) and land
+  | "fly"
+  // travel from --dy lanes above, lifted and tilted on the way, and land with a bounce
+  | "lift"
+  // receive: a short swell of the element and a ring that leaves it
+  | "pulse"
+  // a column of digits rolls one row up (a counter that counts)
+  | "roll";

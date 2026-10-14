@@ -12,20 +12,43 @@
   animation-fill-mode: both;
 }
 .scn[data-phase="start"] [data-fx],
-.scn[data-phase="start"] [data-fx]::before {
+.scn[data-phase="start"] [data-fx]::before,
+.scn[data-phase="start"] [data-fx]::after {
   animation-play-state: paused;
 }
 /* The runner pauses everything when the stage leaves the screen or the tab is hidden */
 [data-run="paused"] .scn[data-phase="play"] [data-fx],
-[data-run="paused"] .scn[data-phase="play"] [data-fx]::before {
+[data-run="paused"] .scn[data-phase="play"] [data-fx]::before,
+[data-run="paused"] .scn[data-phase="play"] [data-fx]::after {
   animation-play-state: paused;
 }
 
+/* Since the ludic pass (approved pilot of 2026-10-13) the three basic entrances carry component motion in every scene:
+   "in" rises with an overshoot, "pop" is born with a spring (and the glyph inside it draws itself, below), "drop" travels
+   lifted and tilted (the keyframes are those of "rise", "spring" and "lift") */
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="in"] {
-  animation-name: fx-in;
+  animation-name: fx-rise;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pop"] {
-  animation-name: fx-pop;
+  animation-name: fx-spring;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  transform-origin: var(--origin, 50% 50%);
+}
+/* A check (or any glyph) inside something that springs in draws itself from the left, just after the spring */
+.scn:is([data-phase="start"], [data-phase="play"])
+  :is([data-fx="pop"], [data-fx="spring"])
+  svg {
+  animation: fx-wipe calc(var(--d, 0.35s) * 0.55)
+    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s) + var(--d, 0.35s) * 0.45)
+    ease-out both;
+}
+.scn[data-phase="start"] :is([data-fx="pop"], [data-fx="spring"]) svg,
+[data-run="paused"]
+  .scn[data-phase="play"]
+  :is([data-fx="pop"], [data-fx="spring"])
+  svg {
+  animation-play-state: paused;
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="wipe"] {
   animation-name: fx-wipe;
@@ -34,7 +57,8 @@
   animation-name: fx-out;
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="drop"] {
-  animation-name: fx-drop;
+  animation-name: fx-lift;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="blink"] {
   animation-name: fx-blink;
@@ -49,18 +73,6 @@
     cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-@keyframes fx-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-}
-@keyframes fx-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-}
 @keyframes fx-wipe {
   from {
     clip-path: inset(0 100% 0 0);
@@ -75,11 +87,6 @@
   }
   to {
     opacity: 0;
-  }
-}
-@keyframes fx-drop {
-  from {
-    transform: translateY(var(--dy, 0));
   }
 }
 @keyframes fx-blink {
@@ -106,10 +113,140 @@
   }
 }
 
+/* MOVIMENTO DE COMPONENTE (PILOTO LÚDICO) */
+/* The motion the HyperFrames of the 2026-10-02 round had and the native scenes lacked: a component is born with a spring,
+   rises with a small overshoot, grows from its base, flies in from another part of the screen, travels between lanes
+   lifted and tilted, swells when it receives, and a counter rolls. Same contract as above (FROM a state TO the natural
+   one); the keyframes carry the curve, so they run on a near-linear timing. */
+.scn:is([data-phase="start"], [data-phase="play"])
+  :is(
+    [data-fx="spring"],
+    [data-fx="rise"],
+    [data-fx="grow"],
+    [data-fx="fly"],
+    [data-fx="lift"],
+    [data-fx="pulse"]
+  ) {
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="spring"] {
+  animation-name: fx-spring;
+  transform-origin: var(--origin, 50% 100%);
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="rise"] {
+  animation-name: fx-rise;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="grow"] {
+  animation-name: fx-grow;
+  transform-origin: 50% 100%;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="fly"] {
+  animation-name: fx-fly;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="lift"] {
+  animation-name: fx-lift;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pulse"] {
+  animation-name: fx-pulse;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pulse"]::after {
+  animation: fx-ring var(--d, 0.35s)
+    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s)) ease-out both;
+}
+.scn:is([data-phase="start"], [data-phase="play"]) [data-fx="roll"] {
+  animation-name: fx-roll;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.2, 1.3);
+}
+@keyframes fx-spring {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.6);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(0) scale(1.07);
+  }
+  72% {
+    transform: scale(0.97);
+  }
+  88% {
+    transform: scale(1.01);
+  }
+}
+@keyframes fx-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+@keyframes fx-grow {
+  0% {
+    transform: scaleY(0);
+  }
+  65% {
+    transform: scaleY(1.2);
+  }
+}
+@keyframes fx-fly {
+  0% {
+    opacity: 0;
+    transform: translate(var(--fx, -40px), var(--fy, 0)) scale(0.72);
+  }
+  25% {
+    opacity: 1;
+  }
+  70% {
+    transform: translate(0, 0) scale(1.04);
+  }
+}
+@keyframes fx-lift {
+  0% {
+    transform: translateY(var(--dy, 0));
+  }
+  45% {
+    transform: translateY(calc(var(--dy, 0) * 0.4)) rotate(-2.5deg) scale(1.05);
+  }
+  78% {
+    transform: translateY(4%) rotate(0.6deg) scale(1);
+  }
+  90% {
+    transform: translateY(-1%);
+  }
+}
+@keyframes fx-pulse {
+  35% {
+    transform: scale(1.16);
+  }
+  70% {
+    transform: scale(0.98);
+  }
+}
+@keyframes fx-ring {
+  from {
+    opacity: 0.6;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes fx-roll {
+  from {
+    transform: translateY(0);
+  }
+}
+
 /* Reduced motion: every scene shows its settled frame, whatever the runner wrote */
 @media (prefers-reduced-motion: reduce) {
   .scn [data-fx],
-  .scn [data-fx]::before {
+  .scn [data-fx]::before,
+  .scn [data-fx]::after,
+  .scn [data-fx] svg {
     animation: none !important;
   }
 }

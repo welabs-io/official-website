@@ -358,8 +358,8 @@ test.describe("native chain behaviour", () => {
     expect(Math.abs(gap - data.scenes[1])).toBeLessThan(0.25);
   });
 
-  // 35% at the 2x pace: measured 41.9% and 42.5% on 2026-10-13 (56.5% at 1x, against a bar of 55%); a chain stage also
-  // moves its overview, token and connector on every swap (see e2e/product-chain.spec.ts)
+  // 35% since the ludic pass: measured 38.4% on 2026-10-13 (41.9% and 42.5% at 2x before it, 56.5% at 1x); a chain stage
+  // also moves its overview, token and connector on every swap (see e2e/product-chain.spec.ts)
   test("at least 35% of the cycle is still (computed styles sampled every 100 ms)", async ({
     page,
   }) => {

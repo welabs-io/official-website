@@ -37,7 +37,8 @@
   --s-t-meta: 0.6875rem;
   --s-t-label: 0.75rem;
   --s-t-body: 0.8125rem;
-  --s-t-key: 1.25rem;
+  /* 18 px since the ludic pass: the key reads like the title of a real app, not a headline (it was 20 px) */
+  --s-t-key: 1.125rem;
   /* Shape and depth */
   --s-r-ctl: 6px;
   --s-r-card: 12px;

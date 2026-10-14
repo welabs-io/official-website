@@ -12,31 +12,15 @@ import { ConfirmToast } from "./ConfirmToast";
 import { CardSheet, CardStatus, CrmFunnelCard } from "./CrmFunnelCard";
 import { HouseRooms } from "./HouseRooms";
 import { Glyph, GLYPHS, ROOM_GLYPHS } from "./icons";
-import { InboxUnified } from "./InboxUnified";
+import { LudicChannels } from "./LudicChannels";
+import { LudicFunnel } from "./LudicFunnel";
 import { SceneWindow } from "./SceneWindow";
 import { SourcePanel } from "./SourcePanel";
 import styles from "./scenes.module.css";
 
 const { card, stages, times } = STORY;
 const cardCopy = { title: card.title, order: card.order };
-const { owner, deadline, history, followup } = card.facts;
-const FACT_ICONS = [GLYPHS.user, GLYPHS.clock, GLYPHS.history, GLYPHS.calendar];
-const factRows = (action: string) => [
-  ...[owner, deadline, history, followup].map(({ label, value }, i) => ({
-    label,
-    value,
-    action,
-    icon: FACT_ICONS[i],
-  })),
-  // The fact the house fills in the next scene, still missing
-  { label: card.pending, value: "", icon: GLYPHS.truck, pending: true },
-  // Who asked and where, already known from the inbox
-  ...card.origin.map(({ label, value }, i) => ({
-    label,
-    value,
-    icon: i === 0 ? GLYPHS.user : GLYPHS.chat,
-  })),
-];
+const { owner, deadline, history } = card.facts;
 
 export function SceneBody({
   scene,
@@ -51,7 +35,11 @@ export function SceneBody({
       // Domus and Relloo: the full house and the empty funnel glued to its wall
       case "s0":
         return (
-          <SceneWindow product="domus" meta={STORY.houseMeta}>
+          <SceneWindow
+            product="domus"
+            meta={STORY.houseMeta}
+            receive={act("funnel", "pulse", { offset: 0.17, length: 0.18 })}
+          >
             <div className={styles.page}>
               <p className={`${styles.pageTitle} ${styles.key}`} data-key="">
                 {STORY.house}
@@ -76,90 +64,35 @@ export function SceneBody({
             </div>
           </SceneWindow>
         );
-      // Tuner: the call and the message of Marina become one conversation
+      // Tuner: the call and the message of Marina become one conversation (ludic pilot: the phone and the inbox talk)
       case "s1":
         return (
-          <SceneWindow product="tuner">
-            <div className={styles.full}>
-              <InboxUnified
-                act={act}
-                title={STORY.inboxTitle}
-                person={STORY.person}
-                current={{
-                  name: STORY.person,
-                  preview: STORY.ask,
-                  time: times.ask,
-                }}
-                others={STORY.inbox}
-                meta={card.order}
-                items={[
-                  {
-                    channel: STORY.channels.chat,
-                    tone: "ok",
-                    icon: GLYPHS.chat,
-                    from: STORY.you,
-                    text: STORY.before,
-                    time: times.before,
-                  },
-                  {
-                    channel: STORY.channels.voice,
-                    tone: "info",
-                    icon: GLYPHS.phone,
-                    text: STORY.call,
-                    time: times.call,
-                    action: "call",
-                    wave: true,
-                  },
-                  {
-                    channel: STORY.channels.chat,
-                    tone: "ok",
-                    icon: GLYPHS.chat,
-                    text: STORY.ask,
-                    time: times.ask,
-                    action: "ask",
-                    typing: 0.45,
-                    isKey: true,
-                  },
-                ]}
-                mark={STORY.thread}
-                reply={STORY.reply}
-                action="merge"
-              />
-            </div>
+          <SceneWindow
+            product="tuner"
+            receive={act("ask", "pulse", { offset: 0.14, length: 0.14 })}
+          >
+            <LudicChannels act={act} />
           </SceneWindow>
         );
-      // Relloo: the card is born in Novo, gets its facts and moves to Em análise
+      // Relloo: the card is born in Novo, gets its facts and moves to Em análise (ludic pilot: the card travels)
       case "s2":
         return (
-          <SceneWindow product="relloo" meta={card.order}>
-            <div className={`${styles.duo} ${styles.duoFunnel}`}>
-              <CrmFunnelCard
-                act={act}
-                title={STORY.funnel}
-                meta={`${STORY.others.length + 1} abertos`}
-                stages={stages}
-                stage={1}
-                card={cardCopy}
-                owner={owner.value}
-                others={STORY.others}
-                born="born"
-                facts="facts"
-                moves={[{ action: "review", rows: 1 }]}
-                keyTitle
-              />
-              <CardSheet
-                act={act}
-                title={card.details}
-                meta={card.order}
-                rows={factRows("facts")}
-              />
-            </div>
+          <SceneWindow
+            product="relloo"
+            meta={card.order}
+            receive={act("born", "pulse", { offset: 0.04, length: 0.18 })}
+          >
+            <LudicFunnel act={act} />
           </SceneWindow>
         );
       // Domus: three rooms hand the address, the order and the Saturday window to the card
       case "s3":
         return (
-          <SceneWindow product="domus" meta={card.order}>
+          <SceneWindow
+            product="domus"
+            meta={card.order}
+            receive={act("card", "pulse", { offset: 0.17, length: 0.18 })}
+          >
             <div className={`${styles.duo} ${styles.duoHouse}`}>
               <HouseRooms
                 act={act}
@@ -217,7 +150,10 @@ export function SceneBody({
       // Knowly: the line of the policy becomes the answer, with its source
       case "s4":
         return (
-          <SceneWindow product="knowly">
+          <SceneWindow
+            product="knowly"
+            receive={act("hit", "pulse", { offset: 0.1, length: 0.18 })}
+          >
             <SourcePanel
               act={act}
               question={STORY.ask}
@@ -241,7 +177,11 @@ export function SceneBody({
       // Magneto: the rule in three steps, the Gestora approves, the card goes to Resolvido
       case "s5":
         return (
-          <SceneWindow product="magneto" meta={card.order}>
+          <SceneWindow
+            product="magneto"
+            meta={card.order}
+            receive={act("finish", "pulse", { offset: 0.09, length: 0.18 })}
+          >
             <div className={`${styles.duo} ${styles.duoFlow}`}>
               <ApprovalFlow
                 act={act}
@@ -294,7 +234,10 @@ export function SceneBody({
       // Domus and Tuner: the result returns to the room Pedidos and Marina is told
       case "s6":
         return (
-          <SceneWindow product="domus">
+          <SceneWindow
+            product="domus"
+            receive={act("home", "pulse", { offset: 0.04, length: 0.18 })}
+          >
             <div className={`${styles.duo} ${styles.duoHousePhone}`}>
               <HouseRooms
                 act={act}

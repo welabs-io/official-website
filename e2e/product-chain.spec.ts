@@ -194,9 +194,9 @@ test.describe("product chain behaviour", () => {
   });
 
   for (const slug of ["domus", "relloo", "tuner", "knowly", "magneto"] as const)
-    // 35% at the 2x pace: measured 38.5% to 41.5% (domus, two runs) up to 74.3% (knowly) on 2026-10-13. A chain stage also
-    // moves its overview, token and connector on every swap, and at 100 ms sampling a 0.15 s action marks two or three
-    // samples, so the bar sits below the 40% of the single-scene carousels
+    // 35% since the ludic pass: measured 35.8% (domus) to 71.4% (knowly) on 2026-10-13 (38.5% to 74.3% before it). A chain
+    // stage also moves its overview, token and connector on every swap, and at 100 ms sampling a spring of 0.2 s marks
+    // two or three samples
     test(`${slug}: at least 35% of the cycle is still (computed styles sampled every 100 ms)`, async ({
       page,
     }) => {

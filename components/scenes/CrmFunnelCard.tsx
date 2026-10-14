@@ -199,33 +199,46 @@ export function CardSheet({
           </p>
         ) : null)}
       <dl className={styles.facts}>
-        {rows.map((row) => (
-          <div
-            key={row.label}
-            className={styles.fact}
-            data-fresh={row.fresh ? "" : undefined}
-            {...(row.action
-              ? act(row.action, "in", {
-                  index: animated.indexOf(row),
-                  count: animated.length,
-                  offset,
-                })
-              : {})}
-          >
-            <dt>
-              {row.icon ? <Glyph d={row.icon} size={14} /> : null}
-              {row.label}
-            </dt>
-            <dd>
-              {row.pending ? (
-                <span className={styles.pending} aria-hidden="true" />
-              ) : (
-                row.value
-              )}
-              {row.from ? <em>{row.from}</em> : null}
-            </dd>
-          </div>
-        ))}
+        {rows.map((row) => {
+          // A value handed over by a room flies in from the house on the left (ludic pass); the others rise
+          const props = row.action
+            ? act(row.action, row.from ? "fly" : "in", {
+                index: animated.indexOf(row),
+                count: animated.length,
+                offset,
+              })
+            : null;
+          return (
+            <div
+              key={row.label}
+              className={styles.fact}
+              data-fresh={row.fresh ? "" : undefined}
+              {...props}
+              style={
+                props
+                  ? ({
+                      ...props.style,
+                      "--fx": "-14rem",
+                      "--fy": "0",
+                    } as React.CSSProperties)
+                  : undefined
+              }
+            >
+              <dt>
+                {row.icon ? <Glyph d={row.icon} size={14} /> : null}
+                {row.label}
+              </dt>
+              <dd>
+                {row.pending ? (
+                  <span className={styles.pending} aria-hidden="true" />
+                ) : (
+                  row.value
+                )}
+                {row.from ? <em>{row.from}</em> : null}
+              </dd>
+            </div>
+          );
+        })}
       </dl>
     </div>
   );
