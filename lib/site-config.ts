@@ -11,7 +11,7 @@
 // connector block, closing and the other products. The connector block always comes right before the closing, because
 // its rails run down into it. `pad` names the spacing class of the section (home.module.css).
 import { PAGE_HEADINGS } from "./content";
-import { productBySlug, type ProductSlug } from "./products";
+import { PRODUCTS, productBySlug, type ProductSlug } from "./products";
 
 export type Tone = "dark" | "light";
 export type SectionPad =
@@ -71,6 +71,8 @@ export type SectionConfig =
   | (Base & { kind: "integrations" })
   // The other four products (product page)
   | (Base & { kind: "others"; slug: ProductSlug })
+  // The way down to the next product, at the end of a product (the descent goes on into it)
+  | (Base & { kind: "next"; slug: ProductSlug })
   | (Base & { kind: "hub"; lit?: ProductSlug })
   | (Base & { kind: "closing" });
 
@@ -180,7 +182,28 @@ export function productConfig(slug: ProductSlug): PageConfig {
       { id: "faq", kind: "faq", slug, tone: "light", pad: "read" },
       hub(`${name} no núcleo e nos trilhos`, slug),
       closing,
-      { id: "others", kind: "others", slug, tone: "light", pad: "read" },
+      // The product no longer ends on a list of the others: it ends on the next one, and the page goes on into it
+      { id: "next", kind: "next", slug, tone: "light", pad: "read" },
     ],
   };
 }
+
+// DESCIDA CONTÍNUA
+// The home is cut in two around the product slot: the head (opening, order and the products band, where the cards are)
+// stays above the product that opens, and the tail (from "what changes" to the closing) gives way to it. The cut is right
+// after the products band, so the product is the next section of the home.
+const CUT = HOME_CONFIG.sections.findIndex((s) => s.id === "products") + 1;
+export const HOME_HEAD: PageConfig = {
+  ...HOME_CONFIG,
+  sections: HOME_CONFIG.sections.slice(0, CUT),
+};
+export const HOME_TAIL: PageConfig = {
+  home: true,
+  sections: HOME_CONFIG.sections.slice(CUT),
+};
+
+// The product after this one, in the order of the list (the last one leads back to the first)
+export const nextProduct = (slug: ProductSlug): ProductSlug => {
+  const i = PRODUCTS.findIndex((p) => p.slug === slug);
+  return PRODUCTS[(i + 1) % PRODUCTS.length].slug;
+};

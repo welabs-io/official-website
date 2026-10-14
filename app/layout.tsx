@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { RouteMotion } from "@/components/onepage/RouteMotion";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 // Welabs package tokens (--wl-*)
 import "./brand/welabs.css";
@@ -52,8 +51,6 @@ export default function RootLayout({
           Ir para o conteúdo
         </a>
         <main id="main-content">{children}</main>
-        {/* The view transition between the home and the product pages (renders nothing) */}
-        <RouteMotion />
       </body>
     </html>
   );

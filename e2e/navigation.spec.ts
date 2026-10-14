@@ -1,9 +1,10 @@
 // NAVEGAÇÃO ENTRE A HOME E OS PRODUTOS
 // The operator's report of 2026-10-12: "when I click a product the page eats the first block and there is no way back".
 // Measured cause: `html { scroll-behavior: smooth }` made Next 16 reach the new route by a 0.5 s scroll through its own body,
-// and made the browser's restoration on back and forward an animation too (the page has no smooth scroll now). These specs
-// pin what the visitor must get: the top
-// of the product page in view, never under the fixed header and never crossed by a scroll; the browser's back button
+// and made the browser's restoration on back and forward an animation too (the page has no smooth scroll now). Since the
+// descent (components/onepage/Descent.tsx) the product is the section under the products band and a click scrolls down
+// to it on purpose. These specs pin what the visitor must get: the top of the product in view, never under the fixed
+// header, reached by a scroll that only goes down; the browser's back button
 // returning to the card that was clicked; and a menu with the five products, "Como funciona" and "Contato" (a drop-down
 // list on a desktop, a panel on a phone). The trail, the logo and "Outros produtos" are in sections-nav.spec.ts.
 import { expect, test, type Page } from "@playwright/test";
@@ -23,12 +24,17 @@ const sample = (page: Page) =>
     tick();
   });
 
+// The opening of the product: since the descent (components/onepage/Descent.tsx) the product is the section under the
+// products band of the home, so "the top of the product page" is the top of the slot at the top of the window
 const heroGeometry = (page: Page) =>
   page.evaluate(() => {
     const header = document.querySelector("header")!.getBoundingClientRect();
-    const h1 = document.querySelector("h1")!.getBoundingClientRect();
+    const h1 = document.querySelector("#product h1")!.getBoundingClientRect();
+    const slot = document
+      .querySelector("[data-descent-slot]")!
+      .getBoundingClientRect();
     return {
-      y: Math.round(scrollY),
+      y: Math.round(slot.top),
       headerBottom: header.bottom,
       h1Top: h1.top,
       h1Bottom: h1.bottom,
@@ -37,7 +43,7 @@ const heroGeometry = (page: Page) =>
   });
 
 for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
-  test(`a click on a product card lands on the visible top of its page, with no scroll through it, at ${vp.name}`, async ({
+  test(`a click on a product card descends to the top of its product, never past it, at ${vp.name}`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: vp.width, height: vp.height });
@@ -48,17 +54,16 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
     await sample(page);
     await card.click();
     await page.waitForURL("**/products/relloo");
-    await page.waitForTimeout(900);
-    // Every frame on the product page is at the top: nothing animated the page through its body
+    await page.waitForTimeout(1600);
+    // The descent only goes down, and stops on the top of the product (it never overshoots and comes back)
     const frames = await page.evaluate(
       () => (window as unknown as { __y: [string, number][] }).__y,
     );
-    const onProduct = frames.filter(([path]) => path === "/products/relloo");
-    expect(onProduct.length).toBeGreaterThan(5);
-    expect(onProduct.filter(([, y]) => y > 2)).toEqual([]);
+    const ys = frames.map(([, y]) => y);
+    expect(ys.every((y, i) => i === 0 || y >= ys[i - 1] - 1)).toBe(true);
     // The logo (the h1) is in view and below the fixed header, not hidden under it
     const g = await heroGeometry(page);
-    expect(g.y).toBe(0);
+    expect(Math.abs(g.y)).toBeLessThanOrEqual(2);
     expect(g.h1Top).toBeGreaterThanOrEqual(g.headerBottom);
     expect(g.h1Bottom).toBeLessThanOrEqual(g.vh);
   });
@@ -75,18 +80,18 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
     expect(before).toBeGreaterThan(300);
     await card.click();
     await page.waitForURL("**/products/tuner");
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(1600);
     await page.goBack();
     await page.waitForURL((url) => url.pathname === "/");
-    await page.waitForTimeout(900);
+    await page.waitForTimeout(1600);
     const after = await page.evaluate(() => Math.round(scrollY));
     expect(Math.abs(after - before)).toBeLessThanOrEqual(2);
-    // And forward again shows the opening of the product page (the browser restores where the visitor was on it)
+    // And forward again shows the opening of the product
     await page.goForward();
     await page.waitForURL("**/products/tuner");
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(900);
     const g = await heroGeometry(page);
-    expect(g.y).toBeLessThan(40);
+    expect(Math.abs(g.y)).toBeLessThan(40);
     expect(g.h1Bottom).toBeGreaterThan(g.headerBottom);
   });
 }
@@ -138,7 +143,8 @@ test("on a phone the menu is a panel with the same entries; it closes on Escape 
   await nav.locator('a[href="/products/knowly"]').click();
   await page.waitForURL("**/products/knowly");
   await expect(nav).toBeHidden();
+  await page.waitForTimeout(300);
   const g = await heroGeometry(page);
-  expect(g.y).toBe(0);
+  expect(Math.abs(g.y)).toBeLessThanOrEqual(2);
   expect(g.h1Top).toBeGreaterThanOrEqual(g.headerBottom);
 });

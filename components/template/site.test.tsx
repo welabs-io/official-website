@@ -14,8 +14,8 @@ import { copyViolation } from "@/lib/content/rules";
 import { CHAIN_STEPS, ties } from "@/lib/chain";
 import { PRODUCTS } from "@/lib/products";
 import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
-import { metadata as homeMetadata } from "@/app/page";
-import { generateMetadata } from "@/app/products/[slug]/page";
+import { metadata as homeMetadata } from "@/app/(site)/page";
+import { generateMetadata } from "@/app/(site)/products/[slug]/page";
 import { SiteTemplate } from "@/components/template/SiteTemplate";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
 
