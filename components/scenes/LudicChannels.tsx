@@ -22,9 +22,9 @@ const { times, channels } = STORY;
 
 export function LudicChannels({ act }: { act: Act }) {
   // The question springs out of the corner of its tail (bottom right, Marina's own bubble)
-  const asked = act("ask", "spring", { offset: 0.12, length: 0.26 });
+  const asked = act("ask", "spring", { offset: 0.1, length: 0.18 });
   // ...and lands in the Tuner as soon as it is out
-  const landed = act("ask", "fly", { offset: 0.26, length: 0.19 });
+  const landed = act("ask", "fly", { offset: 0.16, length: 0.12 });
   return (
     <div className={l.channels}>
       {/* Marina's phone: the chat with the business, newest at the bottom */}
@@ -47,7 +47,7 @@ export function LudicChannels({ act }: { act: Act }) {
             {STORY.before}
             <time>{times.before}</time>
           </p>
-          <p className={l.sys} {...act("call", "rise", { length: 0.2 })}>
+          <p className={l.sys} {...act("call", "rise", { length: 0.18 })}>
             <Glyph d={GLYPHS.phone} size={12} />
             {STORY.call}
             <time>{times.call}</time>
@@ -55,7 +55,7 @@ export function LudicChannels({ act }: { act: Act }) {
           <div className={l.outSlot}>
             <span
               className={l.typing}
-              {...act("ask", "blink", { length: 0.16 })}
+              {...act("ask", "blink", { length: 0.12 })}
             >
               <i />
               <i />
@@ -90,11 +90,11 @@ export function LudicChannels({ act }: { act: Act }) {
           </span>
           <span
             className={l.pill}
-            {...act("merge", "spring", { offset: 0.1, length: 0.26 })}
+            {...act("merge", "spring", { offset: 0.06, length: 0.2 })}
           >
             <span
               className={l.check}
-              {...act("merge", "wipe", { offset: 0.22, length: 0.15 })}
+              {...act("merge", "wipe", { offset: 0.16, length: 0.11 })}
             >
               <Glyph d={GLYPHS.check} size={12} />
             </span>
@@ -106,9 +106,9 @@ export function LudicChannels({ act }: { act: Act }) {
           <li
             className={l.bracket}
             aria-hidden="true"
-            {...act("merge", "grow", { length: 0.22 })}
+            {...act("merge", "grow", { length: 0.18 })}
           />
-          <li className={l.item} {...act("call", "spring", { length: 0.24 })}>
+          <li className={l.item} {...act("call", "spring", { length: 0.2 })}>
             <span
               className={l.mark}
               data-tone="info"
@@ -127,8 +127,8 @@ export function LudicChannels({ act }: { act: Act }) {
                   const bar = act("call", "grow", {
                     index: k,
                     count: WAVE.length,
-                    offset: 0.06,
-                    length: 0.12,
+                    offset: 0.04,
+                    length: 0.08,
                   });
                   return (
                     <i

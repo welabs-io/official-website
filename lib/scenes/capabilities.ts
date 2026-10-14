@@ -37,8 +37,10 @@ export type CapabilityScript = TimedScene & {
 
 // ROTEIRO DAS CENAS DE CAPACIDADE
 // Three per product, in the order the opening plays them. Short actions with a reading pause between them; the whole
-// motion of a scene stays near 1 s. Since script 2.0 every scene runs at twice the old pace (half-length actions, a
-// 0.45 s swap, a hold of 0.9 s), the same as the chain.
+// motion of a scene stays near 1 s. Since script 2.0 every scene runs at twice the old pace (a 0.45 s swap, a hold of
+// 0.9 s), the same as the chain. Since the ludic pass every scene has the same three beats as the chain (0.45 s for
+// 0.22 s, 0.8 s for 0.28 s, 1.25 s for 0.27 s) and a hold of 1.0 s: long enough for a spring, a flight or a check that
+// draws itself, with the reading pauses that keep the page at 35% still or more in the browser (measured, v12/perf.md).
 export const CAPABILITY_SCRIPT: Record<
   ProductSlug,
   readonly CapabilityScript[]
@@ -50,12 +52,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 1,
       // The fields of the form come in, then the screen they make, then its state
       actions: [
-        { id: "fields", at: 0.45, dur: 0.2 },
-        { id: "screen", at: 0.875, dur: 0.2 },
-        { id: "ready", at: 1.475, dur: 0.125 },
+        { id: "fields", at: 0.45, dur: 0.22 },
+        { id: "screen", at: 0.8, dur: 0.28 },
+        { id: "ready", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.6,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "domus-cash",
@@ -63,12 +65,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 0,
       // The PIX lands in the statement, meets its invoice and settles it
       actions: [
-        { id: "pix", at: 0.45, dur: 0.15 },
-        { id: "match", at: 0.85, dur: 0.15 },
-        { id: "paid", at: 1.425, dur: 0.15 },
+        { id: "pix", at: 0.45, dur: 0.22 },
+        { id: "match", at: 0.8, dur: 0.28 },
+        { id: "paid", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.575,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "domus-contract",
@@ -76,12 +78,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 3,
       // The second signature, the signed state, then what the same record already holds
       actions: [
-        { id: "sign", at: 0.45, dur: 0.15 },
-        { id: "signed", at: 0.825, dur: 0.125 },
-        { id: "links", at: 1.375, dur: 0.2 },
+        { id: "sign", at: 0.45, dur: 0.22 },
+        { id: "signed", at: 0.8, dur: 0.28 },
+        { id: "links", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.575,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
   ],
   relloo: [
@@ -91,12 +93,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 1,
       // The history of the person, then what the Domus keeps, then the card that gets it all
       actions: [
-        { id: "history", at: 0.45, dur: 0.225 },
-        { id: "domus", at: 0.9, dur: 0.15 },
-        { id: "card", at: 1.425, dur: 0.15 },
+        { id: "history", at: 0.45, dur: 0.22 },
+        { id: "domus", at: 0.8, dur: 0.28 },
+        { id: "card", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.575,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "relloo-campaign",
@@ -104,12 +106,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 2,
       // The steps of the campaign light up, the coupon arrives, the sale comes back with its cashback
       actions: [
-        { id: "steps", at: 0.45, dur: 0.225 },
-        { id: "coupon", at: 0.875, dur: 0.15 },
-        { id: "cash", at: 1.425, dur: 0.15 },
+        { id: "steps", at: 0.45, dur: 0.22 },
+        { id: "coupon", at: 0.8, dur: 0.28 },
+        { id: "cash", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.575,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "relloo-agent",
@@ -117,12 +119,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 5,
       // The agent answers with its source, the person asks for someone, the team takes over
       actions: [
-        { id: "answer", at: 0.45, dur: 0.15 },
-        { id: "ask", at: 0.825, dur: 0.125 },
-        { id: "handoff", at: 1.375, dur: 0.175 },
+        { id: "answer", at: 0.45, dur: 0.22 },
+        { id: "ask", at: 0.8, dur: 0.28 },
+        { id: "handoff", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
   ],
   magneto: [
@@ -132,12 +134,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 3,
       // The sentence becomes three blocks, then the flow is switched on
       actions: [
-        { id: "blocks", at: 0.5, dur: 0.25 },
-        { id: "links", at: 0.85, dur: 0.15 },
-        { id: "active", at: 1.4, dur: 0.15 },
+        { id: "blocks", at: 0.45, dur: 0.22 },
+        { id: "links", at: 0.8, dur: 0.28 },
+        { id: "active", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "magneto-canvas",
@@ -145,12 +147,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 0,
       // The drawing runs: each block is checked in turn, the branch above the limit included
       actions: [
-        { id: "run", at: 0.45, dur: 0.3 },
-        { id: "branch", at: 0.9, dur: 0.15 },
-        { id: "done", at: 1.4, dur: 0.15 },
+        { id: "run", at: 0.45, dur: 0.22 },
+        { id: "branch", at: 0.8, dur: 0.28 },
+        { id: "done", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "magneto-versions",
@@ -158,12 +160,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 2,
       // The new version passes its test beside the active one, becomes active, and the log says who did it
       actions: [
-        { id: "test", at: 0.45, dur: 0.2 },
-        { id: "activate", at: 0.875, dur: 0.15 },
-        { id: "log", at: 1.4, dur: 0.15 },
+        { id: "test", at: 0.45, dur: 0.22 },
+        { id: "activate", at: 0.8, dur: 0.28 },
+        { id: "log", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
   ],
   tuner: [
@@ -173,12 +175,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 2,
       // The question is typed in the chat of the site and lands in the inbox like the other channels
       actions: [
-        { id: "type", at: 0.45, dur: 0.175 },
-        { id: "arrive", at: 0.85, dur: 0.15 },
-        { id: "reply", at: 1.4, dur: 0.15 },
+        { id: "type", at: 0.45, dur: 0.22 },
+        { id: "arrive", at: 0.8, dur: 0.28 },
+        { id: "reply", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "tuner-call",
@@ -186,12 +188,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 1,
       // The call is routed to the right team, then passed on with what was said
       actions: [
-        { id: "route", at: 0.45, dur: 0.175 },
-        { id: "take", at: 0.85, dur: 0.15 },
-        { id: "note", at: 1.4, dur: 0.15 },
+        { id: "route", at: 0.45, dur: 0.22 },
+        { id: "take", at: 0.8, dur: 0.28 },
+        { id: "note", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "tuner-official",
@@ -199,12 +201,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 3,
       // Photo and location arrive whole, a day later the conversation picks up, and the record checks it all
       actions: [
-        { id: "media", at: 0.45, dur: 0.2 },
-        { id: "later", at: 0.875, dur: 0.15 },
-        { id: "checks", at: 1.4, dur: 0.175 },
+        { id: "media", at: 0.45, dur: 0.22 },
+        { id: "later", at: 0.8, dur: 0.28 },
+        { id: "checks", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.575,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
   ],
   knowly: [
@@ -214,12 +216,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 0,
       // The answer comes sentence by sentence, each with its source, and the gap is said plainly
       actions: [
-        { id: "answer", at: 0.45, dur: 0.2 },
-        { id: "sources", at: 0.85, dur: 0.175 },
-        { id: "missing", at: 1.4, dur: 0.15 },
+        { id: "answer", at: 0.45, dur: 0.22 },
+        { id: "sources", at: 0.8, dur: 0.28 },
+        { id: "missing", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "knowly-sources",
@@ -227,12 +229,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 1,
       // The search lights what it finds in every kind of source, then the freshness of each one
       actions: [
-        { id: "search", at: 0.45, dur: 0.15 },
-        { id: "found", at: 0.8, dur: 0.225 },
-        { id: "fresh", at: 1.4, dur: 0.15 },
+        { id: "search", at: 0.45, dur: 0.22 },
+        { id: "found", at: 0.8, dur: 0.28 },
+        { id: "fresh", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
     {
       id: "knowly-access",
@@ -240,12 +242,12 @@ export const CAPABILITY_SCRIPT: Record<
       cap: 2,
       // The space of the person opens, the others stay locked, and the answer respects it
       actions: [
-        { id: "open", at: 0.45, dur: 0.175 },
-        { id: "ask", at: 0.825, dur: 0.15 },
-        { id: "reply", at: 1.4, dur: 0.15 },
+        { id: "open", at: 0.45, dur: 0.22 },
+        { id: "ask", at: 0.8, dur: 0.28 },
+        { id: "reply", at: 1.25, dur: 0.27 },
       ],
-      settle: 1.55,
-      hold: 0.9,
+      settle: 1.52,
+      hold: 1.0,
     },
   ],
 };

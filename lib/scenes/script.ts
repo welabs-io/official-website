@@ -10,6 +10,10 @@
 // pause between actions shrank to 0.45 of its old length and the hold went from 1.2-1.8 s to 0.9-1.0 s. The cycle went
 // from 34.45 s to 17.6 s.
 //
+// Version 2.1 is the ludic pass (pilot approved on 2026-10-13): every scene has the same three beats (0.45 s for 0.22 s,
+// 0.8 s for 0.28 s, 1.25 s for 0.27 s; two-beat scenes 0.45 s for 0.3 s and 1.1 s for 0.35 s), long enough for a spring,
+// a flight or a check that draws itself, and a hold of 1.0 s. The cycle is 17.5 s.
+//
 // Rules the tests enforce (lib/scenes/script.test.ts):
 //  - every action ends at or before `settle`, and the last one ends exactly at it;
 //  - the first action starts after the swap (0.45 s), so scene and swap never move together and no text changes before
@@ -19,16 +23,17 @@
 //  - at least STILL_TARGET of the cycle is still (swap, connector and actions counted as motion).
 import type { SceneId } from "./types";
 
-export const SCRIPT_VERSION = "2.0.0";
+export const SCRIPT_VERSION = "2.1.0";
 
 // Seconds the swap between two scenes takes (the rotation of the tiles) and the connector pulse after it
 export const SWAP_SECONDS = 0.45;
 export const CONNECTOR_SECONDS = 0.35;
 
-// Share of the cycle that must be still, from the script alone (63% for the chain and 59% for the Magneto opening at the
-// 2x pace; it was 60% at 1x, but a swap of 0.45 s weighs more in a 2.5 s scene). The browser specs ask 35% (chain stages) to
-// 40% (single-scene carousels) of the page, which also counts the overview, the rails and the sampling grain of 100 ms
-export const STILL_TARGET = 0.55;
+// Share of the cycle that must be still, from the script alone. Measured after the ludic pass: 52.6% for the chain and
+// 51.6% for every opening (it was 63% and 59% before it: a spring needs more time than a fade). The browser keeps about
+// 13 points less, because it also counts the overview, the rails and the sampling grain of 100 ms: 35.8% to 38.4% on
+// the chains, 38.8% and 39.0% on the carousels; the browser specs ask 35% everywhere (v12/perf.md)
+export const STILL_TARGET = 0.5;
 
 // Bounds of a scene, of its final hold and of the whole chain, in seconds
 export const SCENE_SECONDS_RANGE = [2.3, 2.8] as const;
@@ -71,13 +76,14 @@ export const SCRIPT: readonly SceneScript[] = [
     id: "s0",
     step: 0,
     products: ["domus", "relloo"],
+    // Ludic pass: the rooms spring in one after the other, then the funnel rises against the wall
     actions: [
-      { id: "rooms", at: 0.45, dur: 0.25 },
-      { id: "funnel", at: 1.325, dur: 0.175 },
+      { id: "rooms", at: 0.45, dur: 0.3 },
+      { id: "funnel", at: 1.1, dur: 0.35 },
     ],
-    settle: 1.5,
-    hold: 0.9,
-    token: { at: 0.45, dur: 0.25 },
+    settle: 1.45,
+    hold: 1.0,
+    token: { at: 0.45, dur: 0.3 },
   },
   {
     id: "s1",
@@ -87,13 +93,13 @@ export const SCRIPT: readonly SceneScript[] = [
     // scene keeps the 2x length (call: the call rises and its waveform grows; ask: Marina types, the bubble springs on
     // her phone and flies into the inbox; merge: the two channels join, the pill pops and the Tuner logo swells)
     actions: [
-      { id: "call", at: 0.45, dur: 0.3 },
-      { id: "ask", at: 0.8, dur: 0.45 },
-      { id: "merge", at: 1.3, dur: 0.375 },
+      { id: "call", at: 0.45, dur: 0.22 },
+      { id: "ask", at: 0.8, dur: 0.28 },
+      { id: "merge", at: 1.25, dur: 0.27 },
     ],
-    settle: 1.675,
-    hold: 0.9,
-    token: { at: 1.3, dur: 0.375 },
+    settle: 1.52,
+    hold: 1.0,
+    token: { at: 1.25, dur: 0.27 },
   },
   {
     id: "s2",
@@ -102,66 +108,69 @@ export const SCRIPT: readonly SceneScript[] = [
     // Ludic pilot: the card springs into Novo and the counter rolls; the facts rise one after the other while the emblems
     // of the card pop; the card travels to Em análise lifted and tilted, and both counters roll
     actions: [
-      { id: "born", at: 0.45, dur: 0.3 },
-      { id: "facts", at: 0.8, dur: 0.45 },
-      { id: "review", at: 1.3, dur: 0.375 },
+      { id: "born", at: 0.45, dur: 0.22 },
+      { id: "facts", at: 0.8, dur: 0.28 },
+      { id: "review", at: 1.25, dur: 0.27 },
     ],
-    settle: 1.675,
-    hold: 0.9,
-    token: { at: 1.3, dur: 0.375 },
+    settle: 1.52,
+    hold: 1.0,
+    token: { at: 1.25, dur: 0.27 },
   },
   {
     id: "s3",
     step: 3,
     products: ["domus"],
-    // The rooms light up, then the card takes what they hand over
+    // The rooms light up, then what they hand over flies into the card (ludic pass) and the Domus logo receives it
     actions: [
-      { id: "handoff", at: 0.475, dur: 0.225 },
-      { id: "card", at: 1.25, dur: 0.25 },
+      { id: "handoff", at: 0.45, dur: 0.3 },
+      { id: "card", at: 1.1, dur: 0.35 },
     ],
-    settle: 1.5,
-    hold: 0.9,
-    token: { at: 0.475, dur: 0.225 },
+    settle: 1.45,
+    hold: 1.0,
+    token: { at: 0.45, dur: 0.3 },
   },
   {
     id: "s4",
     step: 4,
     products: ["knowly"],
+    // Ludic pass: the document rises, its line is marked, and the answer flies out of it with the source
     actions: [
-      { id: "doc", at: 0.45, dur: 0.125 },
-      { id: "hit", at: 0.925, dur: 0.15 },
-      { id: "answer", at: 1.425, dur: 0.2 },
+      { id: "doc", at: 0.45, dur: 0.22 },
+      { id: "hit", at: 0.8, dur: 0.28 },
+      { id: "answer", at: 1.25, dur: 0.27 },
     ],
-    settle: 1.625,
-    hold: 0.9,
-    token: { at: 1.425, dur: 0.2 },
+    settle: 1.52,
+    hold: 1.0,
+    token: { at: 1.25, dur: 0.27 },
   },
   {
     id: "s5",
     step: 5,
     products: ["magneto"],
+    // Ludic pass: each step springs its check, which draws itself; the button gives way to the approval pill
     actions: [
-      { id: "rule", at: 0.45, dur: 0.175 },
-      { id: "approve", at: 1.025, dur: 0.15 },
-      { id: "finish", at: 1.5, dur: 0.2 },
+      { id: "rule", at: 0.45, dur: 0.22 },
+      { id: "approve", at: 0.8, dur: 0.28 },
+      { id: "finish", at: 1.25, dur: 0.27 },
     ],
-    settle: 1.7,
-    hold: 0.9,
-    token: { at: 0.45, dur: 0.175 },
+    settle: 1.52,
+    hold: 1.0,
+    token: { at: 0.45, dur: 0.22 },
   },
   {
     id: "s6",
     step: 6,
     products: ["domus", "tuner"],
+    // Ludic pass: the room Pedidos takes the result, the notification springs over the phone, the reply springs in
     actions: [
-      { id: "home", at: 0.45, dur: 0.175 },
-      { id: "toast", at: 0.925, dur: 0.175 },
-      { id: "received", at: 1.425, dur: 0.125 },
+      { id: "home", at: 0.45, dur: 0.22 },
+      { id: "toast", at: 0.8, dur: 0.28 },
+      { id: "received", at: 1.25, dur: 0.27 },
     ],
-    settle: 1.55,
+    settle: 1.52,
     // The last scene stays longest, with the whole map at rest before the loop
     hold: 1.0,
-    token: { at: 0.45, dur: 0.175 },
+    token: { at: 0.45, dur: 0.22 },
   },
 ];
 

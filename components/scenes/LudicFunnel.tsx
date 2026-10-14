@@ -46,7 +46,7 @@ function Roll({
           <span
             key={i}
             className={l.rollStep}
-            {...act(action, "roll", { length: 0.22 })}
+            {...act(action, "roll", { length: 0.2 })}
           >
             {inner}
           </span>
@@ -59,7 +59,7 @@ function Roll({
 
 export function LudicFunnel({ act }: { act: Act }) {
   const others = STORY.others;
-  const lift = act("review", "lift", { length: 0.34 });
+  const lift = act("review", "lift", { length: 0.25 });
   return (
     <div className={`${styles.duo} ${styles.duoFunnel}`}>
       <div className={l.board} data-edge="">
@@ -84,7 +84,7 @@ export function LudicFunnel({ act }: { act: Act }) {
                 {i === 1 ? (
                   <span className={l.glow}>
                     <span
-                      {...act("review", "in", { offset: 0.2, length: 0.17 })}
+                      {...act("review", "in", { offset: 0.12, length: 0.15 })}
                     />
                   </span>
                 ) : null}
@@ -112,7 +112,7 @@ export function LudicFunnel({ act }: { act: Act }) {
                     >
                       <span
                         className={l.deal}
-                        {...act("born", "spring", { length: 0.28 })}
+                        {...act("born", "spring", { length: 0.2 })}
                       >
                         <b className={l.key} data-key="">
                           {card.title}
@@ -130,7 +130,7 @@ export function LudicFunnel({ act }: { act: Act }) {
                                       {...act("facts", "spring", {
                                         index: k,
                                         count: 4,
-                                        length: 0.2,
+                                        length: 0.16,
                                       })}
                                     >
                                       <Glyph d={d} size={12} />
@@ -172,7 +172,7 @@ export function LudicFunnel({ act }: { act: Act }) {
             <div
               key={f.label}
               className={l.fact}
-              {...act("facts", "rise", { index: k, count: 4, length: 0.2 })}
+              {...act("facts", "rise", { index: k, count: 4, length: 0.16 })}
             >
               <dt>
                 <span className={l.factIcon}>

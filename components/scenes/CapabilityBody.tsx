@@ -188,7 +188,8 @@ function DomusCash({ act }: { act: Act }) {
                 <li
                   key={line.time}
                   className={`${c.row} ${fresh ? c.lit : ""}`}
-                  {...(fresh ? act("pix", "in") : {})}
+                  /* The PIX flies into the statement (ludic pass) */
+                  {...(fresh ? act("pix", "fly") : {})}
                 >
                   <span className={s.iconBox}>
                     <Glyph d={fresh ? GLYPHS.bolt : GLYPHS.bank} size={14} />
@@ -374,7 +375,8 @@ function RellooPerson({ act }: { act: Act }) {
               </li>
             ))}
           </ul>
-          <div className={`${c.from} ${c.side}`} {...act("domus", "in")}>
+          {/* What the Domus keeps flies in beside the history (ludic pass) */}
+          <div className={`${c.from} ${c.side}`} {...act("domus", "fly")}>
             <p className={c.label}>{t.domus}</p>
             <dl className={c.pairs}>
               {t.domusRows.map((row) => (
@@ -838,7 +840,8 @@ function TunerSite({ act }: { act: Act }) {
                 <li
                   key={item.name}
                   className={`${c.row} ${c.rowTall} ${fresh ? c.lit : ""}`}
-                  {...(fresh ? act("arrive", "in") : {})}
+                  /* The question of the site flies into the inbox (ludic pass) */
+                  {...(fresh ? act("arrive", "fly") : {})}
                 >
                   <span className={s.avatarSm}>{item.name[0]}</span>
                   <span className={c.entry}>

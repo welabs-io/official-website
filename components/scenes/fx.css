@@ -23,11 +23,32 @@
   animation-play-state: paused;
 }
 
+/* Since the ludic pass (approved pilot of 2026-10-13) the three basic entrances carry component motion in every scene:
+   "in" rises with an overshoot, "pop" is born with a spring (and the glyph inside it draws itself, below), "drop" travels
+   lifted and tilted (the keyframes are those of "rise", "spring" and "lift") */
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="in"] {
-  animation-name: fx-in;
+  animation-name: fx-rise;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pop"] {
-  animation-name: fx-pop;
+  animation-name: fx-spring;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  transform-origin: var(--origin, 50% 50%);
+}
+/* A check (or any glyph) inside something that springs in draws itself from the left, just after the spring */
+.scn:is([data-phase="start"], [data-phase="play"])
+  :is([data-fx="pop"], [data-fx="spring"])
+  svg {
+  animation: fx-wipe calc(var(--d, 0.35s) * 0.55)
+    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s) + var(--d, 0.35s) * 0.45)
+    ease-out both;
+}
+.scn[data-phase="start"] :is([data-fx="pop"], [data-fx="spring"]) svg,
+[data-run="paused"]
+  .scn[data-phase="play"]
+  :is([data-fx="pop"], [data-fx="spring"])
+  svg {
+  animation-play-state: paused;
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="wipe"] {
   animation-name: fx-wipe;
@@ -36,7 +57,8 @@
   animation-name: fx-out;
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="drop"] {
-  animation-name: fx-drop;
+  animation-name: fx-lift;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="blink"] {
   animation-name: fx-blink;
@@ -51,18 +73,6 @@
     cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-@keyframes fx-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-}
-@keyframes fx-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-}
 @keyframes fx-wipe {
   from {
     clip-path: inset(0 100% 0 0);
@@ -77,11 +87,6 @@
   }
   to {
     opacity: 0;
-  }
-}
-@keyframes fx-drop {
-  from {
-    transform: translateY(var(--dy, 0));
   }
 }
 @keyframes fx-blink {
@@ -240,7 +245,8 @@
 @media (prefers-reduced-motion: reduce) {
   .scn [data-fx],
   .scn [data-fx]::before,
-  .scn [data-fx]::after {
+  .scn [data-fx]::after,
+  .scn [data-fx] svg {
     animation: none !important;
   }
 }

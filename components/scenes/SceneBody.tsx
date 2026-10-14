@@ -35,7 +35,11 @@ export function SceneBody({
       // Domus and Relloo: the full house and the empty funnel glued to its wall
       case "s0":
         return (
-          <SceneWindow product="domus" meta={STORY.houseMeta}>
+          <SceneWindow
+            product="domus"
+            meta={STORY.houseMeta}
+            receive={act("funnel", "pulse", { offset: 0.17, length: 0.18 })}
+          >
             <div className={styles.page}>
               <p className={`${styles.pageTitle} ${styles.key}`} data-key="">
                 {STORY.house}
@@ -65,7 +69,7 @@ export function SceneBody({
         return (
           <SceneWindow
             product="tuner"
-            receive={act("ask", "pulse", { offset: 0.3, length: 0.15 })}
+            receive={act("ask", "pulse", { offset: 0.14, length: 0.14 })}
           >
             <LudicChannels act={act} />
           </SceneWindow>
@@ -76,7 +80,7 @@ export function SceneBody({
           <SceneWindow
             product="relloo"
             meta={card.order}
-            receive={act("born", "pulse", { offset: 0.1, length: 0.2 })}
+            receive={act("born", "pulse", { offset: 0.04, length: 0.18 })}
           >
             <LudicFunnel act={act} />
           </SceneWindow>
@@ -84,7 +88,11 @@ export function SceneBody({
       // Domus: three rooms hand the address, the order and the Saturday window to the card
       case "s3":
         return (
-          <SceneWindow product="domus" meta={card.order}>
+          <SceneWindow
+            product="domus"
+            meta={card.order}
+            receive={act("card", "pulse", { offset: 0.17, length: 0.18 })}
+          >
             <div className={`${styles.duo} ${styles.duoHouse}`}>
               <HouseRooms
                 act={act}
@@ -142,7 +150,10 @@ export function SceneBody({
       // Knowly: the line of the policy becomes the answer, with its source
       case "s4":
         return (
-          <SceneWindow product="knowly">
+          <SceneWindow
+            product="knowly"
+            receive={act("hit", "pulse", { offset: 0.1, length: 0.18 })}
+          >
             <SourcePanel
               act={act}
               question={STORY.ask}
@@ -166,7 +177,11 @@ export function SceneBody({
       // Magneto: the rule in three steps, the Gestora approves, the card goes to Resolvido
       case "s5":
         return (
-          <SceneWindow product="magneto" meta={card.order}>
+          <SceneWindow
+            product="magneto"
+            meta={card.order}
+            receive={act("finish", "pulse", { offset: 0.09, length: 0.18 })}
+          >
             <div className={`${styles.duo} ${styles.duoFlow}`}>
               <ApprovalFlow
                 act={act}
@@ -219,7 +234,10 @@ export function SceneBody({
       // Domus and Tuner: the result returns to the room Pedidos and Marina is told
       case "s6":
         return (
-          <SceneWindow product="domus">
+          <SceneWindow
+            product="domus"
+            receive={act("home", "pulse", { offset: 0.04, length: 0.18 })}
+          >
             <div className={`${styles.duo} ${styles.duoHousePhone}`}>
               <HouseRooms
                 act={act}

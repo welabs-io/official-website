@@ -35,6 +35,7 @@ export function SourcePanel({
   hitAction: string;
   answerAction: string;
 }) {
+  const flown = act(answerAction, "fly");
   return (
     <div className={styles.source}>
       <div className={styles.doc} data-edge="" {...act(docAction, "in")}>
@@ -84,10 +85,18 @@ export function SourcePanel({
           <Glyph d={GLYPHS.search} size={14} />
           <span>{question}</span>
         </p>
+        {/* The answer flies out of the document on the left, where its line was marked (ludic pass) */}
         <div
           className={styles.answer}
           data-edge=""
-          {...act(answerAction, "pop")}
+          {...flown}
+          style={
+            {
+              ...flown.style,
+              "--fx": "-12rem",
+              "--fy": "1rem",
+            } as React.CSSProperties
+          }
         >
           <p className={styles.answerLabel}>
             <Glyph d={GLYPHS.spark} size={14} />
