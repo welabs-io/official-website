@@ -28,6 +28,7 @@ import {
   HomeFaq,
   Integrations,
   Journey,
+  NextProduct,
   OtherProducts,
   ProductHero,
 } from "./Reading";
@@ -106,6 +107,8 @@ function Body({ section }: { section: SectionConfig }) {
       return <Integrations />;
     case "faq":
       return section.slug ? <ProductFaq slug={section.slug} /> : <HomeFaq />;
+    case "next":
+      return <NextProduct slug={section.slug} />;
     case "others":
       return <OtherProducts slug={section.slug} />;
     case "hub": {

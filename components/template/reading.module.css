@@ -344,142 +344,81 @@
 .heroBlock img {
   --h: clamp(64px, 6vw, 88px);
   margin-left: 0;
-  /* The logo the card of the home (or the previous product) morphs into: see app/globals.css */
-  view-transition-name: product-logo;
 }
 .hero > :not(.heroText) {
   justify-self: stretch;
 }
 
-/* SELETOR DE PRODUTOS */
-/* A quiet row on top of the opening: the way back on the left, the five products centred on the axis. The product of the
-   page is lit (full colour on a white chip, a 4 px amber bar under it); the others are graphite marks that take their
-   colour on hover and focus. The row and the bar have view transition names of their own, so on a switch the row stays
-   still and only the bar slides to the product picked. */
-.switcher {
+/* PRÓXIMO PRODUTO */
+/* The door at the end of a product: a band almost a screen tall, the thread of the page running into its middle, where
+   the next product waits with the logo at the size of its own opening (so the descent only moves and scales it). The
+   whole band is the link; hover and focus lift the amber bar under the logo and nudge the arrow down. */
+.next {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--sp-2);
-  position: relative;
-  z-index: 1;
-  view-transition-name: product-switcher;
-}
-.back {
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  min-height: 40px;
-  padding: 0 var(--sp-3) 0 var(--sp-2);
+  justify-items: center;
+  align-content: center;
+  gap: var(--sp-4);
+  /* Tall enough that the door can scroll up to the header: the descent reads as going down into it */
+  min-height: calc(100svh - var(--header-h) - var(--sp-8));
+  margin: 0 auto;
+  width: min(1200px, 100% - 48px);
   border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  background: var(--bg);
-  color: var(--ink);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background-color 0.2s var(--ease-out),
-    border-color 0.2s var(--ease-out);
-}
-.back svg {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.2s var(--ease-out);
-}
-.back:hover {
+  border-radius: var(--r-win);
   background: var(--surface);
-  border-color: var(--mute);
+  box-shadow: var(--shadow-card);
+  color: var(--ink);
+  text-align: center;
+  text-decoration: none;
 }
-.back:hover svg {
-  transform: translateX(-2px);
-}
-.switchList {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  margin: 0;
-  padding: var(--sp-1);
-  border: 1px solid var(--line);
-  border-radius: var(--r-card);
-  background: var(--bg);
-  list-style: none;
-}
-.switchItem {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
+.nextLabel {
   padding: 0 var(--sp-3);
-  border-radius: var(--r-ctl);
-  transition: background-color 0.2s var(--ease-out);
+  background: var(--surface);
+  color: var(--mute);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: var(--lh-lead);
 }
-.switchItem img {
-  --h: 22px;
-  display: block;
+.nextLogo {
+  --h: clamp(64px, 6vw, 88px);
   height: var(--h);
   width: auto;
-  filter: grayscale(1);
-  opacity: 0.5;
-  transition:
-    filter 0.2s var(--ease-out),
-    opacity 0.2s var(--ease-out);
 }
-a.switchItem:hover,
-a.switchItem:focus-visible {
-  background: var(--surface);
-}
-a.switchItem:hover img,
-a.switchItem:focus-visible img,
-.switchItem[aria-current="page"] img {
-  filter: none;
-  opacity: 1;
-}
-.switchItem[aria-current="page"] {
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgb(28 26 22 / 0.08);
-}
-.switchBar {
-  position: absolute;
-  left: 30%;
-  right: 30%;
-  bottom: 0;
-  height: 4px;
+/* The amber bar of the door, the one area of colour in the band */
+.nextLogo + .nextLine::before {
+  content: "";
+  display: block;
+  width: var(--sp-7);
+  height: var(--sp-1);
+  margin: 0 auto var(--sp-4);
   border-radius: var(--r-ctl);
   background: var(--a);
-  view-transition-name: switch-bar;
+  transition: width 0.3s var(--ease-out);
 }
-@media (max-width: 640px) {
-  .switcher {
-    grid-template-columns: auto 1fr;
-  }
-  .switchList {
-    justify-self: end;
-    gap: 0;
-  }
-  .switchItem {
-    padding: 0 var(--sp-2);
-  }
-  .switchItem img {
-    --h: 18px;
-  }
+.nextLine {
+  color: var(--mute);
+  font-size: var(--text-xl);
+  line-height: var(--lh-lead);
 }
-@media (max-width: 400px) {
-  .back {
-    padding: 0 var(--sp-2);
-  }
-  .backText {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-  .switchItem {
-    padding: 0 var(--sp-1);
+.nextCue {
+  width: var(--sp-6);
+  height: var(--sp-6);
+  margin-top: var(--sp-5);
+  color: var(--ink);
+  transition: transform 0.3s var(--ease-out);
+}
+.next:hover .nextLine::before,
+.next:focus-visible .nextLine::before {
+  width: var(--sp-9);
+}
+.next:hover .nextCue,
+.next:focus-visible .nextCue {
+  transform: translateY(var(--sp-1));
+}
+@media (prefers-reduced-motion: reduce) {
+  .nextLine::before,
+  .nextCue {
+    transition: none;
   }
 }
 

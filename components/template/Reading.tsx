@@ -1,7 +1,7 @@
 // SEÇÕES DE LEITURA
 // The reading sections between the visual ones (chain, product ring, connectors): the order from start to end, what changes
-// in the operation, who it is for, integrations and questions on the home; the opening, the switcher and the other products
-// of a product page (its reading bands, in the tokens of the scenes, are ProductReading.tsx). Server markup, no state, all
+// in the operation, who it is for, integrations and questions on the home; the opening, the other products and the door to
+// the next product of a product page (its reading bands, in the tokens of the scenes, are ProductReading.tsx). Server markup, no state, all
 // text read from lib/content. Each section has a centred head (title and one line) that covers the thread of the page
 // behind it, and cards that do the same.
 import Link from "next/link";
@@ -23,12 +23,12 @@ import { ICON_STROKE } from "@/lib/icon-stroke";
 import { PLATFORM_LOGOS } from "@/lib/partners";
 import {
   LOGO_PAD,
-  PRODUCTS,
   productAlt,
   productBySlug,
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
+import { nextProduct } from "@/lib/site-config";
 import { ProductCards } from "./Content";
 import { Icon } from "./Icon";
 import styles from "./reading.module.css";
@@ -234,14 +234,13 @@ export function OtherProducts({ slug }: { slug: ProductSlug }) {
 }
 
 // ABERTURA DA PÁGINA DE PRODUTO
-// Same column as the opening of the home, centred on the axis of the page: the product switcher on top (the way back and
-// the five products), the logo (the h1) with its factual line, and the stage that plays three capability scenes of the
-// product, with their names and the sentence about the one on screen under it. Native and animated: no video, no still
-// frame.
+// Same column as the opening of the home, centred on the axis of the page: the logo (the h1) with its factual line, and
+// the stage that plays three capability scenes of the product, with their names and the sentence about the one on screen
+// under it. Native and animated: no video, no still frame. The product is the section that follows the products band of
+// the home (the descent, components/onepage/Descent.tsx), so its opening has no way back of its own: the way back is up.
 export function ProductHero({ slug }: { slug: ProductSlug }) {
   return (
     <div className={`${styles.wrap} ${styles.hero}`}>
-      <ProductSwitcher slug={slug} />
       <div className={styles.heroText}>
         <ProductBlock
           slug={slug}
@@ -260,67 +259,45 @@ export function ProductHero({ slug }: { slug: ProductSlug }) {
   );
 }
 
-// SELETOR DE PRODUTOS
-// Replaces the trail "Welabs / Domus", which read as a dead end. The top of every product page carries the way back to
-// the home and the five products in a row, the one of the page lit with a 4 px amber bar. The row has a view transition
-// name of its own (app/globals.css), so it stays in place while the rest of the page changes, and the bar slides to the
-// product picked. `data-nav` tells components/onepage/RouteMotion.tsx what a click means: "switch" replaces the page in
-// the history (back still returns to where the visitor came from), "back" returns to the position left on the home.
-export function ProductSwitcher({ slug }: { slug: ProductSlug }) {
+// PRÓXIMO PRODUTO
+// The end of a product page is a door, not a list: one tall band that names the next product with its opening logo and
+// line. The whole band is the link, and `data-door` tells components/onepage/Descent.tsx to grow it into the next
+// product instead of jumping. Its logo is the same file and the same width as the opening it becomes, so the move is a
+// pure translate and scale.
+export function NextProduct({ slug }: { slug: ProductSlug }) {
+  const next = productBySlug(nextProduct(slug))!;
   return (
-    <nav aria-label={NAV.switcher} className={styles.switcher}>
-      <Link
-        href="/"
-        prefetch={false}
-        className={styles.back}
-        data-nav="back"
-        aria-label={NAV.backLabel}
+    <Link
+      href={`/products/${next.slug}`}
+      prefetch={false}
+      className={styles.next}
+      data-door={next.slug}
+      aria-label={`${NAV.next}: ${next.name}`}
+    >
+      <span className={styles.nextLabel}>{NAV.next}</span>
+      <img
+        className={styles.nextLogo}
+        data-door-logo
+        src={productLogo(next.slug, "light", "hero", 64)}
+        alt=""
+        width={1005}
+        height={550}
+        loading="lazy"
+        decoding="async"
+      />
+      <span className={styles.nextLine}>{next.line}</span>
+      <svg
+        className={styles.nextCue}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={ICON_STROKE}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={ICON_STROKE}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m14.5 6-6 6 6 6" />
-        </svg>
-        <span className={styles.backText}>{NAV.back}</span>
-      </Link>
-      <ul className={styles.switchList}>
-        {PRODUCTS.map((p) => {
-          const logo = (
-            <img
-              src={productLogo(p.slug, "light", "row")}
-              alt={productAlt(p.slug, "row")}
-              width={1005}
-              height={550}
-              style={{ "--pad": LOGO_PAD[p.slug] } as React.CSSProperties}
-            />
-          );
-          return (
-            <li key={p.slug}>
-              {p.slug === slug ? (
-                <span className={styles.switchItem} aria-current="page">
-                  {logo}
-                  <i className={styles.switchBar} />
-                </span>
-              ) : (
-                <Link
-                  href={`/products/${p.slug}`}
-                  prefetch={false}
-                  className={styles.switchItem}
-                  data-nav="switch"
-                >
-                  {logo}
-                </Link>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+        <path d="M12 5v14m-6-6 6 6 6-6" />
+      </svg>
+    </Link>
   );
 }
