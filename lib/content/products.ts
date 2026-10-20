@@ -15,7 +15,9 @@ export type ProductPage = {
   // The section of the interaction of the product
   play: { title: string; lead: string };
   // Title of the stage with this product lit among the others, and the effect it shows there
-  center: { title: string; stamp: string };
+  // v2.1: the effect each product shows on the stage is the one of the home (HOME_INTRO.stamps), so the stage reads the
+  // same everywhere; only the title is per page
+  center: { title: string };
   // Details that come with the product: real, short, never the definition of the product
   details: readonly string[];
   // Open questions of the contact (no answers: they are the reason to talk)
@@ -32,7 +34,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     },
     center: {
       title: "Onde os outros produtos trabalham",
-      stamp: "Marina já cadastrada",
     },
     details: [
       "NFS-e nacional",
@@ -60,7 +61,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     },
     center: {
       title: "Junto dos outros produtos",
-      stamp: "Marina com a Ana",
     },
     details: [
       "Ligação pelo WhatsApp gravada",
@@ -85,7 +85,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     },
     center: {
       title: "Junto dos outros produtos",
-      stamp: "Aprovado às 10:14",
     },
     details: [
       "Espera e aprovação",
@@ -104,12 +103,12 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     short: "O número oficial do WhatsApp, as ligações e o Discord no mesmo ponto.",
     scenes: [{ id: "tuner-call", name: "Ligação para a equipe certa" }],
     play: {
-      title: "Ligue e veja para onde vai",
-      lead: "Escolha uma opção do menu.",
+      // v2.1: the title says the effect (the operator found "Ligue e veja para onde vai" did not explain it)
+      title: "Cada ligação na pessoa certa",
+      lead: "Aperte uma opção do menu.",
     },
     center: {
       title: "Junto dos outros produtos",
-      stamp: "Ligação na conversa",
     },
     details: [
       "WhatsApp oficial",
@@ -138,7 +137,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     },
     center: {
       title: "Junto dos outros produtos",
-      stamp: "Sim, até 12h",
     },
     details: [
       "Fonte de cada frase",

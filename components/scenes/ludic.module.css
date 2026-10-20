@@ -342,6 +342,12 @@
     display: none;
   }
 }
+/* v2.1: a phone-wide card (under 20 rem) puts the pill of the thread under the name, so it never leaves the thread */
+@container scn (max-width: 20rem) {
+  .threadHead {
+    flex-wrap: wrap;
+  }
+}
 @container scn (max-height: 27rem) {
   .items {
     gap: 0.5rem;

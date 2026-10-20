@@ -880,3 +880,10 @@
     display: none;
   }
 }
+/* v2.1: a phone-wide card (under 20 rem) keeps the answer and its source, and drops the detail line under the answer,
+   which pushed the source under the bottom edge (measured by e2e/layout.spec.ts at 375 px) */
+@container scn (max-width: 20rem) {
+  .answerDetail {
+    display: none;
+  }
+}

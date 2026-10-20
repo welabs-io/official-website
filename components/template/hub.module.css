@@ -1,0 +1,532 @@
+/* PALCO DOS CINCO PRODUTOS */
+/* v2.1: a grid, so nothing on the stage overlaps or is cut. The four products sit in the outer columns, the record of the
+   Domus spans the middle, and each tie lives in its own column between them: it starts on the edge of a product and ends
+   on the edge of the record. The lit product carries its effect (the amber packet) along its tie, and its line lights in
+   the record. The cycle is the 12.5 s of the word that turns in the title: window --w (0 to 4) of 2.5 s per product. */
+.hub {
+  --tie: 40px;
+  --node-h: 96px;
+  --gap: var(--sp-8);
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.9fr) var(--tie) minmax(0, 1.5fr) var(--tie)
+    minmax(0, 0.9fr);
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "relloo tie-relloo core tie-magneto magneto"
+    "tuner tie-tuner core tie-knowly knowly";
+  row-gap: var(--gap);
+  padding: var(--sp-6) var(--sp-5);
+  border: 1px solid var(--cl);
+  border-radius: var(--r-win);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.hub[data-small] {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* PRODUTOS EM VOLTA */
+.node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: var(--sp-2);
+  height: var(--node-h);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--cl);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+}
+/* Row 1 sits on the bottom of its row and row 2 on the top, so the tie from Tuner up to Relloo is exactly the row gap */
+.node[data-p="relloo"],
+.node[data-p="magneto"] {
+  align-self: end;
+}
+.node[data-p="tuner"],
+.node[data-p="knowly"] {
+  align-self: start;
+}
+.node[data-p="relloo"] {
+  grid-area: relloo;
+}
+.node[data-p="magneto"] {
+  grid-area: magneto;
+}
+.node[data-p="tuner"] {
+  grid-area: tuner;
+}
+.node[data-p="knowly"] {
+  grid-area: knowly;
+}
+a.node:hover,
+a.node:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-pop);
+}
+/* The logo files carry their 0.5X protection area: a 40 px file draws a wordmark of about 19 px */
+.node img {
+  height: 40px;
+  width: auto;
+  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--sp-3) * -1);
+}
+.event {
+  font-size: var(--text-xs);
+  line-height: var(--lh-heading);
+  font-weight: 500;
+  color: var(--mute-l);
+}
+/* The lit state: an ink edge, the soft amber halo and the 4 px amber bar at the foot (an area, never a thin line) */
+.node::after,
+.core::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--ink);
+  border-radius: inherit;
+  box-shadow:
+    0 0 0 4px var(--a-200),
+    inset 0 -4px 0 var(--a);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* AS LIGAÇÕES */
+.tie {
+  position: relative;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--thread-l);
+}
+/* The tie sits on the middle line of its card (its 2 px centred on it by the 1 px shift) */
+.tie[data-of="relloo"],
+.tie[data-of="magneto"] {
+  align-self: end;
+  margin-bottom: calc(var(--node-h) / 2);
+  translate: 0 1px;
+}
+.tie[data-of="tuner"],
+.tie[data-of="knowly"] {
+  align-self: start;
+  margin-top: calc(var(--node-h) / 2);
+  translate: 0 -1px;
+}
+.tie[data-of="relloo"] {
+  grid-area: tie-relloo;
+}
+.tie[data-of="magneto"] {
+  grid-area: tie-magneto;
+}
+.tie[data-of="tuner"] {
+  grid-area: tie-tuner;
+}
+.tie[data-of="knowly"] {
+  grid-area: tie-knowly;
+}
+/* Tuner to Relloo: up the row gap, between the two cards */
+.tieUp {
+  grid-area: tuner;
+  align-self: start;
+  justify-self: center;
+  width: 2px;
+  height: var(--gap);
+  margin-top: calc(var(--gap) * -1);
+  border-radius: 2px;
+  background: var(--thread-l);
+}
+/* The amber copy of a tie while its product is lit: a 4 px bar with a dash that flows toward the record */
+.tie::before,
+.tieUp::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--a) 0 10px,
+    transparent 10px 16px
+  );
+  opacity: 0;
+}
+.tieUp {
+  position: relative;
+}
+.tieUp::before {
+  inset: 0 -1px;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--a) 0 10px,
+    transparent 10px 16px
+  );
+}
+/* The effect travelling: from the product to the record */
+.packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--a);
+  box-shadow: 0 0 0 4px var(--a-200);
+  opacity: 0;
+  --run: calc(var(--tie) - 12px);
+}
+.tie[data-of="magneto"] .packet,
+.tie[data-of="knowly"] .packet {
+  left: auto;
+  right: 0;
+  --run: calc((var(--tie) - 12px) * -1);
+}
+
+/* O REGISTRO DO DOMUS */
+.core {
+  grid-area: core;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: 1px solid var(--cl);
+  border-radius: var(--r-win);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+a.core:hover,
+a.core:focus-visible {
+  transform: translateY(-2px);
+}
+.coreLogo {
+  height: 44px;
+  width: auto;
+  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--sp-3) * -1);
+}
+.recordHead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-2);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--cl);
+  font-size: var(--text-xs);
+  color: var(--mute-l);
+}
+.recordHead b {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--ink);
+}
+.record {
+  display: grid;
+  gap: var(--sp-1);
+}
+.line {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  justify-items: start;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-ctl);
+  font-size: var(--text-xs);
+  line-height: var(--lh-heading);
+  font-weight: 500;
+}
+.line img {
+  height: 32px;
+  width: auto;
+  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--sp-2) * -1);
+}
+.lineDomus {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+  color: var(--mute-l);
+}
+/* The line of the lit product: the selected row of the ERP front (amber 100 with the 4 px amber bar on its start edge) */
+.line::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--a-100);
+  box-shadow: inset 4px 0 0 var(--a);
+  opacity: 0;
+}
+.ok {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1f8a4c;
+}
+.ok::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* O CICLO DA HOME */
+/* Window --w of 2.5 s: the product lights at its start, its packet leaves at 0.2 s and reaches the record at 0.9 s, when
+   its line lights; all of it goes out at the end of the window. Paused off screen (`data-on`, LiveObserver). */
+.hub[data-hub="cycle"] :is(.tie, .tieUp)::before {
+  animation:
+    win 12.5s linear infinite paused,
+    dash 0.9s linear infinite paused;
+  animation-delay: calc(var(--w) * 2.5s - 12.5s), 0s;
+}
+.hub[data-hub="cycle"] :is(.node, .core)::after {
+  animation: win 12.5s linear infinite paused;
+  animation-delay: calc(var(--w) * 2.5s - 12.5s);
+}
+.hub[data-hub="cycle"] .packet {
+  animation: packet 12.5s infinite paused;
+  animation-delay: calc(var(--w) * 2.5s - 12.5s + 0.2s);
+}
+.hub[data-hub="cycle"] .line::before {
+  animation: line-win 12.5s linear infinite paused;
+  animation-delay: calc(var(--w) * 2.5s - 12.5s + 0.9s);
+}
+[data-on="true"] .hub[data-hub="cycle"] :is(.node, .core)::after,
+[data-on="true"] .hub[data-hub="cycle"] :is(.tie, .tieUp)::before,
+[data-on="true"] .hub[data-hub="cycle"] .packet,
+[data-on="true"] .hub[data-hub="cycle"] .line::before {
+  animation-play-state: running;
+}
+@keyframes win {
+  0%,
+  19% {
+    opacity: 1;
+  }
+  20%,
+  99.9% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes line-win {
+  0%,
+  12% {
+    opacity: 1;
+  }
+  13%,
+  99.9% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes packet {
+  0% {
+    opacity: 0;
+    transform: translateX(0) scale(0.6);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  1.5% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  5.6% {
+    opacity: 1;
+    transform: translateX(var(--run)) scale(1);
+  }
+  7%,
+  100% {
+    opacity: 0;
+    transform: translateX(var(--run)) scale(0.4);
+  }
+}
+@keyframes dash {
+  to {
+    background-position: 16px 0;
+  }
+}
+.hub[data-hub="cycle"] .tieUp::before {
+  animation-name: win, dash-up;
+}
+@keyframes dash-up {
+  to {
+    background-position: 0 -16px;
+  }
+}
+
+/* PALCO PARADO (PÁGINA DE PRODUTO) E PRODUTO APONTADO */
+/* The product of `data-lit` (or the one under the pointer or the focus) stays lit: its edge, its tie flowing, its packet
+   on a loop of 1.4 s and its line in the record. The cycle stops while a product is pointed at. */
+.hub:has(:is(.node, .core):is(:hover, :focus-visible)) :is(.node, .core)::after,
+.hub:has(:is(.node, .core):is(:hover, :focus-visible))
+  :is(.tie, .tieUp)::before,
+.hub:has(:is(.node, .core):is(:hover, :focus-visible)) .packet,
+.hub:has(:is(.node, .core):is(:hover, :focus-visible)) .line::before {
+  animation: none;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.hub[data-hub="still"] :is(.node, .core)::after,
+.hub[data-hub="still"] :is(.tie, .tieUp)::before,
+.hub[data-hub="still"] .packet,
+.hub[data-hub="still"] .line::before {
+  animation: none;
+}
+/* `--lit` is the product shown lit: the one of the page, or the one pointed at */
+.hub[data-lit="relloo"],
+.hub:has(.node[data-p="relloo"]:is(:hover, :focus-visible)) {
+  --lit-relloo: 1;
+}
+.hub[data-lit="magneto"],
+.hub:has(.node[data-p="magneto"]:is(:hover, :focus-visible)) {
+  --lit-magneto: 1;
+}
+.hub[data-lit="tuner"],
+.hub:has(.node[data-p="tuner"]:is(:hover, :focus-visible)) {
+  --lit-tuner: 1;
+}
+.hub[data-lit="knowly"],
+.hub:has(.node[data-p="knowly"]:is(:hover, :focus-visible)) {
+  --lit-knowly: 1;
+}
+.hub[data-lit="domus"],
+.hub:has(.core:is(:hover, :focus-visible)) {
+  --lit-domus: 1;
+}
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-p="relloo"]::after,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-of="relloo"]::before {
+  opacity: var(--lit-relloo, 0);
+}
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-p="magneto"]::after,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-of="magneto"]::before {
+  opacity: var(--lit-magneto, 0);
+}
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-p="tuner"]::after,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-of="tuner"]::before,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  .tieUp::before {
+  opacity: var(--lit-tuner, 0);
+}
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-p="knowly"]::after,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-of="knowly"]::before {
+  opacity: var(--lit-knowly, 0);
+}
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-p="domus"]::after,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  [data-of="domus"]::before {
+  opacity: var(--lit-domus, 0);
+}
+.hub[data-lit="relloo"] .tie[data-of="relloo"] .packet,
+.hub[data-lit="magneto"] .tie[data-of="magneto"] .packet,
+.hub[data-lit="tuner"] .tie[data-of="tuner"] .packet,
+.hub[data-lit="knowly"] .tie[data-of="knowly"] .packet,
+.hub:has(.node[data-p="relloo"]:is(:hover, :focus-visible))
+  .tie[data-of="relloo"]
+  .packet,
+.hub:has(.node[data-p="magneto"]:is(:hover, :focus-visible))
+  .tie[data-of="magneto"]
+  .packet,
+.hub:has(.node[data-p="tuner"]:is(:hover, :focus-visible))
+  .tie[data-of="tuner"]
+  .packet,
+.hub:has(.node[data-p="knowly"]:is(:hover, :focus-visible))
+  .tie[data-of="knowly"]
+  .packet {
+  animation: packet-loop 1.4s infinite;
+}
+@keyframes packet-loop {
+  0% {
+    opacity: 0;
+    transform: translateX(0) scale(0.6);
+  }
+  12% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  62% {
+    opacity: 1;
+    transform: translateX(var(--run)) scale(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: translateX(var(--run)) scale(0.4);
+  }
+}
+
+/* CELULAR */
+/* The record on top, the four products under it two by two; the ties have no room and leave */
+@media (max-width: 860px) {
+  .hub {
+    --node-h: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    grid-template-areas:
+      "core core"
+      "relloo magneto"
+      "tuner knowly";
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+  }
+  .node {
+    align-self: stretch !important;
+    padding: var(--sp-3);
+  }
+  .node img {
+    height: 36px;
+  }
+  .tie,
+  .tieUp {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub *,
+  .hub *::before,
+  .hub *::after {
+    animation: none !important;
+  }
+  /* The cycle stays on its first frame: the Domus lit */
+  .hub[data-hub="cycle"] .core::after,
+  .hub[data-hub="cycle"] .line[data-of="domus"]::before {
+    opacity: 1;
+  }
+}
