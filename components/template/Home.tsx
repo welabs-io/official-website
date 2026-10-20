@@ -9,14 +9,14 @@ import { Glyph, GLYPHS, ROOM_GLYPHS } from "@/components/scenes/icons";
 import { MiniScene } from "@/components/scenes/MiniScene";
 import {
   CLOSING,
-  DOMUS_ROOMS,
+  DOMUS_MODULES,
   HOME_CONTACT,
   HOME_DOMUS,
   HOME_EFFECTS,
-  HOME_FIT,
   HOME_INTRO,
   HOME_MESSAGE,
   HOME_PRODUCTS,
+  type Room,
 } from "@/lib/content";
 import { PLATFORM_LOGOS } from "@/lib/partners";
 import {
@@ -25,11 +25,12 @@ import {
   PRODUCTS,
   productAlt,
   productLogo,
-  type ProductSlug,
 } from "@/lib/products";
 import { DragToCheck } from "./DragToCheck";
 import { Orbit } from "./Orbit";
 import { SectionHead } from "./SectionHead";
+import house from "./house.module.css";
+import msg from "./message.module.css";
 import styles from "./v2.module.css";
 
 // Glyphs of the rooms: the shared line set of the scenes
@@ -38,16 +39,6 @@ const ROOM_D: Record<string, string> = {
   box: ROOM_GLYPHS.Estoque,
   coin: ROOM_GLYPHS.Financeiro,
 };
-
-const logo = (slug: ProductSlug, height: number) => (
-  <img
-    src={productLogo(slug, "light", "row", height)}
-    alt=""
-    width={1005}
-    height={550}
-    style={{ height }}
-  />
-);
 
 // ABERTURA
 // Title with the word that turns (M1), one line, one button, and the stage of the five products that follows the word
@@ -59,7 +50,8 @@ export function HomeIntro() {
       <div className={styles.introText}>
         <h1 className={styles.introTitle}>
           {HOME_INTRO.before}{" "}
-          <span className={styles.turn}>
+          {/* data-mask: the box clips on purpose (only one word of the track shows), e2e/layout.spec.ts skips it */}
+          <span className={styles.turn} data-mask>
             {/* The first word is the one read by assistive technology and by a still page */}
             <span className={styles.srOnly}>{HOME_INTRO.words[0].text}</span>
             <span className={styles.turnTrack} aria-hidden="true">
@@ -82,95 +74,120 @@ export function HomeIntro() {
   );
 }
 
-// ENCAIXE
-// A film with no text (M7): the pieces arrive loose and fit into the Domus, the seam lighting amber on each fit. It plays
-// once, when the band first comes on screen.
-export function HomeFit() {
-  const pieces: { slug: ProductSlug; side: "r" | "l" | "t" | "b" }[] = [
-    { slug: "relloo", side: "r" },
-    { slug: "magneto", side: "t" },
-    { slug: "tuner", side: "b" },
-    { slug: "knowly", side: "l" },
-  ];
-  return (
-    <div className={shell.wrap}>
-      <div className={styles.fit} role="img" aria-label={HOME_FIT.label}>
-        <span className={`${styles.piece} ${styles.pieceCore}`}>
-          <img
-            src={productLogo("domus", "dark", "row")}
-            alt=""
-            width={1005}
-            height={550}
-          />
-        </span>
-        {pieces.map(({ slug, side }, i) => (
-          <span
-            key={slug}
-            className={styles.piece}
-            data-side={side}
-            data-p={slug}
-            style={{ "--i": i } as React.CSSProperties}
-          >
-            {logo(slug, 30)}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // A MENSAGEM QUE ATRAVESSA
 // I2: the visitor drags the message onto the track (or presses the button); it walks through the five products, each
-// one lighting with the stamp of its effect, and the phone on the right gets the confirmation.
+// one lighting with its effect, and lands in the Domus on the right.
+// v2.1: the destination was an empty box with a thick black edge; it is now the Domus forming, on the idea of its brand
+// opening (domus-intro-s2-r2, in the light theme): the rooms of the business arrive, lock side by side inside the outline
+// of the symbol and condense into its amber square, and the record of the order shows under it. The stops are cards
+// wide enough for each logo at 20 px (they were 64 px circles with 16 px logos).
+// Geometry of the symbol, in the coordinates of the official Domus logo (public/brands/welabs/products/domus-light.svg)
+const RING = { x: 188.64, y: 75.9, w: 119.1, h: 118.8, rx: 34.79, sw: 36 };
+const SQUARE = { x: 221.35, y: 108.46, s: 53.69 };
+// Four rooms inside the hole of the ring (2 by 2), and where each one flies in from
+const ROOMS = [
+  { x: 212.64, y: 99.9, fx: -70, fy: -40 },
+  { x: 250.64, y: 99.9, fx: 70, fy: -50 },
+  { x: 212.64, y: 137.9, fx: -60, fy: 50 },
+  { x: 250.64, y: 137.9, fx: 70, fy: 40 },
+];
+
 export function HomeMessage() {
   return (
     <div className={shell.wrap}>
       <SectionHead title={HOME_MESSAGE.title} lead={HOME_MESSAGE.lead} />
-      <div className={styles.msg}>
+      <div className={msg.msg}>
         <input
           type="checkbox"
           id="msg-go"
           className={styles.toggle}
           aria-describedby="msg-track"
         />
-        <DragToCheck
-          inputId="msg-go"
-          targetId="msg-track"
-          className={styles.bubble}
-        >
+        <DragToCheck inputId="msg-go" targetId="msg-track" className={msg.bubble}>
           <small>{HOME_MESSAGE.bubble.channel}</small>
           {HOME_MESSAGE.bubble.text}
         </DragToCheck>
-        <ol id="msg-track" className={styles.track}>
-          <li className={styles.rail} aria-hidden="true">
-            <span className={styles.run} />
-            <span className={styles.token} />
+        <ol id="msg-track" className={msg.track}>
+          <li className={msg.rail} aria-hidden="true">
+            <span className={msg.run} />
+            <span className={msg.token} />
           </li>
           {HOME_MESSAGE.stations.map(({ product, label }, i) => (
             <li
               key={product}
-              className={styles.station}
+              className={msg.station}
               style={{ "--i": i } as React.CSSProperties}
             >
-              <span className={styles.dot}>
+              <span className={msg.stop}>
                 <img
-                  src={productLogo(product, "light", "row", 16)}
+                  src={productLogo(product, "light", "row", 20)}
                   alt={productAlt(product, "row")}
                   width={1005}
                   height={550}
                 />
               </span>
-              <span className={styles.label}>{label}</span>
+              <span className={msg.label}>{label}</span>
             </li>
           ))}
         </ol>
-        <div className={styles.phone} aria-hidden="true">
-          <span className={styles.phoneMsg}>
-            <span className={styles.ok} />
-            {HOME_MESSAGE.done}
+        <div className={msg.dest} aria-hidden="true">
+          <svg
+            className={msg.sym}
+            viewBox="168 55 160 160"
+            fill="none"
+            aria-hidden="true"
+          >
+            <rect
+              className={msg.ring}
+              x={RING.x}
+              y={RING.y}
+              width={RING.w}
+              height={RING.h}
+              rx={RING.rx}
+              strokeWidth={RING.sw}
+            />
+            {ROOMS.map((r, i) => (
+              <rect
+                key={i}
+                className={msg.room}
+                x={r.x}
+                y={r.y}
+                width={33}
+                height={33}
+                rx={6}
+                style={
+                  {
+                    "--i": i,
+                    "--fx": `${r.fx}px`,
+                    "--fy": `${r.fy}px`,
+                  } as React.CSSProperties
+                }
+              />
+            ))}
+            <rect
+              className={msg.square}
+              x={SQUARE.x}
+              y={SQUARE.y}
+              width={SQUARE.s}
+              height={SQUARE.s}
+            />
+          </svg>
+          <img
+            className={msg.destLogo}
+            src={productLogo("domus", "light", "row", 22)}
+            alt=""
+            width={1005}
+            height={550}
+          />
+          <span className={msg.record}>
+            <span className={msg.ok} />
+            <span>
+              <b>{HOME_MESSAGE.record}</b>
+              {HOME_MESSAGE.done}
+            </span>
           </span>
         </div>
-        <label htmlFor="msg-go" className={styles.go}>
+        <label htmlFor="msg-go" className={msg.go}>
           <span data-off>{HOME_MESSAGE.send}</span>
           <span data-on>{HOME_MESSAGE.again}</span>
         </label>
@@ -180,8 +197,22 @@ export function HomeMessage() {
 }
 
 // A CASA DO DOMUS
-// The whole management of the company as the rooms of one house, tax and PIX only as a tag; "+ Sua área" makes a new
-// room (I3) and the rooms light one after the other. The other four products stand on its ground.
+// The whole management of the company as the modules of one house, with tax and PIX only as a tag; the other four
+// products stand on its ground.
+// v2.1: the house shows the modules the ERP code really installs, on two floors: the standard ones (ERPNext and HRMS)
+// and the ones made to measure (our own apps); the roof is a vector drawing (it was a CSS gradient that looked like a
+// pixelated bitmap). "+ Novo módulo" (I3) says what it does: the slot turns into a new module with the "Novo módulo"
+// seal, and its screen assembles field by field; pressing it again takes it back.
+const room = (r: Room, i: number) => (
+  <li key={r.name} className={house.room} style={{ "--i": i } as React.CSSProperties}>
+    <span className={house.icon}>
+      <Glyph d={ROOM_D[r.glyph]} size={18} />
+    </span>
+    <span className={house.name}>{r.name}</span>
+    {r.tag && <b className={house.tag}>{r.tag}</b>}
+  </li>
+);
+
 export function DomusHouse({
   id,
   title,
@@ -193,7 +224,7 @@ export function DomusHouse({
   lead: string;
 }) {
   return (
-    <div className={styles.house}>
+    <div className={house.house}>
       <SectionHead title={title} lead={lead} />
       <input
         type="checkbox"
@@ -201,37 +232,56 @@ export function DomusHouse({
         className={styles.toggle}
         aria-label={HOME_DOMUS.addLabel}
       />
-      <div className={styles.roof} aria-hidden="true" />
-      <ul className={styles.rooms}>
-        {DOMUS_ROOMS.map((room, i) => (
-          <li
-            key={room.name}
-            className={styles.room}
-            style={{ "--i": i } as React.CSSProperties}
-          >
-            <span className={styles.roomIcon}>
-              <Glyph d={ROOM_D[room.glyph]} size={18} />
-            </span>
-            {room.name}
-            {room.tag && <b className={styles.tag}>{room.tag}</b>}
-          </li>
-        ))}
-        {/* The dashed room is the button; once pressed it is the new room (pressing it again takes it back) */}
-        <li>
-          <label htmlFor={id} className={styles.roomAdd}>
-            <span data-off>
-              <Glyph d={GLYPHS.plus} size={18} />
-              {HOME_DOMUS.add}
-            </span>
-            <span data-on>
-              <span className={styles.roomIcon}>
-                <Glyph d={GLYPHS.pen} size={18} />
-              </span>
-              {HOME_DOMUS.born}
-            </span>
-          </label>
-        </li>
-      </ul>
+      <svg
+        className={house.roof}
+        viewBox="0 0 1000 120"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path className={house.roofFill} d="M0 120 L500 8 L1000 120 Z" />
+        <path className={house.roofLine} d="M0 120 L500 8 L1000 120" />
+      </svg>
+      <div className={house.walls}>
+        <div className={house.floor}>
+          <p className={house.floorName}>{HOME_DOMUS.standard}</p>
+          <ul className={house.rooms}>{DOMUS_MODULES.standard.map(room)}</ul>
+        </div>
+        <div className={house.floor} data-floor="custom">
+          <p className={house.floorName}>{HOME_DOMUS.custom}</p>
+          <ul className={house.rooms}>
+            {DOMUS_MODULES.custom.map((r, i) => room(r, i + 10))}
+            {/* The dashed slot is the button; once pressed it is the new module (pressing it again takes it back) */}
+            <li className={house.slot}>
+              <label htmlFor={id} className={house.add}>
+                <span className={house.addFace} data-off>
+                  <Glyph d={GLYPHS.plus} size={18} />
+                  {HOME_DOMUS.add}
+                </span>
+                <span className={house.born} data-on>
+                  <span className={house.bornHead}>
+                    <span className={house.icon}>
+                      <Glyph d={GLYPHS.pen} size={18} />
+                    </span>
+                    <span className={house.name}>{HOME_DOMUS.born}</span>
+                    <b className={house.seal}>{HOME_DOMUS.bornTag}</b>
+                  </span>
+                  <span className={house.screen}>
+                    {HOME_DOMUS.bornFields.map((f, i) => (
+                      <span
+                        key={f}
+                        className={house.field}
+                        style={{ "--i": i } as React.CSSProperties}
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </span>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
@@ -337,7 +387,10 @@ export function ContactBand({
           <li key={ask}>{ask}</li>
         ))}
       </ul>
-      <a href={CONTACT_HREF} className={styles.contactCta}>
+      <a
+        href={CONTACT_HREF}
+        className={`${shell.cta} ${shell.ctaBig} ${styles.contactCta}`}
+      >
         {CTA_LABEL}
       </a>
     </div>
