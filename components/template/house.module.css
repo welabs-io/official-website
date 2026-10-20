@@ -1,0 +1,266 @@
+/* A CASA DO DOMUS (I3) */
+/* The modules of the Domus under one roof, on two floors: the standard ones and the ones made to measure. The roof is a
+   vector path (crisp at any size: its stroke does not scale with the box); the walls are one card. "+ Novo módulo" is a
+   label over the checkbox of the section: checked, its dashed slot becomes the new module with its seal and its screen,
+   which assembles field by field. Every move is written FROM a state TO the natural one (reduced motion shows the end). */
+.house {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+.roof {
+  display: block;
+  width: calc(100% + var(--sp-6));
+  height: 72px;
+  margin: 0 calc(var(--sp-6) / -2) -2px;
+  overflow: visible;
+}
+.roofFill {
+  fill: var(--surface);
+}
+.roofLine {
+  fill: none;
+  stroke: var(--input);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.walls {
+  display: grid;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  border: 2px solid var(--input);
+  border-top: 0;
+  border-radius: 0 0 var(--r-win) var(--r-win);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.floor {
+  display: grid;
+  gap: var(--sp-3);
+}
+.floor + .floor {
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--cl);
+}
+.floorName {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--mute-l);
+}
+.rooms {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.room {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 56px;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--cl);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition:
+    border-color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out);
+}
+.room:hover {
+  border-color: var(--a-300);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-1px);
+}
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-ctl);
+  background: var(--surface-accent);
+}
+/* The modules made to measure carry the amber tint on their icon */
+.floor[data-floor="custom"] .icon {
+  background: var(--a-100);
+}
+.name {
+  min-width: 0;
+  line-height: var(--lh-heading);
+}
+.tag {
+  margin-left: auto;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-ctl);
+  background: var(--a);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* O MÓDULO NOVO */
+.slot {
+  grid-column: span 2;
+}
+.add {
+  display: grid;
+  height: 100%;
+  min-height: 56px;
+  border: 2px dashed var(--input);
+  border-radius: var(--r-card);
+  color: var(--mute-l);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
+}
+.add:hover {
+  border-color: var(--ink);
+  background: var(--a-100);
+  color: var(--ink);
+}
+.house:has(:global(input):focus-visible) .add {
+  box-shadow:
+    0 0 0 2px var(--c),
+    0 0 0 4px var(--ink);
+}
+.addFace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.born {
+  display: none;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+}
+.bornHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  color: var(--ink);
+}
+.seal {
+  margin-left: auto;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-ctl);
+  background: var(--action);
+  color: var(--action-fg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+/* The screen of the new module: its fields arrive one by one */
+.screen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+.field {
+  padding: var(--sp-2);
+  border: 1px solid var(--input);
+  border-radius: var(--r-ctl);
+  background: var(--surface);
+  color: var(--mute-l);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+.house:has(:global(input):checked) .add {
+  border: 1px solid var(--ink);
+  background: var(--surface);
+  box-shadow:
+    0 0 0 4px var(--a-200),
+    inset 0 -4px 0 var(--a);
+  animation: slot-born var(--dur-3) var(--ease-out) both;
+}
+.house:has(:global(input):checked) .addFace {
+  display: none;
+}
+.house:has(:global(input):checked) .born {
+  display: grid;
+}
+.house:has(:global(input):checked) .seal {
+  animation: seal-in 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) 0.15s both;
+}
+.house:has(:global(input):checked) .field {
+  animation: field-in var(--dur-3) var(--ease-out) both;
+  animation-delay: calc(0.35s + var(--i) * 0.14s);
+}
+/* The rooms of the house light one after the other as the new module joins them */
+.house:has(:global(input):checked) .room {
+  animation: room-lit 0.9s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 0.035s);
+}
+@keyframes slot-born {
+  from {
+    border-color: var(--input);
+    box-shadow: none;
+    transform: scale(0.97);
+  }
+}
+@keyframes seal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-6deg);
+  }
+}
+@keyframes field-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+}
+@keyframes room-lit {
+  30% {
+    border-color: var(--a-300);
+    box-shadow: 0 0 0 3px var(--a-100);
+  }
+}
+
+/* CELULAR */
+@media (max-width: 860px) {
+  .roof {
+    height: 44px;
+  }
+  .walls {
+    padding: var(--sp-3);
+  }
+  .rooms {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+  .room {
+    position: relative;
+    min-height: 48px;
+    gap: var(--sp-2);
+  }
+  .icon {
+    width: 26px;
+    height: 26px;
+  }
+  /* The tag sits on the corner of the module, so a narrow module keeps its name */
+  .tag {
+    position: absolute;
+    top: calc(var(--sp-2) * -1);
+    right: calc(var(--sp-1) * -1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .house *,
+  .house *::before,
+  .house *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

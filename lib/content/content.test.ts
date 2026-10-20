@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 import { PRODUCTS } from "@/lib/products";
 import {
   CLOSING,
-  DOMUS_ROOMS,
+  DOMUS_MODULES,
   HOME_CONTACT,
   HOME_DOMUS,
   HOME_EFFECTS,
@@ -38,7 +38,7 @@ const ALL = strings([
   HOME_INTRO,
   HOME_MESSAGE,
   HOME_DOMUS,
-  DOMUS_ROOMS,
+  DOMUS_MODULES,
   HOME_PRODUCTS,
   HOME_EFFECTS,
   HOME_CONTACT,
@@ -116,22 +116,28 @@ describe("every product page has the same fields", () => {
 });
 
 describe("the Domus is the whole management of the company", () => {
-  it("its rooms are the areas of a company, with tax and PIX only as a tag", () => {
-    const names = DOMUS_ROOMS.map((r) => r.name);
+  // v2.1: the modules are the ones the ERP code installs (modulos-domus.md of the round): the standard floor holds the
+  // ERPNext and HRMS modules, the floor made to measure our own apps, and tax and PIX are only a tag
+  it("its modules are the ERP's, standard and made to measure, with tax and PIX only as a tag", () => {
+    const standard = DOMUS_MODULES.standard.map((r) => r.name);
+    const custom = DOMUS_MODULES.custom.map((r) => r.name);
     for (const area of [
       "Vendas",
       "Compras",
       "Estoque",
+      "Produção",
       "Financeiro",
-      "Fiscal",
       "Projetos",
       "Pessoas",
+      "Ativos",
+      "Qualidade",
     ])
-      expect(names).toContain(area);
-    expect(DOMUS_ROOMS.filter((r) => r.tag).map((r) => r.tag)).toEqual([
-      "PIX",
-      "NFS-e",
-    ]);
+      expect(standard).toContain(area);
+    for (const app of ["Fiscal", "Bancos", "Jurídico", "Chamados", "Aprovações"])
+      expect(custom).toContain(app);
+    const all = [...DOMUS_MODULES.standard, ...DOMUS_MODULES.custom];
+    expect(all.filter((r) => r.tag).map((r) => r.tag)).toEqual(["NFS-e", "PIX"]);
+    expect(new Set(all.map((r) => r.name)).size).toBe(all.length);
   });
   it("its sentence is about the whole company and the room the company makes, not about money", () => {
     expect(PRODUCT_PAGE.domus.short).toMatch(/empresa inteira/);
