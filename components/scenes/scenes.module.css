@@ -252,6 +252,17 @@
 .duoHousePhone {
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
 }
+/* v2.2 (audit M04): the confirmation comes after the conversation that caused it, as a notification under the last
+   message, not over the top of the chat (it read 10:16 above 09:12) */
+.duoHousePhone > .phone {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.duoHousePhone .toast {
+  position: relative;
+  inset: auto;
+  margin: 0 0.625rem 0.625rem;
+  --origin: 50% 100%;
+}
 
 /* TELEFONE */
 .phone {

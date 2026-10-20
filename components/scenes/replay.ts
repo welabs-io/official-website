@@ -6,6 +6,8 @@
 // under reduced motion); this module, fetched with the descent chunk after hydration, only writes the phase of each scene
 // marked `data-replay` (its length in seconds). The motion itself is the CSS of the scenes (fx.css).
 
+import { restartScene } from "./restart";
+
 // Seconds the settled frame stays before the scene plays again
 const PAUSE = 2.2;
 
@@ -14,10 +16,8 @@ export function install() {
   const timers = new Map<HTMLElement, ReturnType<typeof setTimeout>>();
 
   const play = (scene: HTMLElement) => {
-    // First frame, a forced style flush so the animations restart, then play
-    scene.dataset.phase = "start";
-    scene.getBoundingClientRect();
-    scene.dataset.phase = "play";
+    // v2.2: from zero through restartScene (start → play alone left the finished animations on their last frame)
+    restartScene(scene, "play");
     const seconds = Number(scene.dataset.replay) || 2.5;
     timers.set(
       scene,

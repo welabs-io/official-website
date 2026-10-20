@@ -8,7 +8,10 @@ import { run } from "./scene-run";
 
 const SCENES = [1, 2, 3, 4, 5, 6, 7]; // seconds
 
-function stage(seconds = SCENES, names: { dataset: Record<string, string> }[] = []) {
+function stage(
+  seconds = SCENES,
+  names: { dataset: Record<string, string> }[] = [],
+) {
   const phases: string[] = [];
   const tiles = seconds.map(() => {
     const scn = {
@@ -18,6 +21,7 @@ function stage(seconds = SCENES, names: { dataset: Record<string, string> }[] = 
         },
       } as unknown as Record<string, string>,
       getBoundingClientRect: () => ({}),
+      getAnimations: () => [],
     };
     return {
       dataset: {} as Record<string, string>,
@@ -165,7 +169,7 @@ describe("scene runner on the capability stage", () => {
     runner.resume();
     phases.length = 0;
     vi.advanceTimersByTime(2001);
-    // First frame, then play again
-    expect(phases).toEqual(["start", "play"]);
+    // v2.2: through the settled frame (no animation names, so the old ones are dropped), then play again from zero
+    expect(phases).toEqual(["end", "play"]);
   });
 });
