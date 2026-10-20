@@ -100,12 +100,15 @@
   transform: none;
 }
 
-/* The scene is 2:1 on a desktop, 16:10 on a tablet and 7:10 on a phone, so the same words fit in rem at every width */
-@media (max-width: 860px) {
-  .stage,
-  .tile {
-    aspect-ratio: 16 / 10;
-  }
+/* The scene is 16:10 beside the text of the opening (v2.2: the opening is two columns, so the tile is the 690 px of the
+   tablet, not the 920 px of a whole row, and it keeps the tablet layout of the scenes), and 7:10 on a phone, so the
+   same words fit in rem at every width */
+.stage,
+.tile {
+  aspect-ratio: 16 / 10;
+}
+.screen {
+  --tile-w: min(100%, 920px, calc(70vh * 1.6));
 }
 @media (max-width: 560px) {
   .stage,

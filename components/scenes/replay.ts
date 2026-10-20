@@ -6,7 +6,7 @@
 // under reduced motion); this module, fetched with the descent chunk after hydration, only writes the phase of each scene
 // marked `data-replay` (its length in seconds). The motion itself is the CSS of the scenes (fx.css).
 
-import { installPlays } from "@/components/plays/play-run";
+import { centerSwitches, installPlays } from "@/components/plays/play-run";
 import { restartScene } from "./restart";
 
 // Seconds the settled frame stays before the scene plays again
@@ -50,6 +50,8 @@ export function install() {
       seen.add(el);
       io.observe(el);
     });
+    // v2.2: the product of the page in the middle of the selector row (components/plays/play-run.ts)
+    centerSwitches();
   };
   scan();
   const mo = new MutationObserver(scan);

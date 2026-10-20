@@ -6,6 +6,18 @@
 //    divider (`data-first`).
 //  - Magneto: choosing another value starts the flow over, so a decision taken on the other value is cleared.
 //  - Any play: after the reset button the order is cleared too.
+// v2.2 (audit M06): on a phone the product selector is one row that scrolls sideways; the product of the page is
+// brought to its middle, so the current logo is never the one cut at the edge (called on every change of the page)
+export function centerSwitches() {
+  document.querySelectorAll<HTMLElement>("[data-switch] ul").forEach((ul) => {
+    const current = ul.querySelector("[aria-current]")?.parentElement;
+    if (!current || ul.scrollWidth <= ul.clientWidth) return;
+    const row = ul.getBoundingClientRect();
+    const item = current.getBoundingClientRect();
+    ul.scrollLeft += item.left - row.left - (row.width - item.width) / 2;
+  });
+}
+
 export function installPlays() {
   let seq = 0;
 

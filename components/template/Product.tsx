@@ -34,7 +34,7 @@ function ProductSwitch({ current }: { current: ProductSlug }) {
     <nav className={styles.switch} aria-label={NAV.switch} data-switch="">
       <ul>
         {PRODUCTS.map(({ slug, name }) => (
-          <li key={slug}>
+          <li key={slug} data-p={slug}>
             <Link
               href={`/products/${slug}`}
               prefetch={false}

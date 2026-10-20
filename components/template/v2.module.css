@@ -388,21 +388,19 @@
 }
 
 /* ABERTURA DA PÁGINA DE PRODUTO */
+/* v2.2 (audit M05): one layout for the five products. Two columns (5/7), the text on the left and the screen on the
+   right, above the fold; the Domus and the four products with a stage of scenes no longer differ (the four stacked,
+   with the scene starting at 456 px and the right of the text empty) */
 .opening {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   align-items: center;
-  gap: var(--sp-7);
+  gap: var(--sp-6) var(--sp-7);
 }
 .openingText {
   display: grid;
   justify-items: start;
   gap: var(--sp-5);
-}
-/* A product that opens with its stage of scenes stacks: the screens need the whole width to stay inside their windows */
-.opening[data-stage] {
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--sp-6);
 }
 /* The logo of the opening is a step above the cards */
 .openingText h1 img {
@@ -476,9 +474,16 @@
 }
 /* A 40 px file draws a wordmark of about 19 px (the file carries its 0.5X protection area) */
 .switch img {
-  height: 40px;
+  --h: 40px;
+  height: var(--h);
   width: auto;
   margin: calc(var(--sp-2) * -1) 0;
+}
+/* v2.2 (audit M06): the Tuner file is 599 tall against 563 of the others (the waves over its "r"), so in the same box its
+   wordmark drew smaller and lower; it gets the extra height, centred on the same line */
+.switch [data-p="tuner"] img {
+  height: calc(var(--h) * 599.11 / 563.28);
+  margin: calc(var(--sp-2) * -1 - var(--h) * 0.0318) 0;
 }
 
 /* DETALHES QUE JÁ VÊM JUNTO */
@@ -515,6 +520,12 @@
   .five {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  /* v2.2: on a tablet the screen takes 8 of 12 columns, so it keeps its tablet layout (16:10, over 34 rem) and stays
+     above the fold */
+  .opening {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    column-gap: var(--sp-5);
+  }
 }
 
 /* CELULAR */
@@ -532,11 +543,27 @@
     justify-self: stretch;
     justify-content: center;
   }
+  /* v2.2 (audit M06): one row on a phone (it broke 3 + 2), scrolled sideways with a snap when it does not fit */
   .switch ul {
+    flex-wrap: nowrap;
     gap: var(--sp-1);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .switch li {
+    flex: none;
+    scroll-snap-align: start;
+  }
+  .switch a {
+    padding-inline: var(--sp-2);
+  }
+  .switch a::after {
+    left: var(--sp-2);
+    right: var(--sp-2);
   }
   .switch img {
-    height: 32px;
+    --h: 30px;
   }
   .ground {
     gap: var(--sp-3);
