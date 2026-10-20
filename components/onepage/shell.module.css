@@ -427,10 +427,14 @@
     padding: 0 var(--sp-2);
     font-size: var(--text-md);
   }
-  /* The products are always listed in the panel */
+  /* The products are always listed in the panel (the fade of the desktop list does not apply there) */
   .menu {
     position: static;
     display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
     min-width: 0;
     padding: 0 0 var(--sp-2) var(--sp-2);
     border: 0;

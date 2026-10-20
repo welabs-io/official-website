@@ -1,37 +1,44 @@
-// INTERAÇÕES DA V2
-// The visitor plays the page: pointing at a product lights its ties and its stamp, the word of the title turns with the
-// stage, the message dragged onto the track (or sent with the button) walks through the five products to the phone,
-// "+ Sua área" makes a new room in the Domus, and every product page has its own play. Each one is a native control
-// with a visible label, so the keyboard reaches it too; under reduced motion nothing runs and the final frame shows.
+// INTERAÇÕES DA V2.1
+// The visitor plays the page: pointing at a product lights it, its tie and its line in the record of the Domus (v2.1:
+// the stage is a grid, the effect lights in the record instead of a floating stamp), the word of the title turns with
+// the stage, the message dragged onto the track (or sent with the button) walks through the five products and lands in
+// the Domus that forms, "+ Novo módulo" makes a new module in the house of the Domus, and every product page has its own
+// play. Each one is a native control with a visible label, so the keyboard reaches it too; under reduced motion nothing
+// runs and the final frame shows.
 import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 900 } });
 
-const opacity = (page: Page, selector: string) =>
+// The opacity of the lit layer of every piece of the stage: `::after` of a card, `::before` of a tie or a line
+const lit = (page: Page, selector: string) =>
   page.evaluate(
     (sel) =>
       [...document.querySelectorAll(sel)].map((el) =>
-        Number(getComputedStyle(el).opacity),
+        Number(
+          getComputedStyle(el, el.hasAttribute("data-p") ? "::after" : "::before")
+            .opacity,
+        ),
       ),
     selector,
   );
 
-test("pointing at a product lights its ties and its stamp, and stops the cycle", async ({
+test("pointing at a product lights it, its tie and its line in the record, and stops the cycle", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "load" });
-  const orbit = page.locator('#intro [data-orbit="cycle"]');
-  await orbit.locator('[data-p="tuner"]').hover();
-  await page.waitForTimeout(200);
-  const tuner = await opacity(page, '#intro [data-orbit] [data-of="tuner"]');
-  const others = await opacity(
+  const stage = page.locator('#intro [data-hub="cycle"]');
+  await stage.locator('[data-p="tuner"]').hover();
+  await page.waitForTimeout(400);
+  // The card, its tie and its line of the record
+  const tuner = await lit(page, '#intro [data-hub] :is([data-p="tuner"], [data-of="tuner"])');
+  const others = await lit(
     page,
-    '#intro [data-orbit] [data-of]:not([data-of="tuner"])',
+    '#intro [data-hub] :is([data-p]:not([data-p="tuner"]), [data-of]:not([data-of="tuner"]))',
   );
-  expect(tuner.length).toBeGreaterThan(2);
+  expect(tuner.length).toBe(3);
   expect(tuner.every((o) => o === 1)).toBe(true);
   expect(others.every((o) => o === 0)).toBe(true);
-  await expect(orbit.locator('span[data-of="tuner"]')).toBeVisible();
+  await expect(stage.locator('[data-of="tuner"]').last()).toContainText("Ligação gravada");
 });
 
 test("the word of the title turns with the stage", async ({ page }) => {
@@ -44,16 +51,24 @@ test("the word of the title turns with the stage", async ({ page }) => {
   await expect.poll(at, { timeout: 5000 }).toBeLessThan(0);
 });
 
-test("the message sent with the button walks through the five products to the phone", async ({
+test("the message sent with the button walks through the five products and lands in the Domus", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "load" });
   await page.locator("#message").scrollIntoViewIfNeeded();
   await page.getByText("Enviar a mensagem").click();
   await expect(page.locator("#msg-go")).toBeChecked();
-  await page.waitForTimeout(6500);
-  const phone = await opacity(page, "#message [aria-hidden] span");
-  expect(Math.max(...phone)).toBe(1);
+  await page.waitForTimeout(7000);
+  // The Domus formed: the outline in ink, the amber square in, the record of the order confirmed
+  const domus = await page.evaluate(() => {
+    const rects = document.querySelectorAll("#message svg rect");
+    return {
+      ring: getComputedStyle(rects[0]).stroke,
+      square: Number(getComputedStyle(rects[rects.length - 1]).opacity),
+    };
+  });
+  expect(domus).toEqual({ ring: "rgb(28, 26, 22)", square: 1 });
+  await expect(page.locator("#message").getByText("Confirmado: sábado")).toBeVisible();
   await expect(page.getByText("Recomeçar")).toBeVisible();
 });
 
@@ -66,14 +81,16 @@ test("the message dragged onto the track is sent", async ({ page }) => {
   await expect(page.locator("#msg-go")).toBeChecked();
 });
 
-test("'+ Sua área' makes a new room in the Domus, and the keyboard does it too", async ({
+test("'+ Novo módulo' makes a new module in the Domus, with its seal, and the keyboard does it too", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "load" });
   await page.locator("#domus").scrollIntoViewIfNeeded();
+  await expect(page.locator('label[for="area-add"]')).toContainText("Novo módulo");
   await page.locator('label[for="area-add"]').click();
   await expect(page.locator("#area-add")).toBeChecked();
   await expect(page.locator('label[for="area-add"]')).toContainText("Vistorias");
+  await expect(page.locator('label[for="area-add"] b')).toHaveText("Novo módulo");
   await page.locator("#area-add").focus();
   await page.keyboard.press("Space");
   await expect(page.locator("#area-add")).not.toBeChecked();
@@ -123,8 +140,10 @@ test.describe("one play per product", () => {
     const play = page.locator('[data-play="tuner"]');
     await play.scrollIntoViewIfNeeded();
     await play.locator('label[for="ivr-2"]').click();
-    await expect(play.locator('li[data-key="2"] span').last()).toBeVisible();
-    await expect(play.locator('li[data-key="1"] span').last()).toBeHidden();
+    // The person of the option answers, recorded; the others stay idle
+    await expect(play.locator('li[data-key="2"]')).toContainText("Gravando");
+    await expect(play.locator('li[data-key="2"] > span').last()).toBeVisible();
+    await expect(play.locator('li[data-key="1"] > span').last()).toBeHidden();
   });
   test("knowly: an answer with its source, and a source that stays closed", async ({
     page,
@@ -141,7 +160,7 @@ test.describe("one play per product", () => {
   });
 });
 
-test("on a phone the fitted pieces stay inside their stage and the bar shows under the first word", async ({
+test("on a phone the pieces of the stage stay inside it and the bar shows under the first word", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -151,11 +170,14 @@ test("on a phone the fitted pieces stay inside their stage and the bar shows und
   const page = await context.newPage();
   await page.goto("/", { waitUntil: "load" });
   const g = await page.evaluate(() => {
-    const stage = document.querySelector("#chain [role=img]")!;
+    // v2.1: the film of the fitting pieces (#chain) left; the stage of the opening is the one that must fit a phone
+    const stage = document.querySelector("#intro [role=group]")!;
     const box = stage.getBoundingClientRect();
     const word = document.querySelector("#intro h1 span[aria-hidden] span")!;
     return {
+      // The pieces drawn on a phone (the ties have no room there and are not drawn)
       out: [...stage.children].filter((el) => {
+        if (getComputedStyle(el).display === "none") return false;
         const r = el.getBoundingClientRect();
         return r.left < box.left || r.right > box.right;
       }).length,
@@ -168,7 +190,7 @@ test("on a phone the fitted pieces stay inside their stage and the bar shows und
   await context.close();
 });
 
-test("under reduced motion nothing runs: the Domus is lit, the pieces fitted, the first word shown", async ({
+test("under reduced motion nothing runs: the Domus is lit and the first word shown", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -183,20 +205,22 @@ test("under reduced motion nothing runs: the Domus is lit, the pieces fitted, th
       .getAnimations()
       .filter((a) =>
         (a.effect as KeyframeEffect | null)?.target instanceof Element
-          ? ((a.effect as KeyframeEffect).target as Element).closest(
-              "#intro, #chain",
-            )
+          ? ((a.effect as KeyframeEffect).target as Element).closest("#intro")
           : false,
       ).length,
-    domus: [...document.querySelectorAll('#intro [data-of="domus"]')].map(
-      (el) => Number(getComputedStyle(el).opacity),
+    // The record of the Domus lit and its line of the Domus lit; no product lit
+    domus: [
+      Number(getComputedStyle(document.querySelector('#intro [data-p="domus"]')!, "::after").opacity),
+      Number(getComputedStyle(document.querySelector('#intro [data-of="domus"]')!, "::before").opacity),
+    ],
+    products: [...document.querySelectorAll('#intro [data-p]:not([data-p="domus"])')].map((el) =>
+      Number(getComputedStyle(el, "::after").opacity),
     ),
-    pieces: [...document.querySelectorAll("#chain [data-p]")].map((el) =>
-      Number(getComputedStyle(el).opacity),
-    ),
+    word: new DOMMatrix(getComputedStyle(document.querySelector("#intro h1 span[aria-hidden]")!).transform).m42,
   }));
   expect(state.running).toBe(0);
-  expect(state.domus.every((o) => o === 1)).toBe(true);
-  expect(state.pieces.every((o) => o === 1)).toBe(true);
+  expect(state.domus).toEqual([1, 1]);
+  expect(state.products.every((o) => o === 0)).toBe(true);
+  expect(state.word).toBe(0);
   await context.close();
 });
