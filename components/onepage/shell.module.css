@@ -97,7 +97,9 @@
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;
   --logo-h: 42px;
-  background: var(--halo) no-repeat, var(--c);
+  background:
+    var(--halo) no-repeat,
+    var(--c);
   background-size: 100% 900px;
   color: var(--ink);
   overflow-x: clip;
@@ -416,6 +418,14 @@
   }
   .nav[data-open="true"] {
     display: flex;
+    /* v2.2 (audit B02): a 20% graphite veil over the page under the open panel */
+    box-shadow: 0 0 0 100vmax color-mix(in srgb, var(--g) 20%, transparent);
+    /* Only below the panel: the header above stays clear */
+    clip-path: inset(0 0 -100vmax 0);
+  }
+  /* v2.2 (audit B02): the page behind the open panel does not scroll */
+  :global(html):has(.nav[data-open="true"]) {
+    overflow: hidden;
   }
   .navList {
     flex-direction: column;
@@ -527,7 +537,9 @@
   --bg: var(--surface-band);
 }
 .band[data-surface="contact"] {
-  background: var(--halo) no-repeat, var(--c);
+  background:
+    var(--halo) no-repeat,
+    var(--c);
   border-top: 1px solid var(--cl);
   --bg: var(--c);
 }
