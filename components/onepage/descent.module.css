@@ -6,11 +6,11 @@
   display: none;
 }
 
-/* A FOLHA QUE CRESCE */
-/* Drawn by components/onepage/Descent.tsx over the page, under the fixed header: the surface of the card (or of the door
-   to the next product) that grows to the whole window while the page scrolls under it, and the logo that travels from
-   the card to the opening of the product. Both are sized at their final box and moved only by transform (origin at the
-   top left corner) and opacity. */
+/* A FOLHA DA VOLTA */
+/* Drawn by components/onepage/descent-run.ts over the page, under the fixed header, on the browser's back from a
+   product to the home: the surface of the opening that shrinks into the card while the page scrolls up, and the logo that
+   travels back to the card. Both are sized at their final box and moved only by transform (origin at the top left
+   corner) and opacity. The way in is the brand opening (components/intro). */
 .sheet,
 .logo {
   position: fixed;
@@ -25,11 +25,22 @@
   width: 100vw;
   height: 100vh;
   border: 1px solid #e2d8c3;
-  background: #fffdf8;
-  box-shadow: 0 16px 32px -20px rgb(28 26 22 / 0.4);
+  background: #ffffff;
+  box-shadow:
+    0 12px 32px -8px oklch(0 0 0 / 0.12),
+    0 6px 12px -4px oklch(0 0 0 / 0.08);
 }
 .logo {
   z-index: 41;
+}
+/* The white veil of the moves that only swap the page (the way home, back and forward between products) */
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
 }
 .logo img {
   position: absolute;
