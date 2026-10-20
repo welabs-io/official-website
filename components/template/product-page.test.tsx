@@ -1,8 +1,8 @@
 // TESTES DO TEMPLATE DAS PÁGINAS
 // The home and the five product pages are one template: the same band structure with two lists of sections. The product
-// pages open with the product switcher, the logo and the stage of three capability scenes, then what it solves, how it works (the
+// pages open with the logo and the stage of three capability scenes, then what it solves, how it works (the
 // native chain), the capabilities in groups, who it is for, the questions, the connector block lit on the product, the
-// closing and the other products. No video anywhere. Rendered on the server and read as text.
+// closing and the door to the next product (the descent, PR #27). No video anywhere. Rendered on the server and read as text.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { CHAIN_STEPS } from "@/lib/chain";
@@ -36,7 +36,7 @@ describe("one template, same sequence", () => {
       "closing",
     ]);
   });
-  it("every product page has the same ten bands, the connector block right before the closing", () => {
+  it("every product page has the same nine bands, the connector block right before the closing", () => {
     for (const config of slugs.map(productConfig))
       expect(kinds(config)).toEqual([
         "hero",
@@ -47,7 +47,7 @@ describe("one template, same sequence", () => {
         "faq",
         "hub",
         "closing",
-        "others",
+        "next",
       ]);
   });
   it.each(slugs)("the %s page renders its sections in that order", (slug) => {
@@ -62,7 +62,7 @@ describe("one template, same sequence", () => {
       "connectors",
       "platforms",
       "contact",
-      "others",
+      "next",
     ];
     const at = (id: string) => html.indexOf(`id="${id}"`);
     for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);

@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import {
   HUB_NOTE,
+  NAV,
   PAGE_HEADINGS,
   PRODUCT_CONTENT,
   TIE_LINES,
@@ -234,23 +235,27 @@ describe("navigation on every page", () => {
     },
   );
   it.each(productPages)(
-    "$slug has the product switcher (the way back, the product current) and the other four products at the end",
+    // The descent model (PR #27): no product switcher and no list of the other products; the way back is up the page and
+    // the way on is the door "Próximo" at the end, which leads to the next product in the order of the list
+    "$slug has no switcher, and ends on the door 'Próximo' to the next product",
     ({ slug, html }) => {
-      const name = PRODUCTS.find((p) => p.slug === slug)!.name;
-      const start = html.indexOf('aria-label="Trocar de produto"');
-      const switcher = html.slice(start, html.indexOf("</nav>", start));
-      expect(switcher).toContain('data-nav="back"');
-      expect(switcher.match(/data-nav="switch"/g)).toHaveLength(4);
-      expect(switcher).toMatch(
-        new RegExp(`aria-current="page"><img[^>]*alt="${name}"`),
-      );
-      const others = html.slice(
-        html.indexOf('id="others"'),
+      const next =
+        PRODUCTS[
+          (PRODUCTS.findIndex((p) => p.slug === slug) + 1) % PRODUCTS.length
+        ];
+      expect(html).not.toContain('aria-label="Trocar de produto"');
+      expect(html).not.toContain('data-nav="switch"');
+      expect(html).not.toContain('id="others"');
+      const door = html.slice(
+        html.indexOf('id="next"'),
         html.indexOf("<footer"),
       );
-      expect(others.match(/data-card="[a-z]+"/g)).toHaveLength(4);
-      expect(others).not.toContain(`href="/products/${slug}"`);
-      expect(visibleText(others)).toContain("Outros produtos");
+      expect(door.match(/data-door="[a-z]+"/g)).toEqual([
+        `data-door="${next.slug}"`,
+      ]);
+      expect(door).toContain(`href="/products/${next.slug}"`);
+      expect(door).toContain(`aria-label="${NAV.next}: ${next.name}"`);
+      expect(visibleText(door)).toContain(NAV.next);
     },
   );
 });
@@ -324,8 +329,9 @@ describe("the content layer on the rendered pages", () => {
     "$slug has the problems, the capabilities, the live caption and a line per connection",
     ({ slug, html }) => {
       const t = text(html);
-      for (const heading of Object.values(PAGE_HEADINGS))
-        expect(t).toContain(heading);
+      // "Outros produtos" left the page with the descent (PR #27): the product ends on the door "Próximo" instead
+      for (const [key, heading] of Object.entries(PAGE_HEADINGS))
+        if (key !== "others") expect(t).toContain(heading);
       const c = PRODUCT_CONTENT[slug];
       for (const r of c.resolves) {
         expect(t).toContain(r.problem);

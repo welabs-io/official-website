@@ -162,13 +162,17 @@ for (const vp of VIEWPORTS)
     });
   });
 
-test("the product page is one template: a native opening with the capability scenes, the reading bands and the other products", async ({
+test("the product page is one template: a native opening with the capability scenes, the reading bands and the door to the next product", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/products/domus", { waitUntil: "load" });
+  // The product is the slot of the one-page layout (the head of the home above it and the hidden tail below it are the
+  // home's own bands)
   const ids = await page.evaluate(() =>
-    [...document.querySelectorAll("section[data-live]")].map((s) => s.id),
+    [
+      ...document.querySelectorAll("[data-descent-slot] section[data-live]"),
+    ].map((s) => s.id),
   );
   expect(ids).toEqual([
     "product",
@@ -179,9 +183,10 @@ test("the product page is one template: a native opening with the capability sce
     "faq",
     "connectors",
     "platforms",
-    "others",
+    "next",
   ]);
-  expect(await page.locator("h1").count()).toBe(1);
+  // One h1 for the product; the layout adds the home's own, for screen readers only
+  expect(await page.locator("[data-descent-slot] h1").count()).toBe(1);
   // The opening is native and plays: three capability scenes, no still frame, and no video or frame anywhere
   expect(await page.locator("#product-scenes [data-tile]").count()).toBe(3);
   expect(await page.locator("#product [data-mini]").count()).toBe(0);

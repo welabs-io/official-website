@@ -31,16 +31,18 @@ describe("route segments are in English", () => {
     /\/(page|route)\.tsx?$/.test(f),
   );
   // The workbench of the video montage (lab/chain) left with the videos: the native chain is measured on the home itself
+  // A route group "(site)" is a folder of the layout, not a segment of the address
+  const urlSegments = (file: string) =>
+    path
+      .relative(path.join(root, "app"), path.dirname(file))
+      .split(path.sep)
+      .filter((s) => s && !/^\(.*\)$/.test(s));
   it("has the home and the product page", () => {
-    const routes = pageFiles.map((f) =>
-      path.relative(path.join(root, "app"), path.dirname(f)),
-    );
+    const routes = pageFiles.map((f) => urlSegments(f).join("/"));
     expect(routes.sort()).toEqual(["", "products/[slug]"]);
   });
   it.each(pageFiles)("%s has no Portuguese segment", (file) => {
-    const segments = path
-      .relative(path.join(root, "app"), path.dirname(file))
-      .split(path.sep);
+    const segments = urlSegments(file);
     for (const s of segments) expect(s).not.toMatch(PT);
   });
   it("redirect destinations have no Portuguese segment or anchor", () => {

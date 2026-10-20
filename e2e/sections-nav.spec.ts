@@ -1,8 +1,7 @@
 // CAMINHO DE VOLTA E ÂNCORAS DAS SEÇÕES
 // What a visitor uses to get around once the pages are long: the menu entry "Como funciona" lands on the order from start
-// to end right under the fixed header, every product page has the product switcher at the top ("Voltar" and the five
-// products, the one of the page current) and "Outros produtos" at the end, and the logo of the header leads home from any
-// page. The transitions and the way back are in e2e/route-motion.spec.ts.
+// to end right under the fixed header, every product ends on the door "Próximo" to the next product (the way back is up
+// the page, there is no switcher since the descent of PR #27), and the logo of the header leads home from any page.
 import { expect, test } from "@playwright/test";
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
@@ -38,32 +37,42 @@ test("'Como funciona' and 'Contato' land on their sections under the header", as
   await expect(page.locator("#contact h2")).toBeInViewport();
 });
 
-for (const slug of SLUGS)
-  test(`the ${slug} page has the product switcher with ${NAMES[slug]} current, the logo to the home and the other four products at the end`, async ({
+for (const [i, slug] of SLUGS.entries())
+  test(`the ${slug} page has ${NAMES[slug]} as the product in the slot, the door "Próximo" to the next one at the end and the logo to the home`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/products/${slug}`, { waitUntil: "load" });
-    const switcher = page.getByRole("navigation", {
-      name: "Trocar de produto",
-    });
+    // The descent model (PR #27): no product switcher and no list of the others
     await expect(
-      switcher.getByRole("link", { name: "Voltar para a página inicial" }),
-    ).toBeVisible();
-    await expect(
-      switcher.locator('[aria-current="page"] img'),
-    ).toHaveAttribute("alt", NAMES[slug]);
-    await expect(switcher.locator('a[data-nav="switch"]')).toHaveCount(4);
-    const others = page.locator("#others");
-    await others.scrollIntoViewIfNeeded();
-    await expect(others.locator("a[data-card]")).toHaveCount(4);
-    await expect(others.locator(`a[href="/products/${slug}"]`)).toHaveCount(0);
-    // One of them leads to another page, which opens at its top
-    const target = SLUGS.find((s) => s !== slug)!;
-    await others.locator(`a[href="/products/${target}"]`).click();
+      page.getByRole("navigation", { name: "Trocar de produto" }),
+    ).toHaveCount(0);
+    await expect(page.locator("#others")).toHaveCount(0);
+    await expect(page.locator("#product h1 img")).toHaveAttribute(
+      "alt",
+      new RegExp(NAMES[slug]),
+    );
+    // The door leads to the next product of the list (the last leads back to the first)
+    const target = SLUGS[(i + 1) % SLUGS.length];
+    const door = page.locator("[data-descent-slot] #next a[data-door]");
+    await door.scrollIntoViewIfNeeded();
+    await expect(door).toHaveAttribute("data-door", target);
+    await expect(door).toHaveAttribute("href", `/products/${target}`);
+    await expect(door).toContainText("Próximo");
+    await door.click();
     await page.waitForURL(`**/products/${target}`);
-    await page.waitForTimeout(700);
-    expect(await page.evaluate(() => Math.round(scrollY))).toBe(0);
+    await page.waitForTimeout(1600);
+    // The next product opens at the top of the slot, under the fixed header
+    const g = await page.evaluate(() => ({
+      slot: document
+        .querySelector("[data-descent-slot]")!
+        .getBoundingClientRect().top,
+      h1Top: document.querySelector("#product h1")!.getBoundingClientRect().top,
+      headerBottom: document.querySelector("header")!.getBoundingClientRect()
+        .bottom,
+    }));
+    expect(Math.abs(g.slot)).toBeLessThanOrEqual(2);
+    expect(g.h1Top).toBeGreaterThanOrEqual(g.headerBottom);
     // The logo of the header leads to the home
     await page.getByRole("link", { name: "Welabs, início" }).click();
     await page.waitForURL((url) => url.pathname === "/");
