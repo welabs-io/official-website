@@ -57,7 +57,6 @@ components/scenes/      cenas nativas (cadeia, capacidades, produtos da home): j
 lib/scenes/             história, roteiros (tempos das ações), cenas de capacidade, cenas dos produtos da home e tipos
 lib/                    produtos, slugs públicos, configuração das páginas, política do selo e os passos da cadeia (lib/chain.ts)
 public/brands/welabs/   logos da Welabs, logos dos produtos, favicons e selos
-public/clients/         logos de terceiros que o site Imagine já exibe
 public/platforms/       marcas de infra e dev (simple-icons, CC0; AWS e HostDime oficiais)
 public/fonts/           Inter (latin, variável), a única fonte de texto
 scripts/                logos em WebP, medição de peso e verificação do site contra o preview

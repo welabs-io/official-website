@@ -208,8 +208,9 @@ assert.equal(
   1,
   "one card is lit",
 );
+// No client brand on the Welabs site (operator, 2026-10-20): logos would need the client's consent
 const clientLogos = [...home.matchAll(/src="\/clients\/[^"]+"/g)].length;
-assert(clientLogos >= 7, "clients carousel renders its logos");
+assert.equal(clientLogos, 0, "no client logo on the home");
 assert(
   !IMAGINE_SYSTEMS.test(home.slice(home.indexOf('id="platforms"'))),
   "no Imagine system in the closing strip",

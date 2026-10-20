@@ -30,7 +30,6 @@ const sentences = (): string[] => {
     HOME_INTRO.title,
     HOME_INTRO.lead,
     HUB_NOTE,
-    CLOSING.clients,
     CLOSING.platforms,
     ...Object.values(PAGE_HEADINGS),
     ...Object.values(TIE_LINES),

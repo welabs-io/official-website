@@ -54,9 +54,8 @@ export const TIE_LINES: Record<string, string> = {
 export const tieKey = (a: ProductSlug, b: ProductSlug) =>
   [a, b].sort().join("-");
 
-// Closing: the two groups of marks, each under a short title
+// Closing: the platform marks under a short title (no client brands on the Welabs site since 2026-10-20)
 export const CLOSING = {
-  clients: "Quem já opera com a gente",
   platforms: "Onde rodamos",
 } as const;
 
