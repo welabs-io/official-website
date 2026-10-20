@@ -1,16 +1,3 @@
-// LOGOS DOS CARROSSÉIS
-// Third-party logos only: the ones the Imagine site already shows in its section of the companies it serves
-// (imagine/public/brands, lib/emphasis.json). Stant, Tabe.la and WeGO are Imagine systems and stay out.
-export const CLIENT_LOGOS = [
-  { name: "Light", src: "/clients/light.webp", h: 44 },
-  { name: "Neoenergia", src: "/clients/neoenergia.webp", h: 36 },
-  { name: "Enel", src: "/clients/enel.webp", h: 32 },
-  { name: "Report", src: "/clients/report.svg", h: 36 },
-  { name: "Kiosk Brands", src: "/clients/kiosk-brands.svg", h: 40 },
-  { name: "IMA", src: "/clients/ima.svg", h: 44 },
-  { name: "AVSI", src: "/clients/avsi.webp", h: 44 },
-] as const;
-
 // PLATAFORMAS DE INFRA E DESENVOLVIMENTO
 // Monochrome official marks: simple-icons 16.34.0 (CC0) for everything it carries; AWS (official logo SVG) and HostDime
 // (official logo PNG from hostdime.com.br) are not in that package. `evidence` records why each one is listed; the
@@ -95,5 +82,4 @@ export const PLATFORM_LOGOS = [
   },
 ] as const;
 
-export const CLIENTS_LABEL = "Quem atendemos";
 export const PLATFORMS_LABEL = "Infraestrutura e ferramentas";

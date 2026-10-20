@@ -129,15 +129,15 @@ describe("pages carry little text and no slogan", () => {
     expect(visibleText(home)).toContain("Conversar com a Welabs");
   });
 
-  it("the closing is two titled strips, one of the marks of who operates with us and one of the platforms, then the button", () => {
+  it("the closing is one titled strip of platforms, with no client brand, then the button", () => {
     const closing = home.slice(home.indexOf('id="platforms"'));
-    // Two carousels (the loop copy is aria-hidden), each under its title
-    expect(closing.match(/role="region"/g)).toHaveLength(2);
-    expect(visibleText(closing)).toContain("Quem já opera com a gente");
+    // One carousel (the loop copy is aria-hidden) under its title; client brands need consent, so none is shown
+    expect(closing.match(/role="region"/g)).toHaveLength(1);
+    expect(visibleText(closing)).not.toContain("Quem já opera com a gente");
     expect(visibleText(closing)).toContain("Onde rodamos");
     for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
       expect(closing).toContain(`alt="${name}"`);
-    expect(closing).toMatch(/src="\/clients\//);
+    expect(home).not.toMatch(/src="\/clients\//);
     expect(closing.lastIndexOf('role="region"')).toBeLessThan(
       closing.indexOf('id="contact"'),
     );

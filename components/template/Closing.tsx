@@ -1,12 +1,13 @@
 // FECHAMENTO
-// Two strips of black-and-white logos, each under a short title (who already operates with us, where we run), then the
-// closing button. The section around it (id, graphite band) comes from Section; the footer comes after it (PageFrame).
+// One strip of black-and-white platform logos under a short title (where we run), then the closing button. Client logos
+// were removed on 2026-10-20: the operator decided the Welabs site shows no client brand that would need consent. The
+// section around it (id, graphite band) comes from Section; the footer comes after it (PageFrame).
 import { Carousel } from "@/components/onepage/Carousel";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import styles from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
 import { CLOSING, HOME_SECTIONS } from "@/lib/content";
-import { CLIENT_LOGOS, PLATFORM_LOGOS } from "@/lib/partners";
+import { PLATFORM_LOGOS } from "@/lib/partners";
 import { CTA_LABEL } from "@/lib/products";
 import content from "./content.module.css";
 import { SectionHead } from "./SectionHead";
@@ -15,21 +16,6 @@ export function Closing() {
   return (
     <>
       <div className={`${shell.wrap} ${styles.strips}`}>
-        <div
-          role="group"
-          aria-labelledby="strip-clients"
-          className={styles.strip}
-        >
-          <h2 id="strip-clients" className={content.stripTitle}>
-            {CLOSING.clients}
-          </h2>
-          <Carousel
-            label="Marcas de quem opera com a Welabs"
-            logos={CLIENT_LOGOS}
-            kind="all"
-            seconds={45}
-          />
-        </div>
         <div
           role="group"
           aria-labelledby="strip-platforms"
