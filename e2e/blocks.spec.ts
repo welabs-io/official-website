@@ -23,13 +23,16 @@ async function wordmarkHeights(page: Page, selector: string) {
       if (share.has(src)) continue;
       const text = await (await fetch(src)).text();
       const holder = document.createElement("div");
-      holder.style.cssText = "position:absolute;left:-9999px;top:0;width:1000px";
+      holder.style.cssText =
+        "position:absolute;left:-9999px;top:0;width:1000px";
       holder.innerHTML = text;
       document.body.append(holder);
       const svg = holder.querySelector("svg")!;
       const vb = svg.viewBox.baseVal;
       // The wordmark only: the seal "by welabs" of an endorsed file sits under it, so the first group of paths is read
-      const marks = [...svg.children].filter((el) => el instanceof SVGGraphicsElement) as SVGGraphicsElement[];
+      const marks = [...svg.children].filter(
+        (el) => el instanceof SVGGraphicsElement,
+      ) as SVGGraphicsElement[];
       let y0 = Infinity;
       let y1 = -Infinity;
       for (const el of marks) {
@@ -43,7 +46,12 @@ async function wordmarkHeights(page: Page, selector: string) {
     }
     return imgs.map((img) => ({
       src: new URL(img.currentSrc || img.src).pathname,
-      px: Math.round(img.getBoundingClientRect().height * share.get(new URL(img.currentSrc || img.src).pathname)! * 10) / 10,
+      px:
+        Math.round(
+          img.getBoundingClientRect().height *
+            share.get(new URL(img.currentSrc || img.src).pathname)! *
+            10,
+        ) / 10,
     }));
   }, selector);
 }
@@ -75,16 +83,25 @@ async function contrasts(page: Page, scope: string) {
     const out: { text: string; ratio: number; need: number }[] = [];
     for (const root of document.querySelectorAll(scope))
       for (const el of root.querySelectorAll("*")) {
-        const own = [...el.childNodes].some((n) => n.nodeType === 3 && (n.textContent ?? "").trim());
+        const own = [...el.childNodes].some(
+          (n) => n.nodeType === 3 && (n.textContent ?? "").trim(),
+        );
         if (!own) continue;
         const cs = getComputedStyle(el);
-        if (cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) < 0.95) continue;
-        if (el.closest('[aria-hidden="true"] [data-mini], [data-mini]')) continue;
+        if (
+          cs.visibility === "hidden" ||
+          cs.display === "none" ||
+          Number(cs.opacity) < 0.95
+        )
+          continue;
+        if (el.closest('[aria-hidden="true"] [data-mini], [data-mini]'))
+          continue;
         const fg = parse(cs.color);
         const bg = bgOf(el);
         const [hi, lo] = [lum(fg), lum(bg)].sort((a, b) => b - a);
         const size = parseFloat(cs.fontSize);
-        const large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
+        const large =
+          size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
         out.push({
           text: (el.textContent ?? "").trim().slice(0, 30),
           ratio: Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100,
@@ -96,11 +113,14 @@ async function contrasts(page: Page, scope: string) {
 }
 
 test.describe("(a) the tokens of the ERP front", () => {
-  test("page, surfaces, the action button and the focus ring", async ({ page }) => {
+  test("page, surfaces, the action button and the focus ring", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "load" });
     const t = await page.evaluate(() => {
-      const cs = (sel: string) => getComputedStyle(document.querySelector(sel)!);
+      const cs = (sel: string) =>
+        getComputedStyle(document.querySelector(sel)!);
       // The button of the header (the one in the menu panel is for a narrow phone)
       const cta = cs("header > div > a[href='/#contact']");
       return {
@@ -121,19 +141,25 @@ test.describe("(a) the tokens of the ERP front", () => {
     await page.hover("header > div > a[href='/#contact']");
     await page.waitForTimeout(300);
     const hover = await page.evaluate(() => {
-      const cs = getComputedStyle(document.querySelector("header > div > a[href='/#contact']")!);
+      const cs = getComputedStyle(
+        document.querySelector("header > div > a[href='/#contact']")!,
+      );
       return [cs.backgroundColor, cs.color];
     });
     expect(hover).toEqual(["rgb(255, 204, 116)", "rgb(28, 26, 22)"]);
     // Focus: 2 px of the page, then 2 px of ink
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
-    const ring = await page.evaluate(() => getComputedStyle(document.activeElement!).boxShadow);
+    const ring = await page.evaluate(
+      () => getComputedStyle(document.activeElement!).boxShadow,
+    );
     expect(ring).toContain("rgb(28, 26, 22) 0px 0px 0px 4px");
   });
 
   for (const path of ["/", "/products/tuner"])
-    test(`every text of the changed components reaches AA on ${path}`, async ({ page }) => {
+    test(`every text of the changed components reaches AA on ${path}`, async ({
+      page,
+    }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path, { waitUntil: "load" });
@@ -141,13 +167,17 @@ test.describe("(a) the tokens of the ERP front", () => {
         path === "/"
           ? "header, #intro, #message, #domus, #products, #contact"
           : "[data-descent-slot] #product nav, [data-descent-slot] #play, [data-descent-slot] #center, [data-descent-slot] #contact";
-      const low = (await contrasts(page, scope)).filter((c) => c.ratio < c.need);
+      const low = (await contrasts(page, scope)).filter(
+        (c) => c.ratio < c.need,
+      );
       expect(low).toEqual([]);
     });
 });
 
 test.describe("(c) the motions act", () => {
-  test("the stage of the home cycles: a product lights, its packet travels, its line lights in the record", async ({ page }) => {
+  test("the stage of the home cycles: a product lights, its packet travels, its line lights in the record", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "load" });
     await page.waitForTimeout(600);
@@ -156,11 +186,15 @@ test.describe("(c) the motions act", () => {
       const packets = new Set<string>();
       const t0 = performance.now();
       while (performance.now() - t0 < 6000) {
-        for (const el of document.querySelectorAll<HTMLElement>("#intro [role=group] [data-of]")) {
+        for (const el of document.querySelectorAll<HTMLElement>(
+          "#intro [role=group] [data-of]",
+        )) {
           const before = getComputedStyle(el, "::before").opacity;
           if (Number(before) > 0.5) lit.add(el.dataset.of!);
         }
-        for (const p of document.querySelectorAll<HTMLElement>("#intro [role=group] i")) {
+        for (const p of document.querySelectorAll<HTMLElement>(
+          "#intro [role=group] i",
+        )) {
           const s = getComputedStyle(p);
           if (Number(s.opacity) > 0.5) packets.add(s.transform);
         }
@@ -173,7 +207,9 @@ test.describe("(c) the motions act", () => {
     expect(seen.packets).toBeGreaterThan(5);
   });
 
-  test("the outcomes of the home play again and again while on screen", async ({ page }) => {
+  test("the outcomes of the home play again and again while on screen", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "load" });
     await page.locator("#operation").scrollIntoViewIfNeeded();
@@ -182,18 +218,30 @@ test.describe("(c) the motions act", () => {
     let running = 0;
     for (let i = 0; i < 14; i++) {
       const s = await page.evaluate(() => ({
-        phases: [...document.querySelectorAll<HTMLElement>("#operation [data-replay]")].map((e) => e.dataset.phase).join(""),
-        running: document.querySelector("#operation")!.getAnimations({ subtree: true }).filter((a) => a.playState === "running").length,
+        phases: [
+          ...document.querySelectorAll<HTMLElement>("#operation [data-replay]"),
+        ]
+          .map((e) => e.dataset.phase)
+          .join(""),
+        running: document
+          .querySelector("#operation")!
+          .getAnimations({ subtree: true })
+          .filter((a) => a.playState === "running").length,
       }));
       phases.push(s.phases);
       running = Math.max(running, s.running);
       await page.waitForTimeout(500);
     }
-    expect(phases.every((p) => p === "playplayplay"), phases.join(",")).toBe(true);
+    expect(
+      phases.every((p) => p === "playplayplay"),
+      phases.join(","),
+    ).toBe(true);
     expect(running).toBeGreaterThan(5);
   });
 
-  test("the opening of a product plays its scene: actions run, not only the swap", async ({ page }) => {
+  test("the opening of a product plays its scene: actions run, not only the swap", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/products/magneto", { waitUntil: "load" });
     await page.waitForTimeout(400);
@@ -201,8 +249,16 @@ test.describe("(c) the motions act", () => {
       let max = 0;
       const t0 = performance.now();
       while (performance.now() - t0 < 5000) {
-        const centre = document.querySelector('[data-descent-slot] [data-pos="0"] .scn');
-        if (centre) max = Math.max(max, centre.getAnimations({ subtree: true }).filter((a) => a.playState === "running").length);
+        const centre = document.querySelector(
+          '[data-descent-slot] [data-pos="0"] .scn',
+        );
+        if (centre)
+          max = Math.max(
+            max,
+            centre
+              .getAnimations({ subtree: true })
+              .filter((a) => a.playState === "running").length,
+          );
         await new Promise((r) => setTimeout(r, 100));
       }
       return max;
@@ -210,34 +266,75 @@ test.describe("(c) the motions act", () => {
     expect(maxRunning).toBeGreaterThan(3);
     // No ring turning: the tiles do not rotate or travel sideways
     const turning = await page.evaluate(() =>
-      [...document.querySelectorAll<HTMLElement>("[data-descent-slot] [data-tile]")].some((t) => getComputedStyle(t).rotate !== "none" && getComputedStyle(t).rotate !== "0deg"),
+      [
+        ...document.querySelectorAll<HTMLElement>(
+          "[data-descent-slot] [data-tile]",
+        ),
+      ].some(
+        (t) =>
+          getComputedStyle(t).rotate !== "none" &&
+          getComputedStyle(t).rotate !== "0deg",
+      ),
     );
     expect(turning).toBe(false);
   });
 });
 
 test.describe("(e) the house of the Domus", () => {
-  test("the real modules on two floors, a vector roof, and a new module that says it is one", async ({ page }) => {
+  test("the real modules on two floors, a vector roof, and a new module that says it is one", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "load" });
     const house = page.locator("#domus");
     await house.scrollIntoViewIfNeeded();
-    const floors = await house.locator("ul").evaluateAll((uls) =>
-      uls.slice(0, 2).map((ul) => [...ul.querySelectorAll("li")].map((li) => li.textContent!.trim())),
-    );
-    for (const m of ["Vendas", "Compras", "Estoque", "Produção", "Financeiro", "Contratos", "Projetos", "Pessoas", "Ativos", "Qualidade"])
+    const floors = await house
+      .locator("ul")
+      .evaluateAll((uls) =>
+        uls
+          .slice(0, 2)
+          .map((ul) =>
+            [...ul.querySelectorAll("li")].map((li) => li.textContent!.trim()),
+          ),
+      );
+    for (const m of [
+      "Vendas",
+      "Compras",
+      "Estoque",
+      "Produção",
+      "Financeiro",
+      "Contratos",
+      "Projetos",
+      "Pessoas",
+      "Ativos",
+      "Qualidade",
+    ])
       expect(floors[0]).toContain(m);
-    for (const m of ["FiscalNFS-e", "BancosPIX", "Jurídico", "Chamados", "Demandas", "Aprovações", "Privacidade"])
+    for (const m of [
+      "FiscalNFS-e",
+      "BancosPIX",
+      "Jurídico",
+      "Chamados",
+      "Demandas",
+      "Aprovações",
+      "Privacidade",
+    ])
       expect(floors[1].join("|")).toContain(m);
     // The roof is a vector path whose stroke does not scale with the box
-    expect(await house.locator("svg path").nth(1).evaluate((p) => getComputedStyle(p).vectorEffect)).toBe("non-scaling-stroke");
+    expect(
+      await house
+        .locator("svg path")
+        .nth(1)
+        .evaluate((p) => getComputedStyle(p).vectorEffect),
+    ).toBe("non-scaling-stroke");
     // "+ Novo módulo": the slot becomes the new module, with its seal and its three fields
     await house.locator("label", { hasText: "Novo módulo" }).click();
     await page.waitForTimeout(1200);
     await expect(house.getByText("Vistorias")).toBeVisible();
     const seal = house.locator("b", { hasText: "Novo módulo" });
     await expect(seal).toBeVisible();
-    for (const f of ["Local", "Data", "Foto"]) await expect(house.getByText(f, { exact: true })).toBeVisible();
+    for (const f of ["Local", "Data", "Foto"])
+      await expect(house.getByText(f, { exact: true })).toBeVisible();
     // And it goes back
     await house.locator("label").filter({ hasText: "Vistorias" }).click();
     await page.waitForTimeout(400);
@@ -246,7 +343,9 @@ test.describe("(e) the house of the Domus", () => {
 });
 
 test.describe("(f) the message lands in the Domus", () => {
-  test("logos on the track are at least 18 px of wordmark, and the Domus forms when the message arrives", async ({ page }) => {
+  test("logos on the track are at least 18 px of wordmark, and the Domus forms when the message arrives", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "load" });
     const msg = page.locator("#message");
@@ -254,16 +353,22 @@ test.describe("(f) the message lands in the Domus", () => {
     const heights = await wordmarkHeights(page, "#message ol img");
     expect(heights).toHaveLength(5);
     for (const h of heights) expect(h.px, h.src).toBeGreaterThanOrEqual(18);
-    // Before: the outline waits in sand, no square
+    // Before: the symbol waits as a thin ink outline (v2.2, audit M01: it was a thick sand ring), no square
     const before = await page.evaluate(() => {
-      const [ring, , , , , square] = document.querySelectorAll("#message svg rect");
-      return [getComputedStyle(ring).stroke, getComputedStyle(square).opacity];
+      const [ring, , , , , square] =
+        document.querySelectorAll("#message svg rect");
+      return [
+        getComputedStyle(ring).stroke,
+        getComputedStyle(ring).strokeWidth,
+        getComputedStyle(square).opacity,
+      ];
     });
-    expect(before).toEqual(["rgb(226, 216, 195)", "0"]);
+    expect(before).toEqual(["rgb(28, 26, 22)", "1.8px", "0"]);
     await msg.locator("label", { hasText: "Enviar a mensagem" }).click();
     await page.waitForTimeout(7200);
     const after = await page.evaluate(() => {
-      const [ring, , , , , square] = document.querySelectorAll("#message svg rect");
+      const [ring, , , , , square] =
+        document.querySelectorAll("#message svg rect");
       return [getComputedStyle(ring).stroke, getComputedStyle(square).opacity];
     });
     expect(after).toEqual(["rgb(28, 26, 22)", "1"]);
@@ -272,15 +377,22 @@ test.describe("(f) the message lands in the Domus", () => {
 });
 
 test.describe("(g) the play of the Tuner", () => {
-  test("a key lights its wire, the call travels to the person, who answers recorded", async ({ page }) => {
+  test("a key lights its wire, the call travels to the person, who answers recorded", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/products/tuner", { waitUntil: "load" });
     const play = page.locator("[data-descent-slot] #play");
     await play.scrollIntoViewIfNeeded();
-    await expect(play.getByRole("heading")).toHaveText("Cada ligação na pessoa certa");
+    // v2.2 (audit A05, section 5): the menu sends the call to a team; the busy one holds it, then takes it
+    await expect(play.getByRole("heading")).toHaveText(
+      "Menu de opções e distribuição de ligações",
+    );
     await play.locator("label", { hasText: "Financeiro" }).click();
     const travel = await page.evaluate(async () => {
-      const call = document.querySelector<HTMLElement>('[data-descent-slot] #play i[data-key="2"]')!;
+      const call = document.querySelector<HTMLElement>(
+        '[data-descent-slot] #play i[data-ev="2"]',
+      )!;
       const seen = new Set<string>();
       const t0 = performance.now();
       while (performance.now() - t0 < 700) {
@@ -290,19 +402,22 @@ test.describe("(g) the play of the Tuner", () => {
       return seen.size;
     });
     expect(travel).toBeGreaterThan(10);
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(4500);
     const state = await page.evaluate(() => {
       const slot = document.querySelector("[data-descent-slot] #play")!;
-      const hot = slot.querySelector('g[data-key="2"] path:last-child')!;
-      const person = slot.querySelector('li[data-key="2"]')!;
+      const hot = slot.querySelector('path[data-ev="2"]')!;
+      const team = slot.querySelector('[data-team="2"]')!;
       return {
-        wire: getComputedStyle(hot).opacity,
-        live: getComputedStyle(person.querySelector("[class*='live']")!).display,
+        wire: getComputedStyle(hot).display,
+        live: getComputedStyle(team.querySelector('[data-ev="2"]')!).display,
       };
     });
-    expect(state.wire).toBe("1");
-    // Shown (a flex item, so its inline-flex computes as flex)
+    expect(state.wire).not.toBe("none");
     expect(state.live).not.toBe("none");
-    await expect(play.getByText("Gravação e transcrição na conversa")).toBeVisible();
+    await expect(
+      play
+        .getByText("Gravação e transcrição na conversa")
+        .filter({ visible: true }),
+    ).toBeVisible();
   });
 });

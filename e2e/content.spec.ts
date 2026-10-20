@@ -18,7 +18,11 @@ for (const path of ["/", ...SLUGS.map((s) => `/products/${s}`)])
     expect(widths.body).toBeLessThanOrEqual(widths.inner);
     const outside = await page.evaluate(() =>
       [...document.querySelectorAll<HTMLElement>("h1, h2, li, p, a")]
-        .filter((el) => !el.closest('[role="region"], #operation ul'))
+        // v2.2: the product selector is a strip that scrolls sideways on a phone too (audit M06)
+        .filter(
+          (el) =>
+            !el.closest('[role="region"], #operation ul, [data-switch] ul'),
+        )
         .filter((el) => {
           const r = el.getBoundingClientRect();
           return r.width > 0 && (r.right > innerWidth + 0.5 || r.left < -0.5);
