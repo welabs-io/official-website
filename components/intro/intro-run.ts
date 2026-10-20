@@ -11,6 +11,8 @@
 //  3. `land` hands the logo over to the logo of the product opening: the same file, moved by translate and scale only,
 //     while the sheet fades and the product shows through. Nothing cuts.
 // A click, a key or the wheel during the opening skips to its closing frame; the hand-over still runs.
+// v2.2 (audit A08): the whole opening plays on the first entry into each product of a visit; later entries, and every
+// swap by the product selector, play the brand flash (FLASH). The sheet stays whole while the logo flies.
 import styles from "./intro.module.css";
 
 type Slug = "domus" | "relloo" | "magneto" | "tuner" | "knowly";
@@ -23,10 +25,19 @@ type Box = { x: number; y: number; w: number; h: number };
 // lays out (its viewBox), `light` the viewBox of the file the site shows; both are checked against the files by
 // intro.test.ts.
 export const BOXES: Record<Slug, { dark: number[]; light: number[] }> = {
-  domus: { dark: [0, -4.8, 864.66, 426.63], light: [-70.2, -75, 1005.06, 563.28] },
+  domus: {
+    dark: [0, -4.8, 864.66, 426.63],
+    light: [-70.2, -75, 1005.06, 563.28],
+  },
   relloo: { dark: [0, 0, 640.92, 421.83], light: [-75, -75, 790.92, 563.28] },
-  magneto: { dark: [0, -9, 1155.84, 430.83], light: [-66, -75, 1287.84, 563.28] },
-  tuner: { dark: [0, -45.13, 772.57, 466.96], light: [-65.7, -110.83, 903.97, 599.11] },
+  magneto: {
+    dark: [0, -9, 1155.84, 430.83],
+    light: [-66, -75, 1287.84, 563.28],
+  },
+  tuner: {
+    dark: [0, -45.13, 772.57, 466.96],
+    light: [-65.7, -110.83, 903.97, 599.11],
+  },
   knowly: { dark: [0, -9, 916.2, 430.83], light: [-66, -75, 1048.2, 563.28] },
 };
 
@@ -45,8 +56,7 @@ const endorsedUrl = (slug: Slug) =>
 // What an opening needs before it can draw a frame: its module and the text of its logo
 type Ready = { mod: Module; logo: string };
 const cache = new Map<Slug, Promise<Ready>>();
-export const isSlug = (s: string | null): s is Slug =>
-  s !== null && s in BOXES;
+export const isSlug = (s: string | null): s is Slug => s !== null && s in BOXES;
 
 export function prepare(slug: Slug) {
   let ready = cache.get(slug);
@@ -91,6 +101,12 @@ const HOLD = 0.35;
 // Milliseconds of the opening of the sheet and of the hand-over
 const OPEN_MS = 450;
 const LAND_MS = 700;
+// v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector. The
+// opening starts on its closing frame, the sheet opens faster and the hand-over is shorter: about 700 ms from the click
+// to the product, against 5.2 to 5.4 s of the whole opening (measured on 8187680)
+export const FLASH = { open: 120, hold: 0, land: 260 } as const;
+// The content of the product comes in after the logo lands, by the sheet fading in 160 ms (never during the flight)
+const REVEAL_MS = 160;
 
 export type Playing = {
   // Resolves when the opening reached its closing frame and held it (or was skipped)
@@ -103,7 +119,12 @@ export type Playing = {
 
 // O PALCO DA ABERTURA
 // A 1920x1080 stage, the size the round was drawn at, scaled to fit the window and centred under the header
-export async function open(slug: Slug, from: Box): Promise<Playing> {
+export async function open(
+  slug: Slug,
+  from: Box,
+  // v2.2: the short brand flash instead of the whole opening
+  flash = false,
+): Promise<Playing> {
   const { mod, logo } = await prepare(slug);
   const box = BOXES[slug];
   const sheet = document.createElement("div");
@@ -139,8 +160,9 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
   stage.style.transform = `translate(${(W - 1920 * scale) / 2}px, ${header + (H - header - 1080 * scale) / 2}px) scale(${scale})`;
 
   const inst = mod.mount(stage, { logo, box: box.dark, safe: 98 });
-  const end = mod.SETTLED + HOLD;
-  let clock = 0;
+  const end = mod.SETTLED + (flash ? FLASH.hold : HOLD);
+  // The flash starts on the closing frame
+  let clock = flash ? mod.SETTLED : 0;
   let last = performance.now();
   let skip = false;
   let done = false;
@@ -189,10 +211,18 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
     sheet.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round ${mix(16, 0, k)}px)`;
     sheet.style.opacity = String(Math.min(1, t * 4));
   };
-  clip(0);
-  void tween(OPEN_MS, clip).then(() => {
+  // The flash covers the whole window at once, fading in, so the page can change under it sooner
+  const cover = (t: number) => (sheet.style.opacity = String(out(t)));
+  if (flash) {
     sheet.style.clipPath = "none";
-  });
+    cover(0);
+    void tween(FLASH.open, cover);
+  } else {
+    clip(0);
+    void tween(OPEN_MS, clip).then(() => {
+      sheet.style.clipPath = "none";
+    });
+  }
 
   return {
     settled,
@@ -223,13 +253,14 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
       place(0);
       wm.style.visibility = "hidden";
       target.style.visibility = "hidden";
-      await tween(LAND_MS, (t) => {
+      // v2.2 (audit A08): the sheet stays whole for the whole flight (it faded from 15% of it, which left the large logo
+      // over the page at half opacity); the amber bar goes first, and the page shows only once the logo has landed
+      await tween(flash ? FLASH.land : LAND_MS, (t) => {
         place(t);
-        // The sheet thins out behind the logo; the amber bar goes first
-        sheet.style.opacity = String(1 - Math.max(0, (t - 0.15) / 0.85));
         role.style.opacity = String(1 - Math.min(1, t * 3));
       });
       target.style.visibility = "";
+      await tween(REVEAL_MS, (t) => (sheet.style.opacity = String(1 - t)));
       fly.remove();
       sheet.remove();
     },
