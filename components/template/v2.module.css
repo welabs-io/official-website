@@ -114,6 +114,8 @@
 }
 .turnWord {
   position: relative;
+  /* The bar under the word stays inside the word, behind its letters, with or without the turning animation */
+  isolation: isolate;
   display: block;
   width: fit-content;
   height: 1.2em;
@@ -1790,16 +1792,17 @@
   .fit {
     height: 340px;
   }
+  /* The fitted cross is 312 px wide at most, so it stays inside the stage of a 343 px phone */
   .piece {
-    --pw: 104px;
-    --ph: 70px;
+    --pw: 92px;
+    --ph: 64px;
   }
   .piece img {
-    height: 17px;
+    height: 16px;
   }
   .pieceCore {
-    --pw: 140px;
-    --ph: 94px;
+    --pw: 120px;
+    --ph: 84px;
   }
   .pieceCore img {
     height: 22px;
@@ -1829,22 +1832,22 @@
     top: -11px;
   }
   .piece[data-p="relloo"] {
-    --x: calc((var(--pw) + 140px) / -2 - 4px);
+    --x: calc((var(--pw) + 120px) / -2 - 4px);
     --fx: -140px;
     --fy: -90px;
   }
   .piece[data-p="knowly"] {
-    --x: calc((var(--pw) + 140px) / 2 + 4px);
+    --x: calc((var(--pw) + 120px) / 2 + 4px);
     --fx: 140px;
     --fy: 90px;
   }
   .piece[data-p="tuner"] {
-    --y: calc((var(--ph) + 94px) / -2 - 4px);
+    --y: calc((var(--ph) + 84px) / -2 - 4px);
     --fx: -100px;
     --fy: -80px;
   }
   .piece[data-p="magneto"] {
-    --y: calc((var(--ph) + 94px) / 2 + 4px);
+    --y: calc((var(--ph) + 84px) / 2 + 4px);
     --fx: 100px;
     --fy: 80px;
   }

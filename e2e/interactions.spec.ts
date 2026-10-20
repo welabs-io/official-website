@@ -141,6 +141,33 @@ test.describe("one play per product", () => {
   });
 });
 
+test("on a phone the fitted pieces stay inside their stage and the bar shows under the first word", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 375, height: 812 },
+    reducedMotion: "reduce",
+  });
+  const page = await context.newPage();
+  await page.goto("/", { waitUntil: "load" });
+  const g = await page.evaluate(() => {
+    const stage = document.querySelector("#chain [role=img]")!;
+    const box = stage.getBoundingClientRect();
+    const word = document.querySelector("#intro h1 span[aria-hidden] span")!;
+    return {
+      out: [...stage.children].filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.left < box.left || r.right > box.right;
+      }).length,
+      bar: getComputedStyle(word, "::after").zIndex,
+      isolated: getComputedStyle(word).isolation,
+    };
+  });
+  expect(g.out).toBe(0);
+  expect(g.isolated).toBe("isolate");
+  await context.close();
+});
+
 test("under reduced motion nothing runs: the Domus is lit, the pieces fitted, the first word shown", async ({
   browser,
 }) => {
