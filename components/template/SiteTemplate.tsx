@@ -7,14 +7,12 @@ import {
   HomeContact,
   HomeDomus,
   HomeEffects,
-  HomeFit,
   HomeIntro,
   HomeMessage,
   Platforms,
 } from "./Home";
 import {
   DomusAreas,
-  NextProduct,
   ProductCenter,
   ProductContact,
   ProductDetails,
@@ -27,8 +25,6 @@ function Body({ section }: { section: SectionConfig }) {
   switch (section.kind) {
     case "intro":
       return <HomeIntro />;
-    case "fit":
-      return <HomeFit />;
     case "message":
       return <HomeMessage />;
     case "domus":
@@ -55,8 +51,6 @@ function Body({ section }: { section: SectionConfig }) {
       return <ProductCenter slug={section.slug} />;
     case "details":
       return <ProductDetails slug={section.slug} />;
-    case "next":
-      return <NextProduct slug={section.slug} />;
   }
 }
 

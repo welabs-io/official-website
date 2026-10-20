@@ -21,9 +21,12 @@ const { times } = STORY;
 export function SceneBody({
   scene,
   phase = "end",
+  replay,
 }: {
   scene: SceneScript;
   phase?: "start" | "play" | "end";
+  // v2.1: seconds of the scene, when it plays again and again while on screen (components/scenes/replay.ts)
+  replay?: number;
 }) {
   const act = actFor(scene);
   const body = (() => {
@@ -133,6 +136,7 @@ export function SceneBody({
       className={`scn ${styles.scene}`}
       data-scene={scene.id}
       data-phase={phase}
+      data-replay={replay}
     >
       {body}
     </div>

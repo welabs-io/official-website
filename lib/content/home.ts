@@ -25,11 +25,19 @@ export const HOME_INTRO = {
     tuner: "Ligação na conversa",
     knowly: "Sim, até 12h",
   } satisfies Record<ProductSlug, string>,
-} as const;
-
-// The fitting pieces: a film with no text, named for assistive technology only
-export const HOME_FIT = {
-  label: "Os cinco produtos se encaixam no Domus",
+  // v2.1: the record of the Domus at the centre of the stage. Each product, when it is lit, sends its effect along its
+  // tie and the line of that effect lights in the record: what happens in one product shows in the Domus
+  record: {
+    title: "Pedido 1234",
+    who: "Marina",
+    lines: {
+      tuner: "Ligação gravada",
+      relloo: "Respondida pela Ana",
+      knowly: "Sábado, até 12h, com a fonte",
+      magneto: "Troca aprovada",
+    },
+    domus: "Estoque e financeiro em dia",
+  },
 } as const;
 
 // The message that crosses the operation (drag it onto the track, or press the button)
@@ -47,31 +55,56 @@ export const HOME_MESSAGE = {
     { product: "domus", label: "Registrado" },
   ] as const satisfies readonly { product: ProductSlug; label: string }[],
   done: "Confirmado: sábado",
+  // The record the message lands on, in the Domus
+  record: "Pedido 1234",
 } as const;
 
-// The rooms of the Domus. `tag` is the small attractive detail of a room, never its definition
+// The modules of the Domus, as installed in the ERP code (v2.1, control/portfolio/site-redesign/v13-proposta/v2-1/
+// modulos-domus.md): the standard floor is the ERPNext and HRMS modules the product image installs
+// (erpnext .k8s/Dockerfile.product:53, motor erpnext/modules.txt), the floor made to measure is our own apps (worktrack,
+// legal_br, nfse_connector, inter_connector, asaas_connector, omie_connector, data_privacy). `tag` is the small
+// attractive detail of a module, never its definition.
 export type Room = { name: string; glyph: string; tag?: string };
-export const DOMUS_ROOMS: readonly Room[] = [
-  { name: "Vendas", glyph: "tag" },
-  { name: "Compras", glyph: "bag" },
-  { name: "Estoque", glyph: "box" },
-  { name: "Produção", glyph: "spark" },
-  { name: "Financeiro", glyph: "coin", tag: "PIX" },
-  { name: "Fiscal", glyph: "doc", tag: "NFS-e" },
-  { name: "Contratos", glyph: "pen" },
-  { name: "Projetos", glyph: "calendar" },
-  { name: "Pessoas", glyph: "user" },
-  { name: "Jurídico", glyph: "book" },
-  { name: "Aprovações", glyph: "check" },
-];
+export const DOMUS_MODULES: {
+  standard: readonly Room[];
+  custom: readonly Room[];
+} = {
+  standard: [
+    { name: "Vendas", glyph: "tag" },
+    { name: "Compras", glyph: "bag" },
+    { name: "Estoque", glyph: "box" },
+    { name: "Produção", glyph: "bolt" },
+    { name: "Financeiro", glyph: "coin" },
+    { name: "Contratos", glyph: "pen" },
+    { name: "Projetos", glyph: "calendar" },
+    { name: "Pessoas", glyph: "user" },
+    { name: "Ativos", glyph: "truck" },
+    { name: "Qualidade", glyph: "search" },
+  ],
+  custom: [
+    { name: "Fiscal", glyph: "doc", tag: "NFS-e" },
+    { name: "Bancos", glyph: "bank", tag: "PIX" },
+    { name: "Jurídico", glyph: "book" },
+    { name: "Chamados", glyph: "chat" },
+    { name: "Demandas", glyph: "rule" },
+    { name: "Aprovações", glyph: "check" },
+    { name: "Privacidade", glyph: "lock" },
+    { name: "Dados do Omie", glyph: "refresh" },
+  ],
+};
 
 export const HOME_DOMUS = {
   title: "A gestão inteira fica no Domus",
-  lead: "E ganha as áreas que só a sua operação tem.",
-  add: "Sua área",
-  // The room the "+" makes: an example of an area a company creates for itself
+  lead: "E ganha os módulos que só a sua operação tem.",
+  // The two floors of the house: the modules that come with the Domus, and the ones made to measure
+  standard: "Padrão",
+  custom: "Sob medida",
+  add: "Novo módulo",
+  // The module the "+" makes: an example of a module a company creates for itself, with the screen it gets
   born: "Vistorias",
-  addLabel: "Criar uma área nova",
+  bornTag: "Novo módulo",
+  bornFields: ["Local", "Data", "Foto"],
+  addLabel: "Criar um módulo novo",
   more: "Conhecer o Domus",
   ground: "Os outros produtos trabalham sobre o Domus",
 } as const;
@@ -100,17 +133,17 @@ export const HOME_CONTACT = {
   asksLabel: "Perguntas para a conversa",
 } as const;
 
-// MENU DO CABEÇALHO E PRÓXIMO PRODUTO
+// MENU DO CABEÇALHO E SELETOR DE PRODUTOS
 // Labels of the navigation: the products (a list under it), the Domus (the centre of the chain) and the call to action;
-// the name of the menu on a phone; the door at the end of a product page to the next one.
+// the name of the menu on a phone; the name of the selector of the five products at the top of a product (v2.1, in
+// place of the door "Próximo produto" at its end).
 export const NAV = {
   label: "Principal",
   products: "Produtos",
   domus: "Domus",
   open: "Abrir o menu",
   close: "Fechar o menu",
-  // The door at the end of a product, to the next one
-  next: "Próximo produto",
+  switch: "Os cinco produtos",
 } as const;
 
 // Closing: the platform marks under a short title (no client brands on the Welabs site since 2026-10-20)

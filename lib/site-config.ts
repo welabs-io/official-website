@@ -1,13 +1,16 @@
 // CONFIGURAÇÃO DAS PÁGINAS
-// Every band is the light (cream) theme of the brand; the contact band is amber. One declarative list of sections per
-// route; components/template/SiteTemplate walks it and renders each section, so no section markup is copied between
-// routes. The v2 of the content (2026-10-20): little text, the rest is motion the visitor plays.
-// - Home: the opening with the stage of the five products, the film of the fitting pieces, the message that crosses the
-//   operation, the Domus and its rooms, the five products, what changes, the contact and where we run.
-// - Product page: the opening, the one interaction of the product (the Domus has its rooms and its fields), the product
-//   among the others, the details that come with it, the contact and the door to the next product.
-// `pad` names the spacing class of the section (home.module.css).
-import { PRODUCTS, type ProductSlug } from "./products";
+// Every band is the light theme of the site (the white page of the ERP front tokens); a band that needs to stand apart
+// takes the soft band surface, and the contact closes on the warm halo. One declarative list of sections per route;
+// components/template/SiteTemplate walks it and renders each section, so no section markup is copied between routes.
+// - Home: the opening with the stage of the five products, the message that crosses the operation, the Domus and its
+//   modules, the five products, what changes, the contact and where we run.
+// - Product page: the selector of the five products and the opening, the one interaction of the product (the Domus has
+//   its modules and its fields), the product among the others, the details that come with it and the contact.
+// v2.1 (2026-10-20): the film of the fitting pieces (`#chain`) left the home (a drawing with no function: the stage of the
+// opening already shows the products on the Domus, now with what each one does), and the door to the next product left
+// the end of a product (the selector at its top replaces it). `pad` names the spacing class of the section
+// (home.module.css).
+import type { ProductSlug } from "./products";
 
 export type SectionPad =
   | "intro"
@@ -22,13 +25,12 @@ type Base = {
   pad: SectionPad;
   // Heading for screen readers only (a visual band that shows no title of its own)
   srTitle?: string;
-  // The surface of the band: cream (default), the soft band cream, or the amber of the contact
-  surface?: "band" | "amber";
+  // The surface of the band: the page (default), the soft band, or the contact (the warm halo with the amber bar)
+  surface?: "band" | "contact";
 };
 
 export type SectionConfig =
   | (Base & { kind: "intro" })
-  | (Base & { kind: "fit" })
   | (Base & { kind: "message" })
   | (Base & { kind: "domus" })
   | (Base & { kind: "products" })
@@ -39,9 +41,7 @@ export type SectionConfig =
   | (Base & { kind: "areas" })
   | (Base & { kind: "play"; slug: ProductSlug })
   | (Base & { kind: "center"; slug: ProductSlug })
-  | (Base & { kind: "details"; slug: ProductSlug })
-  // The way down to the next product, at the end of a product (the descent goes on into it)
-  | (Base & { kind: "next"; slug: ProductSlug });
+  | (Base & { kind: "details"; slug: ProductSlug });
 
 export type PageConfig = {
   home: boolean;
@@ -58,17 +58,11 @@ export const HOME_CONFIG: PageConfig = {
   home: true,
   sections: [
     { id: "intro", kind: "intro", pad: "intro" },
-    {
-      id: "chain",
-      kind: "fit",
-      pad: "block",
-      srTitle: "Os produtos se encaixam",
-    },
     { id: "message", kind: "message", pad: "block", surface: "band" },
     { id: "domus", kind: "domus", pad: "block" },
     { id: "products", kind: "products", pad: "products", surface: "band" },
     { id: "operation", kind: "effects", pad: "block" },
-    { id: "contact", kind: "contact", pad: "contact", surface: "amber" },
+    { id: "contact", kind: "contact", pad: "contact", surface: "contact" },
     platforms,
   ],
 };
@@ -94,9 +88,8 @@ export function productConfig(slug: ProductSlug): PageConfig {
         surface: slug === "domus" ? "band" : undefined,
       },
       { id: "details", kind: "details", slug, pad: "block" },
-      { id: "contact", kind: "contact", slug, pad: "contact", surface: "amber" },
-      // The product ends on the next one, and the page goes on into it
-      { id: "next", kind: "next", slug, pad: "block" },
+      // The product ends on its contact; the way to another product is the selector at its top
+      { id: "contact", kind: "contact", slug, pad: "contact", surface: "contact" },
     ],
   };
 }
@@ -113,10 +106,4 @@ export const HOME_HEAD: PageConfig = {
 export const HOME_TAIL: PageConfig = {
   home: true,
   sections: HOME_CONFIG.sections.slice(CUT),
-};
-
-// The product after this one, in the order of the list (the last one leads back to the first)
-export const nextProduct = (slug: ProductSlug): ProductSlug => {
-  const i = PRODUCTS.findIndex((p) => p.slug === slug);
-  return PRODUCTS[(i + 1) % PRODUCTS.length].slug;
 };

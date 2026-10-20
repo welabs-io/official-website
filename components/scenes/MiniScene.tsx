@@ -1,10 +1,11 @@
-// CENA NATIVA PARADA (VITRINE)
-// One native scene of the story drawn once, in its settled frame: the outcomes of the home ("O que muda na operação")
-// reuse the screens (SceneBody) with no clock and no client code. It is an illustration:
+// CENA NATIVA DA VITRINE
+// One native scene of the story: the outcomes of the home ("O que muda na operação") reuse the screens (SceneBody) with no
+// client code of their own. The server draws the settled frame; since v2.1 the scene plays again and again while on screen
+// (components/scenes/replay.ts writes its phase). It is an illustration:
 // hidden from assistive technology, and marked `data-mini` so the word counters treat its interface text as interface,
 // not as copy (the copy rules still read it). The size comes from the container: the scene answers to the width of its
 // frame (wide, tablet and phone layouts), and the frame changes its aspect ratio with that width.
-import { SCRIPT } from "@/lib/scenes/script";
+import { SCRIPT, sceneSeconds } from "@/lib/scenes/script";
 import type { SceneId } from "@/lib/scenes/types";
 import { SceneBody } from "./SceneBody";
 import "./fx.css";
@@ -29,7 +30,8 @@ export function MiniScene({
         aria-hidden="true"
       >
         <div className={styles.frame} data-phone={phone ? "" : undefined}>
-          <SceneBody scene={scene} phase="end" />
+          {/* v2.1: drawn settled, then played again and again while on screen (components/scenes/replay.ts) */}
+          <SceneBody scene={scene} phase="end" replay={sceneSeconds(scene)} />
         </div>
       </div>
       {/* End marker of the block above, for the counters that cut it out of the copy */}

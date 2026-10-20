@@ -19,7 +19,7 @@ export function SiteNav({
   contactHref,
 }: {
   NAV: typeof NavLabels;
-  products: readonly { slug: string; name: string; line: string }[];
+  products: readonly { slug: string; name: string; line: string; logo: string }[];
   cta: string;
   contactHref: string;
 }) {
@@ -64,7 +64,7 @@ export function SiteNav({
               {NAV.products}
             </Link>
             <ul className={styles.menu}>
-              {products.map(({ slug, name, line }) => (
+              {products.map(({ slug, name, line, logo }) => (
                 <li key={slug}>
                   <Link
                     href={`/products/${slug}`}
@@ -75,7 +75,8 @@ export function SiteNav({
                     }
                     onClick={close}
                   >
-                    <b>{name}</b>
+                    {/* v2.1: the product is named by its logo, as in the selector at the top of a product */}
+                    <img src={logo} alt={name} width={1005} height={550} />
                     <span>{line}</span>
                   </Link>
                 </li>

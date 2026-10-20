@@ -1,7 +1,7 @@
 // SEÇÃO DO TEMPLATE
 // One band of the page: the anchor, the live marker that makes everything inside pause off screen (LiveObserver), the
-// surface (cream, the soft band cream or the amber of the contact), the spacing class and the heading for screen
-// readers. Server markup only.
+// surface (the page, the soft band or the contact: v2.1, the warm halo in place of the amber field), the spacing class
+// and the heading for screen readers. Server markup only.
 import type { ReactNode } from "react";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
@@ -17,7 +17,7 @@ export function Section({
   id: string;
   pad: SectionPad;
   srTitle?: string;
-  surface?: "band" | "amber";
+  surface?: "band" | "contact";
   children: ReactNode;
 }) {
   return (

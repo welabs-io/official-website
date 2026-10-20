@@ -3,7 +3,7 @@
 // points to the contact section of the home; the contact destination is still to be decided by the operator.
 import Link from "next/link";
 import { FOOTER_NAV_LABEL, NAV } from "@/lib/content";
-import { CTA_LABEL, PRODUCTS, WELABS_LOGO } from "@/lib/products";
+import { CTA_LABEL, PRODUCTS, WELABS_LOGO, productLogo } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
 import { LiveObserver } from "./LiveObserver";
 import { SiteNav } from "./SiteNav";
@@ -28,6 +28,7 @@ function Header() {
             slug,
             name,
             line,
+            logo: productLogo(slug, "light", "row"),
           }))}
           cta={CTA_LABEL}
           contactHref={CONTACT_HREF}

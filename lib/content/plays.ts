@@ -39,14 +39,16 @@ export const MAGNETO_PLAY = {
 } as const;
 
 export const TUNER_PLAY = {
-  call: "Ligação de Marina",
-  menu: "Menu de opções",
+  call: "Marina ligando",
+  menu: "Menu da ligação",
   options: [
     { key: "1", label: "Pedidos", to: "Ana" },
     { key: "2", label: "Financeiro", to: "Bruno" },
     { key: "3", label: "Falar com alguém", to: "Carla" },
   ],
   recording: "Gravando",
+  // Where the recorded call lands, once the person answers (v2.1)
+  land: "Gravação e transcrição na conversa",
   label: "Opções do menu",
 } as const;
 

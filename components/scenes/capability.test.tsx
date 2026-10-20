@@ -26,7 +26,7 @@ import {
   stillRatio,
 } from "@/lib/scenes/script";
 import { CapabilityBody } from "./CapabilityBody";
-import { CapabilityStage } from "./SceneStage";
+import { CapabilityStage, HOLD_EXTRA } from "./SceneStage";
 
 const ALL: CapabilityScript[] = PRODUCTS.flatMap(
   ({ slug }) => CAPABILITY_SCRIPT[slug],
@@ -173,7 +173,8 @@ describe("capability stage", () => {
       scenes: number[];
       captions?: string[];
     };
-    expect(data.scenes).toEqual(scenes.map(sceneSeconds));
+    // v2.1: each scene holds its result HOLD_EXTRA seconds more before the swap
+    expect(data.scenes).toEqual(scenes.map((s) => sceneSeconds(s) + HOLD_EXTRA));
     expect(data.captions).toBeUndefined();
   });
   it("a stage of one scene shows no list of names", () => {

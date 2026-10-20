@@ -6,8 +6,20 @@
 // to it on purpose. These specs pin what the visitor must get: the top of the product in view, never under the fixed
 // header, reached by a scroll that only goes down; the browser's back button
 // returning to the card that was clicked; and a menu with the five products and the Domus (a drop-down list on a
-// desktop, a panel on a phone). The trail, the logo and the door to the next product are in sections-nav.spec.ts.
+// desktop, a panel on a phone). The selector of the products and the logo are in sections-nav.spec.ts.
+// v2.1: every way into a product plays the brand opening of that product (about 5 s) before it lands, so every check of
+// the landing waits for the opening to leave (`landed`); the move itself is measured by e2e/transitions.spec.ts.
 import { expect, test, type Page } from "@playwright/test";
+
+// The brand opening has played and left: no sheet of the opening and no travelling logo over the page
+const landed = (page: Page) =>
+  page.waitForFunction(
+    () =>
+      !document.querySelector("[data-intro]") &&
+      !document.querySelector("body > img"),
+    undefined,
+    { timeout: 12000 },
+  );
 import { VIEWPORTS } from "./viewports";
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
@@ -54,7 +66,7 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
     await sample(page);
     await card.click();
     await page.waitForURL("**/products/relloo");
-    await page.waitForTimeout(1600);
+    await landed(page);
     // The descent only goes down, and stops on the top of the product (it never overshoots and comes back)
     const frames = await page.evaluate(
       () => (window as unknown as { __y: [string, number][] }).__y,
@@ -80,7 +92,7 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
     expect(before).toBeGreaterThan(300);
     await card.click();
     await page.waitForURL("**/products/tuner");
-    await page.waitForTimeout(1600);
+    await landed(page);
     await page.goBack();
     await page.waitForURL((url) => url.pathname === "/");
     await page.waitForTimeout(1600);
@@ -112,6 +124,7 @@ test("the desktop menu lists the five products and the Domus, and each leads whe
     await expect(nav.locator(`a[href="/products/${slug}"]`).first()).toBeVisible();
   await nav.locator('a[href="/products/magneto"]').first().click();
   await page.waitForURL("**/products/magneto");
+  await landed(page);
   await expect(page.locator("[data-descent-slot] h1 img")).toHaveAttribute(
     "alt",
     /Magneto/,
@@ -119,6 +132,7 @@ test("the desktop menu lists the five products and the Domus, and each leads whe
   // The Domus entry leads to the Domus
   await nav.getByRole("link", { name: "Domus", exact: true }).click();
   await page.waitForURL("**/products/domus");
+  await landed(page);
   await expect(page.locator("[data-descent-slot] h1 img")).toHaveAttribute(
     "alt",
     /Domus/,
@@ -157,7 +171,7 @@ test("on a phone the menu is a panel with the same entries; it closes on Escape 
   await nav.locator('a[href="/products/knowly"]').click();
   await page.waitForURL("**/products/knowly");
   await expect(nav).toBeHidden();
-  await page.waitForTimeout(300);
+  await landed(page);
   const g = await heroGeometry(page);
   expect(Math.abs(g.y)).toBeLessThanOrEqual(2);
   expect(g.h1Top).toBeGreaterThanOrEqual(g.headerBottom);

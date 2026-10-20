@@ -16,8 +16,13 @@ const read = (file: string) => readFileSync(path.join(ROOT, file), "utf8");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 // Sheets that carry the page's own rhythm: spaces and type come from tokens
+// v2.1: the stage, the message, the house and the play of the Tuner have sheets of their own, under the same rule
 const SHEETS = [
   "components/template/v2.module.css",
+  "components/template/hub.module.css",
+  "components/template/message.module.css",
+  "components/template/house.module.css",
+  "components/template/tuner-play.module.css",
   "components/onepage/home.module.css",
   "components/onepage/shell.module.css",
 ];
@@ -103,9 +108,11 @@ describe("space and type tokens", () => {
       ["--sp-7", 48],
       ["--sp-8", 64],
       ["--sp-9", 80],
-      ["--r-ctl", 6],
-      ["--r-card", 12],
-      ["--r-win", 16],
+      // v2.1: the shapes of the ERP front (field 10, surface 8, overlay 14, control 22)
+      ["--r-ctl", 10],
+      ["--r-card", 8],
+      ["--r-win", 14],
+      ["--r-pill", 22],
     ] as const)
       expect(css, name).toContain(`${name}: ${px}px;`);
     expect(css).toMatch(/--measure:\s*66ch;/);
@@ -114,6 +121,7 @@ describe("space and type tokens", () => {
   it("cards and chips use the shape tokens, and only the shapes of the scale", () => {
     // Drawings that are not cards keep their own shape: the round end of a 4 to 8 px bar (2px), the squircle of the Domus
     // symbol (26% and 22%), the body of a phone (28px) and the bottom of the house (only its lower corners round)
+    // v2.1: plus the tab of a selected entry (only its upper corners round) and `inherit` (a lit ring over its card)
     const DRAWINGS = [
       "2px",
       "26%",
@@ -121,8 +129,11 @@ describe("space and type tokens", () => {
       "28px",
       "0 0 var(--r-win) var(--r-win)",
       "var(--r-win) var(--r-win) var(--r-win) var(--r-ctl)",
+      "var(--r-ctl) var(--r-ctl) 0 0",
+      "inherit",
     ];
-    const radii = declarations(strip(read("components/template/v2.module.css")))
+    const radii = SHEETS.filter((s) => s.startsWith("components/template"))
+      .flatMap((s) => declarations(strip(read(s))))
       .filter(({ prop }) => prop === "border-radius")
       .map(({ value }) => value);
     expect(radii.length).toBeGreaterThan(20);
@@ -131,6 +142,7 @@ describe("space and type tokens", () => {
         "var(--r-card)",
         "var(--r-ctl)",
         "var(--r-win)",
+        "var(--r-pill)",
         "50%",
         ...DRAWINGS,
       ]).toContain(value);

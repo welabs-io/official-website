@@ -1,9 +1,7 @@
 /* PALCO DAS CENAS NATIVAS */
-/* The circular carousel of native scenes (the chain, the products of the home, the capabilities of a product page): the
-   centre scene is the one that plays; the previous and the next sit behind it at half scale, shifted by 38% of the width,
-   under a cream veil, so only a strip of each shows (on a phone, an edge); the ones further back are invisible. The
-   rotation (a turn with depth along an arc, components/ring/rotation.css) lasts --swap-time, the swap of the script
-   (0.45 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
+/* The capability scenes of a product page, one on screen at a time: it plays, holds its result, and the next one
+   crossfades in (v2.1; it was a circular carousel whose turn was most of the motion). The swap lasts --swap-time, the
+   swap of the script (0.45 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
 .screen {
   --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
   /* Width of the centre scene: 920 px at most (2:1, so 460 px tall), never taller than 70% of the window, the whole wrap
@@ -20,13 +18,23 @@
   margin: 0 auto;
   aspect-ratio: 2 / 1;
 }
+/* v2.1: the scenes sit one over the other and the one on screen (position 0) crossfades in, with a short rise; the
+   others wait invisible (they used to turn in a ring, which was most of the motion and showed nothing of the product) */
 .tile {
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 0;
   width: 100%;
   aspect-ratio: 2 / 1;
-  /* Place, depth, turn and the transitions of the swap: components/ring/rotation.css (selects on data-ring/data-pos) */
+  opacity: 0;
+  transform: translateY(var(--sp-2)) scale(0.985);
+  transition:
+    opacity var(--swap-time, 0.45s) var(--ease),
+    transform var(--swap-time, 0.45s) var(--ease);
+}
+.tile[data-pos="0"] {
+  opacity: 1;
+  transform: none;
 }
 /* Only the scenes that can be seen (the centre and its two neighbours) are promoted to their own layer */
 .tile:is([data-pos="0"], [data-pos="1"], [data-pos="-1"]) {
@@ -50,22 +58,6 @@
   position: absolute;
   inset: 0;
   isolation: isolate;
-}
-/* Veil of the neighbours: the scene stays itself (a settled frame) and the cream of the page washes over it */
-.tileFrame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  border-radius: 1rem;
-  background: rgb(250 245 234 / 0.55);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--swap-time, 0.45s) var(--ease);
-}
-.tile[data-pos="1"] .tileFrame::after,
-.tile[data-pos="-1"] .tileFrame::after {
-  opacity: 1;
 }
 
 /* NOMES DAS CENAS */
@@ -130,7 +122,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .tile,
-  .tileFrame::after,
   .names li,
   .names li::after {
     transition: none;

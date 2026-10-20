@@ -99,12 +99,11 @@ const hasMenu = (html) => {
   );
 };
 
-// HOME: abertura, encaixe, mensagem, Domus, produtos, o que muda, contato, onde rodamos
+// HOME: abertura, mensagem, Domus, produtos, o que muda, contato, onde rodamos (v2.1: o encaixe saiu)
 const home = await page("/");
 const HOME_ORDER = [
   "top",
   "intro",
-  "chain",
   "message",
   "domus",
   "products",
@@ -128,7 +127,7 @@ assert(
   "every band is marked live (motion pauses off screen)",
 );
 assert(/<h1[\s\S]*?Software para/.test(home), "the title of the home is its h1");
-assert(home.includes('data-orbit="cycle"'), "the stage of the opening cycles");
+assert(home.includes('data-hub="cycle"'), "the stage of the opening cycles");
 for (const id of ["msg-go", "area-add"])
   assert(
     home.includes(`id="${id}"`) && home.includes(`for="${id}"`),
@@ -209,15 +208,17 @@ for (const slug of SLUGS) {
     `${slug} has ${productWords} visible words`,
   );
   assert(hasMenu(html), `${slug} header has the menu and the logo link`);
-  // The descent model (PR #27): no switcher and no list of the others; the way on is the door to the next product
-  const nextSlug = SLUGS[(SLUGS.indexOf(slug) + 1) % SLUGS.length];
+  // v2.1: the door to the next product left; the five products are a selector at the top of the product
+  const switcher = slot.slice(
+    slot.indexOf('aria-label="Os cinco produtos"'),
+    slot.indexOf("</nav>", slot.indexOf('aria-label="Os cinco produtos"')),
+  );
   assert(
-    !html.includes('aria-label="Trocar de produto"') &&
-      !html.includes('id="others"') &&
-      slot.includes('id="next"') &&
-      slot.includes(`data-door="${nextSlug}"`) &&
-      slot.includes(`href="/products/${nextSlug}"`),
-    `${slug} ends on the door to ${nextSlug}, with no switcher`,
+    !slot.includes('id="next"') &&
+      !slot.includes("data-door") &&
+      SLUGS.every((s) => switcher.includes(`href="/products/${s}"`)) &&
+      (switcher.match(/aria-current="page"/g) ?? []).length === 1,
+    `${slug} opens with the selector of the five products, with no door at its end`,
   );
   assert(
     /<title>[^<]* by Welabs<\/title>/.test(html),
@@ -231,7 +232,6 @@ for (const slug of SLUGS) {
     "center",
     "details",
     "contact",
-    "next",
   ];
   assert(
     PRODUCT_ORDER.every(
@@ -274,10 +274,10 @@ for (const src of assets) await get(src);
 await expectRedirect("/new", "/");
 await expectRedirect("/produtos", "/#products");
 await expectRedirect("/solucoes", "/#products");
-await expectRedirect("/sobre", "/#chain");
+await expectRedirect("/sobre", "/#message");
 await expectRedirect("/products", "/#products");
 await expectRedirect("/solutions", "/#products");
-await expectRedirect("/about", "/#chain");
+await expectRedirect("/about", "/#message");
 for (const slug of SLUGS)
   await expectRedirect(`/produtos/${slug}`, `/products/${slug}`);
 for (const [from, to] of [
@@ -295,7 +295,7 @@ for (const [from, to] of [
 }
 await expectRedirect("/produtos/domus?x=1", "/products/domus?x=1");
 await expectRedirect("/welabs", "/");
-await expectRedirect("/welabs/sobre", "/#chain");
+await expectRedirect("/welabs/sobre", "/#message");
 // O produto oculto volta para a seção de produtos (temporário)
 const hidden = await fetch(base + "/produtos/ecossistema-monitoramento", {
   redirect: "manual",

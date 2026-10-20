@@ -1,8 +1,11 @@
 // CAMINHO DE VOLTA E ÂNCORAS DAS SEÇÕES
 // What a visitor uses to get around: the menu entry "Produtos" lands on the five cards and the button of the header on the
-// contact, both under the fixed header; every product ends on the door to the next product (the way back is up the page,
-// there is no switcher since the descent of PR #27), and the logo of the header leads home from any page.
+// contact, both under the fixed header; every product opens with the selector of the five products (v2.1: in place of
+// the door "Próximo produto" at its end), whose logos lead to the other products through their brand openings; and the
+// logo of the header leads home from any page.
 import { expect, test } from "@playwright/test";
+
+test.setTimeout(45000);
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
 const NAMES = {
@@ -38,30 +41,34 @@ test("'Produtos' and the button land on their sections of the home under the hea
 });
 
 for (const [i, slug] of SLUGS.entries())
-  test(`the ${slug} page has ${NAMES[slug]} as the product in the slot, the door "Próximo" to the next one at the end and the logo to the home`, async ({
+  test(`the ${slug} page has ${NAMES[slug]} as the product in the slot, the selector of the five products at its top and the logo to the home`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/products/${slug}`, { waitUntil: "load" });
-    // The descent model (PR #27): no product switcher and no list of the others
-    await expect(
-      page.getByRole("navigation", { name: "Trocar de produto" }),
-    ).toHaveCount(0);
-    await expect(page.locator("#others")).toHaveCount(0);
+    // v2.1: no door at the end, no list of the others; the selector at the top names the five, this one current
+    await expect(page.locator("[data-descent-slot] #next")).toHaveCount(0);
+    await expect(page.locator("[data-descent-slot] [data-door]")).toHaveCount(0);
     await expect(page.locator("#product h1 img")).toHaveAttribute(
       "alt",
       new RegExp(NAMES[slug]),
     );
-    // The door leads to the next product of the list (the last leads back to the first)
+    const selector = page.getByRole("navigation", { name: "Os cinco produtos" });
+    await expect(selector.getByRole("link")).toHaveCount(5);
+    await expect(selector.locator('[aria-current="page"]')).toHaveAttribute(
+      "href",
+      `/products/${slug}`,
+    );
+    // Its logo leads to another product, through the brand opening of that product
     const target = SLUGS[(i + 1) % SLUGS.length];
-    const door = page.locator("[data-descent-slot] #next a[data-door]");
-    await door.scrollIntoViewIfNeeded();
-    await expect(door).toHaveAttribute("data-door", target);
-    await expect(door).toHaveAttribute("href", `/products/${target}`);
-    await expect(door).toContainText("Próximo");
-    await door.click();
+    await selector.getByRole("link", { name: NAMES[target] }).click();
+    await expect(page.locator(`[data-intro="${target}"]`)).toHaveCount(1);
     await page.waitForURL(`**/products/${target}`);
-    await page.waitForTimeout(1600);
+    await page.waitForFunction(
+      () => !document.querySelector("[data-intro]") && !document.querySelector("body > img"),
+      undefined,
+      { timeout: 12000 },
+    );
     // The next product opens at the top of the slot, under the fixed header
     const g = await page.evaluate(() => ({
       slot: document
@@ -76,5 +83,5 @@ for (const [i, slug] of SLUGS.entries())
     // The logo of the header leads to the home
     await page.getByRole("link", { name: "Welabs, início" }).click();
     await page.waitForURL((url) => url.pathname === "/");
-    await expect(page.locator("#chain")).toBeVisible();
+    await expect(page.locator("#message")).toBeVisible();
   });

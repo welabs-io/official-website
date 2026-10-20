@@ -1,0 +1,81 @@
+/* PALCO DA ABERTURA DE MARCA */
+/* The white sheet the opening plays on (intro-run.ts): over the page, under the fixed header (z-index 50), with the warm
+   halo of the page at its top. The stage is the 1920x1080 frame of the round, scaled to the window by transform. The
+   round clipped its frame (what waits outside it, like the magnets of the Magneto before they enter, must not show), so
+   the stage clips too, with its edges faded, so a piece that flies in comes out of the white instead of a hard line. */
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 55% at 50% 0%, oklch(0.66 0.21 28 / 0.06), transparent 70%),
+    #ffffff;
+  will-change: clip-path, opacity;
+  cursor: pointer;
+}
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform-origin: 0 0;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #1c1a16;
+  mask:
+    linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent),
+    linear-gradient(transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
+}
+/* The camera layer the Magneto flow wraps around the magnets (the other openings style theirs inline) */
+.stage :global(.zoom) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+}
+.stage :global(svg) {
+  max-width: none;
+  overflow: visible;
+}
+/* The wrapper of the endorsed logo (laid out by the choreography in the round's box) and the light file inside it */
+.wm {
+  overflow: visible;
+}
+.wmImg {
+  position: absolute;
+  max-width: none;
+}
+.role {
+  position: absolute;
+  left: 0;
+  width: 1920px;
+  height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bar {
+  display: block;
+  width: 72px;
+  height: 4px;
+  border-radius: 2px;
+  background: #ffb020;
+  transform-origin: 50% 50%;
+  transform: scaleX(0);
+}
+/* The logo that travels from the closing frame to the opening of the product, over the sheet */
+.fly {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 46;
+  max-width: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+  will-change: transform;
+}

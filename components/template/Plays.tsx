@@ -17,6 +17,7 @@ import {
 } from "@/lib/content/plays";
 import type { ProductSlug } from "@/lib/products";
 import { DragToCheck } from "./DragToCheck";
+import tuner from "./tuner-play.module.css";
 import styles from "./v2.module.css";
 
 function DomusPlay() {
@@ -158,15 +159,24 @@ function MagnetoPlay() {
   );
 }
 
+// A LIGAÇÃO QUE CHEGA NA PESSOA CERTA
+// v2.1: "Ligue e veja para onde vai" did not say what the Tuner does. Now the call of Marina rings on a phone with the
+// menu of the call; a key pressed lights the wire to the person of that option, the call travels along it and the person
+// answers, recorded, and the recording lands in the conversation. The drawing says it, with no sentence: wires from the
+// phone to the team (an SVG in px, so the travelling call follows the same path by `offset-path`).
+const WIRES = ["M0 150 C64 150 56 46 120 46", "M0 150 C64 150 56 150 120 150", "M0 150 C64 150 56 254 120 254"];
+
 function TunerPlay() {
   return (
-    <div className={styles.play} data-play="tuner">
-      <div className={styles.phoneCall}>
-        <p className={styles.callHead}>
-          <Glyph d={GLYPHS.phone} size={16} />
+    <div className={tuner.play} data-play="tuner">
+      <div className={tuner.phone}>
+        <p className={tuner.callHead}>
+          <span className={tuner.ring}>
+            <Glyph d={GLYPHS.phone} size={16} />
+          </span>
           {TUNER_PLAY.call}
         </p>
-        <fieldset className={styles.keys}>
+        <fieldset className={tuner.keys}>
           <legend>{TUNER_PLAY.menu}</legend>
           {TUNER_PLAY.options.map((o) => (
             <span key={o.key}>
@@ -177,7 +187,7 @@ function TunerPlay() {
                 data-key={o.key}
                 className={styles.toggle}
               />
-              <label htmlFor={`ivr-${o.key}`} className={styles.key}>
+              <label htmlFor={`ivr-${o.key}`} className={tuner.key}>
                 <b>{o.key}</b>
                 {o.label}
               </label>
@@ -185,18 +195,49 @@ function TunerPlay() {
           ))}
         </fieldset>
       </div>
-      <ul className={styles.team}>
+      <div className={tuner.wires} aria-hidden="true">
+        <svg viewBox="0 0 120 300" width="120" height="300">
+          {WIRES.map((d, i) => (
+            <g key={d} data-key={i + 1}>
+              <path className={tuner.wire} d={d} />
+              <path className={tuner.wireHot} d={d} />
+            </g>
+          ))}
+        </svg>
+        {WIRES.map((d, i) => (
+          <i
+            key={d}
+            className={tuner.call}
+            data-key={i + 1}
+            style={{ offsetPath: `path("${d}")` }}
+          />
+        ))}
+      </div>
+      <ul className={tuner.team}>
         {TUNER_PLAY.options.map((o) => (
           <li key={o.key} data-key={o.key}>
-            <span className={styles.avatar}>{o.to[0]}</span>
-            <span>
+            <span className={tuner.avatar}>{o.to[0]}</span>
+            <span className={tuner.who}>
               <b>{o.to}</b>
               <small>{o.label}</small>
             </span>
-            <span className={styles.rec}>{TUNER_PLAY.recording}</span>
+            <span className={tuner.live}>
+              <span className={tuner.wave}>
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+              {TUNER_PLAY.recording}
+            </span>
           </li>
         ))}
       </ul>
+      <p className={tuner.land}>
+        <span className={tuner.ok} />
+        {TUNER_PLAY.land}
+      </p>
     </div>
   );
 }
