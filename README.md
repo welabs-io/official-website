@@ -2,7 +2,7 @@
 
 Site da Welabs, empresa que desenvolve produtos próprios de software: Domus, Relloo, Magneto, Tuner e Knowly. Uma página única: a home (cerca de 4,6 telas a 1440 px) e uma página por produto (cerca de 3,6 a 4,4 telas), que abre embaixo da home e desce para o próximo produto.
 
-Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em português, sem banco de dados. A identidade é a da marca Welabs (âmbar, grafite, creme, Inter), num tema único: o tema claro (creme) em todas as faixas, o contato numa faixa âmbar e o rodapé em grafite. O site é 100% nativo: nenhum vídeo, `<iframe>` ou player.
+Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em português, sem banco de dados. A identidade é a da Welabs (âmbar, grafite, Inter) com os tokens atuais do front do ERP (v2.1: página branca com halo quente, botão de ação grafite, foco de 2 + 2 px; de-para em `control/portfolio/site-redesign/v13-proposta/v2-1/tokens-erp.md`), num tema único claro, e o rodapé em grafite. O site é 100% nativo: nenhum vídeo, `<iframe>` ou player; as aberturas de marca dos produtos são SVG nativo (`components/intro`).
 
 ## Conteúdo v2 (20/10/2026)
 
@@ -12,24 +12,24 @@ Menos explicação, mais vontade de conhecer: cada seção tem no máximo um tí
 
 | Rota               | Conteúdo |
 | ------------------ | -------- |
-| `/`                | `#intro` (título com a palavra que gira e o palco dos cinco produtos), `#chain` (filme sem texto das peças que se encaixam no Domus), `#message` (a mensagem que atravessa a operação), `#domus` (a casa do Domus com "+ Sua área"), `#products` (os cinco cartões), `#operation` (três desfechos em cena nativa), `#contact` (perguntas em aberto e o botão) e `#platforms` (onde rodamos) |
-| `/products/[slug]` | `#product` (logo com selo, a frase e o botão; o Domus abre com as áreas que se encaixam no símbolo, os outros com o palco das suas cenas), `#areas` (só o Domus), `#play` (a interação do produto), `#center` (o produto entre os outros), `#details` (o que já vem junto), `#contact` e `#next` (a porta para o próximo produto) |
+| `/`                | `#intro` (título com a palavra que gira e o palco dos cinco produtos sobre o registro do Domus), `#message` (a mensagem que atravessa a operação e chega no Domus), `#domus` (a casa do Domus com os módulos reais e "+ Novo módulo"), `#products` (os cinco cartões), `#operation` (três desfechos em cena nativa, tocando), `#contact` (perguntas em aberto e o botão) e `#platforms` (onde rodamos) |
+| `/products/[slug]` | `#product` (o seletor dos cinco produtos, o logo com selo, a frase e o botão; o Domus abre com uma tela sua tocando, os outros com as suas cenas), `#areas` (só o Domus), `#play` (a interação do produto), `#center` (o produto entre os outros), `#details` (o que já vem junto) e `#contact` |
 
 O menu do cabeçalho (`components/onepage/SiteNav.tsx`) está em todas as páginas: Produtos (os cinco, numa lista que abre ao passar o mouse ou ao focar; num celular, um painel aberto por botão que fecha com Esc, com um toque num link e ao mudar de página) e Domus. O botão do cabeçalho leva ao contato da home e o logo leva à home em toda página.
 
-Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → `/`; `/produtos`, `/products`, `/solucoes` e `/solutions` → `/#products`; `/sobre` e `/about` → `/#chain`; `/produtos/<slug>` → `/products/<slug>`; ids internos (`erp`, `flow`…) e slugs anteriores (`rello`, `hub-de-dominio`) vão direto ao slug atual; `/welabs/*` e `/portfolio-preview/*` do site compartilhado também. A query string é mantida. O produto oculto (`ecossistema-monitoramento`) volta para `/#products` (temporário). A lista está em `next.config.mjs`; `lib/routes.test.ts` trava segmento de rota em português e redirecionamento em mais de um salto.
+Rotas em inglês. Endereços antigos redirecionam (308) em um salto: `/new` → `/`; `/produtos`, `/products`, `/solucoes` e `/solutions` → `/#products`; `/sobre` e `/about` → `/#message`; `/produtos/<slug>` → `/products/<slug>`; ids internos (`erp`, `flow`…) e slugs anteriores (`rello`, `hub-de-dominio`) vão direto ao slug atual; `/welabs/*` e `/portfolio-preview/*` do site compartilhado também. A query string é mantida. O produto oculto (`ecossistema-monitoramento`) volta para `/#products` (temporário). A lista está em `next.config.mjs`; `lib/routes.test.ts` trava segmento de rota em português e redirecionamento em mais de um salto.
 
 ## Interações e movimento
 
 Tudo é CSS sobre controles nativos (`:has(:checked)`): cada interação é uma caixa de seleção ou um rádio com o rótulo visível como botão, então funciona sem script, com teclado e com leitor de tela. Os estilos ficam em `components/template/v2.module.css`; toda animação roda só com a faixa na tela (`data-on`, `LiveObserver`) e é escrita como movimento DE um estado até o natural, então sob `prefers-reduced-motion` cada desenho mostra o quadro final.
 
 - **Palavra que gira** (`HomeIntro`): cinco palavras, 2 s paradas e 0,5 s de troca, ciclo de 12,5 s.
-- **Palco dos produtos** (`components/template/Orbit.tsx`): o Domus no centro e as ligações que o código tem; no mesmo ciclo da palavra, o produto da vez acende as ligações (barra âmbar com tracejado que corre) e mostra um selo de efeito. Passar o mouse ou focar um produto para o ciclo e acende aquele produto. Na página de produto o palco fica parado, com o produto aceso.
-- **Encaixe** (`HomeFit`): as peças chegam e se encaixam no Domus, uma vez, quando a faixa entra na tela.
-- **A mensagem** (`HomeMessage`): arrastar o balão até o trilho (ou apertar "Enviar a mensagem") faz a mensagem passar pelos cinco produtos até o celular. O arrasto é a única peça de cliente nova (`components/template/DragToCheck.tsx`), que só marca a caixa de seleção.
-- **"+ Sua área"** (`DomusHouse`): o cômodo tracejado vira um cômodo novo e as áreas acendem em escada.
+- **Palco dos produtos** (`components/template/Orbit.tsx`, `hub.module.css`): uma grade com o registro do Domus (Pedido 1234) no meio, os quatro produtos em volta e cada ligação na sua coluna; no mesmo ciclo da palavra, o produto da vez mostra o que fez, o pacote âmbar corre pela ligação e acende a linha dele no registro. Passar o mouse ou focar um produto para o ciclo e acende aquele produto. Na página de produto o palco fica parado, com o produto aceso.
+- **A mensagem** (`HomeMessage`, `message.module.css`): arrastar o balão até o trilho (ou apertar "Enviar a mensagem") faz a mensagem passar pelos cinco produtos e chegar no Domus, que se forma como na sua abertura de marca. O arrasto é a única peça de cliente nova (`components/template/DragToCheck.tsx`), que só marca a caixa de seleção.
+- **"+ Novo módulo"** (`DomusHouse`, `house.module.css`): a casa mostra os módulos que o ERP instala, em dois andares (Padrão e Sob medida); a vaga tracejada vira um módulo novo com o selo e a tela que se monta.
+- **Entrada num produto** (`components/onepage/descent-run.ts`, `components/intro`): todo link para um produto toca a abertura de marca dele (portada da rodada de motion, sob demanda) e pousa no logo da abertura do produto.
 - **Uma interação por produto** (`components/template/Plays.tsx`): Domus (arrastar um campo vira coluna da tabela), Relloo (os canais de uma pessoa na mesma conversa), Magneto (o fluxo espera a aprovação), Tuner (o menu da ligação leva à pessoa certa) e Knowly (a resposta com a fonte e a fonte fechada).
-- **Cenas nativas** (`components/scenes`): o palco da abertura de Relloo, Magneto, Tuner e Knowly gira as cenas de capacidade (`lib/scenes/capabilities.ts`) com o relógio de `lib/scenes/script.ts`; `SceneDriver` baixa `scene-run.ts` sob demanda. Os três desfechos da home são cenas paradas (`MiniScene`).
+- **Cenas nativas** (`components/scenes`): o palco da abertura de Relloo, Magneto, Tuner e Knowly troca as cenas de capacidade no lugar (`lib/scenes/capabilities.ts`) com o relógio de `lib/scenes/script.ts`; `SceneDriver` baixa `scene-run.ts` sob demanda. Os três desfechos da home tocam e repetem enquanto estão na tela (`MiniScene`, `components/scenes/replay.ts`).
 
 ## Conteúdo
 
@@ -39,7 +39,7 @@ Orçamento de palavras visíveis (cenas não contam): de 200 a 300 na home e de 
 
 ## Sistema visual
 
-Os tokens ficam em `.page` (`components/onepage/shell.module.css`) e as folhas dos componentes só os leem: escala de texto `--text-xs` (14 px, o piso do site) a `--text-hero` (o título da home), alturas de linha `--lh-*`, entreletra `--ls-*`, largura de linha `--measure` (66ch), grade de 4 px `--sp-1` a `--sp-9`, raios `--r-ctl` (6), `--r-card` (12) e `--r-win` (16), sombras `--shadow-card` e `--shadow-pop`. O traço de todo ícone é `ICON_STROKE` (`lib/icon-stroke.ts`). O foco visível é um só (`app/globals.css`). `components/template/polish.test.tsx` reprova valor solto nas folhas, fonte fora da escala, raio fora da escala e traço diferente.
+Os tokens ficam em `.page` (`components/onepage/shell.module.css`) e as folhas dos componentes só os leem: escala de texto `--text-xs` (14 px, o piso do site) a `--text-hero` (o título da home), alturas de linha `--lh-*`, entreletra `--ls-*`, largura de linha `--measure` (66ch), grade de 4 px `--sp-1` a `--sp-9`, raios do front do ERP `--r-ctl` (10), `--r-card` (8), `--r-win` (14) e `--r-pill` (22), sombras `--shadow-card` e `--shadow-pop`, e um movimento só para toda transição (`--dur-1` a `--dur-3`, `--ease-out`, `--ease-in-out`). O traço de todo ícone é `ICON_STROKE` (`lib/icon-stroke.ts`). O foco visível é um só (`app/globals.css`). `components/template/polish.test.tsx` reprova valor solto nas folhas, fonte fora da escala, raio fora da escala e traço diferente.
 
 ## Estrutura de pastas
 
