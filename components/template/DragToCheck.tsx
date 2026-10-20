@@ -27,7 +27,11 @@ export function DragToCheck({
       if (!start || e.pointerId !== start.id) return;
       const dx = e.clientX - start.x;
       const dy = e.clientY - start.y;
-      if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+      // v2.2: the pointer is captured only once it really drags, so a plain tap still reaches the label inside
+      if (!moved && Math.abs(dx) + Math.abs(dy) > 4) {
+        moved = true;
+        el.setPointerCapture(e.pointerId);
+      }
       el.style.transform = `translate(${dx}px, ${dy}px)`;
     };
     const click = (e: MouseEvent) => {
@@ -59,7 +63,6 @@ export function DragToCheck({
       moved = false;
       start = { x: e.clientX, y: e.clientY, id: e.pointerId };
       el.setAttribute("data-dragging", "");
-      el.setPointerCapture(e.pointerId);
     };
     el.addEventListener("pointerdown", down);
     el.addEventListener("pointermove", move);

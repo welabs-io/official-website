@@ -1,0 +1,326 @@
+/* MAGNETO: APROVAÇÃO NO MEIO DO FLUXO */
+/* States, read from the controls: any (a value chosen), low (below the limit), high (above it), wait (high, no decision
+   yet), ok (approved), no (refused), done (low, or approved) and fail (done with the failure switched on). Each element
+   carries its beat per state (--beat-a, --beat-low below the limit, --beat-ok after an approval) and --late when it comes
+   after the update, which a failure pushes 2.5 beats (the retry). One row of the flow is a fixed height, so the token
+   runs on the rail by whole rows. */
+.root {
+  --row: 56px;
+  --step: calc(var(--row) + var(--sp-3));
+}
+.root [data-ev] {
+  --at: calc(var(--beat-a, 0) + var(--fx, 0));
+}
+.root:has([id="mg-low"]:checked) [data-ev] {
+  --at: calc(var(--beat-low, var(--beat-a, 0)) + var(--fx, 0));
+}
+.root:has([id="mg-high"]:checked) [data-ev] {
+  --at: calc(var(--beat-ok, var(--beat-a, 0)) + var(--fx, 0));
+}
+.root:has([id="mg-fail"]:checked) [data-ev] {
+  --fx: calc(var(--late, 0) * 2.5);
+}
+.root:is(:has([id="mg-low"]:checked), :has([id="mg-high"]:checked))
+  [data-ev~="any"],
+.root:has([id="mg-low"]:checked) [data-ev~="low"],
+.root:has([id="mg-high"]:checked) [data-ev~="high"],
+.root:has([id="mg-high"]:checked):not(:has([name="mg-dec"]:checked))
+  [data-ev~="wait"],
+.root:has([id="mg-high"]:checked):has([id="mg-ok"]:checked) [data-ev~="ok"],
+.root:has([id="mg-high"]:checked):has([id="mg-no"]:checked) [data-ev~="no"],
+.root:is(
+    :has([id="mg-low"]:checked),
+    :has([id="mg-high"]:checked):has([id="mg-ok"]:checked)
+  )
+  [data-ev~="done"],
+.root:is(
+    :has([id="mg-low"]:checked),
+    :has([id="mg-high"]:checked):has([id="mg-ok"]:checked)
+  ):has([id="mg-fail"]:checked)
+  [data-ev~="fail"] {
+  display: var(--shown, block);
+}
+
+/* The open status of the order gives way to the one the run writes */
+.root:has([name="mg-value"]:checked) [data-idle] {
+  display: none;
+}
+
+/* O FLUXO */
+.flow {
+  position: relative;
+  display: grid;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* The rail through the icons, from the first row to the last */
+.flow::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--row) / 2);
+  bottom: calc(var(--row) / 2);
+  left: calc(var(--sp-3) + 16px);
+  width: 2px;
+  background: var(--thread);
+}
+.node {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  height: var(--row);
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  font-size: var(--text-sm);
+  transition:
+    border-color var(--dur-2) var(--ease-out),
+    opacity var(--dur-2) var(--ease-out);
+}
+.node b {
+  min-width: 0;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-accent);
+  color: var(--ink);
+}
+/* The check of a step done, on the corner of its icon (inside the card) */
+.done {
+  --shown: grid;
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--success);
+  color: var(--surface);
+}
+.root .done[data-ev] {
+  animation-name: mg-pop;
+}
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+/* The retry and its recovery share one place */
+[data-node="update"] .status {
+  display: grid;
+  justify-items: end;
+}
+[data-node="update"] .status > * {
+  grid-area: 1 / 1;
+}
+.pill {
+  --shown: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--surface-accent);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill[data-tone="ok"] {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.pill[data-tone="fail"] {
+  background: var(--destructive-soft);
+  color: var(--destructive);
+}
+.pill[data-tone="skip"] {
+  border: 1px dashed var(--input);
+  background: transparent;
+  color: var(--mute);
+}
+.decide {
+  --shown: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.waiting {
+  color: var(--mute);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+.adjust {
+  --shown: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--a);
+  border-radius: var(--r-ctl);
+  background: var(--a-100);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ESTADOS DOS NÓS */
+.root:has([id="mg-low"]:checked) [data-node="approval"] {
+  border-style: dashed;
+  opacity: 0.7;
+}
+/* Waiting: the approval node calls for the decision, three slow pulses */
+.root:has([id="mg-high"]:checked):not(:has([name="mg-dec"]:checked))
+  [data-node="approval"] {
+  border-color: var(--a);
+  animation: pl-glow-mg calc(var(--beat) * 2) var(--ease-in-out)
+    calc(var(--beat) * 2) 3;
+}
+.root:has([id="mg-high"]:checked):has([id="mg-no"]:checked)
+  :is([data-node="update"], [data-node="notify"]) {
+  opacity: 0.45;
+}
+/* The failure: the update node turns red while it retries, then recovers */
+.root [data-retry][data-ev] {
+  animation:
+    pl-in-mg var(--dur-3) var(--ease-spring) calc(var(--at) * var(--beat)) both,
+    mg-gone 1ms linear calc((var(--at) + 2.5) * var(--beat)) both;
+}
+.root [data-retry] svg {
+  animation: mg-spin calc(var(--beat) * 2.5) linear
+    calc(var(--at) * var(--beat)) both;
+}
+
+/* O TOKEN */
+.tokens {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+/* A ring around the icon of the step it is on: it frames the step when it stops and runs down the rail between them */
+.token {
+  --shown: block;
+  position: absolute;
+  top: calc(var(--row) / 2 - 22px);
+  left: calc(var(--sp-3) + 17px - 22px);
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--a);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--a-100);
+}
+.token[data-seg="low"] {
+  --from: 0;
+  --to: 3;
+  --len: 3;
+  --fade: 1;
+}
+.token[data-seg="wait"] {
+  --from: 0;
+  --to: 2;
+  --len: 2;
+  --fade: 0;
+}
+.token[data-seg="ok"] {
+  --from: 2;
+  --to: 3;
+  --len: 1;
+  --fade: 1;
+}
+.token[data-seg="end"] {
+  --from: 3;
+  --to: 4;
+  --len: 1;
+  --fade: 0;
+}
+.root .token[data-ev] {
+  animation:
+    mg-move calc(var(--len) * var(--beat)) var(--ease-in-out)
+      calc(var(--at) * var(--beat)) both,
+    mg-fade 1ms linear calc((var(--at) + var(--len)) * var(--beat)) both;
+}
+
+@keyframes mg-move {
+  from {
+    transform: translateY(calc(var(--from) * var(--step)));
+  }
+  to {
+    transform: translateY(calc(var(--to) * var(--step)));
+  }
+}
+@keyframes mg-fade {
+  to {
+    opacity: calc(1 - var(--fade));
+  }
+}
+@keyframes mg-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+@keyframes mg-gone {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes mg-spin {
+  to {
+    transform: rotate(2turn);
+  }
+}
+@keyframes pl-in-mg {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+@keyframes pl-glow-mg {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--a-200);
+  }
+  50% {
+    box-shadow: 0 0 0 6px var(--a-200);
+  }
+}
+
+/* CELULAR */
+@media (max-width: 860px) {
+  .root {
+    --row: 92px;
+  }
+  .node {
+    grid-template-columns: 32px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    row-gap: var(--sp-1);
+  }
+  .icon {
+    grid-row: 1 / span 2;
+  }
+  .status {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+  [data-node="update"] .status {
+    justify-items: start;
+  }
+  .waiting {
+    display: none;
+  }
+}

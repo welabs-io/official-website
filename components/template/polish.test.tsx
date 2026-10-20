@@ -22,7 +22,13 @@ const SHEETS = [
   "components/template/hub.module.css",
   "components/template/message.module.css",
   "components/template/house.module.css",
-  "components/template/tuner-play.module.css",
+  // v2.2: the plays moved to components/plays, one sheet for their anatomy and one per product
+  "components/plays/plays.module.css",
+  "components/plays/domus.module.css",
+  "components/plays/relloo.module.css",
+  "components/plays/magneto.module.css",
+  "components/plays/tuner.module.css",
+  "components/plays/knowly.module.css",
   "components/onepage/home.module.css",
   "components/onepage/shell.module.css",
 ];

@@ -29,8 +29,9 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     short: "A gestão da empresa inteira, moldada à sua operação.",
     scenes: [],
     play: {
-      title: "Do jeito da sua operação",
-      lead: "Arraste um campo e a tela muda junto.",
+      // v2.2: the play is the form builder (audit, sections 4 and 5)
+      title: "Campos novos viram colunas na hora",
+      lead: "Arraste um tipo de campo para o formulário.",
     },
     center: {
       title: "Onde os outros produtos trabalham",
@@ -56,8 +57,8 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       { id: "relloo-agent", name: "Agente que passa a vez" },
     ],
     play: {
-      title: "Uma pessoa, todos os canais",
-      lead: "Toque num canal.",
+      title: "Todos os canais na mesma conversa",
+      lead: "Dispare os canais na ordem que quiser.",
     },
     center: {
       title: "Junto dos outros produtos",
@@ -80,8 +81,8 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     short: "Fluxos com aprovação, desenhados em blocos.",
     scenes: [{ id: "magneto-canvas", name: "Fluxo em blocos" }],
     play: {
-      title: "A pessoa só entra para aprovar",
-      lead: "Toque em aprovar.",
+      title: "Aprovação no meio do fluxo",
+      lead: "Escolha o valor e veja o caminho do pedido.",
     },
     center: {
       title: "Junto dos outros produtos",
@@ -100,11 +101,12 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     ],
   },
   tuner: {
-    short: "O número oficial do WhatsApp, as ligações e o Discord no mesmo ponto.",
+    short:
+      "O número oficial do WhatsApp, as ligações e o Discord no mesmo ponto.",
     scenes: [{ id: "tuner-call", name: "Ligação para a equipe certa" }],
     play: {
       // v2.1: the title says the effect (the operator found "Ligue e veja para onde vai" did not explain it)
-      title: "Cada ligação na pessoa certa",
+      title: "Menu de opções e distribuição de ligações",
       lead: "Aperte uma opção do menu.",
     },
     center: {
@@ -132,8 +134,8 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       { id: "knowly-access", name: "Acesso por pessoa" },
     ],
     play: {
-      title: "Pergunte",
-      lead: "Escolha uma pergunta.",
+      title: "Respostas com fonte e acesso",
+      lead: "Troque o perfil e pergunte de novo.",
     },
     center: {
       title: "Junto dos outros produtos",
