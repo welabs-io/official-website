@@ -1,7 +1,7 @@
 // JANELA DE PRODUTO DAS CENAS
 // The frame every scene shares: a product window with a 32 px bar (three muted dots and the path "Product / Place" in
-// 12 px, with an optional piece of context on the right). No amber in the bar: the only amber dot at the top of the
-// stage is the connector of the overview. Server markup; the body is whatever the scene draws.
+// 12 px, with an optional piece of context on the right). No amber in the bar. Server markup; the body is whatever the
+// scene draws.
 import type { ReactNode } from "react";
 import type { ActProps } from "@/lib/scenes/types";
 import { productLogo } from "@/lib/products";

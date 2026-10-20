@@ -1,7 +1,7 @@
 /* CENA NATIVA PARADA */
 /* The holder is the container the frame measures itself against: wide (2:1) from 52 rem of width, tablet (16:10) up to it
    and a phone (7:10) below 34 rem, the three layouts the scenes already have. `data-phone` forces the phone layout for
-   the narrow cards of the benefits (they are never wider than 34 rem). No content-visibility: a skipped block takes an
+   the narrow cards of the outcomes of the home (they are never wider than 34 rem). No content-visibility: a skipped block takes an
    estimated height, and the page below it would move by a few pixels when the block is drawn, which is exactly what the
    back button must not do. */
 .holder {

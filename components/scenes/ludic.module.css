@@ -1,9 +1,9 @@
-/* PILOTO LÚDICO DAS CENAS (S1 TUNER E S2 RELLOO) */
+/* CENA LÚDICA DO TUNER (S1) */
 /* The look of a real app with a little more play: soft depth (two elevations and a layered card), a light illustration
-   (the phone with its notch and a dotted chat wall, the board lanes tinted by their stage), and interface text of 11 to
-   13 px, the conversation at 13 px like a messaging app. Colour by meaning: voice is information blue, WhatsApp is
-   success green, the stages keep their tones; amber is only an area (bars of 4 px, pale fills, the ring of a logo that
-   receives). Every rule draws the settled frame; the motion is in fx.css. Tokens come from the scene (`--s-*`). */
+   (the phone with its notch and a dotted chat wall), and interface text of 11 to 13 px, the conversation at 13 px like
+   a messaging app. Colour by meaning: voice is information blue, WhatsApp is success green; amber is only an area (bars
+   of 4 px, pale fills, the ring of a logo that receives). Every rule draws the settled frame; the motion is in fx.css.
+   Tokens come from the scene (`--s-*`). */
 
 /* CHAVE: the one element of 18 px per scene */
 .key {
@@ -14,7 +14,7 @@
   color: var(--s-ink);
 }
 
-/* CENA S1: O TELEFONE E A CONVERSA DO TUNER */
+/* O TELEFONE E A CONVERSA DO TUNER */
 .channels {
   display: grid;
   /* The phone keeps the proportions of a phone: at most 15 rem wide, the conversation takes the rest */
@@ -333,260 +333,16 @@
   color: var(--s-action-fg);
 }
 
-/* CENA S2: O QUADRO DO FUNIL E OS DADOS DO CARTÃO */
-.board,
-.sheet {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  min-height: 0;
-  overflow: hidden;
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-card);
-  background: var(--s-panel);
-  box-shadow: var(--s-elev-1);
-}
-.boardHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.75rem 0.875rem 0.5rem;
-  font-size: var(--s-t-label);
-}
-.boardHead > span {
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-.lanes {
-  display: grid;
-  grid-auto-rows: minmax(0, 1fr);
-  gap: 0.375rem;
-  min-height: 0;
-  padding: 0 0.5rem 0.5rem;
-}
-.lane {
-  position: relative;
-  display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1fr);
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 0;
-  padding: 0.375rem 0.5rem 0.375rem 0.75rem;
-  border-radius: 0.625rem;
-  background: var(--s-win);
-}
-/* The lane of the card: a pale amber fill and the 4 px amber bar on its left edge */
-.glow,
-.glow > span {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-}
-.glow > span {
-  background: var(--s-amber-50);
-  box-shadow: inset 4px 0 0 var(--s-amber);
-}
-/* Novo is lit only while the card is on it: at rest (the settled frame) its highlight is gone */
-.glowLeft {
-  opacity: 0;
-}
-.laneHead {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: var(--s-t-label);
-  font-weight: 500;
-}
-.laneHead > span {
-  flex: 1;
-  min-width: 0;
-}
-.roll {
-  display: inline-block;
-  height: 1rem;
-  min-width: 1.25rem;
-  overflow: hidden;
-  padding: 0 0.3125rem;
-  border-radius: 999px;
-  background: var(--s-chip);
-  font-size: var(--s-t-meta);
-  font-weight: 600;
-  font-style: normal;
-  line-height: 1rem;
-  text-align: center;
-  color: var(--s-mute);
-  font-variant-numeric: tabular-nums;
-}
-.rollStep {
-  display: block;
-  transform: translateY(-1rem);
-}
-.rollCol {
-  display: grid;
-}
-.laneBody {
-  position: relative;
-  display: grid;
-  min-height: 0;
-}
-.empty {
-  height: 2.25rem;
-  border: 1px dashed var(--s-edge);
-  border-radius: 0.5rem;
-}
-.other {
-  display: grid;
-  gap: 0.0625rem;
-  padding: 0.375rem 0.625rem;
-  border: 1px solid var(--s-hair);
-  border-radius: 0.5rem;
-  background: var(--s-win);
-  font-size: var(--s-t-label);
-}
-.other span {
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-/* The card travels one lane up at rest (--dy) and lands on its own lane; it sits above every lane while it moves */
-.travel {
-  position: relative;
-  z-index: 3;
-  display: block;
-}
-.deal {
-  display: grid;
-  gap: 0.25rem;
-  padding: 0.5rem 0.625rem 0.5rem 0.75rem;
-  border: 1px solid var(--s-edge);
-  border-radius: 0.625rem;
-  background: var(--s-win);
-  box-shadow:
-    0 0 0 1px rgb(28 26 22 / 0.02),
-    0 0.75rem 1.25rem -0.75rem rgb(28 26 22 / 0.35),
-    0 0.125rem 0.25rem rgb(28 26 22 / 0.06);
-  --origin: 0% 100%;
-}
-.dealFoot {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-.dealFoot > span:first-child {
-  flex: 1;
-}
-.emblems {
-  display: flex;
-  gap: 0.1875rem;
-}
-.emblem {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: var(--s-chip);
-  color: var(--s-faint);
-}
-.emblemOn {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--s-amber-200);
-  color: var(--s-ink);
-  --origin: 50% 50%;
-}
-.owner {
-  display: grid;
-  place-items: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: var(--s-info-soft);
-  color: var(--s-info);
-  font-weight: 600;
-}
-.sheet {
-  background: var(--s-win);
-}
-.facts {
-  display: grid;
-  align-content: start;
-  gap: 0.375rem;
-  padding: 0 0.625rem 0.625rem !important;
-}
-.fact {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.4375rem 0.625rem;
-  border-radius: 0.5rem;
-  background: var(--s-panel);
-  font-size: var(--s-t-label);
-}
-.fact dt {
-  display: flex;
-  align-items: center;
-  gap: 0.4375rem;
-  color: var(--s-mute);
-}
-.fact dd {
-  font-weight: 600;
-}
-.factIcon {
-  display: grid;
-  place-items: center;
-  width: 1.375rem;
-  height: 1.375rem;
-  border-radius: 0.375rem;
-  background: var(--s-win);
-  color: var(--s-ink);
-  box-shadow: var(--s-elev-1);
-}
-.factPending {
-  background: transparent;
-  border: 1px dashed var(--s-edge);
-}
-.factQuiet {
-  background: transparent;
-}
-.factQuiet dd {
-  font-weight: 500;
-  color: var(--s-mute);
-}
-.dash {
-  display: block;
-  width: 3rem;
-  border-top: 1px dashed var(--s-faint);
-}
-
-/* ESTREITO: one column; the phone and the facts panel step aside so the moving component keeps the frame */
+/* ESTREITO: one column; the phone steps aside so the conversation keeps the frame */
 @container scn (max-width: 34rem) {
   .channels {
     grid-template-columns: minmax(0, 1fr);
   }
-  .phone,
-  .sheet {
-    display: none;
-  }
-  .lane {
-    grid-template-columns: 5.75rem minmax(0, 1fr);
-  }
-  .emblems {
+  .phone {
     display: none;
   }
 }
 @container scn (max-height: 27rem) {
-  .lanes {
-    gap: 0.25rem;
-  }
   .items {
     gap: 0.5rem;
   }

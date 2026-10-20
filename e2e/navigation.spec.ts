@@ -5,8 +5,8 @@
 // descent (components/onepage/Descent.tsx) the product is the section under the products band and a click scrolls down
 // to it on purpose. These specs pin what the visitor must get: the top of the product in view, never under the fixed
 // header, reached by a scroll that only goes down; the browser's back button
-// returning to the card that was clicked; and a menu with the five products, "Como funciona" and "Contato" (a drop-down
-// list on a desktop, a panel on a phone). The trail, the logo and "Outros produtos" are in sections-nav.spec.ts.
+// returning to the card that was clicked; and a menu with the five products and the Domus (a drop-down list on a
+// desktop, a panel on a phone). The trail, the logo and the door to the next product are in sections-nav.spec.ts.
 import { expect, test, type Page } from "@playwright/test";
 import { VIEWPORTS } from "./viewports";
 
@@ -96,28 +96,39 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
   });
 }
 
-test("the desktop menu lists the five products, Como funciona and Contato, and each leads where it says", async ({
+test("the desktop menu lists the five products and the Domus, and each leads where it says", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/", { waitUntil: "load" });
   const nav = page.getByRole("navigation", { name: "Principal" });
   await expect(nav.getByRole("link", { name: "Produtos" })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Como funciona" })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Contato" })).toBeVisible();
+  await expect(
+    nav.getByRole("link", { name: "Domus", exact: true }),
+  ).toBeVisible();
   // The list of products opens on hover and on keyboard focus
   await nav.getByRole("link", { name: "Produtos" }).hover();
   for (const slug of SLUGS)
-    await expect(nav.locator(`a[href="/products/${slug}"]`)).toBeVisible();
-  await nav.locator('a[href="/products/magneto"]').click();
+    await expect(nav.locator(`a[href="/products/${slug}"]`).first()).toBeVisible();
+  await nav.locator('a[href="/products/magneto"]').first().click();
   await page.waitForURL("**/products/magneto");
-  await expect(page.locator("h1 img")).toHaveAttribute("alt", /Magneto/);
-  // "Contato" leads to the closing of the home
-  await nav.getByRole("link", { name: "Contato" }).click();
+  await expect(page.locator("[data-descent-slot] h1 img")).toHaveAttribute(
+    "alt",
+    /Magneto/,
+  );
+  // The Domus entry leads to the Domus
+  await nav.getByRole("link", { name: "Domus", exact: true }).click();
+  await page.waitForURL("**/products/domus");
+  await expect(page.locator("[data-descent-slot] h1 img")).toHaveAttribute(
+    "alt",
+    /Domus/,
+  );
+  // The button of the header leads to the contact of the home
+  await page.locator("header > div > a[href='/#contact']").click();
   await page.waitForURL(
     (url) => url.pathname === "/" && url.hash === "#contact",
   );
-  await expect(page.locator("#contact a")).toBeInViewport();
+  await expect(page.locator("#contact h2")).toBeInViewport();
 });
 
 test("on a phone the menu is a panel with the same entries; it closes on Escape and on a link", async ({
@@ -133,9 +144,12 @@ test("on a phone the menu is a panel with the same entries; it closes on Escape 
     page.getByRole("button", { name: "Fechar o menu" }),
   ).toHaveAttribute("aria-expanded", "true");
   for (const slug of SLUGS)
-    await expect(nav.locator(`a[href="/products/${slug}"]`)).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Como funciona" })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Contato" })).toBeVisible();
+    await expect(
+      nav.locator(`a[href="/products/${slug}"]`).first(),
+    ).toBeVisible();
+  await expect(
+    nav.getByRole("link", { name: "Domus", exact: true }),
+  ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(nav).toBeHidden();
   // A link closes the panel and the next page opens with the panel shut

@@ -1,7 +1,7 @@
 // CAMINHO DE VOLTA E ÂNCORAS DAS SEÇÕES
-// What a visitor uses to get around once the pages are long: the menu entry "Como funciona" lands on the order from start
-// to end right under the fixed header, every product ends on the door "Próximo" to the next product (the way back is up
-// the page, there is no switcher since the descent of PR #27), and the logo of the header leads home from any page.
+// What a visitor uses to get around: the menu entry "Produtos" lands on the five cards and the button of the header on the
+// contact, both under the fixed header; every product ends on the door to the next product (the way back is up the page,
+// there is no switcher since the descent of PR #27), and the logo of the header leads home from any page.
 import { expect, test } from "@playwright/test";
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
@@ -13,27 +13,27 @@ const NAMES = {
   knowly: "Knowly",
 } as const;
 
-test("'Como funciona' and 'Contato' land on their sections under the header", async ({
+test("'Produtos' and the button land on their sections of the home under the header", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/products/domus", { waitUntil: "load" });
   const nav = page.getByRole("navigation", { name: "Principal" });
-  await nav.getByRole("link", { name: "Como funciona" }).click();
-  await page.waitForURL((url) => url.pathname === "/" && url.hash === "#how");
+  await nav.getByRole("link", { name: "Produtos" }).click();
+  await page.waitForURL(
+    (url) => url.pathname === "/" && url.hash === "#products",
+  );
   await page.waitForTimeout(700);
+  await expect(page.locator("#products h2")).toBeInViewport();
+  await expect(page.locator("#products [data-card]")).toHaveCount(5);
+  await page.locator("header > div > a[href='/#contact']").click();
+  await page.waitForURL((url) => url.hash === "#contact");
+  await page.waitForTimeout(400);
   const top = await page.evaluate(() => ({
-    section: document.querySelector("#how")!.getBoundingClientRect().top,
+    title: document.querySelector("#contact h2")!.getBoundingClientRect().top,
     header: document.querySelector("header")!.getBoundingClientRect().bottom,
   }));
-  expect(top.section).toBeGreaterThanOrEqual(top.header - 2);
-  expect(top.section).toBeLessThan(top.header + 40);
-  await expect(page.locator("#how h2")).toHaveText(
-    "Um pedido, do começo ao fim",
-  );
-  await expect(page.locator("#how li")).toHaveCount(7);
-  await nav.getByRole("link", { name: "Contato" }).click();
-  await page.waitForURL((url) => url.hash === "#contact");
+  expect(top.title).toBeGreaterThanOrEqual(top.header);
   await expect(page.locator("#contact h2")).toBeInViewport();
 });
 

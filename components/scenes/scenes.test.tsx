@@ -1,15 +1,15 @@
-// TESTES DAS CENAS NATIVAS
-// Every scene renders on the server in its settled frame, uses every action of its script (and only those: asking for an
-// action the script lacks throws), carries no live region, no image and no video, and keeps its words inside the copy
-// rules. The stage keeps the same swap of positions as the ring it replaced.
+// TESTES DAS CENAS NATIVAS DA HOME
+// The three outcomes of the story the home shows ("O que muda na operação") render on the server in their settled
+// frame, use every action of their script (and only those: asking for an action the script lacks throws), carry no live
+// region, no image and no video, and keep their words inside the copy rules. Shown still (MiniScene): an illustration
+// hidden from assistive technology, marked so the word counters treat its text as interface.
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { copyViolation } from "@/lib/content/rules";
-import { CHAIN_STEPS } from "@/lib/chain";
 import { SCRIPT } from "@/lib/scenes/script";
-import { STORY } from "@/lib/scenes/story";
+import { STORY, WINDOW_TITLES } from "@/lib/scenes/story";
+import { MiniScene } from "./MiniScene";
 import { SceneBody } from "./SceneBody";
-import { SceneStage } from "./SceneStage";
 
 const html = (i: number) =>
   renderToStaticMarkup(<SceneBody scene={SCRIPT[i]} />);
@@ -54,7 +54,7 @@ describe("scene components", () => {
     );
   });
 
-  it("every sentence of the story respects the copy rules", () => {
+  it("every sentence of the story respects the copy rules, and no window says a word of the inside", () => {
     const strings: string[] = [];
     const walk = (value: unknown) => {
       if (typeof value === "string") strings.push(value);
@@ -63,20 +63,19 @@ describe("scene components", () => {
         Object.values(value).forEach(walk);
     };
     walk(STORY);
+    walk(WINDOW_TITLES);
     expect(strings.length).toBeGreaterThan(30);
     for (const s of strings) expect(copyViolation(s), s).toBeNull();
+    expect(strings.join(" ")).not.toMatch(/Cômodos|Funil/);
   });
 
-  it("the story has the texts of the brief", () => {
+  it("the outcomes show what the home says they show", () => {
     const all = SCRIPT.map((_, i) => html(i)).join(" ");
     for (const text of [
-      "Alteração de entrega",
+      STORY.thread,
+      STORY.kb.source,
+      STORY.confirm,
       "Pedido 1234",
-      "Política de entregas",
-      "Sábado: entregas até 12h",
-      "Aprovar alteração",
-      "Confirmado: sábado",
-      "Aguardando aprovação",
     ])
       expect(all, text).toContain(text);
   });
@@ -90,28 +89,11 @@ describe("scene components", () => {
   });
 });
 
-describe("scene stage", () => {
-  const stage = renderToStaticMarkup(
-    <SceneStage id="chain-ring" label="Cenas" tone="light" />,
-  );
-  it("has one tile per step, named by the sentence of the chain, the centre one first", () => {
-    expect(stage.match(/data-tile="s\d"/g)).toHaveLength(CHAIN_STEPS.length);
-    // Quotes are escaped in the markup
-    const label = CHAIN_STEPS[0].srLabel.replace(/"/g, "&quot;");
-    expect(stage).toContain(`aria-label="${label}"`);
-    expect(stage).toMatch(/data-pos="0"[^>]*data-tile="s0"/);
-    expect(stage).toMatch(/data-pos="1"[^>]*data-tile="s1"/);
-    expect(stage).toMatch(/data-pos="-1"[^>]*data-tile="s6"/);
-  });
-  it("is plain server markup with the durations next to it and no live region", () => {
-    expect(stage).not.toMatch(/aria-live/);
-    expect(stage).toMatch(/data-scene-data/);
-    const json = stage.match(
-      /<script type="application\/json" data-scene-data(?:="[^"]*")?>([^<]*)<\/script>/,
-    )![1];
-    const data = JSON.parse(json.replace(/&quot;/g, '"')) as {
-      scenes: number[];
-    };
-    expect(data.scenes).toHaveLength(7);
+describe("still scene", () => {
+  it("is an illustration hidden from assistive technology, closed by the end marker the counters read", () => {
+    const markup = renderToStaticMarkup(<MiniScene id="s4" phone />);
+    expect(markup).toMatch(/data-mini="s4"[^>]*aria-hidden="true"/);
+    expect(markup).toContain("data-mini-end");
+    expect(markup).toContain('data-phase="end"');
   });
 });

@@ -1,19 +1,19 @@
 // TESTES DAS CENAS DE CAPACIDADE
-// The fifteen capability scenes of the product pages follow the rules of the chain: each one renders on the server in
-// its settled frame, uses every action of its script and only those, marks exactly one key element, draws no image but
-// the logo of its bar, no video and no live region, and keeps its words inside the copy rules. Their script has the
-// pace of the chain (actions after the swap, the last one ending at `settle`, 2.3 to 2.8 s per scene, a hold of 0.8 to
-// 1.0 s) and the opening of every product is still most of the time. Each scene shows a capability the content already
-// lists, named by its sentence.
+// The capability scenes of the product openings follow the rules of every native scene: each one renders on the server
+// in its settled frame, uses every action of its script and only those, marks exactly one key element, draws no image
+// but the logo of its bar, no video and no live region, and keeps its words inside the copy rules. Their script has the
+// shared pace (actions after the swap, the last one ending at `settle`, 2.3 to 2.8 s per scene, a hold of 0.8 to 1.0 s)
+// and every opening is still most of the time. The page names each scene; the promises the code does not sustain left
+// with the v2 of the content (no campaign, no process written as a sentence, no chat of the site in the Tuner).
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { PRODUCT_CONTENT } from "@/lib/content";
+import { PRODUCT_PAGE } from "@/lib/content";
 import { copyViolation } from "@/lib/content/rules";
 import { PRODUCTS } from "@/lib/products";
 import {
   CAPABILITY_SCRIPT,
   CAPABILITY_STORY,
-  capabilityOf,
+  capabilityScenes,
   type CapabilityScript,
 } from "@/lib/scenes/capabilities";
 import {
@@ -25,14 +25,8 @@ import {
   sceneSeconds,
   stillRatio,
 } from "@/lib/scenes/script";
-import {
-  HOME_PRODUCT_SCENE,
-  HOME_SHOWN_CAPABILITY,
-  homeProductScenes,
-} from "@/lib/scenes/home-products";
-import { ProductCards } from "@/components/template/Content";
 import { CapabilityBody } from "./CapabilityBody";
-import { CapabilityStage, ProductsStage } from "./SceneStage";
+import { CapabilityStage } from "./SceneStage";
 
 const ALL: CapabilityScript[] = PRODUCTS.flatMap(
   ({ slug }) => CAPABILITY_SCRIPT[slug],
@@ -42,21 +36,29 @@ const html = (scene: CapabilityScript) =>
   renderToStaticMarkup(<CapabilityBody scene={scene} />);
 
 describe("capability script", () => {
-  it("has three scenes per product, each about a capability of its content, with unique ids", () => {
+  it("every scene belongs to its product, is named by its page, and the ids are unique", () => {
     for (const { slug } of PRODUCTS) {
-      const scenes = CAPABILITY_SCRIPT[slug];
-      expect(scenes).toHaveLength(3);
-      for (const scene of scenes) {
+      for (const scene of CAPABILITY_SCRIPT[slug])
         expect(scene.product).toBe(slug);
-        expect(PRODUCT_CONTENT[slug].capabilities[scene.cap]).toBeDefined();
-        expect(capabilityOf(scene).detail.length).toBeGreaterThan(10);
-      }
+      expect(capabilityScenes(slug).map((s) => s.id)).toEqual(
+        PRODUCT_PAGE[slug].scenes.map((s) => s.id),
+      );
     }
     expect(new Set(ALL.map((s) => s.id)).size).toBe(ALL.length);
+    // Every scene of the script is played by its page: no scene is left behind
+    expect(ALL).toHaveLength(
+      PRODUCTS.reduce((n, p) => n + PRODUCT_PAGE[p.slug].scenes.length, 0),
+    );
+  });
+
+  it("the Domus opens with its areas, every other product with at least one scene", () => {
+    expect(CAPABILITY_SCRIPT.domus).toHaveLength(0);
+    for (const { slug } of PRODUCTS.filter((p) => p.slug !== "domus"))
+      expect(capabilityScenes(slug).length).toBeGreaterThan(0);
   });
 
   it.each(cases)(
-    "%s: actions start after the swap, end at settle, and the scene keeps the pace of the chain",
+    "%s: actions start after the swap, end at settle, and the scene keeps the shared pace",
     (_, scene) => {
       expect(new Set(scene.actions.map((a) => a.id)).size).toBe(
         scene.actions.length,
@@ -73,17 +75,16 @@ describe("capability script", () => {
       expect(sceneSeconds(scene)).toBeLessThanOrEqual(SCENE_SECONDS_RANGE[1]);
       expect(scene.hold).toBeGreaterThanOrEqual(HOLD_SECONDS_RANGE[0]);
       expect(scene.hold).toBeLessThanOrEqual(HOLD_SECONDS_RANGE[1]);
-      // 51.6% measured for every scene after the ludic pass (v12/perf.md)
       expect(
         1 - motionSeconds(scene) / sceneSeconds(scene),
       ).toBeGreaterThanOrEqual(STILL_TARGET);
     },
   );
 
-  it.each(PRODUCTS.map((p) => p.slug))(
+  it.each(PRODUCTS.filter((p) => p.slug !== "domus").map((p) => p.slug))(
     `the opening of %s is still at least ${STILL_TARGET * 100}% of its cycle`,
     (slug) => {
-      expect(stillRatio(CAPABILITY_SCRIPT[slug])).toBeGreaterThanOrEqual(
+      expect(stillRatio(capabilityScenes(slug))).toBeGreaterThanOrEqual(
         STILL_TARGET,
       );
     },
@@ -128,7 +129,7 @@ describe("capability scenes", () => {
     ).toThrow(/no action/);
   });
 
-  it("every string of the capability scenes respects the copy rules", () => {
+  it("every string of the capability scenes respects the copy rules and none promises what the code lacks", () => {
     const strings: string[] = [];
     const walk = (value: unknown) => {
       if (typeof value === "string") strings.push(value);
@@ -137,116 +138,49 @@ describe("capability scenes", () => {
         Object.values(value).forEach(walk);
     };
     walk(CAPABILITY_STORY);
-    expect(strings.length).toBeGreaterThan(150);
+    expect(strings.length).toBeGreaterThan(80);
     for (const s of strings) expect(copyViolation(s), s).toBeNull();
+    const all = strings.join(" ");
+    expect(all).not.toMatch(/cupom|cashback|funil|Descreva o processo|Voltar à versão|Baixa automática/i);
   });
 });
 
 describe("capability stage", () => {
   const stage = renderToStaticMarkup(
-    <CapabilityStage id="product-scenes" label="Capacidades" slug="domus" />,
+    <CapabilityStage id="product-scenes" label="Telas" slug="knowly" />,
   );
-  it("has one tile per scene, the first at the centre, each named by its capability and sentence", () => {
-    const [first, second, third] = CAPABILITY_SCRIPT.domus;
-    expect(stage).toMatch(
-      new RegExp(`data-pos="0"[^>]*data-tile="${first.id}"`),
-    );
-    expect(stage).toMatch(
-      new RegExp(`data-pos="1"[^>]*data-tile="${second.id}"`),
-    );
-    expect(stage).toMatch(
-      new RegExp(`data-pos="-1"[^>]*data-tile="${third.id}"`),
-    );
-    const { name, detail } = capabilityOf(first);
-    expect(stage).toContain(`aria-label="${name}: ${detail}"`);
-  });
-  it("writes the durations and the captions for the runner, the first caption in place, no live region and no steps", () => {
-    expect(stage).not.toMatch(/aria-live/);
-    const json = stage.match(
-      /<script type="application\/json" data-scene-data(?:="[^"]*")?>([^<]*)<\/script>/,
-    )![1];
-    const data = JSON.parse(json.replace(/&quot;/g, '"')) as {
-      scenes: number[];
-      captions: string[];
-      steps?: number[];
-    };
-    expect(data.scenes).toEqual(CAPABILITY_SCRIPT.domus.map(sceneSeconds));
-    expect(data.captions).toEqual(
-      CAPABILITY_SCRIPT.domus.map((s) => capabilityOf(s).detail),
-    );
-    expect(data.steps).toBeUndefined();
-    const caption = stage.match(/<p[^>]*data-caption[^>]*>([^<]*)<\/p>/)![1];
-    expect(caption).toBe(data.captions[0]);
-  });
-});
-
-describe("products stage of the home", () => {
-  const scenes = homeProductScenes();
-  const stage = renderToStaticMarkup(
-    <ProductsStage id="products-ring" label="Produtos" />,
-  );
-  it("plays one capability scene per product, in the order of the site, each from its own product", () => {
-    expect(scenes.map((s) => s.product)).toEqual(PRODUCTS.map((p) => p.slug));
-    for (const scene of scenes) {
-      expect(CAPABILITY_SCRIPT[scene.product]).toContain(scene);
-      expect(scene.id).toBe(HOME_PRODUCT_SCENE[scene.product]);
-    }
-    const order = [...stage.matchAll(/data-tile="([a-z-]+)"/g)].map(
-      (m) => m[1],
-    );
-    expect(order).toEqual(scenes.map((s) => s.id));
+  const scenes = capabilityScenes("knowly");
+  const names = PRODUCT_PAGE.knowly.scenes.map((s) => s.name);
+  it("has one tile per scene, the first at the centre, each named by the short name of its page", () => {
     expect(stage).toMatch(
       new RegExp(`data-pos="0"[^>]*data-tile="${scenes[0].id}"`),
     );
+    expect(stage).toMatch(
+      new RegExp(`data-pos="1"[^>]*data-tile="${scenes[1].id}"`),
+    );
+    expect(stage).toMatch(
+      new RegExp(`data-pos="-1"[^>]*data-tile="${scenes[2].id}"`),
+    );
+    expect(stage).toContain(`aria-label="${names[0]}"`);
+    for (const name of names) expect(stage).toContain(`>${name}</li>`);
   });
-  it("draws the logo of the product in the bar of each window and no video", () => {
-    for (const scene of scenes)
-      expect(stage).toMatch(
-        new RegExp(
-          `data-tile="${scene.id}"[\\s\\S]*?data-product="${scene.product}"`,
-        ),
-      );
-    expect(stage).not.toMatch(/<video|<iframe|hyperframes-player|\.mp4|\.webm/);
-  });
-  it("keeps the 2x pace: scenes of about 2.5 s, a legible hold, the swap of the script, still most of the time", () => {
-    for (const scene of scenes) {
-      expect(sceneSeconds(scene)).toBeGreaterThanOrEqual(2.4);
-      expect(sceneSeconds(scene)).toBeLessThanOrEqual(2.6);
-      expect(scene.hold).toBeGreaterThanOrEqual(0.8);
-      expect(scene.hold).toBeLessThanOrEqual(1.0);
-    }
-    expect(SWAP_SECONDS).toBe(0.45);
-    expect(stillRatio(scenes)).toBeGreaterThanOrEqual(STILL_TARGET);
-  });
-  it("writes for the runner the card each scene lights, and names each tile by product and capability", () => {
+  it("writes the durations for the runner, no caption, no live region", () => {
+    expect(stage).not.toMatch(/aria-live|data-caption/);
     const json = stage.match(
       /<script type="application\/json" data-scene-data(?:="[^"]*")?>([^<]*)<\/script>/,
     )![1];
     const data = JSON.parse(json.replace(/&quot;/g, '"')) as {
       scenes: number[];
-      lit: string[];
-      steps?: number[];
+      captions?: string[];
     };
-    expect(data.lit).toEqual(PRODUCTS.map((p) => p.slug));
     expect(data.scenes).toEqual(scenes.map(sceneSeconds));
-    expect(data.steps).toBeUndefined();
-    const { name, detail } = capabilityOf(scenes[0]);
-    expect(stage).toContain(`aria-label="Domus, ${name}: ${detail}"`);
+    expect(data.captions).toBeUndefined();
   });
-  it("each card under the carousel marks the capability its scene shows, one per card, among the three it lists", () => {
-    const cards = renderToStaticMarkup(
-      <ProductCards tone="light" lit="domus" shown={HOME_SHOWN_CAPABILITY} />,
+  it("a stage of one scene shows no list of names", () => {
+    const one = renderToStaticMarkup(
+      <CapabilityStage id="product-scenes" label="Telas" slug="tuner" />,
     );
-    for (const scene of scenes) {
-      const card = cards.slice(
-        cards.indexOf(`data-card="${scene.product}"`),
-        cards.indexOf("</a>", cards.indexOf(`data-card="${scene.product}"`)),
-      );
-      expect(card.match(/data-shown/g), scene.product).toHaveLength(1);
-      expect(scene.cap).toBeLessThan(3);
-      expect(card).toMatch(
-        new RegExp(`data-shown=""[^>]*>[\\s\\S]*?${capabilityOf(scene).name}`),
-      );
-    }
+    expect(one.match(/data-tile="/g)).toHaveLength(1);
+    expect(one).not.toContain("data-cap=");
   });
 });

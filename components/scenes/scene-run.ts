@@ -1,30 +1,20 @@
 // EXECUÇÃO DAS CENAS NO NAVEGADOR
 // Loaded on demand by SceneDriver. The whole runner is a timer over the scene durations the server wrote next to the
 // stage (lib/scenes/script.ts: settle + hold). On every boundary it moves the tiles to their new places (`data-pos`),
-// writes the phase of each scene (`play` for the centre, `start` for the ones that come next, `end` for the ones behind),
-// flips the pulse of the thread, lights the name and writes the caption of the scene where the stage has them (the
-// capability stage of a product page), lights the product card of the scene where the section has cards (the products
-// carousel of the home) and tells the overview with the `ring:swap` event. The animations themselves are CSS
-// (components/scenes/fx.css) and nothing here reads layout. `pause` stops the timer and freezes the CSS animations
-// (`data-run="paused"`); `resume` continues from the same instant; `destroy` puts the stage back on its settled first
-// scene.
-import { follow } from "@/components/ring/overview-follow";
+// writes the phase of each scene (`play` for the centre, `start` for the ones that come next, `end` for the ones behind)
+// and lights the short name of the scene on screen (the capability stage of a product page). The animations themselves
+// are CSS (components/scenes/fx.css) and nothing here reads layout. `pause` stops the timer and freezes the CSS
+// animations (`data-run="paused"`); `resume` continues from the same instant; `destroy` puts the stage back on its
+// settled first scene.
 import { placeOf, ringPosition } from "@/components/ring/positions";
 import { turn } from "@/components/ring/turn";
 
-// `steps` maps each scene of the stage to the step of the chain it plays (identity on the home; a product page plays a
-// subset, so the overview must be told the step, not the position)
 type SceneData = {
   version: number;
   cycle: number;
   // Seconds the rotation of a swap takes (the script's SWAP_SECONDS)
   swap: number;
   scenes: number[];
-  steps?: number[];
-  // The caption of each scene (the capability stage of a product page)
-  captions?: string[];
-  // The product card each scene lights in its section (the products carousel of the home)
-  lit?: string[];
 };
 
 export function run(root: HTMLElement) {
@@ -39,35 +29,12 @@ export function run(root: HTMLElement) {
   const scenes = tiles.map((tile) => tile.querySelector<HTMLElement>(".scn"));
   const count = tiles.length;
 
-  // The block above (the overview) follows this stage through the swap event; it has no clock of its own
-  const stepOf = (scene: number) => data.steps?.[scene] ?? scene;
-  const overview = follow(root.id, root.closest("section"), stepOf(0));
-  const rail = root
-    .closest("section")
-    ?.querySelector<HTMLElement>(":scope > [data-rail]");
-  const flipRail = () => {
-    if (rail) rail.dataset.pulse = rail.dataset.pulse === "a" ? "b" : "a";
-  };
-  // The names of the capabilities under the stage and the caption of the one on screen (capability stage only)
+  // The short names of the scenes under the stage, the one on screen lit
   const names = [...root.querySelectorAll<HTMLElement>("[data-cap]")];
-  const caption = root.querySelector<HTMLElement>("[data-caption]");
-  // The product cards of the section (the home), the one of the scene on screen lit
-  const cards = data.lit
-    ? [
-        ...(root
-          .closest("section")
-          ?.querySelectorAll<HTMLElement>("[data-card]") ?? []),
-      ]
-    : [];
   const label = (active: number) => {
     names.forEach((name, i) => {
       name.dataset.on = i === active ? "true" : "false";
     });
-    const text = data.captions?.[active];
-    if (caption && text) caption.textContent = text;
-    const product = data.lit?.[active];
-    for (const card of cards)
-      card.dataset.on = card.dataset.card === product ? "true" : "false";
   };
 
   // Places and phases for the scene `active` at the centre. A scene ahead waits on its first frame, one behind keeps its
@@ -111,7 +78,6 @@ export function run(root: HTMLElement) {
   function next() {
     // Count from the planned boundary, not from now, so the cycle does not drift with the timer's lateness
     const planned = due;
-    const from = active;
     active = (active + 1) % count;
     root.style.setProperty("--swap-time", `${data.swap}s`);
     // A stage of one scene has nothing to swap to: the scene goes back to its first frame and plays again
@@ -121,17 +87,6 @@ export function run(root: HTMLElement) {
       // Starts the arc (lift in, dip out) of the rotation
       turn(arena);
     }
-    flipRail();
-    window.dispatchEvent(
-      new CustomEvent("ring:swap", {
-        detail: {
-          ring: root.id,
-          from,
-          to: active,
-          index: stepOf(active),
-        },
-      }),
-    );
     clearTimeout(timer);
     due = planned + data.scenes[active] * 1000;
     timer = setTimeout(next, Math.max(0, due - performance.now()));
@@ -142,9 +97,8 @@ export function run(root: HTMLElement) {
       delete root.dataset.run;
       if (!started) {
         started = true;
-        // The first scene starts from its first frame; the overview plays the token of step 0
+        // The first scene starts from its first frame
         show(0);
-        overview.begin();
         schedule(data.scenes[0] * 1000);
         return;
       }
@@ -166,7 +120,6 @@ export function run(root: HTMLElement) {
     destroy() {
       clearTimeout(timer);
       delete root.dataset.run;
-      overview();
       active = 0;
       label(0);
       delete arena.dataset.turn;
