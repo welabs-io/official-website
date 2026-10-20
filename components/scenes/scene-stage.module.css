@@ -3,7 +3,8 @@
    crossfades in (v2.1; it was a circular carousel whose turn was most of the motion). The swap lasts --swap-time, the
    swap of the script (0.45 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
 .screen {
-  --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  /* v2.2 (audit M11): the in-and-out curve of the page, not an easeInOutQuad of its own */
+  --ease: var(--ease-in-out);
   /* Width of the centre scene: 920 px at most (2:1, so 460 px tall), never taller than 70% of the window, the whole wrap
      on a phone */
   --tile-w: min(100%, 920px, calc(70vh * 2));

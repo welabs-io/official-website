@@ -4,11 +4,13 @@
      start  the first frame: every animated element held at its "from" state (animation paused at 0, fill backwards);
      play   the same animations running with the times of the script (--at, --d, --i, --st).
    Each effect animates FROM a state TO the natural one, so "end" needs no keyframes and a scene that leaves "play" does
-   not jump. Only opacity, transform, clip-path and colours move. */
+   not jump. Only opacity, transform, clip-path and colours move.
+   v2.2 (audit M11): every curve is a motion token of the page (--ease-out, --ease-spring); the scenes had five of
+   their own. */
 .scn [data-fx] {
   animation-duration: var(--d, 0.35s);
   animation-delay: calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s));
-  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation-timing-function: var(--ease-out);
   animation-fill-mode: both;
 }
 .scn[data-phase="start"] [data-fx],
@@ -28,11 +30,11 @@
    lifted and tilted (the keyframes are those of "rise", "spring" and "lift") */
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="in"] {
   animation-name: fx-rise;
-  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  animation-timing-function: var(--ease-out);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pop"] {
   animation-name: fx-spring;
-  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  animation-timing-function: var(--ease-out);
   transform-origin: var(--origin, 50% 50%);
 }
 /* A check (or any glyph) inside something that springs in draws itself from the left, just after the spring */
@@ -41,7 +43,7 @@
   svg {
   animation: fx-wipe calc(var(--d, 0.35s) * 0.55)
     calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s) + var(--d, 0.35s) * 0.45)
-    ease-out both;
+    var(--ease-out) both;
 }
 .scn[data-phase="start"] :is([data-fx="pop"], [data-fx="spring"]) svg,
 [data-run="paused"]
@@ -58,7 +60,7 @@
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="drop"] {
   animation-name: fx-lift;
-  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  animation-timing-function: var(--ease-out);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="blink"] {
   animation-name: fx-blink;
@@ -69,8 +71,7 @@
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="light"]::before {
   animation: fx-bar var(--d, 0.35s)
-    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s))
-    cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s)) var(--ease-out) both;
 }
 
 @keyframes fx-wipe {
@@ -127,7 +128,7 @@
     [data-fx="lift"],
     [data-fx="pulse"]
   ) {
-  animation-timing-function: cubic-bezier(0.3, 0.6, 0.4, 1);
+  animation-timing-function: var(--ease-out);
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="spring"] {
   animation-name: fx-spring;
@@ -151,11 +152,11 @@
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="pulse"]::after {
   animation: fx-ring var(--d, 0.35s)
-    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s)) ease-out both;
+    calc(var(--at, 0s) + var(--i, 0) * var(--st, 0s)) var(--ease-out) both;
 }
 .scn:is([data-phase="start"], [data-phase="play"]) [data-fx="roll"] {
   animation-name: fx-roll;
-  animation-timing-function: cubic-bezier(0.5, 0, 0.2, 1.3);
+  animation-timing-function: var(--ease-spring);
 }
 @keyframes fx-spring {
   0% {

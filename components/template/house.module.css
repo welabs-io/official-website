@@ -200,7 +200,7 @@
   display: grid;
 }
 .house:has(:global(input):checked) .seal {
-  animation: seal-in 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) 0.15s both;
+  animation: seal-in 0.42s var(--ease-spring) 0.15s both;
 }
 .house:has(:global(input):checked) .field {
   animation: field-in var(--dur-3) var(--ease-out) both;

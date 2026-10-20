@@ -201,7 +201,7 @@
   height: 1.625rem;
   padding: 0 0.5rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-label);
   font-weight: 500;
@@ -331,7 +331,7 @@
   gap: 0.25rem;
   padding: 0.125rem 0.5rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-meta);
   font-weight: 500;
@@ -498,7 +498,7 @@
   gap: 0.375rem;
   padding: 0.125rem 0.5rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-meta);
   font-weight: 500;
@@ -547,7 +547,7 @@
   justify-self: center;
   position: relative;
   padding: 0.125rem 0.5rem;
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-panel);
   border: 1px solid var(--s-edge);
   font-size: var(--s-t-meta);
@@ -661,7 +661,7 @@
   gap: 0.375rem;
   padding: 0.25rem 0.625rem 0.25rem 0.25rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-label);
 }

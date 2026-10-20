@@ -81,6 +81,8 @@
   --r-card: 8px;
   --r-win: 14px;
   --r-pill: 22px;
+  /* v2.2 (audit M11): the fully round end of a chip, a dot or a pill of a drawing (it was a loose 999px in the scenes) */
+  --r-dot: 999px;
   /* The neutral shadows of the preset (--shadow-md under a card, --shadow-lg under a popover) */
   --shadow-card:
     0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 6px -2px oklch(0 0 0 / 0.06);
@@ -331,7 +333,7 @@
   transition:
     opacity var(--dur-2) var(--ease-out),
     transform var(--dur-2) var(--ease-out),
-    visibility 0s;
+    visibility 0s linear;
 }
 :global(html[data-moving]) .hasMenu .menu {
   opacity: 0;
@@ -379,7 +381,8 @@
     height: 44px;
     padding: 0;
     border: 1px solid var(--cl);
-    border-radius: 6px;
+    /* v2.2 (audit M11): the shape of a control, not a loose 6 px */
+    border-radius: var(--r-ctl);
     background: transparent;
     color: var(--ink);
     cursor: pointer;

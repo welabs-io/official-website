@@ -311,7 +311,8 @@ a.core:focus-visible {
   animation-delay: calc(var(--w) * 2.5s - 12.5s);
 }
 .hub[data-hub="cycle"] .packet {
-  animation: packet 12.5s infinite paused;
+  /* The keyframes carry the curve of the flight (--ease-in-out); the run between them is linear */
+  animation: packet 12.5s linear infinite paused;
   animation-delay: calc(var(--w) * 2.5s - 12.5s + 0.2s);
 }
 .hub[data-hub="cycle"] .line::before {
@@ -520,7 +521,7 @@ a.core:focus-visible {
 .hub:has(.node[data-p="knowly"]:is(:hover, :focus-visible))
   .tie[data-of="knowly"]
   .packet {
-  animation: packet-loop 1.4s infinite;
+  animation: packet-loop 1.4s linear infinite;
 }
 @keyframes packet-loop {
   0% {

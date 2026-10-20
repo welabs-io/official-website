@@ -107,7 +107,7 @@
 .turnTrack {
   display: flex;
   flex-direction: column;
-  animation: turn 12.5s cubic-bezier(0.7, 0, 0.2, 1) infinite paused;
+  animation: turn 12.5s var(--ease-in-out) infinite paused;
 }
 [data-on="true"] .turnTrack {
   animation-play-state: running;

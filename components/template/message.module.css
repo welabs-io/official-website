@@ -335,7 +335,7 @@
   }
 }
 .msg:has(:global(input):checked) .room {
-  animation: room-in 0.42s cubic-bezier(0.3, 0.6, 0.4, 1) both;
+  animation: room-in 0.42s var(--ease-out) both;
   animation-delay: calc(5s + var(--i) * 0.1s);
 }
 .msg:has(:global(input):checked) .square {
