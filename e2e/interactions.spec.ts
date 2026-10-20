@@ -9,18 +9,21 @@ import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 900 } });
 
-// The opacity of the lit layer of every piece of the stage: `::after` of a card, `::before` of a tie or a line
+// The opacity of the lit layer of every piece of the stage: `::after` of a card, `::before` of a line of the record and,
+// since v2.2, the lit copy of the SVG curve of a tie (its second path)
 const lit = (page: Page, selector: string) =>
   page.evaluate(
     (sel) =>
-      [...document.querySelectorAll(sel)].map((el) =>
-        Number(
+      [...document.querySelectorAll(sel)].map((el) => {
+        const hot = el.querySelector("svg path:nth-of-type(2)");
+        if (hot) return Number(getComputedStyle(hot).opacity);
+        return Number(
           getComputedStyle(
             el,
             el.hasAttribute("data-p") ? "::after" : "::before",
           ).opacity,
-        ),
-      ),
+        );
+      }),
     selector,
   );
 

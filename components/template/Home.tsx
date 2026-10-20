@@ -114,7 +114,10 @@ export function HomeMessage() {
         <ol id="msg-track" className={msg.track}>
           <li className={msg.rail} aria-hidden="true">
             <span className={msg.run} />
-            <span className={msg.token} />
+            {/* v2.2 (audit M01): the message itself travels, a small bubble that stops 300 ms at each product */}
+            <span className={msg.token}>
+              <Glyph d={GLYPHS.chat} size={14} />
+            </span>
           </li>
           {HOME_MESSAGE.stations.map(({ product, label }, i) => (
             <li
@@ -193,6 +196,7 @@ export function HomeMessage() {
         </div>
         <label htmlFor="msg-go" className={msg.go}>
           <span data-off>{HOME_MESSAGE.send}</span>
+          <span data-run>{HOME_MESSAGE.sending}</span>
           <span data-on>{HOME_MESSAGE.again}</span>
         </label>
       </div>

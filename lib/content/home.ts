@@ -48,6 +48,8 @@ export const HOME_MESSAGE = {
   // v2.2: the category of the channel, not the brand
   bubble: { channel: "Mensagem", text: "Dá para entregar sábado?" },
   send: "Enviar a mensagem",
+  // v2.2 (audit M01): while the message runs the button says so; "Recomeçar" only once it has landed
+  sending: "Enviando",
   again: "Recomeçar",
   stations: [
     { product: "tuner", label: "Chegou" },

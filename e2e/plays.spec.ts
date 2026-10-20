@@ -180,6 +180,19 @@ test.describe("rich plays", () => {
     expect(order).toEqual(["site", "call", "message"]);
   });
 
+  test("domus: a kind of field dragged onto the form is added, the same as a tap", async ({
+    page,
+  }) => {
+    const play = await openPlay(page, "domus");
+    await play
+      .locator('[data-drag]:has(label[for="dp-date"])')
+      .dragTo(page.locator("#dp-form"));
+    await expect(page.locator("#dp-date")).toBeChecked();
+    await page.locator('label[for="dp-text"]').click();
+    await expect(page.locator("#dp-text")).toBeChecked();
+    await expect(play.locator("th", { hasText: "Prazo" })).toBeVisible();
+  });
+
   test("reset puts every play back on its idle frame", async ({ page }) => {
     const play = await openPlay(page, "magneto");
     await page.locator('label[for="mg-high"]').click();
