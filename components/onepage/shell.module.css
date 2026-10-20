@@ -1,27 +1,47 @@
 /* BASE DA PÁGINA */
-/* Welabs light theme (cream): one theme for the whole page, amber only as an area (dot, block, 4 px+ bar), Inter text.
-   Only the footer is graphite. */
+/* Welabs light theme: one theme for the whole page, amber only as an area (dot, block, 4 px+ bar), Inter text. Only the
+   footer is graphite.
+   v2.1 (2026-10-20): the colours, shapes, shadows, the action button and the focus ring follow the CURRENT tokens of
+   the ERP front (welabs-io/erp-platform, front/src/ui-kit/theme/welabs-theme.css and the `welabs` preset of
+   @imagineapps-team/react), not the brand package, which the operator reported out of date; the map is in
+   control/portfolio/site-redesign/v13-proposta/v2-1/tokens-erp.md. */
 .page {
   --g: #10141c;
   --g2: #161b25;
   --g3: #262d3a;
-  --c: #fffdf8;
+  /* The page is white with a warm halo at the top (ERP --background oklch(1 0 0) and --background-radial) */
+  --c: #ffffff;
   --c2: #f3ecdd;
   --cl: #e2d8c3;
-  /* SUPERFÍCIES DO TEMA CREME (CRM) */
-  /* The one place of the surface palette: the soft cream is the page (--c, #fffdf8); cards, windows, menu and popover
-     are white (--surface) and stand out by the hairline (--cl); wide strips such as window title bars and even rows
-     take the old page cream (--surface-band); highlight, selected and chips stay --surface-accent. Components read
-     these names; none carries its own cream. */
+  /* SUPERFÍCIES DO TEMA CLARO (FRONT DO ERP) */
+  /* The one place of the surface palette: the page, cards, windows, menu and popover are one white (ERP --background,
+     --card, --popover) and stand apart by the sand hairline (--cl, ERP --border); a band that must stand apart is the
+     ERP content area (--muted at 30% over the page); highlight, selected and chips stay sand 100 (--surface-accent).
+     Components read these names; none carries its own colour. */
   --surface: #ffffff;
-  --surface-band: #faf5ea;
+  --muted: oklch(0.96 0 0);
+  --surface-band: color-mix(in oklch, var(--muted) 30%, var(--c));
   --surface-accent: var(--c2);
+  --halo: radial-gradient(
+    60% 55% at 50% 0%,
+    oklch(0.66 0.21 28 / 0.06),
+    transparent 70%
+  );
   --a: #ffb020;
+  /* The amber scale of the preset: 100 the selected row, 200 the soft primary, 300 the hover of the action button */
+  --a-100: #fff1d8;
+  --a-200: #ffe2b1;
+  --a-300: #ffcc74;
+  /* The action button: graphite with cream text on light (ERP --action, --action-foreground) */
+  --action: #25272a;
+  --action-fg: #faf5ea;
   --ink: #1c1a16;
   --mute-d: #9da3ae;
   --mute-l: #625b4e;
+  /* The 3:1 border of a control (ERP --input, sand 600) */
+  --input: #827968;
   /* Structural lines of the light theme (thread, rails, bus): darker than the hairlines of the cards, so the drawing reads */
-  --thread-l: #d2c6ae;
+  --thread-l: #d4c7ab;
   /* ESCALA TIPOGRÁFICA, ESPAÇAMENTO E FORMAS */
   /* The one system every component reads (no loose value in the component sheets). Type: seven steps, 14 px the smallest
      text of the site; weights 400 (text), 500 (lead and labels) and 600 (titles); line heights 1.08 for display, 1.25
@@ -55,17 +75,30 @@
   --sp-7: 48px;
   --sp-8: 64px;
   --sp-9: 80px;
-  --r-ctl: 6px;
-  --r-card: 12px;
-  --r-win: 16px;
+  /* Shapes of the ERP front: a field or chip 10 px (--field-radius), a card 8 px (--surface-radius), a window or popover
+     14 px (--overlay-radius) and the round button 22 px (--control-radius) */
+  --r-ctl: 10px;
+  --r-card: 8px;
+  --r-win: 14px;
+  --r-pill: 22px;
+  /* The neutral shadows of the preset (--shadow-md under a card, --shadow-lg under a popover) */
   --shadow-card:
-    0 1px 2px rgb(28 26 22 / 0.05), 0 12px 24px -18px rgb(28 26 22 / 0.28);
-  --shadow-pop: 0 16px 32px -20px rgb(28 26 22 / 0.4);
+    0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 6px -2px oklch(0 0 0 / 0.06);
+  --shadow-pop:
+    0 12px 32px -8px oklch(0 0 0 / 0.12), 0 6px 12px -4px oklch(0 0 0 / 0.08);
+  /* MOVIMENTO DAS INTERAÇÕES */
+  /* One easing and three durations for every hover, press, open and reveal of the page (v2.1: the transitions were
+     loose values, and several hovers had none) */
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 0.16s;
+  --dur-2: 0.28s;
+  --dur-3: 0.48s;
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;
   --logo-h: 42px;
-  background: var(--c);
+  background: var(--halo) no-repeat, var(--c);
+  background-size: 100% 900px;
   color: var(--ink);
   overflow-x: clip;
 }
@@ -91,7 +124,6 @@
   --soft: rgb(250 245 234 / 0.1);
 }
 .light {
-  background: var(--c);
   color: var(--ink);
   --bg: var(--c);
   --line: var(--cl);
@@ -131,12 +163,12 @@
 }
 
 /* CABEÇALHO FIXO */
+/* Solid page colour, like the top bar of the ERP front on light */
 .header {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--c) 92%, transparent);
-  backdrop-filter: blur(10px);
+  background: var(--c);
   border-bottom: 1px solid var(--cl);
 }
 .headerInner {
@@ -162,32 +194,47 @@
     --logo-h: 34px;
   }
 }
+/* BOTÃO DE AÇÃO */
+/* The action button of the ERP front: graphite with cream text; on hover a lighter amber (300) with ink text, an amber
+   300 edge and the card shadow; pressed is the full amber. The amber is never darkened and never carries cream text. */
 .cta {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   padding: 0 var(--sp-5);
-  border-radius: var(--r-ctl);
-  background: var(--a);
-  color: var(--ink);
+  border: 1px solid var(--action);
+  border-radius: var(--r-pill);
+  background: var(--action);
+  color: var(--action-fg);
   font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   transition:
-    background-color 0.2s var(--ease-out),
-    transform 0.2s var(--ease-out);
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
 }
 .cta:hover {
-  background: #ffc04d;
+  background: var(--a-300);
+  border-color: var(--a-300);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px var(--a-300),
+    var(--shadow-card);
 }
 .cta:active {
+  background: var(--a);
+  border-color: var(--a);
+  color: var(--ink);
   transform: translateY(1px);
 }
 .ctaBig {
-  min-height: 56px;
+  min-height: 52px;
   padding: 0 var(--sp-6);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
 }
 @media (max-width: 520px) {
   /* The compact header button keeps the 14 px floor of the type scale */
@@ -217,6 +264,7 @@
   padding: 0;
   list-style: none;
 }
+/* The entry of the page in view: ink with the 3 px amber bar under it (the active tab of the ERP front) */
 .navLink {
   display: inline-flex;
   align-items: center;
@@ -227,51 +275,80 @@
   font-size: var(--text-sm);
   font-weight: 500;
   text-decoration: none;
-  transition: background-color 0.2s var(--ease-out);
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
 }
-.navLink:hover,
+.navLink:hover {
+  background: var(--surface-accent);
+}
 .navLink[aria-current] {
-  background: var(--soft);
+  box-shadow: inset 0 -3px 0 var(--a);
+  border-radius: var(--r-ctl) var(--r-ctl) 0 0;
 }
 .hasMenu {
   position: relative;
 }
+/* The list of products opens and closes by opacity and a short rise (it was a display swap with no transition); while a
+   move of the descent runs (`data-moving` on <html>) it closes at once, so it never stays over the brand opening */
 .menu {
   position: absolute;
   top: 100%;
   left: 0;
   z-index: 60;
-  display: none;
-  min-width: 300px;
+  min-width: 320px;
   margin: 0;
   padding: var(--sp-2);
   list-style: none;
   background: var(--surface);
   border: 1px solid var(--cl);
-  border-radius: var(--r-card);
+  border-radius: var(--r-win);
   box-shadow: var(--shadow-pop);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out),
+    visibility 0s linear var(--dur-2);
 }
 /* The list stays open while the pointer crosses the 1 px gap, because the item itself holds the hover */
 .hasMenu:hover .menu,
 .hasMenu:focus-within .menu {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-2) var(--ease-out),
+    visibility 0s;
+}
+:global(html[data-moving]) .hasMenu .menu {
+  opacity: 0;
+  visibility: hidden;
+  transition: none;
 }
 .menuLink {
   display: grid;
-  gap: var(--sp-1);
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  gap: var(--sp-4);
   padding: var(--sp-3);
   border-radius: var(--r-ctl);
   color: var(--ink);
   text-decoration: none;
-  transition: background-color 0.2s var(--ease-out);
+  transition: background-color var(--dur-1) var(--ease-out);
 }
-.menuLink:hover,
+.menuLink:hover {
+  background: var(--surface-accent);
+}
 .menuLink[aria-current] {
-  background: var(--soft);
+  background: var(--a-100);
 }
-.menuLink b {
-  font-size: var(--text-sm);
-  font-weight: 600;
+.menuLink img {
+  height: 40px;
+  width: auto;
+  margin: calc(var(--sp-2) * -1) 0;
 }
 .menuLink span {
   font-size: var(--text-xs);
@@ -437,14 +514,16 @@
 }
 
 /* SUPERFÍCIES DAS FAIXAS */
-/* A band is cream by default; a band that needs to stand apart from its neighbour takes the band cream, and the contact
-   is the one band of amber (amber as an area, never as text). */
+/* A band is the page by default; a band that needs to stand apart from its neighbour takes the soft band (the content
+   area of the ERP front). v2.1: the contact is no longer an amber field with graphite text (the operator found it did not
+   work); it closes on the warm halo of the page, under a hairline, and the amber stays an area: the bar over its title
+   and the hover of its button. */
 .band[data-surface="band"] {
   background: var(--surface-band);
   --bg: var(--surface-band);
 }
-.band[data-surface="amber"] {
-  background: var(--a);
-  --bg: var(--a);
-  --mute: var(--ink);
+.band[data-surface="contact"] {
+  background: var(--halo) no-repeat, var(--c);
+  border-top: 1px solid var(--cl);
+  --bg: var(--c);
 }

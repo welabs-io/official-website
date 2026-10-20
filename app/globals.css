@@ -32,7 +32,8 @@ html {
 }
 body {
   margin: 0;
-  background: #fffdf8;
+  /* The white page of the ERP front tokens (v2.1; was the cream #fffdf8) */
+  background: #ffffff;
   color: #1c1a16;
   font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -46,16 +47,22 @@ a {
   color: inherit;
 }
 /* FOCO VISÍVEL */
-/* One focus ring for every control: a 3 px amber ring (area, as the brand asks) inside a 2 px graphite outline. Amber
-   alone on cream is 1.7:1, so the graphite line carries the contrast (WCAG 2.2 asks 3:1) and the amber carries the brand. */
+/* One focus ring for every control, the one of the ERP front (front/src/ui-kit/theme/welabs-theme.css, "anel de foco
+   com offset na cor do fundo"): a 2 px gap in the page colour, then a 2 px opaque ink ring, so the ring's neighbour is
+   always the page, never the fill of the control (≥ 3:1, WCAG 1.4.11). A transparent outline stays for forced colours,
+   where the system repaints it. */
 :focus-visible {
-  outline: 2px solid #1c1a16;
-  outline-offset: 3px;
-  box-shadow: 0 0 0 3px #ffb020;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 4px #1c1a16;
 }
-/* On a graphite band (the footer) the outline turns cream */
+/* On a graphite band (the footer) the ring turns cream over the graphite */
 footer :focus-visible {
-  outline-color: #fffdf8;
+  box-shadow:
+    0 0 0 2px #10141c,
+    0 0 0 4px #fffdf8;
 }
 .skip-link {
   position: absolute;
