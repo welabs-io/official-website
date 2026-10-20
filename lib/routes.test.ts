@@ -79,7 +79,7 @@ describe("redirects", () => {
     expect(bySource.get("/new")?.destination).toBe("/");
     expect(bySource.get("/produtos")?.destination).toBe("/#products");
     expect(bySource.get("/solucoes")?.destination).toBe("/#products");
-    expect(bySource.get("/sobre")?.destination).toBe("/#chain");
+    expect(bySource.get("/sobre")?.destination).toBe("/#message");
     expect(bySource.get("/produtos/domus")?.destination).toBe(
       "/products/domus",
     );
@@ -94,7 +94,7 @@ describe("redirects", () => {
       permanent: true,
     });
     expect(bySource.get("/about")).toMatchObject({
-      destination: "/#chain",
+      destination: "/#message",
       permanent: true,
     });
   });

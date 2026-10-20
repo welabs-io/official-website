@@ -6,7 +6,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PageFrame } from "@/components/onepage/PageFrame";
-import { NAV, PRODUCT_PAGE } from "@/lib/content";
+import { HOME_INTRO, NAV, PRODUCT_PAGE } from "@/lib/content";
 import { copyViolation } from "@/lib/content/rules";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/(site)/page";
@@ -124,7 +124,6 @@ describe("the home", () => {
     const order = [
       "top",
       "intro",
-      "chain",
       "message",
       "domus",
       "products",
@@ -135,12 +134,13 @@ describe("the home", () => {
     for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);
     for (let i = 1; i < order.length; i++)
       expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
-    for (const gone of ["how", "audience", "integrations", "faq", "connectors"])
+    // v2.1: the film of the fitting pieces (#chain) left, a drawing with no function
+    for (const gone of ["how", "audience", "integrations", "faq", "connectors", "chain"])
       expect(at(gone), gone).toBe(-1);
   });
 
   it("opens with the title as its h1, the word that turns, one line and one button", () => {
-    const intro = home.slice(at("intro"), at("chain"));
+    const intro = home.slice(at("intro"), at("message"));
     expect(intro.match(/<h1/g)).toHaveLength(1);
     expect(visibleText(intro)).toContain("Software para");
     expect(intro.match(/href="\/#contact"/g)).toHaveLength(1);
@@ -148,21 +148,15 @@ describe("the home", () => {
   });
 
   it("the stage lights the products in the order of the turning word, every product a link", () => {
-    const intro = home.slice(at("intro"), at("chain"));
-    expect(intro).toContain('data-orbit="cycle"');
+    const intro = home.slice(at("intro"), at("message"));
+    expect(intro).toContain('data-hub="cycle"');
     for (const p of PRODUCTS)
       expect(intro).toContain(`href="/products/${p.slug}"`);
-    // Five ties drawn, each with one amber copy per end
-    expect(intro.match(/<line /g)).toHaveLength(15);
-  });
-
-  it("the film of the fitting pieces has no text, only a name for assistive technology", () => {
-    const fit = home.slice(
-      home.indexOf(">", at("chain")) + 1,
-      home.lastIndexOf("<section", at("message")),
-    );
-    expect(visibleText(fit)).toBe("Os produtos se encaixam");
-    expect(fit).toContain('role="img"');
+    // v2.1: four ties to the record (each carries its packet) and the record of the Domus with one line per product
+    expect(intro.match(/<span[^>]*data-of="(relloo|magneto|tuner|knowly)"[^>]*aria-hidden="true"/g)).toHaveLength(4);
+    // ...and every piece that lights in the cycle carries its window: 4 ties and 5 lines of the record
+    expect(intro.match(/data-of="(domus|relloo|magneto|tuner|knowly)" style/g)).toHaveLength(9);
+    expect(visibleText(intro)).toContain(HOME_INTRO.record.title);
   });
 
   it("the message is dragged or sent with a visible button, and walks through the five products", () => {
@@ -234,7 +228,6 @@ describe("the product pages", () => {
         "center",
         "details",
         "contact",
-        "next",
       ];
       const at = (id: string) => html.indexOf(`id="${id}"`);
       for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);
@@ -286,7 +279,7 @@ describe("the product pages", () => {
         html.indexOf('id="center"'),
         html.indexOf('id="details"'),
       );
-      expect(center).toContain('data-orbit="still"');
+      expect(center).toContain('data-hub="still"');
       expect(center).toContain(
         `data-lit="${slug === "domus" ? "relloo" : slug}"`,
       );
@@ -298,25 +291,22 @@ describe("the product pages", () => {
   );
 
   it.each(productPages)(
-    // The descent model (PR #27): no switcher and no list of the others; the way back is up the page and the way on is
-    // the door at the end, which leads to the next product in the order of the list
-    "$slug ends on the door to the next product, with no switcher",
+    // v2.1: the door "Próximo produto" left the end of a product; the five products are a selector at its top, the
+    // product of the page marked as the current one and the four others links to their pages
+    "$slug opens with the selector of the five products and ends on its contact",
     ({ slug, html }) => {
-      const next =
-        PRODUCTS[
-          (PRODUCTS.findIndex((p) => p.slug === slug) + 1) % PRODUCTS.length
-        ];
-      expect(html).not.toContain('aria-label="Trocar de produto"');
-      expect(html).not.toContain('id="others"');
-      const door = html.slice(html.indexOf('id="next"'), html.indexOf("<footer"));
-      expect(door.match(/data-door="[a-z]+"/g)).toEqual([
-        `data-door="${next.slug}"`,
-      ]);
-      expect(door).toContain(`href="/products/${next.slug}"`);
-      // The name of the link is what it shows: the label, the logo of the product (its alt) and its line
-      expect(door).not.toContain("aria-label=");
-      expect(visibleText(door)).toContain(NAV.next);
-      expect(door).toContain(`alt="${next.name}"`);
+      expect(html).not.toContain("data-door");
+      expect(html).not.toContain('id="next"');
+      const at = html.indexOf(`aria-label="${NAV.switch}"`);
+      expect(at).toBeGreaterThan(html.indexOf('id="product"'));
+      const nav = html.slice(at, html.indexOf("</nav>", at));
+      for (const p of PRODUCTS)
+        expect(nav).toContain(`href="/products/${p.slug}"`);
+      const current = nav.match(/<a[^>]*aria-current="page"[^>]*>/g) ?? [];
+      expect(current).toHaveLength(1);
+      expect(current[0]).toContain(`href="/products/${slug}"`);
+      const sections = html.match(/<section id="([a-z]+)"/g) ?? [];
+      expect(sections.at(-1)).toBe('<section id="contact"');
     },
   );
 

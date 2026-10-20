@@ -1,41 +1,63 @@
 // SEÇÕES DA PÁGINA DE PRODUTO (V2)
-// The page of a product in the v2 content: the opening (logo, one sentence, the button and a native drawing), the one
-// interaction of the product, the stage with the product among the others, the details that come with it, the contact
-// with open questions and the door to the next product. Server markup; the plays are CSS over checkboxes and radios.
+// The page of a product in the v2 content: the selector of the five products and the opening (logo, one sentence, the
+// button and a native screen), the one interaction of the product, the stage with the product among the others, the
+// details that come with it and the contact with open questions (v2.1: the door to the next product left; the selector
+// replaces it). Server markup; the plays are CSS over checkboxes and radios.
 import Link from "next/link";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { ProductBlock } from "@/components/onepage/ProductBlock";
 import shell from "@/components/onepage/shell.module.css";
-import { Glyph, ROOM_GLYPHS, GLYPHS } from "@/components/scenes/icons";
+import { MiniScene } from "@/components/scenes/MiniScene";
 import { CapabilityStage } from "@/components/scenes/SceneStage";
 import { NAV, PAGE_HEADINGS, PRODUCT_PAGE } from "@/lib/content";
-import { ICON_STROKE } from "@/lib/icon-stroke";
 import {
   CTA_LABEL,
+  PRODUCTS,
   productBySlug,
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
-import { nextProduct } from "@/lib/site-config";
 import { ContactBand, DomusHouse } from "./Home";
 import { Orbit } from "./Orbit";
 import { PLAYS } from "./Plays";
 import { SectionHead } from "./SectionHead";
 import styles from "./v2.module.css";
 
-// The areas that fit into the Domus symbol at the opening (M8)
-const ASSEMBLE = [
-  { name: "Vendas", d: GLYPHS.tag },
-  { name: "Estoque", d: ROOM_GLYPHS.Estoque },
-  { name: "Financeiro", d: ROOM_GLYPHS.Financeiro },
-  { name: "Fiscal", d: GLYPHS.doc },
-  { name: "Pessoas", d: GLYPHS.user },
-  { name: "Projetos", d: GLYPHS.calendar },
-];
+// SELETOR DOS CINCO PRODUTOS
+// v2.1: the way between products is explicit, at the top of every product, in place of the "Welabs / <name>" trail and
+// of the door "Próximo produto" that closed the page. The five logos in their order, the product of the page in ink with
+// the 4 px amber bar under it (the active tab of the ERP front), the others quiet until pointed at. Each one is a link:
+// the descent (components/onepage/descent-run.ts) opens the brand opening of that product from the logo clicked.
+function ProductSwitch({ current }: { current: ProductSlug }) {
+  return (
+    <nav className={styles.switch} aria-label={NAV.switch}>
+      <ul>
+        {PRODUCTS.map(({ slug, name }) => (
+          <li key={slug}>
+            <Link
+              href={`/products/${slug}`}
+              prefetch={false}
+              aria-current={slug === current ? "page" : undefined}
+              aria-label={name}
+            >
+              <img
+                src={productLogo(slug, "light", "row")}
+                alt=""
+                width={1005}
+                height={550}
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
 
 // ABERTURA
-// The logo is the h1 (the descent moves the logo of the card onto it); the Domus opens with its areas fitting into its
-// symbol, every other product with the stage of its capability scenes and their short names.
+// The selector of the five products, then the logo as the h1 (the brand opening lands its logo on it), the sentence and
+// the button; the Domus opens with one of its screens playing, every other product with the stage of its capability
+// scenes and their short names.
 export function ProductOpening({ slug }: { slug: ProductSlug }) {
   const page = PRODUCT_PAGE[slug];
   const name = productBySlug(slug)!.name;
@@ -44,13 +66,8 @@ export function ProductOpening({ slug }: { slug: ProductSlug }) {
       className={`${shell.wrap} ${styles.opening}`}
       data-stage={slug === "domus" ? undefined : ""}
     >
+      <ProductSwitch current={slug} />
       <div className={styles.openingText}>
-        <p className={styles.trail}>
-          <Link href="/" prefetch={false}>
-            Welabs
-          </Link>{" "}
-          / {name}
-        </p>
         <ProductBlock
           slug={slug}
           tone="light"
@@ -63,19 +80,10 @@ export function ProductOpening({ slug }: { slug: ProductSlug }) {
         </a>
       </div>
       {slug === "domus" ? (
-        <div className={styles.assemble} aria-hidden="true">
-          <div className={styles.frame}>
-            {ASSEMBLE.map((area, i) => (
-              <span
-                key={area.name}
-                className={styles.area}
-                style={{ "--i": i } as React.CSSProperties}
-              >
-                <Glyph d={area.d} size={22} />
-                {area.name}
-              </span>
-            ))}
-          </div>
+        // v2.1: a real screen of the Domus, playing (the order of Marina comes back to the module Pedidos and she is told),
+        // in place of a symbol drawn in CSS with six areas that only flew in
+        <div className={styles.domusStage}>
+          <MiniScene id="s6" />
         </div>
       ) : (
         <CapabilityStage
@@ -114,14 +122,13 @@ export function ProductPlay({ slug }: { slug: ProductSlug }) {
 // O PRODUTO ENTRE OS OUTROS
 // The Domus page lights the Relloo (a product working on the Domus); every other page lights itself
 export function ProductCenter({ slug }: { slug: ProductSlug }) {
-  const { title, stamp } = PRODUCT_PAGE[slug].center;
+  const { title } = PRODUCT_PAGE[slug].center;
   return (
     <div className={shell.wrap}>
       <SectionHead title={title} />
       <Orbit
         label={title}
         lit={slug === "domus" ? "relloo" : slug}
-        stamp={stamp}
         self={slug}
         small
       />
@@ -149,45 +156,3 @@ export const ProductContact = ({ slug }: { slug: ProductSlug }) => (
     asks={PRODUCT_PAGE[slug].asks}
   />
 );
-
-// PRÓXIMO PRODUTO
-// The end of a product page is a door: one tall band that names the next product with its opening logo and line. The
-// whole band is the link, and `data-door` tells components/onepage/Descent.tsx to grow it into the next product. Its
-// logo is the same file and the same height as the opening it becomes, so the move is a pure translate and scale.
-export function NextProduct({ slug }: { slug: ProductSlug }) {
-  const next = productBySlug(nextProduct(slug))!;
-  return (
-    <Link
-      href={`/products/${next.slug}`}
-      prefetch={false}
-      className={styles.next}
-      data-door={next.slug}
-    >
-      <span className={styles.nextLabel}>{NAV.next}</span>
-      {/* The logo names the product, so the name of the link is what it shows */}
-      <img
-        className={styles.nextLogo}
-        data-door-logo
-        src={productLogo(next.slug, "light", "hero", 64)}
-        alt={next.name}
-        width={1005}
-        height={550}
-        loading="lazy"
-        decoding="async"
-      />
-      <span className={styles.nextLine}>{next.line}</span>
-      <svg
-        className={styles.nextCue}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={ICON_STROKE}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M12 5v14m-6-6 6 6 6-6" />
-      </svg>
-    </Link>
-  );
-}

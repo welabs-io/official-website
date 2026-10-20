@@ -39,11 +39,12 @@ const redirects = [
   // Portuguese routes of the previous site
   { source: "/produtos", destination: "/#products", permanent: true },
   { source: "/solucoes", destination: "/#products", permanent: true },
-  { source: "/sobre", destination: "/#chain", permanent: true },
+  // v2.1: the band #chain left the home; "about" lands on the message that crosses the five products
+  { source: "/sobre", destination: "/#message", permanent: true },
   // English routes that have no page of their own: the home already holds that content
   { source: "/products", destination: "/#products", permanent: true },
   { source: "/solutions", destination: "/#products", permanent: true },
-  { source: "/about", destination: "/#chain", permanent: true },
+  { source: "/about", destination: "/#message", permanent: true },
   ...productRedirects("/produtos"),
   // Retired slugs under the English route
   ...productRedirects("/products").filter(
@@ -53,7 +54,7 @@ const redirects = [
   { source: "/welabs", destination: "/", permanent: true },
   { source: "/welabs/produtos", destination: "/#products", permanent: true },
   { source: "/welabs/solucoes", destination: "/#products", permanent: true },
-  { source: "/welabs/sobre", destination: "/#chain", permanent: true },
+  { source: "/welabs/sobre", destination: "/#message", permanent: true },
   ...productRedirects("/welabs/produtos"),
   { source: "/welabs/:path*", destination: "/", permanent: true },
   { source: "/portfolio-preview/welabs", destination: "/", permanent: true },
