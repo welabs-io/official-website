@@ -1,197 +1,110 @@
 // CONFIGURAÇÃO DAS PÁGINAS
-// Every band is the light (cream) theme of the brand: the home and the product pages have one theme, no alternating
-// graphite and cream bands. The site has no video: the chain, the products carousel of the home and the opening of a
-// product page are native scenes.
-// One declarative list of sections per route; components/template/SiteTemplate walks it and renders each section. The
-// home and the five product pages are the same template with two configurations, so no section markup is copied between
-// routes. The rhythm alternates visual bands (the chain, the product ring, the benefits with their scenes, the connector
-// block) and reading bands (the order from start to end, who it is for, integrations, questions): the home is chain,
-// order, products, benefits, audience, integrations, questions, connector block, closing; the product page is opening
-// (with the capability scenes), what it solves, how it works (the chain), capabilities in groups, audience, questions,
-// connector block, closing and the other products. The connector block always comes right before the closing, because
-// its rails run down into it. `pad` names the spacing class of the section (home.module.css).
-import { PAGE_HEADINGS } from "./content";
-import { PRODUCTS, productBySlug, type ProductSlug } from "./products";
+// Every band is the light (cream) theme of the brand; the contact band is amber. One declarative list of sections per
+// route; components/template/SiteTemplate walks it and renders each section, so no section markup is copied between
+// routes. The v2 of the content (2026-10-20): little text, the rest is motion the visitor plays.
+// - Home: the opening with the stage of the five products, the film of the fitting pieces, the message that crosses the
+//   operation, the Domus and its rooms, the five products, what changes, the contact and where we run.
+// - Product page: the opening, the one interaction of the product (the Domus has its rooms and its fields), the product
+//   among the others, the details that come with it, the contact and the door to the next product.
+// `pad` names the spacing class of the section (home.module.css).
+import { PRODUCTS, type ProductSlug } from "./products";
 
-export type Tone = "dark" | "light";
 export type SectionPad =
-  | "chain"
+  | "intro"
+  | "block"
   | "products"
   | "productPage"
-  | "block"
-  | "read"
-  | "connectors"
+  | "contact"
   | "closing";
 
 type Base = {
   id: string;
-  tone: Tone;
   pad: SectionPad;
   // Heading for screen readers only (a visual band that shows no title of its own)
   srTitle?: string;
-  // Thread of the page: "off" where the drawing of the section crosses the axis itself; "tail" draws only the stretch
-  // under the content (the chain of the home, whose own connector carries the axis down to the ring)
-  thread?: "on" | "off" | "tail" | "none";
-  // Stretch of the thread at the bottom of the section, with the pulse that goes down to the next dock; `railDelay`
-  // is the wait (seconds) between the swap of the ring and the start of the pulse
-  rail?: "drop" | "converge";
-  railDelay?: number;
-};
-
-// A carousel of native scenes: the id of its stage (the runner and the `ring:swap` event name it) and its accessible name
-export type StageConfig = {
-  id: string;
-  label: string;
+  // The surface of the band: cream (default), the soft band cream, or the amber of the contact
+  surface?: "band" | "amber";
 };
 
 export type SectionConfig =
-  // The chain of the home in two blocks: opening, overview (top) and the ring of detail scenes (bottom), joined by the
-  // connector that drops from the lit node
-  | (Base & { kind: "chain"; stage: StageConfig })
-  // The products of the home: the carousel of one native scene per product, then the five cards, the one of the product
-  // on screen lit
-  | (Base & { kind: "products"; stage: StageConfig })
-  // "How it works" of a product page: the native chain narrowed to the scenes of the product (overview on top, scenes
-  // below)
-  | (Base & { kind: "how"; slug: ProductSlug; title: string })
-  // Opening of a product page: trail, logo, line and the stage of the capability scenes of the product
-  | (Base & { kind: "hero"; slug: ProductSlug })
-  // Three problems and what the product does about them (product page)
-  | (Base & { kind: "resolves"; slug: ProductSlug })
-  // Six capabilities in groups with one sentence each (product page)
-  | (Base & { kind: "capabilities"; slug: ProductSlug })
-  // Profiles and questions: the home's own (no slug) or a product's
-  | (Base & { kind: "audience"; slug?: ProductSlug })
-  | (Base & { kind: "faq"; slug?: ProductSlug })
-  // The order from start to end, in seven steps (home)
-  | (Base & { kind: "journey" })
-  // What changes in the operation, with a native scene each (home)
-  | (Base & { kind: "benefits" })
-  // Channels, data, cloud and AI (home)
-  | (Base & { kind: "integrations" })
-  // The other four products (product page)
-  | (Base & { kind: "others"; slug: ProductSlug })
+  | (Base & { kind: "intro" })
+  | (Base & { kind: "fit" })
+  | (Base & { kind: "message" })
+  | (Base & { kind: "domus" })
+  | (Base & { kind: "products" })
+  | (Base & { kind: "effects" })
+  | (Base & { kind: "contact"; slug?: ProductSlug })
+  | (Base & { kind: "platforms" })
+  | (Base & { kind: "opening"; slug: ProductSlug })
+  | (Base & { kind: "areas" })
+  | (Base & { kind: "play"; slug: ProductSlug })
+  | (Base & { kind: "center"; slug: ProductSlug })
+  | (Base & { kind: "details"; slug: ProductSlug })
   // The way down to the next product, at the end of a product (the descent goes on into it)
-  | (Base & { kind: "next"; slug: ProductSlug })
-  | (Base & { kind: "hub"; lit?: ProductSlug })
-  | (Base & { kind: "closing" });
+  | (Base & { kind: "next"; slug: ProductSlug });
 
 export type PageConfig = {
   home: boolean;
-  // The home has no visible title: its h1 is for screen readers
-  srH1?: string;
   sections: SectionConfig[];
 };
 
-// The connector block and the closing are the same on every route (the hub only lights the product of a product page)
-const hub = (srTitle: string, lit?: ProductSlug): SectionConfig => ({
-  id: "connectors",
-  kind: "hub",
-  tone: "light",
-  pad: "connectors",
-  srTitle,
-  lit,
-  thread: "off",
-  rail: "converge",
-});
-const closing: SectionConfig = {
+const platforms: SectionConfig = {
   id: "platforms",
-  kind: "closing",
-  tone: "light",
+  kind: "platforms",
   pad: "closing",
-  thread: "none",
 };
 
 export const HOME_CONFIG: PageConfig = {
   home: true,
-  srH1: "Welabs",
   sections: [
+    { id: "intro", kind: "intro", pad: "intro" },
     {
       id: "chain",
-      kind: "chain",
-      tone: "light",
-      pad: "chain",
-      thread: "tail",
-      rail: "drop",
-      railDelay: 0.5,
-      stage: {
-        id: "chain-ring",
-        label: "Cenas de cada sistema da cadeia",
-      },
+      kind: "fit",
+      pad: "block",
+      srTitle: "Os produtos se encaixam",
     },
-    { id: "how", kind: "journey", tone: "light", pad: "read" },
-    {
-      id: "products",
-      kind: "products",
-      tone: "light",
-      pad: "products",
-      srTitle: "Produtos",
-      rail: "drop",
-      railDelay: 0.2,
-      stage: {
-        id: "products-ring",
-        label: "Uma tela de cada produto",
-      },
-    },
-    { id: "operation", kind: "benefits", tone: "light", pad: "read" },
-    { id: "audience", kind: "audience", tone: "light", pad: "read" },
-    { id: "integrations", kind: "integrations", tone: "light", pad: "read" },
-    { id: "faq", kind: "faq", tone: "light", pad: "read" },
-    hub("Produtos ligados entre si"),
-    closing,
+    { id: "message", kind: "message", pad: "block", surface: "band" },
+    { id: "domus", kind: "domus", pad: "block" },
+    { id: "products", kind: "products", pad: "products", surface: "band" },
+    { id: "operation", kind: "effects", pad: "block" },
+    { id: "contact", kind: "contact", pad: "contact", surface: "amber" },
+    platforms,
   ],
 };
 
 export function productConfig(slug: ProductSlug): PageConfig {
-  const { name } = productBySlug(slug)!;
   return {
     home: false,
     sections: [
+      { id: "product", kind: "opening", slug, pad: "productPage" },
+      ...(slug === "domus"
+        ? ([
+            { id: "areas", kind: "areas", pad: "block", surface: "band" },
+            { id: "play", kind: "play", slug, pad: "block" },
+          ] as SectionConfig[])
+        : ([
+            { id: "play", kind: "play", slug, pad: "block", surface: "band" },
+          ] as SectionConfig[])),
       {
-        id: "product",
-        kind: "hero",
+        id: "center",
+        kind: "center",
         slug,
-        tone: "light",
-        pad: "productPage",
-      },
-      { id: "resolves", kind: "resolves", slug, tone: "light", pad: "block" },
-      {
-        id: "how",
-        kind: "how",
-        slug,
-        tone: "light",
         pad: "block",
-        title: PAGE_HEADINGS.how,
-        rail: "drop",
-        railDelay: 0.2,
+        surface: slug === "domus" ? "band" : undefined,
       },
-      {
-        id: "capabilities",
-        kind: "capabilities",
-        slug,
-        tone: "light",
-        pad: "read",
-      },
-      {
-        id: "audience",
-        kind: "audience",
-        slug,
-        tone: "light",
-        pad: "read",
-      },
-      { id: "faq", kind: "faq", slug, tone: "light", pad: "read" },
-      hub(`${name} no núcleo e nos trilhos`, slug),
-      closing,
-      // The product no longer ends on a list of the others: it ends on the next one, and the page goes on into it
-      { id: "next", kind: "next", slug, tone: "light", pad: "read" },
+      { id: "details", kind: "details", slug, pad: "block" },
+      { id: "contact", kind: "contact", slug, pad: "contact", surface: "amber" },
+      // The product ends on the next one, and the page goes on into it
+      { id: "next", kind: "next", slug, pad: "block" },
     ],
   };
 }
 
 // DESCIDA CONTÍNUA
-// The home is cut in two around the product slot: the head (opening, order and the products band, where the cards are)
-// stays above the product that opens, and the tail (from "what changes" to the closing) gives way to it. The cut is right
-// after the products band, so the product is the next section of the home.
+// The home is cut in two around the product slot: the head (from the opening to the five products, where the cards are)
+// stays above the product that opens, and the tail (what changes, the contact, where we run) gives way to it. The cut is
+// right after the products band, so the product is the next section of the home.
 const CUT = HOME_CONFIG.sections.findIndex((s) => s.id === "products") + 1;
 export const HOME_HEAD: PageConfig = {
   ...HOME_CONFIG,

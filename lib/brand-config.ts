@@ -17,7 +17,7 @@ export type LogoPlace =
   | "hero"
   // Accessible name of the first logo of each product on the home
   | "first-mention"
-  // Rows of logos (chain, products), miniature core and rails, connector block, navigation, footer, CTA
+  // Rows of logos (the cards, the ground of the Domus, the stations of the message), the stage, navigation, footer, CTA
   | "row"
   | "hub";
 

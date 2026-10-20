@@ -1,128 +1,165 @@
 // CONTEÚDO DE CADA PRODUTO
-// Problems and capabilities, one entry per product, in weight order. Every claim comes from the films
-// of the motion round (manifest `proves`), the Domus synthesis of 2026-10-08 or the product dossiers of the portfolio:
-// no client, no metric, no feature that is not there. The line under the logo stays in lib/products.ts.
-import type { ProductContentMap } from "./types";
+// The page of a product (v2 of the content, approved on 2026-10-20): little text, one interaction per product. Every
+// claim comes from the code of the product, as measured in section 1 of the v13 analysis (portfolio/site-redesign/
+// v13-proposta/analise.md): no funnel, coupon or cashback in the Relloo, no process written as a sentence in the Magneto,
+// the Knowly limited to what the knowledge base already does, and the Domus as the whole management of the company, with
+// tax and banks only as an attractive detail.
+import type { CapabilitySceneId } from "../scenes/capabilities";
+import type { ProductSlug } from "../products";
 
-export const PRODUCT_CONTENT: ProductContentMap = {
+export type ProductPage = {
+  // Sentence under the logo of the opening
+  short: string;
+  // Capability scenes of the opening, with the short name under each (the Domus opens with its areas instead)
+  scenes: readonly { id: CapabilitySceneId; name: string }[];
+  // The section of the interaction of the product
+  play: { title: string; lead: string };
+  // Title of the stage with this product lit among the others, and the effect it shows there
+  center: { title: string; stamp: string };
+  // Details that come with the product: real, short, never the definition of the product
+  details: readonly string[];
+  // Open questions of the contact (no answers: they are the reason to talk)
+  asks: readonly string[];
+};
+
+export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
   domus: {
-    resolves: [
-      {
-        problem: "Cada área guarda os dados num lugar diferente.",
-        does: "O Domus reúne cadastros, financeiro e contratos da empresa num sistema só.",
-      },
-      {
-        problem: "Um cadastro novo vira um projeto de programação.",
-        does: "Você desenha o cadastro e a tela nasce pronta, sem refazer o sistema.",
-      },
-      {
-        problem: "As regras da empresa ficam só no papel.",
-        does: "As regras moram dentro do Domus e rodam como fluxo no Magneto.",
-      },
+    short: "A gestão da empresa inteira, moldada à sua operação.",
+    scenes: [],
+    play: {
+      title: "Do jeito da sua operação",
+      lead: "Arraste um campo e a tela muda junto.",
+    },
+    center: {
+      title: "Onde os outros produtos trabalham",
+      stamp: "Marina já cadastrada",
+    },
+    details: [
+      "NFS-e nacional",
+      "PIX e extrato do Banco Inter",
+      "Asaas",
+      "Assinatura eletrônica",
+      "Dados do Omie",
+      "Assistente com IA",
     ],
-    capabilities: [
-      { icon: "bank", text: "Financeiro e bancos" },
-      { icon: "screen", text: "Cadastro que vira tela" },
-      { icon: "flow", text: "Regras que rodam no Magneto" },
-      { icon: "contract", text: "Contratos e assinaturas" },
-      { icon: "people", text: "Gestão de pessoas" },
-      { icon: "receipt", text: "Nota fiscal de serviço" },
+    asks: [
+      "Quais áreas a sua empresa usaria?",
+      "Como trazer o que está no sistema atual?",
+      "O que dá para moldar sem programar?",
     ],
   },
   relloo: {
-    resolves: [
-      {
-        problem: "O pedido chega por canais diferentes e se perde.",
-        does: "O Relloo junta tudo num cartão com responsável, prazo e histórico.",
-      },
-      {
-        problem: "A pessoa conta o pedido de novo a cada contato.",
-        does: "O cartão traz as conversas e os pedidos anteriores, e os dados que o Domus guarda.",
-      },
-      {
-        problem: "Campanha e venda ficam em ferramentas separadas.",
-        does: "O Relloo acompanha do formulário e do cupom no WhatsApp até a venda no caixa e o cashback.",
-      },
+    short: "As conversas de todos os canais, com a história de cada pessoa.",
+    scenes: [
+      { id: "relloo-person", name: "A pessoa inteira" },
+      { id: "relloo-agent", name: "Agente que passa a vez" },
     ],
-    capabilities: [
-      { icon: "card", text: "Cartão com dono e prazo" },
-      { icon: "history", text: "Histórico de cada pessoa" },
-      { icon: "megaphone", text: "Campanha e cupom no WhatsApp" },
-      { icon: "funnel", text: "Funis e etapas de venda" },
-      { icon: "cash", text: "Venda no caixa e cashback" },
-      { icon: "bot", text: "Agente que passa a vez" },
+    play: {
+      title: "Uma pessoa, todos os canais",
+      lead: "Toque num canal.",
+    },
+    center: {
+      title: "Junto dos outros produtos",
+      stamp: "Marina com a Ana",
+    },
+    details: [
+      "Ligação pelo WhatsApp gravada",
+      "Chat no site",
+      "Agentes de IA com fonte",
+      "Prazo de resposta",
+      "Respostas prontas",
+      "Google Agenda",
+    ],
+    asks: [
+      "Por quais canais as conversas chegam hoje?",
+      "Quanto um agente de IA resolveria sozinho?",
+      "Como a equipe divide as conversas?",
     ],
   },
   magneto: {
-    resolves: [
-      {
-        problem: "O processo vive em planilha, e-mail e lembrete.",
-        does: "O Magneto desenha o processo em blocos, e ele passa a rodar.",
-      },
-      {
-        problem: "Explicar o processo a quem programa leva semanas.",
-        does: "Você descreve o processo numa frase, revisa os blocos e ele roda.",
-      },
-      {
-        problem: "Mudar uma regra dá medo.",
-        does: "A nova versão fica ao lado, passa por teste e volta à anterior num toque.",
-      },
+    short: "Fluxos com aprovação, desenhados em blocos.",
+    scenes: [{ id: "magneto-canvas", name: "Fluxo em blocos" }],
+    play: {
+      title: "A pessoa só entra para aprovar",
+      lead: "Toque em aprovar.",
+    },
+    center: {
+      title: "Junto dos outros produtos",
+      stamp: "Aprovado às 10:14",
+    },
+    details: [
+      "Espera e aprovação",
+      "Validação antes de publicar",
+      "Nova tentativa quando outro sistema falha",
+      "Registro de quem mudou",
+      "Editor dentro do Domus",
     ],
-    capabilities: [
-      { icon: "blocks", text: "Fluxo desenhado em blocos" },
-      { icon: "approval", text: "Aprovação onde precisa" },
-      { icon: "versions", text: "Versão testada ao lado" },
-      { icon: "wand", text: "Processo descrito em frase" },
-      { icon: "undo", text: "Volta atrás num toque" },
-      { icon: "log", text: "Registro de quem mudou" },
+    asks: [
+      "Quais aprovações travam a sua operação?",
+      "O que roda hoje em planilha e lembrete?",
+      "Quem precisa decidir, e quando?",
     ],
   },
   tuner: {
-    resolves: [
-      {
-        problem: "Cada canal tem a sua própria caixa de entrada.",
-        does: "Voz, WhatsApp e chat do site chegam do mesmo jeito, numa conversa só.",
-      },
-      {
-        problem: "A pessoa repete tudo quando a ligação é transferida.",
-        does: "A ligação vai para a equipe certa e passa adiante sem repetir nada.",
-      },
-      {
-        problem: "Foto e localização se perdem pelo caminho.",
-        does: "No número oficial do WhatsApp elas chegam inteiras e a conversa retoma no dia seguinte.",
-      },
+    short: "O número oficial do WhatsApp, as ligações e o Discord no mesmo ponto.",
+    scenes: [{ id: "tuner-call", name: "Ligação para a equipe certa" }],
+    play: {
+      title: "Ligue e veja para onde vai",
+      lead: "Escolha uma opção do menu.",
+    },
+    center: {
+      title: "Junto dos outros produtos",
+      stamp: "Ligação na conversa",
+    },
+    details: [
+      "WhatsApp oficial",
+      "Menu de opções na ligação",
+      "Distribuição para a equipe",
+      "Gravação e transcrição",
+      "Ligação pelo WhatsApp",
+      "Discord",
     ],
-    capabilities: [
-      { icon: "chat", text: "Número oficial no WhatsApp" },
-      { icon: "phone", text: "Ligação para a equipe certa" },
-      { icon: "globe", text: "Chat no site" },
-      { icon: "pin", text: "Foto e localização inteiras" },
-      { icon: "transfer", text: "Transferência sem repetir nada" },
-      { icon: "history", text: "Conversa retomada no dia seguinte" },
+    asks: [
+      "Quantos números e linhas a empresa tem?",
+      "Para onde cada ligação deveria ir?",
+      "Quais conversas precisam ficar gravadas?",
     ],
   },
   knowly: {
-    resolves: [
-      {
-        problem: "O que a equipe guarda está espalhado.",
-        does: "O Knowly reúne as fontes num lugar só e acompanha cada atualização.",
-      },
-      {
-        problem: "Ninguém confere de onde veio a resposta.",
-        does: "Cada frase da resposta traz a origem, e ele avisa quando não encontra.",
-      },
-      {
-        problem: "Nem todo mundo deve ver tudo.",
-        does: "Cada pessoa vê só o que pode, e a resposta respeita quem pergunta.",
-      },
+    short: "Respostas com a fonte, e cada pessoa vê só o que pode.",
+    scenes: [
+      { id: "knowly-answer", name: "Resposta com a fonte" },
+      { id: "knowly-sources", name: "Fontes num lugar só" },
+      { id: "knowly-access", name: "Acesso por pessoa" },
     ],
-    capabilities: [
-      { icon: "link", text: "Resposta com a fonte" },
-      { icon: "folder", text: "Fontes num lugar só" },
-      { icon: "lock", text: "Acesso por pessoa" },
-      { icon: "refresh", text: "Atualizado na origem" },
-      { icon: "shield", text: "Sem dado pessoal" },
-      { icon: "question", text: "Avisa quando não encontra" },
+    play: {
+      title: "Pergunte",
+      lead: "Escolha uma pergunta.",
+    },
+    center: {
+      title: "Junto dos outros produtos",
+      stamp: "Sim, até 12h",
+    },
+    details: [
+      "Fonte de cada frase",
+      "Acesso por pessoa e grupo",
+      "Dado pessoal barrado",
+      "Documentos, tickets e atas",
+      "Cadastros do Domus",
+    ],
+    asks: [
+      "Onde está o conhecimento da equipe hoje?",
+      "Quem pode ver o quê?",
+      "Quais perguntas se repetem?",
     ],
   },
 };
+
+// Headings shared by the five product pages
+export const PAGE_HEADINGS = {
+  areas: "Todas as áreas da empresa",
+  areasLead: "E as que só a sua operação tem.",
+  details: "Detalhes que já vêm junto",
+  contact: (name: string) => `Quer ver o ${name} com a sua operação?`,
+  scenes: (name: string) => `Telas do ${name}`,
+} as const;

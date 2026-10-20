@@ -3,17 +3,11 @@
 // product screen drawn in HTML and CSS; its motion is a list of named actions the script times.
 import type { CSSProperties } from "react";
 
-export type SceneId = "s0" | "s1" | "s2" | "s3" | "s4" | "s5" | "s6";
+// The outcomes of the story the home shows (the call and the message as one person, the answer with its source, the
+// order back confirmed); the ids are those of the scenes of the former chain, kept so the frames stay comparable
+export type SceneId = "s1" | "s4" | "s6";
 
-export const SCENE_IDS: readonly SceneId[] = [
-  "s0",
-  "s1",
-  "s2",
-  "s3",
-  "s4",
-  "s5",
-  "s6",
-];
+export const SCENE_IDS: readonly SceneId[] = ["s1", "s4", "s6"];
 
 // Props that tie an element to an action of the script: `data-act` names it, `--at`/`--d` carry the time of the action
 // (and of each item of a staggered one) so CSS animates with the numbers of the script, never with numbers of its own.

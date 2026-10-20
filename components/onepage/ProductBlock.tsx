@@ -17,12 +17,15 @@ export function ProductBlock({
   link = true,
   heading = "h2",
   className,
+  short,
 }: {
   slug: ProductSlug;
   tone: "dark" | "light";
   link?: boolean;
   heading?: "h1" | "h2";
   className?: string;
+  // The sentence of the opening of a product page, in place of the short line of the cards
+  short?: string;
 }) {
   const product = productBySlug(slug)!;
   const Heading = heading;
@@ -54,7 +57,9 @@ export function ProductBlock({
           logo
         )}
       </Heading>
-      <p className={styles.line}>{product.line}</p>
+      <p className={short ? styles.short : styles.line}>
+        {short ?? product.line}
+      </p>
     </div>
   );
 }

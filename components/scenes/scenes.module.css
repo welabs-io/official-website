@@ -1,4 +1,4 @@
-/* CENAS NATIVAS DA CADEIA */
+/* CENAS NATIVAS */
 /* Product screens drawn in HTML and CSS, at their real size (the scene never scales like a video would). Interface text
    is small and the hierarchy comes from weight and colour before size: meta 11 px, label 12 px, body 13 px, and one key
    element of 18 to 22 px per scene (`.key`). Three radii (6 item, 12 panel, 16 window), two edges (hairline divider and
@@ -169,27 +169,18 @@
 .dot[data-tone="ok"] {
   background: var(--s-ok-dot);
 }
-.avatarXs,
 .avatarSm {
   display: grid;
   flex: none;
   place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 50%;
   background: var(--s-amber-200);
   color: var(--s-ink);
+  font-size: var(--s-t-label);
   font-weight: 600;
   line-height: 1;
-}
-.avatarXs {
-  width: 1.25rem;
-  height: 1.25rem;
-  font-size: var(--s-t-meta);
-  letter-spacing: -0.02em;
-}
-.avatarSm {
-  width: 1.75rem;
-  height: 1.75rem;
-  font-size: var(--s-t-label);
 }
 .avatarSm[data-tone="contact"] {
   background: var(--s-ink);
@@ -250,54 +241,16 @@
   background: var(--s-info-soft);
   color: var(--s-info);
 }
-/* Head of a panel: the name in 13/600 and its context in 11 */
-.panelHead {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  min-width: 0;
-}
-.panelHead > b {
-  font-size: var(--s-t-body);
-}
-.panelHead > span:not([class]) {
-  margin-left: auto;
-  font-size: var(--s-t-meta);
-  font-weight: 500;
-  color: var(--s-mute);
-}
 
 /* COMPOSIÇÕES */
-.page {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 0.875rem;
-  min-height: 0;
-}
-.pageTitle {
-  align-self: end;
-}
-.full {
-  display: grid;
-  min-height: 0;
-}
 .duo {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--s-gap);
   min-height: 0;
 }
-.duoHouse {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-}
 .duoHousePhone {
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-}
-.duoFunnel {
-  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-}
-.duoFlow {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
 }
 
 /* TELEFONE */
@@ -462,197 +415,6 @@
 }
 
 /* CAIXA DE ENTRADA */
-.inbox {
-  display: grid;
-  grid-template-columns: 15rem minmax(0, 1fr);
-  min-height: 0;
-  overflow: hidden;
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-card);
-  background: var(--s-win);
-}
-.inboxList {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  min-height: 0;
-  background: var(--s-panel);
-  border-right: 1px solid var(--s-hair);
-}
-.listHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 2.75rem;
-  padding: 0 0.875rem;
-  border-bottom: 1px solid var(--s-hair);
-  font-size: var(--s-t-label);
-}
-.listHead span {
-  min-width: 1.25rem;
-  padding: 0.0625rem 0.375rem;
-  border-radius: 999px;
-  background: var(--s-chip);
-  font-size: var(--s-t-meta);
-  font-weight: 600;
-  text-align: center;
-  color: var(--s-mute);
-}
-.inboxList ul {
-  display: grid;
-  align-content: start;
-  gap: 0.125rem;
-  padding: 0.375rem;
-}
-.inboxList li {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  padding: 0.5rem 0.5rem 0.5rem 0.625rem;
-  border-radius: var(--s-r-ctl);
-}
-.inboxList li > time {
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-  white-space: nowrap;
-}
-.inboxList li.inboxOn {
-  background: var(--s-amber-50);
-  box-shadow: inset 0 0 0 1px var(--s-amber-200);
-}
-.inboxList li.inboxOn::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.5rem;
-  bottom: 0.5rem;
-  width: 3px;
-  border-radius: 0 3px 3px 0;
-  background: var(--s-amber);
-}
-.entry {
-  display: grid;
-  flex: 1;
-  min-width: 0;
-  line-height: 1.3;
-}
-.entry b {
-  font-size: var(--s-t-label);
-}
-.entry span {
-  overflow: hidden;
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.thread {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  min-width: 0;
-  min-height: 0;
-}
-.threadHead {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  height: 2.75rem;
-  padding: 0 0.875rem;
-  border-bottom: 1px solid var(--s-hair);
-}
-.threadHead .pillOk {
-  margin-left: auto;
-}
-/* Timeline: a 1 px line through the channel marks */
-.timeline {
-  --tl-gap: 1.375rem;
-  position: relative;
-  display: grid;
-  align-content: start;
-  gap: var(--tl-gap);
-  padding: 1.25rem 1.25rem 0.75rem;
-}
-.timeline li {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.875rem;
-}
-/* A 1 px line from each channel mark to the next one: it ends at the last item */
-.timeline li:not(:last-child)::before {
-  content: "";
-  position: absolute;
-  left: calc(0.8125rem - 0.5px);
-  top: 1.625rem;
-  bottom: calc(-1 * var(--tl-gap));
-  width: 1px;
-  background: var(--s-hair);
-}
-.channelMark {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 1.625rem;
-  height: 1.625rem;
-  border: 1px solid transparent;
-  border-radius: 50%;
-}
-.channelMark[data-tone="info"] {
-  background: var(--s-info-soft);
-  color: var(--s-info);
-}
-.channelMark[data-tone="ok"] {
-  background: var(--s-ok-soft);
-  color: var(--s-ok);
-}
-.itemBody {
-  display: grid;
-  gap: 0.25rem;
-  min-width: 0;
-  padding-top: 0.125rem;
-}
-.itemMeta {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-.itemMeta b {
-  font-size: var(--s-t-label);
-  font-weight: 500;
-  color: var(--s-ink);
-}
-.itemText {
-  font-size: var(--s-t-body);
-}
-/* History reads quieter than what arrives in the scene */
-.timeline li[data-quiet] .itemText {
-  color: var(--s-mute);
-}
-/* The typing dots and the text share one cell, so the text takes the place of the dots */
-.itemSlot {
-  display: grid;
-  justify-items: start;
-}
-.itemSlot > * {
-  grid-area: 1 / 1;
-}
-.typingInline {
-  display: flex;
-  align-self: center;
-  gap: 0.25rem;
-  padding: 0.5rem 0.625rem;
-  border-radius: var(--s-r-card);
-  background: var(--s-chip);
-  opacity: 0;
-}
-.typingInline i {
-  width: 0.375rem;
-  height: 0.375rem;
-  border-radius: 50%;
-  background: var(--s-mute);
-}
 .wave {
   display: flex;
   align-items: center;
@@ -666,347 +428,6 @@
   border-radius: 1px;
   background: var(--s-info-dot);
   opacity: 0.45;
-}
-.replyBox {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin: 0 0.875rem 0.875rem;
-  height: 2.25rem;
-  padding: 0 0.375rem 0 0.75rem;
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-ctl);
-  font-size: var(--s-t-label);
-  color: var(--s-mute);
-}
-.replyBox i {
-  display: grid;
-  place-items: center;
-  width: 1.625rem;
-  height: 1.625rem;
-  border-radius: 4px;
-  background: var(--s-chip);
-  color: var(--s-mute);
-}
-
-/* FUNIL */
-.funnel,
-.sheet,
-.flow,
-.status,
-.doc {
-  min-width: 0;
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-card);
-  background: var(--s-panel);
-}
-.funnel {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  overflow: hidden;
-}
-.funnel > .panelHead,
-.sheet > .panelHead {
-  height: 2.75rem;
-  padding: 0 0.875rem;
-  border-bottom: 1px solid var(--s-hair);
-}
-/* Four lanes of equal height share the panel: the pitch is the same for every lane, which is what the slide of the card
-   counts on */
-.lanes {
-  display: grid;
-  grid-auto-rows: minmax(0, 1fr);
-}
-.lane {
-  position: relative;
-  display: grid;
-  grid-template-columns: var(--lane-head, 8.5rem) minmax(0, 1fr);
-  align-items: center;
-  min-height: 0;
-  border-top: 1px solid var(--s-hair);
-}
-.lane:first-child {
-  border-top: 0;
-}
-.laneHead {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  align-self: stretch;
-  padding: 0 0.875rem;
-  font-size: var(--s-t-label);
-  font-weight: 500;
-  line-height: 1.25;
-}
-.laneHead em {
-  margin-left: auto;
-  font-size: var(--s-t-meta);
-  font-weight: 500;
-  color: var(--s-mute);
-  font-variant-numeric: tabular-nums;
-}
-.laneBody {
-  position: relative;
-  display: grid;
-  align-content: center;
-  padding: 0 0.625rem 0 0;
-}
-.emptySlot {
-  height: 3.25rem;
-  border: 1px dashed var(--s-edge);
-  border-radius: var(--s-r-ctl);
-}
-/* The card of the story floats over its lane: the host is exactly one lane tall (its top border included), so each layer
-   inside it slides by whole lanes */
-.layerHost {
-  position: absolute;
-  z-index: 2;
-  top: -1px;
-  bottom: 0;
-  left: var(--lane-head, 8.5rem);
-  right: 0;
-  display: grid;
-}
-.layer {
-  display: grid;
-  min-height: 0;
-}
-.layer {
-  align-content: center;
-}
-.layerHost .deal {
-  margin: 1px 0.625rem 0 0;
-}
-.deal,
-.other {
-  position: relative;
-  display: grid;
-  align-content: center;
-  gap: 0.25rem;
-  padding: 0.375rem 0.75rem 0.375rem 0.875rem;
-  overflow: hidden;
-  background: var(--s-win);
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-ctl);
-  box-shadow: var(--s-elev-1);
-  line-height: 1.25;
-}
-.deal {
-  background: var(--s-amber-50);
-  box-shadow: var(--s-elev-2);
-}
-/* The card of the story is the one of the moment: a 3 px amber bar on its left */
-.deal::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--s-amber);
-}
-.deal > b:not(.key) {
-  font-size: var(--s-t-body);
-  white-space: nowrap;
-}
-.deal > b.key {
-  white-space: nowrap;
-}
-.dealFoot {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-.emblems {
-  display: flex;
-  gap: 0.3125rem;
-  margin-left: auto;
-}
-.emblem {
-  position: relative;
-  color: var(--s-wall);
-}
-.emblemOn {
-  position: absolute;
-  inset: 0;
-  color: var(--s-ink);
-}
-.other b {
-  font-size: var(--s-t-label);
-  font-weight: 500;
-}
-.other span {
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-
-/* PAINEL DE DADOS DO CARTÃO */
-.sheet {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  overflow: hidden;
-}
-/* The rows share the height of the panel, so the panel ends with the one beside it */
-.facts {
-  display: grid;
-  grid-auto-rows: minmax(2rem, 1fr);
-  background: var(--s-win);
-}
-.fact {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0 0.875rem;
-  border-top: 1px solid var(--s-hair);
-}
-.fact:first-child {
-  border-top: 0;
-}
-.fact dt {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: var(--s-t-label);
-  color: var(--s-mute);
-  white-space: nowrap;
-}
-.fact dt svg {
-  color: var(--s-faint);
-}
-.fact dd {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
-  font-size: var(--s-t-body);
-  font-weight: 500;
-  text-align: right;
-  white-space: nowrap;
-}
-.fact dd em {
-  padding: 0.125rem 0.375rem;
-  border-radius: 4px;
-  background: var(--s-chip);
-  font-size: var(--s-t-meta);
-  font-weight: 500;
-  color: var(--s-mute);
-}
-/* A row that arrived in this scene: pale amber and a 3 px amber bar */
-.fact[data-fresh] {
-  position: relative;
-  background: var(--s-amber-50);
-}
-.fact[data-fresh]::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--s-amber);
-}
-.fact[data-fresh] dt svg {
-  color: var(--s-ink);
-}
-.pending {
-  display: block;
-  width: 6rem;
-  border-top: 1px dashed var(--s-wall);
-}
-.cardHead {
-  display: grid;
-  gap: 0.375rem;
-  padding: 0.875rem;
-  border-bottom: 1px solid var(--s-hair);
-}
-.cardHeadMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-
-/* REGISTRO DO CARTÃO (ESTÁGIO E PROGRESSO) */
-.status {
-  display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
-  overflow: hidden;
-}
-.statusCard {
-  display: flex;
-  align-items: baseline;
-  gap: 0.625rem;
-  padding: 0.875rem 0.875rem 0;
-}
-.statusCard b {
-  font-size: var(--s-t-body);
-}
-.statusCard span {
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-.statusStack {
-  display: grid;
-  padding: 0.5rem 0.875rem 0;
-}
-.statusStack > span {
-  grid-area: 1 / 1;
-}
-.statusStack > span > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.statusStack .dot {
-  width: 0.625rem;
-  height: 0.625rem;
-}
-.statusStack > [data-tone="ok"] {
-  color: var(--s-ok);
-}
-.statusStack > [data-tone="warn"] {
-  color: var(--s-warn);
-}
-.statusStack > [data-tone="info"] {
-  color: var(--s-info);
-}
-.statusPrev {
-  opacity: 0;
-}
-.track {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.375rem;
-  padding: 0.875rem 0.875rem 1rem;
-}
-.track li {
-  display: grid;
-  gap: 0.375rem;
-  min-width: 0;
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-  line-height: 1.25;
-}
-.trackBar {
-  display: block;
-  height: 4px;
-  overflow: hidden;
-  border-radius: 2px;
-  background: var(--s-hair);
-}
-.trackBar i {
-  display: block;
-  height: 100%;
-  background: var(--s-ok-dot);
-}
-.status .facts {
-  border-top: 1px solid var(--s-hair);
 }
 
 /* CASA */
@@ -1149,7 +570,10 @@
   align-self: start;
   align-content: start;
   gap: 0.75rem;
+  min-width: 0;
   padding: 1rem;
+  border: 1px solid var(--s-edge);
+  border-radius: var(--s-r-card);
   background: var(--s-win);
   box-shadow: var(--s-elev-1);
 }
@@ -1321,125 +745,12 @@
   font-size: var(--s-t-label);
 }
 
-/* FLUXO DE APROVAÇÃO */
-.flow {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  background: var(--s-win);
-  box-shadow: var(--s-elev-1);
-}
-.flow > .panelHead {
-  padding: 0.75rem 0.875rem;
-  border-bottom: 1px solid var(--s-hair);
-}
-/* The steps share the height of the panel (auto rows stretch), and each link reaches the node below it whatever the
-   height of its row */
-.steps {
-  display: grid;
-  grid-template-rows: auto auto auto;
-  align-content: stretch;
-  padding: 0.25rem 0.875rem 0.75rem;
-}
-.step {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.5rem minmax(0, 1fr);
-  column-gap: 0.75rem;
-  align-items: start;
-  padding: 0.75rem 0 0.5rem;
-}
-/* The vertical line from this node to the next: behind the nodes, filling in success */
-.stepLink {
-  position: absolute;
-  z-index: 0;
-  left: calc(0.75rem - 1px);
-  top: 2.25rem;
-  bottom: -0.75rem;
-  width: 2px;
-  overflow: hidden;
-  background: var(--s-hair);
-}
-.stepLink i {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--s-ok-dot);
-}
-.stepNode {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  background: var(--s-win);
-  box-shadow: inset 0 0 0 1.5px var(--s-edge);
-}
-.stepDone {
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--s-ok-dot);
-  color: var(--s-win);
-}
-.stepText {
-  display: grid;
-  line-height: 1.3;
-  padding-top: 0.125rem;
-}
-.stepText b {
-  font-size: var(--s-t-body);
-}
-.stepText span {
-  font-size: var(--s-t-meta);
-  color: var(--s-mute);
-}
-/* The Gestora's row under step 2: avatar, name, and the button that becomes a pill */
-.approval {
-  grid-column: 2;
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  margin-top: 0.625rem;
-  padding: 0.625rem 0.625rem 0.625rem 0.75rem;
-  background: var(--s-panel);
-  border: 1px solid var(--s-hair);
-  border-radius: var(--s-r-ctl);
-}
-.decide {
-  display: grid;
-  margin-left: auto;
-}
-.decide > * {
-  grid-area: 1 / 1;
-  justify-self: end;
-}
-.button {
-  display: inline-flex;
-  align-items: center;
-  height: 1.875rem;
-  padding: 0 0.75rem;
-  border-radius: var(--s-r-ctl);
-  background: var(--s-action);
-  color: var(--s-action-fg);
-  font-size: var(--s-t-label);
-  font-weight: 600;
-  white-space: nowrap;
-  opacity: 0;
-}
-.decide .pillOk {
-  align-self: center;
-}
-
-/* TELA BAIXA: any tile under 27 rem of height (the 16:10 opening of a product page at 1024, the cards of the benefits)
+/* TELA BAIXA: any tile under 27 rem of height (the 16:10 opening of a product page at 1024, the outcomes of the home)
    tightens its rhythm and drops the extra sections */
 @container scn (max-height: 27rem) {
   .win {
     --s-pad: 0.875rem;
     --s-gap: 0.75rem;
-  }
-  .page {
-    gap: 0.5rem;
   }
   .roof {
     height: 1.25rem;
@@ -1456,46 +767,12 @@
     width: 1.5rem;
     height: 1.5rem;
   }
-  .funnel > .panelHead,
-  .sheet > .panelHead,
-  .listHead,
-  .threadHead {
-    height: 2.25rem;
-  }
   .phoneHead {
     height: 2.5rem;
   }
   .toast {
     top: 3rem;
     padding: 0.5rem 0.75rem;
-  }
-  .facts {
-    grid-auto-rows: minmax(1.75rem, 1fr);
-  }
-  .emptySlot {
-    height: 2.25rem;
-  }
-  .deal,
-  .other {
-    padding-block: 0.25rem;
-  }
-  .cardHead {
-    padding: 0.625rem 0.75rem;
-  }
-  .timeline {
-    --tl-gap: 0.625rem;
-    padding: 0.625rem 0.75rem 0.5rem;
-  }
-  .step {
-    padding: 0.5rem 0 0.25rem;
-  }
-  .stepLink {
-    top: 2rem;
-    bottom: -0.5rem;
-  }
-  .approval {
-    margin-top: 0.375rem;
-    padding: 0.375rem 0.5rem;
   }
   .doc {
     gap: 0.5rem;
@@ -1507,9 +784,6 @@
   .answer {
     margin-top: 0;
     padding: 0.75rem;
-  }
-  .track {
-    padding: 0.625rem 0.875rem 0.75rem;
   }
   .docMore {
     display: none;
@@ -1523,7 +797,6 @@
     --s-pad: 0.75rem;
     --s-gap: 0.625rem;
     --s-t-key: 1.125rem;
-    --lane-head: 6.75rem;
   }
   .bar {
     padding: 0 0.75rem;
@@ -1532,20 +805,13 @@
     display: none;
   }
   .duo,
-  .duoHouse,
   .duoHousePhone,
-  .duoFunnel,
-  .duoFlow,
   .source {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
     grid-auto-rows: auto;
     align-content: start;
     gap: var(--s-gap);
-  }
-  .page {
-    align-content: start;
-    grid-template-rows: auto auto;
   }
   /* House: rows of a fixed height, the roof lower */
   .house {
@@ -1573,63 +839,13 @@
     width: 1.5rem;
     height: 1.5rem;
   }
-  /* Tuner: the inbox drops its list */
-  .inbox {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .inboxList {
-    display: none;
-  }
-  .timeline {
-    --tl-gap: 0.875rem;
-    padding: 0.875rem 0.75rem 0.5rem;
-  }
   .wave {
     width: 8rem;
-  }
-  /* Funnel: lanes of a fixed height, the quiet cards and the emblems go; next to the house, the lanes are only names */
-  .lanes {
-    grid-auto-rows: 3.25rem;
-  }
-  .other,
-  .emblems {
-    display: none;
-  }
-  .duoHouse .lanes {
-    grid-auto-rows: 1.875rem;
-  }
-  .duoHouse .lane {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .duoHouse .laneBody {
-    display: none;
-  }
-  .duoFunnel {
-    --lane-head: 5.75rem;
-  }
-  .duoFunnel .laneHead {
-    padding: 0 0.5rem 0 0.75rem;
-  }
-  .duoFunnel .laneHead em {
-    display: none;
   }
   .roomNew > * {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-  .emptySlot {
-    height: 2.25rem;
-  }
-  .duoFunnel .fact:nth-child(n + 4) {
-    display: none;
-  }
-  /* The card of the house shows only the rows the rooms handed over */
-  .cardHead ~ .facts .fact:not([data-fresh]) {
-    display: none;
-  }
-  .fact dd em {
-    display: none;
   }
   /* Knowly: the document keeps its lines, the connector and the extras go */
   .doc {
@@ -1640,28 +856,6 @@
   .docMore,
   .related {
     display: none;
-  }
-  /* Magneto: the Gestora's row keeps the decision, the record keeps stage and progress */
-  .approval > .who,
-  .approval > .avatarSm {
-    display: none;
-  }
-  .approval {
-    margin-top: 0.375rem;
-    padding: 0.375rem 0.5rem;
-  }
-  .decide {
-    margin-left: 0;
-  }
-  .status .facts {
-    display: none;
-  }
-  .step {
-    padding: 0.5rem 0 0.25rem;
-  }
-  .stepLink {
-    top: 2rem;
-    bottom: -0.5rem;
   }
   /* Phone next to the house: the header and the notification, the chat behind it out */
   .duoHousePhone > .phone {
@@ -1679,32 +873,10 @@
   }
 }
 
-/* TELA ESTREITA E BAIXA (os cartões dos benefícios): the protagonist pane alone */
+/* TELA ESTREITA E BAIXA (as cenas do efeito da home): the protagonist pane alone */
 @container scn (max-width: 34rem) and (max-height: 28.5rem) {
-  .duoFunnel .fact:nth-child(n + 3),
-  .duoHouse > .house:has(+ .sheet),
-  .duoFlow .flow > .panelHead,
-  .track li > span:last-child,
   .ask > .query,
   .docHead {
-    display: none;
-  }
-  /* Funnel: the two lanes of the story (Novo and Em análise), tall enough for the title of the card on two lines */
-  .duoFunnel .lanes {
-    grid-auto-rows: 4.5rem;
-  }
-  .duoFunnel .lane:nth-child(n + 3) {
-    display: none;
-  }
-  .deal > b.key {
-    white-space: normal;
-  }
-}
-
-/* TELA MÉDIA: under 52 rem of width the rows of facts drop the tag of their origin and the Gestora keeps only her face */
-@container scn (max-width: 52rem) {
-  .fact dd em,
-  .approval > .who {
     display: none;
   }
 }

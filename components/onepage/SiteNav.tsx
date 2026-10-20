@@ -1,7 +1,7 @@
 "use client";
 // MENU DO CABEÇALHO
-// The navigation of every page: Produtos (a link to the products of the home with the five products in a list under it),
-// Como funciona and Contato. On a desktop the list opens on hover and on keyboard focus (no state); on a phone the whole
+// The navigation of every page: Produtos (a link to the products of the home with the five products in a list under it)
+// and the Domus. On a desktop the list opens on hover and on keyboard focus (no state); on a phone the whole
 // menu is a panel under the header, opened by a button. The panel closes on any link, on Escape and when the page
 // changes, so it never stays open over a page the visitor already reached.
 // The texts and the products come as props from the server (PageFrame), so no list of the site ships in this client
@@ -82,24 +82,18 @@ export function SiteNav({
               ))}
             </ul>
           </li>
+          {/* The Domus has an entry of its own: it is the centre the other products work on (v2) */}
           <li>
             <Link
-              href="/#how"
+              href="/products/domus"
               prefetch={false}
               className={styles.navLink}
+              aria-current={
+                pathname === "/products/domus" ? "page" : undefined
+              }
               onClick={close}
             >
-              {NAV.how}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={contactHref}
-              prefetch={false}
-              className={styles.navLink}
-              onClick={close}
-            >
-              {NAV.contact}
+              {NAV.domus}
             </Link>
           </li>
         </ul>

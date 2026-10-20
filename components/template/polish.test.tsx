@@ -17,8 +17,7 @@ const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 // Sheets that carry the page's own rhythm: spaces and type come from tokens
 const SHEETS = [
-  "components/template/reading.module.css",
-  "components/template/content.module.css",
+  "components/template/v2.module.css",
   "components/onepage/home.module.css",
   "components/onepage/shell.module.css",
 ];
@@ -67,12 +66,7 @@ describe("space and type tokens", () => {
     expect(loose).toEqual([]);
   });
 
-  it.each([
-    ...SHEETS,
-    "components/template/chain-overview.module.css",
-    "components/template/corehub.module.css",
-    "components/onepage/logos.module.css",
-  ])("%s sets font sizes only from the type scale", (file) => {
+  it.each(SHEETS)("%s sets font sizes only from the type scale", (file) => {
     const loose = declarations(strip(read(file)))
       .filter(({ prop }) => prop === "font-size")
       .filter(({ value }) => !/^var\(--text-[\w-]+\)$/.test(value))
@@ -118,23 +112,28 @@ describe("space and type tokens", () => {
   });
 
   it("cards and chips use the shape tokens, and only the shapes of the scale", () => {
-    for (const file of [
-      "components/template/reading.module.css",
-      "components/template/content.module.css",
-    ]) {
-      const radii = declarations(strip(read(file)))
-        .filter(({ prop }) => prop === "border-radius")
-        .map(({ value }) => value);
-      for (const value of radii)
-        // --r-win is the third shape of the scale (the door to the next product is a window-sized surface)
-        expect([
-          "var(--r-card)",
-          "var(--r-ctl)",
-          "var(--r-win)",
-          "50%",
-          "1px",
-        ]).toContain(value);
-    }
+    // Drawings that are not cards keep their own shape: the round end of a 4 to 8 px bar (2px), the squircle of the Domus
+    // symbol (26% and 22%), the body of a phone (28px) and the bottom of the house (only its lower corners round)
+    const DRAWINGS = [
+      "2px",
+      "26%",
+      "22%",
+      "28px",
+      "0 0 var(--r-win) var(--r-win)",
+      "var(--r-win) var(--r-win) var(--r-win) var(--r-ctl)",
+    ];
+    const radii = declarations(strip(read("components/template/v2.module.css")))
+      .filter(({ prop }) => prop === "border-radius")
+      .map(({ value }) => value);
+    expect(radii.length).toBeGreaterThan(20);
+    for (const value of radii)
+      expect([
+        "var(--r-card)",
+        "var(--r-ctl)",
+        "var(--r-win)",
+        "50%",
+        ...DRAWINGS,
+      ]).toContain(value);
   });
 });
 

@@ -1,172 +1,152 @@
 // TESTES DO CONTEÚDO
-// Every product has the required fields, every field respects its word limit and no sentence carries a slogan, a
-// banned word or a maturity marker. The same word lists guard the rendered pages (components/template/site.test.tsx).
+// The v2 of the content (2026-10-20): each section has at most one short title and one line, every product page has
+// the same fields, and no sentence carries a slogan, a banned word, a maturity marker or a promise the code of the
+// product does not sustain (v13 analysis, section 1). The same word lists guard the rendered pages
+// (components/template/site.test.tsx).
 import { describe, expect, it } from "vitest";
-import { CHAIN_STEPS, ties } from "@/lib/chain";
 import { PRODUCTS } from "@/lib/products";
-import { capabilityOf, capabilityScenes } from "@/lib/scenes/capabilities";
 import {
   CLOSING,
+  DOMUS_ROOMS,
+  HOME_CONTACT,
+  HOME_DOMUS,
+  HOME_EFFECTS,
   HOME_INTRO,
-  HUB_NOTE,
-  PAGE_HEADINGS,
-  TIE_LINES,
-  tieKey,
+  HOME_MESSAGE,
+  HOME_PRODUCTS,
 } from "./home";
-import { PRODUCT_DEPTH } from "./product-depth";
-import { PRODUCT_CONTENT } from "./products";
-import { copyViolation, words } from "./rules";
 import {
-  AUDIENCE,
-  BENEFITS,
-  HOME_FAQ,
-  HOME_SECTIONS,
-  INTEGRATIONS,
-  JOURNEY,
-} from "./sections";
+  DOMUS_PLAY,
+  KNOWLY_PLAY,
+  MAGNETO_PLAY,
+  RELLOO_PLAY,
+  TUNER_PLAY,
+} from "./plays";
+import { PAGE_HEADINGS, PRODUCT_PAGE } from "./products";
+import { copyViolation, words } from "./rules";
 
-const sentences = (): string[] => {
-  const all: string[] = [
-    HOME_INTRO.title,
-    HOME_INTRO.lead,
-    HUB_NOTE,
-    CLOSING.platforms,
-    ...Object.values(PAGE_HEADINGS),
-    ...Object.values(TIE_LINES),
-    ...Object.values(HOME_SECTIONS).flatMap((s) => Object.values(s)),
-    ...JOURNEY.map((s) => s.text),
-    ...BENEFITS.flatMap((b) => [b.title, b.text]),
-    ...AUDIENCE.flatMap((a) => [a.title, a.text]),
-    ...INTEGRATIONS.flatMap((g) => [
-      g.title,
-      g.text,
-      ...g.chips.map((c) => c.text),
-    ]),
-    ...HOME_FAQ.flatMap((f) => [f.q, f.a]),
-  ];
-  for (const depth of Object.values(PRODUCT_DEPTH)) {
-    for (const g of depth.groups)
-      all.push(g.title, ...g.items.map((i) => i.detail));
-    for (const a of depth.audience) all.push(a.title, a.text);
-    for (const f of depth.faq) all.push(f.q, f.a);
-  }
-  for (const content of Object.values(PRODUCT_CONTENT)) {
-    for (const r of content.resolves) all.push(r.problem, r.does);
-    for (const c of content.capabilities) all.push(c.text);
-  }
-  for (const p of PRODUCTS) all.push(p.line);
-  return all;
+const strings = (value: unknown, out: string[] = []): string[] => {
+  if (typeof value === "string") out.push(value);
+  else if (typeof value === "function") out.push((value as (s: string) => string)("Domus"));
+  else if (Array.isArray(value)) value.forEach((v) => strings(v, out));
+  else if (value && typeof value === "object")
+    Object.values(value).forEach((v) => strings(v, out));
+  return out;
 };
 
-describe("every product has the required content", () => {
-  it.each(PRODUCTS.map((p) => p.slug))("%s", (slug) => {
-    const c = PRODUCT_CONTENT[slug];
-    expect(c.resolves).toHaveLength(3);
-    expect(c.capabilities).toHaveLength(6);
-    for (const r of c.resolves) {
-      expect(r.problem.length).toBeGreaterThan(0);
-      expect(r.does.length).toBeGreaterThan(0);
-    }
-    for (const cap of c.capabilities) {
-      expect(cap.icon).toBeTruthy();
-      expect(words(cap.text)).toBeGreaterThanOrEqual(2);
-      expect(words(cap.text)).toBeLessThanOrEqual(5);
-    }
-  });
+const ALL = strings([
+  HOME_INTRO,
+  HOME_MESSAGE,
+  HOME_DOMUS,
+  DOMUS_ROOMS,
+  HOME_PRODUCTS,
+  HOME_EFFECTS,
+  HOME_CONTACT,
+  CLOSING,
+  PRODUCT_PAGE,
+  PAGE_HEADINGS,
+  DOMUS_PLAY,
+  RELLOO_PLAY,
+  MAGNETO_PLAY,
+  TUNER_PLAY,
+  KNOWLY_PLAY,
+  PRODUCTS.map((p) => p.line),
+]);
 
-  it("the home card capabilities are the first three, with distinct icons", () => {
-    for (const p of PRODUCTS) {
-      const icons = PRODUCT_CONTENT[p.slug].capabilities.map((c) => c.icon);
-      expect(new Set(icons).size).toBe(6);
-    }
-  });
-
-  it.each(PRODUCTS.map((p) => p.slug))(
-    "%s has one caption per scene of its opening (the sentence of the capability), at most 20 words",
-    (slug) => {
-      const captions = capabilityScenes(slug).map(
-        (scene) => capabilityOf(scene).detail,
-      );
-      expect(captions).toHaveLength(3);
-      for (const caption of captions)
-        expect(words(caption)).toBeLessThanOrEqual(20);
-    },
-  );
-});
-
-describe("the common sentences respect their limits", () => {
-  it("the opening title has at most 8 words and the lead at most 20", () => {
-    expect(words(HOME_INTRO.title)).toBeLessThanOrEqual(8);
+describe("one short title and one line per section", () => {
+  it("the opening: a title of at most 8 words with each turning word, and a line of at most 20", () => {
+    for (const w of HOME_INTRO.words)
+      expect(
+        words(`${HOME_INTRO.before} ${w.text} ${HOME_INTRO.after}`),
+      ).toBeLessThanOrEqual(8);
     expect(words(HOME_INTRO.lead)).toBeLessThanOrEqual(20);
+    // One word per product, in the order of the products
+    expect(HOME_INTRO.words.map((w) => w.product)).toEqual(
+      PRODUCTS.map((p) => p.slug),
+    );
   });
-  it("the connector sentence has at most 12 words", () => {
-    expect(words(HUB_NOTE)).toBeLessThanOrEqual(12);
+  it("every section title has at most 7 words and every line at most 12", () => {
+    for (const title of [
+      HOME_MESSAGE.title,
+      HOME_DOMUS.title,
+      HOME_PRODUCTS.title,
+      HOME_EFFECTS.title,
+      HOME_CONTACT.title,
+      PAGE_HEADINGS.areas,
+      PAGE_HEADINGS.details,
+      ...PRODUCTS.map((p) => PRODUCT_PAGE[p.slug].play.title),
+      ...PRODUCTS.map((p) => PRODUCT_PAGE[p.slug].center.title),
+    ])
+      expect(words(title), title).toBeLessThanOrEqual(7);
+    for (const line of [
+      HOME_MESSAGE.lead,
+      HOME_DOMUS.lead,
+      PAGE_HEADINGS.areasLead,
+      ...PRODUCTS.map((p) => PRODUCT_PAGE[p.slug].play.lead),
+    ])
+      expect(words(line), line).toBeLessThanOrEqual(12);
   });
-  it("there is a line of at most 14 words for every connection of the chain", () => {
-    for (const tie of ties()) {
-      const line = TIE_LINES[tieKey(tie.a, tie.b)];
-      expect(line, `${tie.a}-${tie.b}`).toBeTruthy();
-      expect(words(line)).toBeLessThanOrEqual(14);
-    }
+  it("the effects and the stamps are captions of at most 6 words", () => {
+    for (const item of HOME_EFFECTS.items)
+      expect(words(item.text)).toBeLessThanOrEqual(6);
+    for (const stamp of Object.values(HOME_INTRO.stamps))
+      expect(words(stamp)).toBeLessThanOrEqual(4);
+    for (const s of HOME_MESSAGE.stations)
+      expect(words(s.label)).toBeLessThanOrEqual(3);
   });
 });
 
-describe("the reading sections of the home", () => {
-  it("the order from start to end has the seven steps of the chain, one sentence of at most 22 words each", () => {
-    expect(JOURNEY).toHaveLength(CHAIN_STEPS.length);
-    for (const step of JOURNEY) {
-      expect(step.products.length).toBeGreaterThan(0);
-      expect(words(step.text)).toBeLessThanOrEqual(22);
-    }
+describe("every product page has the same fields", () => {
+  it.each(PRODUCTS.map((p) => p.slug))("%s", (slug) => {
+    const page = PRODUCT_PAGE[slug];
+    expect(words(page.short)).toBeLessThanOrEqual(14);
+    expect(page.details.length).toBeGreaterThanOrEqual(5);
+    expect(page.details.length).toBeLessThanOrEqual(6);
+    for (const d of page.details) expect(words(d)).toBeLessThanOrEqual(6);
+    expect(page.asks).toHaveLength(3);
+    for (const a of page.asks) expect(a.endsWith("?")).toBe(true);
+    // The Domus opens with its areas; every other product with its native scenes
+    if (slug === "domus") expect(page.scenes).toHaveLength(0);
+    else expect(page.scenes.length).toBeGreaterThan(0);
   });
-  it("there are six benefits, each on a distinct scene, and four profiles", () => {
-    expect(BENEFITS).toHaveLength(6);
-    expect(new Set(BENEFITS.map((b) => b.scene)).size).toBe(6);
-    expect(AUDIENCE).toHaveLength(4);
-    for (const a of AUDIENCE) expect(words(a.text)).toBeLessThanOrEqual(24);
+  it("the contact of the home asks open questions, with no answer", () => {
+    expect(HOME_CONTACT.asks.length).toBeGreaterThanOrEqual(3);
+    for (const a of HOME_CONTACT.asks) expect(a.endsWith("?")).toBe(true);
   });
-  it("the integrations are the four groups asked for, in order", () => {
-    expect(INTEGRATIONS.map((g) => g.id)).toEqual([
-      "channels",
-      "data",
-      "cloud",
-      "ai",
+});
+
+describe("the Domus is the whole management of the company", () => {
+  it("its rooms are the areas of a company, with tax and PIX only as a tag", () => {
+    const names = DOMUS_ROOMS.map((r) => r.name);
+    for (const area of [
+      "Vendas",
+      "Compras",
+      "Estoque",
+      "Financeiro",
+      "Fiscal",
+      "Projetos",
+      "Pessoas",
+    ])
+      expect(names).toContain(area);
+    expect(DOMUS_ROOMS.filter((r) => r.tag).map((r) => r.tag)).toEqual([
+      "PIX",
+      "NFS-e",
     ]);
   });
-  it("there are six to eight questions, each answer at most 40 words", () => {
-    expect(HOME_FAQ.length).toBeGreaterThanOrEqual(6);
-    expect(HOME_FAQ.length).toBeLessThanOrEqual(8);
-    for (const f of HOME_FAQ) expect(words(f.a)).toBeLessThanOrEqual(40);
+  it("its sentence is about the whole company and the room the company makes, not about money", () => {
+    expect(PRODUCT_PAGE.domus.short).toMatch(/empresa inteira/);
+    expect(PRODUCT_PAGE.domus.short).not.toMatch(/financeiro|fiscal|PIX|nota/i);
   });
 });
 
-describe("the depth of every product page", () => {
-  it.each(PRODUCTS.map((p) => p.slug))(
-    "%s places each of its six capabilities in exactly one group, with one sentence of at most 20 words",
-    (slug) => {
-      const used = PRODUCT_DEPTH[slug].groups.flatMap((g) =>
-        g.items.map((i) => i.cap),
-      );
-      expect([...used].sort()).toEqual([0, 1, 2, 3, 4, 5]);
-      for (const g of PRODUCT_DEPTH[slug].groups)
-        for (const item of g.items)
-          expect(words(item.detail)).toBeLessThanOrEqual(20);
-    },
-  );
-  it.each(PRODUCTS.map((p) => p.slug))(
-    "%s has three profiles and three or four questions",
-    (slug) => {
-      expect(PRODUCT_DEPTH[slug].audience).toHaveLength(3);
-      expect(PRODUCT_DEPTH[slug].faq.length).toBeGreaterThanOrEqual(3);
-      expect(PRODUCT_DEPTH[slug].faq.length).toBeLessThanOrEqual(4);
-      for (const f of PRODUCT_DEPTH[slug].faq)
-        expect(words(f.a)).toBeLessThanOrEqual(30);
-    },
-  );
-});
-
-describe("no slogan, banned word or maturity marker in any sentence", () => {
-  it.each(sentences().map((s) => [s]))("%s", (sentence) => {
+describe("no slogan, banned word, maturity marker or promise without code", () => {
+  it.each(ALL.map((s) => [s]))("%s", (sentence) => {
     expect(copyViolation(sentence)).toBeNull();
+  });
+  it("none of the promises the code does not sustain", () => {
+    const all = ALL.join(" ");
+    expect(all).not.toMatch(
+      /funil|cupom|cashback|em frase|numa frase|volta num toque|baixa sozinho|Instagram/i,
+    );
   });
 });

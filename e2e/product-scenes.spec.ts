@@ -5,9 +5,11 @@
 // page pass AA too. At 1440: at least 35% of the cycle of the opening is still, reduced motion shows the settled frames
 // with no animation running, and the stage pauses off screen.
 import { expect, test, type Page } from "@playwright/test";
+import { PRODUCT_PAGE } from "../lib/content/products";
 import { VIEWPORTS } from "./viewports";
 
-const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
+// The Domus opens with its areas fitting into its symbol (no stage of scenes); the four others with their scenes
+const SLUGS = ["relloo", "magneto", "tuner", "knowly"] as const;
 const STAGE = "#product-scenes";
 
 async function toStage(page: Page, slug: string) {
@@ -94,7 +96,7 @@ for (const vp of VIEWPORTS)
         const page = await context.newPage();
         await toStage(page, slug);
         const count = await page.locator(`${STAGE} [data-tile]`).count();
-        expect(count).toBe(3);
+        expect(count).toBe(PRODUCT_PAGE[slug].scenes.length);
         for (let i = 0; i < count; i++) {
           // Puts scene i at the centre, settled, the way reduced motion shows it
           const text = await page.evaluate(
@@ -103,7 +105,7 @@ for (const vp of VIEWPORTS)
                 ...document.querySelectorAll<HTMLElement>(`${sel} [data-tile]`),
               ];
               tiles.forEach((tile, k) => {
-                const p = ((k - index + 4) % 3) - 1;
+                const p = k === index ? 0 : k > index ? 1 : -1;
                 tile.dataset.pos = String(p);
               });
               const scene = tiles[index].querySelector(".scn")!;
@@ -185,16 +187,15 @@ for (const vp of VIEWPORTS)
             where,
           ).toBeLessThanOrEqual(0);
         }
-        // The opening and the reading bands of the page, in the tokens of the scenes, pass AA as well
+        // The opening and the other bands of the page pass AA as well
         expect(
           await contrastFailures(page, [
-            `${STAGE} [data-caption]`,
             `${STAGE} [data-cap]`,
-            "#product nav",
-            "#resolves",
-            "#capabilities",
-            "#audience",
-            "#faq",
+            "[data-descent-slot] #product",
+            "[data-descent-slot] #play",
+            "[data-descent-slot] #center",
+            "[data-descent-slot] #details",
+            "[data-descent-slot] #contact",
           ]),
         ).toEqual([]);
         await context.close();
@@ -209,7 +210,7 @@ test.describe("capability stage behaviour", () => {
     page,
   }) => {
     test.setTimeout(120000);
-    await toStage(page, "domus");
+    await toStage(page, "knowly");
     const cycle = JSON.parse(
       (await page.locator(`${STAGE} script[data-scene-data]`).textContent())!,
     ).cycle as number;
@@ -285,7 +286,7 @@ test.describe("capability stage behaviour", () => {
       };
     }, STAGE);
     expect(state.phases.every((p) => p === "end")).toBe(true);
-    expect(state.centre).toBe("magneto-sentence");
+    expect(state.centre).toBe("magneto-canvas");
     expect(state.running).toBe(0);
     await context.close();
   });

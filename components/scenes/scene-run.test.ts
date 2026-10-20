@@ -1,15 +1,24 @@
 // TESTES DO RUNNER DAS CENAS
 // The runner is a timer over the scene durations. These tests drive it with fake timers and a minimal DOM stub: the loop
 // must go on after a pause (also when the timer ran late past its deadline, as a hidden tab makes it), pause must freeze
-// the scene and resume must continue from the same instant.
+// the scene and resume must continue from the same instant; the name of the scene on screen is lit, and a stage of one
+// scene replays it.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { run } from "./scene-run";
 
 const SCENES = [1, 2, 3, 4, 5, 6, 7]; // seconds
 
-function stage() {
-  const tiles = SCENES.map(() => {
-    const scn = { dataset: {} as Record<string, string> };
+function stage(seconds = SCENES, names: { dataset: Record<string, string> }[] = []) {
+  const phases: string[] = [];
+  const tiles = seconds.map(() => {
+    const scn = {
+      dataset: {
+        set phase(v: string) {
+          phases.push(v);
+        },
+      } as unknown as Record<string, string>,
+      getBoundingClientRect: () => ({}),
+    };
     return {
       dataset: {} as Record<string, string>,
       removeAttribute: () => {},
@@ -21,42 +30,36 @@ function stage() {
   const ring = { children: tiles, dataset: {} as Record<string, string> };
   const props: Record<string, string> = {};
   const root = {
-    id: "chain-ring",
+    id: "product-scenes",
     dataset: {} as Record<string, string>,
     style: {
       setProperty: (name: string, value: string) => {
         props[name] = value;
       },
     },
-    closest: () => null,
-    querySelectorAll: () => [],
+    querySelectorAll: (sel: string) => (sel === "[data-cap]" ? names : []),
     querySelector: (sel: string) =>
       sel === "[data-ring]"
         ? ring
         : sel.startsWith("script")
           ? {
               textContent: JSON.stringify({
-                scenes: SCENES,
+                scenes: seconds,
                 cycle: 28,
                 swap: 0.7,
               }),
             }
           : null,
   };
-  return { root, tiles, ring, props };
+  return { root, tiles, ring, props, phases };
 }
 
 beforeEach(() => {
   vi.useFakeTimers();
-  vi.stubGlobal("window", {
-    dispatchEvent: () => true,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-  });
 });
 afterEach(() => {
   vi.useRealTimers();
-  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 const centre = (tiles: ReturnType<typeof stage>["tiles"]) =>
@@ -138,184 +141,31 @@ describe("scene runner", () => {
   });
 });
 
-// PÁGINA DE PRODUTO: CENAS EM SUBCONJUNTO
-describe("scene runner on a product page", () => {
-  // Builds a stage of `steps.length` tiles whose data carries the step each one plays
-  function subset(steps: number[], seconds: number[]) {
-    const events: { index: number; to: number }[] = [];
-    const phases: string[] = [];
-    const tiles = steps.map(() => {
-      const scn = {
-        dataset: {
-          set phase(v: string) {
-            phases.push(v);
-          },
-        } as unknown as Record<string, string>,
-        getBoundingClientRect: () => ({}),
-      };
-      return {
-        dataset: {} as Record<string, string>,
-        removeAttribute: () => {},
-        setAttribute: () => {},
-        querySelector: () => scn,
-      };
-    });
-    const root = {
-      id: "product-chain",
+describe("scene runner on the capability stage", () => {
+  it("lights the short name of the scene on screen and puts the first one back on destroy", () => {
+    const names = [0, 1, 2].map(() => ({
       dataset: {} as Record<string, string>,
-      style: { setProperty: () => {} },
-      closest: () => null,
-      querySelectorAll: () => [],
-      querySelector: (sel: string) =>
-        sel === "[data-ring]"
-          ? { children: tiles, dataset: {} }
-          : sel.startsWith("script")
-            ? {
-                textContent: JSON.stringify({
-                  scenes: seconds,
-                  steps,
-                  swap: 0.7,
-                }),
-              }
-            : null,
-    };
-    vi.stubGlobal("window", {
-      dispatchEvent: (event: CustomEvent) => {
-        events.push(event.detail);
-        return true;
-      },
-      addEventListener: () => {},
-      removeEventListener: () => {},
-    });
-    return { root, tiles, events, phases };
-  }
-
-  it("tells the overview the step of the scene, not its position", () => {
-    const { root, events } = subset([1, 6], [2, 3]);
+    }));
+    const { root } = stage([2, 2, 2], names);
     const runner = run(root as unknown as HTMLElement);
     runner.resume();
+    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
     vi.advanceTimersByTime(2001);
-    expect(events).toHaveLength(1);
-    expect(events[0]).toMatchObject({ to: 1, index: 6 });
-    vi.advanceTimersByTime(3000);
-    expect(events[1]).toMatchObject({ to: 0, index: 1 });
+    expect(names.map((n) => n.dataset.on)).toEqual(["false", "true", "false"]);
+    vi.advanceTimersByTime(4000);
+    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
+    vi.advanceTimersByTime(2000);
+    runner.destroy();
+    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
   });
 
   it("a stage of one scene replays it at every boundary", () => {
-    const { root, events, phases } = subset([4], [2]);
+    const { root, phases } = stage([2]);
     const runner = run(root as unknown as HTMLElement);
     runner.resume();
     phases.length = 0;
     vi.advanceTimersByTime(2001);
     // First frame, then play again
     expect(phases).toEqual(["start", "play"]);
-    expect(events).toHaveLength(1);
-    expect(events[0]).toMatchObject({ to: 0, index: 4 });
-  });
-});
-
-describe("scene runner on the capability stage", () => {
-  it("lights the name and writes the caption of the scene on screen, before the swap event", () => {
-    const captions = ["Primeira.", "Segunda.", "Terceira."];
-    const names = captions.map(() => ({
-      dataset: {} as Record<string, string>,
-    }));
-    const caption = { textContent: captions[0] };
-    const seen: string[] = [];
-    const tiles = captions.map(() => ({
-      dataset: {} as Record<string, string>,
-      removeAttribute: () => {},
-      setAttribute: () => {},
-      querySelector: () => ({ dataset: {} }),
-    }));
-    const root = {
-      id: "product-scenes",
-      dataset: {} as Record<string, string>,
-      style: { setProperty: () => {} },
-      closest: () => null,
-      querySelectorAll: (sel: string) => (sel === "[data-cap]" ? names : []),
-      querySelector: (sel: string) =>
-        sel === "[data-ring]"
-          ? { children: tiles, dataset: {} }
-          : sel === "[data-caption]"
-            ? caption
-            : sel.startsWith("script")
-              ? {
-                  textContent: JSON.stringify({
-                    scenes: [2, 2, 2],
-                    swap: 0.7,
-                    captions,
-                  }),
-                }
-              : null,
-    };
-    vi.stubGlobal("window", {
-      dispatchEvent: () => {
-        seen.push(caption.textContent);
-        return true;
-      },
-      addEventListener: () => {},
-      removeEventListener: () => {},
-    });
-    const runner = run(root as unknown as HTMLElement);
-    runner.resume();
-    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
-    vi.advanceTimersByTime(2001);
-    expect(names.map((n) => n.dataset.on)).toEqual(["false", "true", "false"]);
-    expect(seen).toEqual(["Segunda."]);
-    vi.advanceTimersByTime(4000);
-    expect(seen).toEqual(["Segunda.", "Terceira.", "Primeira."]);
-    runner.destroy();
-    expect(names.map((n) => n.dataset.on)).toEqual(["true", "false", "false"]);
-    expect(caption.textContent).toBe("Primeira.");
-  });
-});
-
-describe("scene runner on the products carousel of the home", () => {
-  it("lights the card of the product on screen and puts the first one back on destroy", () => {
-    const lit = ["domus", "relloo", "magneto"];
-    const cards = lit.map((slug) => ({
-      dataset: { card: slug } as Record<string, string>,
-    }));
-    const section = {
-      querySelectorAll: (sel: string) => (sel === "[data-card]" ? cards : []),
-      querySelector: () => null,
-    };
-    const tiles = lit.map(() => ({
-      dataset: {} as Record<string, string>,
-      removeAttribute: () => {},
-      setAttribute: () => {},
-      querySelector: () => ({ dataset: {} }),
-    }));
-    const root = {
-      id: "products-ring",
-      dataset: {} as Record<string, string>,
-      style: { setProperty: () => {} },
-      closest: () => section,
-      querySelectorAll: () => [],
-      querySelector: (sel: string) =>
-        sel === "[data-ring]"
-          ? { children: tiles, dataset: {} }
-          : sel.startsWith("script")
-            ? {
-                textContent: JSON.stringify({
-                  scenes: [5, 5, 5],
-                  swap: 0.7,
-                  lit,
-                }),
-              }
-            : null,
-    };
-    const on = () => cards.map((c) => c.dataset.on);
-    const runner = run(root as unknown as HTMLElement);
-    runner.resume();
-    expect(on()).toEqual(["true", "false", "false"]);
-    vi.advanceTimersByTime(5001);
-    expect(on()).toEqual(["false", "true", "false"]);
-    vi.advanceTimersByTime(10000);
-    expect(on()).toEqual(["true", "false", "false"]);
-    vi.advanceTimersByTime(5000);
-    runner.destroy();
-    expect(on()).toEqual(["true", "false", "false"]);
   });
 });

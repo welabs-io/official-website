@@ -86,7 +86,7 @@ export function LudicChannels({ act }: { act: Act }) {
             <b className={l.key} data-key="">
               {STORY.person}
             </b>
-            <span>{STORY.card.order}</span>
+            <span>{STORY.order}</span>
           </span>
           <span
             className={l.pill}
