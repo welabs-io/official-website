@@ -1,64 +1,20 @@
-/* SEÇÕES DA HOME */
-/* Compact: no minimum heights, no empty area bigger than a title line. Gaps between title, line and ring are 12 to
-   24 px. The ring takes the whole wrap. */
+/* RITMO DAS SEÇÕES */
+/* Compact: no minimum heights, no empty area bigger than a title line. Each band names its spacing class
+   (lib/site-config.ts, `pad`); the surface of a band comes from its data-surface. */
 
-/* SEÇÃO 1: CADEIA */
-/* Sits under the fixed header; 48 px of padding on a desktop, 32 px on a phone. */
-.chain {
+/* ABERTURA DA HOME: sits under the fixed header */
+.intro {
   --pt: calc(var(--header-h) + var(--sp-7));
-  --pb: var(--sp-7);
+  --pb: var(--sp-8);
 }
 
-/* ABERTURA DA HOME */
-/* Compact, centred on the axis of the page: one line of title on a desktop, one supporting line, 16 px under them. */
-.lede {
-  display: grid;
-  justify-items: center;
-  gap: var(--sp-2);
-  margin-bottom: var(--sp-5);
-  text-align: center;
-}
-.ledeTitle {
-  /* The opening title is the top step of the type scale, one above the section titles */
-  max-width: 28ch;
-  font-size: var(--text-display);
-  line-height: var(--lh-display);
-  font-weight: 600;
-  letter-spacing: var(--ls-display);
-  text-wrap: balance;
-}
-.ledeLine {
-  max-width: min(var(--measure), 100%);
-  font-size: var(--text-lg);
-  line-height: var(--lh-lead);
-  font-weight: 500;
-  color: var(--mute);
-  text-wrap: balance;
-}
-@media (min-width: 1100px) {
-  .ledeTitle {
-    max-width: 24ch;
-  }
+/* SEÇÕES DE INTERAÇÃO E DE LEITURA */
+.block {
+  --pt: clamp(var(--sp-7), 5vw, var(--sp-8));
+  --pb: clamp(var(--sp-7), 5vw, var(--sp-8));
 }
 
-/* CADEIA EM DOIS BLOCOS */
-/* The overview (top) and the ring (bottom) are one column on the axis; the connector of the overview ends on the top
-   edge of the tile, so there is no gap between them. */
-.chainBlock {
-  display: grid;
-  justify-items: stretch;
-}
-
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* SEÇÃO 2: PRODUTOS */
+/* OS CINCO PRODUTOS */
 .products {
   --pt: var(--sp-7);
   --pb: var(--sp-7);
@@ -70,110 +26,42 @@
   --pb: var(--sp-8);
 }
 
-/* BLOCO DE TEXTO (PÁGINA DE PRODUTO): O QUE RESOLVE E COMO FUNCIONA */
-.block {
+/* CONTATO: a band of amber, the one wide area of colour of the page */
+.contact {
   --pt: var(--sp-8);
   --pb: var(--sp-8);
+  scroll-margin-top: var(--header-h);
 }
 
-/* SEÇÕES DE LEITURA E VITRINES DE CENA */
-/* The bands that carry the length of the page: 48 to 80 px above and below, so each one is about a window high. */
-.read {
-  --pt: clamp(var(--sp-7), 5.5vw, var(--sp-9));
-  --pb: clamp(var(--sp-7), 5.5vw, var(--sp-9));
-}
-
-/* SEÇÃO 3: CONECTORES */
-.connectors {
+/* ONDE RODAMOS */
+.closing {
   --pt: var(--sp-6);
   --pb: var(--sp-6);
-}
-
-/* SEÇÃO 4: FECHAMENTO */
-.closing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* Gap and top padding are named: the stretches that converge on the strip (ConnectorRail, --closing-pt comes from
-     the page, as the stretches belong to the section above) and the thread between the strip and the button are drawn
-     from them */
-  --closing-gap: clamp(var(--sp-6), 4vw, var(--sp-7));
-  gap: var(--closing-gap);
-  --pt: var(--closing-pt);
-  --pb: var(--closing-pt);
-  /* Both this band and the connectors above it are graphite: a hairline tells them apart */
   border-top: 1px solid var(--line);
 }
-.strips {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--sp-1);
-}
-/* A title over its strip of logos; the first one clears the docks of the rails that arrive on the strip. min-width 0
-   keeps the width of the moving track from widening the column. */
-.strip {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  min-width: 0;
-  gap: var(--sp-1);
-}
-.strip:first-child {
-  padding-top: var(--sp-3);
-}
-.contact {
-  display: flex;
-  justify-content: center;
-  scroll-margin-top: 96px;
-}
-.contactBox {
-  display: grid;
-  justify-items: center;
-}
-.contactBox > :first-child {
-  margin-bottom: clamp(var(--sp-5), 3vw, var(--sp-6));
-}
-/* The thread keeps going alone from the strip to the button of the closing and ends in a dock on its top edge */
-.thread {
-  position: relative;
-}
-.thread::before {
-  content: "";
+
+.srOnly {
   position: absolute;
-  left: 50%;
-  top: calc(var(--closing-gap) * -1);
-  width: 2px;
-  height: var(--closing-gap);
-  margin-left: -1px;
-  background: var(--thread, var(--line));
-}
-.thread::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -5px;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  border-radius: 50%;
-  background: var(--a);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 @media (max-width: 860px) {
-  .chain {
-    --pt: calc(var(--header-h) + var(--sp-6));
+  .intro {
+    --pt: calc(var(--header-h) + var(--sp-5));
     --pb: var(--sp-6);
   }
-  .products,
   .block,
-  .connectors {
-    --pt: var(--sp-6);
-    --pb: var(--sp-6);
+  .products,
+  .contact {
+    --pt: var(--sp-7);
+    --pb: var(--sp-7);
   }
   .productPage {
-    --pb: var(--sp-6);
-  }
-  .closing {
-    --closing-gap: var(--sp-6);
+    --pt: calc(var(--header-h) + var(--sp-5));
     --pb: var(--sp-6);
   }
 }

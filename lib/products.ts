@@ -8,35 +8,42 @@ export const PRODUCTS = [
   {
     slug: "domus",
     name: "Domus",
-    line: "Gestão completa da empresa",
+    line: "Gestão da empresa inteira",
     category: "ERP",
-    keywords: ["ERP", "sistema de gestão empresarial", "financeiro", "fiscal"],
+    keywords: [
+      "ERP",
+      "sistema de gestão empresarial",
+      "vendas",
+      "estoque",
+      "financeiro",
+      "fiscal",
+    ],
   },
   {
     slug: "relloo",
     name: "Relloo",
-    line: "Relacionamento, atendimento e vendas",
+    line: "Conversas e atendimento",
     category: "CRM",
-    keywords: ["CRM", "gestão de relacionamento", "funil de vendas"],
+    keywords: ["CRM", "gestão de relacionamento", "atendimento multicanal"],
   },
   {
     slug: "magneto",
     name: "Magneto",
-    line: "Fluxos de trabalho em blocos",
+    line: "Fluxos com aprovação",
     category: "Automação de processos e workflow",
     keywords: ["automação de processos", "workflow", "BPM", "aprovações"],
   },
   {
     slug: "tuner",
     name: "Tuner",
-    line: "WhatsApp, voz e chat do site",
+    line: "WhatsApp, ligações e canais",
     category: "Canais de atendimento",
     keywords: ["WhatsApp", "central de atendimento", "omnichannel"],
   },
   {
     slug: "knowly",
     name: "Knowly",
-    line: "Base de conhecimento com fonte",
+    line: "Respostas com a fonte",
     category: "Base de conhecimento com IA",
     keywords: ["base de conhecimento", "IA", "busca semântica", "RAG"],
   },
@@ -77,4 +84,5 @@ export const WELABS_LOGO = {
   light: "/brands/welabs/welabs-logo-light-block.svg",
 };
 
-export const CTA_LABEL = "Conversar com a Welabs";
+// Says what happens after the click (v2): the contact is the only way in, a button with no form
+export const CTA_LABEL = "Agendar uma demonstração";

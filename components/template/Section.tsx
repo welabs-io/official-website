@@ -1,45 +1,35 @@
 // SEÇÃO DO TEMPLATE
 // One band of the page: the anchor, the live marker that makes everything inside pause off screen (LiveObserver), the
-// tone (graphite or cream), the spacing class and the heading for screen readers. Server markup only.
+// surface (cream, the soft band cream or the amber of the contact), the spacing class and the heading for screen
+// readers. Server markup only.
 import type { ReactNode } from "react";
 import home from "@/components/onepage/home.module.css";
 import shell from "@/components/onepage/shell.module.css";
-import type { SectionPad, Tone } from "@/lib/site-config";
-import { ConnectorRail } from "./ConnectorRail";
+import type { SectionPad } from "@/lib/site-config";
 
 export function Section({
   id,
-  tone,
   pad,
   srTitle,
-  thread = "on",
-  rail,
-  railDelay,
+  surface,
   children,
 }: {
   id: string;
-  tone: Tone;
   pad: SectionPad;
   srTitle?: string;
-  // "off" hides the hairline of the thread where the drawing of the section crosses the page axis; "none" also hides
-  // the dock on its top edge (the closing, whose docks sit on the strip); "tail" keeps only the stretch under the content
-  thread?: "on" | "off" | "tail" | "none";
-  // Stretch of the thread at the bottom of the section, with the pulse that goes down to the next dock
-  rail?: "drop" | "converge";
-  railDelay?: number;
+  surface?: "band" | "amber";
   children: ReactNode;
 }) {
   return (
     <section
       id={id}
-      className={`${shell.band} ${shell[tone]} ${home[pad]}`}
+      className={`${shell.band} ${shell.light} ${home[pad]}`}
+      data-surface={surface}
       data-live
       data-on="false"
-      data-thread={thread}
     >
       {srTitle && <h2 className={home.srOnly}>{srTitle}</h2>}
       {children}
-      {rail && <ConnectorRail variant={rail} delay={railDelay} />}
     </section>
   );
 }

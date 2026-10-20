@@ -1,17 +1,9 @@
 /* DESCIDA CONTÍNUA */
 /* The home and the product are one page. The slot holds the product that is open (empty on the home); while it holds
-   one, the tail of the home (from "what changes" to the closing) gives way, so the product is the section right after
+   one, the tail of the home (from "what changes" to where we run) gives way, so the product is the section right after
    the products band. Pure CSS: a direct visit to /products/<slug> is laid out right on the first paint. */
 .slot:has(> section) + .tail {
   display: none;
-}
-/* The tail is a band list of its own: its first band is not the top of the page, so its thread and dock start on its
-   top edge, not under the fixed header (shell.module.css) */
-.tail > section:first-of-type::before {
-  top: 0;
-}
-.tail > section:first-of-type::after {
-  top: -5px;
 }
 
 /* A FOLHA QUE CRESCE */
