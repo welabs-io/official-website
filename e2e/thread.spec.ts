@@ -23,15 +23,17 @@ for (const route of ROUTES)
               parseFloat(style.width) / 2
             );
           };
-          return [...document.querySelectorAll("section[data-live]")].map(
-            (band) => ({
+          // Only the bands that are laid out: on a product route the tail of the home is display:none while the product
+          // is open (descent.module.css), so its bands have no box
+          return [...document.querySelectorAll("section[data-live]")]
+            .filter((band) => band.getClientRects().length > 0)
+            .map((band) => ({
               id: band.id,
               thread: (band as HTMLElement).dataset.thread,
               hairline: centre(band, "::before"),
               dock: centre(band, "::after"),
               axis,
-            }),
-          );
+            }));
         });
         expect(result.length).toBeGreaterThanOrEqual(4);
         for (const band of result) {

@@ -239,25 +239,48 @@ for (const slug of SLUGS) {
     /<p[^>]*data-caption/.test(html) && !/aria-live/.test(html),
     `${slug} page has the caption, without a live region`,
   );
-  const productWords = visibleText(copyOnly(html)).split(" ").length;
+  // A product route serves the whole one-page layout (the head of the home, the product in its slot, the tail of the home
+  // that gives way to it), so the product's own copy is the slot alone: counting the page would count the home with it
+  const slot = html.slice(
+    html.indexOf("data-descent-slot"),
+    html.indexOf("data-descent-tail"),
+  );
+  assert(
+    slot.length > 0 && html.indexOf("data-descent-tail") > 0,
+    `${slug} page has its slot in the one-page layout`,
+  );
+  // The budget of 400 to 700 was set on the product page as the template renders it (frame plus product, as in
+  // components/template/site.test.tsx): the header, the product's own slot and the footer, without the home around it
+  const productPage = [
+    html.slice(html.indexOf("<header"), html.indexOf("</header>")),
+    slot,
+    html.slice(html.indexOf("<footer")),
+  ].join(" ");
+  const productWords = visibleText(copyOnly(productPage)).split(" ").length;
   assert(
     productWords >= 400 && productWords <= 700,
     `${slug} has ${productWords} visible words`,
   );
   assert(hasMenu(html), `${slug} header has the menu and the logo link`);
+  // The descent model (PR #27): no switcher and no list of the others; the way back is up, the way on is the door
+  // "Próximo" to the next product of the list at the end of the slot
+  const nextSlug = SLUGS[(SLUGS.indexOf(slug) + 1) % SLUGS.length];
   assert(
-    html.includes('aria-label="Trocar de produto"') &&
-      html.includes('data-nav="back"') &&
-      html.includes('id="others"'),
-    `${slug} has the product switcher, the way back and the other products`,
+    !html.includes('aria-label="Trocar de produto"') &&
+      !html.includes('id="others"') &&
+      slot.includes('id="next"') &&
+      slot.includes(`data-door="${nextSlug}"`) &&
+      slot.includes(`href="/products/${nextSlug}"`),
+    `${slug} ends on the door to ${nextSlug}, with no switcher`,
   );
   assert(
     /<title>[^<]* by Welabs<\/title>/.test(html),
     `${slug} title follows the "<Product> by Welabs" pattern`,
   );
   // Template: opening with the capability scenes, what it solves, the chain, capabilities in groups, profiles,
-  // questions, connectors with this product lit, the closing and the other products
-  const at = (id) => html.indexOf(`id="${id}"`);
+  // questions, connectors with this product lit, the closing and the door to the next product. Read in the slot: the
+  // head of the home above it repeats ids such as "how"
+  const at = (id) => slot.indexOf(`id="${id}"`);
   const PRODUCT_ORDER = [
     "product",
     "resolves",
@@ -268,7 +291,7 @@ for (const slug of SLUGS) {
     "connectors",
     "platforms",
     "contact",
-    "others",
+    "next",
   ];
   assert(
     PRODUCT_ORDER.every(
@@ -276,13 +299,13 @@ for (const slug of SLUGS) {
     ) && at("films") < 0,
     `${slug} page has its sections in order: ${PRODUCT_ORDER.join(", ")}`,
   );
-  const opening = html.slice(at("product"), at("resolves"));
+  const opening = slot.slice(at("product"), at("resolves"));
   assert(
     (opening.match(new RegExp(`data-tile="${slug}-`, "g")) ?? []).length ===
       3 && !/data-mini=/.test(opening),
     `${slug} opens with three native capability scenes, no still`,
   );
-  const block = html.slice(at("connectors"), at("platforms"));
+  const block = slot.slice(at("connectors"), at("platforms"));
   assert(
     block.includes('aria-current="page"') &&
       !block.includes(`href="/products/${slug}"`),

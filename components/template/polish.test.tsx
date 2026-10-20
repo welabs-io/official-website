@@ -126,9 +126,14 @@ describe("space and type tokens", () => {
         .filter(({ prop }) => prop === "border-radius")
         .map(({ value }) => value);
       for (const value of radii)
-        expect(["var(--r-card)", "var(--r-ctl)", "50%", "1px"]).toContain(
-          value,
-        );
+        // --r-win is the third shape of the scale (the door to the next product is a window-sized surface)
+        expect([
+          "var(--r-card)",
+          "var(--r-ctl)",
+          "var(--r-win)",
+          "50%",
+          "1px",
+        ]).toContain(value);
     }
   });
 });
