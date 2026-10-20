@@ -108,19 +108,20 @@ export const CAPABILITY_SCRIPT: Record<
 };
 
 // HISTÓRIA DAS CENAS DE CAPACIDADE
-// Every string the capability scenes draw, by scene. Same world as lib/scenes/story.ts: the store of Marina's order 1234,
-// its people (Ana, Carla Mendes, Rafael Lima, Bia Souza) and its delivery policy.
+// Every string the capability scenes draw, by scene. Same world as lib/scenes/story.ts: the store of Marina's order 1234
+// and its delivery policy. v2.2 (audit, section 5): one contact (Marina) and teams; no employee by name, no agent with a
+// human name, and the category of a channel instead of its brand.
 export const CAPABILITY_STORY = {
   "relloo-person": {
-    where: "Pessoas",
+    where: "Contatos",
     meta: "Marina",
     name: "Marina",
     since: "3 pedidos",
-    channels: ["WhatsApp", "Telefone"],
+    channels: ["Mensagem", "Telefone"],
     history: "Histórico",
     items: [
       {
-        kind: "WhatsApp",
+        kind: "Mensagem",
         text: "Seu pedido 1234 está em separação.",
         time: "09:12",
       },
@@ -133,25 +134,25 @@ export const CAPABILITY_STORY = {
       { label: "Pedido", value: "1234, 3 itens" },
     ],
     card: { title: "Alteração de entrega", order: "Pedido 1234" },
-    owner: { label: "Responsável", value: "Ana" },
+    owner: { label: "Responsável", value: "Equipe de pedidos" },
     deadline: { label: "Prazo", value: "2 h" },
   },
   "relloo-agent": {
     where: "Agentes",
     meta: "Conversa de teste",
-    agent: "Lia",
-    agentRole: "Agente de atendimento",
+    agent: "Agente de atendimento",
+    agentRole: "Agente de IA",
     knows: "Conhecimento",
     source: "Política de trocas",
-    passes: "Passa a vez",
-    passesWhen: "Quando pedem uma pessoa",
-    contact: "Bia Souza",
+    passes: "Passagem para a equipe",
+    passesWhen: "Quando pedem a equipe",
+    contact: "Marina",
     ask: "Posso trocar um produto?",
     answer: "Pode sim. A troca vale por 30 dias, com a nota.",
     from: "Fonte: Política de trocas, linha 1",
-    human: "Quero falar com uma pessoa.",
-    handoff: "Ana assume a conversa",
-    handoffMeta: "Equipe de atendimento, com a conversa toda",
+    human: "Quero falar com a equipe.",
+    handoff: "Atendimento assume a conversa",
+    handoffMeta: "Com a conversa toda",
   },
   "magneto-canvas": {
     where: "Fluxo",
@@ -159,9 +160,9 @@ export const CAPABILITY_STORY = {
     title: "Pedido de compra",
     blocks: {
       start: "Pedido chega",
-      approve: "Ana aprova",
+      approve: "Gerência aprova",
       notify: "Financeiro é avisado",
-      above: "Diretor aprova",
+      above: "Diretoria aprova",
     },
     kinds: {
       start: "Início",
@@ -175,32 +176,32 @@ export const CAPABILITY_STORY = {
     run: "Execução",
     steps: [
       { text: "Pedido chegou", time: "10:02" },
-      { text: "Ana aprovou", time: "10:14" },
-      { text: "Diretor aprovou", time: "10:31" },
+      { text: "Gerência aprovou", time: "10:14" },
+      { text: "Diretoria aprovou", time: "10:31" },
       { text: "Financeiro avisado", time: "10:31" },
     ],
   },
   "tuner-call": {
     where: "Ligações",
     meta: "Central",
-    caller: "Rafael Lima",
-    callerMeta: "Ligação, 0:42",
+    caller: "Ligação recebida",
+    callerMeta: "Pedido 1251, 0:42",
     menu: "Opção escolhida",
     option: "Troca ou devolução",
     teams: "Equipes",
     list: [
       { name: "Vendas", people: "2 livres" },
-      { name: "Suporte", people: "Davi" },
+      { name: "Suporte", people: "1 livre" },
       { name: "Financeiro", people: "1 livre" },
     ],
     taken: "Em ligação",
     steps: [
       { time: "10:05", text: "Entrou na central" },
       { time: "10:05", text: "Escolheu troca ou devolução" },
-      { time: "10:06", text: "Davi assumiu a ligação" },
+      { time: "10:06", text: "Suporte assumiu a ligação" },
     ],
     note: "Pedido 1251, troca de tamanho",
-    noteMeta: "Passou para o Davi com a conversa",
+    noteMeta: "Passou para o Suporte com a conversa",
   },
   "knowly-answer": {
     where: "Perguntas",
@@ -247,14 +248,14 @@ export const CAPABILITY_STORY = {
   },
   "knowly-access": {
     where: "Acesso",
-    meta: "Bia Souza",
+    meta: "Perfil Suporte",
     spaces: [
       { name: "Vendas", docs: ["Política de prazos", "Modelos de proposta"] },
       { name: "Suporte", docs: ["Como responder", "Reabrir pedido"] },
       { name: "Diretoria", docs: ["Plano do ano", "Metas"] },
     ],
     open: 1,
-    person: "Bia Souza",
+    person: "Perfil Suporte",
     team: "Equipe de suporte",
     before: "Como reabro um pedido?",
     beforeReply: "Abra o pedido e use Reabrir, com o motivo.",
@@ -267,6 +268,6 @@ export const CAPABILITY_STORY = {
 
 // The scenes the opening of a product plays, in the order of its page (lib/content/products.ts)
 export const capabilityScenes = (slug: ProductSlug) =>
-  PRODUCT_PAGE[slug].scenes.map(
-    ({ id }) => CAPABILITY_SCRIPT[slug].find((scene) => scene.id === id)!,
+  PRODUCT_PAGE[slug].scenes.map(({ id }) =>
+    CAPABILITY_SCRIPT[slug].find((scene) => scene.id === id)!,
   );

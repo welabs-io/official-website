@@ -34,14 +34,16 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       lead: "Arraste um tipo de campo para o formulário.",
     },
     center: {
-      title: "Onde os outros produtos trabalham",
+      // v2.2 (audit, section 5): what the stage shows, not a title repeated on five pages
+      title: "O Relloo no registro do Domus",
     },
+    // v2.2: the category first, the one connector the code has in brackets
     details: [
       "NFS-e nacional",
-      "PIX e extrato do Banco Inter",
-      "Asaas",
+      "Bancos: PIX e extrato (Banco Inter)",
+      "Cobrança (Asaas)",
       "Assinatura eletrônica",
-      "Dados do Omie",
+      "Importação de dados (Omie)",
       "Assistente com IA",
     ],
     asks: [
@@ -51,25 +53,26 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     ],
   },
   relloo: {
-    short: "As conversas de todos os canais, com a história de cada pessoa.",
+    // v2.2 (audit, section 5): the contact and its history, never "a pessoa"; categories before brands
+    short: "Conversas de todos os canais, com o histórico de cada contato.",
     scenes: [
-      { id: "relloo-person", name: "A pessoa inteira" },
-      { id: "relloo-agent", name: "Agente que passa a vez" },
+      { id: "relloo-person", name: "Histórico único do contato" },
+      { id: "relloo-agent", name: "Agente de IA com passagem para a equipe" },
     ],
     play: {
       title: "Todos os canais na mesma conversa",
       lead: "Dispare os canais na ordem que quiser.",
     },
     center: {
-      title: "Junto dos outros produtos",
+      title: "As conversas no registro do Domus",
     },
     details: [
-      "Ligação pelo WhatsApp gravada",
+      "Ligações gravadas na conversa",
       "Chat no site",
       "Agentes de IA com fonte",
       "Prazo de resposta",
       "Respostas prontas",
-      "Google Agenda",
+      "Agendas (Google Agenda)",
     ],
     asks: [
       "Por quais canais as conversas chegam hoje?",
@@ -85,7 +88,7 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       lead: "Escolha o valor e veja o caminho do pedido.",
     },
     center: {
-      title: "Junto dos outros produtos",
+      title: "As aprovações no registro do Domus",
     },
     details: [
       "Espera e aprovação",
@@ -101,8 +104,9 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     ],
   },
   tuner: {
+    // v2.2 (audit, section 5): scale and category first, the brands the code sustains in brackets
     short:
-      "O número oficial do WhatsApp, as ligações e o Discord no mesmo ponto.",
+      "Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).",
     scenes: [{ id: "tuner-call", name: "Ligação para a equipe certa" }],
     play: {
       // v2.1: the title says the effect (the operator found "Ligue e veja para onde vai" did not explain it)
@@ -110,15 +114,15 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       lead: "Aperte uma opção do menu.",
     },
     center: {
-      title: "Junto dos outros produtos",
+      title: "As ligações no registro do Domus",
     },
     details: [
-      "WhatsApp oficial",
+      "Mensagens (WhatsApp oficial)",
       "Menu de opções na ligação",
       "Distribuição para a equipe",
       "Gravação e transcrição",
-      "Ligação pelo WhatsApp",
-      "Discord",
+      "Ligações (WhatsApp)",
+      "Comunidades (Discord)",
     ],
     asks: [
       "Quantos números e linhas a empresa tem?",
@@ -127,22 +131,23 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     ],
   },
   knowly: {
-    short: "Respostas com a fonte, e cada pessoa vê só o que pode.",
+    // v2.2 (audit, section 5): the access of a profile, never "cada pessoa"
+    short: "Respostas com a fonte, dentro do acesso de cada perfil.",
     scenes: [
       { id: "knowly-answer", name: "Resposta com a fonte" },
       { id: "knowly-sources", name: "Fontes num lugar só" },
-      { id: "knowly-access", name: "Acesso por pessoa" },
+      { id: "knowly-access", name: "Acesso por perfil" },
     ],
     play: {
       title: "Respostas com fonte e acesso",
       lead: "Troque o perfil e pergunte de novo.",
     },
     center: {
-      title: "Junto dos outros produtos",
+      title: "As respostas no registro do Domus",
     },
     details: [
       "Fonte de cada frase",
-      "Acesso por pessoa e grupo",
+      "Acesso por perfil e grupo",
       "Dado pessoal barrado",
       "Documentos, tickets e atas",
       "Cadastros do Domus",
