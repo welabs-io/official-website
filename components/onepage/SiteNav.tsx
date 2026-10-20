@@ -19,7 +19,12 @@ export function SiteNav({
   contactHref,
 }: {
   NAV: typeof NavLabels;
-  products: readonly { slug: string; name: string; line: string; logo: string }[];
+  products: readonly {
+    slug: string;
+    name: string;
+    line: string;
+    logo: string;
+  }[];
   cta: string;
   contactHref: string;
 }) {
@@ -56,8 +61,12 @@ export function SiteNav({
               href="/#products"
               prefetch={false}
               className={styles.navLink}
+              // v2.2 (audit M10): on the Domus page only "Domus" is the current entry, never both
               aria-current={
-                pathname.startsWith("/products/") ? "true" : undefined
+                pathname.startsWith("/products/") &&
+                pathname !== "/products/domus"
+                  ? "true"
+                  : undefined
               }
               onClick={close}
             >
@@ -89,9 +98,7 @@ export function SiteNav({
               href="/products/domus"
               prefetch={false}
               className={styles.navLink}
-              aria-current={
-                pathname === "/products/domus" ? "page" : undefined
-              }
+              aria-current={pathname === "/products/domus" ? "page" : undefined}
               onClick={close}
             >
               {NAV.domus}

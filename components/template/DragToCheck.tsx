@@ -30,6 +30,14 @@ export function DragToCheck({
       if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
       el.style.transform = `translate(${dx}px, ${dy}px)`;
     };
+    // v2.2: the drag is followed on the window, not by capturing the pointer on the element, so a plain tap still
+    // reaches the label inside (a capture on pointerdown sent the click to the wrapper and the chip never checked)
+    const follow = (on: boolean) => {
+      const fn = on ? window.addEventListener : window.removeEventListener;
+      fn("pointermove", move);
+      fn("pointerup", up);
+      fn("pointercancel", up);
+    };
     const click = (e: MouseEvent) => {
       if (!moved) return;
       moved = false;
@@ -39,6 +47,7 @@ export function DragToCheck({
     const up = (e: PointerEvent) => {
       if (!start || e.pointerId !== start.id) return;
       start = null;
+      follow(false);
       el.removeAttribute("data-dragging");
       el.style.transform = "";
       const target = document.getElementById(targetId)?.getBoundingClientRect();
@@ -59,19 +68,14 @@ export function DragToCheck({
       moved = false;
       start = { x: e.clientX, y: e.clientY, id: e.pointerId };
       el.setAttribute("data-dragging", "");
-      el.setPointerCapture(e.pointerId);
+      follow(true);
     };
     el.addEventListener("pointerdown", down);
-    el.addEventListener("pointermove", move);
-    el.addEventListener("pointerup", up);
-    el.addEventListener("pointercancel", up);
     el.addEventListener("click", click, true);
     return () => {
       el.removeEventListener("click", click, true);
       el.removeEventListener("pointerdown", down);
-      el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerup", up);
-      el.removeEventListener("pointercancel", up);
+      follow(false);
     };
   };
   return (

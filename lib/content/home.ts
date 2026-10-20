@@ -20,7 +20,8 @@ export const HOME_INTRO = {
   stage: "Os cinco produtos ligados ao Domus",
   stamps: {
     domus: "Pedido 1234 atualizado",
-    relloo: "Marina com a Ana",
+    // v2.2 (audit, section 5): the effect, never a person ("Marina com a Ana")
+    relloo: "Conversa distribuída",
     magneto: "Aprovado às 10:14",
     tuner: "Ligação na conversa",
     knowly: "Sim, até 12h",
@@ -32,7 +33,7 @@ export const HOME_INTRO = {
     who: "Marina",
     lines: {
       tuner: "Ligação gravada",
-      relloo: "Respondida pela Ana",
+      relloo: "Respondida no prazo",
       knowly: "Sábado, até 12h, com a fonte",
       magneto: "Troca aprovada",
     },
@@ -44,12 +45,15 @@ export const HOME_INTRO = {
 export const HOME_MESSAGE = {
   title: "Uma mensagem, a operação inteira",
   lead: "Arraste a conversa para o trilho.",
-  bubble: { channel: "WhatsApp", text: "Dá para entregar sábado?" },
+  // v2.2: the category of the channel, not the brand
+  bubble: { channel: "Mensagem", text: "Dá para entregar sábado?" },
   send: "Enviar a mensagem",
+  // v2.2 (audit M01): while the message runs the button says so; "Recomeçar" only once it has landed
+  sending: "Enviando",
   again: "Recomeçar",
   stations: [
     { product: "tuner", label: "Chegou" },
-    { product: "relloo", label: "Ana responde" },
+    { product: "relloo", label: "Resposta" },
     { product: "knowly", label: "Sim, até 12h" },
     { product: "magneto", label: "Aprovado" },
     { product: "domus", label: "Registrado" },
@@ -89,7 +93,8 @@ export const DOMUS_MODULES: {
     { name: "Demandas", glyph: "rule" },
     { name: "Aprovações", glyph: "check" },
     { name: "Privacidade", glyph: "lock" },
-    { name: "Dados do Omie", glyph: "refresh" },
+    // v2.2: the category, with the one connector the code has in brackets (never "e outros")
+    { name: "Importação (Omie)", glyph: "refresh" },
   ],
 };
 
@@ -115,7 +120,7 @@ export const HOME_PRODUCTS = { title: "Os cinco produtos" } as const;
 export const HOME_EFFECTS = {
   title: "O que muda na operação",
   items: [
-    { scene: "s1", text: "Ligação e WhatsApp, a mesma pessoa" },
+    { scene: "s1", text: "Ligação e mensagem no mesmo histórico" },
     { scene: "s4", text: "A resposta vem com a fonte" },
     { scene: "s6", text: "O pedido volta confirmado" },
   ],

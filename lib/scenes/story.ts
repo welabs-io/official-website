@@ -9,7 +9,8 @@ export const STORY = {
   person: "Marina",
   // The contact Marina talks to on her phone (the business side of the WhatsApp chat)
   contact: "Central de pedidos",
-  channels: { voice: "Voz", chat: "WhatsApp" },
+  // v2.2 (audit, section 5): the category of the channel, not its brand; one contact, never "1 pessoa"
+  channels: { voice: "Voz", chat: "Mensagem" },
   call: "Ligação de 0:42",
   ask: "Dá para entregar sábado?",
   // The history of the chat before Marina called: what the business had told her
@@ -18,7 +19,7 @@ export const STORY = {
   confirmMeta: "Central de pedidos, agora",
   // The message the notification opens into, in the chat under Marina's question
   received: "Chega sábado, até 12h.",
-  thread: "2 canais, 1 pessoa",
+  thread: "2 canais, 1 contato",
   order: "Pedido 1234",
   times: {
     before: "09:12",

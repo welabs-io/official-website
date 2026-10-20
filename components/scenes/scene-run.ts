@@ -8,6 +8,7 @@
 // settled first scene.
 import { placeOf, ringPosition } from "@/components/ring/positions";
 import { turn } from "@/components/ring/turn";
+import { restartScene } from "./restart";
 
 type SceneData = {
   version: number;
@@ -47,19 +48,20 @@ export function run(root: HTMLElement) {
       if (position === 0) tile.removeAttribute("aria-hidden");
       else tile.setAttribute("aria-hidden", "true");
       const scene = scenes[i];
-      if (scene)
-        scene.dataset.phase =
-          position === 0 ? "play" : position > 0 ? "start" : "end";
+      if (!scene) return;
+      // v2.2: a scene entering `start` or `play` is restarted from zero (restart.ts); writing the phase alone left a
+      // scene that had already played on its last frame (the Relloo from its 2nd cycle)
+      const phase = position === 0 ? "play" : position > 0 ? "start" : "end";
+      if (phase === "end") scene.dataset.phase = "end";
+      else if (scene.dataset.phase !== phase || phase === "play")
+        restartScene(scene, phase);
     });
   };
 
-  // Replays the only scene: first frame, a forced style flush so the animations restart, then play
+  // Replays the only scene from its first frame (v2.2: through restartScene, the same path as the replays of the home)
   const restart = () => {
     const scene = scenes[0];
-    if (!scene) return;
-    scene.dataset.phase = "start";
-    scene.getBoundingClientRect();
-    scene.dataset.phase = "play";
+    if (scene) restartScene(scene, "play");
   };
 
   let active = 0;

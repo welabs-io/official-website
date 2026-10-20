@@ -3,7 +3,8 @@
    crossfades in (v2.1; it was a circular carousel whose turn was most of the motion). The swap lasts --swap-time, the
    swap of the script (0.45 s). The tile has a fixed aspect ratio, so no scene ever moves the page. */
 .screen {
-  --ease: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  /* v2.2 (audit M11): the in-and-out curve of the page, not an easeInOutQuad of its own */
+  --ease: var(--ease-in-out);
   /* Width of the centre scene: 920 px at most (2:1, so 460 px tall), never taller than 70% of the window, the whole wrap
      on a phone */
   --tile-w: min(100%, 920px, calc(70vh * 2));
@@ -100,12 +101,15 @@
   transform: none;
 }
 
-/* The scene is 2:1 on a desktop, 16:10 on a tablet and 7:10 on a phone, so the same words fit in rem at every width */
-@media (max-width: 860px) {
-  .stage,
-  .tile {
-    aspect-ratio: 16 / 10;
-  }
+/* The scene is 16:10 beside the text of the opening (v2.2: the opening is two columns, so the tile is the 690 px of the
+   tablet, not the 920 px of a whole row, and it keeps the tablet layout of the scenes), and 7:10 on a phone, so the
+   same words fit in rem at every width */
+.stage,
+.tile {
+  aspect-ratio: 16 / 10;
+}
+.screen {
+  --tile-w: min(100%, 920px, calc(70vh * 1.6));
 }
 @media (max-width: 560px) {
   .stage,

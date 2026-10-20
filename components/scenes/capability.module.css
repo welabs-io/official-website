@@ -201,7 +201,7 @@
   height: 1.625rem;
   padding: 0 0.5rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-label);
   font-weight: 500;
@@ -331,7 +331,7 @@
   gap: 0.25rem;
   padding: 0.125rem 0.5rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-meta);
   font-weight: 500;
@@ -441,12 +441,35 @@
   background: var(--s-win);
   box-shadow: var(--s-elev-1);
 }
+/* v2.2 (audit M12): the check of a block sits inside its card, on the corner, never over the edge */
+.block {
+  padding-right: 1.75rem;
+}
 .block .blockDone {
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  border: 2px solid var(--s-panel);
-  box-sizing: content-box;
+  top: 0.375rem;
+  right: 0.375rem;
+}
+/* The branch closes: from the block above the limit back up into the block it rejoins, with a head */
+.branch .block::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 2px;
+  height: 1.75rem;
+  margin-left: -1px;
+  background: var(--s-wall);
+}
+.branch .block::after {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 1.75rem - 5px);
+  left: 50%;
+  margin-left: -4px;
+  border: 4px solid transparent;
+  border-bottom: 5px solid var(--s-wall);
+  border-top: 0;
 }
 .block.lit {
   box-shadow: var(--s-elev-2);
@@ -475,7 +498,7 @@
   gap: 0.375rem;
   padding: 0.125rem 0.5rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-meta);
   font-weight: 500;
@@ -524,7 +547,7 @@
   justify-self: center;
   position: relative;
   padding: 0.125rem 0.5rem;
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-panel);
   border: 1px solid var(--s-edge);
   font-size: var(--s-t-meta);
@@ -638,7 +661,7 @@
   gap: 0.375rem;
   padding: 0.25rem 0.625rem 0.25rem 0.25rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-label);
 }
@@ -850,6 +873,12 @@
     top: -1.25rem;
     height: calc(1.25rem + 50%);
   }
+  .branch .block::before {
+    height: 1.25rem;
+  }
+  .branch .block::after {
+    bottom: calc(100% + 1.25rem - 5px);
+  }
   .timeline li {
     padding: 0.25rem 0;
   }
@@ -903,7 +932,9 @@
   .branch .block {
     grid-column: 1;
   }
-  .branchLine {
+  .branchLine,
+  .branch .block::before,
+  .branch .block::after {
     display: none;
   }
   .branchLabel {

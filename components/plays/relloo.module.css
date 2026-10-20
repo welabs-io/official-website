@@ -1,0 +1,279 @@
+/* RELLOO: TODOS OS CANAIS NA MESMA CONVERSA */
+/* States: one per channel (message, call, site), any (the first contact, which runs the chain of the timeline) and all
+   (the three in: the agent answers and hands over). The order of the events is the order the visitor fired them,
+   written by play-run.ts as `order` and `data-first`; without script they keep the order of the markup. The number of
+   channels is a CSS counter of the checked controls, which come before it in the page. */
+.root {
+  counter-reset: rl;
+}
+.root input:checked {
+  counter-increment: rl;
+}
+.root:has([id="rl-message"]:checked) [data-ev~="message"],
+.root:has([id="rl-call"]:checked) [data-ev~="call"],
+.root:has([id="rl-site"]:checked) [data-ev~="site"],
+.root:has([id^="rl-"]:checked) [data-ev~="any"],
+.root:has([id="rl-message"]:checked):has([id="rl-call"]:checked):has(
+    [id="rl-site"]:checked
+  )
+  [data-ev~="all"] {
+  display: var(--shown, block);
+}
+
+.screen {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--sp-4);
+}
+.conversation {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface-band);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--r-card) var(--r-card) 0 0;
+  font-size: var(--text-sm);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--a-100);
+}
+.count {
+  margin-left: auto;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--surface-accent);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.count::after {
+  content: " " counter(rl);
+}
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 248px;
+  margin: 0;
+  padding: var(--sp-3);
+  list-style: none;
+}
+.event,
+.agent {
+  --shown: grid;
+  justify-items: start;
+  gap: var(--sp-1);
+}
+.agent {
+  order: 99;
+  justify-items: end;
+}
+.switch {
+  justify-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+  color: var(--mute);
+  font-size: var(--text-xs);
+}
+.switch::before,
+.switch::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.event[data-first] .switch {
+  display: none;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--mute);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.bubble {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  font-size: var(--text-sm);
+}
+.bubble[data-out] {
+  border-color: var(--a-300);
+  background: var(--a-100);
+}
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.root .agent[data-ev] .source {
+  animation: rl-pop var(--dur-3) var(--ease-spring) calc(var(--beat) * 5.5) both;
+}
+.handoff {
+  --shown: flex;
+  order: 100;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border: 1px dashed var(--input);
+  border-radius: var(--r-ctl);
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+/* O PRAZO DE RESPOSTA */
+.deadline {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+.deadline svg {
+  transform: rotate(-90deg);
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 3;
+  stroke-dasharray: 51;
+}
+.deadline i {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--success);
+  color: var(--surface);
+}
+.root .event[data-ev] .deadline svg {
+  animation: rl-ring calc(var(--beat) * 2.4) linear calc(var(--beat) * 0.6) both;
+}
+.root .event[data-ev] .deadline i {
+  animation: rl-pop var(--dur-3) var(--ease-spring) calc(var(--beat) * 3) both;
+}
+
+/* A LINHA DO TEMPO */
+.timeline {
+  position: relative;
+  align-self: start;
+  display: grid;
+  align-content: start;
+  gap: var(--sp-4);
+  margin: 0;
+  padding: var(--sp-3) 0 0 var(--sp-5);
+  list-style: none;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: var(--sp-4);
+  bottom: var(--sp-2);
+  left: var(--sp-2);
+  width: 2px;
+  background: var(--line);
+}
+.mile {
+  --shown: flex;
+  position: relative;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+.dot {
+  position: absolute;
+  top: 4px;
+  left: calc(var(--sp-5) * -1 + 3px);
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--a);
+  box-shadow: 0 0 0 1px var(--a-300);
+}
+/* The distribution: three seats take turns before the team gets it */
+.rotation {
+  display: inline-flex;
+  gap: var(--sp-1);
+}
+.rotation i {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface-accent);
+  animation: rl-turn calc(var(--beat) * 1.5) var(--ease-in-out)
+    calc((var(--at) + var(--n, 0) * 0.5) * var(--beat)) 1 both;
+}
+.rotation i:nth-child(2) {
+  --n: 1;
+}
+.rotation i:nth-child(3) {
+  --n: 2;
+  animation-fill-mode: both;
+  animation-name: rl-turn-last;
+}
+
+@keyframes rl-ring {
+  from {
+    stroke-dashoffset: 51;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes rl-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+@keyframes rl-turn {
+  50% {
+    background: var(--a);
+  }
+}
+@keyframes rl-turn-last {
+  to {
+    background: var(--a);
+  }
+}
+
+/* CELULAR */
+@media (max-width: 860px) {
+  .screen {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thread {
+    min-height: 0;
+  }
+}

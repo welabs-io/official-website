@@ -17,7 +17,7 @@
 // The URL is always the real route (`/products/<slug>`), so a product is shareable and opens directly. Only transform,
 // opacity, clip-path and scroll move; under reduced motion every move is an instant jump.
 import type { useRouter } from "next/navigation";
-import { isSlug, open, prepare } from "@/components/intro/intro-run";
+import { FLASH, isSlug, open, prepare } from "@/components/intro/intro-run";
 import styles from "./descent.module.css";
 
 type Router = ReturnType<typeof useRouter>;
@@ -40,6 +40,28 @@ const memory = {
   // A back that the descent itself asked for (the scroll up past a product): no reverse move
   silent: false,
   path: "",
+};
+
+// The products whose whole opening already played in this visit (sessionStorage, so a reload of the tab keeps it; a
+// browser that refuses the storage simply plays the whole opening again)
+const SEEN_KEY = "welabs-openings";
+const seenSet = (): string[] => {
+  try {
+    return JSON.parse(sessionStorage.getItem(SEEN_KEY) ?? "[]") as string[];
+  } catch {
+    return [];
+  }
+};
+const seen = (slug: string) => seenSet().includes(slug);
+const remember = (slug: string) => {
+  try {
+    sessionStorage.setItem(
+      SEEN_KEY,
+      JSON.stringify([...new Set([...seenSet(), slug])]),
+    );
+  } catch {
+    // No storage: nothing to remember
+  }
 };
 
 // Resolves the moves waiting for the next route to be in the DOM
@@ -162,9 +184,11 @@ function veil() {
 // Wheel and touch scrolling are held while a move runs, so the visitor does not fight the scroll of the move; the page
 // is marked as moving (`data-moving` on <html>), which closes the menu of the header (shell.module.css)
 const hold = (e: Event) => e.preventDefault();
-function lockInput(on: boolean) {
+// v2.2: `wheel` false marks the move without holding the scroll (the brand flash is short enough to leave it free)
+function lockInput(on: boolean, wheel = true) {
   if (on) document.documentElement.dataset.moving = "";
   else delete document.documentElement.dataset.moving;
+  if (on && !wheel) return;
   const fn = on ? window.addEventListener : window.removeEventListener;
   fn("wheel", hold, { passive: false } as AddEventListenerOptions);
   fn("touchmove", hold, { passive: false } as AddEventListenerOptions);
@@ -194,7 +218,14 @@ export function install(router: Router, pathname: string) {
   const prefetched = new Set<string>();
 
   // ENTRAR NUM PRODUTO: A ABERTURA DA MARCA
-  async function enter(origin: Element, href: string, slug: string) {
+  // v2.2 (audit A08): the whole opening only on the first entry into each product of the visit; a later entry, and any
+  // swap by the product selector, plays the brand flash (about 700 ms) and does not hold the wheel
+  async function enter(
+    origin: Element,
+    href: string,
+    slug: string,
+    viaSwitch: boolean,
+  ) {
     memory.busy = true;
     if (!slugOf(location.pathname)) memory.homeY = scrollY;
     memory.depth += 1;
@@ -205,12 +236,14 @@ export function install(router: Router, pathname: string) {
       memory.busy = false;
       return;
     }
-    lockInput(true);
+    const flash = viaSwitch || seen(slug);
+    remember(slug);
+    lockInput(true, !flash);
     let playing: Awaited<ReturnType<typeof open>> | null = null;
     try {
-      playing = await open(slug, box(origin));
-      // The page changes only under the full sheet (the opening of its clip takes 0.45 s)
-      await new Promise((r) => setTimeout(r, 470));
+      playing = await open(slug, box(origin), flash);
+      // The page changes only under the full sheet (the opening of its clip)
+      await new Promise((r) => setTimeout(r, flash ? FLASH.open + 20 : 470));
       router.push(href, { scroll: false });
       await committed();
       jump(slotTop());
@@ -334,8 +367,7 @@ export function install(router: Router, pathname: string) {
     const url = new URL(a.href, location.href);
     if (url.origin !== location.origin || url.hash) return null;
     if (url.pathname === location.pathname) return null;
-    if (url.pathname !== "/" && !url.pathname.startsWith(PRODUCT))
-      return null;
+    if (url.pathname !== "/" && !url.pathname.startsWith(PRODUCT)) return null;
     return url;
   }
 
@@ -347,7 +379,13 @@ export function install(router: Router, pathname: string) {
     const href = url.pathname + url.search;
     const slug = slugOf(url.pathname);
     // The menu closes on its own (SiteNav); the opening grows from the entry that was clicked
-    if (slug) void enter(a.closest("[data-card]") ?? a, href, slug);
+    if (slug)
+      void enter(
+        a.closest("[data-card]") ?? a,
+        href,
+        slug,
+        a.closest("[data-switch]") !== null,
+      );
     else void home(href);
     return true;
   }

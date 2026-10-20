@@ -57,20 +57,56 @@ async function record(page: Page, ms: number) {
   }, ms);
 }
 
-async function expectOpening(page: Page, slug: string, start: () => Promise<void>) {
-  const frames = record(page, 6200);
+// v2.2 (audit A08): the whole opening plays on the first entry into a product of the visit (every run starts a fresh
+// visit by clearing sessionStorage); a swap by the product selector plays the brand flash, about 700 ms
+async function expectOpening(
+  page: Page,
+  slug: string,
+  start: () => Promise<void>,
+  mode: "full" | "flash" = "full",
+) {
+  const frames = record(page, mode === "full" ? 6200 : 1600);
   await start();
   const f = await frames;
   const withSheet = f.filter((x) => x.sheet === slug);
-  // The sheet of the opening of this product came in at once and stayed for the opening
-  expect(withSheet.length, "frames with the opening").toBeGreaterThan(120);
-  expect(f.findIndex((x) => x.sheet === slug), "first frame with the opening").toBeLessThan(30);
-  // Its clip opened over several frames (from the box clicked to the window), and the opening drew many frames
-  expect(new Set(withSheet.map((x) => x.clip)).size, "clip frames").toBeGreaterThan(8);
-  expect(new Set(withSheet.map((x) => x.draw)).size, "drawn frames").toBeGreaterThan(40);
+  console.log(
+    `${slug} ${mode}: ${withSheet.length} frames with the sheet of ${f.length}`,
+  );
+  expect(
+    f.findIndex((x) => x.sheet === slug),
+    "first frame with the opening",
+  ).toBeLessThan(30);
+  if (mode === "full") {
+    // The sheet of the opening of this product came in at once and stayed for the opening (v2.2: by its time on screen,
+    // over 3 s, since a loaded machine draws fewer frames in the same 5 s)
+    expect(withSheet.length, "frames with the opening").toBeGreaterThan(60);
+    expect(
+      withSheet.at(-1)!.t - withSheet[0].t,
+      "ms of the opening",
+    ).toBeGreaterThan(3000);
+    // Its clip opened over several frames (from the box clicked to the window), and the opening drew many frames
+    expect(
+      new Set(withSheet.map((x) => x.clip)).size,
+      "clip frames",
+    ).toBeGreaterThan(8);
+    expect(
+      new Set(withSheet.map((x) => x.draw)).size,
+      "drawn frames",
+    ).toBeGreaterThan(40);
+  } else {
+    // The flash: the sheet for well under a second, never the whole opening
+    expect(withSheet.length, "frames with the flash").toBeGreaterThan(15);
+    expect(withSheet.length, "frames with the flash").toBeLessThan(70);
+  }
   // The hand-over: the logo travelled and the sheet faded over several frames
-  expect(f.some((x) => x.fly), "travelling logo").toBe(true);
-  expect(new Set(withSheet.map((x) => x.opacity)).size, "fade frames").toBeGreaterThan(8);
+  expect(
+    f.some((x) => x.fly),
+    "travelling logo",
+  ).toBe(true);
+  expect(
+    new Set(withSheet.map((x) => x.opacity)).size,
+    "fade frames",
+  ).toBeGreaterThan(8);
   // It landed: the product is the route, the sheet is gone, the opening of the product sits under the header
   const last = f.at(-1)!;
   expect(last.path).toBe(`/products/${slug}`);
@@ -79,7 +115,13 @@ async function expectOpening(page: Page, slug: string, start: () => Promise<void
     const h1 = document.querySelector("[data-descent-slot] #product h1 img")!;
     const header = document.querySelector("header")!.getBoundingClientRect();
     const r = h1.getBoundingClientRect();
-    return { top: r.top, bottom: r.bottom, header: header.bottom, vh: innerHeight, vis: getComputedStyle(h1).visibility };
+    return {
+      top: r.top,
+      bottom: r.bottom,
+      header: header.bottom,
+      vh: innerHeight,
+      vis: getComputedStyle(h1).visibility,
+    };
   });
   expect(geo.top).toBeGreaterThanOrEqual(geo.header);
   expect(geo.bottom).toBeLessThan(geo.vh);
@@ -89,10 +131,13 @@ async function expectOpening(page: Page, slug: string, start: () => Promise<void
 test.describe.configure({ mode: "serial" });
 test.setTimeout(RUNS * 12_000 + 30_000);
 
-test(`Menu → Produtos → Domus plays the opening of the Domus, ${RUNS} of ${RUNS}`, async ({ page }) => {
+test(`Menu → Produtos → Domus plays the opening of the Domus, ${RUNS} of ${RUNS}`, async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   for (let i = 0; i < RUNS; i++) {
     await page.goto("/", { waitUntil: "load" });
+    await page.evaluate(() => sessionStorage.clear());
     // Half of the runs click right after the load, before the descent chunk may have landed
     await page.waitForTimeout(i % 2 ? 1200 : 50);
     await page.hover("header nav >> text=Produtos");
@@ -102,10 +147,13 @@ test(`Menu → Produtos → Domus plays the opening of the Domus, ${RUNS} of ${R
   }
 });
 
-test(`a card of the home plays the opening of its product, ${RUNS} of ${RUNS}`, async ({ page }) => {
+test(`a card of the home plays the opening of its product, ${RUNS} of ${RUNS}`, async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   for (let i = 0; i < RUNS; i++) {
     await page.goto("/", { waitUntil: "load" });
+    await page.evaluate(() => sessionStorage.clear());
     await page.waitForTimeout(i % 2 ? 1200 : 50);
     const card = page.locator('a[data-card="relloo"]');
     await card.scrollIntoViewIfNeeded();
@@ -113,30 +161,52 @@ test(`a card of the home plays the opening of its product, ${RUNS} of ${RUNS}`, 
   }
 });
 
-test(`the selector of a product plays the opening of the next one, ${RUNS} of ${RUNS}`, async ({ page }) => {
+test(`the selector of a product plays the brand flash of the next one, ${RUNS} of ${RUNS}`, async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const order = ["relloo", "magneto", "tuner", "knowly", "domus"];
   await page.goto("/products/domus", { waitUntil: "load" });
   await page.waitForTimeout(1200);
   for (let i = 0; i < RUNS; i++) {
     const slug = order[i % order.length];
-    await expectOpening(page, slug, () =>
-      page
-        .locator(`nav[aria-label="Os cinco produtos"] a[href="/products/${slug}"]`)
-        .click(),
+    await expectOpening(
+      page,
+      slug,
+      () =>
+        page
+          .locator(
+            `nav[aria-label="Os cinco produtos"] a[href="/products/${slug}"]`,
+          )
+          .click(),
+      "flash",
     );
   }
 });
 
-test(`the browser's back from a product returns to the card with a move, ${RUNS} of ${RUNS}`, async ({ page }) => {
+test(`the browser's back from a product returns to the card with a move, ${RUNS} of ${RUNS}`, async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   for (let i = 0; i < RUNS; i++) {
     await page.goto("/", { waitUntil: "load" });
     await page.waitForTimeout(1200);
     const card = page.locator('a[data-card="magneto"]');
     await card.scrollIntoViewIfNeeded();
-    const homeY = await page.evaluate(() => scrollY);
+    // v2.2: the position at the instant of the click, not before it: when the card is covered for a moment, Playwright
+    // scrolls it again before clicking (measured: 3 of 8 runs on 5fc85df ended "344 px off", with the card exactly where
+    // it was clicked)
+    await page.evaluate(() =>
+      addEventListener(
+        "pointerdown",
+        () => ((window as unknown as { __clickY: number }).__clickY = scrollY),
+        { capture: true, once: true },
+      ),
+    );
     await card.click();
+    const homeY = await page.evaluate(
+      () => (window as unknown as { __clickY: number }).__clickY,
+    );
     await page.waitForURL("**/products/magneto");
     await page.waitForFunction(() => !document.querySelector("[data-intro]"));
     // The way back: the layers of the reverse move are over the page for many frames, moving
@@ -147,7 +217,8 @@ test(`the browser's back from a product returns to the card with a move, ${RUNS}
           const t0 = performance.now();
           const tick = () => {
             const layer = [...document.body.children].find(
-              (el) => el.tagName === "DIV" && (el as HTMLElement).style.transform,
+              (el) =>
+                el.tagName === "DIV" && (el as HTMLElement).style.transform,
             ) as HTMLElement | undefined;
             out.push(layer ? layer.style.transform : "");
             if (performance.now() - t0 < 1600) requestAnimationFrame(tick);
@@ -161,6 +232,8 @@ test(`the browser's back from a product returns to the card with a move, ${RUNS}
     expect(new Set(moved).size, "frames of the way back").toBeGreaterThan(20);
     await page.waitForURL((u) => u.pathname === "/");
     await page.waitForTimeout(300);
-    expect(Math.abs((await page.evaluate(() => scrollY)) - homeY)).toBeLessThan(4);
+    expect(Math.abs((await page.evaluate(() => scrollY)) - homeY)).toBeLessThan(
+      4,
+    );
   }
 });

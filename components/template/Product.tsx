@@ -30,10 +30,11 @@ import styles from "./v2.module.css";
 // the descent (components/onepage/descent-run.ts) opens the brand opening of that product from the logo clicked.
 function ProductSwitch({ current }: { current: ProductSlug }) {
   return (
-    <nav className={styles.switch} aria-label={NAV.switch}>
+    // v2.2: `data-switch` makes a swap here a brand flash, not the whole opening (descent-run.ts)
+    <nav className={styles.switch} aria-label={NAV.switch} data-switch="">
       <ul>
         {PRODUCTS.map(({ slug, name }) => (
-          <li key={slug}>
+          <li key={slug} data-p={slug}>
             <Link
               href={`/products/${slug}`}
               prefetch={false}

@@ -22,7 +22,13 @@ const SHEETS = [
   "components/template/hub.module.css",
   "components/template/message.module.css",
   "components/template/house.module.css",
-  "components/template/tuner-play.module.css",
+  // v2.2: the plays moved to components/plays, one sheet for their anatomy and one per product
+  "components/plays/plays.module.css",
+  "components/plays/domus.module.css",
+  "components/plays/relloo.module.css",
+  "components/plays/magneto.module.css",
+  "components/plays/tuner.module.css",
+  "components/plays/knowly.module.css",
   "components/onepage/home.module.css",
   "components/onepage/shell.module.css",
 ];
@@ -146,6 +152,56 @@ describe("space and type tokens", () => {
         "50%",
         ...DRAWINGS,
       ]).toContain(value);
+  });
+});
+
+// v2.2 (audit M11): the motion and the round shapes are one scale on the whole page, the scenes included. Measured on
+// 8187680: five easing curves besides --ease-out (ease, ease-out, two springs and an easeInOutQuad) and 999px written
+// loose in the scenes. The scenes keep their interface text of 11 to 13 px as a documented exception (a drawing of a
+// product screen, at the size of that screen; e2e/product-scenes.spec.ts holds its legibility rule).
+const MOTION_SHEETS = [
+  ...SHEETS,
+  "components/scenes/fx.css",
+  "components/scenes/scenes.module.css",
+  "components/scenes/capability.module.css",
+  "components/scenes/ludic.module.css",
+  "components/scenes/scene-stage.module.css",
+  "components/scenes/mini-scene.module.css",
+  "components/intro/intro.module.css",
+  "components/onepage/descent.module.css",
+];
+
+describe("one motion scale and one round shape", () => {
+  it.each(MOTION_SHEETS)(
+    "%s eases every transition and animation with a motion token (or linear)",
+    (file) => {
+      const css = strip(read(file));
+      // A curve is written only where a motion token is defined
+      expect(
+        css.replace(/--ease[\w-]*:\s*cubic-bezier\([^)]*\)/g, ""),
+      ).not.toMatch(/cubic-bezier\(/);
+      const loose = declarations(css)
+        .filter(({ prop }) => /^(transition|animation)$/.test(prop))
+        .filter(({ value }) => !/^none\b/.test(value))
+        .flatMap(({ selector, value }) =>
+          value
+            .split(/,(?![^(]*\))/)
+            .filter((part) => !/var\(--ease|linear|steps\(/.test(part))
+            .map((part) => `${selector} { ${part.trim()} }`),
+        );
+      expect(loose).toEqual([]);
+    },
+  );
+
+  it.each(MOTION_SHEETS)("%s writes a full round as --r-dot", (file) => {
+    expect(strip(read(file))).not.toMatch(/border-radius:\s*999px/);
+  });
+
+  it("the motion tokens are defined once, with one spring", () => {
+    const css = strip(read("components/onepage/shell.module.css"));
+    for (const name of ["--ease-out", "--ease-in-out", "--ease-spring"])
+      expect(css).toMatch(new RegExp(`${name}:\\s*cubic-bezier\\(`));
+    expect(css).toMatch(/--r-dot:\s*999px;/);
   });
 });
 

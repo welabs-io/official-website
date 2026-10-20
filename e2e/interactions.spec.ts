@@ -9,16 +9,21 @@ import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 900 } });
 
-// The opacity of the lit layer of every piece of the stage: `::after` of a card, `::before` of a tie or a line
+// The opacity of the lit layer of every piece of the stage: `::after` of a card, `::before` of a line of the record and,
+// since v2.2, the lit copy of the SVG curve of a tie (its second path)
 const lit = (page: Page, selector: string) =>
   page.evaluate(
     (sel) =>
-      [...document.querySelectorAll(sel)].map((el) =>
-        Number(
-          getComputedStyle(el, el.hasAttribute("data-p") ? "::after" : "::before")
-            .opacity,
-        ),
-      ),
+      [...document.querySelectorAll(sel)].map((el) => {
+        const hot = el.querySelector("svg path:nth-of-type(2)");
+        if (hot) return Number(getComputedStyle(hot).opacity);
+        return Number(
+          getComputedStyle(
+            el,
+            el.hasAttribute("data-p") ? "::after" : "::before",
+          ).opacity,
+        );
+      }),
     selector,
   );
 
@@ -30,7 +35,10 @@ test("pointing at a product lights it, its tie and its line in the record, and s
   await stage.locator('[data-p="tuner"]').hover();
   await page.waitForTimeout(400);
   // The card, its tie and its line of the record
-  const tuner = await lit(page, '#intro [data-hub] :is([data-p="tuner"], [data-of="tuner"])');
+  const tuner = await lit(
+    page,
+    '#intro [data-hub] :is([data-p="tuner"], [data-of="tuner"])',
+  );
   const others = await lit(
     page,
     '#intro [data-hub] :is([data-p]:not([data-p="tuner"]), [data-of]:not([data-of="tuner"]))',
@@ -38,7 +46,9 @@ test("pointing at a product lights it, its tie and its line in the record, and s
   expect(tuner.length).toBe(3);
   expect(tuner.every((o) => o === 1)).toBe(true);
   expect(others.every((o) => o === 0)).toBe(true);
-  await expect(stage.locator('[data-of="tuner"]').last()).toContainText("Ligação gravada");
+  await expect(stage.locator('[data-of="tuner"]').last()).toContainText(
+    "Ligação gravada",
+  );
 });
 
 test("the word of the title turns with the stage", async ({ page }) => {
@@ -68,7 +78,9 @@ test("the message sent with the button walks through the five products and lands
     };
   });
   expect(domus).toEqual({ ring: "rgb(28, 26, 22)", square: 1 });
-  await expect(page.locator("#message").getByText("Confirmado: sábado")).toBeVisible();
+  await expect(
+    page.locator("#message").getByText("Confirmado: sábado"),
+  ).toBeVisible();
   await expect(page.getByText("Recomeçar")).toBeVisible();
 });
 
@@ -86,79 +98,24 @@ test("'+ Novo módulo' makes a new module in the Domus, with its seal, and the k
 }) => {
   await page.goto("/", { waitUntil: "load" });
   await page.locator("#domus").scrollIntoViewIfNeeded();
-  await expect(page.locator('label[for="area-add"]')).toContainText("Novo módulo");
+  await expect(page.locator('label[for="area-add"]')).toContainText(
+    "Novo módulo",
+  );
   await page.locator('label[for="area-add"]').click();
   await expect(page.locator("#area-add")).toBeChecked();
-  await expect(page.locator('label[for="area-add"]')).toContainText("Vistorias");
-  await expect(page.locator('label[for="area-add"] b')).toHaveText("Novo módulo");
+  await expect(page.locator('label[for="area-add"]')).toContainText(
+    "Vistorias",
+  );
+  await expect(page.locator('label[for="area-add"] b')).toHaveText(
+    "Novo módulo",
+  );
   await page.locator("#area-add").focus();
   await page.keyboard.press("Space");
   await expect(page.locator("#area-add")).not.toBeChecked();
 });
 
-test.describe("one play per product", () => {
-  test("domus: a field dragged onto the table becomes a column", async ({
-    page,
-  }) => {
-    await page.goto("/products/domus", { waitUntil: "load" });
-    const play = page.locator('[data-descent-slot] [data-play="domus"]');
-    await play.scrollIntoViewIfNeeded();
-    await play.locator("[data-drag]").dragTo(page.locator("#field-table"));
-    await expect(page.locator("#field-add")).toBeChecked();
-    await expect(play.locator("th").last()).toBeVisible();
-    await expect(play.locator("th").last()).toHaveText("Foto");
-  });
-  test("relloo: a channel lands in the conversation of the same person", async ({
-    page,
-  }) => {
-    await page.goto("/products/relloo", { waitUntil: "load" });
-    const play = page.locator('[data-play="relloo"]');
-    await play.scrollIntoViewIfNeeded();
-    await expect(play.locator('[data-ch="call"]').last()).toBeHidden();
-    await play.locator('label[for="ch-call"]').click();
-    await expect(play.locator('li[data-ch="call"]')).toBeVisible();
-  });
-  test("magneto: the flow waits for the approval and then goes on", async ({
-    page,
-  }) => {
-    await page.goto("/products/magneto", { waitUntil: "load" });
-    const play = page.locator('[data-play="magneto"]');
-    await play.scrollIntoViewIfNeeded();
-    await play.getByText("Aprovar", { exact: true }).click();
-    await expect(page.locator("#flow-ok")).toBeChecked();
-    await page.waitForTimeout(1600);
-    const last = await play
-      .locator('li[data-step="3"] span')
-      .first()
-      .evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(last).toBe("rgb(31, 138, 76)");
-  });
-  test("tuner: an option of the menu sends the call to the right person, recorded", async ({
-    page,
-  }) => {
-    await page.goto("/products/tuner", { waitUntil: "load" });
-    const play = page.locator('[data-play="tuner"]');
-    await play.scrollIntoViewIfNeeded();
-    await play.locator('label[for="ivr-2"]').click();
-    // The person of the option answers, recorded; the others stay idle
-    await expect(play.locator('li[data-key="2"]')).toContainText("Gravando");
-    await expect(play.locator('li[data-key="2"] > span').last()).toBeVisible();
-    await expect(play.locator('li[data-key="1"] > span').last()).toBeHidden();
-  });
-  test("knowly: an answer with its source, and a source that stays closed", async ({
-    page,
-  }) => {
-    await page.goto("/products/knowly", { waitUntil: "load" });
-    const play = page.locator('[data-play="knowly"]');
-    await play.scrollIntoViewIfNeeded();
-    await expect(play.locator('[data-ask="0"]').last()).toBeVisible();
-    await play.locator('label[for="ask-2"]').click();
-    await expect(play.locator('div[data-ask="2"]')).toBeVisible();
-    await expect(play.locator('div[data-ask="2"]')).toContainText(
-      "não tem acesso",
-    );
-  });
-});
+// v2.2: the play of each product page (a chain of states with a choice, a record and the effect on the Domus) is
+// accepted by e2e/plays.spec.ts
 
 test("on a phone the pieces of the stage stay inside it and the bar shows under the first word", async ({
   browser,
@@ -210,13 +167,26 @@ test("under reduced motion nothing runs: the Domus is lit and the first word sho
       ).length,
     // The record of the Domus lit and its line of the Domus lit; no product lit
     domus: [
-      Number(getComputedStyle(document.querySelector('#intro [data-p="domus"]')!, "::after").opacity),
-      Number(getComputedStyle(document.querySelector('#intro [data-of="domus"]')!, "::before").opacity),
+      Number(
+        getComputedStyle(
+          document.querySelector('#intro [data-p="domus"]')!,
+          "::after",
+        ).opacity,
+      ),
+      Number(
+        getComputedStyle(
+          document.querySelector('#intro [data-of="domus"]')!,
+          "::before",
+        ).opacity,
+      ),
     ],
-    products: [...document.querySelectorAll('#intro [data-p]:not([data-p="domus"])')].map((el) =>
-      Number(getComputedStyle(el, "::after").opacity),
-    ),
-    word: new DOMMatrix(getComputedStyle(document.querySelector("#intro h1 span[aria-hidden]")!).transform).m42,
+    products: [
+      ...document.querySelectorAll('#intro [data-p]:not([data-p="domus"])'),
+    ].map((el) => Number(getComputedStyle(el, "::after").opacity)),
+    word: new DOMMatrix(
+      getComputedStyle(document.querySelector("#intro h1 span[aria-hidden]")!)
+        .transform,
+    ).m42,
   }));
   expect(state.running).toBe(0);
   expect(state.domus).toEqual([1, 1]);

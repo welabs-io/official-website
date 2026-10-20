@@ -4,7 +4,10 @@
    on the edge of the record. The lit product carries its effect (the amber packet) along its tie, and its line lights in
    the record. The cycle is the 12.5 s of the word that turns in the title: window --w (0 to 4) of 2.5 s per product. */
 .hub {
-  --tie: 40px;
+  /* v2.2: the column of a tie holds its 64 × 56 curve (Orbit.tsx) */
+  --tie: 64px;
+  --tie-h: 56px;
+  --port: 3px;
   --node-h: 96px;
   --gap: var(--sp-8);
   position: relative;
@@ -103,24 +106,53 @@ a.node:focus-visible {
 }
 
 /* AS LIGAÇÕES */
+/* v2.2 (audit A06): SVG curves in px boxes (Orbit.tsx). A tie of the upper row starts on the middle line of its card
+   and bends down 50 px into the record; one of the lower row bends up, so every tie leans toward the centre. The wire
+   is 1.5 px of ink at 30%; the lit copy (`.hot`) is full ink with a dash that flows toward the record; the ports are
+   6 px rings on the edges of the cards. */
 .tie {
   position: relative;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--thread-l);
+  width: 64px;
+  height: 56px;
+  justify-self: center;
 }
-/* The tie sits on the middle line of its card (its 2 px centred on it by the 1 px shift) */
+/* The port (3 px from the edge of the box) sits on the middle line of the card */
 .tie[data-of="relloo"],
 .tie[data-of="magneto"] {
   align-self: end;
-  margin-bottom: calc(var(--node-h) / 2);
-  translate: 0 1px;
+  margin-bottom: calc(var(--node-h) / 2 - var(--tie-h) + var(--port));
 }
 .tie[data-of="tuner"],
 .tie[data-of="knowly"] {
   align-self: start;
-  margin-top: calc(var(--node-h) / 2);
-  translate: 0 -1px;
+  margin-top: calc(var(--node-h) / 2 - var(--tie-h) + var(--port));
+}
+.tie svg,
+.tieUp svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  fill: none;
+}
+.wire,
+.hot {
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.wire {
+  stroke: var(--ink);
+  stroke-opacity: 0.3;
+}
+.hot {
+  stroke: var(--ink);
+  stroke-dasharray: 4 6;
+  opacity: 0;
+}
+.port {
+  fill: var(--surface);
+  stroke: var(--ink);
+  stroke-opacity: 0.45;
+  stroke-width: 1.5;
 }
 .tie[data-of="relloo"] {
   grid-area: tie-relloo;
@@ -136,59 +168,26 @@ a.node:focus-visible {
 }
 /* Tuner to Relloo: up the row gap, between the two cards */
 .tieUp {
+  position: relative;
   grid-area: tuner;
   align-self: start;
   justify-self: center;
-  width: 2px;
+  width: 12px;
   height: var(--gap);
   margin-top: calc(var(--gap) * -1);
-  border-radius: 2px;
-  background: var(--thread-l);
 }
-/* The amber copy of a tie while its product is lit: a 4 px bar with a dash that flows toward the record */
-.tie::before,
-.tieUp::before {
-  content: "";
-  position: absolute;
-  inset: -1px 0;
-  border-radius: 2px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--a) 0 10px,
-    transparent 10px 16px
-  );
-  opacity: 0;
-}
-.tieUp {
-  position: relative;
-}
-.tieUp::before {
-  inset: 0 -1px;
-  background: repeating-linear-gradient(
-    180deg,
-    var(--a) 0 10px,
-    transparent 10px 16px
-  );
-}
-/* The effect travelling: from the product to the record */
+/* The effect travelling along the curve, from the product to the record */
 .packet {
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 0;
   width: 12px;
   height: 12px;
-  margin-top: -6px;
   border-radius: 50%;
   background: var(--a);
   box-shadow: 0 0 0 4px var(--a-200);
+  offset-rotate: 0deg;
   opacity: 0;
-  --run: calc(var(--tie) - 12px);
-}
-.tie[data-of="magneto"] .packet,
-.tie[data-of="knowly"] .packet {
-  left: auto;
-  right: 0;
-  --run: calc((var(--tie) - 12px) * -1);
 }
 
 /* O REGISTRO DO DOMUS */
@@ -296,7 +295,7 @@ a.core:focus-visible {
 /* O CICLO DA HOME */
 /* Window --w of 2.5 s: the product lights at its start, its packet leaves at 0.2 s and reaches the record at 0.9 s, when
    its line lights; all of it goes out at the end of the window. Paused off screen (`data-on`, LiveObserver). */
-.hub[data-hub="cycle"] :is(.tie, .tieUp)::before {
+.hub[data-hub="cycle"] :is(.tie, .tieUp) .hot {
   animation:
     win 12.5s linear infinite paused,
     dash 0.9s linear infinite paused;
@@ -306,8 +305,14 @@ a.core:focus-visible {
   animation: win 12.5s linear infinite paused;
   animation-delay: calc(var(--w) * 2.5s - 12.5s);
 }
+/* v2.2 (audit A06): the stamp of a product not lit stays at 0.35, so one effect reads at a time */
+.hub[data-hub="cycle"] .event {
+  animation: win-dim 12.5s linear infinite paused;
+  animation-delay: calc(var(--w) * 2.5s - 12.5s);
+}
 .hub[data-hub="cycle"] .packet {
-  animation: packet 12.5s infinite paused;
+  /* The keyframes carry the curve of the flight (--ease-in-out); the run between them is linear */
+  animation: packet 12.5s linear infinite paused;
   animation-delay: calc(var(--w) * 2.5s - 12.5s + 0.2s);
 }
 .hub[data-hub="cycle"] .line::before {
@@ -315,10 +320,24 @@ a.core:focus-visible {
   animation-delay: calc(var(--w) * 2.5s - 12.5s + 0.9s);
 }
 [data-on="true"] .hub[data-hub="cycle"] :is(.node, .core)::after,
-[data-on="true"] .hub[data-hub="cycle"] :is(.tie, .tieUp)::before,
+[data-on="true"] .hub[data-hub="cycle"] :is(.tie, .tieUp) .hot,
+[data-on="true"] .hub[data-hub="cycle"] .event,
 [data-on="true"] .hub[data-hub="cycle"] .packet,
 [data-on="true"] .hub[data-hub="cycle"] .line::before {
   animation-play-state: running;
+}
+@keyframes win-dim {
+  0%,
+  19% {
+    opacity: 1;
+  }
+  20%,
+  99.9% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 @keyframes win {
   0%,
@@ -349,35 +368,32 @@ a.core:focus-visible {
 @keyframes packet {
   0% {
     opacity: 0;
-    transform: translateX(0) scale(0.6);
-    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    offset-distance: 0%;
+    transform: scale(0.6);
+    animation-timing-function: var(--ease-in-out);
   }
   1.5% {
     opacity: 1;
-    transform: translateX(0) scale(1);
-    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    offset-distance: 0%;
+    transform: scale(1);
+    animation-timing-function: var(--ease-in-out);
   }
   5.6% {
     opacity: 1;
-    transform: translateX(var(--run)) scale(1);
+    offset-distance: 100%;
+    transform: scale(1);
   }
   7%,
   100% {
     opacity: 0;
-    transform: translateX(var(--run)) scale(0.4);
+    offset-distance: 100%;
+    transform: scale(0.4);
   }
 }
+/* The dash flows from the product toward the record (the direction the paths are drawn in) */
 @keyframes dash {
   to {
-    background-position: 16px 0;
-  }
-}
-.hub[data-hub="cycle"] .tieUp::before {
-  animation-name: win, dash-up;
-}
-@keyframes dash-up {
-  to {
-    background-position: 0 -16px;
+    stroke-dashoffset: -20;
   }
 }
 
@@ -385,8 +401,7 @@ a.core:focus-visible {
 /* The product of `data-lit` (or the one under the pointer or the focus) stays lit: its edge, its tie flowing, its packet
    on a loop of 1.4 s and its line in the record. The cycle stops while a product is pointed at. */
 .hub:has(:is(.node, .core):is(:hover, :focus-visible)) :is(.node, .core)::after,
-.hub:has(:is(.node, .core):is(:hover, :focus-visible))
-  :is(.tie, .tieUp)::before,
+.hub:has(:is(.node, .core):is(:hover, :focus-visible)) :is(.tie, .tieUp) .hot,
 .hub:has(:is(.node, .core):is(:hover, :focus-visible)) .packet,
 .hub:has(:is(.node, .core):is(:hover, :focus-visible)) .line::before {
   animation: none;
@@ -394,10 +409,35 @@ a.core:focus-visible {
   transition: opacity var(--dur-2) var(--ease-out);
 }
 .hub[data-hub="still"] :is(.node, .core)::after,
-.hub[data-hub="still"] :is(.tie, .tieUp)::before,
+.hub[data-hub="still"] :is(.tie, .tieUp) .hot,
 .hub[data-hub="still"] .packet,
 .hub[data-hub="still"] .line::before {
   animation: none;
+}
+/* The flow of a lit tie keeps running while it is lit (still stage or a product pointed at) */
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  :is(.tie, .tieUp)
+  .hot {
+  animation: dash 0.9s linear infinite;
+}
+/* Pointed at or still: the stamp of the lit product at full strength, the others at 0.35 */
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  .event {
+  animation: none;
+  opacity: calc(0.35 + 0.65 * var(--lit-self, 0));
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.node[data-p="relloo"] {
+  --lit-self: var(--lit-relloo, 0);
+}
+.node[data-p="magneto"] {
+  --lit-self: var(--lit-magneto, 0);
+}
+.node[data-p="tuner"] {
+  --lit-self: var(--lit-tuner, 0);
+}
+.node[data-p="knowly"] {
+  --lit-self: var(--lit-knowly, 0);
 }
 /* `--lit` is the product shown lit: the one of the page, or the one pointed at */
 .hub[data-lit="relloo"],
@@ -423,27 +463,40 @@ a.core:focus-visible {
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
   [data-p="relloo"]::after,
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
-  [data-of="relloo"]::before {
+  .line[data-of="relloo"]::before,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  .tie[data-of="relloo"]
+  .hot {
   opacity: var(--lit-relloo, 0);
 }
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
   [data-p="magneto"]::after,
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
-  [data-of="magneto"]::before {
+  .line[data-of="magneto"]::before,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  .tie[data-of="magneto"]
+  .hot {
   opacity: var(--lit-magneto, 0);
 }
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
   [data-p="tuner"]::after,
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
-  [data-of="tuner"]::before,
+  .line[data-of="tuner"]::before,
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
-  .tieUp::before {
+  .tie[data-of="tuner"]
+  .hot,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  .tieUp
+  .hot {
   opacity: var(--lit-tuner, 0);
 }
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
   [data-p="knowly"]::after,
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
-  [data-of="knowly"]::before {
+  .line[data-of="knowly"]::before,
+.hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
+  .tie[data-of="knowly"]
+  .hot {
   opacity: var(--lit-knowly, 0);
 }
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
@@ -468,26 +521,30 @@ a.core:focus-visible {
 .hub:has(.node[data-p="knowly"]:is(:hover, :focus-visible))
   .tie[data-of="knowly"]
   .packet {
-  animation: packet-loop 1.4s infinite;
+  animation: packet-loop 1.4s linear infinite;
 }
 @keyframes packet-loop {
   0% {
     opacity: 0;
-    transform: translateX(0) scale(0.6);
+    offset-distance: 0%;
+    transform: scale(0.6);
   }
   12% {
     opacity: 1;
-    transform: translateX(0) scale(1);
-    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    offset-distance: 0%;
+    transform: scale(1);
+    animation-timing-function: var(--ease-in-out);
   }
   62% {
     opacity: 1;
-    transform: translateX(var(--run)) scale(1);
+    offset-distance: 100%;
+    transform: scale(1);
   }
   80%,
   100% {
     opacity: 0;
-    transform: translateX(var(--run)) scale(0.4);
+    offset-distance: 100%;
+    transform: scale(0.4);
   }
 }
 

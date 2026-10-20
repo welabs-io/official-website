@@ -6,6 +6,9 @@
 // under reduced motion); this module, fetched with the descent chunk after hydration, only writes the phase of each scene
 // marked `data-replay` (its length in seconds). The motion itself is the CSS of the scenes (fx.css).
 
+import { centerSwitches, installPlays } from "@/components/plays/play-run";
+import { restartScene } from "./restart";
+
 // Seconds the settled frame stays before the scene plays again
 const PAUSE = 2.2;
 
@@ -14,10 +17,8 @@ export function install() {
   const timers = new Map<HTMLElement, ReturnType<typeof setTimeout>>();
 
   const play = (scene: HTMLElement) => {
-    // First frame, a forced style flush so the animations restart, then play
-    scene.dataset.phase = "start";
-    scene.getBoundingClientRect();
-    scene.dataset.phase = "play";
+    // v2.2: from zero through restartScene (start → play alone left the finished animations on their last frame)
+    restartScene(scene, "play");
     const seconds = Number(scene.dataset.replay) || 2.5;
     timers.set(
       scene,
@@ -49,11 +50,16 @@ export function install() {
       seen.add(el);
       io.observe(el);
     });
+    // v2.2: the product of the page in the middle of the selector row (components/plays/play-run.ts)
+    centerSwitches();
   };
   scan();
   const mo = new MutationObserver(scan);
   mo.observe(document.body, { childList: true, subtree: true });
+  // v2.2: the little script of the product plays rides on this chunk (components/plays/play-run.ts)
+  const stopPlays = installPlays();
   return () => {
+    stopPlays();
     io.disconnect();
     mo.disconnect();
     timers.forEach((t) => clearTimeout(t));

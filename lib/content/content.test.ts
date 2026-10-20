@@ -27,7 +27,8 @@ import { copyViolation, words } from "./rules";
 
 const strings = (value: unknown, out: string[] = []): string[] => {
   if (typeof value === "string") out.push(value);
-  else if (typeof value === "function") out.push((value as (s: string) => string)("Domus"));
+  else if (typeof value === "function")
+    out.push((value as (s: string) => string)("Domus"));
   else if (Array.isArray(value)) value.forEach((v) => strings(v, out));
   else if (value && typeof value === "object")
     Object.values(value).forEach((v) => strings(v, out));
@@ -133,10 +134,19 @@ describe("the Domus is the whole management of the company", () => {
       "Qualidade",
     ])
       expect(standard).toContain(area);
-    for (const app of ["Fiscal", "Bancos", "Jurídico", "Chamados", "Aprovações"])
+    for (const app of [
+      "Fiscal",
+      "Bancos",
+      "Jurídico",
+      "Chamados",
+      "Aprovações",
+    ])
       expect(custom).toContain(app);
     const all = [...DOMUS_MODULES.standard, ...DOMUS_MODULES.custom];
-    expect(all.filter((r) => r.tag).map((r) => r.tag)).toEqual(["NFS-e", "PIX"]);
+    expect(all.filter((r) => r.tag).map((r) => r.tag)).toEqual([
+      "NFS-e",
+      "PIX",
+    ]);
     expect(new Set(all.map((r) => r.name)).size).toBe(all.length);
   });
   it("its sentence is about the whole company and the room the company makes, not about money", () => {

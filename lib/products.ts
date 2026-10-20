@@ -36,7 +36,9 @@ export const PRODUCTS = [
   {
     slug: "tuner",
     name: "Tuner",
-    line: "WhatsApp, ligações e canais",
+    // v2.2 (audit, section 5): the category, not the brand ahead of it (the audit's "Canais de mensagem e voz" is five
+    // words; a product line has at most four, site.test.tsx)
+    line: "Mensagens e ligações",
     category: "Canais de atendimento",
     keywords: ["WhatsApp", "central de atendimento", "omnichannel"],
   },

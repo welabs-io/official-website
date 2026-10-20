@@ -7,11 +7,19 @@
   max-width: 1040px;
   margin: 0 auto;
 }
+/* v2.2 (audit A07): the roof was 16 px to the left, because `svg { max-width: 100% }` (globals.css) capped its widened
+   box and only the negative margin moved it. Now it may pass the walls (`max-width: none`), with a 24 px eave on each
+   side and a pitch of 18° at every width (the box keeps the ratio of the drawing, 1000 × 162.5, tan 18° = 0.325). The
+   walls start 24 × 0.325 px up, so their sides end exactly on the roof line, in the same 2.5 px ink stroke. */
 .roof {
+  position: relative;
+  z-index: 1;
   display: block;
-  width: calc(100% + var(--sp-6));
-  height: 72px;
-  margin: 0 calc(var(--sp-6) / -2) -2px;
+  width: calc(100% + var(--sp-5) * 2);
+  max-width: none;
+  height: auto;
+  aspect-ratio: 1000 / 162.5;
+  margin: 0 calc(var(--sp-5) * -1) calc(var(--sp-5) * -0.325);
   overflow: visible;
 }
 .roofFill {
@@ -19,8 +27,9 @@
 }
 .roofLine {
   fill: none;
-  stroke: var(--input);
-  stroke-width: 2;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
@@ -28,7 +37,7 @@
   display: grid;
   gap: var(--sp-5);
   padding: var(--sp-5);
-  border: 2px solid var(--input);
+  border: 2.5px solid var(--ink);
   border-top: 0;
   border-radius: 0 0 var(--r-win) var(--r-win);
   background: var(--surface);
@@ -191,7 +200,7 @@
   display: grid;
 }
 .house:has(:global(input):checked) .seal {
-  animation: seal-in 0.42s cubic-bezier(0.3, 1.4, 0.5, 1) 0.15s both;
+  animation: seal-in 0.42s var(--ease-spring) 0.15s both;
 }
 .house:has(:global(input):checked) .field {
   animation: field-in var(--dur-3) var(--ease-out) both;
@@ -230,9 +239,6 @@
 
 /* CELULAR */
 @media (max-width: 860px) {
-  .roof {
-    height: 44px;
-  }
   .walls {
     padding: var(--sp-3);
   }

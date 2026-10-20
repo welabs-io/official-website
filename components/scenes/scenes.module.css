@@ -227,7 +227,7 @@
   justify-self: start;
   height: 1.375rem;
   padding: 0 0.5rem;
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   font-size: var(--s-t-meta);
   font-weight: 600;
   line-height: 1;
@@ -251,6 +251,17 @@
 }
 .duoHousePhone {
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+}
+/* v2.2 (audit M04): the confirmation comes after the conversation that caused it, as a notification under the last
+   message, not over the top of the chat (it read 10:16 above 09:12) */
+.duoHousePhone > .phone {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.duoHousePhone .toast {
+  position: relative;
+  inset: auto;
+  margin: 0 0.625rem 0.625rem;
+  --origin: 50% 100%;
 }
 
 /* TELEFONE */
@@ -285,7 +296,7 @@
 .day {
   align-self: center;
   padding: 0.125rem 0.5rem;
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-chip);
   font-size: var(--s-t-meta);
   font-weight: 500;
@@ -642,7 +653,7 @@
 .skeleton i {
   display: block;
   height: 0.375rem;
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-hair);
 }
 .skeleton i:nth-child(1) {
@@ -740,7 +751,7 @@
 .related li {
   padding: 0.25rem 0.625rem;
   border: 1px solid var(--s-edge);
-  border-radius: 999px;
+  border-radius: var(--r-dot);
   background: var(--s-win);
   font-size: var(--s-t-label);
 }

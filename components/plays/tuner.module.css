@@ -1,0 +1,340 @@
+/* TUNER: MENU DE OPÇÕES E DISTRIBUIÇÃO DE LIGAÇÕES */
+/* States: one per option of the menu (1, 2, 3). The wire of the option draws itself and the call travels along it; a
+   free team takes it at 1.5 beats, the busy one (option 2) holds it with the position marked and takes it 4 beats later.
+   The stage is a fixed 300 px tall on a desktop so the wires (SVG in px) meet the centre of each team row: rows of
+   92 px with 12 px between them, centres at 46, 150 and 254. On a phone the wires go and the pieces stack. Status
+   colours are the success and ink of the preset; the waveform is an amber area (audit B06: no red outside the palette). */
+.root:has([id="tn-1"]:checked) [data-ev~="1"],
+.root:has([id="tn-2"]:checked) [data-ev~="2"],
+.root:has([id="tn-3"]:checked) [data-ev~="3"] {
+  display: var(--shown, block);
+}
+
+.screen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1.4fr);
+  grid-template-rows: 300px auto;
+  gap: 0 var(--sp-3);
+}
+.key {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface-accent);
+  color: var(--ink);
+  font-size: var(--text-xs);
+}
+
+/* A LIGAÇÃO */
+.call {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-win);
+  background: var(--surface-band);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+.ring {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--a);
+  color: var(--ink);
+}
+.root:has([name="tn-menu"]:checked) .ring {
+  animation: tn-ring calc(var(--beat) * 1.2) var(--ease-in-out) 0s 2;
+}
+.caller {
+  color: var(--mute);
+  font-size: var(--text-xs);
+}
+
+/* OS FIOS */
+.wires {
+  position: relative;
+  width: 120px;
+  height: 300px;
+}
+.wires svg {
+  display: block;
+  overflow: visible;
+  fill: none;
+}
+.wire {
+  stroke: var(--thread);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+}
+.wireHot {
+  --shown: inline;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 200;
+}
+.root .wireHot[data-ev] {
+  animation: tn-draw calc(var(--beat) * 1.5) var(--ease-out) 0s both;
+}
+.packet {
+  --shown: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--a);
+  box-shadow: 0 0 0 4px var(--a-200);
+  offset-rotate: 0deg;
+}
+.root .packet[data-ev] {
+  animation: tn-travel calc(var(--beat) * 1.5) var(--ease-in-out) 0s both;
+}
+
+/* AS EQUIPES */
+.teams {
+  display: grid;
+  grid-template-rows: repeat(3, 92px);
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.team {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-content: center;
+  gap: var(--sp-1) var(--sp-3);
+  padding: 0 var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  font-size: var(--text-sm);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-accent);
+}
+.who {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.who b {
+  font-weight: 500;
+}
+.state {
+  display: grid;
+  justify-items: start;
+}
+.state > * {
+  grid-area: 1 / 1;
+}
+.free {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--success);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.free::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+.free[data-busy] {
+  color: var(--mute);
+}
+/* The team of the option leaves its idle status when it takes the call */
+.root:has([id="tn-1"]:checked) [data-team="1"] .free,
+.root:has([id="tn-3"]:checked) [data-team="3"] .free {
+  animation: tn-gone 1ms linear calc(var(--beat) * 1.5) both;
+}
+.root:has([id="tn-2"]:checked) [data-team="2"] .free {
+  animation: tn-gone 1ms linear calc(var(--beat) * 5.5) both;
+}
+.live {
+  --shown: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.wave {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  height: 16px;
+}
+.wave i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--a);
+  transform-origin: 50% 50%;
+}
+.root .live[data-ev] .wave i {
+  animation: tn-wave calc(var(--beat) * 1.2) var(--ease-in-out)
+    calc((var(--at) + var(--n, 0) * 0.15) * var(--beat)) 3 both;
+}
+.wave i:nth-child(2) {
+  --n: 1;
+}
+.wave i:nth-child(3) {
+  --n: 2;
+}
+.wave i:nth-child(4) {
+  --n: 3;
+}
+.wave i:nth-child(5) {
+  --n: 4;
+}
+.hold {
+  --shown: inline-flex;
+  grid-column: 2;
+  align-items: center;
+  gap: var(--sp-2);
+  justify-self: start;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--a-100);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.hold svg {
+  transform: rotate(-90deg);
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-dasharray: 51;
+}
+.root .hold[data-ev] {
+  animation:
+    pl-in-tn var(--dur-3) var(--ease-spring) calc(var(--at) * var(--beat)) both,
+    tn-gone 1ms linear calc(var(--beat) * 5.5) both;
+}
+.root .hold[data-ev] svg {
+  animation: tn-count calc(var(--beat) * 4) linear calc(var(--beat) * 1.5) both;
+}
+
+/* A GRAVAÇÃO NA CONVERSA DO RELLOO */
+.land {
+  --shown: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--a);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  font-size: var(--text-sm);
+}
+.land img {
+  flex: none;
+  height: 36px;
+  width: auto;
+}
+.land > span {
+  display: grid;
+  gap: var(--sp-1);
+}
+.transcript {
+  color: var(--mute);
+  font-size: var(--text-xs);
+}
+
+@keyframes tn-ring {
+  50% {
+    box-shadow: 0 0 0 10px var(--a-200);
+  }
+}
+@keyframes tn-draw {
+  from {
+    stroke-dashoffset: 200;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes tn-travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+@keyframes tn-gone {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes tn-wave {
+  50% {
+    transform: scaleY(0.35);
+  }
+}
+@keyframes tn-count {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 51;
+  }
+}
+@keyframes pl-in-tn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+/* CELULAR */
+@media (max-width: 860px) {
+  .screen {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    gap: var(--sp-3);
+  }
+  .call {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
+    text-align: left;
+  }
+  .ring {
+    grid-row: 1 / span 2;
+    width: 44px;
+    height: 44px;
+  }
+  .wires {
+    display: none;
+  }
+  .teams {
+    grid-template-rows: none;
+  }
+  .team {
+    padding: var(--sp-3);
+  }
+  .land {
+    margin-top: 0;
+  }
+}

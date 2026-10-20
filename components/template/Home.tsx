@@ -103,14 +103,21 @@ export function HomeMessage() {
           className={styles.toggle}
           aria-describedby="msg-track"
         />
-        <DragToCheck inputId="msg-go" targetId="msg-track" className={msg.bubble}>
+        <DragToCheck
+          inputId="msg-go"
+          targetId="msg-track"
+          className={msg.bubble}
+        >
           <small>{HOME_MESSAGE.bubble.channel}</small>
           {HOME_MESSAGE.bubble.text}
         </DragToCheck>
         <ol id="msg-track" className={msg.track}>
           <li className={msg.rail} aria-hidden="true">
             <span className={msg.run} />
-            <span className={msg.token} />
+            {/* v2.2 (audit M01): the message itself travels, a small bubble that stops 300 ms at each product */}
+            <span className={msg.token}>
+              <Glyph d={GLYPHS.chat} size={14} />
+            </span>
           </li>
           {HOME_MESSAGE.stations.map(({ product, label }, i) => (
             <li
@@ -189,6 +196,7 @@ export function HomeMessage() {
         </div>
         <label htmlFor="msg-go" className={msg.go}>
           <span data-off>{HOME_MESSAGE.send}</span>
+          <span data-run>{HOME_MESSAGE.sending}</span>
           <span data-on>{HOME_MESSAGE.again}</span>
         </label>
       </div>
@@ -204,7 +212,11 @@ export function HomeMessage() {
 // pixelated bitmap). "+ Novo módulo" (I3) says what it does: the slot turns into a new module with the "Novo módulo"
 // seal, and its screen assembles field by field; pressing it again takes it back.
 const room = (r: Room, i: number) => (
-  <li key={r.name} className={house.room} style={{ "--i": i } as React.CSSProperties}>
+  <li
+    key={r.name}
+    className={house.room}
+    style={{ "--i": i } as React.CSSProperties}
+  >
     <span className={house.icon}>
       <Glyph d={ROOM_D[r.glyph]} size={18} />
     </span>
@@ -232,14 +244,10 @@ export function DomusHouse({
         className={styles.toggle}
         aria-label={HOME_DOMUS.addLabel}
       />
-      <svg
-        className={house.roof}
-        viewBox="0 0 1000 120"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <path className={house.roofFill} d="M0 120 L500 8 L1000 120 Z" />
-        <path className={house.roofLine} d="M0 120 L500 8 L1000 120" />
+      <svg className={house.roof} viewBox="0 0 1000 162.5" aria-hidden="true">
+        {/* v2.2: an 18° pitch whatever the width (the box keeps this ratio, house.module.css) */}
+        <path className={house.roofFill} d="M0 162.5 L500 0 L1000 162.5 Z" />
+        <path className={house.roofLine} d="M0 162.5 L500 0 L1000 162.5" />
       </svg>
       <div className={house.walls}>
         <div className={house.floor}>
@@ -335,7 +343,11 @@ export function FiveProducts() {
             >
               <img
                 className={styles.cardLogo}
-                src={productLogo(slug, slug === "domus" ? "dark" : "light", "row")}
+                src={productLogo(
+                  slug,
+                  slug === "domus" ? "dark" : "light",
+                  "row",
+                )}
                 alt={productAlt(slug, "row")}
                 width={1005}
                 height={550}
