@@ -15,3 +15,7 @@ out
 .DS_Store
 *.log
 *.tsbuildinfo
+# The site's agent skills are versioned with the code; the rest of .claude (local settings) stays out
+!/.claude/
+/.claude/*
+!/.claude/skills/
