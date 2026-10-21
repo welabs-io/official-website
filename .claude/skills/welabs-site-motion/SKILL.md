@@ -13,7 +13,7 @@ description: Contrato de continuidade do movimento no site Welabs (welabs-websit
 4. **Pausa fora da tela.** Movimento CSS só roda sob `data-on="true"`, que o `LiveObserver` escreve nos elementos `data-live` (`components/onepage/LiveObserver.tsx:10-23`). Cena com roteiro é observada com limiar de 0,5 (`components/scenes/replay.ts:34-44`). Fora da tela não pode haver nenhuma animação rodando.
 5. **Movimento reduzido mostra o quadro final.** O servidor desenha o quadro assentado (`data-phase="end"`, `components/scenes/replay.ts:5-7`), e sob `prefers-reduced-motion: reduce` nada roda: `getAnimations()` do bloco dá 0 e o conteúdo final fica visível (`e2e/domus.spec.ts:214-233`). Toda folha que anima tem o seu bloco `@media (prefers-reduced-motion: reduce)`.
 
-**Padrão de referência: a casa do Domus** (`components/template/house.module.css:1-15`). O ciclo é de 8 s (`--domus-cycle`) e o checkbox troca cada animação pela gêmea (`-a`/`-b`, keyframes iguais), o que reinicia a sequência do primeiro quadro. A peça toca até o fim, segura, reseta e segue em loop. Copie essa mecânica, com o hold do contrato.
+**Padrão de referência: a casa do Domus** (`components/template/house.module.css:1-15`). O ciclo é de 8 s (`--domus-cycle`) e o checkbox troca cada animação pela gêmea (`-a`/`-b`, keyframes iguais), o que reinicia a sequência do primeiro quadro. A peça toca até o fim, segura, reseta e segue em loop. Copie essa mecânica, mas com o hold do contrato: depois do clique, a casa segura a tela por 3,2 s (medido em `155fb83` a 1440 px, com amostra a cada 200 ms), contra ~1 s do contrato, e por isso está como falha conhecida da F3 em `e2e/continuity.spec.ts`.
 
 ## Durações e ritmo
 
@@ -59,7 +59,7 @@ Ficam **locais**: o driver de cena por roteiro (`replay.ts`, `scene-run.ts`, `re
 ## Como provar (Playwright)
 
 - `e2e/helpers/continuity.ts`:
-  - `expectContinuousLoop(locator, options)` amostra o estado visível do bloco e reprova se ele ficar parado mais que `maxStillMs` sem gesto. Com `trigger`, também reprova se o bloco não reagir ao clique ou se congelar depois dele, e confere que a atividade continua até o fim da janela;
+  - `expectContinuousLoop(locator, options)` amostra o estado visível do bloco (texto, `data-phase`/`data-state`/`data-step`, controles marcados e opacidade/transform do que anima). Sem gesto, ele reprova o bloco que não muda, que fica parado mais que `maxIdleStillMs` (3,5 s) ou que para antes do fim da janela. Com `trigger`, também reprova o bloco que não reage em `reactMs` (1 s), que não segura o quadro final por `minHoldMs` (0,8 s), que fica parado mais que `maxStillMs` (2 s) ou que não volta ao loop;
   - `expectFinalFrameUnderReducedMotion(page, locator)` confere 0 animações e o conteúdo visível.
-- `e2e/continuity.spec.ts` usa os dois helpers. A casa do Domus passa hoje, e as peças ainda fora do contrato (mensagem e plays) estão como `test.fail` numa lista explícita, com a fase que as corrige. Quando a fase entrar, troque `test.fail` por `test`. O próprio `test.fail` reprova se a peça já passar.
+- `e2e/continuity.spec.ts` usa os dois helpers. O quadro final sob movimento reduzido passa nos 7 blocos. O contrato de loop ainda não passa em nenhum deles: a casa (hold de 3,2 s), a mensagem e os 5 plays estão como `test.fail` numa lista explícita, com a fase que os corrige (F3). Quando a fase entrar, troque `test.fail` por `test`. O próprio `test.fail` reprova se a peça já passar.
 - Roda contra um servidor de pé (`PORTFOLIO_PREVIEW_URL`, `playwright.config.ts`). Suba um servidor próprio em outra porta e não use a porta do preview do operador.

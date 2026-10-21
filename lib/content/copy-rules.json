@@ -40,12 +40,54 @@
     "os outros dão vida",
     "ideias que viram",
     "um só fluxo",
-    "do primeiro oi ao fechamento"
+    "do primeiro oi ao fechamento",
+    "só fiscal",
+    "apenas fiscal",
+    "somente fiscal"
   ],
   "allowed": [
     "alteração de entrega",
     "janela de entrega",
     "política de entregas",
     "entregas"
-  ]
+  ],
+  "_persons": "First names of people: no fictitious person on the site (a scene shows the effect on a record, never a named person). Matched as whole words, case-sensitive, so the capitalised name only; names that are also Portuguese words (Rosa, Clara, Vitória...) are left out on purpose, to keep the check free of false positives.",
+  "persons": [
+    "Ana", "Maria", "Marina", "Mariana", "Juliana", "Fernanda", "Patrícia", "Camila", "Amanda", "Bruna",
+    "Carla", "Beatriz", "Larissa", "Letícia", "Gabriela", "Rafaela", "Aline", "Priscila", "Vanessa", "Jéssica",
+    "Renata", "Adriana", "Simone", "Cristina", "Luana", "Carolina", "Isabela", "Júlia", "Laura", "Sofia",
+    "Helena", "Alice", "Valentina", "Heloísa", "Lorena", "Cecília", "Lívia", "Manuela", "Paula", "Joana",
+    "Raquel", "Débora", "Sílvia", "Márcia", "Cláudia", "Mônica", "Sandra", "Tatiane", "Bianca", "Natália",
+    "João", "José", "Pedro", "Paulo", "Lucas", "Mateus", "Gabriel", "Rafael", "Felipe", "Bruno",
+    "Carlos", "Eduardo", "Fernando", "Gustavo", "Henrique", "Leonardo", "Marcos", "Ricardo", "Rodrigo", "Thiago",
+    "Tiago", "Vinícius", "Daniel", "Diego", "André", "Antônio", "Francisco", "Luiz", "Luís", "Roberto",
+    "Sérgio", "Marcelo", "Fábio", "Márcio", "Alexandre", "Igor", "Caio", "Davi", "Arthur", "Miguel",
+    "Heitor", "Bernardo", "Samuel", "Enzo", "Guilherme", "Murilo", "Otávio", "Renato", "Leandro", "Júlio"
+  ],
+  "_stack": "The internal stack and the technical base of the products: never on the site (the platforms strip names only AWS, Google Cloud, DigitalOcean and HostDime). Matched as whole words, case-sensitive.",
+  "stack": [
+    "Kubernetes", "Argo CD", "ArgoCD", "Vault", "Temporal", "Authentik", "Docker", "GitHub", "PostgreSQL",
+    "Postgres", "Cloudflare", "Frappe", "ERPNext", "HRMS", "LLM", "RAG"
+  ],
+  "_known": "Known failures the gate tolerates today, each with the phase of the v3 plan that removes it (control/portfolio/site-redesign/v3-plan/plano.md, section 5). The vitest fails when a tolerated value is no longer on the site, so this list only shrinks: delete the entry when its phase lands, never add one to make a check pass.",
+  "known": {
+    "persons": [
+      {
+        "value": "Marina",
+        "phase": "F1",
+        "todo": "lib/scenes/story.ts, lib/scenes/capabilities.ts and lib/content/home.ts: the scenes show the record, not a person"
+      }
+    ],
+    "stack": [
+      { "value": "Cloudflare", "phase": "F1", "todo": "lib/partners.ts: the strip keeps only the four clouds" },
+      { "value": "Kubernetes", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "Argo CD", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "Vault", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "PostgreSQL", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "Temporal", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "Authentik", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "Docker", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" },
+      { "value": "GitHub", "phase": "F1", "todo": "lib/partners.ts: internal stack out of the strip" }
+    ]
+  }
 }

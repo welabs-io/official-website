@@ -4,7 +4,14 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { copyViolation } from "./rules";
+import rules from "./copy-rules.json";
+import {
+  KNOWN_PERSONS,
+  KNOWN_STACK,
+  copyViolation,
+  personViolation,
+  stackViolation,
+} from "./rules";
 
 describe("copy rules", () => {
   it.each([
@@ -37,6 +44,49 @@ describe("copy rules", () => {
     expect(copyViolation("Alteração de entrega e a entrega do cliente")).toBe(
       "entrega",
     );
+  });
+
+  it.each([
+    ["Responder Marina", "Marina"],
+    ["Ligação de João às 10:05", "João"],
+    ["Perfil: José", "José"],
+    ["Ana pediu a troca", "Ana"],
+  ])("finds the person in %s", (text, found) => {
+    expect(personViolation(text, [])).toBe(found);
+  });
+
+  it.each([
+    "Análise de crédito",
+    "a marina do porto",
+    "Pedido 1234 · Financeiro",
+    "Joãozinho",
+  ])("finds no person in %s", (text) => {
+    expect(personViolation(text, [])).toBeNull();
+  });
+
+  it("a known failure is tolerated by default, and only by default", () => {
+    expect(personViolation("Responder Marina")).toBeNull();
+    expect(personViolation("Responder Marina e Pedro")).toBe("Pedro");
+    expect(personViolation("Responder Marina", [])).toBe("Marina");
+  });
+
+  it.each([
+    ["Roda em Kubernetes", "Kubernetes"],
+    ["Argo CD e Vault", "Argo CD"],
+    ["Base em Frappe", "Frappe"],
+  ])("finds the internal stack in %s", (text, found) => {
+    expect(stackViolation(text, [])).toBe(found);
+  });
+
+  it("every known failure names a value of its list and the phase that removes it", () => {
+    for (const k of KNOWN_PERSONS) {
+      expect(rules.persons).toContain(k.value);
+      expect(k.phase).toMatch(/^F[1-6]$/);
+    }
+    for (const k of KNOWN_STACK) {
+      expect(rules.stack).toContain(k.value);
+      expect(k.phase).toMatch(/^F[1-6]$/);
+    }
   });
 
   it("check-portfolio reads the same list and carries no list of its own", () => {

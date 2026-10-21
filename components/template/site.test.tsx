@@ -7,7 +7,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PageFrame } from "@/components/onepage/PageFrame";
 import { HOME_INTRO, NAV, PRODUCT_PAGE } from "@/lib/content";
-import { copyViolation } from "@/lib/content/rules";
+import {
+  KNOWN_PERSONS,
+  KNOWN_STACK,
+  copyViolation,
+  personViolation,
+  stackViolation,
+} from "@/lib/content/rules";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/(site)/page";
 import { generateMetadata } from "@/app/(site)/products/[slug]/page";
@@ -82,6 +88,26 @@ describe("little text, no slogan", () => {
       expect(copyViolation(`${visibleText(html)} ${hiddenText(html)}`)).toBeNull();
     },
   );
+
+  // v3: no person by name and no internal stack, besides the known failures of copy-rules.json (each with its phase)
+  it.each(pages)(
+    "$slug names no person and shows no internal stack",
+    ({ html }) => {
+      const text = `${visibleText(html)} ${hiddenText(html)}`;
+      expect(personViolation(text)).toBeNull();
+      expect(stackViolation(text)).toBeNull();
+    },
+  );
+
+  it("every tolerated known failure is still on the site (delete it from copy-rules.json `known` when its phase lands)", () => {
+    const all = pages
+      .map(({ html }) => `${visibleText(html)} ${hiddenText(html)}`)
+      .join(" ");
+    for (const k of KNOWN_PERSONS)
+      expect(all, `${k.value} (${k.phase})`).toContain(k.value);
+    for (const k of KNOWN_STACK)
+      expect(all, `${k.value} (${k.phase})`).toContain(k.value);
+  });
 
   it("the home and every product page stay inside the word budget of the v2", () => {
     // v2 (2026-10-20): the home went from 700-1000 words to about 250, a product page from 400-700 to about 200; the

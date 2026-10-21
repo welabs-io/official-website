@@ -51,6 +51,17 @@ const violation = (text) => {
   const clean = text.replace(ALLOWED, " ");
   return clean.match(WORDS)?.[0] ?? clean.match(PHRASES)?.[0] ?? null;
 };
+// v3: names of people and of the internal stack (case-sensitive, whole words with a unicode edge), besides the known
+// failures of the same file, each tolerated until the phase that removes it
+const listMatcher = (list) =>
+  new RegExp(`(?:^|[^\\p{L}])(${list.map(esc).join("|")})(?=[^\\p{L}]|$)`, "gu");
+const firstOf = (matcher, known, text) => {
+  const skip = new Set(known.map((k) => k.value));
+  for (const m of text.matchAll(matcher)) if (!skip.has(m[1])) return m[1];
+  return null;
+};
+const PERSONS = listMatcher(rules.persons);
+const STACK = listMatcher(rules.stack);
 const IMAGINE_SYSTEMS = /stant|tabe\.la|tabela|wego/i;
 
 const pages = new Map();
@@ -65,6 +76,10 @@ const page = async (url) => {
   );
   const all = `${visibleText(html)} ${hiddenText(html)}`;
   assert(!violation(all), `${url} breaks the copy rules: ${violation(all)}`);
+  const person = firstOf(PERSONS, rules.known.persons, all);
+  assert(!person, `${url} names a person: ${person}`);
+  const stack = firstOf(STACK, rules.known.stack, all);
+  assert(!stack, `${url} shows the internal stack: ${stack}`);
   return html;
 };
 

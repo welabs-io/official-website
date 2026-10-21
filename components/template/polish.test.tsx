@@ -1,8 +1,9 @@
 // TESTES DA LAPIDAÇÃO VISUAL
 // The visual system is enforced by tests, not by memory: the component sheets of the page read the tokens of `.page`
-// (type scale, 4 px space grid, shapes) and carry no loose value, every line icon has the same stroke, and the type
-// scale never goes under 14 px.
-import { readFileSync } from "node:fs";
+// (type scale, 4 px space grid, shapes) and carry no loose value, every line icon has the same stroke, the type
+// scale of the page never goes under 14 px and no sheet anywhere goes under the 12 px floor (v3), and the section
+// heads have more than one variant (v3, known failure until F2).
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -205,6 +206,79 @@ describe("one motion scale and one round shape", () => {
     for (const name of ["--ease-out", "--ease-in-out", "--ease-spring"])
       expect(css).toMatch(new RegExp(`${name}:\\s*cubic-bezier\\(`));
     expect(css).toMatch(/--r-dot:\s*999px;/);
+  });
+});
+
+// v3 (plan, section 4.1): the floor of the type scale is 12 px everywhere, the drawn product screens included (the page
+// itself starts at 14, above). Every type token and every font size of every sheet resolves at or above the floor; a
+// clamp counts by its minimum. Known failures carry the phase that removes them, and one that is gone fails too.
+// The SVG labels of the brand intros (components/intro/*.js) are in viewBox units, scaled with the drawing: out of scope.
+const FLOOR_PX = 12;
+const FLOOR_KNOWN: Record<string, string> = {
+  // TODO(F2): the meta text of the scenes is 11 px (0.6875rem); it goes to the 12 px step
+  "components/scenes/tokens.module.css|--s-t-meta": "F2",
+};
+const ALL_SHEETS = ["components", "app"].flatMap((dir) =>
+  readdirSync(path.join(ROOT, dir), { recursive: true, encoding: "utf8" })
+    .filter((f) => f.endsWith(".css"))
+    .map((f) => path.posix.join(dir, f.split(path.sep).join("/"))),
+);
+// The smallest size a value can render, in px, or null when it is a reference resolved elsewhere (var, em, %)
+const minPx = (value: string): number | null => {
+  const v = value.trim().replace(/^clamp\(\s*([^,]+),[\s\S]*\)$/, "$1").trim();
+  const m = v.match(/^(\d*\.?\d+)(px|rem)$/);
+  if (!m) return null;
+  return Number(m[1]) * (m[2] === "rem" ? 16 : 1);
+};
+
+describe("the floor of the type scale", () => {
+  const below = () =>
+    ALL_SHEETS.flatMap((file) =>
+      declarations(strip(read(file)))
+        .filter(
+          ({ prop }) =>
+            prop === "font-size" || /^--(?:text|s-t|wl-text)-[\w-]+$/.test(prop),
+        )
+        .filter(({ value }) => {
+          const px = minPx(value);
+          return px !== null && px < FLOOR_PX;
+        })
+        .map(({ prop }) => `${file}|${prop}`),
+    );
+
+  it("every type token and font size of the sheets is at least 12 px, besides the known failures", () => {
+    expect(ALL_SHEETS.length).toBeGreaterThan(20);
+    expect([...new Set(below())].sort()).toEqual(Object.keys(FLOOR_KNOWN).sort());
+  });
+
+  it("no component writes a font size under the floor inline", () => {
+    const tsx = readdirSync(path.join(ROOT, "components"), {
+      recursive: true,
+      encoding: "utf8",
+    }).filter((f) => f.endsWith(".tsx"));
+    const loose = tsx.flatMap((f) =>
+      [
+        ...read(path.posix.join("components", f)).matchAll(
+          /fontSize:\s*["']?(\d*\.?\d+)(px)?["']?|font-size="(\d*\.?\d+)"/g,
+        ),
+      ]
+        .filter((m) => Number(m[1] ?? m[3]) < FLOOR_PX)
+        .map((m) => `${f}: ${m[0]}`),
+    );
+    expect(loose).toEqual([]);
+  });
+});
+
+// v3 (plan, section 4.1): the sections are not one centred 40 px h2 each; the head has variants (chapter, showcase,
+// strip), marked `data-head` on the markup
+describe("a hierarchy of section heads", () => {
+  // TODO(F2): SectionHead has one variant only (components/template/SectionHead.tsx); turn into `it` when F2 lands
+  it.fails("the home uses at least two variants of section head", () => {
+    const html = renderToStaticMarkup(<Sections config={HOME_CONFIG} />);
+    const variants = new Set(
+      [...html.matchAll(/data-head="([\w-]+)"/g)].map((m) => m[1]),
+    );
+    expect(variants.size).toBeGreaterThanOrEqual(2);
   });
 });
 
