@@ -101,17 +101,21 @@ test("'+ Novo módulo' makes a new module in the Domus, with its seal, and the k
   await expect(page.locator('label[for="area-add"]')).toContainText(
     "Novo módulo",
   );
+  // Pilot of the lib (2026-10-21): the button only restarts the new module (it loops on its own; e2e/domus.spec.ts),
+  // so each press, by pointer or keyboard, sends it back to its first frame and it is born again with its seal
+  const slot = page.locator("#domus li[aria-label='Vistorias']");
+  const born = () =>
+    slot.evaluate((li) => Number(getComputedStyle(li.children[1]).opacity));
   await page.locator('label[for="area-add"]').click();
   await expect(page.locator("#area-add")).toBeChecked();
-  await expect(page.locator('label[for="area-add"]')).toContainText(
-    "Vistorias",
-  );
-  await expect(page.locator('label[for="area-add"] b')).toHaveText(
-    "Novo módulo",
-  );
+  expect(await born()).toBeLessThan(0.5);
+  await expect.poll(born, { timeout: 3000 }).toBeGreaterThan(0.9);
+  await expect(slot.locator("[data-slot='badge']")).toHaveText("Novo módulo");
   await page.locator("#area-add").focus();
   await page.keyboard.press("Space");
   await expect(page.locator("#area-add")).not.toBeChecked();
+  expect(await born()).toBeLessThan(0.5);
+  await expect.poll(born, { timeout: 3000 }).toBeGreaterThan(0.9);
 });
 
 // v2.2: the play of each product page (a chain of states with a choice, a record and the effect on the Domus) is

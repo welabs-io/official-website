@@ -93,8 +93,8 @@ export const DOMUS_MODULES: {
     { name: "Demandas", glyph: "rule" },
     { name: "Aprovações", glyph: "check" },
     { name: "Privacidade", glyph: "lock" },
-    // v2.2: the category, with the one connector the code has in brackets (never "e outros")
-    { name: "Importação (Omie)", glyph: "refresh" },
+    // Pilot of the lib (2026-10-21): the category only; the block names no third-party product
+    { name: "Importação", glyph: "refresh" },
   ],
 };
 
@@ -108,7 +108,12 @@ export const HOME_DOMUS = {
   // The module the "+" makes: an example of a module a company creates for itself, with the screen it gets
   born: "Vistorias",
   bornTag: "Novo módulo",
-  bornFields: ["Local", "Data", "Foto"],
+  // Each field of the new screen with the value it shows once filled (the lib's Field: label over the input)
+  bornFields: [
+    { label: "Local", value: "Doca 3" },
+    { label: "Data", value: "21/10/2026" },
+    { label: "Foto", value: "3 fotos" },
+  ],
   addLabel: "Criar um módulo novo",
   more: "Conhecer o Domus",
   ground: "Os outros produtos trabalham sobre o Domus",

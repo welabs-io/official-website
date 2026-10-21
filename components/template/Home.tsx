@@ -3,6 +3,7 @@
 // (v2.module.css); the only client piece is the drag shortcut of the message (DragToCheck). Every interaction works
 // with no script and with a keyboard (a checkbox and its visible label), and under reduced motion shows its final frame.
 import Link from "next/link";
+import { Badge, Card, CardContent, Field, Input } from "@/components/lib/ui";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import shell from "@/components/onepage/shell.module.css";
 import { Glyph, GLYPHS, ROOM_GLYPHS } from "@/components/scenes/icons";
@@ -204,13 +205,19 @@ export function HomeMessage() {
   );
 }
 
-// A CASA DO DOMUS
-// The whole management of the company as the modules of one house, with tax and PIX only as a tag; the other four
-// products stand on its ground.
-// v2.1: the house shows the modules the ERP code really installs, on two floors: the standard ones (ERPNext and HRMS)
-// and the ones made to measure (our own apps); the roof is a vector drawing (it was a CSS gradient that looked like a
-// pixelated bitmap). "+ Novo módulo" (I3) says what it does: the slot turns into a new module with the "Novo módulo"
-// seal, and its screen assembles field by field; pressing it again takes it back.
+// O DOMUS E SEUS MÓDULOS
+// The whole management of the company as the modules inside the Domus symbol, with tax and PIX only as a tag; the
+// other four products stand under it.
+// v2.1: the modules the ERP code really installs, on two floors: the standard ones (ERPNext and HRMS) and the ones
+// made to measure (our own apps).
+// Pilot of @imagineapps-team/react 0.18.0 (2026-10-21): the house with a roof became the rounded square of the Domus
+// logo (public/brands/welabs/products/domus-light.svg: ring and amber square), a bit smaller, holding the same modules.
+// The new module plays in a loop by itself: the dashed slot becomes "Vistorias" (its icon is the amber square of the
+// logo) and its screen opens (the lib's Card, Field and Input), then everything resets and the loop goes on.
+// "+ Novo módulo" (a label over the checkbox) restarts the sequence from its first frame; it plays to the end, holds,
+// resets and keeps looping, so no click leaves the block frozen. The tags, the seal and the screen are the real
+// components of the lib (components/lib/ui.tsx is their client boundary), painted by its welabs theme (app/lib.css,
+// data-theme="welabs" on the block).
 const room = (r: Room, i: number) => (
   <li
     key={r.name}
@@ -221,7 +228,7 @@ const room = (r: Room, i: number) => (
       <Glyph d={ROOM_D[r.glyph]} size={18} />
     </span>
     <span className={house.name}>{r.name}</span>
-    {r.tag && <b className={house.tag}>{r.tag}</b>}
+    {r.tag && <Badge className={house.tag}>{r.tag}</Badge>}
   </li>
 );
 
@@ -236,7 +243,7 @@ export function DomusHouse({
   lead: string;
 }) {
   return (
-    <div className={house.house}>
+    <div className={house.house} data-theme="welabs">
       <SectionHead title={title} lead={lead} />
       <input
         type="checkbox"
@@ -244,48 +251,55 @@ export function DomusHouse({
         className={styles.toggle}
         aria-label={HOME_DOMUS.addLabel}
       />
-      <svg className={house.roof} viewBox="0 0 1000 162.5" aria-hidden="true">
-        {/* v2.2: an 18° pitch whatever the width (the box keeps this ratio, house.module.css) */}
-        <path className={house.roofFill} d="M0 162.5 L500 0 L1000 162.5 Z" />
-        <path className={house.roofLine} d="M0 162.5 L500 0 L1000 162.5" />
-      </svg>
-      <div className={house.walls}>
+      <div className={house.frame}>
         <div className={house.floor}>
-          <p className={house.floorName}>{HOME_DOMUS.standard}</p>
+          <div className={house.floorHead}>
+            <p className={house.floorName}>{HOME_DOMUS.standard}</p>
+          </div>
           <ul className={house.rooms}>{DOMUS_MODULES.standard.map(room)}</ul>
         </div>
         <div className={house.floor} data-floor="custom">
-          <p className={house.floorName}>{HOME_DOMUS.custom}</p>
+          <div className={house.floorHead}>
+            <p className={house.floorName}>{HOME_DOMUS.custom}</p>
+            <label htmlFor={id} className={house.add} data-slot="button">
+              <Glyph d={GLYPHS.plus} size={16} />
+              {HOME_DOMUS.add}
+            </label>
+          </div>
           <ul className={house.rooms}>
             {DOMUS_MODULES.custom.map((r, i) => room(r, i + 10))}
-            {/* The dashed slot is the button; once pressed it is the new module (pressing it again takes it back) */}
-            <li className={house.slot}>
-              <label htmlFor={id} className={house.add}>
-                <span className={house.addFace} data-off>
-                  <Glyph d={GLYPHS.plus} size={18} />
-                  {HOME_DOMUS.add}
+            {/* The slot of the new module: the dashed place, the module born in it and the screen it opens */}
+            <li className={house.slot} aria-label={HOME_DOMUS.born}>
+              <span className={house.ghost} aria-hidden="true" />
+              <span className={house.born}>
+                <span className={house.seed} aria-hidden="true">
+                  <Glyph d={GLYPHS.pen} size={18} />
                 </span>
-                <span className={house.born} data-on>
-                  <span className={house.bornHead}>
-                    <span className={house.icon}>
-                      <Glyph d={GLYPHS.pen} size={18} />
-                    </span>
-                    <span className={house.name}>{HOME_DOMUS.born}</span>
-                    <b className={house.seal}>{HOME_DOMUS.bornTag}</b>
-                  </span>
-                  <span className={house.screen}>
-                    {HOME_DOMUS.bornFields.map((f, i) => (
-                      <span
-                        key={f}
-                        className={house.field}
-                        style={{ "--i": i } as React.CSSProperties}
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </span>
-                </span>
-              </label>
+                <span className={house.name}>{HOME_DOMUS.born}</span>
+                <Badge variant="neutral" className={house.seal}>
+                  {HOME_DOMUS.bornTag}
+                </Badge>
+              </span>
+              {/* The screen of the module: read-only fields out of the tab order (a drawing of a screen, not a form) */}
+              <Card size="sm" className={house.screen}>
+                <CardContent className={house.fields}>
+                  {HOME_DOMUS.bornFields.map((f, i) => (
+                    <Field
+                      key={f.label}
+                      label={f.label}
+                      className={house.field}
+                      style={{ "--i": i } as React.CSSProperties}
+                    >
+                      <Input
+                        readOnly
+                        tabIndex={-1}
+                        value={f.value}
+                        className={house.value}
+                      />
+                    </Field>
+                  ))}
+                </CardContent>
+              </Card>
             </li>
           </ul>
         </div>

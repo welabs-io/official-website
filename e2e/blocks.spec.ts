@@ -4,8 +4,8 @@
 //      components that changed;
 //  (c) the motions act again: the stage cycles with packets, the outcomes play, the opening of a product plays its scene
 //      (and does not only turn);
-//  (e) the house of the Domus shows the real modules on two floors, its roof is a vector, and "+ Novo módulo" makes a
-//      new module with its seal and its screen;
+//  (e) the Domus shows the real modules on two floors inside the ring of its logo, and "+ Novo módulo" makes a new
+//      module with its seal and its screen, which then closes on its own;
 //  (f) the message lands in the Domus that forms, and every logo on the track is at least 18 px of wordmark;
 //  (g) the play of the Tuner: a key lights its wire, the call travels and the person answers, recorded.
 // The overlap and cut checks are e2e/layout.spec.ts (block b); the transitions and the brand openings,
@@ -281,7 +281,7 @@ test.describe("(c) the motions act", () => {
 });
 
 test.describe("(e) the house of the Domus", () => {
-  test("the real modules on two floors, a vector roof, and a new module that says it is one", async ({
+  test("the real modules on two floors, and a new module that says it is one", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -320,25 +320,25 @@ test.describe("(e) the house of the Domus", () => {
       "Privacidade",
     ])
       expect(floors[1].join("|")).toContain(m);
-    // The roof is a vector path whose stroke does not scale with the box
-    expect(
-      await house
-        .locator("svg path")
-        .nth(1)
-        .evaluate((p) => getComputedStyle(p).vectorEffect),
-    ).toBe("non-scaling-stroke");
-    // "+ Novo módulo": the slot becomes the new module, with its seal and its three fields
+    // Pilot of the lib (2026-10-21): no roof any more; the frame is the ring of the Domus logo (e2e/domus.spec.ts).
+    // "+ Novo módulo" restarts the new module: it is born with its seal (the lib's Badge) and its screen opens with
+    // its three fields (the lib's Field and Input)
     await house.locator("label", { hasText: "Novo módulo" }).click();
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(3600);
     await expect(house.getByText("Vistorias")).toBeVisible();
-    const seal = house.locator("b", { hasText: "Novo módulo" });
+    const seal = house.locator("[data-slot='badge']", {
+      hasText: "Novo módulo",
+    });
     await expect(seal).toBeVisible();
     for (const f of ["Local", "Data", "Foto"])
       await expect(house.getByText(f, { exact: true })).toBeVisible();
-    // And it goes back
-    await house.locator("label").filter({ hasText: "Vistorias" }).click();
-    await page.waitForTimeout(400);
-    await expect(house.getByText("Vistorias")).toBeHidden();
+    // And it closes on its own, with no second click (the loop goes on: e2e/domus.spec.ts)
+    await page.waitForTimeout(4200);
+    expect(
+      await house
+        .locator("[data-slot='card']")
+        .evaluate((el) => Number(getComputedStyle(el).opacity)),
+    ).toBeLessThan(0.1);
   });
 });
 

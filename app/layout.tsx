@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 // Welabs package tokens (--wl-*)
 import "./brand/welabs.css";
+// The theme of @imagineapps-team/react (Tailwind 4 and the welabs preset), before the site's own sheets
+import "./lib.css";
 import "./globals.css";
 
 // MARCA NO NAVEGADOR

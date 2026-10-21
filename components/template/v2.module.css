@@ -167,9 +167,12 @@
 }
 
 /* A CASA DO DOMUS (I3): house.module.css; here only the ground the other products stand on */
+/* Pilot of the lib (2026-10-21): four equal cells on the axis of the Domus (they were boxes as wide as each logo, so
+   the stems and the gaps changed from one product to the next); the stem leaves the ring and lands on the centre of
+   its cell, and the link under them shares the same axis */
 .ground {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 136px);
   justify-content: center;
   gap: var(--sp-6);
   margin: var(--sp-5) 0 0;
@@ -179,7 +182,7 @@
 .ground li {
   position: relative;
 }
-/* Each product stands on the house: a short stroke up to it */
+/* Each product stands on the Domus: a short stroke up to it, in the graphite of the ring */
 .ground li::before {
   content: "";
   position: absolute;
@@ -188,11 +191,12 @@
   width: 2px;
   height: var(--sp-5);
   margin-left: -1px;
-  background: var(--thread);
+  background: var(--g);
 }
 .ground a {
-  display: block;
-  padding: var(--sp-2) var(--sp-3);
+  display: grid;
+  place-items: center;
+  height: 48px;
   border: 1px solid var(--line);
   border-radius: var(--r-card);
   background: var(--surface);
@@ -565,8 +569,17 @@
   .switch img {
     --h: 30px;
   }
+  /* Inset by the corner of the ring, so every stem leaves its straight edge */
   .ground {
-    gap: var(--sp-3);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--sp-2);
+    padding: 0 var(--sp-6);
+  }
+  .ground a {
+    height: 40px;
+  }
+  .ground img {
+    height: 26px;
   }
   .five {
     grid-template-columns: repeat(2, minmax(0, 1fr));

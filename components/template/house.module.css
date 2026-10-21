@@ -1,47 +1,27 @@
-/* A CASA DO DOMUS (I3) */
-/* The modules of the Domus under one roof, on two floors: the standard ones and the ones made to measure. The roof is a
-   vector path (crisp at any size: its stroke does not scale with the box); the walls are one card. "+ Novo módulo" is a
-   label over the checkbox of the section: checked, its dashed slot becomes the new module with its seal and its screen,
-   which assembles field by field. Every move is written FROM a state TO the natural one (reduced motion shows the end). */
+/* O DOMUS E SEUS MÓDULOS (I3) */
+/* Pilot of @imagineapps-team/react 0.18.0 (2026-10-21). The modules sit inside the rounded square of the Domus logo
+   (a ring of --domus-ring with the logo's corner rule), on two floors: the standard ones and the ones made to measure.
+   The badges, the screen (Card) and its fields (Field, Input) are the lib's components, painted by its welabs theme
+   (app/lib.css, data-theme="welabs" on the block, sand --border/--input); this sheet only places and moves them. The
+   structure keeps the site's sand palette (--cl, --surface-accent).
+   The new module loops by itself (one --domus-cycle): the dashed slot turns into "Vistorias", whose icon is the amber
+   square of the logo, its screen opens and fills field by field, holds, closes, and the slot is dashed again. The
+   checkbox only swaps every animation for its twin (the -a and -b keyframes are equal), which restarts the sequence from
+   its first frame: after a click it plays to the end, holds (4.6 s), resets and goes on looping. Nothing runs off
+   screen (`data-on`, LiveObserver) and the frame with no animation is the final one (the module born with its seal;
+   on a phone, its screen filled under it), which is what reduced motion shows. */
 .house {
+  --domus-cycle: 8s;
   max-width: 1040px;
   margin: 0 auto;
 }
-/* v2.2 (audit A07): the roof was 16 px to the left, because `svg { max-width: 100% }` (globals.css) capped its widened
-   box and only the negative margin moved it. Now it may pass the walls (`max-width: none`), with a 24 px eave on each
-   side and a pitch of 18° at every width (the box keeps the ratio of the drawing, 1000 × 162.5, tan 18° = 0.325). The
-   walls start 24 × 0.325 px up, so their sides end exactly on the roof line, in the same 2.5 px ink stroke. */
-.roof {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: calc(100% + var(--sp-5) * 2);
-  max-width: none;
-  height: auto;
-  aspect-ratio: 1000 / 162.5;
-  margin: 0 calc(var(--sp-5) * -1) calc(var(--sp-5) * -0.325);
-  overflow: visible;
-}
-.roofFill {
-  fill: var(--surface);
-}
-.roofLine {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-.walls {
+.frame {
   display: grid;
   gap: var(--sp-5);
   padding: var(--sp-5);
-  border: 2.5px solid var(--ink);
-  border-top: 0;
-  border-radius: 0 0 var(--r-win) var(--r-win);
+  border: var(--domus-ring) solid var(--g);
+  border-radius: var(--r-domus);
   background: var(--surface);
-  box-shadow: var(--shadow-card);
 }
 .floor {
   display: grid;
@@ -51,10 +31,20 @@
   padding-top: var(--sp-5);
   border-top: 1px solid var(--cl);
 }
+/* The name of the floor and, on the floor made to measure, the button: one line of control height */
+.floorHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--control-height-sm);
+}
 .floorName {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   font-weight: 600;
-  color: var(--mute-l);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
 }
 .rooms {
   display: grid;
@@ -64,17 +54,22 @@
   padding: 0;
   list-style: none;
 }
-.room {
+/* A module: icon tile, name and tag on one centre line (no empty track, so a name without a tag keeps its width) */
+.room,
+.born {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
   min-height: 56px;
-  padding: var(--sp-2) var(--sp-3);
+  padding: var(--sp-3);
   border: 1px solid var(--cl);
   border-radius: var(--r-card);
   background: var(--surface);
+  color: var(--foreground);
   font-size: var(--text-sm);
   font-weight: 500;
+}
+.room {
   transition:
     border-color var(--dur-1) var(--ease-out),
     box-shadow var(--dur-2) var(--ease-out),
@@ -85,7 +80,8 @@
   box-shadow: var(--shadow-card);
   transform: translateY(-1px);
 }
-.icon {
+.icon,
+.seed {
   display: grid;
   flex: none;
   place-items: center;
@@ -96,170 +92,423 @@
 }
 /* The modules made to measure carry the amber tint on their icon */
 .floor[data-floor="custom"] .icon {
-  background: var(--a-100);
+  background: var(--primary-soft);
 }
 .name {
   min-width: 0;
+  overflow: hidden;
   line-height: var(--lh-heading);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.tag {
+/* The lib's Badge (a tag of a module, the seal of the new one): placed at the end of the line, painted by the lib */
+.tag,
+.seal {
   margin-left: auto;
-  padding: var(--sp-1) var(--sp-2);
-  border-radius: var(--r-ctl);
-  background: var(--a);
+}
+/* A tag takes 4 px of the module's right padding, so "Fiscal" keeps its whole name at 1040 px */
+.tag {
+  margin-right: calc(var(--sp-1) * -1);
+}
+
+/* O BOTÃO DO MÓDULO NOVO */
+/* A label over the checkbox (a lib Button cannot be one), drawn like the lib's outline Button at the small control
+   height, a pill like the ERP's buttons */
+.add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: var(--control-height-sm);
+  padding: 0 var(--sp-4) 0 var(--sp-3);
+  border: 1px solid var(--cl);
+  border-radius: var(--r-pill);
+  background: var(--background);
+  color: var(--foreground);
   font-size: var(--text-xs);
   font-weight: 600;
   line-height: 1;
-}
-
-/* O MÓDULO NOVO */
-.slot {
-  grid-column: span 2;
-}
-.add {
-  display: grid;
-  height: 100%;
-  min-height: 56px;
-  border: 2px dashed var(--input);
-  border-radius: var(--r-card);
-  color: var(--mute-l);
-  font-size: var(--text-sm);
-  font-weight: 600;
   cursor: pointer;
   transition:
-    border-color var(--dur-2) var(--ease-out),
-    background-color var(--dur-2) var(--ease-out),
-    box-shadow var(--dur-2) var(--ease-out),
-    color var(--dur-1) var(--ease-out);
+    border-color var(--dur-1) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out);
 }
 .add:hover {
-  border-color: var(--ink);
-  background: var(--a-100);
-  color: var(--ink);
+  border-color: var(--foreground);
+  background: var(--primary-soft);
 }
-.house:has(:global(input):focus-visible) .add {
+.house:has(:global(input[type="checkbox"]):focus-visible) .add {
   box-shadow:
-    0 0 0 2px var(--c),
-    0 0 0 4px var(--ink);
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
 }
-.addFace {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
+
+/* O MÓDULO NOVO E A SUA TELA */
+.slot {
+  position: relative;
+  display: grid;
+  grid-column: span 2;
+}
+.ghost,
+.born {
+  grid-area: 1 / 1;
+}
+.ghost {
+  border: 1.5px dashed var(--input);
+  border-radius: var(--r-card);
+  opacity: 0;
 }
 .born {
-  display: none;
-  gap: var(--sp-3);
-  padding: var(--sp-3);
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
-.bornHead {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  color: var(--ink);
+/* The amber square of the logo, square like it */
+.seed {
+  border-radius: 0;
+  background: var(--primary);
+  color: var(--primary-foreground);
 }
-.seal {
-  margin-left: auto;
-  padding: var(--sp-1) var(--sp-2);
-  border-radius: var(--r-ctl);
-  background: var(--action);
-  color: var(--action-fg);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-/* The screen of the new module: its fields arrive one by one */
+/* The screen of the module (the lib's Card, small size) over the three columns that end at the slot */
 .screen {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: calc(100% + var(--sp-2));
+  width: calc(150% + var(--sp-3) / 2);
+  /* Over the grid it covers three modules, so it only opens inside the cycle: the still frame keeps it closed */
+  opacity: 0;
+  pointer-events: none;
+}
+/* Three of the lib's Field (label over Input) side by side */
+.fields {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-2);
+  gap: var(--sp-3);
 }
 .field {
-  padding: var(--sp-2);
-  border: 1px solid var(--input);
-  border-radius: var(--r-ctl);
-  background: var(--surface);
-  color: var(--mute-l);
-  font-size: var(--text-xs);
-  font-weight: 500;
+  min-width: 0;
 }
-.house:has(:global(input):checked) .add {
-  border: 1px solid var(--ink);
-  background: var(--surface);
-  box-shadow:
-    0 0 0 4px var(--a-200),
-    inset 0 -4px 0 var(--a);
-  animation: slot-born var(--dur-3) var(--ease-out) both;
+
+/* O CICLO */
+[data-on="true"] .house .ghost {
+  animation: domus-ghost-a var(--domus-cycle) linear infinite both;
 }
-.house:has(:global(input):checked) .addFace {
-  display: none;
+[data-on="true"] .house .born {
+  animation: domus-born-a var(--domus-cycle) linear infinite both;
 }
-.house:has(:global(input):checked) .born {
-  display: grid;
+[data-on="true"] .house .seal {
+  animation: domus-seal-a var(--domus-cycle) linear infinite both;
 }
-.house:has(:global(input):checked) .seal {
-  animation: seal-in 0.42s var(--ease-spring) 0.15s both;
+[data-on="true"] .house .screen {
+  animation: domus-screen-a var(--domus-cycle) linear infinite both;
 }
-.house:has(:global(input):checked) .field {
-  animation: field-in var(--dur-3) var(--ease-out) both;
-  animation-delay: calc(0.35s + var(--i) * 0.14s);
+[data-on="true"] .house .field {
+  animation: domus-field-a var(--domus-cycle) linear infinite both;
+  animation-delay: calc(var(--i) * 0.4s);
 }
-/* The rooms of the house light one after the other as the new module joins them */
-.house:has(:global(input):checked) .room {
-  animation: room-lit 0.9s var(--ease-out) both;
-  animation-delay: calc(var(--i) * 0.035s);
+[data-on="true"] .house .value {
+  animation: domus-value-a var(--domus-cycle) linear infinite both;
 }
-@keyframes slot-born {
-  from {
-    border-color: var(--input);
-    box-shadow: none;
-    transform: scale(0.97);
+[data-on="true"] .house .field .value {
+  animation-delay: calc(var(--i) * 0.4s);
+}
+[data-on="true"] .house .room {
+  animation: domus-room-a var(--domus-cycle) linear infinite both;
+  animation-delay: calc(var(--i) * 0.03s);
+}
+/* A click (either way) swaps every animation for its twin: the sequence starts again from its first frame */
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .ghost {
+  animation-name: domus-ghost-b;
+}
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .born {
+  animation-name: domus-born-b;
+}
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .seal {
+  animation-name: domus-seal-b;
+}
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .screen {
+  animation-name: domus-screen-b;
+}
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .field {
+  animation-name: domus-field-b;
+}
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .value {
+  animation-name: domus-value-b;
+}
+[data-on="true"] .house:has(:global(input[type="checkbox"]):checked) .room {
+  animation-name: domus-room-b;
+}
+
+/* Clock of one cycle (8 s): the slot waits 0.8 s, the module is born at 0.8 to 1.3 s, its seal at 1.3 s, the screen
+   opens at 1.6 s and its fields fill one every 0.4 s, all of it holds until 6.4 s, closes by 7.4 s and the slot waits
+   dashed until the cycle starts again */
+@keyframes domus-ghost-a {
+  0%,
+  10% {
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
   }
-}
-@keyframes seal-in {
-  from {
+  14%,
+  88% {
     opacity: 0;
-    transform: scale(0.6) rotate(-6deg);
+    animation-timing-function: var(--ease-in-out);
+  }
+  94%,
+  100% {
+    opacity: 1;
   }
 }
-@keyframes field-in {
-  from {
+@keyframes domus-ghost-b {
+  0%,
+  10% {
+    opacity: 1;
+    animation-timing-function: var(--ease-out);
+  }
+  14%,
+  88% {
     opacity: 0;
-    transform: translateY(var(--sp-2));
+    animation-timing-function: var(--ease-in-out);
+  }
+  94%,
+  100% {
+    opacity: 1;
   }
 }
-@keyframes room-lit {
-  30% {
+@keyframes domus-born-a {
+  0%,
+  10% {
+    opacity: 0;
+    transform: scale(0.94);
+    animation-timing-function: var(--ease-spring);
+  }
+  16%,
+  86% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: var(--ease-in-out);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes domus-born-b {
+  0%,
+  10% {
+    opacity: 0;
+    transform: scale(0.94);
+    animation-timing-function: var(--ease-spring);
+  }
+  16%,
+  86% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: var(--ease-in-out);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes domus-seal-a {
+  0%,
+  16% {
+    opacity: 0;
+    transform: scale(0.6);
+    animation-timing-function: var(--ease-spring);
+  }
+  22%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes domus-seal-b {
+  0%,
+  16% {
+    opacity: 0;
+    transform: scale(0.6);
+    animation-timing-function: var(--ease-spring);
+  }
+  22%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes domus-screen-a {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(var(--sp-2)) scale(0.98);
+    animation-timing-function: var(--ease-out);
+  }
+  26%,
+  80% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: var(--ease-in-out);
+  }
+  86%,
+  100% {
+    opacity: 0;
+    transform: translateY(var(--sp-1));
+  }
+}
+@keyframes domus-screen-b {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(var(--sp-2)) scale(0.98);
+    animation-timing-function: var(--ease-out);
+  }
+  26%,
+  80% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: var(--ease-in-out);
+  }
+  86%,
+  100% {
+    opacity: 0;
+    transform: translateY(var(--sp-1));
+  }
+}
+@keyframes domus-field-a {
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateY(var(--sp-1));
+    animation-timing-function: var(--ease-out);
+  }
+  29%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes domus-field-b {
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateY(var(--sp-1));
+    animation-timing-function: var(--ease-out);
+  }
+  29%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* The value of each input arrives after its field (the input itself stays, only its text shows) */
+@keyframes domus-value-a {
+  0%,
+  31% {
+    color: transparent;
+    animation-timing-function: var(--ease-out);
+  }
+  36%,
+  100% {
+    color: var(--foreground);
+  }
+}
+@keyframes domus-value-b {
+  0%,
+  31% {
+    color: transparent;
+    animation-timing-function: var(--ease-out);
+  }
+  36%,
+  100% {
+    color: var(--foreground);
+  }
+}
+/* The modules light one after the other as the new one joins them */
+@keyframes domus-room-a {
+  0%,
+  14% {
+    animation-timing-function: var(--ease-out);
+  }
+  18% {
     border-color: var(--a-300);
     box-shadow: 0 0 0 3px var(--a-100);
+    animation-timing-function: var(--ease-out);
+  }
+  28%,
+  100% {
+    border-color: var(--cl);
+    box-shadow: none;
+  }
+}
+@keyframes domus-room-b {
+  0%,
+  14% {
+    animation-timing-function: var(--ease-out);
+  }
+  18% {
+    border-color: var(--a-300);
+    box-shadow: 0 0 0 3px var(--a-100);
+    animation-timing-function: var(--ease-out);
+  }
+  28%,
+  100% {
+    border-color: var(--cl);
+    box-shadow: none;
+  }
+}
+
+/* TELAS ESTREITAS */
+/* Under the full 1040 px a module is too narrow for its name and its tag on one line ("Fiscal" was cut at 1024): the
+   tag sits on the corner of the module, so the name keeps its width */
+@media (max-width: 1100px) {
+  .room {
+    position: relative;
+  }
+  .room .tag {
+    position: absolute;
+    top: calc(var(--sp-2) * -1);
+    right: calc(var(--sp-1) * -1);
+    margin: 0;
   }
 }
 
 /* CELULAR */
+/* Two columns; the slot is a whole row and its screen opens inside it, under the module (its room is kept, so the
+   loop never moves the page) */
 @media (max-width: 860px) {
-  .walls {
-    padding: var(--sp-3);
+  .house {
+    --domus-ring: 8px;
+  }
+  .frame {
+    padding: var(--sp-4);
   }
   .rooms {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--sp-2);
   }
-  .room {
-    position: relative;
-    min-height: 48px;
+  .room,
+  .born {
     gap: var(--sp-2);
+    min-height: 48px;
+    padding: var(--sp-2);
   }
-  .icon {
+  .icon,
+  .seed {
     width: 26px;
     height: 26px;
   }
-  /* The tag sits on the corner of the module, so a narrow module keeps its name */
-  .tag {
-    position: absolute;
-    top: calc(var(--sp-2) * -1);
-    right: calc(var(--sp-1) * -1);
+  .slot {
+    grid-template-rows: auto auto;
+    row-gap: var(--sp-2);
+  }
+  .screen {
+    position: static;
+    width: auto;
+    opacity: 1;
+  }
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (prefers-reduced-motion: reduce) {

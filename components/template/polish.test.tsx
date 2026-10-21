@@ -137,6 +137,9 @@ describe("space and type tokens", () => {
       "var(--r-win) var(--r-win) var(--r-win) var(--r-ctl)",
       "var(--r-ctl) var(--r-ctl) 0 0",
       "inherit",
+      // Pilot of the lib: the ring of the Domus logo around its modules, and its amber square, which has no corner
+      "var(--r-domus)",
+      "0",
     ];
     const radii = SHEETS.filter((s) => s.startsWith("components/template"))
       .flatMap((s) => declarations(strip(read(s))))

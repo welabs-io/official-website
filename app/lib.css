@@ -1,0 +1,78 @@
+/* TEMA DA BIBLIOTECA @imagineapps-team/react */
+/* The consumer setup of the lib (its README and the ERP front, front/src/styles.css): the theme entry (Tailwind 4,
+   tokens, default brand, base) and the `welabs` preset, then the class sources of the compiled components. The lib
+   paints only where data-theme="welabs" is set (the Domus block, components/template/Home.tsx); the rest of the page
+   keeps its own sheets, which are unlayered and so win over the lib's layered base. */
+@import "@imagineapps-team/react/theme/styles.css";
+@import "@imagineapps-team/react/theme/welabs";
+@source "../node_modules/@imagineapps-team/react/dist/**/*.js";
+
+/* The site's type scale starts at 14 px (components/template/polish.test.tsx): the lib's smallest step follows it;
+   the utilities' default transition takes the site's --ease-out and --dur-1 */
+@theme {
+  --text-xs: 0.875rem;
+  --default-transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --default-transition-duration: 0.16s;
+}
+
+/* MOVIMENTO E FONTE DA LIB NA ESCALA DO SITE */
+/* The lib's base gives every control a default transition (--ease-out-quad, --duration-fast) and its keyframes read
+   --ease-out-soft and --ease-in-out; the site has one motion scale (shell.module.css --ease-out, --ease-in-out, --dur-1,
+   e2e/tokens.spec.ts), so the lib's curves take the site's values here. Its base also sets the heading face from
+   --font-heading: both faces are the site's Inter. */
+:root {
+  --ease-out-quad: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 0.16s;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Inter", system-ui, sans-serif;
+}
+
+/* The lib's base gives every link, button and input of the page a 160 ms transition of every property; outside the
+   lib's components the site keeps its own motion (each sheet declares its transitions), so the default only applies
+   under data-theme="welabs". Same layer and zero specificity as the lib's rule, later in the cascade. */
+@layer base {
+  :where(button, a, [role="button"], input, select, textarea, summary):where(
+      :not([data-theme="welabs"] *)
+    ) {
+    transition-duration: 0s;
+  }
+}
+
+/* The lib's base and the reset of Tailwind 4 (preflight) moved the rest of the page by a few pixels: the body line
+   height went from `normal` to the lib's --leading-body 1.5 (180 boxes of the home grew) and images and icons sat on
+   the middle instead of the baseline (measured on 1711c63 against this build: computed styles of the 569 elements
+   outside the Domus block). The body keeps the site's line height through the lib's own token, and the media outside
+   the lib keep their baseline. */
+:root {
+  --leading-body: normal;
+  --leading-heading: normal;
+  --tracking-heading: normal;
+}
+:is(img, svg):not([data-theme="welabs"] *) {
+  vertical-align: baseline;
+}
+
+/* CAMADA DO SITE SOBRE A MARCA WELABS */
+/* Colour: the site keeps its sand hairline and its warm control border (shell.module.css --cl and --input) where the
+   preset has neutral greys (--border oklch(0.9 0 0), --input oklch(0.6 0 0)). Structure: the ERP front's role tokens
+   (front/src/ui-kit/theme/tabela-theme.css: control 44/36 px, 8 px surfaces) with the field radius (10 px) as the
+   control radius, since the site uses the lib for fields and badges, not for its pill buttons. */
+[data-theme="welabs"]:where(:not([data-mode="dark"])) {
+  --border: #e2d8c3;
+  --input: #827968;
+}
+[data-theme="welabs"] {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Inter", system-ui, sans-serif;
+  --control-height: 2.75rem;
+  --control-height-md: 2.75rem;
+  --control-height-sm: 2.25rem;
+  --control-px-md: 0.75rem;
+  --control-radius: 0.625rem;
+  --surface-radius: 0.875rem;
+  --surface-px: 1rem;
+  --surface-py: 1rem;
+  --surface-gap: 0.75rem;
+}

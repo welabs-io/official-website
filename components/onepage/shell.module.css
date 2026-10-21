@@ -83,6 +83,15 @@
   --r-pill: 22px;
   /* v2.2 (audit M11): the fully round end of a chip, a dot or a pill of a drawing (it was a loose 999px in the scenes) */
   --r-dot: 999px;
+  /* SÍMBOLO DO DOMUS E CONTROLES DA LIB */
+  /* Pilot of @imagineapps-team/react 0.18.0: the frame of the Domus block is the ring of its logo
+     (domus-light.svg: stroke 36 over a 155 px box, outer corner 52.8 = inner 16.8 + stroke), drawn at a 12 px stroke
+     with the same outer = inner + stroke rule; the control heights are the ERP front's lib tokens (--control-height
+     2.75rem, --control-height-sm 2.25rem, front/src/ui-kit/theme/tabela-theme.css), under the lib's own names */
+  --domus-ring: 12px;
+  --r-domus: 52px;
+  --control-height: 44px;
+  --control-height-sm: 36px;
   /* The neutral shadows of the preset (--shadow-md under a card, --shadow-lg under a popover) */
   --shadow-card:
     0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 6px -2px oklch(0 0 0 / 0.06);
