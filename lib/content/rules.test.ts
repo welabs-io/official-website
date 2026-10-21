@@ -64,10 +64,13 @@ describe("copy rules", () => {
     expect(personViolation(text, [])).toBeNull();
   });
 
-  it("a known failure is tolerated by default, and only by default", () => {
-    expect(personViolation("Responder Marina")).toBeNull();
-    expect(personViolation("Responder Marina e Pedro")).toBe("Pedro");
-    expect(personViolation("Responder Marina", [])).toBe("Marina");
+  // v3 (F1): the known lists are empty, so a name is caught by default; a tolerated value still hides only itself
+  it("a tolerated value hides only itself, and nothing is tolerated by default", () => {
+    const tolerated = [{ value: "Marina", phase: "F1", todo: "" }];
+    expect(personViolation("Responder Marina", tolerated)).toBeNull();
+    expect(personViolation("Responder Marina e Pedro", tolerated)).toBe("Pedro");
+    expect(personViolation("Responder Marina")).toBe("Marina");
+    expect(stackViolation("Roda em Kubernetes")).toBe("Kubernetes");
   });
 
   it.each([

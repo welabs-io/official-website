@@ -41,8 +41,9 @@ function RellooPerson({ act }: { act: Act }) {
       <div className={c.duo} data-split="person">
         <div className={`${c.pane} ${c.soft} ${c.top}`}>
           <div className={c.profile}>
+            {/* v3 (F1): the contact is a record, so its avatar is the generic contact glyph, not an initial */}
             <span className={c.avatarLg} aria-hidden="true">
-              M
+              <Glyph d={GLYPHS.user} size={20} />
             </span>
             <span className={c.profileText}>
               <Key>{t.name}</Key>

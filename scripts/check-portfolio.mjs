@@ -184,11 +184,25 @@ assert(
   !IMAGINE_SYSTEMS.test(visibleText(home.slice(home.indexOf('id="platforms"')))),
   "no Imagine system in the strip of platforms",
 );
-for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
-  assert(
-    visibleText(home.slice(home.indexOf('id="platforms"'))).includes(name),
-    `the strip names ${name}`,
-  );
+// v3 (F1): the four clouds the operator asked for, and nothing else of the infrastructure
+const strip = home.slice(
+  home.indexOf('id="platforms"'),
+  home.indexOf("</ul>", home.indexOf('id="platforms"')),
+);
+assert.deepEqual(
+  [...strip.matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => visibleText(m[1])),
+  ["AWS", "Google Cloud", "DigitalOcean", "HostDime"],
+  "the strip names exactly the four clouds",
+);
+// v3 (F1): every button lands on the contact of the home, so that band never links to itself and has a way out
+const homeContact = home.slice(
+  home.indexOf('id="contact"'),
+  home.indexOf('id="platforms"'),
+);
+assert(
+  !homeContact.includes("#contact") && /<a [^>]*href="[^"]+"/.test(homeContact),
+  "the contact of the home has an action that does not lead to itself",
+);
 
 // PÁGINAS DE PRODUTO: logo com selo, metadado de categoria, zero player, uma interação
 for (const slug of SLUGS) {

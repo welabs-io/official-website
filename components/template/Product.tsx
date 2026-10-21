@@ -17,7 +17,7 @@ import {
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
-import { ContactBand, DomusHouse } from "./Home";
+import { ContactBand, DomusHouse, type ContactAction } from "./Home";
 import { Orbit } from "./Orbit";
 import { PLAYS } from "./Plays";
 import { SectionHead } from "./SectionHead";
@@ -81,8 +81,8 @@ export function ProductOpening({ slug }: { slug: ProductSlug }) {
         </a>
       </div>
       {slug === "domus" ? (
-        // v2.1: a real screen of the Domus, playing (the order of Marina comes back to the module Pedidos and she is told),
-        // in place of a symbol drawn in CSS with six areas that only flew in
+        // v2.1: a real screen of the Domus, playing (the order 1234 comes back to the module Pedidos and the contact is
+        // told), in place of a symbol drawn in CSS with six areas that only flew in
         <div className={styles.domusStage}>
           <MiniScene id="s6" />
         </div>
@@ -151,9 +151,17 @@ export function ProductDetails({ slug }: { slug: ProductSlug }) {
   );
 }
 
+// The button of a product's contact: to the contact of the home, never to the band it sits in (v3, F1)
+const PRODUCT_CONTACT_ACTION: ContactAction = {
+  href: CONTACT_HREF,
+  label: CTA_LABEL,
+  kind: "button",
+};
+
 export const ProductContact = ({ slug }: { slug: ProductSlug }) => (
   <ContactBand
     title={PAGE_HEADINGS.contact(productBySlug(slug)!.name)}
     asks={PRODUCT_PAGE[slug].asks}
+    action={PRODUCT_CONTACT_ACTION}
   />
 );

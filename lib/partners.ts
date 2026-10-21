@@ -1,85 +1,18 @@
-// PLATAFORMAS DE INFRA E DESENVOLVIMENTO
-// Monochrome official marks: simple-icons 16.34.0 (CC0) for everything it carries; AWS (official logo SVG) and HostDime
-// (official logo PNG from hostdime.com.br) are not in that package. `evidence` records why each one is listed; the
-// first four were asked for by the operator, the rest are in the code or the infra we run.
+// PLATAFORMAS ONDE RODAMOS
+// The four clouds the operator asked for, and nothing of the internal stack (v3, F1: plano.md sections 1.5 and 3.5; the
+// copy rules in copy-rules.json fail any stack name on a page). Monochrome official marks: simple-icons 16.34.0 (CC0) for
+// Google Cloud and DigitalOcean; AWS (official logo SVG) and HostDime (official logo PNG from hostdime.com.br) are not in
+// that package. `ratio` is the width over the height of what the strip shows; HostDime ships one PNG with its symbol, its
+// name and a tagline, so the strip shows the symbol only (`symbol`: the first 69 of its 480 × 46 px) and the name is the
+// text beside it, like every other mark.
 export const PLATFORM_LOGOS = [
-  { name: "AWS", src: "/platforms/aws.svg", h: 40, evidence: "operator" },
-  {
-    name: "DigitalOcean",
-    src: "/platforms/digitalocean.svg",
-    h: 36,
-    evidence: "operator",
-  },
+  { name: "AWS", src: "/platforms/aws.svg", ratio: 304 / 182 },
+  { name: "Google Cloud", src: "/platforms/googlecloud.svg", ratio: 1 },
+  { name: "DigitalOcean", src: "/platforms/digitalocean.svg", ratio: 1 },
   {
     name: "HostDime",
     src: "/platforms/hostdime.png",
-    h: 20,
-    evidence: "operator",
-  },
-  {
-    name: "Google Cloud",
-    src: "/platforms/googlecloud.svg",
-    h: 36,
-    evidence: "operator",
-  },
-  {
-    name: "Cloudflare",
-    src: "/platforms/cloudflare.svg",
-    h: 36,
-    evidence:
-      "skill imagine-infra-operations: create-app-hostname.sh, Cloudflare for SaaS on welabs.cloud; imagine-infra-authentik-oidc: public instance behind Cloudflare",
-  },
-  {
-    name: "Kubernetes",
-    src: "/platforms/kubernetes.svg",
-    h: 36,
-    evidence:
-      "skill imagine-infra-argocd-kubectl; erp-platform .k8s/workflows (publish-erp-*.workflow.yaml)",
-  },
-  {
-    name: "Argo CD",
-    src: "/platforms/argo.svg",
-    h: 36,
-    evidence:
-      "skills imagine-infra-argocd-kubectl and imagine-infra-gitops-runtime",
-  },
-  {
-    name: "Vault",
-    src: "/platforms/vault.svg",
-    h: 32,
-    evidence: "skill imagine-infra-vault-runtime (Vault and ExternalSecrets)",
-  },
-  {
-    name: "PostgreSQL",
-    src: "/platforms/postgresql.svg",
-    h: 36,
-    evidence: "skill imagine-infra-postgres-temporal (external Postgres)",
-  },
-  {
-    name: "Temporal",
-    src: "/platforms/temporal.svg",
-    h: 36,
-    evidence: "skill imagine-infra-postgres-temporal (Temporal persistence)",
-  },
-  {
-    name: "Authentik",
-    src: "/platforms/authentik.svg",
-    h: 36,
-    evidence: "skill imagine-infra-authentik-oidc (OIDC providers)",
-  },
-  {
-    name: "Docker",
-    src: "/platforms/docker.svg",
-    h: 36,
-    evidence:
-      "erp-platform infra/compose.yaml and docker-bake.hcl (frappe_docker); local runners use docker/buildkit",
-  },
-  {
-    name: "GitHub",
-    src: "/platforms/github.svg",
-    h: 36,
-    evidence: "repositories and PRs on github.com (welabs-io org)",
+    ratio: 69 / 46,
+    symbol: true,
   },
 ] as const;
-
-export const PLATFORMS_LABEL = "Infraestrutura e ferramentas";

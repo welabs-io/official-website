@@ -6,12 +6,13 @@
 // conversation on (no campaign, coupon or cashback), the Magneto the flow drawn in blocks (no process written as a
 // sentence, no rollback button), the Tuner the call routed to the right team (the chat of the site is the Relloo's),
 // the Knowly the answer with its source, its sources and the access per person. The Domus opens with its areas
-// instead. The short name of each scene lives with the page (lib/content/products.ts). The people, orders and documents
-// are those of the story of the home (Marina, the order 1234, the delivery policy) or fictional cases of the same
-// store. Interface text, not page copy: the copy rules still read it (components/scenes/capability.test.tsx).
+// instead. The short name of each scene lives with the page (lib/content/products.ts). The contact, orders and documents
+// are those of the story of the home (the contact 4821, the order 1234, the delivery policy) or fictional cases of the
+// same store. Interface text, not page copy: the copy rules still read it (components/scenes/capability.test.tsx).
 import { PRODUCT_PAGE } from "@/lib/content/products";
 import type { ProductSlug } from "@/lib/products";
 import type { TimedScene } from "./script";
+import { STORY } from "./story";
 
 export type CapabilitySceneId =
   | "relloo-person"
@@ -108,14 +109,14 @@ export const CAPABILITY_SCRIPT: Record<
 };
 
 // HISTÓRIA DAS CENAS DE CAPACIDADE
-// Every string the capability scenes draw, by scene. Same world as lib/scenes/story.ts: the store of Marina's order 1234
-// and its delivery policy. v2.2 (audit, section 5): one contact (Marina) and teams; no employee by name, no agent with a
-// human name, and the category of a channel instead of its brand.
+// Every string the capability scenes draw, by scene. Same world as lib/scenes/story.ts: the store of the order 1234 and
+// its delivery policy. v2.2 (audit, section 5): one contact and teams; no employee by name, no agent with a human name,
+// and the category of a channel instead of its brand. v3 (F1): the contact is its record id (STORY.who), never a name.
 export const CAPABILITY_STORY = {
   "relloo-person": {
     where: "Contatos",
-    meta: "Marina",
-    name: "Marina",
+    meta: STORY.order,
+    name: STORY.who,
     since: "3 pedidos",
     channels: ["Mensagem", "Telefone"],
     history: "Histórico",
@@ -146,7 +147,7 @@ export const CAPABILITY_STORY = {
     source: "Política de trocas",
     passes: "Passagem para a equipe",
     passesWhen: "Quando pedem a equipe",
-    contact: "Marina",
+    contact: STORY.who,
     ask: "Posso trocar um produto?",
     answer: "Pode sim. A troca vale por 30 dias, com a nota.",
     from: "Fonte: Política de trocas, linha 1",

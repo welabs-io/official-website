@@ -397,38 +397,62 @@ export function HomeEffects() {
 }
 
 // CONTATO
-// The open questions (no answers: they are the reason to talk) and the button, the only way in
+// The open questions (no answers: they are the reason to talk) and one way out. v3 (F1): the questions are a numbered
+// agenda of plain text, never shaped like a control (no box, no shadow, no pointer), and the band never links to
+// itself: on a product page the action is the button to the contact of the home; on the home, where every button of the
+// site lands, it is a link to the products band until the operator decides where a request goes (plano.md, 3.3).
+export type ContactAction = {
+  href: string;
+  label: string;
+  kind: "button" | "link";
+};
+
 export function ContactBand({
   title,
   asks,
+  action,
 }: {
   title: string;
   asks: readonly string[];
+  action: ContactAction;
 }) {
   return (
     <div className={`${shell.wrap} ${styles.contact}`}>
       <h2 className={styles.contactTitle}>{title}</h2>
-      <ul className={styles.asks} aria-label={HOME_CONTACT.asksLabel}>
+      <ol className={styles.asks} aria-label={HOME_CONTACT.asksLabel}>
         {asks.map((ask) => (
           <li key={ask}>{ask}</li>
         ))}
-      </ul>
+      </ol>
       <a
-        href={CONTACT_HREF}
-        className={`${shell.cta} ${shell.ctaBig} ${styles.contactCta}`}
+        href={action.href}
+        data-kind={action.kind}
+        className={
+          action.kind === "button"
+            ? `${shell.cta} ${shell.ctaBig} ${styles.contactCta}`
+            : `${styles.link} ${styles.contactCta}`
+        }
       >
-        {CTA_LABEL}
+        {action.label}
       </a>
     </div>
   );
 }
 
+// The products band of the home, the way out of its contact (an anchor, as the menu and the old addresses use)
+const PRODUCTS_HREF = "/#products";
+
 export const HomeContact = () => (
-  <ContactBand title={HOME_CONTACT.title} asks={HOME_CONTACT.asks} />
+  <ContactBand
+    title={HOME_CONTACT.title}
+    asks={HOME_CONTACT.asks}
+    action={{ href: PRODUCTS_HREF, label: HOME_CONTACT.more, kind: "link" }}
+  />
 );
 
 // ONDE RODAMOS
-// The platform marks, each with its name under it
+// v3 (F1): the four clouds only, each mark in one tone beside its name, all at one height; the width follows the
+// `ratio` of what the mark shows (lib/partners.ts), and a `symbol` is cut from the left of its logo file.
 export function Platforms() {
   return (
     <div className={`${shell.wrap} ${styles.platforms}`}>
@@ -436,13 +460,16 @@ export function Platforms() {
       <ul className={styles.plat}>
         {PLATFORM_LOGOS.map((p) => (
           <li key={p.name}>
-            <img
-              src={p.src}
-              alt=""
-              height={24}
-              loading="lazy"
-              decoding="async"
-            />
+            <span className={styles.mark}>
+              <img
+                src={p.src}
+                alt=""
+                data-symbol={"symbol" in p ? "" : undefined}
+                style={{ "--ratio": p.ratio } as React.CSSProperties}
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
             {p.name}
           </li>
         ))}

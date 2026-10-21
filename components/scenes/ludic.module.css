@@ -142,7 +142,7 @@
   /* Three text colours per scene at most (ink, mute and the semantic one): the time stays mute */
   color: var(--s-mute);
 }
-/* The question and the typing dots share one slot; the dots are visible only while Marina types */
+/* The question and the typing dots share one slot; the dots are visible only while the contact types */
 .outSlot {
   position: relative;
   display: flex;

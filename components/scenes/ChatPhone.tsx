@@ -1,6 +1,6 @@
 // TELEFONE COM CONVERSA
-// Marina's phone with the chat of the business: a header with the contact and the channel, and the conversation anchored
-// at the bottom like a messaging app (a day stamp, the call as a system line, bubbles with their time and ticks). An
+// The contact's phone with the chat of the business: a header with the business and the channel, and the conversation
+// anchored at the bottom like a messaging app (a day stamp, the call as a system line, bubbles with their time and ticks). An
 // item with an `action` comes in with that action of the script; one without it is simply there (history). The typing
 // dots come before a bubble that has `typing`; `readAction` turns the ticks of a bubble to the read colour. Server
 // markup, no state.

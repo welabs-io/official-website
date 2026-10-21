@@ -220,17 +220,26 @@ describe("the home", () => {
     expect(part.match(/data-mini="s\d"/g)).toHaveLength(3);
   });
 
-  it("the contact asks open questions and has only the button: no form, no address that was not given", () => {
+  // v3 (F1): every button of the site lands on this band, so it never links to itself (the loop of plano.md 1.3); its
+  // way out is the products band until the operator decides where a request goes
+  it("the contact asks open questions as an agenda and never links to itself: no form, no address that was not given", () => {
     const contact = home.slice(at("contact"), at("platforms"));
-    expect(contact).not.toMatch(/<form|<input|mailto:|wa\.me/);
+    expect(contact).not.toMatch(/<form|<input|<button|mailto:|wa\.me/);
+    expect(contact).toMatch(/<ol[^>]*aria-label="Perguntas para a conversa"/);
     expect(contact.match(/<li>/g)!.length).toBeGreaterThanOrEqual(3);
-    expect(contact).toContain('href="/#contact"');
+    expect(contact).not.toContain("#contact");
+    expect(contact).toContain('href="/#products"');
+    expect(at("products")).toBeGreaterThanOrEqual(0);
   });
 
-  it("where we run names every platform under its mark", () => {
-    const strip = home.slice(at("platforms"));
-    for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
-      expect(visibleText(strip)).toContain(name);
+  // v3 (F1): the four clouds the operator asked for, and nothing else (no internal stack)
+  it("where we run names exactly the four clouds, each beside its mark", () => {
+    const strip = home.slice(at("platforms"), home.indexOf("</ul>", at("platforms")));
+    const names = [...strip.matchAll(/<li>[\s\S]*?<\/li>/g)].map((m) =>
+      visibleText(m[0]),
+    );
+    expect(names).toEqual(["AWS", "Google Cloud", "DigitalOcean", "HostDime"]);
+    expect(strip.match(/<img [^>]*src="\/platforms\//g)).toHaveLength(4);
   });
 
   it("every product shows its standalone logo; the seal is only the identity of a product page", () => {
@@ -333,6 +342,17 @@ describe("the product pages", () => {
       expect(current[0]).toContain(`href="/products/${slug}"`);
       const sections = html.match(/<section id="([a-z]+)"/g) ?? [];
       expect(sections.at(-1)).toBe('<section id="contact"');
+    },
+  );
+
+  // v3 (F1): the button of a product's contact leads to the contact of the home (another band, with its own way out)
+  it.each(productPages)(
+    "$slug ends on its questions and the button to the contact of the home",
+    ({ html }) => {
+      const contact = html.slice(html.indexOf('<section id="contact"'));
+      expect(contact).toMatch(/<ol[^>]*aria-label="Perguntas para a conversa"/);
+      expect(contact).toContain('href="/#contact"');
+      expect(contact).not.toMatch(/href="#contact"|<form|<button/);
     },
   );
 
