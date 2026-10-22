@@ -9,6 +9,7 @@ import { ActionButton } from "@/components/lib/ui";
 import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
+import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
 import k from "./lab.module.css";
 
@@ -24,6 +25,11 @@ const SCENES: Record<SceneId, Entry> = {
     steps: RELLOO_INBOX_STEPS,
     Component: RellooInbox,
     takeFrom: "email",
+  },
+  "domus-modules": {
+    steps: DOMUS_MODULES_STEPS,
+    Component: DomusModules,
+    takeFrom: "born",
   },
 };
 
