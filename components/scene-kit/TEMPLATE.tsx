@@ -11,7 +11,9 @@
 // field is a site primitive (ActionButton, IconButton, RowButton, TextField) with its required icon, icons from
 // lucide-react; colours only from the lib's welabs role tokens (--background, --card, --foreground, --muted,
 // --muted-foreground, --border, --primary, --primary-soft), never the site's cream/sand; amber (--primary) only for
-// what happened or is active; no person, name, face, initial or vendor.
+// what happened or is active; no person, name, face, initial or vendor. Marks, pane heads, row and chip states,
+// stacked text, times, bubbles, lists and seals come from ./parts.module.css (compose its classes in the markup); the
+// scene's own sheet holds only its layout, and every value there is a token of app/lib.css (tokens.test.ts).
 // Proof: copy e2e/scene-kit.spec.ts for the new id (loop + take, reduced motion, icon/text axis within 1 px).
 import { Check, RotateCcw } from "lucide-react";
 import { ActionButton, Badge } from "@/components/lib/ui";
