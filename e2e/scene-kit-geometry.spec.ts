@@ -11,8 +11,6 @@ import { expect, test, type Page } from "@playwright/test";
 
 const LAB = "/lab/scenes/relloo-inbox";
 
-type Box = { left: number; right: number; top: number; bottom: number };
-
 // Every field of the window: its box (inside its border) and the boxes of its pieces, in order
 async function fields(page: Page) {
   return page.evaluate(() => {
