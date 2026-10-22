@@ -1,224 +1,283 @@
 "use client";
-// CENA DO KNOWLY: A RESPOSTA COM A FONTE, DENTRO DO ACESSO
-// Port of the Knowly play (components/plays/KnowlyPlay.tsx, content lib/content/plays.ts KNOWLY_PLAY) into the kit,
-// with the "Dado pessoal barrado" of lib/content/products.ts (knowly.details). Under the board's profile the question
-// about the goals of the year is answered sentence by sentence, each sentence with the number of its source and the
-// line it came from lit on the source; the profile changes to finance and the same answer changes: the plan of the
-// stores is out of its access, and its line closes behind a lock. A question about a personal data of the contact is
-// answered without it: the data is barred. Built from the lib: Badge (source numbers, barred, seal), AnimatedList
-// (sentences), Separator, the site's ActionButton (the profiles, the scene controls), lucide icons, and the kit's shared
-// parts (components/scene-kit/parts.module.css). Amber marks only the sentence arriving and the line it cites; amber
-// soft what was cited. The continuity is the kit's (components/scene-kit/Scene.tsx).
+// CENA DO KNOWLY: CADA FRASE COM A SUA FONTE, DENTRO DO ACESSO
+// The goals of the year are asked under the board's profile and answered sentence by sentence, each sentence with the
+// line of the source it came from; the profile switches to finance and the same answer changes: the plan of the stores
+// is out of its access, so that sentence closes behind a lock and so does its line on the source. A question about a
+// personal data of the order's contact is answered with a neutral notice: the data is barred. v3 (2026-10-22,
+// brief-v3-scenes.md) rebuilds it on the validated Relloo pilot (relloo-inbox.tsx): the question is a sent Message
+// (the black bubble), the answer a Message entry whose sentences each carry their source as the lib's Badge, the
+// Relloo connector runs from each sentence to its line, the profile is the lib's SegmentedControl with the black
+// chosen option (Welabs UI v3 Selection), and the barred data is the lib's neutral Alert with a lock, neither red nor
+// amber. Amber budget: the answer's mark while it arrives, nothing else. The continuity is the kit's
+// (components/scene-kit/Scene.tsx); this file only renders from `scene`.
+import { BookOpen, BookText, FileText, LockKeyhole, TextQuote } from "lucide-react";
+import { Badge } from "@/components/lib/ui";
 import {
-  BookOpen,
-  Check,
-  EyeOff,
-  FileText,
-  Lock,
-  ShieldCheck,
-  UserCog,
-  type LucideIcon,
-} from "lucide-react";
-import { ActionButton, Badge } from "@/components/lib/ui";
-import { AnimatedList, Separator } from "@/components/lib/scene";
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Avatar,
+  AvatarFallback,
+  SegmentedControl,
+  TypingDots,
+} from "@/components/lib/scene";
 import { KNOWLY_PLAY as K } from "@/lib/content/plays";
+import { Connector } from "../Connector";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import k from "./knowly-answer.module.css";
 
 // ROTEIRO DA CENA
-// ask: the board asks; s1, s2: the two sentences arrive with their source; profile: finance asks the same, the second
-// sentence closes; personal: a question about a personal data, barred; done: the frame settles (1.6 s, ~1 s still)
+// ask: the board asks, the answer types; s1, s2: each sentence lands with the trace to its line; profile: finance asks
+// the same, the first sentence lands again with its trace; blocked: the second closes behind a lock, its line too;
+// personal: a question about a personal data, answered by the neutral notice; done: the frame settles (1.8 s)
 export const KNOWLY_ANSWER_STEPS: readonly SceneStep[] = [
-  { id: "ask", hold: 900 },
-  { id: "s1", hold: 900 },
-  { id: "s2", hold: 1000 },
-  { id: "profile", hold: 1300 },
-  { id: "personal", hold: 1300 },
-  { id: "done", hold: 1600 },
+  { id: "ask", hold: 1000 },
+  { id: "s1", hold: 1400 },
+  { id: "s2", hold: 1400 },
+  { id: "profile", hold: 1400 },
+  { id: "blocked", hold: 1400 },
+  { id: "personal", hold: 1400 },
+  { id: "done", hold: 1800 },
 ];
 
 // CONTEÚDO DA CENA
+const PLAN = K.sources.plan;
 const BOARD = K.profiles[2];
 const FINANCE = K.profiles[1];
-const PLAN = K.sources.plan;
 
 const COPY = {
   product: "Knowly",
-  title: "Perguntas / Atendimento",
+  title: "Perguntas",
   label: "Knowly: cada frase da resposta com a sua fonte, a resposta muda com o perfil e o dado pessoal fica de fora",
   answer: "Resposta",
   sources: "Fontes",
+  profile: K.profileLabel,
   goals: K.questions[1].label,
-  // A question about a personal data of the contact of the order, and what the answer says instead
-  personal: "Qual é o telefone do contato do pedido 1234?",
-  barredText: "Dado pessoal: fica fora da resposta.",
-  barred: "Barrado",
+  knowly: "Knowly",
+  time: "10:12",
+  time2: "10:13",
+  line: "Linha",
   record: "Cadastro do pedido 1234",
-  recordLine: "Telefone do contato",
-  sourced: "Cada frase com a fonte",
+  recordLines: ["Telefone do contato"],
+  // A question about a personal data of the contact of the order, and the notice that answers it
+  personal: "Qual é o telefone do contato?",
+  barredTitle: "Dado pessoal barrado",
+  barredText: "O telefone do contato fica fora da resposta.",
+  barredLine: "Dado pessoal",
 };
 
-type Sentence = { key: string; text: string; line: number | null; icon?: LucideIcon };
+type Sentence = { key: string; text: string; line: number; sourced: boolean };
 
-// The answer to the goals under a profile: the board reads the whole plan, finance only its first line
-const goalsFor = (finance: boolean): Sentence[] =>
+// The sentences of the answer under a profile: the board reads the whole plan, finance only its first line
+const sentencesFor = (finance: boolean): Sentence[] =>
   (finance ? K.answers.goalsFinance : K.answers.goalsBoard).map((s, i) => ({
-    key: `goals-${i}-${s.source ?? "blocked"}`,
+    key: `s${i + 1}`,
     text: s.text,
-    line: s.source ? s.line : null,
+    line: s.line,
+    sourced: s.source !== null,
   }));
+
+// The step each sentence lands at, per profile
+const LANDS: Record<string, readonly string[]> = { board: ["s1", "s2"], finance: ["profile", "blocked"] };
+
+// MARCA DE ÍCONE
+// The lib's Avatar with the icon as its fallback; its tone is painted by app/lib.css
+function Mark({ tone }: { tone?: "active" | "subject" }) {
+  return (
+    <Avatar data-tone={tone} aria-hidden="true">
+      <AvatarFallback>
+        <BookOpen />
+      </AvatarFallback>
+    </Avatar>
+  );
+}
 
 function KnowlyAnswerView({ scene }: { scene: SceneApi }) {
   const finance = scene.reached("profile");
   const profile = finance ? FINANCE : BOARD;
+  const lands = LANDS[finance ? "finance" : "board"];
+  const sentences = sentencesFor(finance).filter((_, i) => scene.reached(lands[i]));
   const done = scene.reached("done");
-  // The sentences shown: one per step under the board; the whole answer under finance
-  const goals = goalsFor(finance).filter((_, i) => finance || scene.reached(i === 0 ? "s1" : "s2"));
-  const freshKey = scene.is("s1")
-    ? goals[0]?.key
-    : scene.is("s2")
-      ? goals[1]?.key
-      : scene.is("profile")
-        ? goals[1]?.key
-        : scene.is("personal")
-          ? "personal"
-          : undefined;
-  // The line of the plan cited by the sentence arriving now, and the lines cited so far
-  const cited = new Set(goals.flatMap((s) => (s.line === null ? [] : [s.line])));
-  const freshLine = goals.find((s) => s.key === freshKey)?.line ?? null;
-  const locked: number[] = finance
-    ? K.answers.goalsFinance.flatMap((s) => (s.source === null ? [s.line] : []))
-    : [];
   const personal = scene.reached("personal");
+  // The sentence landing now (and with it the trace to its line), if any
+  const fresh = sentences.find((_, i) => scene.is(lands[i]));
+  // The answer types until its first sentence lands, and keeps the live mark while sentences arrive
+  const typing = sentences.length === 0;
+  const answering = !personal && !done;
+  // The lines of the plan cited so far, and the ones out of the profile's access
+  const cited = new Set(sentences.filter((s) => s.sourced).map((s) => s.line));
+  const locked = new Set(sentences.filter((s) => !s.sourced).map((s) => s.line));
+  const lineState = (i: number) =>
+    locked.has(i) ? "locked" : fresh?.sourced && fresh.line === i ? "active" : cited.has(i) ? "cited" : "idle";
   return (
     <div className={k.split}>
       {/* The question and its answer, under the profile of whoever asks */}
       <section className={k.answer} aria-label={COPY.answer}>
-        <div className={`${p.ruleBottom} ${k.profiles}`}>
-          <p className={p.paneHead}>{K.profileLabel}</p>
-          <div className={`${p.choiceStates} ${k.chips}`}>
-            {[BOARD, FINANCE].map((pr) => (
-              <ActionButton
-                key={pr.id}
-                size="xs"
-                icon={<UserCog strokeWidth={2} />}
-                data-state={pr === profile ? "active" : "waiting"}
-                onClick={() => scene.take(pr === BOARD ? "ask" : "profile")}
-              >
-                {pr.label}
-              </ActionButton>
-            ))}
-          </div>
+        <div className={k.bar}>
+          <p className={p.paneHead}>{COPY.profile}</p>
+          {/* The lib's SegmentedControl (md); the chosen option is the black primary (this scene's sheet) */}
+          <span className={k.profiles}>
+            <SegmentedControl
+              aria-label={COPY.profile}
+              value={profile.id}
+              onValueChange={(v) => scene.take(v === FINANCE.id ? "profile" : "ask")}
+              items={[
+                { value: BOARD.id, label: BOARD.label },
+                { value: FINANCE.id, label: FINANCE.label },
+              ]}
+            />
+          </span>
         </div>
-        <div className={`${p.list} ${k.thread}`}>
-          <p className={`${p.bubble} ${k.ask}`} data-kind="sent">
+
+        <div className={k.thread}>
+          <p className={`${p.bubble} ${k.asked}`} data-kind="sent">
             {COPY.goals}
           </p>
-          {/* Keyed by the profile: the answer of the new profile replaces the old one at once */}
-          <AnimatedList key={`${scene.cycle}-${profile.id}`} className={`${p.list} ${p.listTight}`} distance={6} duration={0.28}>
-            {goals.map((s) => (
-              <div key={s.key} className={k.sentence} data-axis="sentence" data-fresh={!done && s.key === freshKey}>
-                <span
-                  className={`${p.mark} ${p.markSm} ${k.number}`}
-                  // A closed sentence stays neutral even while it arrives: its text is sand 700, never next to amber
-                  data-tone={s.line === null ? undefined : s.key === freshKey && !done ? "active" : "done"}
-                  aria-hidden="true"
-                >
-                  {s.line === null ? <Lock size={14} strokeWidth={2} /> : "1"}
+
+          {/* The answer, a Message entry: the mark, the meta line (who answers, under which profile) and the
+              sentences, each with its source; keyed by the profile, so the new answer replaces the old one at once */}
+          <div key={`${scene.cycle}-${profile.id}`} className={k.entry}>
+            <span className={k.entryMark}>
+              <Mark tone={answering ? "active" : "subject"} />
+            </span>
+            <div className={k.entryBody}>
+              <p className={k.meta}>
+                <b>{COPY.knowly}</b>
+                <span>
+                  {profile.label} · {COPY.time}
                 </span>
-                <span className={k.sentenceText} data-blocked={s.line === null}>
-                  {s.text}
+              </p>
+              {typing ? (
+                <span className={k.typing}>
+                  <TypingDots size={5} gap={3} />
                 </span>
-              </div>
-            ))}
-          </AnimatedList>
+              ) : (
+                <ol className={k.sentences}>
+                  {sentences.map((s) => (
+                    <li
+                      key={s.key}
+                      className={k.sentence}
+                      data-sentence={s.key}
+                      // A closed sentence may wrap on a phone: its lock is measured on its first line (data-axis-pair),
+                      // a sourced one as text against its source (data-axis)
+                      data-axis={s.sourced ? "sentence" : undefined}
+                      data-axis-pair=""
+                      data-state={!done && s === fresh && s.sourced ? "active" : s.sourced ? "done" : "locked"}
+                    >
+                      {s.sourced ? null : <LockKeyhole className={k.lock} aria-hidden="true" />}
+                      <span className={k.text}>{s.text}</span>
+                      {s.sourced ? (
+                        <Badge variant="neutral" appearance="soft" className={k.cite} data-cite={s.key}>
+                          <TextQuote data-icon="inline-start" aria-hidden="true" />
+                          {COPY.line} {s.line + 1}
+                        </Badge>
+                      ) : null}
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          </div>
+
           {personal ? (
             <>
-              <p className={`${p.bubble} ${k.ask}`} data-kind="sent">
+              <p className={`${p.bubble} ${k.asked} ${k.arrive}`} data-kind="sent">
                 {COPY.personal}
               </p>
-              <div className={k.sentence} data-axis="sentence" data-fresh={!done}>
-                <span
-                  className={`${p.mark} ${p.markSm}`}
-                  data-tone={done ? undefined : "active"}
-                  aria-hidden="true"
-                >
-                  <ShieldCheck size={14} strokeWidth={2} />
+              {/* The answer to it, a Message entry whose body is the barred data: the lib's neutral Alert with a
+                  lock, never red nor amber; a note, not an alert (the loop would announce it on every pass) */}
+              <div className={`${k.entry} ${k.arrive}`}>
+                <span className={k.entryMark}>
+                  <Mark tone="subject" />
                 </span>
-                <span className={k.sentenceText}>{COPY.barredText}</span>
+                <div className={k.entryBody}>
+                  <p className={k.meta}>
+                    <b>{COPY.knowly}</b>
+                    <span>
+                      {profile.label} · {COPY.time2}
+                    </span>
+                  </p>
+                  <Alert variant="neutral" role="note" className={k.notice} data-notice="">
+                    <LockKeyhole aria-hidden="true" />
+                    <AlertTitle>{COPY.barredTitle}</AlertTitle>
+                    <AlertDescription>{COPY.barredText}</AlertDescription>
+                  </Alert>
+                </div>
               </div>
             </>
           ) : null}
         </div>
       </section>
 
-      {/* The sources: the line each sentence came from lights; a line out of the profile's access is closed */}
+      {/* The sources: the line each sentence came from lights; a line out of the profile's access closes */}
       <section className={k.sources} aria-label={COPY.sources}>
-        <div className={k.head} data-axis="head">
-          <span className={`${p.mark} ${p.markMd}`} data-tone="subject" aria-hidden="true">
-            <BookOpen size={16} strokeWidth={2} />
-          </span>
-          <span className={k.headTitle}>{COPY.sources}</span>
-          {done ? (
-            <Badge variant="primary" appearance="soft" className={`${p.seal} ${k.seal}`}>
-              <Check size={12} strokeWidth={2.5} aria-hidden="true" />
-              {COPY.sourced}
-            </Badge>
-          ) : null}
+        <div className={k.bar}>
+          <p className={p.paneHead}>{COPY.sources}</p>
+          <Badge variant="neutral" appearance="soft">
+            2
+          </Badge>
         </div>
-        <Separator />
-        <div className={`${p.list} ${k.sourceList}`}>
-          <div className={k.source}>
-            <div className={k.sourceHead} data-axis="source">
-              <span className={`${p.mark} ${p.markSm}`} data-tone="well" aria-hidden="true">
-                <FileText size={14} strokeWidth={2} />
+        <div className={k.docs}>
+          <div className={k.doc} data-doc="plan">
+            <div className={k.docHead} data-axis="doc">
+              <span className={k.docMark} aria-hidden="true">
+                <BookText />
               </span>
-              <b>{PLAN.title}</b>
-              <Badge variant="secondary" appearance="solid">
-                1
-              </Badge>
+              <b className={k.docTitle}>{PLAN.title}</b>
             </div>
-            <ol className={`${p.rowStates} ${k.lines}`}>
-              {PLAN.lines.map((line, i) => {
-                const isLocked = locked.includes(i);
-                const state = isLocked ? "locked" : i === freshLine && !done ? "active" : cited.has(i) ? "done" : "idle";
+            <ol className={k.lines}>
+              {PLAN.lines.map((text, i) => {
+                const state = lineState(i);
                 return (
-                  <li key={line} className={k.line} data-state={state} data-axis="line">
-                    <span className={k.lineIcon} aria-hidden="true">
-                      {isLocked ? <Lock size={12} strokeWidth={2} /> : <span className={k.bullet} />}
+                  <li key={text} className={k.line} data-line={i} data-state={state} data-axis="line" data-axis-pair="">
+                    <span className={k.num} aria-hidden="true">
+                      {state === "locked" ? <LockKeyhole /> : i + 1}
                     </span>
-                    <span>{isLocked ? K.blocked : line}</span>
+                    <span key={state === "locked" ? "locked" : "open"} className={k.lineText}>
+                      {state === "locked" ? K.blocked : text}
+                    </span>
                   </li>
                 );
               })}
             </ol>
           </div>
           {/* The record of the order: the personal data is there, and stays out of the answer */}
-          <div className={k.source}>
-            <div className={k.sourceHead} data-axis="source">
-              <span className={`${p.mark} ${p.markSm}`} data-tone="well" aria-hidden="true">
-                <FileText size={14} strokeWidth={2} />
+          <div className={k.doc} data-doc="record">
+            <div className={k.docHead} data-axis="doc">
+              <span className={k.docMark} aria-hidden="true">
+                <FileText />
               </span>
-              <b>{COPY.record}</b>
+              <b className={k.docTitle}>{COPY.record}</b>
             </div>
-            <ol className={`${p.rowStates} ${k.lines}`}>
-              <li className={k.line} data-state={personal ? "locked" : "idle"} data-axis="line">
-                <span className={k.lineIcon} aria-hidden="true">
-                  <EyeOff size={12} strokeWidth={2} />
-                </span>
-                <span>{COPY.recordLine}</span>
-                {personal ? (
-                  <Badge variant="secondary" appearance="solid" className={k.barred}>
-                    {COPY.barred}
-                  </Badge>
-                ) : null}
-              </li>
+            <ol className={k.lines}>
+              {COPY.recordLines.map((text, i) => {
+                const barred = personal;
+                return (
+                  <li
+                    key={text}
+                    className={k.line}
+                    data-line={`record-${i}`}
+                    data-state={barred ? "locked" : "idle"}
+                    data-axis="line"
+                    data-axis-pair=""
+                  >
+                    <span className={k.num} aria-hidden="true">
+                      {barred ? <LockKeyhole /> : i + 1}
+                    </span>
+                    <span key={barred ? "locked" : "open"} className={k.lineText}>
+                      {barred ? `${text}: ${COPY.barredLine.toLowerCase()}` : text}
+                    </span>
+                  </li>
+                );
+              })}
             </ol>
           </div>
         </div>
       </section>
+
+      {fresh?.sourced && !scene.ghost ? <Connector from={`[data-cite="${fresh.key}"]`} to={`[data-line="${fresh.line}"]`} /> : null}
     </div>
   );
 }

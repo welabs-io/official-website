@@ -237,7 +237,8 @@ const V3_SCENES: GeoScene[] = [
   {
     id: "knowly-answer",
     figure: /^Knowly/,
-    pairs: [4, 4],
+    // The lab's two buttons, the cited sentence's source, the closed sentence and the two closed lines (lock + text)
+    pairs: [6, 6],
     columns: {
       "answer sentences": { selectors: ["[data-sentence] > :first-child"] },
       "source lines": { selectors: ["[data-line] > :first-child"] },

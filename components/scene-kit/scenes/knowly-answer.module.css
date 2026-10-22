@@ -1,179 +1,283 @@
 /* CENA DO KNOWLY: RESPOSTA E FONTES */
-/* Layout only (the lib paints Badge, Separator and the buttons; the kit's shared parts, components/scene-kit/
-   parts.module.css, paint the marks and their tones, the profile and line states, the bubbles, the lists and the
-   seal). Every value is a token of app/lib.css (colour roles: control/portfolio/site-redesign/scene-kit/
-   colour-decisions.md): both panes are the cream paper split by the sand line, a source is a sand 100 card ringed by the
-   sand line. The sentence arriving and the line it cites take amber; what was cited amber soft; a closed line or a
-   barred data reads in sand 700 behind its lock, never amber. */
+/* v3 (2026-10-22): the layout of the validated Relloo (relloo-inbox.module.css) on the Knowly's answer. Every control
+   is the published lib's at its default size (e2e/lib-parity.spec.ts); this sheet places them, paints the scene's
+   states (the sentence landing and the line it cites, the cited lines in green, the closed ones neutral), turns the
+   lib's segmented control to the black chosen option of Welabs UI v3, and choreographs each step. Every value is a
+   token of app/lib.css. The alignment is held by numbers: e2e/scene-kit-geometry.spec.ts. */
 .split {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  background: var(--background);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  background: var(--card);
 }
 
-/* A PERGUNTA E A RESPOSTA */
-.answer {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  border-right: var(--rule) solid var(--border);
+/* Amber budget: the answer's mark drops its amber at once when the answer settles */
+.split [data-slot="avatar-fallback"] {
+  transition: none;
 }
 
-.profiles {
+/* The bar over each pane: its label and its control (the profile switch, the count of sources) on one centre line,
+   at the height of a control, the line under it */
+.bar {
   display: flex;
-  flex-wrap: wrap;
+  min-height: calc(var(--control-height-md) + 2 * var(--sp-4));
   align-items: center;
   justify-content: space-between;
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-4);
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
 }
-.chips {
+
+/* PERFIL: O SEGMENTO DA LIB COM A OPÇÃO ESCOLHIDA EM PRETO */
+/* Welabs UI v3 Selection: the rail is the chrome (the lib's own), the chosen option the black primary with white text;
+   the lib draws a white pill (its moving indicator, or the item itself without motion) */
+.profiles [data-slot="segmented-control-indicator"],
+.profiles [data-slot="segmented-control-item"][data-state="active"]:not(:has(> [data-slot="segmented-control-indicator"])) {
+  background-color: var(--primary);
+  box-shadow: none;
+}
+.profiles [data-slot="segmented-control-item"][data-state="active"] {
+  color: var(--primary-foreground);
+}
+
+/* RESPOSTA */
+.answer {
   display: flex;
-  gap: var(--sp-2);
+  min-width: 0;
+  flex-direction: column;
 }
-
 .thread {
-  padding: var(--sp-4);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
 }
-
-/* The question asked: a sent message, on the right of the thread */
-.ask {
-  justify-self: end;
-  align-self: flex-end;
+/* The question: a sent Message, the black bubble on the right */
+.asked {
   margin: 0;
 }
 
-/* A sentence of the answer: its source number (or its lock) and its text on one centre line */
-.sentence {
+/* The answer: a Message entry (mark, meta line, body) */
+.entry {
   display: flex;
+  gap: var(--sp-3);
+  animation: rise var(--dur-3) var(--ease-out) both;
+}
+.entryMark {
+  display: inline-flex;
+  flex: none;
+}
+.entryBody {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+/* The meta line, as tall as the mark and centred on it: who answers in ink, the profile and time muted */
+.meta {
+  display: flex;
+  min-height: var(--mark-md);
   align-items: center;
   gap: var(--sp-2);
-}
-.number {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-title);
-  font-variant-numeric: tabular-nums;
-}
-.sentenceText {
-  min-width: 0;
+  margin: 0;
   font-size: var(--t-label);
   line-height: var(--line-label);
-  color: var(--foreground);
 }
-.sentenceText[data-blocked="true"] {
+.meta b {
+  font-weight: var(--weight-label);
+}
+.meta span {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-variant-numeric: tabular-nums;
   color: var(--muted-foreground);
 }
+.typing {
+  display: inline-flex;
+  min-height: var(--control-height-md);
+  align-items: center;
+  padding-inline: var(--sp-3);
+}
 
-/* AS FONTES */
-.sources {
+/* Each sentence a row of its own (the connector leaves from its source), separated by space; the one landing takes
+   the amber-50 of the arriving bubble; a closed one is neutral, its lock and text in the muted tone */
+.sentences {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.head {
+/* (top-aligned, so the lock of a sentence that wraps on a phone stays on its first line; one line is still 40 px) */
+.sentence {
+  display: flex;
+  min-height: var(--control-height-md);
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: calc((var(--control-height-md) - var(--line-label)) / 2) var(--sp-3);
+  border-radius: var(--r-ctl);
+  background: var(--muted);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  transition: background-color var(--dur-2) var(--ease-out);
+  animation: rise var(--dur-3) var(--ease-out) both;
+}
+.sentence[data-state="active"] {
+  background: var(--signal-soft);
+}
+.sentence[data-state="locked"] {
+  color: var(--muted-foreground);
+}
+.text {
+  min-width: 0;
+  flex: 1;
+}
+.lock {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex: none;
+  margin-block: calc((var(--line-label) - var(--icon-md)) / 2);
+}
+.cite {
+  flex: none;
+  align-self: center;
+}
+
+/* The barred data: the lib's neutral Alert (chrome soft, ink lock), never red nor amber */
+.notice {
+  margin: 0;
+}
+.arrive {
+  animation: rise var(--dur-3) var(--ease-out) both;
+}
+
+/* FONTES */
+.sources {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border-left: var(--rule) solid var(--border);
+}
+.docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+}
+.doc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+/* The head of a source: its square mark (the Domus record mark) and its title over its meta */
+.docHead {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
+  padding-inline: var(--sp-3);
 }
-.headTitle {
-  flex: 1;
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-title);
-}
-
-.sourceList {
-  padding: var(--sp-3) var(--sp-4) var(--sp-4);
-}
-
-/* A source: a sand 100 card, its title over its lines */
-.source {
-  border-radius: var(--r-card);
-  background: var(--card);
-  box-shadow: var(--edge-ring);
-  overflow: hidden;
-}
-.sourceHead {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-}
-.sourceHead b {
-  flex: 1;
-  font-weight: var(--weight-title);
-}
-
-.lines {
-  margin: 0;
-  padding: 0 0 var(--sp-1);
-  list-style: none;
-}
-/* A line of a source: a small bullet (or a lock) and its text; cited lines read in ink, the others in sand 700 */
-.line {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-3);
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  color: var(--muted-foreground);
-}
-.line[data-state="active"],
-.line[data-state="done"] {
-  color: var(--foreground);
-}
-.lineIcon {
+.docMark {
   display: inline-flex;
+  width: var(--mark-md);
+  height: var(--mark-md);
   flex: none;
   align-items: center;
   justify-content: center;
+  border-radius: var(--r-ctl);
+  background: var(--muted);
+  color: var(--foreground);
+}
+.docMark > svg {
   width: var(--icon-md);
-  height: var(--line-label);
+  height: var(--icon-md);
 }
-.bullet {
-  width: var(--sp-1);
-  height: var(--sp-1);
-  border-radius: var(--r-dot);
-  background: var(--indicator-muted);
+.docTitle {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
 }
-[data-state="active"] .bullet {
-  background: var(--signal);
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-row);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-[data-state="done"] .bullet {
-  background: var(--foreground);
+/* A line of a source: its number and its text; active (cited now) the amber-50 of the selected row, cited the number
+   in green, locked the lock and the text in the muted tone */
+.line {
+  display: flex;
+  min-height: var(--control-height-md);
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-ctl);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  transition: background-color var(--dur-2) var(--ease-out);
 }
-.barred {
-  margin-left: auto;
+.line[data-state="active"] {
+  background: var(--selected);
+}
+.num {
+  display: inline-flex;
+  width: var(--icon-md);
+  flex: none;
+  justify-content: center;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.num > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+.line[data-state="cited"] .num {
+  font-weight: var(--weight-title);
+  color: var(--success);
+}
+.line[data-state="locked"] {
+  color: var(--muted-foreground);
+}
+.lineText {
+  min-width: 0;
+  animation: swap var(--dur-2) var(--ease-out) backwards;
 }
 
-/* CELULAR */
-/* The sources go under the answer */
-@media (max-width: 760px) {
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+}
+@keyframes swap {
+  from {
+    opacity: 0.2;
+    transform: translateY(var(--sp-1));
+  }
+}
+
+/* CELULAR E TABLET */
+/* One column: the answer over its sources (the connector only runs side by side) */
+@media (max-width: 1023px) {
   .split {
     grid-template-columns: minmax(0, 1fr);
   }
-  .answer {
-    border-right: 0;
-    border-bottom: var(--rule) solid var(--border);
+  .sources {
+    border-left: 0;
+    border-top: var(--rule) solid var(--border);
   }
-  .profiles,
+}
+@media (max-width: 640px) {
+  .bar,
   .thread,
-  .head,
-  .sourceList {
-    padding-inline: var(--sp-3);
-  }
-  .head {
-    flex-wrap: wrap;
-  }
-  .headTitle {
-    flex-basis: calc(100% - var(--mark-md) - var(--sp-3));
-  }
-  .seal {
-    margin-left: calc(var(--mark-md) + var(--sp-3));
+  .docs {
+    padding-inline: var(--sp-4);
   }
 }
