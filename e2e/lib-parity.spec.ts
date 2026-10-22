@@ -298,7 +298,7 @@ test.describe("every field and button of domus and magneto match the published l
         if (ref && !byLook[look]) byLook[look] = ref;
       }
     }
-    expect(refField && bySize.md && bySize.sm && byLook["neutral/outline"], "every story renders its control").toBeTruthy();
+    expect(refField && bySize.md && byLook["neutral/outline"], "every story renders its control").toBeTruthy();
 
     const GEOMETRY = ["height", "borderTopLeftRadius", "borderTopWidth", "paddingLeft", "fontSize", "fontWeight"];
     const COLOURS = ["borderTopColor", "backgroundColor", "color"];
@@ -323,6 +323,8 @@ test.describe("every field and button of domus and magneto match the published l
 
       for (const c of seen) {
         const where = `${scene.id} ${c.kind} "${c.name}" (${c.size}, ${c.look})`;
+        // Never below the lib's default size: the md height (40 px), the same floor as the tuner, knowly and home scenes
+        expect(parseFloat(c.style.height), `${where} height`).toBeGreaterThanOrEqual(40 - 0.5);
         if (c.kind === "field") {
           for (const p of FIELD) {
             if (SCENE_ALLOWED[`field|${p}`]) continue;
@@ -334,6 +336,9 @@ test.describe("every field and button of domus and magneto match the published l
           }
           continue;
         }
+        // Every button is the lib's md (no sm or xs): a labelled one is "md", an icon one "icon" (its md); the
+        // geometry is held to that story of the sizes story
+        expect(["md", "icon"], `${where}: size`).toContain(c.size);
         const geo = bySize[c.size];
         expect(geo, `${where}: the lib has a story for its size`).toBeTruthy();
         for (const p of GEOMETRY)
