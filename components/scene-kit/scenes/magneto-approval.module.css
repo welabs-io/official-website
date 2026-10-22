@@ -1,154 +1,365 @@
-/* CENA DO MAGNETO: FLUXO E EXECUÇÃO */
-/* Layout only (the lib paints Badge, Separator and the buttons; the kit's shared parts, components/scene-kit/
-   parts.module.css, paint the marks and their tones, the node and chip states, the stacked text, the log times and the
-   seal). Every value is a token of app/lib.css (colour roles: control/portfolio/site-redesign/scene-kit/
-   colour-decisions.md): both panes are the cream paper split by the sand line. The node running now takes the amber
-   wash with the 3 px amber leading bar and an amber mark; a node that ran an amber soft mark; the failed attempt the
-   lib's destructive tone, never amber. Every icon sits on the centre line of the text it labels. */
+/* CENA DO MAGNETO: O PEDIDO E AS ETAPAS DA EXECUÇÃO */
+/* Welabs UI v3 (brief-v3-scenes, 2026-10-22): the white content split by the line between panels, the order on the
+   left and the run on the right under the Domus DetailHeader; the run as Steps, one line per step and no rail (rows
+   separate by space, never a line). A done step: the success soft mark with the success check. The live step: the
+   amber-50 line (shared rowStates), the amber mark (app/lib.css) and the amber status minidot beside its title. A failed
+   attempt: the neutral mark with the retry icon and the lib's outline "Tentar agora". A step to come or not needed: the
+   dashed mark and the muted title. The lib paints the buttons and the marks' base; this sheet places them and paints the
+   states. Every value is a token of app/lib.css; e2e/scene-kit-geometry.spec.ts holds the alignment by numbers. */
 .split {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  background: var(--background);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  background: var(--card);
 }
 
-/* O FLUXO */
-.flow {
+/* Amber budget across a hand-off: a mark that stops being live drops its amber at once, only the one becoming live
+   eases in, so the outgoing and incoming marks never overlap into a fourth piece of amber */
+.split [data-slot="avatar-fallback"] {
+  transition: none;
+}
+.split [data-state="active"] [data-slot="avatar-fallback"] {
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+
+/* O PEDIDO */
+/* "Valor do pedido" over its two chips (the lib's outline button; the chosen one takes the amber-50 veil of the
+   shared choiceStates), and the order on the Domus at the foot of the pane */
+.order {
   display: flex;
-  flex-direction: column;
   min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
   border-right: var(--rule) solid var(--border);
 }
-
 .values {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
   gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-4);
 }
-
-.chips {
+/* The order on the Domus: the white surface with the line ring, its square mark and name, then its fields as label and
+   value rows (labels muted, values in ink, rows separated by space) */
+.record {
   display: flex;
-  gap: var(--sp-2);
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  border-radius: var(--r-ctl);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
 }
-
-.nodes {
+.recordHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.recordHead > b {
+  font-weight: var(--weight-title);
+}
+.facts {
+  display: grid;
+  gap: var(--sp-2);
   margin: 0;
-  padding: var(--sp-2) 0;
-  list-style: none;
 }
-
-/* A node: mark and name on one line, its status at the end; the line under the marks joins the blocks */
-.node {
-  --node-min: calc(var(--row-min) + var(--sp-1));
-  position: relative;
+.facts > div {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--sp-3);
-  min-height: var(--node-min);
-  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
 }
-/* From the foot of the mark above to the top of this one (marks centred in rows of --node-min) */
-.node + .node::before {
-  content: "";
-  position: absolute;
-  top: calc((var(--node-min) - var(--mark-md)) / -2);
-  left: calc(var(--sp-4) + var(--mark-md) / 2 - var(--rule));
-  width: calc(var(--rule) * 2);
-  height: calc(var(--node-min) - var(--mark-md));
-  background: var(--border);
-}
-
-.nodeLine {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: var(--sp-3);
-}
-
-/* A skipped block reads in second plan, its name included */
-[data-state="skip"] .nodeText > b {
+.facts dt {
   color: var(--muted-foreground);
 }
-
-.status {
-  display: flex;
-  flex: none;
-  justify-content: flex-end;
+.facts dd {
+  margin: 0;
+  font-weight: var(--weight-label);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--foreground);
+}
+.square.square {
+  border-radius: var(--r-sm);
+}
+.swap {
+  animation: swap var(--dur-2) var(--ease-out) backwards;
 }
 
 /* A EXECUÇÃO */
 .run {
   display: flex;
-  flex-direction: column;
   min-width: 0;
+  flex-direction: column;
 }
 
-.runHead {
+/* CABEÇALHO DO REGISTRO (DetailHeader DO DOMUS) */
+.head {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
 }
-.runTitle {
-  flex: 1;
+.headMain {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.identity {
+  display: inline-flex;
+  width: var(--mark-xl);
+  height: var(--mark-xl);
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-ctl);
+  background: var(--muted);
+  box-shadow: var(--edge-ring);
+  color: var(--muted-foreground);
+}
+.identity > svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+.headText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+.headTop > b {
+  font-size: var(--t-page-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+  color: var(--foreground);
+}
+.headMeta {
   font-size: var(--t-label);
   line-height: var(--line-label);
-  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
 }
-
-.log {
-  padding: var(--sp-3) var(--sp-4);
+.headMeta b {
+  font-weight: var(--weight-label);
+  color: var(--foreground);
 }
-
-/* A log line: a small mark and the line of text on one centre line */
-.line {
+.actions {
   display: flex;
+  flex: none;
   align-items: center;
   gap: var(--sp-2);
 }
-.lineText {
-  min-width: 0;
+
+/* The status minidot (a step's or the run's): the 8 px dot and the label, no fill; amber while live, green once done,
+   the quiet dot otherwise */
+.state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
   font-size: var(--t-label);
   line-height: var(--line-label);
+  font-weight: var(--weight-label);
   color: var(--foreground);
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-1) backwards;
+}
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--indicator-muted);
+}
+.state[data-tone="active"] .dot {
+  background: var(--signal);
+  animation: pop var(--dur-3) var(--ease-spring) var(--dur-1) both;
+}
+.state[data-tone="done"] .dot {
+  background: var(--success);
 }
 
-/* The order on the Domus: the record the run changes, a sand 100 card at the foot of the pane */
-.record {
+/* ETAPAS */
+/* One line per step: the mark, the title (with its minidot while live) over the meta, and at the end the time or the
+   step's action. Every line is as tall as a line holding the lib's md button, so a step never moves when its action
+   comes or goes. */
+.steps {
   display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin: auto var(--sp-4) var(--sp-4);
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin: 0;
   padding: var(--sp-3);
-  border-radius: var(--r-card);
-  background: var(--card);
-  box-shadow: var(--edge-ring);
+  list-style: none;
+}
+.step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "mark text trail";
+  align-items: center;
+  column-gap: var(--sp-3);
+  min-height: calc(var(--control-height-md) + 2 * var(--sp-2));
+  padding: var(--sp-2) var(--sp-3);
+}
+.markSlot {
+  grid-area: mark;
+  display: inline-flex;
+}
+.stepText {
+  grid-area: text;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.stepTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.stepTop > b {
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+.stepMeta {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+  animation: swap var(--dur-2) var(--ease-out) backwards;
+}
+.trail {
+  grid-area: trail;
+  display: flex;
+  justify-content: flex-end;
+}
+.time {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.trail > [data-slot="button"] {
+  animation: rise var(--dur-2) var(--ease-out) backwards;
+}
+
+/* The marks by state: done the success soft with the success check; to come or not needed the dashed edge with the
+   icon muted and no fill; failed keeps the neutral rest of app/lib.css (the retry icon tells it) */
+.markSlot [data-slot="avatar"][data-tone="done"] > [data-slot="avatar-fallback"] {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+.markSlot [data-slot="avatar"]:is([data-tone="waiting"], [data-tone="skip"])::after {
+  border-color: transparent;
+}
+.markSlot [data-slot="avatar"]:is([data-tone="waiting"], [data-tone="skip"]) > [data-slot="avatar-fallback"] {
+  background-color: transparent;
+  outline: var(--rule-dashed) dashed var(--indicator-muted);
+  outline-offset: calc(var(--rule-dashed) * -1);
+  color: var(--muted-foreground);
+}
+/* A step to come or not needed reads in second plan, its title included */
+.step:is([data-state="waiting"], [data-state="skip"]) .stepTop > b {
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+/* The live mark pops in on the spring */
+.step[data-state="active"] [data-slot="avatar"] {
+  animation: pop var(--dur-3) var(--ease-spring) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-1));
+  }
+}
+@keyframes swap {
+  from {
+    opacity: 0.2;
+    transform: translateY(var(--sp-1));
+  }
+}
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+  }
 }
 
 /* CELULAR */
-/* The run goes under the flow */
+/* The order goes over the run (the connector rests: it runs only side by side), the header's tools wrap under its
+   block, and a step's action goes under its text. The list keeps room for that one action line in every frame, so the
+   window keeps one height while an action comes and goes. */
 @media (max-width: 760px) {
   .split {
     grid-template-columns: minmax(0, 1fr);
   }
-  .flow {
+  .order {
+    padding: var(--sp-4);
     border-right: 0;
     border-bottom: var(--rule) solid var(--border);
   }
-  .values,
-  .node,
-  .runHead,
-  .log {
-    padding-inline: var(--sp-3);
+  .facts > [data-wide] {
+    display: none;
   }
-  .node + .node::before {
-    left: calc(var(--sp-3) + var(--mark-md) / 2 - var(--rule));
+  .steps {
+    min-height: calc(
+      5 * var(--row-min) + 4 * var(--sp-1) + var(--control-height-md) + var(--sp-2) + 2 * var(--sp-3)
+    );
+    padding: var(--sp-3) var(--sp-2);
   }
-  .record {
-    margin-inline: var(--sp-3);
-    margin-bottom: var(--sp-3);
+  .step {
+    min-height: var(--row-min);
+    padding: var(--sp-2);
+  }
+  .step[data-action] {
+    grid-template-areas:
+      "mark text"
+      ". trail";
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sp-2);
+  }
+  .step[data-action] .trail {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+  }
+  .headMain {
+    gap: var(--sp-2);
+  }
+  .identity {
+    width: var(--mark-md);
+    height: var(--mark-md);
+  }
+  .identity > svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+  .headTop {
+    column-gap: var(--sp-2);
+  }
+  .headTop > b {
+    font-size: var(--t-title);
   }
 }

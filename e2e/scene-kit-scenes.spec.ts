@@ -22,6 +22,9 @@ type Entry = {
   pairs: number;
   // Length of one loop, in ms (the sum of the holds)
   cycleMs: number;
+  // Rebuilt on Welabs UI v3 (brief-v3-scenes): the amber budget is held over the loop, and `traced` lists the steps
+  // that draw the connector at 1440 (none on the settled frame)
+  v3?: { traced: string[] };
 };
 
 const SCENES: Entry[] = [
@@ -30,16 +33,20 @@ const SCENES: Entry[] = [
     figure: /^Domus/,
     trigger: /^Novo módulo/,
     final: "saved",
-    pairs: 18,
-    cycleMs: 6000,
+    // Each module card and the new module's head (6 modules on a phone)
+    pairs: 7,
+    cycleMs: 5300,
+    v3: { traced: [] },
   },
   {
     id: "magneto-approval",
     figure: /^Magneto/,
     trigger: /^R\$ 4\.800/,
     final: "done",
-    pairs: 12,
+    // The five steps and the record of the order
+    pairs: 6,
     cycleMs: 7800,
+    v3: { traced: ["low", "high"] },
   },
   {
     id: "tuner-routing",
@@ -166,6 +173,52 @@ for (const s of SCENES) {
         const all = [...heights];
         expect(Math.max(...all) - Math.min(...all), all.join(",")).toBeLessThanOrEqual(1);
       });
+
+      // ORÇAMENTO DE ÂMBAR E CONECTOR (CENAS V3)
+      // Over one loop, sampled on every animation frame: no frame shows more than 3 pieces of amber (#ffb020 or a blend
+      // more than half way to it, as a fill), the settled frame shows none (the end is green or neutral, never amber),
+      // and at 1440 the connector runs on the steps of `traced` and never on the settled frame
+      if (s.v3) {
+        const v3 = s.v3;
+        test(`at most 3 amber pieces and the connector over a loop at ${width}`, async ({ page }) => {
+          test.setTimeout(40_000);
+          await page.setViewportSize({ width, height: 900 });
+          await page.goto(LAB);
+          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
+          await page.getByRole("button", { name: "Recomeçar" }).click();
+          const seen = await page.evaluate(async (ms) => {
+            const figure = document.querySelector('[role="figure"]')!;
+            const stage = figure.querySelector("[data-scene]")!;
+            const live = stage.lastElementChild!;
+            const amber = (c: string) => {
+              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
+              if (!m) return false;
+              const [r, g, b] = m.slice(1, 4).map(Number);
+              const a = m[4] === undefined ? 1 : Number(m[4]);
+              return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
+            };
+            const ambers: Record<string, number> = {};
+            const traced: Record<string, boolean> = {};
+            const t0 = performance.now();
+            while (performance.now() - t0 < ms) {
+              await new Promise((r) => requestAnimationFrame(r));
+              const step = stage.getAttribute("data-step")!;
+              const n = [...live.querySelectorAll("*")].filter((el) => {
+                const cs = getComputedStyle(el);
+                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
+              }).length;
+              ambers[step] = Math.max(ambers[step] ?? 0, n);
+              traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+            }
+            return { ambers, traced };
+          }, s.cycleMs + 500);
+          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
+          expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
+          if (width === 1440)
+            for (const step of v3.traced) expect(seen.traced[step], `connector at ${step}`).toBe(true);
+          expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+        });
+      }
     }
   });
 }
