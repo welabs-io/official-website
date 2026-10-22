@@ -12,9 +12,10 @@
 }
 
 /* INBOX DOS CANAIS */
-/* The shell of the window: the same sand 100 as the chrome and the card, never the sand 200 (yellow on the cream) */
+/* The list takes the cream paper of the history (operator, 2026-10-22: the sand 100 read as amber here); the pane
+   line alone separates them, and the active row rises to white */
 .list {
-  background: var(--card);
+  background: var(--background);
 }
 
 .paneHead {
@@ -57,7 +58,7 @@
 .rows [data-state]:hover,
 .rows [data-state]:active,
 .rows [data-state="active"] {
-  background-color: var(--background);
+  background-color: var(--surface-raised);
 }
 .rows [data-state="active"] {
   background-size: 3px 100%;

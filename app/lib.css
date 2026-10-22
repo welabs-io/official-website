@@ -67,6 +67,8 @@
 :root,
 [data-theme="welabs"] {
   --background: #faf5ea;
+  /* The one surface lighter than the cream: a selected row rises to it */
+  --surface-raised: #ffffff;
   --popover: #faf5ea;
   --card: #f3ecdd;
   --secondary: color-mix(in srgb, #1c1a16 6%, #f3ecdd);
