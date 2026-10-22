@@ -1,11 +1,33 @@
 ---
 name: welabs-site-motion
-description: Contrato de continuidade do movimento no site Welabs (welabs-website) - toda cena, play, palco e carrossel roda sozinho, faz loop e, depois de qualquer gesto humano, completa, segura ~1 s, reseta e retoma; os 3 tokens de easing; quadro final sob movimento reduzido; pausa fora da tela; componentes de movimento da lib (Marquee, RotatingText, NumberTicker, AnimatedList, BorderBeam...) no lugar de keyframes à mão. Use antes de criar ou alterar animação, transição, keyframe, cena, play, autodemo, replay, carrossel ou qualquer coisa com `data-phase`, `data-live` ou `data-replay` neste repositório, e ao escrever spec Playwright de movimento.
+description: Contrato de continuidade do movimento no site Welabs (welabs-website) - cena nova nasce do kit components/scene-kit (copiar TEMPLATE.tsx, aprovar em /lab/scenes/<id>), que é dono do contrato; toda cena, play, palco e carrossel roda sozinho, faz loop e, depois de qualquer gesto humano, completa, segura ~1 s, reseta e retoma; os 3 tokens de easing; quadro final sob movimento reduzido; pausa fora da tela; componentes de movimento da lib (Marquee, RotatingText, NumberTicker, AnimatedList, BorderBeam...) no lugar de keyframes à mão. Use antes de criar ou alterar animação, transição, keyframe, cena, play, autodemo, replay, carrossel ou qualquer coisa com `data-phase`, `data-live` ou `data-replay` neste repositório, e ao escrever spec Playwright de movimento.
 ---
 
 # Movimento do site Welabs
 
-## O contrato de continuidade (inegociável)
+## Cena nova: use o kit, não escreva o contrato de novo
+
+**Toda cena nova nasce do kit `components/scene-kit/`.** O contrato de continuidade é código do kit, coberto por `components/scene-kit/timeline.test.ts`, e a cena não reimplementa nada dele.
+
+1. **Copie `components/scene-kit/TEMPLATE.tsx`** para `components/scene-kit/scenes/<produto>-<ideia>.tsx`. O cabeçalho do modelo traz as regras da cena.
+2. **Escreva os `steps`** (`{ id, at?, hold?, gate? }`) e **renderize só a partir de `scene`**: `scene.reached(id)`, `scene.is(id)` e `scene.cycle`. Todo controle chama `scene.take(id)`.
+3. **Registre a cena** em `components/scene-kit/registry.ts` e em `LabStage.tsx`, e aprove-a sozinha em `/lab/scenes/<id>` (`noindex`, nas larguras 1440 e 390, com os botões "Recomeçar" e "Simular gesto").
+4. **Prove com uma cópia de `e2e/scene-kit.spec.ts`**: loop mais gesto, movimento reduzido e eixo ícone/texto ≤ 1 px.
+5. **Monte no site com uma linha** (`<MinhaCena />`), só depois do aceite no lab.
+
+O kit é dono destas garantias:
+
+- roda sozinho quando entra na tela, com `useInView` da lib e limiar de 0,4;
+- faz loop: o último passo segura cerca de 1 s (`LOOP_HOLD`) e a cena volta ao primeiro;
+- o gesto assume e devolve: a sequência toca até o fim e, quando ela acaba ou depois de 8 s parada (`HUMAN_IDLE`), segura cerca de 1 s, reseta e retoma;
+- fora da tela, nenhum timer e nenhuma animação CSS rodam (`data-on="false"`);
+- sob movimento reduzido (`useReducedMotion` da lib), o último passo aparece estático, e é ele que o servidor desenha;
+- a janela é o `Card` da lib com a barra de cromo, e a altura dela é a do quadro assentado, porque uma cópia oculta do último passo divide a célula com o passo vivo;
+- os três tokens de easing ficam em `SCENE_EASE`.
+
+As cenas e os plays legados (`components/scenes/`, `components/plays/`) seguem as regras abaixo até migrarem para o kit.
+
+## O contrato de continuidade (legado, fora do kit)
 
 1. **Roda sozinho.** Toda cena, play, palco e carrossel começa a demonstrar sem gesto, ao entrar na tela. Nada abre vazio esperando clique. Hoje os plays abrem no registro vazio, "Nada ainda." (`PLAY_COMMON.idle`, `lib/content/plays.ts:15-19`), o que é falha conhecida da F3.
 2. **Faz loop.** Ao terminar, segura o quadro final e recomeça do primeiro quadro. Nenhuma peça pousa congelada num botão "Recomeçar". A mensagem não faz loop hoje: as animações dela são `both`, sem `infinite` (`components/template/message.module.css:273-359`), o que é falha conhecida da F3.

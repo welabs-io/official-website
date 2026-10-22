@@ -1,0 +1,28 @@
+/* LAB DE CENAS */
+/* The workbench page of a kit scene: the cream floor, the scene centred, a toolbar above it. */
+.main {
+  min-height: 100vh;
+  padding: var(--sp-7) var(--sp-4);
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  max-width: 1040px;
+  margin-inline: auto;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.name {
+  margin-right: auto;
+  font-size: var(--t-label);
+  font-weight: 600;
+  color: var(--mute-l);
+}

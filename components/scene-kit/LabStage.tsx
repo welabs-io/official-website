@@ -1,0 +1,53 @@
+"use client";
+// PALCO DO LAB DE CENAS
+// One kit scene alone, with a toolbar that drives its clock from outside: replay from the first step, or simulate a
+// human take (the same `take` a scene control calls). The lab is a workbench, so the toolbar is allowed here and only
+// here (the site has no pause or replay control: scripts/check-portfolio.mjs).
+import type { ComponentType } from "react";
+import { Button } from "@/components/lib/ui";
+import { useSceneTimeline, type SceneStep } from "./Scene";
+import type { SceneTimeline } from "./timeline";
+import type { SceneId } from "./registry";
+import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
+import k from "./lab.module.css";
+
+type Entry = {
+  steps: readonly SceneStep[];
+  Component: ComponentType<{ timeline?: SceneTimeline }>;
+  // The step a simulated human take jumps to
+  takeFrom: string;
+};
+
+const SCENES: Record<SceneId, Entry> = {
+  "relloo-inbox": {
+    steps: RELLOO_INBOX_STEPS,
+    Component: RellooInbox,
+    takeFrom: "email",
+  },
+};
+
+export function LabStage({ id }: { id: SceneId }) {
+  const entry = SCENES[id];
+  const timeline = useSceneTimeline(entry.steps);
+  const { Component } = entry;
+  return (
+    <div className={k.stage}>
+      <div className={k.toolbar} data-theme="welabs">
+        <span className={k.name}>{id}</span>
+        <Button size="sm" variant="neutral" appearance="outline" onClick={timeline.restart}>
+          Recomeçar
+        </Button>
+        <Button
+          size="sm"
+          variant="neutral"
+          appearance="outline"
+          data-lab="take"
+          onClick={() => timeline.take(entry.takeFrom)}
+        >
+          Simular gesto
+        </Button>
+      </div>
+      <Component timeline={timeline} />
+    </div>
+  );
+}

@@ -1,0 +1,263 @@
+/* CENA DO RELLOO: INBOX E HISTÓRICO */
+/* Layout only: the lib paints the controls (Button, Badge, InputGroup), this sheet places them and draws the marks.
+   Cream for the panes, white for what is said, amber only for a channel that arrived (happened) or is arriving
+   (active). Every icon sits in a box whose centre is the centre of the line it labels (one flex line, align center),
+   so text and icon share one axis. */
+.split {
+  height: auto;
+  min-height: 0;
+}
+
+/* INBOX DOS CANAIS */
+.list {
+  background: var(--surface-band);
+}
+
+.paneHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--t-micro);
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mute-l);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rows > li + li {
+  border-top: 1px solid var(--cl);
+}
+
+/* The row (the lib's Button): an amber bar on the left while its channel arrives */
+.rows [data-state] {
+  gap: var(--sp-3);
+  align-items: center;
+  box-shadow: inset 0 0 0 0 var(--a);
+  transition: box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.rows [data-state="active"] {
+  box-shadow: inset 3px 0 0 0 var(--a);
+  background: var(--surface);
+}
+
+.rowMark,
+.recordMark,
+.mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-dot);
+  background: var(--c2);
+  color: var(--ink);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+
+.rowMark {
+  width: 32px;
+  height: 32px;
+}
+[data-state="done"] > .rowMark {
+  background: var(--a-100);
+}
+[data-state="active"] > .rowMark {
+  background: var(--a);
+}
+
+.rowText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.rowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: 20px;
+  color: var(--ink);
+}
+.rowTop b {
+  font-weight: 600;
+}
+.rowTop time,
+.preview {
+  font-size: var(--t-micro);
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--mute-l);
+}
+.preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-state="waiting"] .rowTop b {
+  color: var(--mute-l);
+}
+
+/* HISTÓRICO DO CONTATO */
+.detail {
+  display: flex;
+  flex-direction: column;
+  background: var(--page);
+}
+
+.record {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+}
+
+.recordMark {
+  width: 40px;
+  height: 40px;
+  background: var(--c2);
+}
+
+.recordText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+.recordText b {
+  font-size: var(--t-lead);
+  line-height: 24px;
+  font-weight: 600;
+}
+.recordText span {
+  font-size: var(--t-micro);
+  line-height: 16px;
+  color: var(--mute-l);
+}
+
+.seal {
+  gap: var(--sp-1);
+  flex: none;
+}
+
+/* Below lg the channels are chips under the record (the inbox pane is off screen); at lg and up the inbox shows them */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-5) var(--sp-4);
+}
+.chips [data-state="done"] {
+  background: var(--a-100);
+}
+.chips [data-state="active"] {
+  background: var(--a);
+  border-color: var(--a);
+}
+@media (min-width: 1024px) {
+  .chips {
+    display: none;
+  }
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+}
+
+/* One entry: the mark and the meta line share the first row (same height, one centre); what was said sits below */
+.entry {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  grid-template-rows: 28px auto;
+  column-gap: var(--sp-3);
+  row-gap: var(--sp-1);
+}
+
+.mark {
+  width: 28px;
+  height: 28px;
+}
+.entry[data-fresh="true"] .mark {
+  background: var(--a);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: 20px;
+}
+.meta b {
+  font-weight: 600;
+}
+.meta time {
+  font-size: var(--t-micro);
+  color: var(--mute-l);
+}
+
+/* What was said reads as a message, as wide as its text, never as a field */
+.said {
+  grid-column: 2;
+  justify-self: start;
+  max-width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--cl);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  font-size: var(--t-label);
+  line-height: 20px;
+  color: var(--ink);
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+.entry[data-fresh="true"] .said {
+  border-color: var(--a-300);
+}
+
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--mute-l);
+}
+
+.composer {
+  margin-top: auto;
+  padding: var(--sp-3) var(--sp-5) var(--sp-4);
+  border-top: 1px solid var(--cl);
+}
+
+@media (max-width: 640px) {
+  .record,
+  .history,
+  .composer {
+    padding-inline: var(--sp-4);
+  }
+  .chips {
+    padding-inline: var(--sp-4);
+  }
+  /* The seal wraps under the record name, on the name's left edge */
+  .record {
+    flex-wrap: wrap;
+  }
+  .recordText {
+    flex-basis: calc(100% - 40px - var(--sp-3));
+  }
+  .seal {
+    margin-left: calc(40px + var(--sp-3));
+  }
+}

@@ -1,0 +1,285 @@
+"use client";
+// CENA DO RELLOO: CANAIS QUE VIRAM UM HISTÓRICO
+// Conversations from four channel categories (Mensagem, E-mail, Voz, Chat do site) arrive one by one and land in ONE
+// conversation history, the record of a contact (STORY.who). No person, name, face, initial or vendor: the channel is
+// its category and the contact is its record id. Built from the lib: SplitView (inbox list + detail), Button rows and
+// chips (the scene controls), AnimatedList (entries arriving), TypingDots, Badge, Separator, InputGroup (composer) and
+// lucide icons. Amber marks only what happened or is active. The continuity (autoplay, loop, human take, off-screen,
+// reduced motion) is the kit's (components/scene-kit/Scene.tsx); this file only renders from `scene`.
+import {
+  Check,
+  Contact,
+  Mail,
+  MessageCircle,
+  MessagesSquare,
+  Package,
+  Phone,
+  SendHorizontal,
+  type LucideIcon,
+} from "lucide-react";
+import {
+  Badge,
+  Button,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/lib/ui";
+import {
+  AnimatedList,
+  Separator,
+  SplitView,
+  SplitViewDetail,
+  SplitViewList,
+  TypingDots,
+} from "@/components/lib/scene";
+import { STORY } from "@/lib/scenes/story";
+import { Scene, type SceneApi, type SceneStep } from "../Scene";
+import type { SceneTimeline } from "../timeline";
+import r from "./relloo-inbox.module.css";
+
+// ROTEIRO DA CENA
+// One step per channel arriving, a "typing" beat before the chat of the site, and the settled frame (merged). The
+// merged step lasts 1.6 s: its marks and seal settle in about 0.4 s, so the frame stands still for about 1 s (the hold)
+export const RELLOO_INBOX_STEPS: readonly SceneStep[] = [
+  { id: "start", hold: 1100 },
+  { id: "message", hold: 1100 },
+  { id: "email", hold: 1100 },
+  { id: "voice", hold: 1100 },
+  { id: "typing", hold: 800 },
+  { id: "site", hold: 1100 },
+  { id: "merged", hold: 1600 },
+];
+
+type Channel = {
+  step: string;
+  label: string;
+  icon: LucideIcon;
+  time: string;
+  preview: string;
+  text: string;
+};
+
+// CONTEÚDO DA CENA
+const CHANNELS: readonly Channel[] = [
+  {
+    step: "message",
+    label: "Mensagem",
+    icon: MessageCircle,
+    time: "09:12",
+    preview: "Meu pedido já saiu?",
+    text: "Meu pedido 1234 já saiu para entrega?",
+  },
+  {
+    step: "email",
+    label: "E-mail",
+    icon: Mail,
+    time: "09:40",
+    preview: "Segunda via da nota",
+    text: "Preciso da segunda via da nota do pedido 1234.",
+  },
+  {
+    step: "voice",
+    label: "Voz",
+    icon: Phone,
+    time: "10:05",
+    preview: "Ligação de 0:42",
+    text: "Ligação de 0:42, transcrita: pediu para mudar o endereço.",
+  },
+  {
+    step: "site",
+    label: "Chat do site",
+    icon: MessagesSquare,
+    time: "10:21",
+    preview: "Posso receber no sábado?",
+    text: "Posso receber no sábado, no endereço novo?",
+  },
+];
+
+const COPY = {
+  product: "Relloo",
+  title: "Contatos / Histórico",
+  label: "Relloo: quatro canais chegam no histórico de um único contato",
+  channels: "Canais",
+  history: "Histórico do contato",
+  created: { label: "Pedido", time: "08:55", text: "Pedido 1234 criado, 3 itens." },
+  typing: "digitando",
+  merged: `${CHANNELS.length} canais, 1 histórico`,
+  reply: "Responder pelo canal de origem",
+  send: "Enviar",
+};
+
+// State of a channel: not yet arrived, arriving now (active) or in the history (happened)
+const stateOf = (scene: SceneApi, ch: Channel) =>
+  scene.is(ch.step) || (ch.step === "site" && scene.is("typing"))
+    ? "active"
+    : scene.reached(ch.step)
+      ? "done"
+      : "waiting";
+
+function Entry({
+  icon: Icon,
+  label,
+  time,
+  fresh,
+  children,
+}: {
+  icon: LucideIcon;
+  label: string;
+  time?: string;
+  fresh: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={r.entry} data-fresh={fresh} data-align="entry">
+      <span className={r.mark} aria-hidden="true">
+        <Icon size={14} strokeWidth={2} />
+      </span>
+      <span className={r.meta}>
+        <b>{label}</b>
+        {time ? <time>{time}</time> : null}
+      </span>
+      <div className={r.said}>{children}</div>
+    </div>
+  );
+}
+
+function RellooInboxView({ scene }: { scene: SceneApi }) {
+  const arrived = CHANNELS.filter((ch) => scene.reached(ch.step));
+  const typing = scene.is("typing");
+  const merged = scene.reached("merged");
+  const newest = arrived.at(-1)?.step;
+  return (
+    <SplitView detailOpen listWidth="17rem" className={r.split}>
+      {/* The inbox of the channels: each row is a control that replays the scene from its channel */}
+      <SplitViewList aria-label={COPY.channels} className={r.list}>
+        <p className={r.paneHead}>
+          <span>{COPY.channels}</span>
+          <Badge variant="neutral" appearance="soft">
+            {CHANNELS.length}
+          </Badge>
+        </p>
+        <ul className={r.rows}>
+          {CHANNELS.map((ch) => {
+            const Icon = ch.icon;
+            return (
+              <li key={ch.step}>
+                <Button
+                  variant="neutral"
+                  appearance="ghost"
+                  className="h-auto w-full justify-start whitespace-normal rounded-none px-4 py-3 text-left"
+                  data-state={stateOf(scene, ch)}
+                  data-channel={ch.step}
+                  onClick={() => scene.take(ch.step)}
+                >
+                  <span className={r.rowMark} aria-hidden="true">
+                    <Icon size={16} strokeWidth={2} />
+                  </span>
+                  <span className={r.rowText}>
+                    <span className={r.rowTop}>
+                      <b>{ch.label}</b>
+                      <time>{ch.time}</time>
+                    </span>
+                    <span className={r.preview}>{ch.preview}</span>
+                  </span>
+                </Button>
+              </li>
+            );
+          })}
+        </ul>
+      </SplitViewList>
+
+      {/* The record of the contact: one history, whatever the channel */}
+      <SplitViewDetail aria-label={COPY.history} className={r.detail}>
+        <div className={r.record} data-align="record">
+          <span className={r.recordMark} aria-hidden="true">
+            <Contact size={18} strokeWidth={2} />
+          </span>
+          <span className={r.recordText}>
+            <b>{STORY.who}</b>
+            <span>{STORY.order}</span>
+          </span>
+          {merged ? (
+            <Badge variant="primary" appearance="soft" className={r.seal} data-merged="">
+              <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+              {COPY.merged}
+            </Badge>
+          ) : null}
+        </div>
+
+        {/* Below lg the inbox pane is off screen (SplitView shows one pane): the channels become chips */}
+        <div className={r.chips}>
+          {CHANNELS.map((ch) => {
+            const Icon = ch.icon;
+            return (
+              <Button
+                key={ch.step}
+                size="xs"
+                variant="neutral"
+                appearance="outline"
+                data-state={stateOf(scene, ch)}
+                onClick={() => scene.take(ch.step)}
+              >
+                <Icon size={14} strokeWidth={2} aria-hidden="true" />
+                {ch.label}
+              </Button>
+            );
+          })}
+        </div>
+
+        <Separator />
+
+        <AnimatedList className={r.history} distance={10} duration={0.32}>
+          <Entry key="created" icon={Package} label={COPY.created.label} time={COPY.created.time} fresh={false}>
+            {COPY.created.text}
+          </Entry>
+          {arrived.map((ch) => (
+            <Entry key={ch.step} icon={ch.icon} label={ch.label} time={ch.time} fresh={!merged && ch.step === newest}>
+              {ch.text}
+            </Entry>
+          ))}
+          {typing ? (
+            <Entry key="typing" icon={MessagesSquare} label={CHANNELS[3].label} fresh>
+              <span className={r.typing}>
+                {COPY.typing}
+                <TypingDots size={5} gap={3} />
+              </span>
+            </Entry>
+          ) : null}
+        </AnimatedList>
+
+        <div className={r.composer} aria-hidden="true" inert>
+          <InputGroup>
+            <InputGroupInput readOnly tabIndex={-1} placeholder={COPY.reply} aria-label={COPY.reply} />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                size="icon-xs"
+                variant="neutral"
+                appearance="solid"
+                tabIndex={-1}
+                aria-label={COPY.send}
+              >
+                <SendHorizontal size={14} strokeWidth={2} />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </SplitViewDetail>
+    </SplitView>
+  );
+}
+
+export function RellooInbox({ timeline }: { timeline?: SceneTimeline }) {
+  return (
+    <Scene
+      id="relloo-inbox"
+      label={COPY.label}
+      product={COPY.product}
+      title={COPY.title}
+      steps={RELLOO_INBOX_STEPS}
+      timeline={timeline}
+    >
+      {(scene) => <RellooInboxView scene={scene} />}
+    </Scene>
+  );
+}

@@ -1,0 +1,73 @@
+/* MOLDURA E PALCO DO KIT DE CENAS */
+/* The window of every kit scene: the lib's Card (white, the sand hairline) with a chrome bar of the product, and a
+   stage whose height is the settled frame's (the hidden copy and the live step share one grid cell). Off-screen or
+   under reduced motion (data-on="false") no CSS animation runs; reduced motion also drops every transition. Colours,
+   type, space and motion come from the site's tokens (components/onepage/shell.module.css). */
+.frame {
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  color: var(--ink);
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-bottom: 1px solid var(--cl);
+  background: var(--surface-band);
+  font-size: var(--t-label);
+  line-height: 20px;
+}
+
+/* The status of the window: amber while the scene is playing (something happens), the hairline when it rests */
+.status {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--cl);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+.status[data-on="true"] {
+  background: var(--a);
+}
+
+.product {
+  font-weight: 600;
+}
+
+.title {
+  color: var(--mute-l);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stage {
+  display: grid;
+}
+
+.ghost,
+.live {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.ghost {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.stage[data-on="false"] * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status,
+  .stage * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
