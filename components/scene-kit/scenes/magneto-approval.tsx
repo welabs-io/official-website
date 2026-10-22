@@ -67,7 +67,7 @@ const COPY = {
   kinds: {
     start: "Gatilho",
     check: "Condição",
-    approval: "Aprovação",
+    approval: "Decisão",
     update: "Integração",
     notify: "Aviso",
   },
@@ -215,7 +215,15 @@ function MagnetoApprovalView({ scene }: { scene: SceneApi }) {
           ) : null}
         </div>
         <Separator />
-        <AnimatedList className={g.log} distance={8} duration={0.28}>
+        {/* Keyed by the run (the loop and the value): when a new run starts, the lines of the old one leave at once
+            instead of animating out while the first lines come in (the settled frame of the server swapping to the
+            first step held 8 lines for the length of the exit, 32 px over the window at 390) */}
+        <AnimatedList
+          key={`${scene.cycle}-${scene.is("low") ? "low" : "high"}`}
+          className={g.log}
+          distance={8}
+          duration={0.28}
+        >
           {lines.map((l) => {
             const Icon = l.icon;
             return (
