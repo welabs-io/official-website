@@ -24,8 +24,16 @@
   align-items: center;
   gap: var(--sp-3);
 }
+.saidText {
+  display: grid;
+  min-width: 0;
+  row-gap: var(--sp-1);
+}
+.saidText > b {
+  font-weight: var(--weight-title);
+}
 .text {
-  margin-top: var(--sp-1);
+  display: block;
 }
 
 /* O CAMINHO */
@@ -79,7 +87,6 @@
 @media (max-width: 860px) {
   .track {
     grid-template-columns: minmax(0, 1fr);
-    border-top: var(--rule) solid var(--border);
   }
   .station + .station {
     border-left: 0;

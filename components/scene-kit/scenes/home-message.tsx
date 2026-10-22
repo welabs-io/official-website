@@ -68,11 +68,10 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
           <span className={`${p.mark} ${p.markMd}`} data-tone="subject" aria-hidden="true">
             <MessageCircle size={16} strokeWidth={2} />
           </span>
-          <span className={p.stack}>
-            <b>{H.bubble.channel}</b>
-            <span className={`${p.bubble} ${h.text}`} data-fresh={scene.is("start")}>
-              {H.bubble.text}
-            </span>
+          {/* The channel over what was said: a received message (the shared bubble, amber ring while it arrives) */}
+          <span className={h.saidText} data-fresh={scene.is("start")}>
+            <b className={p.meta}>{H.bubble.channel}</b>
+            <span className={`${p.bubble} ${h.text}`}>{H.bubble.text}</span>
           </span>
         </div>
         <ActionButton size="xs" icon={<SendHorizontal strokeWidth={2} />} onClick={() => scene.take("tuner")}>
