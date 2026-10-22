@@ -212,10 +212,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
           </span>
           <span className={r.recordText}>
             <b>{STORY.who}</b>
-            <span>
-              {STORY.order}
-              {merged ? ` · ${COPY.merged}` : ""}
-            </span>
+            <span>{`${STORY.order} · ${COPY.merged}`}</span>
           </span>
           {/* The live status of the conversation: the black badge (primary) with the amber dot (signal) */}
           <Badge variant="primary" appearance="solid" className={r.status}>

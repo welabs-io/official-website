@@ -305,7 +305,8 @@ describe("site controls go through the primitives", () => {
           else if (ch === "}") depth--;
           else if (depth === 0) top += ch;
         }
-        if (!/\sicon=/.test(top)) missing.push(`${f}: <${m[1]}>`);
+        // A composer field may lead with a chip (`lead=`, Welabs UI v3: the channel of origin, its own icon inside)
+        if (!/\s(?:icon|lead)=/.test(top)) missing.push(`${f}: <${m[1]}>`);
         for (const c of open.matchAll(/className="([^"]*)"/g))
           if (/(?:^|\s)(?:bg|border|ring|shadow|outline)-/.test(c[1])) painted.push(`${f}: <${m[1]}> ${c[1]}`);
       }
