@@ -14,8 +14,17 @@
 // stays on its first frame (the Domus lit).
 import Link from "next/link";
 import { HOME_INTRO } from "@/lib/content";
-import { productAlt, productLogo, type ProductSlug } from "@/lib/products";
+import {
+  LOGO_INK_X,
+  productAlt,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
 import styles from "./hub.module.css";
+
+// v3 (F2 review, F2-01): where the ink of a logo file starts, so the sheet pulls it back onto the edge of its text
+const inkX = (slug: ProductSlug) =>
+  ({ "--ink-x": LOGO_INK_X[slug] }) as React.CSSProperties;
 
 type Side = Exclude<ProductSlug, "domus">;
 // The four products around the record: the side of the record each one writes on
@@ -138,6 +147,7 @@ export function Orbit({
               alt={productAlt(slug, "row")}
               width={1005}
               height={550}
+              style={inkX(slug)}
             />
             <span className={styles.event}>{HOME_INTRO.stamps[slug]}</span>
           </>,
@@ -154,6 +164,7 @@ export function Orbit({
         <>
           <img
             className={styles.coreLogo}
+            style={inkX("domus")}
             src={productLogo("domus", "light", "row")}
             alt={productAlt("domus", self ? "row" : "first-mention")}
             width={1005}
@@ -176,6 +187,7 @@ export function Orbit({
                   alt=""
                   width={1005}
                   height={550}
+                  style={inkX(slug)}
                 />
                 {record.lines[slug]}
               </span>

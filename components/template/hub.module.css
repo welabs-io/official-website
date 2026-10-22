@@ -78,10 +78,14 @@ a.node:focus-visible {
   box-shadow: var(--shadow-pop);
 }
 /* The logo files carry their 0.5X protection area: a 40 px file draws a wordmark of about 19 px */
+/* v3 (F2 review, F2-01): every logo of the stage is pulled back by the ink offset of its own file (--ink-x, Orbit.tsx
+   from lib/products.ts LOGO_INK_X) times its height, so its first letter starts on the edge of the text under it; a
+   fixed pull of 8 or 12 px left the text 2.5 to 8 px right of the ink, a different gap per product */
 .node img {
-  height: 40px;
+  --h: 40px;
+  height: var(--h);
   width: auto;
-  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--sp-3) * -1);
+  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--h) * var(--ink-x) * -1);
 }
 .event {
   font-size: var(--text-xs);
@@ -213,9 +217,10 @@ a.core:focus-visible {
   transform: translateY(-2px);
 }
 .coreLogo {
-  height: 44px;
+  --h: 44px;
+  height: var(--h);
   width: auto;
-  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--sp-3) * -1);
+  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--h) * var(--ink-x) * -1);
 }
 .recordHead {
   display: flex;
@@ -249,14 +254,18 @@ a.core:focus-visible {
   font-weight: 500;
 }
 .line img {
-  height: 32px;
+  --h: 32px;
+  height: var(--h);
   width: auto;
-  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--sp-2) * -1);
+  margin: calc(var(--sp-2) * -1) 0 calc(var(--sp-2) * -1) calc(var(--h) * var(--ink-x) * -1);
 }
+/* v3 (F2 review, F2-10): the check sits on the first line of its text (an 18 px mark on a 17.5 px line) and the text
+   breaks balanced, never with one word alone on its last line ("Estoque e / financeiro em / dia") */
 .lineDomus {
   grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: var(--sp-2);
+  text-wrap: balance;
   margin-top: var(--sp-1);
   color: var(--mute-l);
 }
@@ -563,7 +572,7 @@ a.core:focus-visible {
     padding: var(--sp-3);
   }
   .node img {
-    height: 36px;
+    --h: 36px;
   }
   .tie,
   .tieUp {

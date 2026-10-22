@@ -232,7 +232,13 @@ const room = (r: Room, i: number) => (
       <Glyph d={ROOM_D[r.glyph]} size={18} />
     </span>
     <span className={house.name}>{r.name}</span>
-    {r.tag && <Badge className={house.tag}>{r.tag}</Badge>}
+    {/* v3 (F2 review, F2-05): a sand tag (the secondary role, sand 100 in app/lib.css, ink text); the amber is for what
+        happens, the module that is born. The neutral soft of the lib is the ink at 10 %, a cold grey on the white card */}
+    {r.tag && (
+      <Badge variant="secondary" appearance="solid" className={house.tag}>
+        {r.tag}
+      </Badge>
+    )}
   </li>
 );
 
@@ -247,8 +253,18 @@ export function DomusHouse({
   lead: string;
 }) {
   return (
-    <div className={house.house} data-theme="welabs">
+    <>
+      {/* v3 (F2 review, F2-04): the chapter head sits on the content edge of the page, like every chapter (inside the
+          1040 px house it started 80 px in); the house stays narrower under it */}
       <SectionHead title={title} lead={lead} variant="chapter" />
+      <DomusHouseBody id={id} />
+    </>
+  );
+}
+
+function DomusHouseBody({ id }: { id: string }) {
+  return (
+    <div className={house.house} data-theme="welabs">
       <input
         type="checkbox"
         id={id}

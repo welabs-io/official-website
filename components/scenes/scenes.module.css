@@ -7,12 +7,15 @@
    the pale fills of what is "of the moment". The scene answers to the size of its tile (container `scn`, inline and
    block): wide from 52 rem, narrow below 34 rem, and lower blocks drop their extra rows. The motion is in fx.css; here
    every element is drawn in its settled state. */
+/* v3 (F2 review, F2-03): the scene is in the flow and its container measures only its width, so the window takes the
+   height of its content (it was laid over a tile of fixed aspect ratio, which left 78 to 148 px of empty window under
+   the content). In a box of fixed height (a row of equal cards) it fills it, and its panes grow into the room. */
 .scene {
   /* Every --s-* token comes from the one shared set (tokens.module.css) */
   composes: tokens from "./tokens.module.css";
-  position: absolute;
-  inset: 0;
-  container: scn / size;
+  position: relative;
+  height: 100%;
+  container: scn / inline-size;
   color: var(--s-ink);
   font-size: var(--s-t-body);
   line-height: 1.38;
@@ -40,8 +43,9 @@
   display: block;
 }
 
-/* ELEMENTO-CHAVE: one per scene, the only text above 13 px */
-.key {
+/* ELEMENTO-CHAVE: one per scene, the only text above 14 px */
+.key,
+.searchKey [data-key] {
   font-size: var(--s-t-key);
   font-weight: 600;
   line-height: 1.2;
@@ -59,10 +63,9 @@
   background: var(--s-win);
   border: 1px solid var(--s-edge);
   border-radius: var(--s-r-win);
-  box-shadow:
-    0 0 0 1px rgb(28 26 22 / 0.03),
-    0 1.5rem 3rem -1.75rem rgb(28 26 22 / 0.35),
-    0 0.125rem 0.5rem rgb(28 26 22 / 0.06);
+  /* v3 (F2 review, F2-08): at rest a window is a card of the page, its edge and no shadow; the window in focus (the scene
+     on screen of a product opening, scene-stage.module.css) rises */
+  box-shadow: 0 0 0 1px rgb(28 26 22 / 0.03);
 }
 .bar {
   display: flex;
@@ -201,11 +204,11 @@
   min-width: 0;
   line-height: 1.3;
 }
+/* v3 (F2 review, F2-02): a name breaks into balanced lines when its box is narrow, never cut with an ellipsis ("Gerência
+   apro…", "Agente de ate…" were the words the scene exists to show) */
 .who > b {
   font-size: var(--s-t-body);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-wrap: balance;
 }
 /* The key element can be the name itself (a team, a space): it keeps the key size */
 .who > b.key {
@@ -683,20 +686,6 @@
   gap: 0.75rem;
   min-width: 0;
 }
-.query {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 2.5rem;
-  padding: 0 0.75rem;
-  background: var(--s-win);
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-ctl);
-  color: var(--s-mute);
-}
-.query span {
-  color: var(--s-ink);
-}
 .answer {
   position: relative;
   display: flex;
@@ -757,50 +746,9 @@
   font-size: var(--s-t-label);
 }
 
-/* TELA BAIXA: any tile under 27 rem of height (the 16:10 opening of a product page at 1024, the outcomes of the home)
-   tightens its rhythm and drops the extra sections */
-@container scn (max-height: 27rem) {
-  .win {
-    --s-pad: 0.875rem;
-    --s-gap: 0.75rem;
-  }
-  .roof {
-    height: 1.25rem;
-  }
-  .rooms {
-    gap: 0.375rem;
-    padding: 0.5rem;
-  }
-  .room {
-    gap: 0.5rem;
-    padding: 0 0.5rem 0 0.375rem;
-  }
-  .roomIcon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-  .phoneHead {
-    height: 2.5rem;
-  }
-  .toast {
-    top: 3rem;
-    padding: 0.5rem 0.75rem;
-  }
-  .doc {
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
-  .docHead {
-    padding-bottom: 0.5rem;
-  }
-  .answer {
-    margin-top: 0;
-    padding: 0.75rem;
-  }
-  .docMore {
-    display: none;
-  }
-}
+/* v3 (F2 review, F2-03): no rule by the height of the tile any more. The window takes the height of its content, so the
+   compact rhythm of a short tile ("TELA BAIXA", under 27 rem) and the protagonist-alone rule of a short phone card left
+   with the fixed aspect ratios. */
 
 /* TELA ESTREITA (CELULAR): one column of panels at their natural height; each scene keeps its protagonist and the
    context that fits */
@@ -825,12 +773,20 @@
     align-content: start;
     gap: var(--s-gap);
   }
+  /* v3 (F2 review, F2-03): in a card taller than the scene (the row of equal cards of the home), the conversation under
+     the house grows into the room, so the window keeps no empty strip under it */
+  .duoHousePhone {
+    grid-template-rows: auto 1fr;
+    align-content: stretch;
+  }
   /* House: rows of a fixed height, the roof lower */
   .house {
     grid-template-rows: auto auto;
   }
+  /* v3 (F2 review, F2-02): a row is 36 px at least and grows with the room that received the result, whose two lines
+     break whole instead of being cut */
   .rooms {
-    grid-auto-rows: 2.25rem;
+    grid-auto-rows: minmax(2.25rem, auto);
     gap: 0.375rem;
     padding: 0.5rem;
   }
@@ -854,10 +810,10 @@
   .wave {
     width: 8rem;
   }
+  /* v3 (F2 review, F2-02): in a phone-wide house the room that received the result keeps its two lines whole, each
+     breaking balanced when the room is narrow; an ellipsis cut the effect itself ("Sábado co…") */
   .roomNew > * {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    text-wrap: balance;
   }
   /* Knowly: the document keeps its lines, the connector and the extras go */
   .doc {
@@ -885,13 +841,6 @@
   }
 }
 
-/* TELA ESTREITA E BAIXA (as cenas do efeito da home): the protagonist pane alone */
-@container scn (max-width: 34rem) and (max-height: 28.5rem) {
-  .ask > .query,
-  .docHead {
-    display: none;
-  }
-}
 /* v2.1: a phone-wide card (under 20 rem) keeps the answer and its source, and drops the detail line under the answer,
    which pushed the source under the bottom edge (measured by e2e/layout.spec.ts at 375 px) */
 @container scn (max-width: 20rem) {

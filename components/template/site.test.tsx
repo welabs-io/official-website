@@ -360,6 +360,15 @@ describe("the product pages", () => {
     },
   );
 
+  // v3 (F2 review, P-04): the metadata names no part of the stack either (the "RAG" of the Knowly keywords)
+  it("keep the stack out of the metadata", async () => {
+    for (const { slug } of PRODUCTS) {
+      const meta = await generateMetadata({ params: Promise.resolve({ slug }) });
+      const text = [meta.description, ...((meta.keywords as string[]) ?? [])].join(" ");
+      expect(stackViolation(text, []), slug).toBeNull();
+    }
+  });
+
   it("follow the 'Domus by Welabs' pattern in the title", async () => {
     for (const { slug, name } of PRODUCTS) {
       const meta = await generateMetadata({

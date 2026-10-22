@@ -319,7 +319,8 @@
 }
 /* The composer: the lib's InputGroup (LudicChannels.tsx), placed at the foot of the conversation; the lib paints it */
 .reply {
-  margin: 0 0.75rem 0.75rem;
+  /* 10 px at the foot, so the window keeps at most 24 px under the composer (F2 review, F2-03) */
+  margin: 0 0.75rem 0.625rem;
 }
 
 /* ESTREITO: one column; the phone steps aside so the conversation keeps the frame */
@@ -329,10 +330,5 @@
   }
   .phone {
     display: none;
-  }
-}
-@container scn (max-height: 27rem) {
-  .items {
-    gap: 0.5rem;
   }
 }

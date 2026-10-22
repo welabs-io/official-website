@@ -32,13 +32,15 @@
 }
 
 /* CABEÇALHO DA SEÇÃO */
-/* v3 (F2, plano.md 4.1): three variants (SectionHead.tsx, `data-head`), one rhythm: the head sits 48 px over its
-   content on a desktop (24 px on a phone), the title is the h2 step (44/30) or, in a strip, the h3 step (24/20). */
+/* v3 (F2, plano.md 4.1): three variants (SectionHead.tsx, `data-head`), one rhythm: the head sits 24 px over its
+   content, the title is the h2 step (44/30) or, in a strip, the h3 step (24/20). */
 .head {
   display: grid;
   gap: var(--sp-2);
   max-width: 100%;
-  margin: 0 0 clamp(var(--sp-5), 3.4vw, var(--sp-7));
+  /* v3 (F2 review, F2-09): 24 px over its content at every width, the compact rhythm inside a section (plano.md 4.4:
+     16 to 24 px); it was 48 px on a desktop */
+  margin: 0 0 var(--sp-5);
 }
 .headTitle {
   font-size: var(--text-title);
@@ -326,11 +328,15 @@
   padding: 0;
   list-style: none;
 }
+/* v3 (F2 review, F2-03 and F2-08): the three cards are as tall as the tallest scene, and each window fills its card,
+   its panes growing into the room (scenes.module.css .scene), so no window keeps an empty strip under its content. The
+   card is only the box: the window draws its own edge (a second border here framed it twice) and, at rest, no shadow. */
+.effects > li {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
 .shot {
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--r-win);
-  background: var(--surface);
+  min-height: 0;
 }
 /* F1 review (P-01, P-02): the caption only, never the paragraphs and list items of the scene inside (`.effects p` gave
    the composer of the Tuner scene 18/600, and `.effects li` on a phone gave each message of the scene 88 % of the
@@ -492,17 +498,19 @@
   --h: clamp(64px, 6vw, 88px);
 }
 /* The screen of the Domus at its opening (one of its scenes, playing) */
+/* The screen of the Domus opening is the focus of its band: the soft shadow of the plane in focus; the window draws its
+   own edge (v3, F2 review: a border here framed it twice) */
 .domusStage {
   overflow: hidden;
-  border: 1px solid var(--line);
   border-radius: var(--r-win);
-  background: var(--surface);
   box-shadow: var(--shadow-pop);
 }
 
 /* SELETOR DOS CINCO PRODUTOS */
-/* The five logos in a row over the opening, on one hairline: the product of the page in ink at full strength with the
-   4 px amber bar under it (the active tab of the ERP front), the others quiet; pointing at one brings it up. */
+/* The five logos in a row over the opening, on one hairline: the product of the page with the 4 px amber bar under it
+   (the active tab of the ERP front); pointing at one brings up its sand ground and a lighter bar.
+   v3 (F2 review, F2-06): every logo keeps its official colours (no grayscale and no fade): the others were neutral grey
+   at half strength, the amber of each mark gone. The bar alone tells the product of the page. */
 .switch {
   grid-column: 1 / -1;
   border-bottom: 1px solid var(--cl);
@@ -521,12 +529,7 @@
   padding: var(--sp-3) var(--sp-3) var(--sp-4);
   border-radius: var(--r-ctl) var(--r-ctl) 0 0;
   line-height: 0;
-  opacity: 0.5;
-  filter: grayscale(1);
-  transition:
-    opacity var(--dur-2) var(--ease-out),
-    filter var(--dur-2) var(--ease-out),
-    background-color var(--dur-1) var(--ease-out);
+  transition: background-color var(--dur-1) var(--ease-out);
 }
 .switch a::after {
   content: "";
@@ -542,13 +545,7 @@
 }
 .switch a:hover,
 .switch a:focus-visible {
-  opacity: 1;
-  filter: none;
   background: var(--surface-accent);
-}
-.switch a[aria-current] {
-  opacity: 1;
-  filter: none;
 }
 .switch a[aria-current]::after,
 .switch a:hover::after {

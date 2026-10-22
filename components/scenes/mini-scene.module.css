@@ -1,29 +1,16 @@
 /* CENA NATIVA PARADA */
-/* The holder is the container the frame measures itself against: wide (2:1) from 52 rem of width, tablet (16:10) up to it
-   and a phone (7:10) below 34 rem, the three layouts the scenes already have. `data-phone` forces the phone layout for
-   the narrow cards of the outcomes of the home (they are never wider than 34 rem). No content-visibility: a skipped block takes an
-   estimated height, and the page below it would move by a few pixels when the block is drawn, which is exactly what the
-   back button must not do. */
+/* The holder is the container the frame measures itself against; the scene picks its layout by its own width (wide
+   from 52 rem, narrow under 34 rem). No content-visibility: a skipped block takes an estimated height, and the page
+   below it would move by a few pixels when the block is drawn, which is exactly what the back button must not do. */
+/* v3 (F2 review, F2-03): no aspect ratio. The frame takes the height of the scene's content, or fills a box of fixed
+   height (the row of equal cards of the outcomes of the home), where the panes of the scene grow into it; a fixed 3:4,
+   16:10 or 2:1 left 78 to 122 px of empty window under the content. */
 .holder {
+  height: 100%;
   container: mini / inline-size;
 }
 .frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
-}
-@container mini (max-width: 34rem) {
-  .frame {
-    aspect-ratio: 7 / 10;
-  }
-}
-@container mini (min-width: 52rem) {
-  .frame {
-    aspect-ratio: 2 / 1;
-  }
-}
-/* 3:4 holds the tallest of the scenes in the phone layout at 20 to 34 rem of width (v2.1: at 4:5 the answer of the
-   Knowly lost its source under the bottom edge, the cut of the operator's print) */
-.frame[data-phone] {
-  aspect-ratio: 3 / 4;
+  height: 100%;
 }

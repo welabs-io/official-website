@@ -289,7 +289,8 @@
   justify-content: flex-end;
   gap: 0.5rem;
   min-height: 0;
-  padding: 0.75rem 0.875rem 0.875rem;
+  /* v3 (F2 review, F2-03): 10 px at the foot, so the window keeps at most 24 px under the last message */
+  padding: 0.75rem 0.875rem 0.625rem;
 }
 .msg {
   max-width: 85%;
@@ -571,7 +572,8 @@
   gap: 0.625rem;
   /* v3 (F2): a grid item of its pane that never grows past it (its text wraps instead) */
   min-width: 0;
-  margin: 0.5rem 0.875rem 0.875rem;
+  /* v3 (F2 review, F2-03): 10 px at the foot, so the window keeps at most 24 px under the note */
+  margin: 0.5rem 0.875rem 0.625rem;
   padding: 0.625rem 0.75rem;
   border: 1.5px solid var(--s-ok-dot);
   border-radius: var(--s-r-card);
@@ -681,19 +683,10 @@
   font-size: var(--s-t-label);
   color: var(--s-mute);
 }
+/* v3 (F2 review, F2-07): the search of the sources is the lib's InputGroup (SceneSearch.tsx), painted by the lib; this
+   class only places it */
 .search {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  height: 3rem;
-  padding: 0 1rem;
-  border: 1px solid var(--s-edge);
-  border-radius: var(--s-r-card);
-  background: var(--s-win);
-  box-shadow: var(--s-elev-2);
-}
-.search svg {
-  color: var(--s-mute);
+  min-width: 0;
 }
 .groups {
   display: grid;
@@ -859,41 +852,8 @@
   gap: 0.375rem;
 }
 
-/* TELA BAIXA: the 16:10 tile of a tablet and anything under 27 rem of height */
-@container scn (max-height: 27rem) {
-  .head {
-    height: 2.25rem;
-  }
-  .boardHead {
-    padding-block: 0.625rem;
-  }
-  .graph {
-    row-gap: 1.25rem;
-    padding: 0.875rem;
-  }
-  .branchLine {
-    top: -1.25rem;
-    height: calc(1.25rem + 50%);
-  }
-  .branch .block::before {
-    height: 1.25rem;
-  }
-  .branch .block::after {
-    bottom: calc(100% + 1.25rem - 5px);
-  }
-  .timeline li {
-    padding: 0.25rem 0;
-  }
-  .from {
-    display: none;
-  }
-  .answerPane {
-    padding: 0.75rem 0.875rem;
-  }
-  .space {
-    padding: 0.625rem;
-  }
-}
+/* v3 (F2 review, F2-03): the compact rhythm of a short tile ("TELA BAIXA") left with the fixed aspect ratio of the tile;
+   the window takes the height of its content (scenes.module.css .scene) */
 
 /* TELA ESTREITA (CELULAR): one column, the protagonist pane and what fits under it */
 @container scn (max-width: 34rem) {
@@ -911,7 +871,8 @@
     grid-template-rows: none;
     row-gap: 0;
     align-content: start;
-    padding: 0.875rem;
+    /* v3 (F2 review, F2-03): the foot of the pane at 10 px, so the window keeps at most 24 px under its content */
+    padding: 0.875rem 0.875rem 0.625rem;
   }
   .graph > .arrow {
     justify-self: center;

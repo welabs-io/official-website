@@ -12,6 +12,7 @@ import {
 } from "@/lib/scenes/capabilities";
 import type { Act } from "@/lib/scenes/types";
 import { Glyph, GLYPHS } from "./icons";
+import { SceneSearch } from "./SceneSearch";
 import { SceneWindow } from "./SceneWindow";
 import c from "./capability.module.css";
 import s from "./scenes.module.css";
@@ -382,10 +383,7 @@ function KnowlyAnswer({ act }: { act: Act }) {
   return (
     <SceneWindow product="knowly" place={t.where} meta={t.meta}>
       <div className={c.column}>
-        <div className={s.query}>
-          <Glyph d={GLYPHS.search} size={14} />
-          <span>{t.question}</span>
-        </div>
+        <SceneSearch query={t.question} />
         <div className={`${c.pane} ${c.answerPane}`}>
           <p className={s.answerLabel}>
             <Glyph d={GLYPHS.spark} size={12} />
@@ -448,10 +446,12 @@ function KnowlySources({ act }: { act: Act }) {
   return (
     <SceneWindow product="knowly" place={t.where} meta={t.meta}>
       <div className={c.column}>
-        <div className={c.search} {...act("search", "in")}>
-          <Glyph d={GLYPHS.search} size={16} />
-          <Key>{t.query}</Key>
-        </div>
+        <SceneSearch
+          query={t.query}
+          asKey
+          className={c.search}
+          {...act("search", "in")}
+        />
         <div className={c.groups}>
           {t.groups.map((group, g) => (
             <div key={group.name} className={`${c.pane} ${c.soft} ${c.group}`}>

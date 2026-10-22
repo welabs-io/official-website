@@ -91,16 +91,13 @@
   border-radius: var(--r-ctl);
   background: var(--surface-accent);
 }
-/* The modules made to measure carry the amber tint on their icon */
-.floor[data-floor="custom"] .icon {
-  background: var(--primary-soft);
-}
+/* v3 (F2 review, F2-05): the modules made to measure no longer carry an amber tint on their icon; the floor's name
+   tells them apart, and the amber marks only the module that is born ("Vistorias") */
 .name {
   min-width: 0;
-  overflow: hidden;
   line-height: var(--lh-heading);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  /* v3 (F2 review, F2-02): a name breaks, never cut with an ellipsis */
+  text-wrap: balance;
 }
 /* The lib's Badge (a tag of a module, the seal of the new one): placed at the end of the line, painted by the lib */
 .tag,
@@ -461,15 +458,20 @@
 
 /* TELAS ESTREITAS */
 /* Under the full 1040 px a module is too narrow for its name and its tag on one line ("Fiscal" was cut at 1024): the
-   tag sits on the corner of the module, so the name keeps its width */
+   tag sits on the corner of the module, so the name keeps its width.
+   v3 (F2 review, F2-05): the corner is inside the card (it crossed its top edge, 20.8 px off the axis of the name), and
+   a module with a tag keeps a band over its icon and name for it, so the two never meet */
 @media (max-width: 1100px) {
   .room {
     position: relative;
   }
+  .room:has(.tag) {
+    padding-top: var(--sp-6);
+  }
   .room .tag {
     position: absolute;
-    top: calc(var(--sp-2) * -1);
-    right: calc(var(--sp-1) * -1);
+    top: var(--sp-1);
+    right: var(--sp-1);
     margin: 0;
   }
 }
