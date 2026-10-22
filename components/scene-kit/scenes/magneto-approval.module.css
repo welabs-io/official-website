@@ -1,0 +1,279 @@
+/* CENA DO MAGNETO: FLUXO E EXECUÇÃO */
+/* Layout and state paint only (the lib paints Badge, Separator and the buttons). Colours are the role tokens of
+   app/lib.css (control/portfolio/site-redesign/scene-kit/colour-decisions.md): both panes are the cream paper split by
+   the sand line, a node or a log line is ink text with a neutral mark (sand 100 well, sand line ring, sand 700 icon).
+   The node running now takes the amber wash of the selected row with the 3 px amber leading bar and an amber mark
+   (ink icon, no ring); a node that ran keeps an amber soft mark; the failed attempt is the lib's destructive tone on
+   its mark and log line, never amber. Every icon sits on the centre line of the text it labels. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  background: var(--background);
+}
+
+/* O FLUXO */
+.flow {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+
+.values {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.paneHead {
+  margin: 0;
+  font-size: var(--t-micro);
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.chips {
+  display: flex;
+  gap: var(--sp-2);
+}
+/* A value chip (the site's ActionButton, soft) follows the chips of the Relloo scene: the value in force takes the
+   amber wash with the 3 px amber leading bar, the other keeps the soft fill with its label in sand 700 */
+.chips [data-state] {
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.chips [data-state]:hover,
+.chips [data-state]:active,
+.chips [data-state="active"] {
+  background-color: var(--surface-raised);
+}
+.chips [data-state="active"] {
+  background-size: 3px 100%;
+}
+.chips [data-state="waiting"] {
+  color: var(--muted-foreground);
+}
+
+.nodes {
+  margin: 0;
+  padding: var(--sp-2) 0;
+  list-style: none;
+}
+
+/* A node: mark and name on one line, its status at the end; the line under the marks joins the blocks */
+.node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: 60px;
+  padding: var(--sp-2) var(--sp-4);
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.node + .node::before {
+  content: "";
+  /* From the foot of the mark above to the top of this one (rows of 60 px, marks of 32 px centred) */
+  position: absolute;
+  top: -14px;
+  left: calc(var(--sp-4) + 15px);
+  width: 2px;
+  height: 28px;
+  background: var(--border);
+}
+.node[data-state="active"] {
+  background-color: var(--surface-raised);
+  background-size: 3px 100%;
+}
+
+.nodeLine {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.mark,
+.dot {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-dot);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out);
+}
+.mark {
+  width: 32px;
+  height: 32px;
+}
+[data-state="active"] .mark,
+.line[data-fresh="true"] .dot {
+  background: var(--primary);
+  box-shadow: none;
+  color: var(--foreground);
+}
+[data-state="done"] .mark {
+  background: var(--primary-soft);
+  box-shadow: none;
+  color: var(--foreground);
+}
+[data-state="fail"] .mark,
+.line[data-fail="true"] .dot {
+  background: var(--destructive-soft);
+  box-shadow: none;
+  color: var(--destructive);
+}
+
+.nodeText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.nodeText b {
+  font-size: var(--t-label);
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.nodeText span {
+  font-size: var(--t-micro);
+  line-height: 16px;
+  color: var(--muted-foreground);
+}
+/* A skipped block reads in second plan, its name included */
+[data-state="skip"] .nodeText b {
+  color: var(--muted-foreground);
+}
+
+.status {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+}
+
+/* A EXECUÇÃO */
+.run {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.runHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.runTitle {
+  flex: 1;
+  font-size: var(--t-label);
+  line-height: 20px;
+  font-weight: 600;
+}
+.seal {
+  gap: var(--sp-1);
+  flex: none;
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+
+/* A log line: a small mark and the line of text on one centre line */
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.dot {
+  width: 22px;
+  height: 22px;
+}
+.lineText {
+  min-width: 0;
+  font-size: var(--t-label);
+  line-height: 20px;
+  color: var(--foreground);
+}
+.lineText time {
+  margin-right: var(--sp-2);
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+
+/* The order on the Domus: the record the run changes, a sand 100 card at the foot of the pane */
+.record {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: auto var(--sp-4) var(--sp-4);
+  padding: var(--sp-3);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.record .mark {
+  background: var(--background);
+  color: var(--foreground);
+}
+.recordText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.recordText b {
+  font-size: var(--t-label);
+  line-height: 20px;
+  font-weight: 600;
+}
+.recordText span {
+  font-size: var(--t-micro);
+  line-height: 16px;
+  color: var(--muted-foreground);
+}
+
+/* CELULAR */
+/* The run goes under the flow */
+@media (max-width: 760px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .flow {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .values,
+  .node,
+  .runHead,
+  .log {
+    padding-inline: var(--sp-3);
+  }
+  .node + .node::before {
+    left: calc(var(--sp-3) + 15px);
+  }
+  .record {
+    margin-inline: var(--sp-3);
+    margin-bottom: var(--sp-3);
+  }
+}

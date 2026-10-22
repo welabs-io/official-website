@@ -33,6 +33,14 @@ const SCENES: Entry[] = [
     pairs: 18,
     cycleMs: 6000,
   },
+  {
+    id: "magneto-approval",
+    figure: /^Magneto/,
+    trigger: /^R\$ 4\.800/,
+    final: "done",
+    pairs: 12,
+    cycleMs: 7800,
+  },
 ];
 
 // The icon/text pairs of the live layer whose centres are off by more than 1 px, and how many were measured

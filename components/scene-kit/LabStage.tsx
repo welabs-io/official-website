@@ -10,6 +10,7 @@ import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
 import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
+import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
 import k from "./lab.module.css";
 
@@ -30,6 +31,11 @@ const SCENES: Record<SceneId, Entry> = {
     steps: DOMUS_MODULES_STEPS,
     Component: DomusModules,
     takeFrom: "born",
+  },
+  "magneto-approval": {
+    steps: MAGNETO_APPROVAL_STEPS,
+    Component: MagnetoApproval,
+    takeFrom: "high",
   },
 };
 
