@@ -1,112 +1,298 @@
-/* CENA DA HOME: A MENSAGEM E O SEU CAMINHO */
-/* Layout only (the lib paints Badge and the button; the kit's shared parts, components/scene-kit/parts.module.css, paint
-   the marks and their tones, the station states, the stacked text, the bubble and the seal). Every value is a token of
-   app/lib.css (colour roles: control/portfolio/site-redesign/scene-kit/colour-decisions.md): the window is the cream
-   paper, the track a row of five stations split by the sand line (a column on a phone), the record a sand 100 card. */
+/* CENA DA HOME: MENSAGEM, TRILHO E REGISTRO */
+/* v3 (2026-10-22): the message, the compact track of the five products and the record of the order, one over the
+   other on the white content. Every control is the published lib's at its default size (e2e/lib-parity.spec.ts); the
+   track is the chrome rail of Welabs UI v3 Steps (done green, the live one amber-50 with the amber mark, waiting on the
+   white well), the record the lib's white Card with the Domus DetailHeader. Every value is a token of app/lib.css. The
+   alignment is held by numbers: e2e/scene-kit-geometry.spec.ts. */
 .root {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--background);
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  background: var(--card);
 }
 
-/* A MENSAGEM */
+/* Amber budget across a step: a mark that stops being live drops its amber at once, only the one becoming live eases
+   in, so the outgoing and incoming marks never overlap */
+.root [data-slot="avatar-fallback"] {
+  transition: none;
+}
+.root [data-state="active"] [data-slot="avatar-fallback"] {
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+
+/* MENSAGEM */
+/* The Message entry and the button that sends it again, on one centre line; below sm the button wraps under it */
 .message {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
+  gap: var(--sp-3) var(--sp-5);
 }
-.said {
+.entry {
   display: flex;
   min-width: 0;
-  align-items: center;
   gap: var(--sp-3);
 }
-.saidText {
-  display: grid;
+.entryMark {
+  display: inline-flex;
+  flex: none;
+}
+.entryBody {
+  display: flex;
   min-width: 0;
-  row-gap: var(--sp-1);
+  flex-direction: column;
+  gap: var(--sp-1);
 }
-.saidText > b {
-  font-weight: var(--weight-title);
+/* The meta line, as tall as the mark and centred on it: the channel in ink, its time muted */
+.meta {
+  display: flex;
+  min-height: var(--mark-md);
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
 }
-.text {
-  display: block;
+.meta b {
+  font-weight: var(--weight-label);
+}
+.meta time {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.said {
+  margin: 0;
 }
 
-/* O CAMINHO */
+/* TRILHO DOS CINCO PRODUTOS */
+/* The chrome rail; each product a column (its mark, its name, its effect), the live one in the amber-50 of the
+   selected row; the effect keeps its place before the message reaches it */
 .track {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-1);
   margin: 0;
-  padding: 0;
+  padding: var(--sp-2);
+  border-radius: var(--r-card);
+  background: var(--muted);
   list-style: none;
 }
 .station {
   display: flex;
-  min-height: var(--row-min);
+  min-width: 0;
+  flex-direction: column;
   align-items: center;
-  padding: var(--sp-3) var(--sp-4);
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-2);
+  border-radius: var(--r-ctl);
+  text-align: center;
+  transition: background-color var(--dur-2) var(--ease-out);
 }
-.station + .station {
-  border-left: var(--rule) solid var(--border);
+.station[data-state="active"] {
+  background: var(--selected);
 }
-.stationLine {
+.stationMark {
+  display: inline-flex;
+  margin-bottom: var(--sp-1);
+}
+.station[data-state="active"] [data-slot="avatar"] {
+  animation: pop var(--dur-3) var(--ease-spring) both;
+}
+.station > b {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  white-space: nowrap;
+}
+.station[data-state="waiting"] > b {
+  color: var(--muted-foreground);
+}
+.effect {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+  visibility: hidden;
+}
+.effect[data-shown="true"] {
+  visibility: visible;
+  animation: swap var(--dur-2) var(--ease-out) backwards;
+}
+
+/* REGISTRO DO PEDIDO NO DOMUS */
+/* The lib's white Card: the Domus DetailHeader (identity and text block on one centre, the title with its status
+   minidot, the meta), the line under it, then the fields of the order (label muted over value in ink) */
+.record {
+  gap: 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.headMain {
   display: flex;
   min-width: 0;
   align-items: center;
   gap: var(--sp-3);
 }
-/* Before the message reaches a product its name waits in second plan and its effect keeps its place unseen */
-.station[data-state="waiting"] .stationText > b {
+/* The Domus LogoThumb frame at md (40 px here, the record of a card): the chrome well, the hairline, the control
+   radius, the icon in the muted text */
+.identity {
+  display: inline-flex;
+  width: var(--mark-lg);
+  height: var(--mark-lg);
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-ctl);
+  background: var(--muted);
+  box-shadow: var(--edge-ring);
   color: var(--muted-foreground);
 }
-.stationText > [data-shown="false"] {
-  visibility: hidden;
+.identity > svg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
 }
-
-/* O REGISTRO NO DOMUS */
-.record {
+.headText {
   display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin: var(--sp-4);
-  padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--r-card);
-  background: var(--card);
-  box-shadow: var(--edge-ring);
+  min-width: 0;
+  flex-direction: column;
 }
-.recordText {
-  flex: 1;
+.headTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+.headTop > b {
+  font-size: var(--t-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-heading);
+}
+.headMeta {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+}
+.headMeta b {
+  font-weight: var(--weight-label);
+  color: var(--foreground);
 }
 
-/* TELAS ESTREITAS */
-/* The track becomes a column of rows */
-@media (max-width: 860px) {
-  .track {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .station + .station {
-    border-left: 0;
-    border-top: var(--rule) solid var(--border);
+/* The status minidot: the 8 px dot and the label, no fill; rest the quiet dot, live amber, done green */
+.state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  animation: swap var(--dur-2) var(--ease-out) backwards;
+}
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--indicator-muted);
+}
+.state[data-tone="live"] .dot {
+  background: var(--signal);
+  animation: pop var(--dur-3) var(--ease-spring) both;
+}
+.state[data-tone="done"] .dot {
+  background: var(--success);
+  animation: pop var(--dur-3) var(--ease-spring) both;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4) var(--sp-5);
+  margin: 0;
+  padding: var(--sp-4) var(--sp-5);
+}
+.datum{
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.datumdt {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+}
+.datumdd {
+  margin: 0;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.datumdd[data-filled="false"] {
+  color: var(--muted-foreground);
+}
+.datumdd[data-filled="true"] {
+  animation: swap var(--dur-2) var(--ease-out) backwards;
+}
+
+@keyframes swap {
+  from {
+    opacity: 0.2;
+    transform: translateY(var(--sp-1));
   }
 }
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+/* CELULAR */
+/* The track keeps its five columns: the names step down to the meta size and the effects leave the rail (the record
+   below carries them); the fields go two by two */
 @media (max-width: 640px) {
-  .message,
+  .root {
+    padding: var(--sp-4);
+  }
   .station {
-    padding-inline: var(--sp-3);
+    padding-inline: 0;
   }
-  .record {
-    flex-wrap: wrap;
-    margin: var(--sp-3);
-    padding-inline: var(--sp-3);
+  .station > b {
+    font-size: var(--t-micro);
+    line-height: var(--line-micro);
   }
-  .recordText {
-    flex-basis: calc(100% - var(--mark-lg) - var(--sp-3));
+  .effect {
+    display: none;
   }
-  .seal {
-    margin-left: calc(var(--mark-lg) + var(--sp-3));
+  .head,
+  .fields {
+    padding-inline: var(--sp-4);
+  }
+  /* As the Relloo on a phone: the identity steps down to 32 px with 8 px to the text, so the title and its status keep
+     one line with 24 px to spare */
+  .headMain {
+    gap: var(--sp-2);
+  }
+  .identity {
+    width: var(--mark-md);
+    height: var(--mark-md);
+  }
+  .identity > svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+  .headTop {
+    column-gap: var(--sp-2);
+  }
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

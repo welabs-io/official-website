@@ -22,9 +22,12 @@ type Entry = {
   pairs: number;
   // Length of one loop, in ms (the sum of the holds)
   cycleMs: number;
-  // Rebuilt on Welabs UI v3 (brief-v3-scenes): the amber budget is held over the loop, and `traced` lists the steps
-  // that draw the connector at 1440 (none on the settled frame)
-  v3?: { traced: string[] };
+  // Role of the trigger (a button unless said otherwise; a segmented control's option is a radio)
+  triggerRole?: "button" | "radio";
+  // v3 scenes (brief-v3-scenes): over one loop, at most 3 pieces of amber in any frame, none on the settled frame (the
+  // end is green or neutral, never amber), and the connector (the Relloo's trace with its riding dot) drawn at each of
+  // these steps, per width, and never on the settled frame
+  handoff?: { 1440: string[]; 390: string[] };
 };
 
 const SCENES: Entry[] = [
@@ -36,7 +39,7 @@ const SCENES: Entry[] = [
     // Each module card and the new module's head (6 modules on a phone)
     pairs: 7,
     cycleMs: 5300,
-    v3: { traced: [] },
+    handoff: { 1440: [], 390: [] },
   },
   {
     id: "magneto-approval",
@@ -46,31 +49,36 @@ const SCENES: Entry[] = [
     // The five steps and the record of the order
     pairs: 6,
     cycleMs: 7800,
-    v3: { traced: ["low", "high"] },
+    handoff: { 1440: ["low", "high"], 390: [] },
   },
   {
     id: "tuner-routing",
     figure: /^Tuner/,
-    trigger: /^Nova ligação/,
+    trigger: /^Financeiro/,
     final: "done",
-    pairs: 9,
-    cycleMs: 7500,
+    pairs: 1,
+    cycleMs: 9400,
+    handoff: { 1440: ["pressed", "taken"], 390: [] },
   },
   {
     id: "knowly-answer",
     figure: /^Knowly/,
     trigger: /^Financeiro/,
+    triggerRole: "radio",
     final: "done",
-    pairs: 9,
-    cycleMs: 7000,
+    pairs: 4,
+    cycleMs: 9800,
+    handoff: { 1440: ["s1", "s2", "profile"], 390: [] },
   },
   {
     id: "home-message",
     figure: /mensagem atravessa/,
     trigger: /^Enviar a mensagem/,
     final: "done",
-    pairs: 7,
-    cycleMs: 6100,
+    // The record's identity on its text block (the track's marks and names are checked by the geometry spec)
+    pairs: 1,
+    cycleMs: 8200,
+    handoff: { 1440: ["relloo", "knowly", "magneto", "domus"], 390: ["relloo", "knowly", "magneto", "domus"] },
   },
 ];
 
@@ -131,7 +139,7 @@ for (const s of SCENES) {
       await expectContinuousLoop(scene, {
         windowMs: 10_000,
         afterMs: 10_000,
-        trigger: scene.getByRole("button", { name: s.trigger }),
+        trigger: scene.getByRole(s.triggerRole ?? "button", { name: s.trigger }),
       });
     });
 
@@ -175,20 +183,20 @@ for (const s of SCENES) {
       });
 
       // ORÇAMENTO DE ÂMBAR E CONECTOR (CENAS V3)
-      // Over one loop, sampled on every animation frame: no frame shows more than 3 pieces of amber (#ffb020 or a blend
-      // more than half way to it, as a fill), the settled frame shows none (the end is green or neutral, never amber),
-      // and at 1440 the connector runs on the steps of `traced` and never on the settled frame
-      if (s.v3) {
-        const v3 = s.v3;
-        test(`at most 3 amber pieces and the connector over a loop at ${width}`, async ({ page }) => {
-          test.setTimeout(40_000);
+      // Sampled on every animation frame over one loop from the first step: no frame shows more than 3 pieces of amber
+      // (#ffb020 or a blend more than half way to it, as a fill), the settled frame shows none, and the connector is
+      // drawn at each hand-off step of this width and never on the settled frame (the measure of e2e/scene-kit.spec.ts
+      // for the Relloo)
+      const handoff = s.handoff;
+      if (handoff) {
+        test(`at most 3 amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
+          test.setTimeout(60_000);
           await page.setViewportSize({ width, height: 900 });
           await page.goto(LAB);
           await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
           await page.getByRole("button", { name: "Recomeçar" }).click();
           const seen = await page.evaluate(async (ms) => {
-            const figure = document.querySelector('[role="figure"]')!;
-            const stage = figure.querySelector("[data-scene]")!;
+            const stage = document.querySelector('[role="figure"] [data-scene]')!;
             const live = stage.lastElementChild!;
             const amber = (c: string) => {
               const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
@@ -214,8 +222,7 @@ for (const s of SCENES) {
           }, s.cycleMs + 500);
           for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
           expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
-          if (width === 1440)
-            for (const step of v3.traced) expect(seen.traced[step], `connector at ${step}`).toBe(true);
+          for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
           expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
         });
       }

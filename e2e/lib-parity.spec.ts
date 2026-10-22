@@ -21,6 +21,18 @@ const ALLOWED: Record<string, string> = {
   "send|backgroundColor":
     "the action is black (Welabs UI v3: --primary #121212 with white text); the lib's welabs primary is the amber, which the site keeps for what is live (--signal)",
   "send|color": "white on the black action, as above (the lib's welabs solid primary has ink text on amber)",
+  // The v3 scenes (tuner-routing, knowly-answer, home-message): the same three decisions, per kind of control
+  "outline|color": "the label and icon take the black ink #121212 (operator decision, as toolbar|color)",
+  "icon|color": "the icon takes the black ink #121212 (operator decision, as action|color)",
+  "row|color": "the row's text is the black ink #121212 (operator decision, as toolbar|color)",
+  "solid|backgroundColor": "the action is black (as send|backgroundColor)",
+  "solid|color": "white on the black action (as send|color)",
+  "segment|color":
+    "the idle options read in the neutral secondary text #55565b (operator decision, 2026-10-22: the preset's sand 700 #625b4e read as graphite)",
+  "segment-item|color": "the idle option's label, the same neutral secondary text (as segment|color)",
+  "segment-active|backgroundColor":
+    "the chosen option is the black primary with white text (Welabs UI v3 Selection: 'Segmento: trilho stone-100, opção ativa primary'); the lib draws a white pill on the rail",
+  "segment-active|color": "white on the black chosen option, as above",
 };
 
 type Style = Record<string, string>;
@@ -166,7 +178,7 @@ const SCENE_ALLOWED: Record<string, string> = {
 type Control = { kind: "field" | "button"; name: string; size: string; look: string; state: string | null; style: Style };
 
 // Every visible field and button of the live layer of a scene, with its computed style
-async function controlsOf(page: Page, id: string): Promise<Control[]> {
+async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
   return page.evaluate(
     ({ id, props }) => {
       const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
@@ -194,7 +206,72 @@ async function controlsOf(page: Page, id: string): Promise<Control[]> {
   );
 }
 
-test.describe("every control of the v3 scenes matches the published lib (welabs brand)", () => {
+// Operator rule (2026-10-22): no control is shrunk below the lib's default (md: 40 px high, 14 px radius, 14 px type).
+// Every button, field and segmented control of each v3 scene, found by its data-slot (not a sample), is compared with
+// the story that draws its kind: a labelled outline or solid button with components-button--with-icon, an icon button
+// with components-buttongroup--icons, a list row (the lib's ghost button laid out as a row) with the ghost of the same
+// story (its height may only grow), a field with components-inputgroup--default, a segmented control with
+// components-segmentedcontrol--default. Only ALLOWED differs.
+const V3_LABS = ["tuner-routing", "knowly-answer", "home-message"] as const;
+
+// Every control of the live layer of the scene, with its kind and its computed style
+async function controlsOf(page: Page, id: string) {
+  return page.evaluate(
+    ({ id, props }) => {
+      const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+      const read = (el: Element) => {
+        const s = getComputedStyle(el);
+        const out: Record<string, string> = {};
+        for (const p of props) out[p] = String(s[p as keyof CSSStyleDeclaration]);
+        out.height = String(el.getBoundingClientRect().height);
+        return out;
+      };
+      const seen = (el: Element) => (el as HTMLElement).offsetParent !== null && el.getBoundingClientRect().width > 0;
+      const out: { kind: string; name: string; style: Record<string, string>; state?: string }[] = [];
+      live.querySelectorAll('[data-slot="button"]').forEach((el) => {
+        if (!seen(el)) return;
+        const size = el.getAttribute("data-size") ?? "md";
+        const appearance = el.getAttribute("data-appearance");
+        const kind = size.startsWith("icon")
+          ? "icon"
+          : appearance === "ghost"
+            ? "row"
+            : appearance === "solid"
+              ? "solid"
+              : appearance ?? "button";
+        out.push({
+          kind,
+          name: `${kind} "${(el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 24)}"`,
+          style: read(el),
+          state: el.getAttribute("data-state") ?? undefined,
+        });
+      });
+      live.querySelectorAll('[data-slot="input-group"]').forEach((el) => {
+        if (!seen(el)) return;
+        const style = read(el);
+        const control = el.querySelector('[data-slot="input-group-control"]');
+        if (control) style.controlFontSize = getComputedStyle(control).fontSize;
+        out.push({ kind: "field", name: "field", style });
+      });
+      live.querySelectorAll('[data-slot="segmented-control"]').forEach((el) => {
+        if (!seen(el)) return;
+        out.push({ kind: "segment", name: "segment", style: read(el) });
+        el.querySelectorAll('[data-slot="segmented-control-item"]').forEach((item) => {
+          const active = item.getAttribute("data-state") === "active";
+          const style = read(item);
+          // The chosen option's fill is its indicator (the lib's moving pill), or the item itself without motion
+          const pill = item.querySelector('[data-slot="segmented-control-indicator"]');
+          if (active && pill) style.backgroundColor = getComputedStyle(pill).backgroundColor;
+          out.push({ kind: active ? "segment-active" : "segment-item", name: `segment "${item.textContent}"`, style });
+        });
+      });
+      return out;
+    },
+    { id, props: [...PROPS] },
+  );
+}
+
+test.describe("every field and button of domus and magneto match the published lib (welabs brand)", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
   test.setTimeout(120_000);
 
@@ -233,14 +310,14 @@ test.describe("every control of the v3 scenes matches the published lib (welabs 
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(`/lab/scenes/${scene.id}`);
       await page.locator(`[data-scene="${scene.id}"]`).waitFor();
-      seen.push(...(await controlsOf(page, scene.id)));
+      seen.push(...(await fieldsAndButtonsOf(page, scene.id)));
       await page.emulateMedia({ reducedMotion: "no-preference" });
       await page.goto(`/lab/scenes/${scene.id}`);
       await page.getByRole("button", { name: "Recomeçar" }).click();
       for (const step of scene.steps) {
         await expect(page.locator(`[data-scene="${scene.id}"]`)).toHaveAttribute("data-step", step, { timeout: 15_000 });
         await page.waitForTimeout(150);
-        seen.push(...(await controlsOf(page, scene.id)));
+        seen.push(...(await fieldsAndButtonsOf(page, scene.id)));
       }
       expect(seen.length, `${scene.id}: controls measured`).toBeGreaterThan(0);
 
@@ -273,6 +350,65 @@ test.describe("every control of the v3 scenes matches the published lib (welabs 
         }
       }
       console.log(`[parity] ${scene.id}: ${seen.length} controls (${[...new Set(seen.map((c) => `${c.kind} ${c.size} ${c.look}`))].join("; ")})`);
+    }
+  });
+});
+
+test.describe("every control of the tuner, knowly and home scenes matches the published lib (welabs brand)", () => {
+  test.setTimeout(120_000);
+
+  test("buttons, fields and segmented controls at 1440 and 390", async ({ page, context }) => {
+    // REFERÊNCIA: AS HISTÓRIAS DA LIB
+    const sb = await context.newPage();
+    await sb.setViewportSize({ width: 1440, height: 900 });
+    await sb.goto(STORY("components-button--with-icon"), { waitUntil: "networkidle" });
+    const refSolid = (await styleOf(sb, '[data-slot="button"][data-variant="primary"][data-appearance="solid"]'))!;
+    const refOutline = (await styleOf(sb, '[data-slot="button"][data-variant="neutral"][data-appearance="outline"]'))!;
+    const refGhost = (await styleOf(sb, '[data-slot="button"][data-appearance="ghost"]'))!;
+    await sb.goto(STORY("components-buttongroup--icons"), { waitUntil: "networkidle" });
+    const refIcon = (await styleOf(sb, '[data-slot="button"][data-size="icon"]'))!;
+    await sb.goto(STORY("components-inputgroup--default"), { waitUntil: "networkidle" });
+    const refField = (await styleOf(sb, '[data-slot="input-group"]'))!;
+    await sb.goto(STORY("components-segmentedcontrol--default"), { waitUntil: "networkidle" });
+    const refSegment = (await styleOf(sb, '[data-slot="segmented-control"]'))!;
+    const refItem = (await styleOf(sb, '[data-slot="segmented-control-item"][data-state="inactive"]'))!;
+    const refActive = (await styleOf(sb, '[data-slot="segmented-control-indicator"]'))!;
+    expect(refSolid && refOutline && refGhost && refIcon && refField && refSegment && refItem && refActive).toBeTruthy();
+
+    const BUTTON = ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "paddingLeft", "fontSize", "fontWeight", "color"];
+    const REF: Record<string, { ref: Style; props: string[] }> = {
+      solid: { ref: refSolid, props: BUTTON },
+      outline: { ref: refOutline, props: BUTTON },
+      icon: { ref: refIcon, props: ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "color"] },
+      // A row is as tall as its two lines (never less than the control): its height is checked as a floor below
+      row: { ref: refGhost, props: ["borderTopLeftRadius", "fontSize", "fontWeight", "color"] },
+      field: { ref: refField, props: ["borderTopLeftRadius", "borderTopWidth", "backgroundColor", "height", "controlFontSize"] },
+      segment: { ref: refSegment, props: ["borderTopLeftRadius", "backgroundColor", "height", "fontSize", "color"] },
+      "segment-item": { ref: refItem, props: ["borderTopLeftRadius", "height", "paddingLeft", "fontSize", "fontWeight", "color"] },
+      "segment-active": { ref: refActive, props: ["backgroundColor", "color", "height"] },
+    };
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    for (const id of V3_LABS) {
+      for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`/lab/scenes/${id}`);
+        await page.locator(`[data-scene="${id}"]`).waitFor();
+        const controls = await controlsOf(page, id);
+        expect(controls.length, `${id} at ${width}: controls found`).toBeGreaterThan(0);
+        for (const c of controls) {
+          const r = REF[c.kind];
+          expect(r, `${id} at ${width}: ${c.name} is a known kind of control`).toBeDefined();
+          // Never below the lib's default size: the md height (40 px) and its type
+          if (c.kind !== "segment-item" && c.kind !== "segment-active")
+            expect(parseFloat(c.style.height), `${id} at ${width}: ${c.name} height`).toBeGreaterThanOrEqual(40 - 0.5);
+          // A control painted by the scene's state (the amber-50 of the selected row or chip, the green of done) keeps
+          // the lib's shape and type; only its fill and its text colour are the state's, not the appearance's
+          const painted = c.state !== undefined && !["idle", "waiting"].includes(c.state);
+          const props = painted ? r.props.filter((p) => p !== "backgroundColor" && p !== "color") : r.props;
+          await compare(page, c.kind, c.style, r.ref, props);
+        }
+      }
     }
   });
 });

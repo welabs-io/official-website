@@ -67,7 +67,9 @@ async function iconAxis(page: Page) {
         .querySelectorAll<HTMLElement>('[data-slot="button"], [data-slot="badge"], [data-axis-pair]')
         .forEach((el) => {
           // An inbox row centres its mark on a two-line text block (e2e/scene-kit.spec.ts measures it), not on a line
-          if (ghost.contains(el) || el.offsetParent === null || el.hasAttribute("data-channel")) return;
+          // (the v3 scenes mark such a row `data-row`; e2e/scene-kit-scenes.spec.ts measures it through `data-axis`)
+          if (ghost.contains(el) || el.offsetParent === null || el.hasAttribute("data-channel") || el.hasAttribute("data-row"))
+            return;
           const icon = el.querySelector("svg, [data-dot]");
           const textNode = [...el.childNodes, ...[...el.querySelectorAll("span")].flatMap((s) => [...s.childNodes])].find(
             (n) => n.nodeType === 3 && n.textContent!.trim(),
@@ -110,18 +112,23 @@ async function columns(page: Page) {
 // CABEÇALHO NO PADRÃO DetailHeader DO DOMUS
 // The Domus DetailHeader (erpnext front ui-kit/components/detail-header.tsx): `items-center` on the identity and the
 // text block, so the identity's centre is the block's; the status sits on the title's line; the meta starts on the
-// title's left edge; the actions are centred on the header's line, which is the identity's (wrapped under it below sm)
-async function expectDetailHeader(page: Page, id: string, width: number) {
+// title's left edge; the actions (when the scene has them) are centred on the header's line, which is the identity's
+// (wrapped under it below sm)
+async function expectDetailHeader(page: Page, id: string, width: number, withActions = true) {
   const h = await page.evaluate((sceneId) => {
     const live = document.querySelector(`[data-scene="${sceneId}"] > :last-child`)!;
     const r = (k: string) => {
-      const el = live.querySelector(`[data-header="${k}"]`);
+      // The visible part (a scene may draw one per breakpoint)
+      const el = [...live.querySelectorAll(`[data-header="${k}"]`)].find((e) => (e as HTMLElement).offsetParent !== null);
       if (!el) return null;
       const b = el.getBoundingClientRect();
       return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, mid: b.top + b.height / 2 };
     };
-    // The header's own box, inside its padding: the room a phone gives the title line
-    const head = live.querySelector('[data-header="actions"]')!.parentElement!;
+    // The header's own box, inside its padding: the room a phone gives the title line. A scene marks it
+    // (`data-header-root`); otherwise it is the parent of the actions
+    const head =
+      live.querySelector('[data-header="identity"]')?.closest("[data-header-root]") ??
+      live.querySelector('[data-header="actions"]')!.parentElement!;
     const hs = getComputedStyle(head);
     const inner = head.getBoundingClientRect().right - parseFloat(hs.paddingRight);
     return {
@@ -134,20 +141,24 @@ async function expectDetailHeader(page: Page, id: string, width: number) {
       inner,
     };
   }, id);
-  for (const [k, v] of Object.entries(h)) expect(v, `header part ${k}`).not.toBeNull();
-  const { identity, block, title, status, meta, actions } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
+  for (const k of ["identity", "block", "title", "status", "meta"] as const) expect(h[k], `header part ${k}`).not.toBeNull();
+  if (withActions) expect(h.actions, "header part actions").not.toBeNull();
+  const { identity, block, title, status, meta } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
   expect(Math.abs(identity.mid - block.mid), `identity ${identity.mid} vs text block ${block.mid}`).toBeLessThanOrEqual(1);
   expect(Math.abs(status.mid - title.mid), `status ${status.mid} vs title ${title.mid}`).toBeLessThanOrEqual(1);
   // The status keeps its line with room to spare (24 px before the actions, or before the header's edge on a phone),
   // so the font metrics of another engine do not wrap it under the title
-  const limit = width >= 640 ? actions.left : h.inner;
+  const limit = withActions && width >= 640 ? h.actions!.left : h.inner;
   expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(24);
   expect(block.left).toBeLessThan(status.left);
   expect(Math.abs(meta.left - title.left), `meta ${meta.left} vs title ${title.left}`).toBeLessThanOrEqual(1);
   // Below sm the Domus header wraps its actions under the title block instead of squeezing it
-  if (width >= 640)
-    expect(Math.abs(actions.mid - identity.mid), `actions ${actions.mid} vs identity ${identity.mid}`).toBeLessThanOrEqual(1);
-  else expect(actions.top, "actions under the title block").toBeGreaterThanOrEqual(identity.bottom);
+  if (withActions) {
+    const actions = h.actions!;
+    if (width >= 640)
+      expect(Math.abs(actions.mid - identity.mid), `actions ${actions.mid} vs identity ${identity.mid}`).toBeLessThanOrEqual(1);
+    else expect(actions.top, "actions under the title block").toBeGreaterThanOrEqual(identity.bottom);
+  }
 }
 
 for (const width of [1440, 390]) {
@@ -196,16 +207,31 @@ for (const width of [1440, 390]) {
   });
 }
 
-// GEOMETRIA DAS CENAS V3 DO DOMUS E DO MAGNETO
+// GEOMETRIA DAS CENAS V3 (DOMUS, MAGNETO, TUNER, KNOWLY, HOME)
 // The same contract on the scenes rebuilt after the Relloo pilot (brief-v3-scenes, 2026-10-22): every field centres its
-// pieces with equal insets, every icon of a control, chip or status sits on its text line, the record header is the
-// Domus DetailHeader with 24 px of room after the status, and the columns of each list share their left edge. The
-// columns are named selectors inside the live layer; a column with `wide` is measured only from that width up.
-type Columns = Record<string, { sel: string[]; wide?: number }>;
-const V3: { id: string; figure: RegExp; fields: [number, number]; pairs: [number, number]; columns: Columns }[] = [
+// pieces with equal insets, every icon of a control, chip or status sits on its text line, the record header (when the
+// scene has one) is the Domus DetailHeader with 24 px of room after the status, the columns of each list share their
+// left edge, and the steps of a horizontal track sit on one centre line. The columns are named selectors inside the
+// live layer; a column with `wide` is measured only from that width up.
+type GeoScene = {
+  id: string;
+  figure: RegExp;
+  // Least number of fields, at 1440 and at 390 (every field found must also keep the contract)
+  fields: [number, number];
+  // Least number of icon/text pairs of the controls, chips and status, at 1440 and at 390
+  pairs: [number, number];
+  // The scene draws a record header (data-header parts); `actions`: with the record's actions on its line
+  header?: { actions: boolean };
+  // Name → selectors (inside the live layer) whose left edges are one column
+  columns: Record<string, { sel: string[]; wide?: number }>;
+  // Name → selector whose matches share one centre line (a horizontal track)
+  rows?: Record<string, string>;
+};
+const V3: GeoScene[] = [
   {
     id: "domus-modules",
     figure: /^Domus/,
+    header: { actions: true },
     // The fields of the new module (3 at 1440, 3 on a phone in 2 + 1)
     fields: [3, 3],
     // "Novo módulo" (header action), the status, and the lab's two toolbar buttons
@@ -221,6 +247,7 @@ const V3: { id: string; figure: RegExp; fields: [number, number]; pairs: [number
   {
     id: "magneto-approval",
     figure: /^Magneto/,
+    header: { actions: true },
     // No field: the scene is steps and a record
     fields: [0, 0],
     // The two value chips, the status, and the lab's two toolbar buttons
@@ -232,6 +259,56 @@ const V3: { id: string; figure: RegExp; fields: [number, number]; pairs: [number
       "order pane": { sel: ['[data-pane="order"] > *'] },
       "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
     },
+  },
+  {
+    id: "tuner-routing",
+    figure: /^Tuner/,
+    // No field minimum: any field the scene draws still keeps the contract
+    fields: [0, 0],
+    // 1440: the lab's two buttons and the status; 390: also the three option buttons
+    pairs: [3, 6],
+    header: { actions: true },
+    columns: {
+      "menu marks": { sel: ["[data-option] > :first-child"], wide: 1024 },
+      "menu texts": { sel: ["[data-option] > :last-child", "[data-option] > :last-child > *"], wide: 1024 },
+      "history marks": { sel: ['[data-slot="timeline"] > li > :first-child'] },
+      "history titles and bubbles": {
+        sel: [
+          '[data-slot="timeline"] > li > :last-child > :first-child',
+          '[data-slot="timeline"] > li > :last-child > :last-child:not(:first-child) > *',
+        ],
+      },
+      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
+      "record, team and history": {
+        sel: ['[data-align="record"]', "[data-team]", '[data-slot="timeline"] > li'],
+      },
+    },
+  },
+  {
+    id: "knowly-answer",
+    figure: /^Knowly/,
+    fields: [0, 0],
+    // The lab's two buttons, the cited sentence's source, the closed sentence and the two closed lines (lock + text)
+    pairs: [6, 6],
+    columns: {
+      "answer sentences": { sel: ["[data-sentence] > :first-child"] },
+      "source lines": { sel: ["[data-line] > :first-child"] },
+      "source line texts": { sel: ["[data-line] > :nth-child(2)"] },
+      "source heads and lines": { sel: ["[data-doc] > :first-child", "[data-doc] [data-line]"] },
+    },
+  },
+  {
+    id: "home-message",
+    figure: /mensagem atravessa/,
+    fields: [0, 0],
+    pairs: [3, 3],
+    header: { actions: false },
+    columns: {
+      "message, track and record": { sel: ["[data-message]", "[data-track]", "[data-record]"] },
+      "record identity and first field": { sel: ['[data-align="record"]', "[data-field]:first-child"] },
+      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
+    },
+    rows: { "track marks": '[data-station] [data-slot="avatar"]', "track names": "[data-station] b" },
   },
 ];
 
@@ -267,9 +344,12 @@ for (const s of V3) {
         for (const { name, dy } of pairs) expect(dy, name).toBeLessThanOrEqual(1);
       });
 
-      test("the record header keeps the Domus DetailHeader geometry", async ({ page }) => {
-        await expectDetailHeader(page, s.id, width);
-      });
+      if (s.header) {
+        const withActions = s.header.actions;
+        test("the record header keeps the Domus DetailHeader geometry", async ({ page }) => {
+          await expectDetailHeader(page, s.id, width, withActions);
+        });
+      }
 
       test("the columns of each list share their left edge", async ({ page }) => {
         const cols = await page.evaluate(
@@ -291,6 +371,33 @@ for (const s of V3) {
           expect(Math.max(...xs) - Math.min(...xs), `${name}: ${xs.join(", ")}`).toBeLessThanOrEqual(1);
         }
       });
+
+      if (s.rows) {
+        const rows = s.rows;
+        test("the steps of the track share one centre line", async ({ page }) => {
+          const mids = await page.evaluate(
+            ({ id, rows }) => {
+              const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+              return Object.fromEntries(
+                Object.entries(rows).map(([name, sel]) => [
+                  name,
+                  [...live.querySelectorAll<HTMLElement>(sel)]
+                    .filter((e) => e.offsetParent !== null)
+                    .map((e) => {
+                      const r = e.getBoundingClientRect();
+                      return Math.round((r.top + r.height / 2) * 100) / 100;
+                    }),
+                ]),
+              );
+            },
+            { id: s.id, rows },
+          );
+          for (const [name, ys] of Object.entries(mids)) {
+            expect(ys.length, name).toBe(5);
+            expect(Math.max(...ys) - Math.min(...ys), `${name}: ${ys.join(", ")}`).toBeLessThanOrEqual(1);
+          }
+        });
+      }
     });
   }
 }

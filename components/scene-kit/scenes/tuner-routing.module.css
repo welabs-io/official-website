@@ -1,164 +1,364 @@
-/* CENA DO TUNER: MENU DA LIGAÇÃO E CONVERSA */
-/* Layout only (the lib paints Badge, Separator and the button; the kit's shared parts, components/scene-kit/
-   parts.module.css, paint the marks and their tones, the option states, the stacked text, the log times, the bubble of
-   the transcript and the seal). Every value is a token of app/lib.css (colour roles: control/portfolio/site-redesign/
-   scene-kit/colour-decisions.md): both panes are the cream paper split by the sand line; the option taken now and the
-   newest line take amber, what happened amber soft. */
+/* CENA DO TUNER: MENU DA LIGAÇÃO E REGISTRO */
+/* v3 (2026-10-22): the layout of the validated Relloo (relloo-inbox.module.css) on the Tuner's call. Every control is
+   the published lib's at its default size (e2e/lib-parity.spec.ts), the record header is the Domus DetailHeader, the
+   history is ONE lib Timeline; this sheet only places them, paints the scene's states (the chosen option, the arriving
+   entry) and choreographs each step. Every value is a token of app/lib.css. The alignment is held by numbers:
+   e2e/scene-kit-geometry.spec.ts. */
 .split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  background: var(--background);
+  position: relative;
+  height: auto;
+  min-height: 0;
+  background: var(--card);
 }
 
-/* A LIGAÇÃO E O MENU */
-.call {
+/* Amber budget across a step: a mark that stops being live drops its amber at once, only the one becoming live eases
+   in, so the outgoing and incoming marks never overlap into a fourth piece of amber */
+.split [data-slot="avatar-fallback"] {
+  transition: none;
+}
+.split [data-state="active"] [data-slot="avatar-fallback"] {
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+
+/* MENU DA LIGAÇÃO */
+/* The white list, split from the record by the line between panels only; rows separate by space, never a line */
+.list {
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  border-right: var(--rule) solid var(--border);
+  gap: var(--sp-2);
+  padding: var(--sp-5) var(--sp-3);
+  background: var(--card);
 }
-
-.caller {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-}
-.callerText {
-  flex: 1;
-}
-
 .paneHead {
-  padding: var(--sp-3) var(--sp-4) var(--sp-1);
+  display: flex;
+  min-height: var(--control-height-sm);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3);
 }
-
-.options {
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
   margin: 0;
-  padding: 0 0 var(--sp-2);
+  padding: 0;
   list-style: none;
 }
+/* The row (the site's RowButton, the whole row is the target): mark and text on one centre line; the shared rowStates
+   paint the ink veil on hover and amber-50 while active; the chosen option keeps the amber-50 of the selected row */
+.rows [data-state] {
+  min-height: var(--row-min);
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+}
+.rows [data-state="chosen"],
+.rows button[data-state="chosen"]:hover {
+  background-color: var(--selected);
+}
+.rowText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+/* The option and its key share one baseline; the option at the label weight, the key at the meta step */
+.rowTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--foreground);
+}
+.rowTop b {
+  font-weight: var(--weight-label);
+}
+.rowTop span {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-text);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.preview {
+  overflow: hidden;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+/* Before the menu is read the options wait in second plan; the active and chosen ones read in ink */
+.rows [data-state="waiting"] .rowTop b {
+  color: var(--muted-foreground);
+}
+.rows :is([data-state="active"], [data-state="chosen"]) .rowTop b {
+  font-weight: var(--weight-title);
+}
+.rows :is([data-state="active"], [data-state="chosen"]) .preview {
+  color: var(--foreground);
+}
 
-/* An option: its key and its team on one line, the team's status at the end */
-.option {
+/* REGISTRO DA LIGAÇÃO */
+.detail {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+}
+
+/* CABEÇALHO DO REGISTRO (DetailHeader DO DOMUS) */
+/* As the Relloo draws it: identity and text block on one centre (gap 12), the title (22/28, 600) with its status
+   minidot on its line, the meta under the title, the actions on the right; below sm the actions wrap under the block */
+.record {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.recordMain {
+  display: flex;
+  min-width: 0;
+  align-items: center;
   gap: var(--sp-3);
-  min-height: var(--row-min);
-  padding: var(--sp-2) var(--sp-4);
 }
-.option + .option {
-  border-top: var(--rule) solid var(--border);
-}
-/* Before the menu is read the options wait in second plan */
-.option[data-state="waiting"] .optionText > b {
+/* The Domus LogoThumb frame: the chrome well, the hairline, the control radius, the icon in the muted text */
+.identity {
+  display: inline-flex;
+  width: var(--mark-xl);
+  height: var(--mark-xl);
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-ctl);
+  background: var(--muted);
+  box-shadow: var(--edge-ring);
   color: var(--muted-foreground);
 }
-
-.optionLine {
+.identity > svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+.recordText {
   display: flex;
   min-width: 0;
-  align-items: center;
-  gap: var(--sp-3);
-}
-
-/* The key of an option is the digit pressed on the phone, in its mark */
-.key {
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-title);
-  font-variant-numeric: tabular-nums;
-}
-
-/* A CONVERSA DO PEDIDO */
-.conversation {
-  display: flex;
   flex-direction: column;
-  min-width: 0;
+  gap: var(--sp-1);
 }
-.head {
+.recordTop {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
+  gap: var(--sp-1) var(--sp-3);
 }
-.headTitle {
-  flex: 1;
+.recordTop > b {
+  font-size: var(--t-page-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+  color: var(--foreground);
+}
+.recordMeta {
   font-size: var(--t-label);
   line-height: var(--line-label);
-  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
 }
-
-.lines {
-  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+.recordMeta b {
+  font-weight: var(--weight-label);
+  color: var(--foreground);
 }
-.line {
-  display: grid;
-  row-gap: var(--sp-1);
-}
-.lineHead {
+.actions {
   display: flex;
+  flex: none;
   align-items: center;
   gap: var(--sp-2);
 }
-.lineText {
-  min-width: 0;
+
+/* The status minidot: the 8 px dot and the label (14/20, 500, ink), no fill; live amber, done green */
+.state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--foreground);
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
+}
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--indicator-muted);
+}
+.state[data-tone="live"] .dot {
+  background: var(--signal);
+  animation: pop var(--dur-3) var(--ease-spring) var(--dur-3) both;
+}
+.state[data-tone="done"] .dot {
+  background: var(--success);
+  animation: pop var(--dur-3) var(--ease-spring) var(--dur-3) both;
+}
+
+/* Below lg the options are the lib's outline buttons (md) under the record; the one routing the call and the chosen
+   one take the amber-50 veil of the selected row */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5) 0;
+}
+.chips [data-chip][data-state="waiting"] {
+  color: var(--muted-foreground);
+}
+.chips [data-chip]:is([data-state="active"], [data-state="chosen"]) {
+  background-color: var(--selected);
+}
+@media (min-width: 1024px) {
+  .chips {
+    display: none;
+  }
+}
+
+/* EQUIPE QUE ATENDE */
+/* The end of the trace: the team's mark and its name over its state, the line under the section */
+.route {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.team {
+  display: flex;
+  min-height: var(--row-min);
+  align-items: center;
+  gap: var(--sp-3);
+}
+.teamMark {
+  display: inline-flex;
+}
+.teamText {
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
+}
+.teamText > b {
+  font-weight: var(--weight-title);
+}
+.teamText[data-routed="false"] > b {
+  color: var(--muted-foreground);
+}
+.team .teamText > span {
   font-size: var(--t-label);
   line-height: var(--line-label);
 }
-/* What comes under a line starts on the line's text, past its mark */
-.lineMeta,
-.transcript {
-  margin-left: calc(var(--mark-xs) + var(--sp-2));
+
+/* HISTÓRICO DA LIGAÇÃO (ActivityFeed DO DOMUS) */
+/* ONE lib Timeline with its rail: each entry is the mark, the title row (what happened and its time) centred on it,
+   and, for a Message entry, the bubble under it */
+.history {
+  flex: 1;
+  padding: var(--sp-5);
 }
-.lineMeta {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  color: var(--muted-foreground);
+.markSlot {
+  display: inline-flex;
+}
+/* (.history before .entry: one class more than app/lib.css's Timeline rules, which these refine) */
+.history .entry > :last-child > :first-child {
+  justify-content: flex-start;
+  gap: var(--sp-2);
+}
+.history .entry > :last-child > :first-child > p {
+  font-weight: var(--weight-label);
+}
+.history .entry > :last-child > :first-child > time {
+  font-weight: var(--weight-text);
+}
+.entry > :last-child > :last-child:not(:first-child) {
+  margin-top: var(--sp-1);
+}
+.said {
+  margin: 0;
+}
+/* The rail grows down from the mark when the next entry lands; the rail into the entry arriving now is the drawn edge */
+.entry > :first-child > :last-child:not(:first-child) {
+  margin-bottom: var(--sp-1);
+  transform-origin: top;
+  transition: background-color var(--dur-3) var(--ease-out);
+  animation: grow var(--dur-3) var(--ease-out) var(--dur-1) both;
+}
+.entry:has(+ .fresh) > :first-child > :last-child:not(:first-child) {
+  background-color: var(--edge-drawn);
+}
+/* An entry lands: it rises a step and fades in, its amber mark pops on the spring */
+.entry {
+  animation: rise var(--dur-3) var(--ease-out) var(--dur-2) both;
+}
+.fresh [data-slot="avatar"] {
+  animation: pop var(--dur-3) var(--ease-spring) var(--dur-2) both;
 }
 
-/* The transcript: what was said on the call, a received message (the shared bubble) with its length over it */
-.transcript {
-  display: grid;
-  gap: var(--sp-1);
-  margin-block: 0;
-  margin-right: 0;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
 }
-.transcript span {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  color: var(--muted-foreground);
+/* What updates in place (the status, the team) never vanishes: it dims and steps up into place */
+@keyframes swap {
+  from {
+    opacity: 0.2;
+    transform: translateY(var(--sp-1));
+  }
+}
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
 }
 
 /* CELULAR */
-@media (max-width: 760px) {
-  .split {
-    grid-template-columns: minmax(0, 1fr);
+/* As the Relloo: the header wraps its actions under the block, the identity steps down to 32 px and the title to the
+   title step, so the title and its status keep one line with 24 px to spare */
+@media (max-width: 640px) {
+  .record {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
   }
-  .call {
-    border-right: 0;
-    border-bottom: var(--rule) solid var(--border);
+  .recordMain {
+    gap: var(--sp-2);
   }
-  .caller,
-  .head {
-    padding: var(--sp-3);
+  .identity {
+    width: var(--mark-md);
+    height: var(--mark-md);
   }
-  .caller {
-    flex-wrap: wrap;
+  .identity > svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
-  .paneHead,
-  .option,
-  .lines {
-    padding-inline: var(--sp-3);
+  .recordTop {
+    column-gap: var(--sp-2);
   }
-  /* The seal wraps under the title of the conversation, on the title's left edge */
-  .head {
-    flex-wrap: wrap;
+  .recordTop > b {
+    font-size: var(--t-title);
   }
-  .headTitle {
-    flex-basis: calc(100% - var(--mark-md) - var(--sp-3));
-  }
-  .seal {
-    margin-left: calc(var(--mark-md) + var(--sp-3));
+  .record,
+  .chips,
+  .route,
+  .history {
+    padding-inline: var(--sp-4);
   }
 }
