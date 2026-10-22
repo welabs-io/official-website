@@ -1,0 +1,179 @@
+/* CENA DO KNOWLY: RESPOSTA E FONTES */
+/* Layout only (the lib paints Badge, Separator and the buttons; the kit's shared parts, components/scene-kit/
+   parts.module.css, paint the marks and their tones, the profile and line states, the bubbles, the lists and the
+   seal). Every value is a token of app/lib.css (colour roles: control/portfolio/site-redesign/scene-kit/
+   colour-decisions.md): both panes are the cream paper split by the sand line, a source is a sand 100 card ringed by the
+   sand line. The sentence arriving and the line it cites take amber; what was cited amber soft; a closed line or a
+   barred data reads in sand 700 behind its lock, never amber. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  background: var(--background);
+}
+
+/* A PERGUNTA E A RESPOSTA */
+.answer {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: var(--rule) solid var(--border);
+}
+
+.profiles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+.chips {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.thread {
+  padding: var(--sp-4);
+}
+
+/* The question asked: a sent message, on the right of the thread */
+.ask {
+  justify-self: end;
+  align-self: flex-end;
+  margin: 0;
+}
+
+/* A sentence of the answer: its source number (or its lock) and its text on one centre line */
+.sentence {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.number {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+}
+.sentenceText {
+  min-width: 0;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--foreground);
+}
+.sentenceText[data-blocked="true"] {
+  color: var(--muted-foreground);
+}
+
+/* AS FONTES */
+.sources {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.headTitle {
+  flex: 1;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+
+.sourceList {
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+}
+
+/* A source: a sand 100 card, its title over its lines */
+.source {
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+  overflow: hidden;
+}
+.sourceHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.sourceHead b {
+  flex: 1;
+  font-weight: var(--weight-title);
+}
+
+.lines {
+  margin: 0;
+  padding: 0 0 var(--sp-1);
+  list-style: none;
+}
+/* A line of a source: a small bullet (or a lock) and its text; cited lines read in ink, the others in sand 700 */
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+}
+.line[data-state="active"],
+.line[data-state="done"] {
+  color: var(--foreground);
+}
+.lineIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-md);
+  height: var(--line-label);
+}
+.bullet {
+  width: var(--sp-1);
+  height: var(--sp-1);
+  border-radius: var(--r-dot);
+  background: var(--indicator-muted);
+}
+[data-state="active"] .bullet {
+  background: var(--primary);
+}
+[data-state="done"] .bullet {
+  background: var(--foreground);
+}
+.barred {
+  margin-left: auto;
+}
+
+/* CELULAR */
+/* The sources go under the answer */
+@media (max-width: 760px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .answer {
+    border-right: 0;
+    border-bottom: var(--rule) solid var(--border);
+  }
+  .profiles,
+  .thread,
+  .head,
+  .sourceList {
+    padding-inline: var(--sp-3);
+  }
+  .head {
+    flex-wrap: wrap;
+  }
+  .headTitle {
+    flex-basis: calc(100% - var(--mark-md) - var(--sp-3));
+  }
+  .seal {
+    margin-left: calc(var(--mark-md) + var(--sp-3));
+  }
+}

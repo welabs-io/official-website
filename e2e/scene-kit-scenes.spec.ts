@@ -49,6 +49,14 @@ const SCENES: Entry[] = [
     pairs: 9,
     cycleMs: 7500,
   },
+  {
+    id: "knowly-answer",
+    figure: /^Knowly/,
+    trigger: /^Financeiro/,
+    final: "done",
+    pairs: 9,
+    cycleMs: 7000,
+  },
 ];
 
 // The icon/text pairs of the live layer whose centres are off by more than 1 px, and how many were measured

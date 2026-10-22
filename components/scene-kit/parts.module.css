@@ -200,6 +200,11 @@
 [data-fresh="true"] .bubble {
   box-shadow: var(--edge-ring-active);
 }
+/* Sent (what the visitor of the screen asked): one step darker and neutral, no ring, ink text */
+.bubble[data-kind="sent"] {
+  background: var(--secondary);
+  box-shadow: none;
+}
 .bubble[data-kind="system"] {
   background: transparent;
   color: var(--muted-foreground);
