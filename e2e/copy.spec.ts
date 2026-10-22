@@ -23,14 +23,8 @@ const PEOPLE = new RegExp(
   `(?:^|[^\\p{L}])(${["Bia", "Souza", "Lima", "Lia", ...rules.persons].join("|")})(?=[^\\p{L}]|$)`,
   "u",
 );
-const BRANDS = [
-  "WhatsApp",
-  "Discord",
-  "Google Agenda",
-  "Banco Inter",
-  "Asaas",
-  "Omie",
-];
+// v3 (F1 review): the third-party brands come from the one list of copy-rules.json
+const BRANDS = rules.vendors;
 
 for (const path of PATHS)
   test(`copy of ${path}`, async ({ page }) => {

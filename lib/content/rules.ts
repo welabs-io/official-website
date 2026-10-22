@@ -56,3 +56,23 @@ export const stackViolation = (
   text: string,
   tolerated: readonly Known[] = KNOWN_STACK,
 ) => firstOf(STACK, text, tolerated);
+
+// MARCAS DE TERCEIROS
+// v3 (F1): a third-party brand is allowed on a page only inside brackets, as an example of its category; the first one
+// outside brackets, or null. Drawn labels (scenes, plays, brand openings) never name one: `vendorIn` finds any, without
+// case, for the sources checked as a whole.
+export const VENDORS: readonly string[] = rules.vendors;
+const VENDOR = listMatcher(rules.vendors);
+export function vendorViolation(text: string): string | null {
+  for (const m of text.matchAll(VENDOR)) {
+    // The match starts on the edge before the name (it may be the bracket itself)
+    const before = text.slice(0, m.index + m[0].length - m[1].length);
+    if (before.lastIndexOf("(") <= before.lastIndexOf(")")) return m[1];
+  }
+  return null;
+}
+const VENDOR_ANY = new RegExp(
+  `(?:^|[^\\p{L}])(${rules.vendors.map(escape).join("|")})(?=[^\\p{L}]|$)`,
+  "iu",
+);
+export const vendorIn = (text: string) => text.match(VENDOR_ANY)?.[1] ?? null;

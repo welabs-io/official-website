@@ -178,10 +178,13 @@
   background: var(--s-win);
   box-shadow: var(--s-elev-2);
 }
+/* v3 (F1 review): the record on the conversation ("Contato 4821") never breaks; when the head is too narrow for the
+   record and the pill side by side, the pill goes under them (it broke the key in two lines at 390) */
 .threadHead {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem 0.625rem;
   padding: 0.75rem 0.875rem;
   border-bottom: 1px solid var(--s-hair);
 }
@@ -196,9 +199,11 @@
 }
 .who {
   display: grid;
-  flex: 1;
-  min-width: 0;
+  flex: 1 0 auto;
   line-height: 1.2;
+}
+.who .key {
+  white-space: nowrap;
 }
 .who > span {
   font-size: var(--s-t-meta);
@@ -340,12 +345,6 @@
   }
   .phone {
     display: none;
-  }
-}
-/* v2.1: a phone-wide card (under 20 rem) puts the pill of the thread under the name, so it never leaves the thread */
-@container scn (max-width: 20rem) {
-  .threadHead {
-    flex-wrap: wrap;
   }
 }
 @container scn (max-height: 27rem) {

@@ -13,6 +13,7 @@ import {
   copyViolation,
   personViolation,
   stackViolation,
+  vendorViolation,
 } from "@/lib/content/rules";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/(site)/page";
@@ -96,6 +97,8 @@ describe("little text, no slogan", () => {
       const text = `${visibleText(html)} ${hiddenText(html)}`;
       expect(personViolation(text)).toBeNull();
       expect(stackViolation(text)).toBeNull();
+      // v3 (F1 review): a third-party brand only inside brackets, as an example of its category
+      expect(vendorViolation(text)).toBeNull();
     },
   );
 
@@ -239,7 +242,8 @@ describe("the home", () => {
       visibleText(m[0]),
     );
     expect(names).toEqual(["AWS", "Google Cloud", "DigitalOcean", "HostDime"]);
-    expect(strip.match(/<img [^>]*src="\/platforms\//g)).toHaveLength(4);
+    // Each mark is a mask over the token of the names (F1 review), one file per cloud
+    expect(strip.match(/--src:url\(&quot;\/platforms\/[^&]+&quot;\)/g)).toHaveLength(4);
   });
 
   it("every product shows its standalone logo; the seal is only the identity of a product page", () => {

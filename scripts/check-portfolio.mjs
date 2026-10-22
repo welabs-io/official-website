@@ -297,6 +297,12 @@ for (const html of pages.values())
     /(?:src|href)="(\/(?:brands|clients|platforms|fonts)\/[^"]+)"/g,
   ))
     assets.add(src);
+// v3 (F1 review): the marks of the platforms are CSS masks, so their files are in a style attribute
+for (const html of pages.values())
+  for (const [, src] of html.matchAll(
+    /url\((?:&quot;|")?(\/platforms\/[^"&)]+)(?:&quot;|")?\)/g,
+  ))
+    assets.add(src);
 for (const src of assets) await get(src);
 
 // REDIRECIONAMENTOS: um salto, 308, destino final com 200

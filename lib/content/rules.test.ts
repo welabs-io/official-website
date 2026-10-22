@@ -11,6 +11,8 @@ import {
   copyViolation,
   personViolation,
   stackViolation,
+  vendorIn,
+  vendorViolation,
 } from "./rules";
 
 describe("copy rules", () => {
@@ -79,6 +81,21 @@ describe("copy rules", () => {
     ["Base em Frappe", "Frappe"],
   ])("finds the internal stack in %s", (text, found) => {
     expect(stackViolation(text, [])).toBe(found);
+  });
+
+  // v3 (F1 review): a brand only inside brackets, as an example of its category
+  it.each([
+    ["Mensagens (WhatsApp oficial)", null],
+    ["Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).", null],
+    ["WhatsApp e voz", "WhatsApp"],
+    ["Comunidades (Discord) e Discord solto", "Discord"],
+  ])("vendorViolation(%s) is %s", (text, found) => {
+    expect(vendorViolation(text)).toBe(found);
+  });
+
+  it("vendorIn finds a brand anywhere, without case", () => {
+    expect(vendorIn("icon: whatsapp")).toBe("whatsapp");
+    expect(vendorIn("Mensagem, Voz, Comunidade")).toBeNull();
   });
 
   it("every known failure names a value of its list and the phase that removes it", () => {

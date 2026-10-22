@@ -451,8 +451,9 @@ export const HomeContact = () => (
 );
 
 // ONDE RODAMOS
-// v3 (F1): the four clouds only, each mark in one tone beside its name, all at one height; the width follows the
-// `ratio` of what the mark shows (lib/partners.ts), and a `symbol` is cut from the left of its logo file.
+// v3 (F1): the four clouds only, all marks at one height and in the token of their names (a CSS mask over the file's
+// alpha, never its own colours); the width follows the `ratio` of what the mark shows (lib/partners.ts). One rule for
+// the name: beside a pure symbol it shows, and a wordmark, which spells it already, keeps it for assistive technology.
 export function Platforms() {
   return (
     <div className={`${shell.wrap} ${styles.platforms}`}>
@@ -460,17 +461,22 @@ export function Platforms() {
       <ul className={styles.plat}>
         {PLATFORM_LOGOS.map((p) => (
           <li key={p.name}>
-            <span className={styles.mark}>
-              <img
-                src={p.src}
-                alt=""
-                data-symbol={"symbol" in p ? "" : undefined}
-                style={{ "--ratio": p.ratio } as React.CSSProperties}
-                loading="lazy"
-                decoding="async"
+            <span className={styles.slot}>
+              <span
+                className={styles.mark}
+                data-symbol={p.symbol ? "" : undefined}
+                style={
+                  {
+                    "--src": `url("${p.src}")`,
+                    "--ratio": p.ratio,
+                    "--scale": p.scale ?? 1,
+                  } as React.CSSProperties
+                }
               />
             </span>
-            {p.name}
+            <span className={p.wordmark ? styles.srOnly : undefined}>
+              {p.name}
+            </span>
           </li>
         ))}
       </ul>

@@ -1,7 +1,7 @@
 // COREOGRAFIA DA ABERTURA CONCEITUAL DO RELLOO, VERSÃO 1.0.1 (fichas e conversas que se encaixam nos dois "o" sobrepostos do sinal)
 // 1.0.1: the connector between the two cards of a stack is drawn after the cards (it was hidden under their edges and read as a stray hourglass); timing and motion are unchanged.
 // Same arc as the approved openings (magneto-intro 1.3.0, domus-intro 1.0.1), with the Relloo idea: while the camera is close, four
-// contact cards (people) arrive in two groups and each message chip (WhatsApp, voice, site chat, e-mail) finds ITS card and docks into
+// contact cards (records) arrive in two groups and each message chip (message, voice, site chat, e-mail) finds ITS card and docks into
 // it; the card lights up with a short history line. The camera pulls back and reveals the two big "o" rings of the Relloo sign, one
 // around each group (graphite/white on the left, amber on the right). The rings slide together and overlap by exactly one stroke
 // (clack, short amber flash, cards absorbed by shrinking and fading on the same 0.16 s as the pull, no pop). Then the pair shrinks
@@ -16,6 +16,9 @@
 // Port of the accepted choreography 1.0.1 for the site (components/intro/intro-run.ts): light palette (kit.js), eases
 // without GSAP, the logo text and the endorsed box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
 // of the light endorsed logo, no `build`. Motion, geometry and times are those of the round.
+// v3 (F1): no fictitious person and no vendor name (plano.md 1.5, the copy rules). Each card is a contact record
+// ("Contato 4821"...), its round mark draws the glyph of its channel instead of a face, and the chips name the category of
+// the channel ("Mensagem", not the brand). Motion, geometry and times are unchanged.
 import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', PANEL = LIGHT.card, PANEL2 = LIGHT.panel2, EDGE = LIGHT.edge, INK = LIGHT.ink;
@@ -79,19 +82,20 @@ import { parseEase, LIGHT } from './kit.js';
     return outer + 'Z' + lg.hole + 'Z';
   }
 
-  // FICHAS E CONVERSAS (visual dos filmes do Relloo: ficha de pessoa, bolha de canal; nomes e rótulos curtos, dados DEMO)
+  // FICHAS E CONVERSAS (visual dos filmes do Relloo: registro de contato, bolha de canal; rótulos curtos, dados DEMO)
   var ICON = {
-    whatsapp: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>',
+    chat: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>',
     voice: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
     site: '<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M8 21h8"/>',
     mail: '<rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/>'
   };
-  // group 0 sits in the white ring (left), group 1 in the amber ring (right); slot 0 is the top card of a stack
+  // group 0 sits in the white ring (left), group 1 in the amber ring (right); slot 0 is the top card of a stack.
+  // `record` is the contact id the card shows (never a person's name), `label` the category of its channel
   var CARDS = [
-    {name: 'Ana', label: 'WhatsApp', icon: 'whatsapp', group: 0, slot: 0, skin: '#F2C6A8', body: '#FFB020'},
-    {name: 'Carla', label: 'Chat do site', icon: 'site', group: 1, slot: 0, skin: '#C99A7A', body: '#8A8FA0'},
-    {name: 'Bruno', label: 'Voz', icon: 'voice', group: 0, slot: 1, skin: '#E8B894', body: '#6F7A92'},
-    {name: 'Davi', label: 'E-mail', icon: 'mail', group: 1, slot: 1, skin: '#B98A6A', body: '#5E6678'}
+    {record: 'Contato 4821', label: 'Mensagem', icon: 'chat', group: 0, slot: 0},
+    {record: 'Contato 4822', label: 'Chat do site', icon: 'site', group: 1, slot: 0},
+    {record: 'Contato 4823', label: 'Voz', icon: 'voice', group: 0, slot: 1},
+    {record: 'Contato 4824', label: 'E-mail', icon: 'mail', group: 1, slot: 1}
   ];
 
   var uid = 0;
@@ -141,8 +145,9 @@ import { parseEase, LIGHT } from './kit.js';
       D.dots = [0, 1, 2].map(function (k) { return D.cland + 0.06 + 0.1 * k; });
       D.off = [0, D.slot ? 120 : -120]; D.bow = D.group ? -26 : 26;     // cards come from above and below, chips from the inner side
       s += '<g class="card" opacity="0"><rect class="cb" x="' + (-hw) + '" y="' + (-hh) + '" width="' + CARD_W + '" height="' + CARD_H + '" rx="24" fill="' + PANEL + '" stroke="' + EDGE + '" stroke-width="3"/>' +
-        '<g transform="translate(' + (m * -106) + ' -34)"><circle r="22" fill="' + PANEL2 + '"/><circle cx="0" cy="-5" r="8.5" fill="' + D.skin + '"/><path d="M-13 15c1.5-8.5 7.5-13 13-13s11.5 4.5 13 13z" fill="' + D.body + '"/></g>' +
-        '<text x="' + (m * -76) + '" y="-25" text-anchor="' + (m > 0 ? 'start' : 'end') + '" font-size="26" font-weight="600" fill="' + INK + '">' + D.name + '</text>' +
+        // The round mark of the card: the glyph of its channel (24 px box, centred), never a face
+        '<g transform="translate(' + (m * -106) + ' -34)"><circle r="22" fill="' + PANEL2 + '"/><g transform="translate(-10 -10) scale(0.8333)" fill="none" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' + ICON[D.icon] + '</g></g>' +
+        '<text x="' + (m * -76) + '" y="-25" text-anchor="' + (m > 0 ? 'start' : 'end') + '" font-size="26" font-weight="600" fill="' + INK + '">' + D.record + '</text>' +
         '<line class="tl" x1="-116" x2="116" y1="55" y2="55" stroke="' + EDGE + '" stroke-width="4" stroke-linecap="round"/>' +
         '<line class="tf" x1="-116" x2="-116" y1="55" y2="55" stroke="' + AMBER + '" stroke-width="4" stroke-linecap="round"/>' +
         '<circle class="td" cx="-116" cy="55" r="7" fill="' + EDGE + '"/><circle class="td" cx="0" cy="55" r="7" fill="' + EDGE + '"/><circle class="td" cx="116" cy="55" r="7" fill="' + EDGE + '"/></g>';

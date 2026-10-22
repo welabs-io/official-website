@@ -304,7 +304,10 @@
   border-radius: var(--r-win);
   background: var(--surface);
 }
-.effects p {
+/* F1 review (P-01, P-02): the caption only, never the paragraphs and list items of the scene inside (`.effects p` gave
+   the composer of the Tuner scene 18/600, and `.effects li` on a phone gave each message of the scene 88 % of the
+   list, so the call card rose over the head of the conversation) */
+.effects > li > p {
   margin-top: var(--sp-3);
   font-size: var(--text-lg);
   font-weight: 600;
@@ -387,9 +390,9 @@
 
 /* ONDE RODAMOS */
 /* v3 (F1): the four clouds in one row, the label on the left in ink (the names are muted, so the label reads as the
-   head of the row and not as a fifth item); every mark one tone (the ink at 80 %) and one height (--mark-h), its width
-   from its own ratio, the name 12 px after it. On a phone (2 × 2) the mark is centred in a slot of one width (--mark-w,
-   the widest mark), so the names line up in each column. A `symbol` is the left of a wider logo file. */
+   head of the row and not as a fifth item); every mark in the muted token of the names and at one height (--mark-h,
+   times its optical --scale), its width from its own ratio, the name 12 px after a pure symbol. On a phone (2 × 2) the
+   mark is centred in a slot of one width (--mark-w, the widest mark), so the names line up in each column. */
 .platforms {
   --mark-h: 24px;
   --mark-w: 40px;
@@ -403,10 +406,13 @@
   font-size: var(--text-sm);
   font-weight: 600;
 }
+/* F1 review: the items take the width of what they show and the row spreads them to both edges, so the gutters between
+   them are equal and the strip ends on the edge of the content (equal cells left 153/132/140 px of gutter) */
 .plat {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--sp-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-5);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -414,7 +420,6 @@
 .plat li {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--sp-3);
   color: var(--mute);
   font-size: var(--text-sm);
@@ -422,22 +427,22 @@
   line-height: var(--lh-heading);
   white-space: nowrap;
 }
-.mark {
+.slot {
   display: grid;
   flex: none;
   place-items: center;
 }
-.plat img {
-  width: calc(var(--mark-h) * var(--ratio));
-  height: var(--mark-h);
-  max-width: none;
-  object-fit: contain;
-  filter: brightness(0);
-  opacity: 0.8;
+/* The mark: the file's alpha as a mask over the token of the names (currentColor), never the file's own colours (a
+   brightness filter left a cold neutral grey on the cream) */
+.mark {
+  width: calc(var(--mark-h) * var(--scale) * var(--ratio));
+  height: calc(var(--mark-h) * var(--scale));
+  background: currentColor;
+  mask: var(--src) center / contain no-repeat;
 }
-.plat img[data-symbol] {
-  object-fit: cover;
-  object-position: left center;
+.mark[data-symbol] {
+  mask-position: left center;
+  mask-size: auto 100%;
 }
 
 /* ABERTURA DA PÁGINA DE PRODUTO */
@@ -652,7 +657,7 @@
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--sp-5);
   }
-  .effects li {
+  .effects > li {
     flex: 0 0 88%;
     scroll-snap-align: start;
   }
@@ -682,13 +687,11 @@
     gap: var(--sp-4);
   }
   .plat {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--sp-4);
   }
-  .plat li {
-    justify-content: flex-start;
-  }
-  .mark {
+  .slot {
     width: var(--mark-w);
   }
 }
