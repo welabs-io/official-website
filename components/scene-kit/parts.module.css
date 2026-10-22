@@ -111,23 +111,23 @@
 /* A row of the site's soft ActionButtons that follow a state, the row in small: waiting keeps the soft fill with its
    label in sand 700, done is a filled amber soft chip, active the amber wash with the leading bar. Only state paint,
    never the control's edge (app/lib.css CONTROLES). */
-.chipStates [data-state] {
+.choiceStates [data-state] {
   background-image: linear-gradient(var(--primary), var(--primary));
   background-repeat: no-repeat;
   background-size: 0 100%;
   transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
 }
-.chipStates [data-state]:hover,
-.chipStates [data-state]:active {
+.choiceStates [data-state]:hover,
+.choiceStates [data-state]:active {
   background-color: var(--surface-raised);
 }
-.chipStates [data-state="waiting"] {
+.choiceStates [data-state="waiting"] {
   color: var(--muted-foreground);
 }
-.chipStates [data-state="done"] {
+.choiceStates [data-state="done"] {
   background-color: var(--primary-soft);
 }
-.chipStates [data-state="active"] {
+.choiceStates [data-state="active"] {
   background-color: var(--surface-raised);
   background-size: var(--bar-active) 100%;
 }
@@ -168,14 +168,16 @@
 .meta > b {
   font-weight: var(--weight-title);
 }
-.meta > time,
+.meta > time {
+  font-size: var(--t-micro);
+  color: var(--muted-foreground);
+}
+/* The time that opens a log line: tabular, so the column of times stays straight */
 .time {
+  margin-right: var(--sp-2);
   font-size: var(--t-micro);
   font-variant-numeric: tabular-nums;
   color: var(--muted-foreground);
-}
-.time {
-  margin-right: var(--sp-2);
 }
 
 /* BOLHA */

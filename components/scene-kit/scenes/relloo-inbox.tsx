@@ -30,6 +30,7 @@ import {
 import { STORY } from "@/lib/scenes/story";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
+import p from "../parts.module.css";
 import r from "./relloo-inbox.module.css";
 
 // ROTEIRO DA CENA
@@ -129,14 +130,20 @@ function Entry({
 }) {
   return (
     <div className={r.entry} data-fresh={fresh} data-kind={kind} data-align="entry">
-      <span className={r.mark} aria-hidden="true">
+      <span
+        className={`${p.mark} ${p.markSm}`}
+        data-tone={fresh ? "active" : undefined}
+        aria-hidden="true"
+      >
         <Icon size={14} strokeWidth={2} />
       </span>
-      <span className={r.meta}>
+      <span className={p.meta}>
         <b>{label}</b>
         {time ? <time>{time}</time> : null}
       </span>
-      <div className={r.said}>{children}</div>
+      <div className={`${p.bubble} ${r.said}`} data-kind={kind}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -151,20 +158,20 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
     <SplitView detailOpen listWidth="17rem" className={r.split}>
       {/* The inbox of the channels: each row is a control that replays the scene from its channel */}
       <SplitViewList aria-label={COPY.channels} className={r.list}>
-        <p className={r.paneHead}>
+        <p className={`${p.paneHead} ${r.paneHead}`}>
           <span>{COPY.channels}</span>
           <Badge variant="neutral" appearance="soft">
             {CHANNELS.length}
           </Badge>
         </p>
-        <ul className={r.rows}>
+        <ul className={`${p.rowStates} ${r.rows}`}>
           {CHANNELS.map((ch) => {
             const Icon = ch.icon;
             return (
               <li key={ch.step}>
                 <RowButton
                   icon={<Icon strokeWidth={2} />}
-                  markClassName={r.rowMark}
+                  markClassName={`${p.mark} ${p.markMd}`}
                   data-state={stateOf(scene, ch)}
                   data-channel={ch.step}
                   onClick={() => scene.take(ch.step)}
@@ -186,15 +193,15 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
       {/* The record of the contact: one history, whatever the channel */}
       <SplitViewDetail aria-label={COPY.history} className={r.detail}>
         <div className={r.record} data-align="record">
-          <span className={r.recordMark} aria-hidden="true">
+          <span className={`${p.mark} ${p.markLg}`} data-tone="subject" aria-hidden="true">
             <Contact size={18} strokeWidth={2} />
           </span>
-          <span className={r.recordText}>
+          <span className={`${p.stack} ${p.stackLead} ${r.recordText}`}>
             <b>{STORY.who}</b>
             <span>{STORY.order}</span>
           </span>
           {merged ? (
-            <Badge variant="primary" appearance="soft" className={r.seal} data-merged="">
+            <Badge variant="primary" appearance="soft" className={`${p.seal} ${r.seal}`} data-merged="">
               <Check size={14} strokeWidth={2.5} aria-hidden="true" />
               {COPY.merged}
             </Badge>
@@ -202,7 +209,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
         </div>
 
         {/* Below lg the inbox pane is off screen (SplitView shows one pane): the channels become chips */}
-        <div className={r.chips}>
+        <div className={`${p.choiceStates} ${r.chips}`}>
           {CHANNELS.map((ch) => {
             const Icon = ch.icon;
             return (
@@ -225,7 +232,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
             under its own key, in the same list as the others, so it turns into that message in place (as a separate
             child it got another key from the lib's Children.toArray, and its exit stacked with the message's enter for
             the length of the exit, pushing the window 48 to 80 px taller) */}
-        <AnimatedList className={r.history} distance={10} duration={0.32}>
+        <AnimatedList className={`${p.list} ${r.history}`} distance={10} duration={0.32}>
           <Entry
             key="created"
             icon={Package}
@@ -260,7 +267,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
 
         {/* The composer is inert here: a soft send button, so the darkest mass of the window is not a control the
             scene never uses */}
-        <div className={r.composer} aria-hidden="true" inert>
+        <div className={`${p.ruleTop} ${r.composer}`} aria-hidden="true" inert>
           <TextField
             icon={<Reply />}
             action={{ icon: <SendHorizontal />, label: COPY.send, tabIndex: -1 }}

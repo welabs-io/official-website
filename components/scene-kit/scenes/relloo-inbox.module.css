@@ -1,12 +1,9 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
 /* Layout only: the lib and the site primitives paint the controls (RowButton, ActionButton, TextField, Badge: their
-   look is app/lib.css CONTROLES), this sheet places them, draws the marks and the state paint of the scene.
-   Colours are the role tokens of app/lib.css, one role each (decisions: control/portfolio/site-redesign/scene-kit/
-   colour-decisions.md): the inbox is the sand 100 shell, the history is the cream 50 paper, sand 200 (--border) only
-   draws lines and rings, ink for what is read first, sand 700 (--muted-foreground) for text and icons that come second
-   and never as a fill. Amber (--primary) marks the one channel arriving now; amber soft (--primary-soft) a channel that
-   arrived. Every icon sits in a box whose centre is the centre of the line it labels (one flex line, align center), so
-   text and icon share one axis. */
+   look is app/lib.css CONTROLES), the kit's shared parts (components/scene-kit/parts.module.css) paint the marks, the
+   row and chip states, the stacked text, the meta line and the bubbles; this sheet places them. Every value is a token
+   of app/lib.css (decisions: control/portfolio/site-redesign/scene-kit/colour-decisions.md). Every icon sits in a box
+   whose centre is the centre of the line it labels (one flex line, align center), so text and icon share one axis. */
 .split {
   height: auto;
   min-height: 0;
@@ -14,7 +11,7 @@
 
 /* INBOX DOS CANAIS */
 /* The list takes the cream paper of the history (operator, 2026-10-22: the sand 100 read as amber here); the pane
-   line alone separates them, and the active row rises to white */
+   line alone separates them, and the active row takes the amber wash */
 .list {
   background: var(--background);
 }
@@ -24,14 +21,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);
-  margin: 0;
   padding: var(--sp-3) var(--sp-4);
-  font-size: var(--t-micro);
-  line-height: 20px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted-foreground);
 }
 
 .rows {
@@ -41,57 +31,13 @@
 }
 
 .rows > li + li {
-  border-top: 1px solid var(--border);
+  border-top: var(--rule) solid var(--border);
 }
 
-/* The row (the site's RowButton, the lib's quiet Button) is never filled with amber: amber is only its 3 px leading bar and its mark. While its
-   channel arrives the row takes the cream paper of the history (the selected row joins the pane it opens); hover and
-   press take the same cream instead of the lib's ghost hover (ink at 18 %, on which the sand 700 text drops to about
-   3.9:1). The bar is a background image, not a box-shadow, so the lib's focus ring (a box-shadow) still shows. */
+/* The row (the site's RowButton) lays its mark and text on one centre line; its state paint is the shared rowStates */
 .rows [data-state] {
   gap: var(--sp-3);
   align-items: center;
-  background-image: linear-gradient(var(--primary), var(--primary));
-  background-repeat: no-repeat;
-  background-size: 0 100%;
-  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
-}
-.rows [data-state]:hover,
-.rows [data-state]:active,
-.rows [data-state="active"] {
-  background-color: var(--surface-raised);
-}
-.rows [data-state="active"] {
-  background-size: 3px 100%;
-}
-
-/* A neutral mark is a ring of sand line on a light fill, its icon in sand 700; an amber mark has no ring and an ink
-   icon (sand 700 never sits on amber) */
-.rowMark,
-.recordMark,
-.mark {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-dot);
-  background: var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
-  color: var(--muted-foreground);
-  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
-    color var(--dur-2) var(--ease-out);
-}
-
-/* At rest (waiting or done) a channel mark is the same neutral mark as the conversation's (operator, 2026-10-22);
-   only the active channel turns amber, like the fresh entry of the history */
-.rowMark {
-  width: 32px;
-  height: 32px;
-}
-[data-state="active"] > .rowMark {
-  background: var(--primary);
-  box-shadow: none;
-  color: var(--foreground);
 }
 
 .rowText {
@@ -107,17 +53,17 @@
   justify-content: space-between;
   gap: var(--sp-2);
   font-size: var(--t-label);
-  line-height: 20px;
+  line-height: var(--line-label);
   color: var(--foreground);
 }
 .rowTop b {
-  font-weight: 600;
+  font-weight: var(--weight-title);
 }
 .rowTop time,
 .preview {
   font-size: var(--t-micro);
-  line-height: 16px;
-  font-weight: 400;
+  line-height: var(--line-micro);
+  font-weight: var(--weight-text);
   color: var(--muted-foreground);
 }
 .preview {
@@ -143,33 +89,8 @@
   padding: var(--sp-4) var(--sp-5);
 }
 
-/* The contact is the subject of the pane: its icon reads in ink */
-.recordMark {
-  width: 40px;
-  height: 40px;
-  color: var(--foreground);
-}
-
 .recordText {
-  display: flex;
-  min-width: 0;
   flex: 1;
-  flex-direction: column;
-}
-.recordText b {
-  font-size: var(--t-lead);
-  line-height: 24px;
-  font-weight: 600;
-}
-.recordText span {
-  font-size: var(--t-micro);
-  line-height: 16px;
-  color: var(--muted-foreground);
-}
-
-.seal {
-  gap: var(--sp-1);
-  flex: none;
 }
 
 /* Below lg the channels are chips under the record (the inbox pane is off screen); at lg and up the inbox shows them */
@@ -179,30 +100,6 @@
   gap: var(--sp-2);
   padding: 0 var(--sp-5) var(--sp-4);
 }
-/* A chip (the site's ActionButton, soft, no edge: app/lib.css CONTROLES) is the row in small and follows it: never
-   filled with amber. Waiting keeps the soft fill with its label in sand 700 (5.25:1), arrived is a filled amber soft
-   chip (like the seal), arriving takes the amber wash of the selected row with the 3 px amber leading bar; hover and
-   press take that same wash instead of the lib's ink at 22 %. Only state paint lives here, never the control's edge. */
-.chips [data-state] {
-  background-image: linear-gradient(var(--primary), var(--primary));
-  background-repeat: no-repeat;
-  background-size: 0 100%;
-  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
-}
-.chips [data-state]:hover,
-.chips [data-state]:active {
-  background-color: var(--surface-raised);
-}
-.chips [data-state="waiting"] {
-  color: var(--muted-foreground);
-}
-.chips [data-state="done"] {
-  background-color: var(--primary-soft);
-}
-.chips [data-state="active"] {
-  background-color: var(--surface-raised);
-  background-size: 3px 100%;
-}
 @media (min-width: 1024px) {
   .chips {
     display: none;
@@ -210,68 +107,20 @@
 }
 
 .history {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
   padding: var(--sp-4) var(--sp-5);
 }
 
 /* One entry: the mark and the meta line share the first row (same height, one centre); what was said sits below */
 .entry {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  grid-template-rows: 28px auto;
+  grid-template-columns: var(--mark-sm) minmax(0, 1fr);
+  grid-template-rows: var(--mark-sm) auto;
   column-gap: var(--sp-3);
   row-gap: var(--sp-1);
 }
 
-.mark {
-  width: 28px;
-  height: 28px;
-}
-.entry[data-fresh="true"] .mark {
-  background: var(--primary);
-  box-shadow: none;
-  color: var(--foreground);
-}
-
-.meta {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--t-label);
-  line-height: 20px;
-}
-.meta b {
-  font-weight: 600;
-}
-.meta time {
-  font-size: var(--t-micro);
-  color: var(--muted-foreground);
-}
-
-/* What was said reads as a message, as wide as its text, never as a field: an incoming message is a sand 100 bubble
-   ringed by the sand line on the cream paper (amber ring while it arrives); a record event (system) has no fill and
-   reads in sand 700, so it never passes for something the contact said */
 .said {
   grid-column: 2;
-  justify-self: start;
-  max-width: 100%;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-card);
-  background: var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
-  font-size: var(--t-label);
-  line-height: 20px;
-  color: var(--foreground);
-  transition: box-shadow var(--dur-2) var(--ease-out);
-}
-.entry[data-fresh="true"] .said {
-  box-shadow: inset 0 0 0 1px var(--primary);
-}
-.entry[data-kind="system"] .said {
-  background: transparent;
-  color: var(--muted-foreground);
 }
 
 .typing {
@@ -284,7 +133,6 @@
 .composer {
   margin-top: auto;
   padding: var(--sp-3) var(--sp-5) var(--sp-4);
-  border-top: 1px solid var(--border);
 }
 
 @media (max-width: 640px) {
@@ -301,9 +149,9 @@
     flex-wrap: wrap;
   }
   .recordText {
-    flex-basis: calc(100% - 40px - var(--sp-3));
+    flex-basis: calc(100% - var(--mark-lg) - var(--sp-3));
   }
   .seal {
-    margin-left: calc(40px + var(--sp-3));
+    margin-left: calc(var(--mark-lg) + var(--sp-3));
   }
 }
