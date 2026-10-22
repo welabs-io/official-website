@@ -1,0 +1,227 @@
+/* VOCABULÁRIO COMUM DAS CENAS DO KIT */
+/* The recurring pieces of every kit scene, declared once (operator, 2026-10-22: one change reflects on every scene).
+   A scene composes them in its markup (className={`${p.mark} ${p.markMd}`}) and keeps in its own sheet only its
+   layout. Every value is a token of app/lib.css (TOKENS DO SITE and the colour roles); components/scene-kit/
+   tokens.test.ts fails on a raw one. The colour roles are those of control/portfolio/site-redesign/scene-kit/
+   colour-decisions.md: sand 700 (--muted-foreground) only for text and icons, amber (--primary) only for what arrives
+   now, amber soft (--primary-soft) for what arrived, the lib's destructive tone only for a failure. */
+
+/* CABEÇA DE PAINEL */
+/* The caps label over a pane or a list ("Canais", "Menu da ligação") */
+.paneHead {
+  margin: 0;
+  font-size: var(--t-micro);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* MARCA (círculo do ícone) */
+/* Neutral at rest: the sand 100 well ringed by the sand line, the icon in sand 700. `data-tone` paints its state:
+   active (amber, ink icon, no ring: sand 700 never sits on amber), done (amber soft), fail (the lib's destructive soft
+   with the destructive icon), subject (the subject of a pane: ink icon), well (the cream well, for a mark that sits on
+   the sand 100 shell). A RowButton mark follows its row: [data-state="active"] > .mark. The icon takes the size of
+   the mark's step (--mark-icon), whatever the size prop of the lucide element. */
+.mark {
+  --mark-size: var(--mark-md);
+  --mark-icon: var(--icon-md);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--r-dot);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out);
+}
+.mark > svg {
+  width: var(--mark-icon);
+  height: var(--mark-icon);
+}
+.markXs {
+  --mark-size: var(--mark-xs);
+  --mark-icon: var(--icon-xs);
+}
+.markSm {
+  --mark-size: var(--mark-sm);
+  --mark-icon: var(--icon-sm);
+}
+.markMd {
+  --mark-size: var(--mark-md);
+  --mark-icon: var(--icon-md);
+}
+.markLg {
+  --mark-size: var(--mark-lg);
+  --mark-icon: var(--icon-lg);
+}
+/* A square mark (the modules of the Domus: the rounded square of the logo) */
+.markSquare {
+  border-radius: var(--r-ctl);
+}
+.mark[data-tone="well"] {
+  background: var(--background);
+}
+.mark[data-tone="subject"] {
+  color: var(--foreground);
+}
+.mark[data-tone="active"],
+[data-state="active"] > .mark {
+  background: var(--primary);
+  box-shadow: none;
+  color: var(--foreground);
+}
+.mark[data-tone="done"] {
+  background: var(--primary-soft);
+  box-shadow: none;
+  color: var(--foreground);
+}
+.mark[data-tone="fail"] {
+  background: var(--destructive-soft);
+  box-shadow: none;
+  color: var(--destructive);
+}
+
+/* ESTADOS DE LINHA */
+/* A list whose rows carry `data-state` (a RowButton, a node, an option): never filled with amber; the row arriving now
+   takes the amber wash of the selected row (--surface-raised) and the 3 px amber leading bar, drawn as a background
+   image (a box-shadow would hide the lib's focus ring). A clickable row takes the same wash on hover and press, instead
+   of the lib's ghost hover (ink at 18 %, on which sand 700 drops to about 3.9:1). */
+.rowStates [data-state] {
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.rowStates button[data-state]:hover,
+.rowStates button[data-state]:active,
+.rowStates [data-state="active"] {
+  background-color: var(--surface-raised);
+}
+.rowStates [data-state="active"] {
+  background-size: var(--bar-active) 100%;
+}
+
+/* ESTADOS DE CHIP */
+/* A row of the site's soft ActionButtons that follow a state, the row in small: waiting keeps the soft fill with its
+   label in sand 700, done is a filled amber soft chip, active the amber wash with the leading bar. Only state paint,
+   never the control's edge (app/lib.css CONTROLES). */
+.chipStates [data-state] {
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.chipStates [data-state]:hover,
+.chipStates [data-state]:active {
+  background-color: var(--surface-raised);
+}
+.chipStates [data-state="waiting"] {
+  color: var(--muted-foreground);
+}
+.chipStates [data-state="done"] {
+  background-color: var(--primary-soft);
+}
+.chipStates [data-state="active"] {
+  background-color: var(--surface-raised);
+  background-size: var(--bar-active) 100%;
+}
+
+/* TEXTO EMPILHADO */
+/* A title over its meta line (a record, a node, an option): the title in ink at the label step, the meta in sand 700
+   at the micro step; .stackLead lifts the title to the lead step (the subject of a pane) */
+.stack {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.stack > b {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+.stack > span {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+}
+.stackLead > b {
+  font-size: var(--t-lead);
+  line-height: var(--line-lead);
+}
+
+/* LINHA DE META */
+/* The label of an entry in ink and its time in sand 700, on one centre line */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.meta > b {
+  font-weight: var(--weight-title);
+}
+.meta > time,
+.time {
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.time {
+  margin-right: var(--sp-2);
+}
+
+/* BOLHA */
+/* What was said reads as a message, as wide as its text: received is the sand 100 bubble ringed by the sand line
+   (amber ring while it arrives: [data-fresh="true"]); a record or system event has no fill and reads in sand 700, so it
+   never passes for something said */
+.bubble {
+  justify-self: start;
+  max-width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--foreground);
+  transition: box-shadow var(--dur-2) var(--ease-out);
+}
+[data-fresh="true"] .bubble {
+  box-shadow: var(--edge-ring-active);
+}
+.bubble[data-kind="system"] {
+  background: transparent;
+  color: var(--muted-foreground);
+}
+
+/* LISTAS E DIVISÓRIAS */
+/* The gap of a list of entries, and the sand line between sections of a pane */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.listTight {
+  gap: var(--sp-2);
+}
+.ruleTop {
+  border-top: var(--rule) solid var(--border);
+}
+.ruleBottom {
+  border-bottom: var(--rule) solid var(--border);
+}
+
+/* SELO */
+/* The lib's soft amber Badge that seals the settled frame: icon and text, never shrunk */
+.seal {
+  gap: var(--sp-1);
+  flex: none;
+}

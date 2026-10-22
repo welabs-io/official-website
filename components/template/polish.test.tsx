@@ -15,6 +15,12 @@ import { Sections } from "./SiteTemplate";
 const ROOT = path.resolve(__dirname, "../..");
 const read = (file: string) => readFileSync(path.join(ROOT, file), "utf8");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
+// The one token source of the site (operator, 2026-10-22): app/lib.css from its TOKENS DO SITE block on (the lib's
+// @theme above it carries Tailwind's own --text-* names, which the site's aliases override)
+const TOKEN_SOURCE = () => {
+  const css = read("app/lib.css");
+  return strip(css.slice(css.indexOf("/* TOKENS DO SITE */")));
+};
 
 // Sheets that carry the page's own rhythm: spaces and type come from tokens
 // v2.1: the stage, the message, the house and the play of the Tuner have sheets of their own, under the same rule
@@ -89,7 +95,7 @@ describe("space and type tokens", () => {
   // v3 (F2, plano.md 4.1): a closed scale of seven steps, resolved at 1440 and at 390 to the sizes of the plan, and every
   // --text-* name the sheets read is one of the steps (no size of its own)
   it("the type scale is the seven steps of the plan, at 1440 and at 390", () => {
-    const css = strip(read("components/onepage/shell.module.css"));
+    const css = TOKEN_SOURCE();
     const value = (name: string) =>
       css.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1].trim() ?? "";
     // The size of a step at a viewport width: px as is, a clamp(min, vw, max) resolved
@@ -124,7 +130,7 @@ describe("space and type tokens", () => {
   });
 
   it("the 4 px space grid, the three shapes and the measure are defined once", () => {
-    const css = strip(read("components/onepage/shell.module.css"));
+    const css = TOKEN_SOURCE();
     for (const [name, px] of [
       ["--sp-1", 4],
       ["--sp-2", 8],
@@ -223,7 +229,8 @@ describe("one motion scale and one round shape", () => {
   });
 
   it("the motion tokens are defined once, with one spring", () => {
-    const css = strip(read("components/onepage/shell.module.css"));
+    // The whole app/lib.css: --ease-in-out sits with the lib's curves, above the TOKENS DO SITE block
+    const css = strip(read("app/lib.css"));
     for (const name of ["--ease-out", "--ease-in-out", "--ease-spring"])
       expect(css).toMatch(new RegExp(`${name}:\\s*cubic-bezier\\(`));
     expect(css).toMatch(/--r-dot:\s*999px;/);

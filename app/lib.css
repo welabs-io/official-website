@@ -29,6 +29,172 @@
   --font-heading: "Inter", system-ui, sans-serif;
 }
 
+/* TOKENS DO SITE */
+/* The ONE source of every token the site and the scene kit read (operator, 2026-10-22: centralize so that one change
+   here reflects on the whole site). Families, each changed only here:
+   - colour aliases of the page (graphite, white, sand, amber scale, action, ink, status) and the planes of depth;
+   - type: the seven size steps and their --text-* aliases, line heights, weights, tracking;
+   - space: the 4 px grid (--sp-1 to --sp-9);
+   - shape: radii (--r-*), line widths (--rule, --bar-active), the edges drawn as inset rings (--edge-*);
+   - shadow: the planes (--shadow-*);
+   - motion: easings (--ease-*, with the lib's own curves above) and durations (--dur-*);
+   - icon and mark sizes of the drawn screens (--icon-*, --mark-*).
+   Component sheets only read these names (var(--…)); components/scene-kit/tokens.test.ts fails on a raw colour, size,
+   weight, line height, radius, shadow, space or duration in a kit sheet. The theme roles (--background, --card,
+   --primary…) are the welabs preset with the surface block below (SUPERFÍCIES CREME). Moved here from
+   components/onepage/shell.module.css (.page) with the same values, so the page did not move. */
+:root {
+  /* Colour aliases of the page: graphite, white, sand 100 (chips, selected) and the sand hairline */
+  --g: #10141c;
+  --g2: #161b25;
+  --g3: #262d3a;
+  --c: #ffffff;
+  --c2: #f3ecdd;
+  --cl: #e2d8c3;
+  /* PLANOS DE PROFUNDIDADE */
+  /* v3 (F2, plano.md 4.1): three planes, one place. The floor is the cream of the brand; a card, a window, a menu or a
+     popover is white with the sand hairline (--cl) and no shadow (--shadow-card is none: a card at rest is flat); what is
+     in focus (lifted on hover, dragged, open) takes a soft shadow (--shadow-raise, --shadow-pop) and, when it is the
+     active item, the amber bar. A band that stands apart is a deeper cream (sand 100 over the floor); highlight,
+     selected and chips stay sand 100 (--surface-accent). The floor follows the theme token --background. */
+  --page: var(--background, #fdf9f1);
+  --surface: #ffffff;
+  /* Sand 100 at 55 % over the floor, written as its sRGB result (a color-mix computes to oklch(), which the contrast
+     readers of the specs do not parse) */
+  --surface-band: #f6f0e3;
+  --surface-accent: var(--c2);
+  --halo: radial-gradient(60% 55% at 50% 0%, oklch(0.66 0.21 28 / 0.06), transparent 70%);
+  --a: #ffb020;
+  /* The amber scale of the preset: 100 the selected row, 200 the soft primary, 300 the hover of the action button */
+  --a-100: #fff1d8;
+  --a-200: #ffe2b1;
+  --a-300: #ffcc74;
+  /* The action button: graphite with cream text on light (ERP --action, --action-foreground) */
+  --action: #25272a;
+  --action-fg: #faf5ea;
+  --ink: #1c1a16;
+  --mute-d: #9da3ae;
+  --mute-l: #625b4e;
+  /* Structural lines of the light theme (thread, rails, bus): darker than the hairlines of the cards, so the drawing reads */
+  --thread-l: #d4c7ab;
+  /* The status colours of the preset (success 700 and its soft 100, danger 700 and its soft 100) */
+  --success: #2c7440;
+  --success-soft: #d5fadb;
+  --destructive: #ab3040;
+  --destructive-soft: #faeaea;
+
+  /* ESCALA TIPOGRÁFICA */
+  /* A closed scale of seven steps, at 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18, body 16, label 14 and
+     micro 12; the page starts at the label (14), the micro lives only inside a drawn screen. Each fluid step reaches its
+     ends exactly at 1440 and at 390 (its vw is the desktop size over 1440). The --text-* names are aliases of the steps
+     (components/template/polish.test.tsx). Weights 400 (text), 500 (lead and labels), 600 (titles); line heights 1.08
+     display, 1.25 headings, 1.4 lead, 1.5 body, and the fixed lines of a drawn screen (16 micro, 20 label, 24 lead);
+     tracking only from 24 px up, and the caps of a pane head. */
+  --t-display: clamp(40px, 5vw, 72px);
+  --t-h2: clamp(30px, 3.0556vw, 44px);
+  --t-h3: clamp(20px, 1.6667vw, 24px);
+  --t-lead: 18px;
+  --t-body: 16px;
+  --t-label: 14px;
+  --t-micro: 12px;
+  --text-hero: var(--t-display);
+  --text-display: var(--t-display);
+  --text-title: var(--t-h2);
+  --text-2xl: var(--t-h3);
+  --text-xl: var(--t-lead);
+  --text-lg: var(--t-lead);
+  --text-md: var(--t-body);
+  --text-sm: var(--t-label);
+  --text-xs: var(--t-label);
+  --lh-display: 1.08;
+  --lh-heading: 1.25;
+  --lh-lead: 1.4;
+  --lh-body: 1.5;
+  --line-micro: 16px;
+  --line-label: 20px;
+  --line-lead: 24px;
+  --weight-text: 400;
+  --weight-label: 500;
+  --weight-title: 600;
+  --ls-display: -0.02em;
+  --ls-heading: -0.01em;
+  --ls-caps: 0.04em;
+  --ls-caps-wide: 0.06em;
+  --measure: 66ch;
+
+  /* ESPAÇO */
+  /* A 4 px grid: 4, 8, 12, 16, 24, 32, 48, 64 and 80 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 80px;
+
+  /* FORMAS, LINHAS E BORDAS */
+  /* Shapes of the ERP front: a field or chip 10 px, a card 8 px, a window or popover 14 px, the round button 22 px, a
+     full round (--r-dot). One hairline width (--rule), the 3 px amber leading bar of an active row (--bar-active), the
+     dashed edge of an empty slot (--rule-dashed); a ring drawn inside a box is an --edge-* (the sand line at rest, the
+     amber line while it arrives) */
+  --r-ctl: 10px;
+  --r-card: 8px;
+  --r-win: 14px;
+  --r-pill: 22px;
+  --r-dot: 999px;
+  --rule: 1px;
+  --rule-dashed: 1.5px;
+  --bar-active: 3px;
+  --edge-ring: inset 0 0 0 var(--rule) var(--border);
+  --edge-ring-active: inset 0 0 0 var(--rule) var(--primary);
+  /* The ring of the Domus logo (domus-light.svg: outer corner = inner corner + stroke): 12 px on the page, 10 px (6 px on
+     a phone) around the modules of a product window, with an inner corner of 18 px (12 px) */
+  --domus-ring: 12px;
+  --r-domus: 52px;
+  --domus-ring-scene: 10px;
+  --domus-ring-scene-sm: 6px;
+  --r-domus-inner: 18px;
+  --r-domus-inner-sm: 12px;
+  /* The control heights of the ERP front's lib tokens (2.75rem, 2.25rem), under the lib's own names */
+  --control-height: 44px;
+  --control-height-sm: 36px;
+
+  /* SOMBRAS */
+  /* A card at rest has none; a lift on hover or focus is the preset's --shadow-md, an open or dragged piece its
+     --shadow-lg, both in the warm ink of the page instead of neutral black, which read grey on the cream */
+  --shadow-card: none;
+  --shadow-raise: 0 4px 12px -2px rgb(28 26 22 / 0.1), 0 2px 6px -2px rgb(28 26 22 / 0.06);
+  --shadow-pop: 0 12px 32px -8px rgb(28 26 22 / 0.16), 0 6px 12px -4px rgb(28 26 22 / 0.08);
+
+  /* MOVIMENTO */
+  /* One easing and three durations for every hover, press, open and reveal (--ease-in-out is defined above, with the
+     lib's curves); --ease-spring is the one overshoot, for what is born */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --dur-1: 0.16s;
+  --dur-2: 0.28s;
+  --dur-3: 0.48s;
+
+  /* ÍCONES E MARCAS DAS TELAS DESENHADAS */
+  /* An icon of a drawn screen (lucide) and the round mark that holds it: xs for a log line, sm for a history entry, md
+     for a row or a node, lg for the subject of a pane; the row of a list starts at --row-min */
+  --icon-xs: 12px;
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 18px;
+  --mark-xs: 22px;
+  --mark-sm: 28px;
+  --mark-md: 32px;
+  --mark-lg: 40px;
+  --row-min: 56px;
+
+  /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
+  --header-h: 72px;
+  --logo-h: 42px;
+}
+
 /* The lib's base gives every link, button and input of the page a 160 ms transition of every property; outside the
    lib's components the site keeps its own motion (each sheet declares its transitions), so the default only applies
    under data-theme="welabs". Same layer and zero specificity as the lib's rule, later in the cascade. */
