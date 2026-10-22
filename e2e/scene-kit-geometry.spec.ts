@@ -67,7 +67,9 @@ async function iconAxis(page: Page) {
         .querySelectorAll<HTMLElement>('[data-slot="button"], [data-slot="badge"], [data-axis-pair]')
         .forEach((el) => {
           // An inbox row centres its mark on a two-line text block (e2e/scene-kit.spec.ts measures it), not on a line
-          if (ghost.contains(el) || el.offsetParent === null || el.hasAttribute("data-channel")) return;
+          // (the v3 scenes mark such a row `data-row`; e2e/scene-kit-scenes.spec.ts measures it through `data-axis`)
+          if (ghost.contains(el) || el.offsetParent === null || el.hasAttribute("data-channel") || el.hasAttribute("data-row"))
+            return;
           const icon = el.querySelector("svg, [data-dot]");
           const textNode = [...el.childNodes, ...[...el.querySelectorAll("span")].flatMap((s) => [...s.childNodes])].find(
             (n) => n.nodeType === 3 && n.textContent!.trim(),
@@ -213,7 +215,8 @@ const V3_SCENES: GeoScene[] = [
   {
     id: "tuner-routing",
     figure: /^Tuner/,
-    pairs: [5, 5],
+    // 1440: the lab's two buttons and the status; 390: also the three option buttons
+    pairs: [3, 6],
     header: { actions: true },
     columns: {
       "menu marks": { selectors: ["[data-option] > :first-child"], wide: true },

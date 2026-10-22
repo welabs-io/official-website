@@ -379,6 +379,15 @@
   background-color: var(--signal);
   color: var(--signal-foreground);
 }
+/* The v3 scenes (2026-10-22): `done` is what happened, in green (success soft, success icon), never amber; `well` a
+   mark waiting on the chrome (a track's rail), the white surface with the stone-700 icon */
+[data-slot="avatar"][data-tone="done"] > [data-slot="avatar-fallback"] {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+[data-slot="avatar"][data-tone="well"] > [data-slot="avatar-fallback"] {
+  background-color: var(--card);
+}
 /* Round 3: the mark keeps the lib's own ring (its ::after hairline), as the Avatar stories draw it */
 /* The lib's Timeline (its slot comes from components/lib/scene.tsx): the marker holds an Avatar, so the lib's own
    cream ring around it steps aside and the column takes the Avatar's width; the title row is as tall as the mark and

@@ -175,7 +175,7 @@ async function controlsOf(page: Page, id: string) {
         return out;
       };
       const seen = (el: Element) => (el as HTMLElement).offsetParent !== null && el.getBoundingClientRect().width > 0;
-      const out: { kind: string; name: string; style: Record<string, string> }[] = [];
+      const out: { kind: string; name: string; style: Record<string, string>; state?: string }[] = [];
       live.querySelectorAll('[data-slot="button"]').forEach((el) => {
         if (!seen(el)) return;
         const size = el.getAttribute("data-size") ?? "md";
@@ -187,7 +187,12 @@ async function controlsOf(page: Page, id: string) {
             : appearance === "solid"
               ? "solid"
               : appearance ?? "button";
-        out.push({ kind, name: `${kind} "${(el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 24)}"`, style: read(el) });
+        out.push({
+          kind,
+          name: `${kind} "${(el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 24)}"`,
+          style: read(el),
+          state: el.getAttribute("data-state") ?? undefined,
+        });
       });
       live.querySelectorAll('[data-slot="input-group"]').forEach((el) => {
         if (!seen(el)) return;
@@ -262,7 +267,11 @@ test.describe("every control of the v3 scenes matches the published lib (welabs 
           // Never below the lib's default size: the md height (40 px) and its type
           if (c.kind !== "segment-item" && c.kind !== "segment-active")
             expect(parseFloat(c.style.height), `${id} at ${width}: ${c.name} height`).toBeGreaterThanOrEqual(40 - 0.5);
-          await compare(page, c.kind, c.style, r.ref, r.props);
+          // A control painted by the scene's state (the amber-50 of the selected row or chip, the green of done) keeps
+          // the lib's shape and type; only its fill and its text colour are the state's, not the appearance's
+          const painted = c.state !== undefined && !["idle", "waiting"].includes(c.state);
+          const props = painted ? r.props.filter((p) => p !== "backgroundColor" && p !== "color") : r.props;
+          await compare(page, c.kind, c.style, r.ref, props);
         }
       }
     }
