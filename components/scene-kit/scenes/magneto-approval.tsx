@@ -28,6 +28,7 @@ import { AnimatedList, Separator } from "@/components/lib/scene";
 import { MAGNETO_PLAY as M } from "@/lib/content/plays";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
+import p from "../parts.module.css";
 import g from "./magneto-approval.module.css";
 
 // ROTEIRO DA CENA
@@ -114,6 +115,16 @@ function nodesAt(scene: SceneApi): Record<keyof typeof COPY.kinds, Status> {
   };
 }
 
+// The tone of a node's mark (components/scene-kit/parts.module.css): amber now, amber soft once run, destructive soft
+// on a failed attempt, neutral otherwise
+const MARK_TONE: Record<NodeState, string | undefined> = {
+  idle: undefined,
+  skip: undefined,
+  active: "active",
+  done: "done",
+  fail: "fail",
+};
+
 const NODES: { id: keyof typeof COPY.kinds; icon: LucideIcon; name: string }[] = [
   { id: "start", icon: PencilLine, name: M.nodes.start },
   { id: "check", icon: GitBranch, name: M.nodes.check },
@@ -152,9 +163,9 @@ function MagnetoApprovalView({ scene }: { scene: SceneApi }) {
     <div className={g.split}>
       {/* The flow: the value that decides the branch, then its blocks in order */}
       <section className={g.flow} aria-label={COPY.flow}>
-        <div className={g.values}>
-          <p className={g.paneHead}>{M.valueLabel}</p>
-          <div className={g.chips}>
+        <div className={`${p.ruleBottom} ${g.values}`}>
+          <p className={p.paneHead}>{M.valueLabel}</p>
+          <div className={`${p.choiceStates} ${g.chips}`}>
             {VALUES.map((v) => (
               <ActionButton
                 key={v.step}
@@ -168,17 +179,17 @@ function MagnetoApprovalView({ scene }: { scene: SceneApi }) {
             ))}
           </div>
         </div>
-        <ol className={g.nodes}>
+        <ol className={`${p.rowStates} ${g.nodes}`}>
           {NODES.map((n) => {
             const Icon = n.icon;
             const s = nodes[n.id];
             return (
               <li key={n.id} className={g.node} data-state={s.state} data-node={n.id}>
                 <span className={g.nodeLine} data-axis="node">
-                  <span className={g.mark} aria-hidden="true">
+                  <span className={`${p.mark} ${p.markMd}`} data-tone={MARK_TONE[s.state]} aria-hidden="true">
                     <Icon size={16} strokeWidth={2} />
                   </span>
-                  <span className={g.nodeText}>
+                  <span className={`${p.stack} ${g.nodeText}`}>
                     <b>{n.name}</b>
                     <span>{s.meta ?? COPY.kinds[n.id]}</span>
                   </span>
@@ -203,12 +214,12 @@ function MagnetoApprovalView({ scene }: { scene: SceneApi }) {
       {/* The run: what happened, in order, and the order on the Domus */}
       <section className={g.run} aria-label={COPY.run}>
         <div className={g.runHead} data-axis="run">
-          <span className={g.mark} aria-hidden="true">
+          <span className={`${p.mark} ${p.markMd}`} aria-hidden="true">
             <Workflow size={16} strokeWidth={2} />
           </span>
           <span className={g.runTitle}>{COPY.run}</span>
           {done ? (
-            <Badge variant="primary" appearance="soft" className={g.seal}>
+            <Badge variant="primary" appearance="soft" className={p.seal}>
               <Check size={12} strokeWidth={2.5} aria-hidden="true" />
               {M.done}
             </Badge>
@@ -220,25 +231,22 @@ function MagnetoApprovalView({ scene }: { scene: SceneApi }) {
             first step held 8 lines for the length of the exit, 32 px over the window at 390) */}
         <AnimatedList
           key={`${scene.cycle}-${scene.is("low") ? "low" : "high"}`}
-          className={g.log}
+          className={`${p.list} ${p.listTight} ${g.log}`}
           distance={8}
           duration={0.28}
         >
           {lines.map((l) => {
             const Icon = l.icon;
+            // The failed attempt keeps the destructive tone while it is the newest line; the newest line is amber
+            const tone =
+              l.fail === true && scene.is("failed") ? "fail" : !done && l.key === newest ? "active" : undefined;
             return (
-              <div
-                key={l.key}
-                className={g.line}
-                data-axis="log"
-                data-fresh={!done && l.key === newest}
-                data-fail={l.fail === true && scene.is("failed")}
-              >
-                <span className={g.dot} aria-hidden="true">
+              <div key={l.key} className={g.line} data-axis="log">
+                <span className={`${p.mark} ${p.markXs}`} data-tone={tone} aria-hidden="true">
                   <Icon size={12} strokeWidth={2.25} />
                 </span>
                 <span className={g.lineText}>
-                  <time>{l.time}</time>
+                  <time className={p.time}>{l.time}</time>
                   {l.text}
                 </span>
               </div>
@@ -246,10 +254,10 @@ function MagnetoApprovalView({ scene }: { scene: SceneApi }) {
           })}
         </AnimatedList>
         <div className={g.record} data-axis="record">
-          <span className={g.mark} aria-hidden="true">
+          <span className={`${p.mark} ${p.markMd}`} data-tone="well subject" aria-hidden="true">
             <Database size={16} strokeWidth={2} />
           </span>
-          <span className={g.recordText}>
+          <span className={p.stack}>
             <b>{COPY.record}</b>
             <span>
               {`Valor: ${value.label}`} · {situation}

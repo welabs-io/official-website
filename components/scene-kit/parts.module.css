@@ -64,10 +64,11 @@
 .markSquare {
   border-radius: var(--r-ctl);
 }
-.mark[data-tone="well"] {
+/* well and subject combine (data-tone="well subject": a cream well with an ink icon) */
+.mark[data-tone~="well"] {
   background: var(--background);
 }
-.mark[data-tone="subject"] {
+.mark[data-tone~="subject"] {
   color: var(--foreground);
 }
 .mark[data-tone="active"],
