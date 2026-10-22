@@ -226,8 +226,9 @@ const V3: { id: string; figure: RegExp; fields: [number, number]; pairs: [number
     // The two value chips, the status, and the lab's two toolbar buttons
     pairs: [5, 5],
     columns: {
-      "step marks": { sel: ["[data-step] > :first-child"] },
-      "step titles and metas": { sel: ["[data-step] > :nth-child(2) > *"] },
+      // `li`: the kit's stage carries data-step too (the step of the clock), and the live layer is its second child
+      "step marks": { sel: ["li[data-step] > :first-child"] },
+      "step titles and metas": { sel: ["li[data-step] > :nth-child(2) > *"] },
       "order pane": { sel: ['[data-pane="order"] > *'] },
       "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
     },
