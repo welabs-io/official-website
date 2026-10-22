@@ -22,6 +22,11 @@ type Entry = {
   pairs: number;
   // Length of one loop, in ms (the sum of the holds)
   cycleMs: number;
+  // Role of the trigger (a button unless said otherwise; a segmented control's option is a radio)
+  triggerRole?: "button" | "radio";
+  // v3 scenes (brief-v3-scenes.md): over one loop, at most 3 pieces of amber in any frame, and the connector (the
+  // Relloo's trace with its riding dot) drawn at each of these steps, per width, and never on the settled frame
+  handoff?: { 1440: string[]; 390: string[] };
 };
 
 const SCENES: Entry[] = [
@@ -44,26 +49,30 @@ const SCENES: Entry[] = [
   {
     id: "tuner-routing",
     figure: /^Tuner/,
-    trigger: /^Nova ligação/,
+    trigger: /^Financeiro/,
     final: "done",
-    pairs: 9,
-    cycleMs: 7500,
+    pairs: 1,
+    cycleMs: 9400,
+    handoff: { 1440: ["pressed", "taken"], 390: [] },
   },
   {
     id: "knowly-answer",
     figure: /^Knowly/,
     trigger: /^Financeiro/,
+    triggerRole: "radio",
     final: "done",
-    pairs: 9,
-    cycleMs: 7000,
+    pairs: 4,
+    cycleMs: 9800,
+    handoff: { 1440: ["s1", "s2", "profile"], 390: [] },
   },
   {
     id: "home-message",
     figure: /mensagem atravessa/,
     trigger: /^Enviar a mensagem/,
     final: "done",
-    pairs: 7,
-    cycleMs: 6100,
+    pairs: 6,
+    cycleMs: 8400,
+    handoff: { 1440: ["relloo", "knowly", "magneto", "domus"], 390: ["relloo", "knowly", "magneto", "domus"] },
   },
 ];
 
@@ -124,7 +133,7 @@ for (const s of SCENES) {
       await expectContinuousLoop(scene, {
         windowMs: 10_000,
         afterMs: 10_000,
-        trigger: scene.getByRole("button", { name: s.trigger }),
+        trigger: scene.getByRole(s.triggerRole ?? "button", { name: s.trigger }),
       });
     });
 
@@ -166,6 +175,49 @@ for (const s of SCENES) {
         const all = [...heights];
         expect(Math.max(...all) - Math.min(...all), all.join(",")).toBeLessThanOrEqual(1);
       });
+
+      // ÂMBAR E CONECTOR (CENAS V3)
+      // Sampled on every animation frame over one loop from the first step: no frame shows more than 3 pieces of amber
+      // (#ffb020 or a blend more than half way to it, as a fill), and the connector is drawn at each hand-off step
+      // of this width and never on the settled frame (the measure of e2e/scene-kit.spec.ts for the Relloo)
+      const handoff = s.handoff;
+      if (handoff) {
+        test(`at most 3 amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
+          test.setTimeout(60_000);
+          await page.setViewportSize({ width, height: 900 });
+          await page.goto(LAB);
+          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
+          await page.getByRole("button", { name: "Recomeçar" }).click();
+          const seen = await page.evaluate(async (ms) => {
+            const stage = document.querySelector('[role="figure"] [data-scene]')!;
+            const live = stage.lastElementChild!;
+            const amber = (c: string) => {
+              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
+              if (!m) return false;
+              const [r, g, b] = m.slice(1, 4).map(Number);
+              const a = m[4] === undefined ? 1 : Number(m[4]);
+              return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
+            };
+            const ambers: Record<string, number> = {};
+            const traced: Record<string, boolean> = {};
+            const t0 = performance.now();
+            while (performance.now() - t0 < ms) {
+              await new Promise((r) => requestAnimationFrame(r));
+              const step = stage.getAttribute("data-step")!;
+              const n = [...live.querySelectorAll("*")].filter((el) => {
+                const cs = getComputedStyle(el);
+                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
+              }).length;
+              ambers[step] = Math.max(ambers[step] ?? 0, n);
+              traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+            }
+            return { ambers, traced };
+          }, s.cycleMs + 200);
+          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
+          for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
+          expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+        });
+      }
     }
   });
 }

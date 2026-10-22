@@ -6,9 +6,15 @@
 import type { ComponentProps } from "react";
 import { Timeline as LibTimeline } from "@imagineapps-team/react/ui";
 
+// Alert (a neutral notice, the knowly-answer's barred data) and SegmentedControl (a profile switch) came with the v3
+// scenes (2026-10-22)
 export {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Avatar,
   AvatarFallback,
+  SegmentedControl,
   TimelineItem,
   Separator,
   SplitView,

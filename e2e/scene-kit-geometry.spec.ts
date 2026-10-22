@@ -190,3 +190,193 @@ for (const width of [1440, 390]) {
     });
   });
 }
+
+// GEOMETRIA DAS CENAS V3 (TUNER, KNOWLY, HOME)
+// The same contract on the scenes rebuilt after the Relloo pilot (brief-v3-scenes.md): every icon of a control, chip or
+// status on its text line, the record header (when the scene has one) in the Domus DetailHeader geometry with its 24 px
+// of room, the columns of each list on one left edge, and the steps of a horizontal track on one centre line. Each scene
+// names its own columns; a column marked `wide` is only laid out side by side (≥ 1024 px).
+type GeoScene = {
+  id: string;
+  figure: RegExp;
+  // Least number of icon/text pairs of the controls, chips and status, at 1440 and at 390
+  pairs: [number, number];
+  // The scene draws a record header (data-header parts); `actions`: with the record's actions on its line
+  header?: { actions: boolean };
+  // Name → selectors (inside the live layer) whose left edges are one column
+  columns: Record<string, { selectors: string[]; wide?: boolean }>;
+  // Name → selector whose matches share one centre line (a horizontal track)
+  rows?: Record<string, string>;
+};
+
+const V3_SCENES: GeoScene[] = [
+  {
+    id: "tuner-routing",
+    figure: /^Tuner/,
+    pairs: [5, 5],
+    header: { actions: true },
+    columns: {
+      "menu marks": { selectors: ["[data-option] > :first-child"], wide: true },
+      "menu texts": { selectors: ["[data-option] > :last-child", "[data-option] > :last-child > *"], wide: true },
+      "history marks": { selectors: ['[data-slot="timeline"] > li > :first-child'] },
+      "history titles and bubbles": {
+        selectors: [
+          '[data-slot="timeline"] > li > :last-child > :first-child',
+          '[data-slot="timeline"] > li > :last-child > :last-child:not(:first-child) > *',
+        ],
+      },
+      "record title and meta": { selectors: ['[data-align="record"] > :last-child > *'] },
+      "record, team and history": {
+        selectors: ['[data-align="record"]', "[data-team]", '[data-slot="timeline"] > li'],
+      },
+    },
+  },
+  {
+    id: "knowly-answer",
+    figure: /^Knowly/,
+    pairs: [4, 4],
+    columns: {
+      "answer sentences": { selectors: ["[data-sentence] > :first-child"] },
+      "source lines": { selectors: ["[data-line] > :first-child"] },
+      "source line texts": { selectors: ["[data-line] > :nth-child(2)"] },
+      "source heads and lines": { selectors: ["[data-doc] > :first-child", "[data-doc] [data-line]"] },
+    },
+  },
+  {
+    id: "home-message",
+    figure: /mensagem atravessa/,
+    pairs: [3, 3],
+    header: { actions: false },
+    columns: {
+      "message, track and record": { selectors: ["[data-message]", "[data-track]", "[data-record]"] },
+      "record fields": { selectors: ["[data-field] > :first-child", "[data-field] > :last-child"] },
+    },
+    rows: { "track marks": '[data-station] [data-slot="avatar"]', "track names": "[data-station] b" },
+  },
+];
+
+for (const s of V3_SCENES) {
+  const LAB_V3 = `/lab/scenes/${s.id}`;
+  for (const width of [1440, 390]) {
+    test.describe(`${s.id} geometry at ${width}`, () => {
+      test.beforeEach(async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await page.goto(LAB_V3);
+        await page.getByRole("figure", { name: s.figure }).waitFor();
+      });
+
+      test("every piece of a field is centred, with equal leading and trailing insets", async ({ page }) => {
+        for (const f of await fields(page)) {
+          for (const p of f.pieces) {
+            const above = p.top - f.inner.top;
+            const below = f.inner.bottom - p.bottom;
+            expect(Math.abs(above - below), `${f.name} / ${p.name}`).toBeLessThanOrEqual(1);
+          }
+          const lead = f.pieces[0].left - f.inner.left;
+          const trail = f.inner.right - f.pieces[f.pieces.length - 1].right;
+          expect(Math.abs(lead - trail), `${f.name}: leading ${lead.toFixed(1)} trailing ${trail.toFixed(1)}`).toBeLessThanOrEqual(1);
+        }
+      });
+
+      test("every icon of a control, chip or status sits on its text line", async ({ page }) => {
+        const pairs = await iconAxis(page);
+        expect(pairs.length).toBeGreaterThanOrEqual(width === 1440 ? s.pairs[0] : s.pairs[1]);
+        for (const { name, dy } of pairs) expect(dy, name).toBeLessThanOrEqual(1);
+      });
+
+      if (s.header) {
+        const withActions = s.header.actions;
+        test("the record header keeps the Domus DetailHeader geometry", async ({ page }) => {
+          const h = await page.evaluate((id) => {
+            const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+            const r = (k: string) => {
+              const el = [...live.querySelectorAll(`[data-header="${k}"]`)].find(
+                (e) => (e as HTMLElement).offsetParent !== null,
+              );
+              if (!el) return null;
+              const b = el.getBoundingClientRect();
+              return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, mid: b.top + b.height / 2 };
+            };
+            // The header's own box, inside its padding: the room the title line has
+            const head = live.querySelector('[data-header="identity"]')!.closest("[data-header-root]")!;
+            const hs = getComputedStyle(head);
+            const inner = head.getBoundingClientRect().right - parseFloat(hs.paddingRight);
+            return {
+              identity: r("identity"),
+              block: r("block"),
+              title: r("title"),
+              status: r("status"),
+              meta: r("meta"),
+              actions: r("actions"),
+              inner,
+            };
+          }, s.id);
+          for (const k of ["identity", "block", "title", "status", "meta"] as const)
+            expect(h[k], `header part ${k}`).not.toBeNull();
+          if (withActions) expect(h.actions, "header part actions").not.toBeNull();
+          const { identity, block, title, status, meta } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
+          expect(Math.abs(identity.mid - block.mid), `identity ${identity.mid} vs text block ${block.mid}`).toBeLessThanOrEqual(1);
+          expect(Math.abs(status.mid - title.mid), `status ${status.mid} vs title ${title.mid}`).toBeLessThanOrEqual(1);
+          const limit = withActions && width >= 640 ? h.actions!.left : h.inner;
+          expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(24);
+          expect(Math.abs(meta.left - title.left), `meta ${meta.left} vs title ${title.left}`).toBeLessThanOrEqual(1);
+          if (withActions) {
+            const actions = h.actions!;
+            if (width >= 640)
+              expect(Math.abs(actions.mid - identity.mid), `actions ${actions.mid} vs identity ${identity.mid}`).toBeLessThanOrEqual(1);
+            else expect(actions.top, "actions under the title block").toBeGreaterThanOrEqual(identity.bottom);
+          }
+        });
+      }
+
+      test("the columns of each list share their left edge", async ({ page }) => {
+        const cols = await page.evaluate(
+          ({ id, columns }) => {
+            const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+            const lefts = (sel: string) =>
+              [...live.querySelectorAll<HTMLElement>(sel)]
+                .filter((e) => e.offsetParent !== null && e.getBoundingClientRect().width > 0)
+                .map((e) => Math.round(e.getBoundingClientRect().left * 100) / 100);
+            return Object.fromEntries(
+              Object.entries(columns).map(([name, c]) => [name, c.selectors.flatMap(lefts)]),
+            );
+          },
+          { id: s.id, columns: s.columns },
+        );
+        for (const [name, xs] of Object.entries(cols)) {
+          if (s.columns[name].wide && width < 1024) continue;
+          expect(xs.length, name).toBeGreaterThan(1);
+          expect(Math.max(...xs) - Math.min(...xs), `${name}: ${xs.join(", ")}`).toBeLessThanOrEqual(1);
+        }
+      });
+
+      if (s.rows) {
+        const rows = s.rows;
+        test("the steps of the track share one centre line", async ({ page }) => {
+          const mids = await page.evaluate(
+            ({ id, rows }) => {
+              const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+              return Object.fromEntries(
+                Object.entries(rows).map(([name, sel]) => [
+                  name,
+                  [...live.querySelectorAll<HTMLElement>(sel)]
+                    .filter((e) => e.offsetParent !== null)
+                    .map((e) => {
+                      const r = e.getBoundingClientRect();
+                      return Math.round((r.top + r.height / 2) * 100) / 100;
+                    }),
+                ]),
+              );
+            },
+            { id: s.id, rows },
+          );
+          for (const [name, ys] of Object.entries(mids)) {
+            expect(ys.length, name).toBe(5);
+            expect(Math.max(...ys) - Math.min(...ys), `${name}: ${ys.join(", ")}`).toBeLessThanOrEqual(1);
+          }
+        });
+      }
+    });
+  }
+}
