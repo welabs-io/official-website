@@ -9,18 +9,23 @@
   --g: #10141c;
   --g2: #161b25;
   --g3: #262d3a;
-  /* The page is white with a warm halo at the top (ERP --background oklch(1 0 0) and --background-radial) */
+  /* White (cards, light text on graphite), sand 100 (chips, selected) and the sand hairline */
   --c: #ffffff;
   --c2: #f3ecdd;
   --cl: #e2d8c3;
-  /* SUPERFÍCIES DO TEMA CLARO (FRONT DO ERP) */
-  /* The one place of the surface palette: the page, cards, windows, menu and popover are one white (ERP --background,
-     --card, --popover) and stand apart by the sand hairline (--cl, ERP --border); a band that must stand apart is the
-     ERP content area (--muted at 30% over the page); highlight, selected and chips stay sand 100 (--surface-accent).
-     Components read these names; none carries its own colour. */
+  /* PLANOS DE PROFUNDIDADE */
+  /* v3 (F2, plano.md 4.1): three planes, one place. The floor is the cream of the brand (sand-50, the light background
+     of welabs-io/brand, tokens/welabs.tokens.json); a card, a window, a menu or a popover is white with the sand
+     hairline (--cl) and no shadow (--shadow-card is none: a card at rest is flat); what is in focus (lifted on hover,
+     dragged, open) takes a soft shadow (--shadow-raise, --shadow-pop) and, when it is the active item, the amber bar. A
+     band that stands apart is a deeper cream (sand 100 over the floor); highlight, selected and chips stay sand 100
+     (--surface-accent). Before v3 the floor was white, the band a neutral grey and every card had a shadow, so nothing
+     stood apart. Components read these names; none carries its own colour. */
+  --page: #faf5ea;
   --surface: #ffffff;
-  --muted: oklch(0.96 0 0);
-  --surface-band: color-mix(in oklch, var(--muted) 30%, var(--c));
+  /* Sand 100 at 55 % over the floor, written as its sRGB result (a color-mix computes to oklch(), which the contrast
+     readers of the specs do not parse) */
+  --surface-band: #f6f0e3;
   --surface-accent: var(--c2);
   --halo: radial-gradient(
     60% 55% at 50% 0%,
@@ -43,22 +48,32 @@
   /* Structural lines of the light theme (thread, rails, bus): darker than the hairlines of the cards, so the drawing reads */
   --thread-l: #d4c7ab;
   /* ESCALA TIPOGRÁFICA, ESPAÇAMENTO E FORMAS */
-  /* The one system every component reads (no loose value in the component sheets). Type: seven steps, 14 px the smallest
-     text of the site; weights 400 (text), 500 (lead and labels) and 600 (titles); line heights 1.08 for display, 1.25
-     for headings, 1.4 for lead and 1.5 for body; tracking only from 24 px up. Line width: paragraphs stay between 60 and
-     75 characters (--measure). Space: a 4 px grid, steps of 4, 8, 12, 16, 24, 32, 48, 64 and 80. Shapes: 6 px for controls
-     and chips, 12 px for cards, 16 px for windows; one hairline colour (--line) for cards, a darker one (--thread) for
-     structure. */
-  --text-xs: 14px;
-  --text-sm: 15px;
-  --text-md: 16px;
-  --text-lg: 18px;
-  --text-xl: 20px;
-  --text-2xl: clamp(22px, 2vw, 26px);
-  --text-title: clamp(28px, 3.2vw, 40px);
-  --text-display: clamp(32px, 3.8vw, 48px);
-  /* The title of the home opening, the one step above display (v2: the title and its turning word carry the page) */
-  --text-hero: clamp(40px, 5vw, 72px);
+  /* The one system every component reads (no loose value in the component sheets). Weights 400 (text), 500 (lead and
+     labels) and 600 (titles); line heights 1.08 for display, 1.25 for headings, 1.4 for lead and 1.5 for body; tracking
+     only from 24 px up. Line width: paragraphs stay between 60 and 75 characters (--measure). Space: a 4 px grid, steps
+     of 4, 8, 12, 16, 24, 32, 48, 64 and 80. Shapes: 6 px for controls and chips, 12 px for cards, 16 px for windows; one
+     hairline colour (--line) for cards, a darker one (--thread) for structure.
+     v3 (F2, plano.md 4.1): a closed scale of seven steps, at 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18,
+     body 16, label 14 and micro 12; the page starts at the label (14), the micro lives only inside a drawn screen
+     (components/scenes/tokens.module.css). Each fluid step reaches its ends exactly at 1440 and at 390 (its vw is the
+     desktop size over 1440). The --text-* names the sheets read are aliases of the steps, so no sheet has a size of its
+     own (it had ten distinct sizes above 12 px: 13, 15, 20, 22, 26, 28 and 40 among them). */
+  --t-display: clamp(40px, 5vw, 72px);
+  --t-h2: clamp(30px, 3.0556vw, 44px);
+  --t-h3: clamp(20px, 1.6667vw, 24px);
+  --t-lead: 18px;
+  --t-body: 16px;
+  --t-label: 14px;
+  --t-micro: 12px;
+  --text-hero: var(--t-display);
+  --text-display: var(--t-display);
+  --text-title: var(--t-h2);
+  --text-2xl: var(--t-h3);
+  --text-xl: var(--t-lead);
+  --text-lg: var(--t-lead);
+  --text-md: var(--t-body);
+  --text-sm: var(--t-label);
+  --text-xs: var(--t-label);
   --lh-display: 1.08;
   --lh-heading: 1.25;
   --lh-lead: 1.4;
@@ -92,11 +107,14 @@
   --r-domus: 52px;
   --control-height: 44px;
   --control-height-sm: 36px;
-  /* The neutral shadows of the preset (--shadow-md under a card, --shadow-lg under a popover) */
-  --shadow-card:
-    0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 6px -2px oklch(0 0 0 / 0.06);
+  /* The shadows of the planes (v3, F2): a card at rest has none; a lift on hover or focus is the preset's --shadow-md, an
+     open or dragged piece its --shadow-lg, both in the warm ink of the page instead of neutral black, which read grey on
+     the cream */
+  --shadow-card: none;
+  --shadow-raise:
+    0 4px 12px -2px rgb(28 26 22 / 0.1), 0 2px 6px -2px rgb(28 26 22 / 0.06);
   --shadow-pop:
-    0 12px 32px -8px oklch(0 0 0 / 0.12), 0 6px 12px -4px oklch(0 0 0 / 0.08);
+    0 12px 32px -8px rgb(28 26 22 / 0.16), 0 6px 12px -4px rgb(28 26 22 / 0.08);
   /* MOVIMENTO DAS INTERAÇÕES */
   /* One easing and three durations for every hover, press, open and reveal of the page (v2.1: the transitions were
      loose values, and several hovers had none) */
@@ -118,7 +136,7 @@
   --logo-h: 42px;
   background:
     var(--halo) no-repeat,
-    var(--c);
+    var(--page);
   background-size: 100% 900px;
   color: var(--ink);
   overflow-x: clip;
@@ -146,7 +164,7 @@
 }
 .light {
   color: var(--ink);
-  --bg: var(--c);
+  --bg: var(--page);
   --line: var(--cl);
   --thread: var(--thread-l);
   --mute: var(--mute-l);
@@ -189,7 +207,7 @@
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
-  background: var(--c);
+  background: var(--page);
   border-bottom: 1px solid var(--cl);
 }
 .headerInner {
@@ -244,7 +262,7 @@
   color: var(--ink);
   box-shadow:
     0 0 0 1px var(--a-300),
-    var(--shadow-card);
+    var(--shadow-raise);
 }
 .cta:active {
   background: var(--a);
@@ -383,18 +401,9 @@
   margin-left: var(--sp-1);
 }
 @media (max-width: 860px) {
+  /* v3 (F2): the lib's Button paints the control (44 px, the 10 px control radius, the sand edge); here only shown */
   .menuButton {
-    display: inline-grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: 1px solid var(--cl);
-    /* v2.2 (audit M11): the shape of a control, not a loose 6 px */
-    border-radius: var(--r-ctl);
-    background: transparent;
-    color: var(--ink);
-    cursor: pointer;
+    display: inline-flex;
   }
   /* Three bars drawn by one element and its two pseudo-elements */
   .burger,
@@ -559,7 +568,7 @@
 .band[data-surface="contact"] {
   background:
     var(--halo) no-repeat,
-    var(--c);
+    var(--page);
   border-top: 1px solid var(--cl);
-  --bg: var(--c);
+  --bg: var(--page);
 }

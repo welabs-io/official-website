@@ -33,12 +33,13 @@
 .logo {
   z-index: 41;
 }
-/* The white veil of the moves that only swap the page (the way home, back and forward between products) */
+/* The veil of the moves that only swap the page (the way home, back and forward between products); v3 (F2): the cream
+   floor of the page (shell.module.css --page), it was white */
 .veil {
   position: fixed;
   inset: 0;
   z-index: 45;
-  background: #ffffff;
+  background: #faf5ea;
   opacity: 0;
   pointer-events: none;
 }

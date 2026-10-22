@@ -96,7 +96,11 @@ const ROOMS = [
 export function HomeMessage() {
   return (
     <div className={shell.wrap}>
-      <SectionHead title={HOME_MESSAGE.title} lead={HOME_MESSAGE.lead} />
+      <SectionHead
+        title={HOME_MESSAGE.title}
+        lead={HOME_MESSAGE.lead}
+        variant="chapter"
+      />
       <div className={msg.msg}>
         <input
           type="checkbox"
@@ -244,7 +248,7 @@ export function DomusHouse({
 }) {
   return (
     <div className={house.house} data-theme="welabs">
-      <SectionHead title={title} lead={lead} />
+      <SectionHead title={title} lead={lead} variant="chapter" />
       <input
         type="checkbox"
         id={id}
@@ -457,7 +461,12 @@ export const HomeContact = () => (
 export function Platforms() {
   return (
     <div className={`${shell.wrap} ${styles.platforms}`}>
-      <h2 className={styles.platformsTitle}>{CLOSING.platforms}</h2>
+      {/* v3 (F2): the strip head (h3 step) in place of a 15 px h2 that read as a fifth item of the row */}
+      <SectionHead
+        title={CLOSING.platforms}
+        variant="strip"
+        className={styles.platformsHead}
+      />
       <ul className={styles.plat}>
         {PLATFORM_LOGOS.map((p) => (
           <li key={p.name}>

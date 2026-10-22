@@ -9,6 +9,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/lib/ui";
 import type { NAV as NavLabels } from "@/lib/content/home";
 import styles from "./shell.module.css";
 
@@ -39,8 +40,14 @@ export function SiteNav({
       className={styles.navWrap}
       onKeyDown={(event) => event.key === "Escape" && close()}
     >
-      <button
+      {/* v3 (F2): the lib's Button (neutral outline, icon size), painted by the welabs theme of app/lib.css; the sheet
+          only shows it on a phone. It was a native button drawn by hand. */}
+      <Button
         type="button"
+        variant="neutral"
+        appearance="outline"
+        size="icon"
+        data-theme="welabs"
         className={styles.menuButton}
         aria-expanded={open}
         aria-controls="site-nav"
@@ -48,7 +55,7 @@ export function SiteNav({
         onClick={() => setOpenAt(open ? null : pathname)}
       >
         <span className={styles.burger} aria-hidden="true" />
-      </button>
+      </Button>
       <nav
         id="site-nav"
         className={styles.nav}

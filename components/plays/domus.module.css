@@ -124,7 +124,7 @@
   background: linear-gradient(135deg, var(--a-100), var(--a-300));
 }
 .thumb[data-tint="2"] {
-  background: linear-gradient(135deg, var(--muted), var(--thread));
+  background: linear-gradient(135deg, var(--c2), var(--thread));
 }
 .status {
   display: inline-block;

@@ -1,8 +1,8 @@
 // TESTES DA LAPIDAÇÃO VISUAL
 // The visual system is enforced by tests, not by memory: the component sheets of the page read the tokens of `.page`
 // (type scale, 4 px space grid, shapes) and carry no loose value, every line icon has the same stroke, the type
-// scale of the page never goes under 14 px and no sheet anywhere goes under the 12 px floor (v3), and the section
-// heads have more than one variant (v3, known failure until F2).
+// scale is the closed scale of seven steps of the plan (v3, F2), the page never goes under 14 px and no sheet anywhere
+// goes under the 12 px floor (v3), and the section heads have their three variants (v3, F2).
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -86,21 +86,41 @@ describe("space and type tokens", () => {
     expect(loose).toEqual([]);
   });
 
-  it("the type scale starts at 14 px and the display step is above the title step", () => {
+  // v3 (F2, plano.md 4.1): a closed scale of seven steps, resolved at 1440 and at 390 to the sizes of the plan, and every
+  // --text-* name the sheets read is one of the steps (no size of its own)
+  it("the type scale is the seven steps of the plan, at 1440 and at 390", () => {
     const css = strip(read("components/onepage/shell.module.css"));
-    const px = (name: string) =>
-      Number(css.match(new RegExp(`${name}:\\s*(\\d+)px`))?.[1]);
-    expect(px("--text-xs")).toBe(14);
-    for (const name of ["--text-sm", "--text-md", "--text-lg", "--text-xl"])
-      expect(px(name)).toBeGreaterThanOrEqual(14);
-    const clampMax = (name: string) =>
-      Number(
-        css.match(new RegExp(`${name}:\\s*clamp\\([^)]*?(\\d+)px\\)`))?.[1],
-      );
-    expect(clampMax("--text-display")).toBeGreaterThan(
-      clampMax("--text-title"),
-    );
-    expect(clampMax("--text-title")).toBeGreaterThan(clampMax("--text-2xl"));
+    const value = (name: string) =>
+      css.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1].trim() ?? "";
+    // The size of a step at a viewport width: px as is, a clamp(min, vw, max) resolved
+    const at = (name: string, width: number) => {
+      const v = value(name);
+      const clamp = v.match(/^clamp\(\s*([\d.]+)px,\s*([\d.]+)vw,\s*([\d.]+)px\s*\)$/);
+      if (clamp) {
+        const [, min, vw, max] = clamp.map(Number);
+        return Math.min(max, Math.max(min, (vw * width) / 100));
+      }
+      return Number(v.match(/^([\d.]+)px$/)?.[1]);
+    };
+    const STEPS: Record<string, [number, number]> = {
+      "--t-display": [72, 40],
+      "--t-h2": [44, 30],
+      "--t-h3": [24, 20],
+      "--t-lead": [18, 18],
+      "--t-body": [16, 16],
+      "--t-label": [14, 14],
+      "--t-micro": [12, 12],
+    };
+    for (const [name, [desktop, phone]] of Object.entries(STEPS)) {
+      expect(at(name, 1440), `${name} at 1440`).toBe(desktop);
+      expect(at(name, 390), `${name} at 390`).toBe(phone);
+    }
+    const aliases = [...css.matchAll(/(--text-[\w-]+):\s*([^;]+);/g)];
+    expect(aliases.length).toBeGreaterThanOrEqual(9);
+    for (const [, name, v] of aliases)
+      expect(v.trim(), name).toMatch(/^var\(--t-(display|h2|h3|lead|body|label)\)$/);
+    // The page itself starts at the label step; the micro step is for the drawn screens only
+    expect(value("--text-xs")).toBe("var(--t-label)");
   });
 
   it("the 4 px space grid, the three shapes and the measure are defined once", () => {
@@ -161,8 +181,9 @@ describe("space and type tokens", () => {
 
 // v2.2 (audit M11): the motion and the round shapes are one scale on the whole page, the scenes included. Measured on
 // 8187680: five easing curves besides --ease-out (ease, ease-out, two springs and an easeInOutQuad) and 999px written
-// loose in the scenes. The scenes keep their interface text of 11 to 13 px as a documented exception (a drawing of a
-// product screen, at the size of that screen; e2e/product-scenes.spec.ts holds its legibility rule).
+// loose in the scenes. The scenes keep their interface text under the page floor as a documented exception (a drawing
+// of a product screen, at the size of that screen: v3, the micro and label steps, 12 and 14 px;
+// e2e/product-scenes.spec.ts holds its legibility rule).
 const MOTION_SHEETS = [
   ...SHEETS,
   "components/scenes/fx.css",
@@ -214,10 +235,8 @@ describe("one motion scale and one round shape", () => {
 // clamp counts by its minimum. Known failures carry the phase that removes them, and one that is gone fails too.
 // The SVG labels of the brand intros (components/intro/*.js) are in viewBox units, scaled with the drawing: out of scope.
 const FLOOR_PX = 12;
-const FLOOR_KNOWN: Record<string, string> = {
-  // TODO(F2): the meta text of the scenes is 11 px (0.6875rem); it goes to the 12 px step
-  "components/scenes/tokens.module.css|--s-t-meta": "F2",
-};
+// v3 (F2): empty; the meta text of the scenes went from 11 px to the 12 px step
+const FLOOR_KNOWN: Record<string, string> = {};
 const ALL_SHEETS = ["components", "app"].flatMap((dir) =>
   readdirSync(path.join(ROOT, dir), { recursive: true, encoding: "utf8" })
     .filter((f) => f.endsWith(".css"))
@@ -237,7 +256,7 @@ describe("the floor of the type scale", () => {
       declarations(strip(read(file)))
         .filter(
           ({ prop }) =>
-            prop === "font-size" || /^--(?:text|s-t|wl-text)-[\w-]+$/.test(prop),
+            prop === "font-size" || /^--(?:text|t|s-t|wl-text)-[\w-]+$/.test(prop),
         )
         .filter(({ value }) => {
           const px = minPx(value);
@@ -272,13 +291,22 @@ describe("the floor of the type scale", () => {
 // v3 (plan, section 4.1): the sections are not one centred 40 px h2 each; the head has variants (chapter, showcase,
 // strip), marked `data-head` on the markup
 describe("a hierarchy of section heads", () => {
-  // TODO(F2): SectionHead has one variant only (components/template/SectionHead.tsx); turn into `it` when F2 lands
-  it.fails("the home uses at least two variants of section head", () => {
+  // v3 (F2): the three variants of SectionHead.tsx; the home uses all of them, and only them
+  it("the home uses at least two variants of section head, all of them known", () => {
     const html = renderToStaticMarkup(<Sections config={HOME_CONFIG} />);
     const variants = new Set(
       [...html.matchAll(/data-head="([\w-]+)"/g)].map((m) => m[1]),
     );
     expect(variants.size).toBeGreaterThanOrEqual(2);
+    for (const v of variants) expect(["chapter", "showcase", "strip"]).toContain(v);
+  });
+
+  it("every h2 of a section head sits in a head with its variant", () => {
+    for (const config of [HOME_CONFIG, ...PRODUCTS.map((p) => productConfig(p.slug))]) {
+      const html = renderToStaticMarkup(<Sections config={config} />);
+      const heads = html.match(/<div[^>]*data-head="[\w-]+"[^>]*><h2/g) ?? [];
+      expect(heads.length).toBeGreaterThanOrEqual(2);
+    }
   });
 });
 

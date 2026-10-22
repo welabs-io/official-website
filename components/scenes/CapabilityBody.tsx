@@ -158,7 +158,10 @@ function RellooAgent({ act }: { act: Act }) {
               {t.human}
             </p>
             <div className={c.handoff} {...act("handoff", "pop")}>
-              <span className={s.avatarSm}>A</span>
+              {/* v3: a team takes over, drawn by the team glyph, never by a person's initial */}
+              <span className={s.avatarSm} aria-hidden="true">
+                <Glyph d={GLYPHS.team} size={14} />
+              </span>
               <span className={c.handoffText}>
                 <Key>{t.handoff}</Key>
                 <span>{t.handoffMeta}</span>
@@ -292,8 +295,9 @@ function TunerCall({ act }: { act: Act }) {
       <div className={c.duo} data-split="call">
         <div className={`${c.pane} ${c.soft} ${c.side} ${c.top}`}>
           <div className={c.caller}>
+            {/* v3: the call is a record (an order), drawn by the phone glyph, never by a person's initials */}
             <span className={c.avatarLg} aria-hidden="true">
-              RL
+              <Glyph d={GLYPHS.phone} size={20} />
             </span>
             <span className={s.who}>
               <b>{t.caller}</b>
@@ -357,7 +361,10 @@ function TunerCall({ act }: { act: Act }) {
             })}
           </ul>
           <div className={c.noteCard} {...act("note", "in")}>
-            <span className={s.avatarSm}>D</span>
+            {/* v3: the note of the order, drawn by the pen glyph, never by a person's initial */}
+            <span className={s.avatarSm} aria-hidden="true">
+              <Glyph d={GLYPHS.pen} size={14} />
+            </span>
             <span className={s.who}>
               <b>{t.note}</b>
               <span>{t.noteMeta}</span>
@@ -540,7 +547,10 @@ function KnowlyAccess({ act }: { act: Act }) {
         </div>
         <div className={`${c.pane} ${c.soft} ${c.askPane}`}>
           <div className={c.askWho}>
-            <span className={s.avatarSm}>B</span>
+            {/* v3: a profile, drawn by the user glyph, never by a person's initial */}
+            <span className={s.avatarSm} aria-hidden="true">
+              <Glyph d={GLYPHS.user} size={14} />
+            </span>
             <span className={s.who}>
               <b>{t.person}</b>
               <span>{t.team}</span>

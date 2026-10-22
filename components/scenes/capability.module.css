@@ -569,6 +569,8 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  /* v3 (F2): a grid item of its pane that never grows past it (its text wraps instead) */
+  min-width: 0;
   margin: 0.5rem 0.875rem 0.875rem;
   padding: 0.625rem 0.75rem;
   border: 1.5px solid var(--s-ok-dot);

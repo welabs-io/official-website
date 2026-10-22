@@ -32,8 +32,8 @@ html {
 }
 body {
   margin: 0;
-  /* The white page of the ERP front tokens (v2.1; was the cream #fffdf8) */
-  background: #ffffff;
+  /* v3 (F2): the cream floor of the brand (sand-50), the page under the overscroll; shell.module.css --page */
+  background: #faf5ea;
   color: #1c1a16;
   font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -54,8 +54,9 @@ a {
 :focus-visible {
   outline: 2px solid transparent;
   outline-offset: 2px;
+  /* v3 (F2): the gap takes the cream of the floor (it was the white page of v2.1) */
   box-shadow:
-    0 0 0 2px #ffffff,
+    0 0 0 2px #faf5ea,
     0 0 0 4px #1c1a16;
 }
 /* On a graphite band (the footer) the ring turns cream over the graphite */

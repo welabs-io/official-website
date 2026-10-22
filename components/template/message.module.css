@@ -193,8 +193,9 @@
   font-size: var(--text-xs);
   line-height: var(--lh-heading);
   font-weight: 600;
+  /* v3 (F2): the record that waits reads as waiting by its dashed edge and muted text, at full opacity (at 0.55 its text
+     was 2.45:1, under AA) */
   color: var(--mute-l);
-  opacity: 0.55;
 }
 .record b {
   display: block;
@@ -252,14 +253,14 @@
 .go:hover {
   background: var(--a-300);
   border-color: var(--a-300);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-raise);
 }
 .go:active {
   transform: translateY(1px);
 }
 .msg:has(:global(input):focus-visible) .go {
   box-shadow:
-    0 0 0 2px var(--c),
+    0 0 0 2px var(--bg),
     0 0 0 4px var(--ink);
 }
 
@@ -450,7 +451,6 @@
 }
 @keyframes record-in {
   from {
-    opacity: 0.55;
     transform: translateY(var(--sp-2));
     color: var(--mute-l);
   }

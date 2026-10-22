@@ -29,7 +29,7 @@ Peers: `recharts` e `@tanstack/react-table` **não estão instalados**. `KpiCard
 
 ## 3. Uma camada de tema só
 
-- **`app/lib.css` é o único lugar** que liga os tokens de papel da lib (`--background`, `--muted`, `--accent`, `--secondary`, `--border`, `--input`, `--chart-*`, raios) às variáveis do site. Hoje ele liga só `--border: #e2d8c3` e `--input: #827968` (`app/lib.css:62-65`). O preset `welabs` deixa `--muted`, `--accent` e `--secondary` em cinza neutro `oklch(0.96 0 0)` (`dist/theme/brands/welabs.css:42-46`), e a F2 liga esses tokens à areia ali mesmo.
+- **`app/lib.css` é o único lugar** que liga os tokens de papel da lib (`--background`, `--muted`, `--accent`, `--secondary`, `--border`, `--input`, `--chart-*`, sombras, raios) às variáveis do site. Desde a F2 ele liga todos: `--background` ao creme, `--card`/`--popover` ao branco, `--muted`/`--accent`/`--secondary` à areia 100 (o preset deixa cinza neutro `oklch(0.96 0 0)`, `dist/theme/brands/welabs.css:42-46`), `--chart-1` ao âmbar e `--shadow-md`/`--shadow-lg` às sombras quentes do site.
 - A médio prazo, a forma oficial é `defineBrand` (`@imagineapps-team/react/theme/brand`), validada antes com `defineBrandInputSchema`.
 - É **proibido** override de cor por componente: nada de `className="bg-[#F3ECDD]"`, `style={{ color: "#..." }}` ou bloco `[data-theme="welabs"]` em outra folha. Efeito com cor própria (`TextShimmer highlightColor`, `BorderBeam color`) recebe `var(--primary)` por prop, centralizado no wrapper de `components/lib/`.
 - O bloco que usa a lib leva `data-theme="welabs"` (`components/template/Home.tsx:246`). Fora dele, `app/lib.css:35-55` neutraliza três vazamentos medidos da base da lib: transição de 160 ms, `line-height` 1,5 e `vertical-align: middle`. Ao ampliar o uso da lib, revise essas três exceções, sem duplicá-las.
@@ -40,8 +40,9 @@ Fonte: `components/onepage/shell.module.css:8-40`. Os componentes leem estes nom
 
 | Papel | Token | Valor |
 |---|---|---|
-| Página / cartão | `--c` / `--surface` | `#ffffff` |
-| Banda que se destaca | `--surface-band` | `--muted` a 30 % sobre `--c` |
+| Chão da página (creme da marca, sand-50) | `--page` | `#faf5ea` |
+| Cartão, janela, menu | `--surface` (e `--c`, branco) | `#ffffff` |
+| Banda que se destaca | `--surface-band` | `#f6f0e3` (areia 100 a 55 % sobre o chão) |
 | Areia de destaque, chip, selecionado | `--c2` / `--surface-accent` | `#f3ecdd` |
 | Linha fina | `--cl` | `#e2d8c3` |
 | Borda de controle (3:1) | `--input` | `#827968` |
@@ -49,16 +50,16 @@ Fonte: `components/onepage/shell.module.css:8-40`. Os componentes leem estes nom
 | Âmbar | `--a`, `--a-100..300` | `#ffb020`, `#fff1d8`, `#ffe2b1`, `#ffcc74` |
 | Ação (CTA pílula) | `--action` / `--action-fg` | `#25272a` / `#faf5ea` |
 
-O âmbar só sinaliza que algo **aconteceu**: linha escrita, foco, item ativo. Não serve para enfeitar chip. São três planos de profundidade: fundo creme, cartão branco com borda fina e sem sombra, e foco com sombra macia (`--shadow-pop`) mais barra âmbar. Sombra em todo cartão está fora do padrão.
+O âmbar só sinaliza que algo **aconteceu**: linha escrita, foco, item ativo. Não serve para enfeitar chip. São três planos de profundidade: fundo creme (`--page`), cartão branco com borda fina e sem sombra (`--shadow-card` vale `none`), e foco com sombra macia (`--shadow-raise` no hover, `--shadow-pop` no que está aberto ou arrastado) mais barra âmbar. Sombra em cartão parado está fora do padrão, e texto esmaecido por `opacity` também: o que fica em segundo plano muda de cor (tinta → `--mute-l`), para não cair abaixo de AA.
 
 ## 5. Tipo, espaço e alinhamento
 
-- **Escala da página** (`shell.module.css:52-61`): 14·15·16·18·20, `--text-2xl` 22–26, `--text-title` 28–40, `--text-display` 32–48 e `--text-hero` 40–72. Folha de componente só usa `font-size: var(--text-*)` e espaço `var(--sp-*)` numa grade de 4 px, cobrado por `components/template/polish.test.tsx:59-86`.
-- **Piso**: 14 px no texto da página. Dentro de tela desenhada (cena, play), o piso é **12 px** com contraste AA, e texto de 11 px é proibido. O `--s-t-meta` de 11 px (`components/scenes/tokens.module.css:37`) é falha conhecida da F2 em `polish.test.tsx`.
-- **Hierarquia de título**: não repita um h2 de 40 px centralizado em toda seção (`SectionHead.tsx:16-21`, hoje variante única). O alvo da F2 são três variantes marcadas por `data-head`:
-  - `chapter`: h2 à esquerda com linha, para tese;
+- **Escala fechada** (`shell.module.css`, `--t-*`), sete degraus em 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18, corpo 16, rótulo 14 e micro 12. Os nomes `--text-*` que as folhas leem são apelidos dos degraus. Folha de componente só usa `font-size: var(--text-*)` e espaço `var(--sp-*)` numa grade de 4 px, cobrado por `components/template/polish.test.tsx`; `e2e/visual-language.spec.ts` mede no máximo 7 tamanhos acima de 12 px nas 6 rotas.
+- **Piso**: 14 px no texto da página. Dentro de tela desenhada (cena, play), os degraus micro (12) e rótulo (14), com a chave em 18 (`components/scenes/tokens.module.css`), sempre com contraste AA. Texto abaixo de 12 px é proibido.
+- **Hierarquia de título**: `SectionHead` tem três variantes marcadas por `data-head`:
+  - `chapter`: linha fina no topo, h2 à esquerda (8/12) e a linha de apoio nas 4 colunas finais, para tese;
   - `showcase`: h2 centralizado, para vitrine de produto;
-  - `strip`: h3 compacto de 24/20 px, para confiança e detalhes.
+  - `strip`: título no degrau h3 (24/20) à esquerda, para detalhes e "Onde rodamos".
 
   Título é efeito ou rótulo, sem misturar os dois na mesma página.
 - **Alinhamento** (régua de `e2e/domus.spec.ts:5-9`):

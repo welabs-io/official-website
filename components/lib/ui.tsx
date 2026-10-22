@@ -6,8 +6,13 @@
 // subpath for these primitives (its exports map stops at `./ui`), so they come from the `ui` barrel.
 export {
   Badge,
+  Button,
   Card,
   CardContent,
   Field,
   Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
 } from "@imagineapps-team/react/ui";

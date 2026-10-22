@@ -70,23 +70,25 @@ for (const width of [1440, 1024])
       for (const tie of ties.slice(0, 4))
         expect(tie.length).toBeGreaterThanOrEqual(80);
       expect(ties[4].length).toBeGreaterThanOrEqual(55);
-      // The stamps of the products not lit read at 0.35 (the still stage of a product page)
+      // The stamps of the products not lit step back (the still stage of a product page). v3 (F2): by colour, the lit one
+      // in ink and the others in the muted text, all at full opacity, so every stamp passes AA (at 0.35 they were 1.7:1)
       if (path !== "/") {
         const dims = await page.evaluate(
           (sel) =>
             [...document.querySelectorAll<HTMLElement>(`${sel} [data-p]`)]
               .filter((el) => el.dataset.p !== "domus")
-              .map((el) => [
-                el.dataset.p,
-                Number(getComputedStyle(el.lastElementChild!).opacity),
-              ]),
+              .map((el) => {
+                const cs = getComputedStyle(el.lastElementChild!);
+                return [el.dataset.p, cs.color, Number(cs.opacity)] as const;
+              }),
           sel,
         );
-        for (const [slug, opacity] of dims)
-          expect(opacity, String(slug)).toBeCloseTo(
-            slug === "relloo" ? 1 : 0.35,
-            1,
+        for (const [slug, color, opacity] of dims) {
+          expect(opacity, String(slug)).toBe(1);
+          expect(color, String(slug)).toBe(
+            slug === "relloo" ? "rgb(28, 26, 22)" : "rgb(98, 91, 78)",
           );
+        }
       }
     });
 

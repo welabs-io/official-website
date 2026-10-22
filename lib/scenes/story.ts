@@ -30,8 +30,9 @@ export const STORY = {
     ask: "10:07",
     confirm: "10:16",
   },
-  // The composer of the conversation: a placeholder, with no name in it
+  // The composer of the conversation: a placeholder, with no name in it, and the name of its send button
   reply: "Escrever resposta",
+  send: "Enviar",
   // Column order of the house: the right column holds Pessoas, Pedidos and Entregas
   rooms: [
     "Atendimento",

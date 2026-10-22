@@ -1,6 +1,6 @@
 // CENAS DE CAPACIDADE NA ABERTURA DA PÁGINA DE PRODUTO
 // Acceptance of the native opening of the five product pages, at the three sizes: every capability scene follows the
-// legibility rule of the scenes (interface text of 11 to 13 px, one key element of 18 to 22 px, at most four sizes and
+// legibility rule of the scenes (v3: interface text of 12 or 14 px, one key element of 18 px, at most four sizes and
 // three colours, every text AA), stays inside its window and never scrolls the page sideways; the reading bands of the
 // page pass AA too. At 1440: at least 35% of the cycle of the opening is still, reduced motion shows the settled frames
 // with no animation running, and the stage pauses off screen.
@@ -159,13 +159,13 @@ for (const vp of VIEWPORTS)
             [STAGE, i] as const,
           );
           const where = `${text.id} at ${vp.name}`;
-          expect(Math.min(...text.sizes), where).toBeGreaterThanOrEqual(11);
+          // v3 (F2, plano.md 4.1): the steps of the closed scale only, the micro (12) and the label (14) for the
+          // interface and the lead (18) for the key; it was 11 to 13 and a key of 18 to 22
           expect(text.keys, `${where}: one key element`).toHaveLength(1);
           const [key] = text.keys;
-          expect(key, where).toBeGreaterThanOrEqual(18);
-          expect(key, where).toBeLessThanOrEqual(22);
+          expect(key, where).toBe(18);
           const rest = text.sizes.filter((px) => px !== key);
-          expect(Math.max(...rest), where).toBeLessThanOrEqual(13);
+          for (const px of rest) expect([12, 14], where).toContain(px);
           expect(
             new Set(text.sizes).size,
             `${where}: sizes`,

@@ -131,8 +131,9 @@ test.describe("(a) the tokens of the ERP front", () => {
         ctaRadius: cta.borderRadius,
       };
     });
-    expect(t.body).toBe("rgb(255, 255, 255)");
-    expect(t.page).toBe("rgb(255, 255, 255)");
+    // v3 (F2, plano.md 4.1): the floor is the cream of the brand (sand-50), no longer the white of v2.1
+    expect(t.body).toBe("rgb(250, 245, 234)");
+    expect(t.page).toBe("rgb(250, 245, 234)");
     // ERP --action #25272a with --action-foreground #faf5ea, round control (22 px)
     expect(t.ctaBg).toBe("rgb(37, 39, 42)");
     expect(t.ctaFg).toBe("rgb(250, 245, 234)");

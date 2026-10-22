@@ -8,9 +8,10 @@
   inset: 0;
   z-index: 45;
   overflow: hidden;
+  /* v3 (F2): the cream floor of the page (shell.module.css --page), so the hand-over to the product never flashes white */
   background:
     radial-gradient(60% 55% at 50% 0%, oklch(0.66 0.21 28 / 0.06), transparent 70%),
-    #ffffff;
+    #faf5ea;
   will-change: clip-path, opacity;
   cursor: pointer;
 }

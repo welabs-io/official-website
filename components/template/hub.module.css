@@ -21,11 +21,10 @@
     "tuner tie-tuner core tie-knowly knowly";
   row-gap: var(--gap);
   padding: var(--sp-6) var(--sp-5);
-  border: 1px solid var(--cl);
-  border-radius: var(--r-win);
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
 }
+/* v3 (F2, plano.md 1.7 and 4.1): the stage is no card of its own any more. Its border around the cards of the products
+   and the record drew a card inside a card (a double frame on the record); the cards now stand on the cream floor, and
+   the record, in focus, keeps the soft shadow. */
 .hub[data-small] {
   max-width: 800px;
   margin: 0 auto;
@@ -305,7 +304,9 @@ a.core:focus-visible {
   animation: win 12.5s linear infinite paused;
   animation-delay: calc(var(--w) * 2.5s - 12.5s);
 }
-/* v2.2 (audit A06): the stamp of a product not lit stays at 0.35, so one effect reads at a time */
+/* v2.2 (audit A06): the stamp of a product not lit steps back, so one effect reads at a time.
+   v3 (F2): it steps back by colour (ink when lit, the muted text otherwise, 6:1), never by opacity (at 0.35 it was 1.7:1,
+   under AA) */
 .hub[data-hub="cycle"] .event {
   animation: win-dim 12.5s linear infinite paused;
   animation-delay: calc(var(--w) * 2.5s - 12.5s);
@@ -329,14 +330,14 @@ a.core:focus-visible {
 @keyframes win-dim {
   0%,
   19% {
-    opacity: 1;
+    color: var(--ink);
   }
   20%,
   99.9% {
-    opacity: 0.35;
+    color: var(--mute-l);
   }
   100% {
-    opacity: 1;
+    color: var(--ink);
   }
 }
 @keyframes win {
@@ -420,24 +421,19 @@ a.core:focus-visible {
   .hot {
   animation: dash 0.9s linear infinite;
 }
-/* Pointed at or still: the stamp of the lit product at full strength, the others at 0.35 */
+/* Pointed at or still: the stamp of the lit product in ink, the others in the muted text (v3, F2: by colour, AA) */
 .hub:is([data-hub="still"], :has(:is(.node, .core):is(:hover, :focus-visible)))
   .event {
   animation: none;
-  opacity: calc(0.35 + 0.65 * var(--lit-self, 0));
-  transition: opacity var(--dur-2) var(--ease-out);
+  color: var(--mute-l);
+  transition: color var(--dur-2) var(--ease-out);
 }
-.node[data-p="relloo"] {
-  --lit-self: var(--lit-relloo, 0);
-}
-.node[data-p="magneto"] {
-  --lit-self: var(--lit-magneto, 0);
-}
-.node[data-p="tuner"] {
-  --lit-self: var(--lit-tuner, 0);
-}
-.node[data-p="knowly"] {
-  --lit-self: var(--lit-knowly, 0);
+.hub[data-hub="still"][data-lit="relloo"] .node[data-p="relloo"] .event,
+.hub[data-hub="still"][data-lit="magneto"] .node[data-p="magneto"] .event,
+.hub[data-hub="still"][data-lit="tuner"] .node[data-p="tuner"] .event,
+.hub[data-hub="still"][data-lit="knowly"] .node[data-p="knowly"] .event,
+.hub .node:is(:hover, :focus-visible) .event {
+  color: var(--ink);
 }
 /* `--lit` is the product shown lit: the one of the page, or the one pointed at */
 .hub[data-lit="relloo"],

@@ -16,11 +16,12 @@ description: Regras de conteúdo do site Welabs (welabs-website) - sem pessoa fi
 | `allowed` | lista fechada onde "entrega" é substantivo da história | removida antes de casar |
 | `persons` | prenomes de pessoa | palavra inteira, **com** maiúscula |
 | `stack` | pilha interna e base tecnológica | palavra inteira, com caixa |
+| `vendors` | marca de terceiro (canal, ferramenta) | na página, só entre parênteses (`vendorViolation`); em rótulo desenhado (cena, play, abertura de marca), nunca (`vendorIn`, sem caixa) |
 | `known` | falhas conhecidas toleradas, cada uma com a fase que a remove | — |
 
 ## As regras
 
-1. **Sem pessoa fictícia e sem personificação.** Cena e play mostram o **efeito** num registro (pedido, linha, perfil, equipe), nunca uma pessoa com nome. O produto não "sabe", "entende" nem "atende": quem age é a operação, e o produto é o lugar onde ela acontece. "Marina" ainda aparece em `lib/scenes/story.ts:9`, `lib/scenes/capabilities.ts:117-149` e `lib/content/home.ts:33`, e está em `known.persons` até a **F1**.
+1. **Sem pessoa fictícia e sem personificação.** Cena e play mostram o **efeito** num registro (pedido, linha, perfil, equipe), nunca uma pessoa com nome. O produto não "sabe", "entende" nem "atende": quem age é a operação, e o produto é o lugar onde ela acontece. Desde a F1, quem pede é o registro "Contato 4821" (`lib/scenes/story.ts`, `STORY.who`), com glifo no lugar de inicial ou rosto, também nas aberturas de marca (`components/intro/*.js`, lidas por `components/intro/copy.test.ts` e `e2e/opening-copy.spec.ts`).
 2. **Sem slogan.** A ideia "tudo termina num registro do Domus" é roteiro, não frase do site. Cada seção a **mostra**, sem enunciá-la. Título curto (até 6 palavras) mais uma linha.
 3. **Nada de "ERP" nem "Cliente" visível**, em nenhum lugar: texto, `alt`, `aria-label`, metadado. Use "a sua empresa", "a operação", "contato", "pessoa atendida".
 4. **Sem marcador de maturidade.** Produto aparece como existente, sem estágio, versão, roadmap, "em breve" ou "beta".
@@ -31,7 +32,7 @@ description: Regras de conteúdo do site Welabs (welabs-website) - sem pessoa fi
    - a base do Domus e a origem dos módulos;
    - o fornecedor de modelo de IA e o detalhe de RAG.
 
-   Hoje `lib/partners.ts:26-82` mostra a pilha em "Onde rodamos", e ela está em `known.stack` até a **F1**.
+   Desde a F1, `lib/partners.ts` tem só as quatro nuvens, e `check-portfolio.mjs` e `site.test.tsx` reprovam qualquer outra na faixa.
 8. **O Domus é a gestão inteira.** É o centro onde o negócio é definido e onde os outros quatro produtos escrevem, com módulos padrão e sob medida. Nunca é "só fiscal" nem "emissor de nota": fiscal e bancos são detalhes dele. Os outros produtos são as portas por onde o trabalho chega ao Domus.
 9. **Prometa só o que o código sustenta.** Toda capacidade citada precisa de evidência no código do produto ou no próprio site (`file:line` no comentário da string, como já fazem `lib/content/products.ts` e `lib/scenes/capabilities.ts`). Ficam de fora:
    - preço, prazo de implantação e número de clientes;

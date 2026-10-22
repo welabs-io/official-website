@@ -58,10 +58,32 @@
 /* Colour: the site keeps its sand hairline and its warm control border (shell.module.css --cl and --input) where the
    preset has neutral greys (--border oklch(0.9 0 0), --input oklch(0.6 0 0)). Structure: the ERP front's role tokens
    (front/src/ui-kit/theme/tabela-theme.css: control 44/36 px, 8 px surfaces) with the field radius (10 px) as the
-   control radius, since the site uses the lib for fields and badges, not for its pill buttons. */
+   control radius, since the site uses the lib for fields and badges, not for its pill buttons.
+   v3 (F2, plano.md 4.1): every role token of the preset that is a neutral grey or white takes its plane of the site,
+   here and nowhere else: the floor is the cream (--background), a card or a popover is white, the fills (--muted,
+   --accent, --secondary: table heads, hover rows, skeletons, neutral badges) are sand 100, the first chart series is the
+   amber, and the shadows are the warm ones of the page. Each reads the site's token (shell.module.css .page) with the
+   brand value as the fallback, for a portal rendered outside the page. */
 [data-theme="welabs"]:where(:not([data-mode="dark"])) {
+  --background: var(--page, #faf5ea);
+  --card: var(--surface, #ffffff);
+  --popover: var(--surface, #ffffff);
+  --muted: var(--c2, #f3ecdd);
+  --accent: var(--c2, #f3ecdd);
+  --secondary: var(--c2, #f3ecdd);
   --border: #e2d8c3;
   --input: #827968;
+  --chart-1: #ffb020;
+  --shadow-md: var(
+    --shadow-raise,
+    0 4px 12px -2px rgb(28 26 22 / 0.1),
+    0 2px 6px -2px rgb(28 26 22 / 0.06)
+  );
+  --shadow-lg: var(
+    --shadow-pop,
+    0 12px 32px -8px rgb(28 26 22 / 0.16),
+    0 6px 12px -4px rgb(28 26 22 / 0.08)
+  );
 }
 [data-theme="welabs"] {
   --font-sans: "Inter", system-ui, sans-serif;

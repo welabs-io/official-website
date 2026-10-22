@@ -7,6 +7,12 @@
 // Interface text of 11 to 13 px, as in a real app; the key element is the record on the conversation (18 px). Server
 // markup, timed by the script (`act`); the settled frame is plain CSS.
 // v3 (F1): the conversation is headed by the contact record (STORY.who) with its order, never a person's name.
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/lib/ui";
 import type { Act } from "@/lib/scenes/types";
 import { STORY } from "@/lib/scenes/story";
 import { Glyph, GLYPHS, TICK_DOUBLE } from "./icons";
@@ -170,12 +176,30 @@ export function LudicChannels({ act }: { act: Act }) {
             </span>
           </li>
         </ol>
-        <p className={l.reply} aria-hidden="true">
-          <span>{STORY.reply}</span>
-          <i>
-            <Glyph d={GLYPHS.send} size={14} />
-          </i>
-        </p>
+        {/* v3 (F2, review P-02): the composer is the lib's InputGroup at the small control height, the field and its
+            send button as in the product; inert, since it is a drawing with nothing to type */}
+        <div className={l.reply} aria-hidden="true" inert data-theme="welabs">
+          <InputGroup className="min-h-control-sm">
+            <InputGroupInput
+              className="text-sm"
+              readOnly
+              tabIndex={-1}
+              placeholder={STORY.reply}
+              aria-label={STORY.reply}
+            />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                size="icon-xs"
+                variant="neutral"
+                appearance="solid"
+                tabIndex={-1}
+                aria-label={STORY.send}
+              >
+                <Glyph d={GLYPHS.send} size={14} />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
       </div>
     </div>
   );

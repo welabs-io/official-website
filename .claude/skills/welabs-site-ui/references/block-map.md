@@ -12,7 +12,7 @@ Medido contra `@imagineapps-team/react` 0.18.0 instalado: os nomes foram conferi
 | `ui/markdown` | `MarkdownRenderer` |
 | `ui/data-table` | `DataTable` (exige `@tanstack/react-table`, que não está instalado) |
 
-Hoje a fronteira `components/lib/ui.tsx` reexporta só `Badge`, `Card`, `CardContent`, `Field` e `Input` da entrada `ui`. Cada entrada nova ganha um arquivo irmão com `"use client"`.
+Hoje a fronteira `components/lib/ui.tsx` reexporta da entrada `ui` `Badge`, `Button` (botão do menu no celular), `Card`, `CardContent`, `Field`, `Input` e `InputGroup`/`InputGroupAddon`/`InputGroupButton`/`InputGroupInput` (campo de resposta da cena do Tuner). Cada entrada nova ganha um arquivo irmão com `"use client"`.
 
 ## Props conferidas no MCP
 

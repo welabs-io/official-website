@@ -141,7 +141,7 @@ export function ProductCenter({ slug }: { slug: ProductSlug }) {
 export function ProductDetails({ slug }: { slug: ProductSlug }) {
   return (
     <div className={shell.wrap}>
-      <SectionHead title={PAGE_HEADINGS.details} />
+      <SectionHead title={PAGE_HEADINGS.details} variant="strip" />
       <ul className={styles.details}>
         {PRODUCT_PAGE[slug].details.map((d) => (
           <li key={d}>{d}</li>

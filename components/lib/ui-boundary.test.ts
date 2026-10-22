@@ -81,8 +81,6 @@ const NATIVE_GAPS: Record<string, string> = {
 const NATIVE_KNOWN: Record<string, number> = {
   // TODO(F3): the reset button of the plays leaves with the autodemo (they reset by themselves); otherwise lib Button
   "components/plays/parts.tsx|button": 1,
-  // TODO(F2): the menu button of the header becomes the lib's Button (or Sheet)
-  "components/onepage/SiteNav.tsx|button": 1,
   // TODO(F3): the list born in the Domus play becomes the lib's Table
   "components/plays/DomusPlay.tsx|table": 1,
 };
@@ -187,8 +185,6 @@ const handMadeClasses = () => {
 
 // Known failures measured on 155fb83, with the phase that swaps them for the lib (welabs-site-ui, references/block-map.md)
 const CLASS_KNOWN: string[] = [
-  // TODO(F2): the menu button of the header becomes the lib's Button
-  "components/onepage/shell.module.css|.menuButton",
   // TODO(F3): the plays take the lib's Field/Input, Table, Badge (status pill and tag) and ChipGroup
   "components/plays/domus.module.css|.field",
   "components/plays/domus.module.css|.flowChip",

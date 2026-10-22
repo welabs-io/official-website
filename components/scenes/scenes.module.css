@@ -211,13 +211,14 @@
 .who > b.key {
   font-size: var(--s-t-key);
 }
+/* v3 (F2): the context line wraps when its box is narrow (at the 12 px step of the scale, a one-line context pushed
+   the notes of the Tuner past their window on a 375 px phone, where the pane clipped them) */
 .who > span {
   display: flex;
   align-items: center;
   gap: 0.3125rem;
   font-size: var(--s-t-meta);
   color: var(--s-mute);
-  white-space: nowrap;
 }
 .pillOk,
 .pillInfo {
