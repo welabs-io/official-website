@@ -32,9 +32,9 @@ html {
 }
 body {
   margin: 0;
-  /* The page under the overscroll reads the single theme token (app/lib.css --background, the light cream) */
-  background: var(--background, #fdf9f1);
-  color: #1c1a16;
+  /* The page under the overscroll reads the single theme layer (app/lib.css --background, the v3 canvas) */
+  background: var(--background);
+  color: var(--foreground);
   font-family: "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -56,8 +56,8 @@ a {
   outline-offset: 2px;
   /* The gap takes the page colour of the single theme token (app/lib.css --background), so it follows the floor */
   box-shadow:
-    0 0 0 2px var(--background, #fdf9f1),
-    0 0 0 4px #1c1a16;
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
 }
 /* On a graphite band (the footer) the ring turns cream over the graphite */
 footer :focus-visible {
@@ -71,8 +71,8 @@ footer :focus-visible {
   top: -64px;
   z-index: 100;
   padding: 10px 16px;
-  background: #ffb020;
-  color: #1c1a16;
+  background: var(--signal);
+  color: var(--signal-foreground);
   font-weight: 600;
 }
 .skip-link:focus {

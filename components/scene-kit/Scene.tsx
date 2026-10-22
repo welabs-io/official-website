@@ -17,6 +17,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { ChevronRight } from "lucide-react";
 import { Card } from "@/components/lib/ui";
 import { useInView, useReducedMotion } from "@/components/lib/scene";
 import {
@@ -87,9 +88,10 @@ type SceneProps = {
   id: string;
   // Accessible name of the window
   label: string;
-  // Chrome bar: the product and the screen of the product
+  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end
   product: string;
   title: string;
+  tools?: ReactNode;
   // Either the steps, or a clock made with useSceneTimeline
   steps?: readonly SceneStep[];
   timeline?: SceneTimeline;
@@ -106,6 +108,7 @@ export function Scene({
   timeline: external,
   children,
   className,
+  tools,
 }: SceneProps) {
   const [own] = useState(() => external ?? new SceneTimeline(steps ?? []));
   const timeline = external ?? own;
@@ -148,9 +151,10 @@ export function Scene({
       aria-label={label}
     >
       <div className={k.chrome}>
-        <span className={k.status} data-on={active} aria-hidden="true" />
         <span className={k.product}>{product}</span>
+        <ChevronRight className={k.chevron} strokeWidth={1.75} aria-hidden="true" />
         <span className={k.title}>{title}</span>
+        {tools ? <span className={k.tools}>{tools}</span> : null}
       </div>
       <div
         ref={ref}

@@ -1,6 +1,6 @@
 // TESTES DOS PAPÉIS DE COR DO KIT DE CENAS
 // The colour roles of the kit (colour-decisions of 2026-10-22, .claude/skills/welabs-site-ui "Papéis de cor") enforced
-// by tool: the sand 700 (#625b4e, --muted-foreground and every token that resolves to it in app/lib.css) is a text and
+// by tool: the text tone, stone-700 in Welabs UI v3 (#4a4a48, --muted-foreground and every token that resolves to it in app/lib.css) is a text and
 // icon tone only, so no sheet or class of components/scene-kit paints a background or a fill with it; and the kit's
 // sheets carry no raw colour (every colour is a role token of app/lib.css).
 import { readFileSync, readdirSync } from "node:fs";
@@ -16,7 +16,8 @@ const kitFiles = (ext: RegExp) =>
     .filter((f) => ext.test(f) && !/\.test\.tsx?$/.test(f));
 const stripCss = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
-const SAND_700 = /#625b4e\b|rgba?\(\s*98\s*,\s*91\s*,\s*78\b/i;
+// Welabs UI v3 (2026-10-22): the text-only tone is stone-700 #4a4a48 (the sand 700 #625b4e before it)
+const SAND_700 = /#4a4a48\b|rgba?\(\s*74\s*,\s*74\s*,\s*72\b/i;
 
 // The custom properties of a sheet that resolve to the sand 700, through any chain of var() aliases
 function textOnlyTokens(themeCss: string): Set<string> {
@@ -51,11 +52,11 @@ function sandFills(css: string, tokens: Set<string>): string[] {
   return found;
 }
 
-// Tailwind classes of a component that fill with a text-only tone (bg-muted-foreground, fill-[#625b4e], ...)
+// Tailwind classes of a component that fill with a text-only tone (bg-muted-foreground, fill-[#4a4a48], ...)
 function sandFillClasses(src: string, tokens: Set<string>): string[] {
   const names = [...tokens].map((t) => t.slice(2)).join("|");
   const re = new RegExp(
-    `\\b(?:bg|fill|from|via|to)-(?:(?:${names})\\b|\\[(?:#625b4e|var\\(--(?:${names})\\))\\]|\\(--(?:${names})\\))`,
+    `\\b(?:bg|fill|from|via|to)-(?:(?:${names})\\b|\\[(?:#4a4a48|var\\(--(?:${names})\\))\\]|\\(--(?:${names})\\))`,
     "gi",
   );
   return [...src.matchAll(re)].map((m) => m[0]);
@@ -65,19 +66,19 @@ const TOKENS = textOnlyTokens(read("app/lib.css"));
 
 describe("the detectors", () => {
   it("resolve the aliases of the sand 700 and flag only fills", () => {
-    const tokens = textOnlyTokens(":root { --a: #625B4E; --b: var(--a); --c: var(--card); }");
+    const tokens = textOnlyTokens(":root { --a: #4A4A48; --b: var(--a); --c: var(--card); }");
     expect([...tokens].sort()).toEqual(["--a", "--b", "--muted-foreground"]);
     const css = `.x { color: var(--b); background: var(--card); }
-      .y { background-color: var(--b); } .z { fill: rgb(98, 91, 78) } .w { box-shadow: inset 0 0 0 1px var(--a) }
+      .y { background-color: var(--b); } .z { fill: rgb(74, 74, 72) } .w { box-shadow: inset 0 0 0 1px var(--a) }
       .v { background: linear-gradient(var(--muted-foreground), transparent) }`;
     expect(sandFills(css, tokens)).toEqual([
       ".y { background-color: var(--b) }",
-      ".z { fill: rgb(98, 91, 78) }",
+      ".z { fill: rgb(74, 74, 72) }",
       ".v { background: linear-gradient(var(--muted-foreground), transparent) }",
     ]);
     expect(
-      sandFillClasses('className="text-muted-foreground bg-muted-foreground fill-[#625b4e] bg-card"', tokens),
-    ).toEqual(["bg-muted-foreground", "fill-[#625b4e]"]);
+      sandFillClasses('className="text-muted-foreground bg-muted-foreground fill-[#4a4a48] bg-card"', tokens),
+    ).toEqual(["bg-muted-foreground", "fill-[#4a4a48]"]);
   });
 
   it("find the sand 700 among the tokens of app/lib.css", () => {

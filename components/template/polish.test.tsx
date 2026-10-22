@@ -141,11 +141,11 @@ describe("space and type tokens", () => {
       ["--sp-7", 48],
       ["--sp-8", 64],
       ["--sp-9", 80],
-      // v2.1: the shapes of the ERP front (field 10, surface 8, overlay 14, control 22)
-      ["--r-ctl", 10],
-      ["--r-card", 8],
-      ["--r-win", 14],
-      ["--r-pill", 22],
+      // Welabs UI v3 (2026-10-22): control 8, card and window 12, and no pill button (the old round step is 8)
+      ["--r-ctl", 8],
+      ["--r-card", 12],
+      ["--r-win", 12],
+      ["--r-pill", 8],
     ] as const)
       expect(css, name).toContain(`${name}: ${px}px;`);
     expect(css).toMatch(/--measure:\s*66ch;/);

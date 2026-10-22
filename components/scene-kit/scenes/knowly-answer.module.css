@@ -142,7 +142,7 @@
   background: var(--indicator-muted);
 }
 [data-state="active"] .bullet {
-  background: var(--primary);
+  background: var(--signal);
 }
 [data-state="done"] .bullet {
   background: var(--foreground);

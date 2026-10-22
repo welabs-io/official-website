@@ -163,8 +163,8 @@
 /* The amber square of the logo, square like it */
 .seed {
   border-radius: 0;
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--signal);
+  color: var(--signal-foreground);
 }
 /* The screen of the module (the lib's Card, small size) over the three columns that end at the slot */
 .screen {

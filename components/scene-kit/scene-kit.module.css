@@ -3,40 +3,37 @@
    settled frame's (the hidden copy and the live step share one grid cell, and the live step stretches to fill it, so
    the window never shows an empty strip under a shorter step). Off-screen or under reduced motion (data-on="false") no
    CSS animation runs; reduced motion also drops every transition. Colours are the role tokens of app/lib.css (the frame
-   carries data-theme="welabs"): the shell (chrome and side panes) is the sand 100 card, the working pane of a scene is
-   the cream 50 paper, sand 200 only draws lines. Type, space and motion come from the site's scales
-   (components/onepage/shell.module.css). */
+   carries data-theme="welabs"): Welabs UI v3, the white window (--card) with the lg shadow and a ring in the line, the
+   chrome bar (--muted) on top with no line under it, and the line (--border) only between the panes of a scene. Type,
+   space and motion come from the site's scales (app/lib.css TOKENS DO SITE). */
 .frame {
   width: 100%;
   max-width: var(--scene-width);
   margin-inline: auto;
+  overflow: hidden;
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: 0 0 0 var(--rule) var(--border), var(--shadow-pop);
   color: var(--foreground);
 }
 
-/* The chrome is the shell of the window (same sand 100 as the card), split from the stage by the sand line */
+/* The chrome bar of the window: the product, a chevron and the place inside it (a breadcrumb), and the scene's own
+   tools at the end (a search field); no status dot, since amber is kept for what is live inside the scene */
 .chrome {
   display: flex;
+  min-height: var(--chrome-h);
   align-items: center;
   gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-4);
-  border-bottom: var(--rule) solid var(--border);
-  background: var(--card);
+  padding: var(--sp-1) var(--sp-4);
+  background: var(--muted);
   font-size: var(--t-label);
   line-height: var(--line-label);
 }
-
-/* The status of the window: amber while the scene is playing (something happens), the quiet sand 600 dot when it
-   rests (3.66:1 on the chrome; the sand line it used before vanished on it) */
-.status {
-  width: var(--dot);
-  height: var(--dot);
+.chevron {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
   flex: none;
-  border-radius: var(--r-dot);
-  background: var(--indicator-muted);
-  transition: background-color var(--dur-2) var(--ease-out);
-}
-.status[data-on="true"] {
-  background: var(--primary);
+  color: var(--input);
 }
 
 .product {
@@ -44,10 +41,18 @@
 }
 
 .title {
+  min-width: 0;
   color: var(--muted-foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.tools {
+  display: flex;
+  min-width: 0;
+  flex: none;
+  align-items: center;
+  margin-left: auto;
 }
 
 .stage {
@@ -72,7 +77,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .status,
   .stage * {
     animation: none !important;
     transition: none !important;
