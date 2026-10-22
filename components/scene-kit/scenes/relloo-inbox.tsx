@@ -213,7 +213,15 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
                     <b>{ch.label}</b>
                     <time>{ch.time}</time>
                   </span>
-                  <span className={r.preview}>{ch.preview}</span>
+                  {/* While the chat of the site types, its row types too: the same dots the history line shows */}
+                  {typing && ch.step === "site" ? (
+                    <span className={`${r.preview} ${r.typing}`}>
+                      {COPY.typing}
+                      <TypingDots size={5} gap={3} />
+                    </span>
+                  ) : (
+                    <span className={r.preview}>{ch.preview}</span>
+                  )}
                 </span>
               </RowButton>
             </li>

@@ -50,6 +50,8 @@ export function Connector({
   gap?: number;
 }) {
   const [d, setD] = useState<string | null>(null);
+  // Where the trace leaves its source: an anchor dot ties the line to the row
+  const [start, setStart] = useState<Point | null>(null);
 
   const ref = useCallback(
     (svg: SVGSVGElement | null) => {
@@ -65,12 +67,9 @@ export function Connector({
           setD(null);
           return;
         }
-        setD(
-          trace(
-            { x: pa.x + pa.w - inset, y: pa.y + pa.h / 2 },
-            { x: pb.x - gap, y: pb.y + pb.h / 2 },
-          ),
-        );
+        const start = { x: pa.x + pa.w - inset, y: pa.y + pa.h / 2 };
+        setD(trace(start, { x: pb.x - gap, y: pb.y + pb.h / 2 }));
+        setStart((prev) => (prev && prev.x === start.x && prev.y === start.y ? prev : start));
       };
       measure();
       const observer = new ResizeObserver(measure);
@@ -89,6 +88,7 @@ export function Connector({
       {d ? (
         // Keyed by the target: a new hand-off draws again, a re-measure of the same one only moves it
         <g key={to}>
+          {start ? <circle cx={start.x} cy={start.y} r={3} className={c.anchor} /> : null}
           <path d={d} pathLength={1} className={c.path} />
           <circle r={3} className={c.dot} style={{ offsetPath: `path("${d}")` }} />
         </g>
