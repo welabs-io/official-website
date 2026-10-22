@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
-  max-width: 1040px;
+  max-width: var(--scene-width);
   margin-inline: auto;
 }
 
@@ -27,6 +27,6 @@
 .name {
   margin-right: auto;
   font-size: var(--t-label);
-  font-weight: 600;
+  font-weight: var(--weight-title);
   color: var(--muted-foreground);
 }

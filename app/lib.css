@@ -189,6 +189,9 @@
   --mark-md: 32px;
   --mark-lg: 40px;
   --row-min: 56px;
+  /* The status dot of a window's chrome, and the widest a product window gets */
+  --dot: 8px;
+  --scene-width: 1040px;
 
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;

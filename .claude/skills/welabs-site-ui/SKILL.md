@@ -106,6 +106,24 @@ Decisão do operador de 22/10: o contorno escuro de 1 px nos campos e o `outline
 
 O âmbar só sinaliza que algo **aconteceu** ou está acontecendo: linha escrita, foco, item ativo. Não serve para enfeitar chip. Texto esmaecido por `opacity` está fora do padrão: o que fica em segundo plano muda de cor (tinta → `--muted-foreground`), para não cair abaixo de AA.
 
+### Tokens
+
+Decisão do operador de 22/10: um padrão só, e um lugar só para mudar. **Todo token do site mora em `app/lib.css`**, no bloco `TOKENS DO SITE` (movido de `components/onepage/shell.module.css .page` com os mesmos valores; a página não mudou). As folhas de componente só leem `var(--…)`.
+
+| Família | Tokens | Onde mudar |
+|---|---|---|
+| Papéis de cor | `--background`, `--card`, `--secondary`, `--border`, `--input`, `--surface-raised`, `--indicator-muted`, `--muted-foreground`, `--primary`, `--primary-soft`, `--destructive(-soft)`, `--success(-soft)` | `app/lib.css`, blocos SUPERFÍCIES CREME e CONTROLES (o resto vem do preset `welabs` da lib) |
+| Cores da página | `--g*`, `--c*`, `--a-*`, `--ink`, `--mute-*`, `--page`, `--surface*`, `--halo`, `--action*` | `app/lib.css`, TOKENS DO SITE |
+| Tipo | `--t-*` (7 degraus) e os apelidos `--text-*`, `--lh-*`, `--line-micro/label/lead` (16/20/24), `--weight-text/label/title`, `--ls-*` | idem |
+| Espaço | `--sp-1` a `--sp-9` (grade de 4 px) | idem |
+| Forma e linha | `--r-*`, `--rule`, `--rule-dashed`, `--bar-active`, `--edge-ring`, `--edge-ring-active`, `--domus-ring*`, `--r-domus*` | idem |
+| Sombra | `--shadow-card`, `--shadow-raise`, `--shadow-pop` | idem |
+| Movimento | `--ease-out`, `--ease-in-out`, `--ease-spring`, `--dur-1/2/3` | idem (`--ease-in-out` fica junto das curvas da lib, no topo) |
+| Ícone e marca | `--icon-xs/sm/md/lg` (12/14/16/18), `--mark-xs/sm/md/lg` (22/28/32/40), `--row-min`, `--dot`, `--scene-width` | idem |
+
+- **Peças comuns das cenas:** `components/scene-kit/parts.module.css` tem a cabeça de painel (`paneHead`), a marca com tamanho e tom (`mark` + `markXs/Sm/Md/Lg`, `data-tone="active|done|fail|subject|well"`), os estados de linha (`rowStates`) e de chip (`choiceStates`), o texto empilhado (`stack`, `stackLead`), a linha de meta e o horário (`meta`, `time`), a bolha (`bubble`), a lista (`list`, `listTight`), as divisórias (`ruleTop`, `ruleBottom`) e o selo (`seal`). A cena compõe essas classes no markup e deixa na própria folha só o layout dela. A janela (cromo, palco, altura) é do `scene-kit.module.css`.
+- **Teste:** `components/scene-kit/tokens.test.ts` reprova, em qualquer folha do kit, tamanho, peso, entrelinha, espaçamento de letra, raio, sombra, espaço, largura de linha, duração ou geometria escritos à mão. A única saída é a lista `GEOMETRY_ALLOWED`, com o motivo de cada entrada. A cor crua continua com `scene-colour.test.ts`, e `components/template/polish.test.tsx` confere as escalas em `app/lib.css`.
+
 ## 5. Tipo, espaço e alinhamento
 
 - **Escala fechada** (`shell.module.css`, `--t-*`), sete degraus em 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18, corpo 16, rótulo 14 e micro 12. Os nomes `--text-*` que as folhas leem são apelidos dos degraus. Folha de componente só usa `font-size: var(--text-*)` e espaço `var(--sp-*)` numa grade de 4 px, cobrado por `components/template/polish.test.tsx`; `e2e/visual-language.spec.ts` mede no máximo 7 tamanhos acima de 12 px nas 6 rotas.

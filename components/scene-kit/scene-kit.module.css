@@ -8,7 +8,7 @@
    (components/onepage/shell.module.css). */
 .frame {
   width: 100%;
-  max-width: 1040px;
+  max-width: var(--scene-width);
   margin-inline: auto;
   color: var(--foreground);
 }
@@ -19,17 +19,17 @@
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4);
-  border-bottom: 1px solid var(--border);
+  border-bottom: var(--rule) solid var(--border);
   background: var(--card);
   font-size: var(--t-label);
-  line-height: 20px;
+  line-height: var(--line-label);
 }
 
 /* The status of the window: amber while the scene is playing (something happens), the quiet sand 600 dot when it
    rests (3.66:1 on the chrome; the sand line it used before vanished on it) */
 .status {
-  width: 8px;
-  height: 8px;
+  width: var(--dot);
+  height: var(--dot);
   flex: none;
   border-radius: var(--r-dot);
   background: var(--indicator-muted);
@@ -40,7 +40,7 @@
 }
 
 .product {
-  font-weight: 600;
+  font-weight: var(--weight-title);
 }
 
 .title {
