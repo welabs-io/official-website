@@ -171,7 +171,7 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
           {FIELDS.map((f) => {
             const filled = scene.reached(f.from);
             return (
-              <div key={f.label} className={h.field} data-field="">
+              <div key={f.label} className={h.datum} data-field="">
                 <dt>{f.label}</dt>
                 <dd key={filled ? "filled" : "empty"} data-filled={filled}>
                   {filled ? f.value : COPY.empty}

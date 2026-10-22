@@ -220,26 +220,26 @@
   margin: 0;
   padding: var(--sp-4) var(--sp-5);
 }
-.field {
+.datum{
   display: flex;
   min-width: 0;
   flex-direction: column;
 }
-.field dt {
+.datumdt {
   font-size: var(--t-micro);
   line-height: var(--line-micro);
   color: var(--muted-foreground);
 }
-.field dd {
+.datumdd {
   margin: 0;
   font-size: var(--t-label);
   line-height: var(--line-label);
   font-weight: var(--weight-label);
 }
-.field dd[data-filled="false"] {
+.datumdd[data-filled="false"] {
   color: var(--muted-foreground);
 }
-.field dd[data-filled="true"] {
+.datumdd[data-filled="true"] {
   animation: swap var(--dur-2) var(--ease-out) backwards;
 }
 
