@@ -87,6 +87,12 @@ for (const s of SCENES) {
   test.describe(`scene kit: ${s.id}`, () => {
     test.use({ viewport: { width: 1440, height: 900 } });
 
+    // The dev server compiles a lab page on its first visit after an edit; that load alone stalls the clock past the
+    // sampler's limits, so the page is compiled before the first measure
+    test.beforeAll(async ({ request }) => {
+      await request.get(LAB, { timeout: 60_000 });
+    });
+
     test("autoplays, loops, and after a click plays, holds, resets and resumes", async ({ page }) => {
       test.setTimeout(60_000);
       await page.goto(LAB);
