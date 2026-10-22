@@ -41,6 +41,14 @@ const SCENES: Entry[] = [
     pairs: 12,
     cycleMs: 7800,
   },
+  {
+    id: "tuner-routing",
+    figure: /^Tuner/,
+    trigger: /^Nova ligação/,
+    final: "done",
+    pairs: 9,
+    cycleMs: 7500,
+  },
 ];
 
 // The icon/text pairs of the live layer whose centres are off by more than 1 px, and how many were measured

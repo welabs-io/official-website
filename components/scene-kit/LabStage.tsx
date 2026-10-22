@@ -12,6 +12,7 @@ import type { SceneId } from "./registry";
 import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
 import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
+import { TUNER_ROUTING_STEPS, TunerRouting } from "./scenes/tuner-routing";
 import k from "./lab.module.css";
 
 type Entry = {
@@ -36,6 +37,11 @@ const SCENES: Record<SceneId, Entry> = {
     steps: MAGNETO_APPROVAL_STEPS,
     Component: MagnetoApproval,
     takeFrom: "high",
+  },
+  "tuner-routing": {
+    steps: TUNER_ROUTING_STEPS,
+    Component: TunerRouting,
+    takeFrom: "ring",
   },
 };
 

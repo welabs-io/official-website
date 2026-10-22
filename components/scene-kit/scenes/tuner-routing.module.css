@@ -1,0 +1,248 @@
+/* CENA DO TUNER: MENU DA LIGAÇÃO E CONVERSA */
+/* Layout and state paint only (the lib paints Badge, Separator and the button). Colours are the role tokens of
+   app/lib.css (control/portfolio/site-redesign/scene-kit/colour-decisions.md): both panes are the cream paper split by
+   the sand line, a mark is a sand 100 well ringed by the sand line with a sand 700 icon. The option taken now and the
+   newest line of the conversation take amber (the option row its wash and 3 px leading bar, the mark amber with an ink
+   icon, no ring); what happened keeps amber soft. The transcript is a received bubble (sand 100, sand ring, ink). */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  background: var(--background);
+}
+
+/* A LIGAÇÃO E O MENU */
+.call {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+
+.caller {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+.callerText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+.callerText b,
+.optionText b {
+  font-size: var(--t-label);
+  line-height: 20px;
+  font-weight: 600;
+}
+.callerText span,
+.optionText span {
+  font-size: var(--t-micro);
+  line-height: 16px;
+  color: var(--muted-foreground);
+}
+
+.paneHead {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4) var(--sp-1);
+  font-size: var(--t-micro);
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.options {
+  margin: 0;
+  padding: 0 0 var(--sp-2);
+  list-style: none;
+}
+
+/* An option: its key and its team on one line, the team's status at the end */
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  min-height: 56px;
+  padding: var(--sp-2) var(--sp-4);
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.option + .option {
+  border-top: 1px solid var(--border);
+}
+.option[data-state="active"] {
+  background-color: var(--surface-raised);
+  background-size: 3px 100%;
+}
+/* Before the menu is read the options wait in second plan */
+.option[data-state="waiting"] .optionText b {
+  color: var(--muted-foreground);
+}
+
+.optionLine {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.optionText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.mark,
+.key,
+.dot {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-dot);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out);
+}
+.mark,
+.key {
+  width: 32px;
+  height: 32px;
+}
+/* The key of an option is the digit pressed on the phone */
+.key {
+  font-size: var(--t-label);
+  line-height: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.caller[data-state="active"] .mark,
+.option[data-state="active"] .key,
+.line[data-fresh="true"] .dot {
+  background: var(--primary);
+  box-shadow: none;
+  color: var(--foreground);
+}
+.caller[data-state="done"] .mark,
+.option[data-state="done"] .key {
+  background: var(--primary-soft);
+  box-shadow: none;
+  color: var(--foreground);
+}
+
+/* A CONVERSA DO PEDIDO */
+.conversation {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+}
+.head .mark {
+  color: var(--foreground);
+}
+.headTitle {
+  flex: 1;
+  font-size: var(--t-label);
+  line-height: 20px;
+  font-weight: 600;
+}
+.seal {
+  gap: var(--sp-1);
+  flex: none;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+}
+.line {
+  display: grid;
+  row-gap: var(--sp-1);
+}
+.lineHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.dot {
+  width: 22px;
+  height: 22px;
+}
+.lineText {
+  min-width: 0;
+  font-size: var(--t-label);
+  line-height: 20px;
+}
+.lineText time {
+  margin-right: var(--sp-2);
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.lineMeta {
+  padding-left: calc(22px + var(--sp-2));
+  font-size: var(--t-micro);
+  line-height: 16px;
+  color: var(--muted-foreground);
+}
+
+/* The transcript: what was said on the call, as a received message under its line */
+.transcript {
+  display: grid;
+  gap: var(--sp-1);
+  justify-self: start;
+  margin: 0 0 0 calc(22px + var(--sp-2));
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
+  font-size: var(--t-label);
+  line-height: 20px;
+  color: var(--foreground);
+}
+.line[data-fresh="true"] .transcript {
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+.transcript span {
+  font-size: var(--t-micro);
+  line-height: 16px;
+  color: var(--muted-foreground);
+}
+
+/* CELULAR */
+@media (max-width: 760px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .call {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .caller,
+  .head {
+    padding: var(--sp-3);
+  }
+  .caller {
+    flex-wrap: wrap;
+  }
+  .paneHead,
+  .option,
+  .lines {
+    padding-inline: var(--sp-3);
+  }
+}

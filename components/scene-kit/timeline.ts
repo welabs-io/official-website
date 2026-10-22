@@ -23,7 +23,8 @@ export type SceneSnapshot = {
   index: number;
   id: string;
   mode: SceneMode;
-  // Increments on every reset to the first step, so a scene can key what must replay from scratch
+  // Increments on every reset to the first step, so a scene can key what must replay from scratch (-1 on the settled
+  // frame of the server and of reduced motion)
   cycle: number;
   last: boolean;
 };
@@ -68,11 +69,14 @@ export class SceneTimeline {
     this.durations = stepDurations(steps);
     this.snapshot = this.read();
     const lastIndex = steps.length - 1;
+    // The settled frame belongs to no loop (cycle -1): when the clock takes over from it on screen, the first step has
+    // another cycle, so a list keyed by `cycle` remounts instead of animating every settled line out on top of the
+    // first ones (that stacked exit made the window taller for its length)
     this.finalSnapshot = {
       index: lastIndex,
       id: steps[lastIndex].id,
       mode: "auto",
-      cycle: 0,
+      cycle: -1,
       last: true,
     };
   }
