@@ -324,8 +324,9 @@ test.describe("(e) the house of the Domus", () => {
     // Pilot of the lib (2026-10-21): no roof any more; the frame is the ring of the Domus logo (e2e/domus.spec.ts).
     // "+ Novo módulo" restarts the new module: it is born with its seal (the lib's Badge) and its screen opens with
     // its three fields (the lib's Field and Input)
+    // v3 (F3): a cycle of 6 s (house.module.css); the screen is open from 1.6 s to 4.2 s and closed from 4.6 s to 7.2 s
     await house.locator("label", { hasText: "Novo módulo" }).click();
-    await page.waitForTimeout(3600);
+    await page.waitForTimeout(3000);
     await expect(house.getByText("Vistorias")).toBeVisible();
     const seal = house.locator("[data-slot='badge']", {
       hasText: "Novo módulo",
@@ -334,7 +335,7 @@ test.describe("(e) the house of the Domus", () => {
     for (const f of ["Local", "Data", "Foto"])
       await expect(house.getByText(f, { exact: true })).toBeVisible();
     // And it closes on its own, with no second click (the loop goes on: e2e/domus.spec.ts)
-    await page.waitForTimeout(4200);
+    await page.waitForTimeout(2400);
     expect(
       await house
         .locator("[data-slot='card']")
@@ -403,18 +404,23 @@ test.describe("(g) the play of the Tuner", () => {
       return seen.size;
     });
     expect(travel).toBeGreaterThan(10);
-    await page.waitForTimeout(4500);
-    const state = await page.evaluate(() => {
-      const slot = document.querySelector("[data-descent-slot] #play")!;
-      const hot = slot.querySelector('path[data-ev="2"]')!;
-      const team = slot.querySelector('[data-team="2"]')!;
-      return {
-        wire: getComputedStyle(hot).display,
-        live: getComputedStyle(team.querySelector('[data-ev="2"]')!).display,
-      };
-    });
-    expect(state.wire).not.toBe("none");
-    expect(state.live).not.toBe("none");
+    // v3 (F3): the choice holds about 1 s after its beats, then the play gives the stage back to its demo
+    // (play-demo.ts), so the state is read while it runs, not after a fixed wait
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const slot = document.querySelector("[data-descent-slot] #play")!;
+            const hot = slot.querySelector('path[data-ev="2"]')!;
+            const team = slot.querySelector('[data-team="2"]')!;
+            return [
+              getComputedStyle(hot).display,
+              getComputedStyle(team.querySelector('[data-ev="2"]')!).display,
+            ].includes("none");
+          }),
+        { timeout: 4_000 },
+      )
+      .toBe(false);
     await expect(
       play
         .getByText("Gravação e transcrição na conversa")

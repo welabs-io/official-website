@@ -98,7 +98,9 @@
 .event[data-first] .switch {
   display: none;
 }
-.tag {
+/* v3 (F3): the line that names where an event came from (its channel, or the agent): a label of text with its glyph,
+   not a tag (it was named `.tag`, the name of a primitive it never drew) */
+.via {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-1);

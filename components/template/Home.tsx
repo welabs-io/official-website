@@ -101,7 +101,9 @@ export function HomeMessage() {
         lead={HOME_MESSAGE.lead}
         variant="chapter"
       />
-      <div className={msg.msg}>
+      {/* v3 (F3): the message sends itself while on screen, lands, holds and starts again (data-demo,
+          components/plays/play-demo.ts); a drag or the button takes over and gives it back */}
+      <div className={msg.msg} data-demo="msg-go">
         <input
           type="checkbox"
           id="msg-go"

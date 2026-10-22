@@ -74,7 +74,7 @@ export function RellooPlay() {
               style={at(0)}
             >
               <span className={r.switch}>{R.switchLabel}</span>
-              <span className={r.tag}>
+              <span className={r.via}>
                 <Glyph d={CHANNEL_GLYPH[c.id]} size={14} />
                 {c.label}
               </span>
@@ -85,7 +85,7 @@ export function RellooPlay() {
             </li>
           ))}
           <li className={r.agent} data-ev="all" style={at(4.5)}>
-            <span className={r.tag}>
+            <span className={r.via}>
               <Glyph d={GLYPHS.bot} size={14} />
               {R.agent}
             </span>
@@ -162,6 +162,8 @@ export function RellooPlay() {
       slug="relloo"
       label={R.label}
       className={r.root}
+      // v3 (F3): the demo fires the three channels, so the agent answers and passes the conversation on
+      demo={R.channels.map((c) => `rl-${c.id}`)}
       controls={controls}
       stage={stage}
       side={side}

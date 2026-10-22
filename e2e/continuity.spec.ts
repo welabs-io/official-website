@@ -18,31 +18,28 @@ type Block = {
   knownUntil?: string;
 };
 
+// v3 (F3): every block holds the contract; the list of known failures is empty
 const BLOCKS: Block[] = [
-  // TODO(F3): the loop and the reset are the pattern, but after a click the module holds its screen 3.2 s (measured on
-  // 155fb83 at 1440, sampled every 200 ms) where the contract holds about 1 s (house.module.css, --domus-cycle)
+  // The 6 s loop of the new module, its filled screen held 1.2 s (it held 3.2 s on 155fb83)
   {
     name: "the new module of the Domus",
     path: "/",
     block: "#domus",
     trigger: '#domus label[for="area-add"]',
-    knownUntil: "F3",
   },
-  // TODO(F3): the message waits for a gesture and lands frozen (no loop, no reset)
+  // The message sends itself, lands, holds and starts again (components/plays/play-demo.ts)
   {
     name: "the message along the chain",
     path: "/",
     block: "#message",
     trigger: '#message label[for="msg-go"]',
-    knownUntil: "F3",
   },
-  // TODO(F3): the plays open empty and never demonstrate by themselves (autodemo, hold, reset)
+  // The plays demonstrate themselves, and a choice of the visitor plays, holds and gives the demo back
   ...["domus", "relloo", "magneto", "tuner", "knowly"].map((slug) => ({
     name: `the play of the ${slug}`,
     path: `/products/${slug}`,
     block: `[data-play="${slug}"]`,
     trigger: `[data-play="${slug}"] label`,
-    knownUntil: "F3",
   })),
 ];
 

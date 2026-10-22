@@ -12,10 +12,13 @@ import s from "./plays.module.css";
 // The delay of a beat, in beats of the shared rhythm (--beat, plays.module.css)
 export const at = (beat: number) => ({ "--at": beat }) as CSSProperties;
 
+// v3 (F3): the play demonstrates itself through `demo` (the ids of its controls in order, play-demo.ts), and resets by
+// itself after each run or each choice of the visitor, so the reset button left
 export function PlayForm({
   slug,
   label,
   className,
+  demo,
   controls,
   stage,
   side,
@@ -24,6 +27,8 @@ export function PlayForm({
   label: string;
   // The root class of the sheet of the product (its states and drawing)
   className: string;
+  // The controls the demo checks, in order
+  demo: readonly string[];
   controls: ReactNode;
   stage: ReactNode;
   side: ReactNode;
@@ -32,14 +37,10 @@ export function PlayForm({
     <form
       className={`${s.play} ${className}`}
       data-play={slug}
+      data-demo={demo.join(" ")}
       aria-label={label}
     >
-      <div className={s.controls}>
-        {controls}
-        <button type="reset" className={s.reset}>
-          {PLAY_COMMON.restart}
-        </button>
-      </div>
+      <div className={s.controls}>{controls}</div>
       {/* The drawn product screens are interface, not page copy: out of the word budget, still under the copy rules */}
       <div className={s.body} data-mini="play">
         <div className={s.stage}>{stage}</div>

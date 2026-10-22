@@ -87,24 +87,6 @@
 .choice svg {
   flex: none;
 }
-.reset {
-  min-height: 44px;
-  margin-left: auto;
-  padding: var(--sp-2) var(--sp-4);
-  border: 0;
-  border-radius: var(--r-ctl);
-  background: transparent;
-  color: var(--mute);
-  font: inherit;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.reset:hover {
-  color: var(--ink);
-}
 
 /* PALCO, REGISTRO E DOMUS */
 .body {
@@ -269,6 +251,14 @@
   .reset {
     margin-left: 0;
   }
+}
+
+/* v3 (F3): off screen a play stands still where it is (LiveObserver writes data-on on the band), so nothing runs there;
+   its demo (play-demo.ts) starts it over when the band comes back */
+[data-on="false"] .play *,
+[data-on="false"] .play *::before,
+[data-on="false"] .play *::after {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

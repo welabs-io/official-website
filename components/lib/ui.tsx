@@ -15,4 +15,10 @@ export {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@imagineapps-team/react/ui";

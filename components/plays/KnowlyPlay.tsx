@@ -215,6 +215,8 @@ export function KnowlyPlay() {
       slug="knowly"
       label={K.label}
       className={k.root}
+      // v3 (F3): the demo asks the delivery question, then the goals, and changes the profile so the answer changes
+      demo={["kn-ship", "kn-goals", "kn-finance", "kn-board"]}
       controls={controls}
       stage={stage}
       side={side}

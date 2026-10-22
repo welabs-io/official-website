@@ -78,12 +78,9 @@ const NATIVE_GAPS: Record<string, string> = {
   // Choice: the native checkbox/radio of the plays, its `type` prop typed "checkbox" | "radio"
   "components/plays/parts.tsx|input": "local gap: CSS state machine of the plays",
 };
-const NATIVE_KNOWN: Record<string, number> = {
-  // TODO(F3): the reset button of the plays leaves with the autodemo (they reset by themselves); otherwise lib Button
-  "components/plays/parts.tsx|button": 1,
-  // TODO(F3): the list born in the Domus play becomes the lib's Table
-  "components/plays/DomusPlay.tsx|table": 1,
-};
+// v3 (F3): empty; the menu button is the lib's Button (F2), the reset of the plays left with the demo and the list of
+// the Domus play is the lib's Table
+const NATIVE_KNOWN: Record<string, number> = {};
 
 const nativePrimitives = () =>
   COMPONENTS_TSX.flatMap((f) => {
@@ -185,14 +182,6 @@ const handMadeClasses = () => {
 
 // Known failures measured on 155fb83, with the phase that swaps them for the lib (welabs-site-ui, references/block-map.md)
 const CLASS_KNOWN: string[] = [
-  // TODO(F3): the plays take the lib's Field/Input, Table, Badge (status pill and tag) and ChipGroup
-  "components/plays/domus.module.css|.field",
-  "components/plays/domus.module.css|.flowChip",
-  "components/plays/domus.module.css|.input",
-  "components/plays/domus.module.css|.table",
-  "components/plays/domus.module.css|.tableWrap",
-  "components/plays/magneto.module.css|.pill",
-  "components/plays/relloo.module.css|.tag",
   // TODO(F4): the capability scenes move into the product strips of the home, on Card and Badge
   "components/scenes/capability.module.css|.cardMini",
   "components/scenes/capability.module.css|.cardMiniMeta",

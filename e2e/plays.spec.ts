@@ -193,12 +193,18 @@ test.describe("rich plays", () => {
     await expect(play.locator("th", { hasText: "Prazo" })).toBeVisible();
   });
 
-  test("reset puts every play back on its idle frame", async ({ page }) => {
-    const play = await openPlay(page, "magneto");
-    await page.locator('label[for="mg-high"]').click();
-    await play.getByRole("button", { name: "Recomeçar" }).click();
-    await expect(page.locator("#mg-high")).not.toBeChecked();
-    await expect(play.getByText("Nada ainda.")).toBeVisible();
+  // v3 (F3, plano.md 4.3): the reset button left with the autodemo (play-demo.ts). A choice of the visitor plays its
+  // beats, holds about 1 s, then the play goes back to its idle frame by itself and the demo runs again.
+  test("after a choice the play gives the stage back to its demo", async ({
+    page,
+  }) => {
+    test.setTimeout(40_000);
+    await openPlay(page, "magneto");
+    await page.locator('label[for="mg-low"]').click();
+    await expect(page.locator("#mg-low")).toBeChecked();
+    await expect(page.locator("#mg-low")).not.toBeChecked({ timeout: 15_000 });
+    // The demo of the Magneto starts on the value above the limit
+    await expect(page.locator("#mg-high")).toBeChecked({ timeout: 3_000 });
   });
 });
 

@@ -183,6 +183,8 @@ export function TunerPlay() {
       slug="tuner"
       label={T.menu}
       className={t.root}
+      // v3 (F3): the demo sends the call to the busy team (it waits in line), then to the free one (it is answered)
+      demo={["tn-2", "tn-1"]}
       controls={controls}
       stage={stage}
       side={side}

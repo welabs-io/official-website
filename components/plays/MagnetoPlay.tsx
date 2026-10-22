@@ -5,6 +5,7 @@
 // the update step: the node turns red, retries and recovers without repeating the steps already done. The record of
 // the run fills with times and the order on the Domus changes its status. States and timing: magneto.module.css.
 import type { CSSProperties } from "react";
+import { Badge } from "@/components/lib/ui";
 import { Glyph, GLYPHS } from "@/components/scenes/icons";
 import { MAGNETO_PLAY as M } from "@/lib/content/plays";
 import m from "./magneto.module.css";
@@ -28,6 +29,43 @@ const v = (a: number, al?: number, ao?: number, late = false) =>
     "--beat-ok": ao,
     "--late": late ? 1 : 0,
   }) as CSSProperties;
+
+// v3 (F3): the status of a node is the lib's Badge under its welabs theme: neutral for a plain answer, success, the
+// destructive tone for a failure and an outline for a step that does not apply; the sheet only shows it in its state
+const TONE = {
+  plain: { variant: "secondary", appearance: "solid" },
+  ok: { variant: "success", appearance: "soft" },
+  fail: { variant: "destructive", appearance: "soft" },
+  skip: { variant: "neutral", appearance: "outline" },
+} as const;
+
+function Pill({
+  ev,
+  tone = "plain",
+  vars,
+  retry = false,
+  children,
+}: {
+  ev: string;
+  tone?: keyof typeof TONE;
+  vars: CSSProperties;
+  retry?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <Badge
+      {...TONE[tone]}
+      data-theme="welabs"
+      className={m.pill}
+      data-ev={ev}
+      data-tone={tone === "plain" ? undefined : tone}
+      data-retry={retry ? "" : undefined}
+      style={vars}
+    >
+      {children}
+    </Badge>
+  );
+}
 
 function Check({ ev, vars }: { ev: string; vars: CSSProperties }) {
   return (
@@ -89,12 +127,12 @@ export function MagnetoPlay() {
         </span>
         <b>{M.nodes.check}</b>
         <span className={m.status}>
-          <span className={m.pill} data-ev="low" style={v(1)}>
+          <Pill ev="low" vars={v(1)}>
             {M.no}
-          </span>
-          <span className={m.pill} data-ev="high" style={v(1)}>
+          </Pill>
+          <Pill ev="high" vars={v(1)}>
             {M.yes}
-          </span>
+          </Pill>
         </span>
       </li>
       <li className={m.node} data-node="approval">
@@ -104,9 +142,9 @@ export function MagnetoPlay() {
         </span>
         <b>{M.nodes.approval}</b>
         <span className={m.status}>
-          <span className={m.pill} data-ev="low" data-tone="skip" style={v(2)}>
+          <Pill ev="low" tone="skip" vars={v(2)}>
             {M.skipped}
-          </span>
+          </Pill>
           {/* Waiting: the decision is the visitor's, two native radios on the node itself */}
           <span className={m.decide} data-ev="wait" style={v(2)}>
             <span className={m.waiting}>{M.waiting}</span>
@@ -117,22 +155,12 @@ export function MagnetoPlay() {
               {M.refuse}
             </Choice>
           </span>
-          <span
-            className={m.pill}
-            data-ev="ok"
-            data-tone="ok"
-            style={v(0, 0, 0)}
-          >
+          <Pill ev="ok" tone="ok" vars={v(0, 0, 0)}>
             {M.approved}
-          </span>
-          <span
-            className={m.pill}
-            data-ev="no"
-            data-tone="fail"
-            style={v(0, 0, 0)}
-          >
+          </Pill>
+          <Pill ev="no" tone="fail" vars={v(0, 0, 0)}>
             {M.refused}
-          </span>
+          </Pill>
           <span className={m.adjust} data-ev="no" style={v(1, 1, 1)}>
             <Glyph d={GLYPHS.refresh} size={14} />
             {M.nodes.adjust}
@@ -146,24 +174,13 @@ export function MagnetoPlay() {
         </span>
         <b>{M.nodes.update}</b>
         <span className={m.status}>
-          <span
-            className={m.pill}
-            data-ev="fail"
-            data-tone="fail"
-            data-retry=""
-            style={v(0, 3, 1)}
-          >
+          <Pill ev="fail" tone="fail" retry vars={v(0, 3, 1)}>
             <Glyph d={GLYPHS.refresh} size={14} />
             {M.retry}
-          </span>
-          <span
-            className={m.pill}
-            data-ev="fail"
-            data-tone="ok"
-            style={v(0, 3, 1, true)}
-          >
+          </Pill>
+          <Pill ev="fail" tone="ok" vars={v(0, 3, 1, true)}>
             {M.recovered}
-          </span>
+          </Pill>
         </span>
       </li>
       <li className={m.node} data-node="notify">
@@ -173,14 +190,9 @@ export function MagnetoPlay() {
         </span>
         <b>{M.nodes.notify}</b>
         <span className={m.status}>
-          <span
-            className={m.pill}
-            data-ev="done"
-            data-tone="ok"
-            style={v(0, 5, 4, true)}
-          >
+          <Pill ev="done" tone="ok" vars={v(0, 5, 4, true)}>
             {M.done}
-          </span>
+          </Pill>
         </span>
       </li>
     </ol>
@@ -240,6 +252,8 @@ export function MagnetoPlay() {
       slug="magneto"
       label={M.label}
       className={m.root}
+      // v3 (F3): the demo takes the value above the limit, so the flow asks for the approval, and approves it
+      demo={["mg-high", "mg-ok"]}
       controls={controls}
       stage={stage}
       side={side}

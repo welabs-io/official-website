@@ -12,8 +12,8 @@ export const DOMUS_RECORD = {
   label: "Registro no Domus",
 } as const;
 
+// v3 (F3): no "Recomeçar": the plays reset by themselves (components/plays/play-demo.ts)
 export const PLAY_COMMON = {
-  restart: "Recomeçar",
   log: "Registro",
   idle: "Nada ainda.",
 } as const;

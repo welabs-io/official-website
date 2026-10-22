@@ -5,7 +5,9 @@
 //    them (`order`), the record shows the minute of each in that order, and the first event has no "channel switch"
 //    divider (`data-first`).
 //  - Magneto: choosing another value starts the flow over, so a decision taken on the other value is cleared.
-//  - Any play: after the reset button the order is cleared too.
+//  - Any play: after a reset the order is cleared too (v3: the reset of the demo, play-demo.ts; the button left).
+import { installDemos } from "./play-demo";
+
 // v2.2 (audit M06): on a phone the product selector is one row that scrolls sideways; the product of the page is
 // brought to its middle, so the current logo is never the one cut at the edge (called on every change of the page)
 export function centerSwitches() {
@@ -69,7 +71,10 @@ export function installPlays() {
 
   document.addEventListener("change", onChange);
   document.addEventListener("reset", onReset, true);
+  // v3 (F3): every play demonstrates itself on screen (play-demo.ts)
+  const stopDemos = installDemos();
   return () => {
+    stopDemos();
     document.removeEventListener("change", onChange);
     document.removeEventListener("reset", onReset, true);
   };

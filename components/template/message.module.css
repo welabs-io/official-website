@@ -78,10 +78,15 @@
   margin-top: -2px;
   border-radius: 2px;
   background: var(--cl);
+  /* v3 (F3): the rail is the container of the walk, so the message moves along it by transform (cqi, cqb), on the
+     compositor, instead of by its left edge */
+  container-type: size;
 }
 .run {
   position: absolute;
-  inset: 0 100% 0 0;
+  inset: 0;
+  transform-origin: left center;
+  transform: scaleX(0);
   border-radius: 2px;
   background: var(--a);
 }
@@ -266,19 +271,20 @@
 
 /* ENVIADA: O QUADRO FINAL E OS MOVIMENTOS ATÉ ELE */
 /* The bubble leaves for the track: it shrinks toward the rail and stays behind, sent */
+/* v3 (F3): sent, the bubble steps back by its colour and its scale, at full opacity: the demo keeps it sent most of the
+   loop, and at 0.6 its text was under AA */
 .msg:has(:global(input):checked) .bubble {
   box-shadow: none;
   color: var(--mute-l);
-  opacity: 0.6;
   transform: scale(0.96);
   animation: bubble-send var(--dur-3) var(--ease-out) both;
 }
 .msg:has(:global(input):checked) .run {
-  right: 0;
+  transform: none;
   animation: run-in 5.5s linear both;
 }
 .msg:has(:global(input):checked) .token {
-  left: 100%;
+  transform: translateX(100cqi);
   animation: token-go 5.5s var(--ease-in-out) both;
 }
 .msg:has(:global(input):checked) .stop {
@@ -361,7 +367,7 @@
 }
 @keyframes run-in {
   from {
-    right: 100%;
+    transform: scaleX(0);
   }
 }
 /* The message reaches a product every 1.1 s (20% of the 5.5 s) and stops there 0.3 s before going on; the five stops are
@@ -369,28 +375,62 @@
 @keyframes token-go {
   0%,
   5.45% {
-    left: 0;
+    transform: none;
     opacity: 1;
   }
   20%,
   25.45% {
-    left: 25%;
+    transform: translateX(25cqi);
   }
   40%,
   45.45% {
-    left: 50%;
+    transform: translateX(50cqi);
   }
   60%,
   65.45% {
-    left: 75%;
+    transform: translateX(75cqi);
   }
   80%,
   97% {
-    left: 100%;
+    transform: translateX(100cqi);
     opacity: 1;
   }
   to {
-    left: 100%;
+    transform: translateX(100cqi);
+    opacity: 0;
+  }
+}
+/* v3 (F3): the same walk down the standing track of a phone */
+@keyframes run-down {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes token-down {
+  0%,
+  5.45% {
+    transform: none;
+    opacity: 1;
+  }
+  20%,
+  25.45% {
+    transform: translateY(25cqb);
+  }
+  40%,
+  45.45% {
+    transform: translateY(50cqb);
+  }
+  60%,
+  65.45% {
+    transform: translateY(75cqb);
+  }
+  80%,
+  97% {
+    transform: translateY(100cqb);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100cqb);
     opacity: 0;
   }
 }
@@ -478,27 +518,62 @@
   }
   /* v2.2 (audit M02): on a phone the track lies down too, compact (the five logos in one row, the label under each), so
      the bubble, the track, the Domus and the button fit one screen; it stood up before and the result fell below it */
+  /* v3 (F3, plano.md 2.3 #2): on a phone the track stands up. The five stops are one column of 40 px rows, each logo
+     in a card of 136 px with its label beside it; the rail runs down through the centres of the cards, and the message
+     walks down it (in one row the five logos were squeezed to 60 px and "Sim, até 12h" broke in two lines) */
   .track {
+    --stop-h: 40px;
+    --stop-w: 136px;
+    grid-template-columns: minmax(0, 1fr);
     width: 100%;
+    max-width: 320px;
     height: auto;
     gap: var(--sp-1);
-    align-items: start;
   }
   .rail {
-    top: 22px;
+    top: calc(var(--stop-h) / 2);
+    bottom: calc(var(--stop-h) / 2);
+    left: calc(var(--stop-w) / 2);
+    right: auto;
+    width: 4px;
+    height: auto;
+    margin-top: 0;
+    margin-left: -2px;
+  }
+  .run {
+    transform-origin: center top;
+    transform: scaleY(0);
+  }
+  .token {
+    left: 50%;
+    top: 0;
+    margin: -13px 0 0 -16px;
   }
   .station {
+    grid-template-columns: var(--stop-w) minmax(0, 1fr);
+    justify-items: start;
+    align-items: center;
+    gap: var(--sp-4);
     padding-top: 0;
   }
   .stop {
-    height: 44px;
-    padding: 0 var(--sp-1);
+    height: var(--stop-h);
+    padding: 0 var(--sp-2);
   }
   .stop img {
-    height: 28px;
+    height: 32px;
   }
   .label {
-    min-height: 2.8em;
+    min-height: 0;
+    text-align: left;
+  }
+  .msg:has(:global(input):checked) .run {
+    transform: none;
+    animation-name: run-down;
+  }
+  .msg:has(:global(input):checked) .token {
+    transform: translateY(100cqb);
+    animation-name: token-down;
   }
   .dest {
     grid-template-columns: auto minmax(0, 1fr);
@@ -515,6 +590,14 @@
   .destLogo {
     height: 32px;
   }
+}
+
+/* v3 (F3): off screen the send stands still where it is (LiveObserver writes data-on on the band), so nothing runs there;
+   the demo starts it over when the band comes back */
+[data-on="false"] .msg *,
+[data-on="false"] .msg *::before,
+[data-on="false"] .msg *::after {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

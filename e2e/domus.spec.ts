@@ -12,7 +12,8 @@
 //  - reduced motion shows the final frame and runs nothing.
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-const CYCLE = 8000;
+// v3 (F3): one loop of the new module is 6 s, its filled screen held about a second (house.module.css)
+const CYCLE = 6000;
 
 async function open(page: Page, width: number, path = "/") {
   await page.setViewportSize({ width, height: 900 });

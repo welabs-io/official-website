@@ -129,29 +129,11 @@
 [data-node="update"] .status > * {
   grid-area: 1 / 1;
 }
+/* v3 (F3): the status of a node is the lib's Badge (MagnetoPlay.tsx, its tone by variant), painted by the lib; the sheet
+   only shows it in its state and keeps it on one line */
 .pill {
   --shown: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--r-pill);
-  background: var(--surface-accent);
-  font-size: var(--text-xs);
-  font-weight: 600;
   white-space: nowrap;
-}
-.pill[data-tone="ok"] {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.pill[data-tone="fail"] {
-  background: var(--destructive-soft);
-  color: var(--destructive);
-}
-.pill[data-tone="skip"] {
-  border: 1px dashed var(--input);
-  background: transparent;
-  color: var(--mute);
 }
 .decide {
   --shown: flex;

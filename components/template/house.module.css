@@ -7,11 +7,12 @@
    The new module loops by itself (one --domus-cycle): the dashed slot turns into "Vistorias", whose icon is the amber
    square of the logo, its screen opens and fills field by field, holds, closes, and the slot is dashed again. The
    checkbox only swaps every animation for its twin (the -a and -b keyframes are equal), which restarts the sequence from
-   its first frame: after a click it plays to the end, holds (4.6 s), resets and goes on looping. Nothing runs off
+   its first frame: after a click it plays to the end, holds about a second (v3 F3: 1.2 s, the cycle is 6 s), resets and
+   goes on looping. Nothing runs off
    screen (`data-on`, LiveObserver) and the frame with no animation is the final one (the module born with its seal;
    on a phone, its screen filled under it), which is what reduced motion shows. */
 .house {
-  --domus-cycle: 8s;
+  --domus-cycle: 6s;
   max-width: 1040px;
   margin: 0 auto;
 }
@@ -236,9 +237,11 @@
   animation-name: domus-room-b;
 }
 
-/* Clock of one cycle (8 s): the slot waits 0.8 s, the module is born at 0.8 to 1.3 s, its seal at 1.3 s, the screen
-   opens at 1.6 s and its fields fill one every 0.4 s, all of it holds until 6.4 s, closes by 7.4 s and the slot waits
-   dashed until the cycle starts again */
+/* Clock of one cycle (6 s, v3 F3): the slot waits 0.6 s, the module is born at 0.6 to 1.0 s, its seal at 1.0 to 1.4 s,
+   the screen opens at 1.2 to 1.6 s and its fields fill one every 0.4 s (the last value at 3.0 s), the whole screen holds
+   1.2 s, closes at 4.2 to 4.6 s, the module goes at 4.6 to 5.0 s and the slot is dashed again from 5.2 s. No stretch
+   of the loop stands still longer than 1.4 s; it held the filled screen 3.2 s after a click (8 s cycle), where the
+   contract holds about a second. */
 @keyframes domus-ghost-a {
   0%,
   10% {
@@ -246,11 +249,11 @@
     animation-timing-function: var(--ease-out);
   }
   14%,
-  88% {
+  80% {
     opacity: 0;
     animation-timing-function: var(--ease-in-out);
   }
-  94%,
+  87%,
   100% {
     opacity: 1;
   }
@@ -262,11 +265,11 @@
     animation-timing-function: var(--ease-out);
   }
   14%,
-  88% {
+  80% {
     opacity: 0;
     animation-timing-function: var(--ease-in-out);
   }
-  94%,
+  87%,
   100% {
     opacity: 1;
   }
@@ -278,13 +281,13 @@
     transform: scale(0.94);
     animation-timing-function: var(--ease-spring);
   }
-  16%,
-  86% {
+  17%,
+  76% {
     opacity: 1;
     transform: none;
     animation-timing-function: var(--ease-in-out);
   }
-  92%,
+  83%,
   100% {
     opacity: 0;
     transform: scale(0.98);
@@ -297,13 +300,13 @@
     transform: scale(0.94);
     animation-timing-function: var(--ease-spring);
   }
-  16%,
-  86% {
+  17%,
+  76% {
     opacity: 1;
     transform: none;
     animation-timing-function: var(--ease-in-out);
   }
-  92%,
+  83%,
   100% {
     opacity: 0;
     transform: scale(0.98);
@@ -311,12 +314,12 @@
 }
 @keyframes domus-seal-a {
   0%,
-  16% {
+  17% {
     opacity: 0;
     transform: scale(0.6);
     animation-timing-function: var(--ease-spring);
   }
-  22%,
+  23%,
   100% {
     opacity: 1;
     transform: none;
@@ -324,12 +327,12 @@
 }
 @keyframes domus-seal-b {
   0%,
-  16% {
+  17% {
     opacity: 0;
     transform: scale(0.6);
     animation-timing-function: var(--ease-spring);
   }
-  22%,
+  23%,
   100% {
     opacity: 1;
     transform: none;
@@ -342,13 +345,13 @@
     transform: translateY(var(--sp-2)) scale(0.98);
     animation-timing-function: var(--ease-out);
   }
-  26%,
-  80% {
+  27%,
+  70% {
     opacity: 1;
     transform: none;
     animation-timing-function: var(--ease-in-out);
   }
-  86%,
+  77%,
   100% {
     opacity: 0;
     transform: translateY(var(--sp-1));
@@ -361,13 +364,13 @@
     transform: translateY(var(--sp-2)) scale(0.98);
     animation-timing-function: var(--ease-out);
   }
-  26%,
-  80% {
+  27%,
+  70% {
     opacity: 1;
     transform: none;
     animation-timing-function: var(--ease-in-out);
   }
-  86%,
+  77%,
   100% {
     opacity: 0;
     transform: translateY(var(--sp-1));
@@ -375,12 +378,12 @@
 }
 @keyframes domus-field-a {
   0%,
-  24% {
+  25% {
     opacity: 0;
     transform: translateY(var(--sp-1));
     animation-timing-function: var(--ease-out);
   }
-  29%,
+  30%,
   100% {
     opacity: 1;
     transform: none;
@@ -388,12 +391,12 @@
 }
 @keyframes domus-field-b {
   0%,
-  24% {
+  25% {
     opacity: 0;
     transform: translateY(var(--sp-1));
     animation-timing-function: var(--ease-out);
   }
-  29%,
+  30%,
   100% {
     opacity: 1;
     transform: none;
@@ -402,22 +405,22 @@
 /* The value of each input arrives after its field (the input itself stays, only its text shows) */
 @keyframes domus-value-a {
   0%,
-  31% {
+  32% {
     color: transparent;
     animation-timing-function: var(--ease-out);
   }
-  36%,
+  37%,
   100% {
     color: var(--foreground);
   }
 }
 @keyframes domus-value-b {
   0%,
-  31% {
+  32% {
     color: transparent;
     animation-timing-function: var(--ease-out);
   }
-  36%,
+  37%,
   100% {
     color: var(--foreground);
   }
