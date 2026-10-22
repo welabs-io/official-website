@@ -1,9 +1,11 @@
 /* MOLDURA E PALCO DO KIT DE CENAS */
 /* The window of every kit scene: the lib's Card with a chrome bar of the product, and a stage whose height is the
-   settled frame's (the hidden copy and the live step share one grid cell). Off-screen or under reduced motion
-   (data-on="false") no CSS animation runs; reduced motion also drops every transition. Colours are the lib's `welabs`
-   role tokens as-is (the frame carries data-theme="welabs"), as in the Domus front: no cream, no sand. Type, space and
-   motion come from the site's scales (components/onepage/shell.module.css). */
+   settled frame's (the hidden copy and the live step share one grid cell, and the live step stretches to fill it, so
+   the window never shows an empty strip under a shorter step). Off-screen or under reduced motion (data-on="false") no
+   CSS animation runs; reduced motion also drops every transition. Colours are the role tokens of app/lib.css (the frame
+   carries data-theme="welabs"): the shell (chrome and side panes) is the sand 100 card, the working pane of a scene is
+   the cream 50 paper, sand 200 only draws lines. Type, space and motion come from the site's scales
+   (components/onepage/shell.module.css). */
 .frame {
   width: 100%;
   max-width: 1040px;
@@ -11,24 +13,26 @@
   color: var(--foreground);
 }
 
+/* The chrome is the shell of the window (same sand 100 as the card), split from the stage by the sand line */
 .chrome {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4);
   border-bottom: 1px solid var(--border);
-  background: var(--muted);
+  background: var(--card);
   font-size: var(--t-label);
   line-height: 20px;
 }
 
-/* The status of the window: amber while the scene is playing (something happens), the border grey when it rests */
+/* The status of the window: amber while the scene is playing (something happens), the quiet sand 600 dot when it
+   rests (3.66:1 on the chrome; the sand line it used before vanished on it) */
 .status {
   width: 8px;
   height: 8px;
   flex: none;
   border-radius: var(--r-dot);
-  background: var(--border);
+  background: var(--indicator-muted);
   transition: background-color var(--dur-2) var(--ease-out);
 }
 .status[data-on="true"] {
@@ -50,8 +54,10 @@
   display: grid;
 }
 
+/* Both layers are grids too, so the scene's root stretches to the cell (the settled frame's height) */
 .ghost,
 .live {
+  display: grid;
   grid-area: 1 / 1;
   min-width: 0;
 }

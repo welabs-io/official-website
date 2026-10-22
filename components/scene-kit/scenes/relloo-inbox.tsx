@@ -117,21 +117,24 @@ const stateOf = (scene: SceneApi, ch: Channel) =>
       ? "done"
       : "waiting";
 
+// One line of the history: what the contact said (incoming) or an event of the record itself (system)
 function Entry({
   icon: Icon,
   label,
   time,
   fresh,
+  kind = "incoming",
   children,
 }: {
   icon: LucideIcon;
   label: string;
   time?: string;
   fresh: boolean;
+  kind?: "incoming" | "system";
   children: React.ReactNode;
 }) {
   return (
-    <div className={r.entry} data-fresh={fresh} data-align="entry">
+    <div className={r.entry} data-fresh={fresh} data-kind={kind} data-align="entry">
       <span className={r.mark} aria-hidden="true">
         <Icon size={14} strokeWidth={2} />
       </span>
@@ -145,10 +148,11 @@ function Entry({
 }
 
 function RellooInboxView({ scene }: { scene: SceneApi }) {
-  const arrived = CHANNELS.filter((ch) => scene.reached(ch.step));
   const typing = scene.is("typing");
+  // The lines of the history: every channel that arrived, plus the chat of the site while it is still typing
+  const shown = CHANNELS.filter((ch) => scene.reached(ch.step) || (typing && ch.step === "site"));
   const merged = scene.reached("merged");
-  const newest = arrived.at(-1)?.step;
+  const newest = shown.at(-1)?.step;
   return (
     <SplitView detailOpen listWidth="17rem" className={r.split}>
       {/* The inbox of the channels: each row is a control that replays the scene from its channel */}
@@ -229,25 +233,45 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
 
         <Separator />
 
+        {/* One amber line at a time: the newest line until the record settles. The typing line is the chat of the site
+            under its own key, in the same list as the others, so it turns into that message in place (as a separate
+            child it got another key from the lib's Children.toArray, and its exit stacked with the message's enter for
+            the length of the exit, pushing the window 48 to 80 px taller) */}
         <AnimatedList className={r.history} distance={10} duration={0.32}>
-          <Entry key="created" icon={Package} label={COPY.created.label} time={COPY.created.time} fresh={false}>
+          <Entry
+            key="created"
+            icon={Package}
+            label={COPY.created.label}
+            time={COPY.created.time}
+            fresh={false}
+            kind="system"
+          >
             {COPY.created.text}
           </Entry>
-          {arrived.map((ch) => (
-            <Entry key={ch.step} icon={ch.icon} label={ch.label} time={ch.time} fresh={!merged && ch.step === newest}>
-              {ch.text}
-            </Entry>
-          ))}
-          {typing ? (
-            <Entry key="typing" icon={MessagesSquare} label={CHANNELS[3].label} fresh>
-              <span className={r.typing}>
-                {COPY.typing}
-                <TypingDots size={5} gap={3} />
-              </span>
-            </Entry>
-          ) : null}
+          {shown.map((ch) =>
+            typing && ch.step === "site" ? (
+              <Entry key={ch.step} icon={ch.icon} label={ch.label} fresh>
+                <span className={r.typing}>
+                  {COPY.typing}
+                  <TypingDots size={5} gap={3} />
+                </span>
+              </Entry>
+            ) : (
+              <Entry
+                key={ch.step}
+                icon={ch.icon}
+                label={ch.label}
+                time={ch.time}
+                fresh={!merged && ch.step === newest}
+              >
+                {ch.text}
+              </Entry>
+            ),
+          )}
         </AnimatedList>
 
+        {/* The composer is inert here: a soft send button, so the darkest mass of the window is not a control the
+            scene never uses */}
         <div className={r.composer} aria-hidden="true" inert>
           <InputGroup>
             <InputGroupInput readOnly tabIndex={-1} placeholder={COPY.reply} aria-label={COPY.reply} />
@@ -255,7 +279,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
               <InputGroupButton
                 size="icon-xs"
                 variant="neutral"
-                appearance="solid"
+                appearance="soft"
                 tabIndex={-1}
                 aria-label={COPY.send}
               >

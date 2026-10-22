@@ -57,7 +57,13 @@
 /* SUPERFÍCIES CREME DO DOMUS SOBRE O PRESET */
 /* Operator decision (2026-10-22): the lib 0.18.0 moved the light surfaces to white and neutral greys (lib 8a1539e8,
    2026-10-14); the site keeps the Domus surfaces of the preset it pins (lib 1d34ba5, erpnext/front package.json):
-   cream page and popover, sand card, sand hairline for muted/accent/border, warm input. Override only, no canary. */
+   cream page and popover, sand card, sand hairline for muted/accent/border, warm input. Override only, no canary.
+   Depth goes light to dark in two surfaces only (cream 50 for paper, sand 100 for the shell); sand 200 is a line, never
+   a large fill (it reads yellow on the cream). The lib's own hairline (--edge-subtle, ink at 6-8 %: Separator, the ring
+   of Card) takes the sand line too, so a window has one hairline colour. --indicator-muted (sand 600) is the quiet dot:
+   a resting status, the typing dots; the lightest sand that keeps 3:1 on the sand 100 card (3.66:1). --muted-foreground
+   (sand 700) is a text and icon tone only, never a fill (operator, 2026-10-22: too strong as a background and poor next
+   to amber); components/scene-kit/scene-colour.test.ts fails on it as a fill. */
 :root,
 [data-theme="welabs"] {
   --background: #faf5ea;
@@ -67,8 +73,15 @@
   --muted: #e2d8c3;
   --accent: #e2d8c3;
   --border: #e2d8c3;
+  --edge-subtle: var(--border);
   --input: #827968;
+  --indicator-muted: #827968;
   --muted-foreground: #625b4e;
+}
+/* The lib's TypingDots paints each dot with an inline `background-color: currentColor` (dist/ui/effects.js
+   TypingDots), which no stylesheet rule outranks without !important: the dots follow the colour of their slot */
+[data-slot="typing-dots"] {
+  color: var(--indicator-muted);
 }
 
 /* CAMADA DO SITE SOBRE A MARCA WELABS */

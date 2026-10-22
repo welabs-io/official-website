@@ -29,28 +29,64 @@ Peers: `recharts` e `@tanstack/react-table` **não estão instalados**. `KpiCard
 
 ## 3. Uma camada de tema só
 
-- **`app/lib.css` é o único lugar** que liga os tokens de papel da lib (`--background`, `--muted`, `--accent`, `--secondary`, `--border`, `--input`, `--chart-*`, sombras, raios) às variáveis do site. Desde a F2 ele liga todos: `--background` ao creme, `--card`/`--popover` ao branco, `--muted`/`--accent`/`--secondary` à areia 100 (o preset deixa cinza neutro `oklch(0.96 0 0)`, `dist/theme/brands/welabs.css:42-46`), `--chart-1` ao âmbar e `--shadow-md`/`--shadow-lg` às sombras quentes do site.
+- **`app/lib.css` é o único lugar** que liga os tokens de papel da lib às cores do site. O bloco "SUPERFÍCIES CREME DO DOMUS" (`app/lib.css:57-85`, decisão do operador de 22/10) sobrescreve o preset `welabs` da 0.18.0, que tem superfícies brancas e cinzas neutros (`dist/theme/brands/welabs.css`), com estes valores:
+  - `--background` e `--popover`: creme 50;
+  - `--card`: areia 100;
+  - `--muted`, `--accent` e `--border`: areia 200;
+  - `--edge-subtle`: `var(--border)`, a linha da própria lib (Separator e anel do Card);
+  - `--input` e `--indicator-muted`: areia 600;
+  - `--muted-foreground`: areia 700.
+
+  Tinta, âmbar (`--primary`, `--primary-soft`) e status vêm do preset sem mudança. O arquivo **não** mexe em `--chart-*`, sombras nem raios de cor; os raios e as alturas de controle ficam no bloco "CAMADA DO SITE".
 - A médio prazo, a forma oficial é `defineBrand` (`@imagineapps-team/react/theme/brand`), validada antes com `defineBrandInputSchema`.
-- É **proibido** override de cor por componente: nada de `className="bg-[#F3ECDD]"`, `style={{ color: "#..." }}` ou bloco `[data-theme="welabs"]` em outra folha. Efeito com cor própria (`TextShimmer highlightColor`, `BorderBeam color`) recebe `var(--primary)` por prop, centralizado no wrapper de `components/lib/`.
-- O bloco que usa a lib leva `data-theme="welabs"` (`components/template/Home.tsx:246`). Fora dele, `app/lib.css:35-55` neutraliza três vazamentos medidos da base da lib: transição de 160 ms, `line-height` 1,5 e `vertical-align: middle`. Ao ampliar o uso da lib, revise essas três exceções, sem duplicá-las.
+- É **proibido** override de cor por componente: nada de `className="bg-[#F3ECDD]"`, `style={{ color: "#..." }}`, hex cru em folha de componente ou bloco `[data-theme="welabs"]` em outra folha. Papel de cor que falta vira token novo em `app/lib.css`, como `--indicator-muted`. Efeito com cor própria (`TextShimmer highlightColor`, `BorderBeam color`) recebe `var(--primary)` por prop, centralizado no wrapper de `components/lib/`.
+- Componente da lib que pinta por estilo inline não se corrige com regra de classe, porque o inline vence. O `TypingDots` pinta cada ponto com `background-color: currentColor` inline, por isso a cor dos pontos vem de `color` no `[data-slot="typing-dots"]` (`app/lib.css`). Antes de sobrescrever uma peça da lib, leia o `dist/ui/*.js` dela.
+- O bloco que usa a lib leva `data-theme="welabs"` (`components/template/Home.tsx:269`, a moldura do kit em `components/scene-kit/Scene.tsx`). Fora dele, `app/lib.css:32-55` neutraliza três vazamentos medidos da base da lib: transição de 160 ms, `line-height` 1,5 e `vertical-align: middle`. Ao ampliar o uso da lib, revise essas três exceções, sem duplicá-las.
 
 ## 4. Paleta creme
 
-Fonte: `components/onepage/shell.module.css:8-40`. Os componentes leem estes nomes, e nenhum carrega cor própria.
+Esta é a paleta de tudo que a lib pinta (cenas do kit, bloco do Domus). A escala de areia completa é 50 `#faf5ea`, 100 `#f3ecdd`, 200 `#e2d8c3`, 300 `#d4c7ab`, 400 `#bfb29a`, 500 `#a39883`, 600 `#827968`, 700 `#625b4e`, 800 `#4c473d`, 900 `#333029` e 950 `#1c1a16`. Só os degraus da tabela têm token.
 
-| Papel | Token | Valor |
+| Papel | Token (`app/lib.css`) | Valor |
 |---|---|---|
-| Chão da página (creme da marca, sand-50) | `--page` | `#faf5ea` |
-| Cartão, janela, menu | `--surface` (e `--c`, branco) | `#ffffff` |
-| Banda que se destaca | `--surface-band` | `#f6f0e3` (areia 100 a 55 % sobre o chão) |
-| Areia de destaque, chip, selecionado | `--c2` / `--surface-accent` | `#f3ecdd` |
-| Linha fina | `--cl` | `#e2d8c3` |
-| Borda de controle (3:1) | `--input` | `#827968` |
-| Tinta / texto secundário | `--ink` / `--mute-l` | `#1c1a16` / `#625b4e` |
-| Âmbar | `--a`, `--a-100..300` | `#ffb020`, `#fff1d8`, `#ffe2b1`, `#ffcc74` |
-| Ação (CTA pílula) | `--action` / `--action-fg` | `#25272a` / `#faf5ea` |
+| Página, popover, papel de trabalho | `--background`, `--popover` | creme 50 `#faf5ea` |
+| Cartão, casca da janela (barra, painel lateral) | `--card` | areia 100 `#f3ecdd` |
+| Linha fina, anel | `--border`, `--edge-subtle` (e `--muted`/`--accent`, que a lib usa como fundo de hover) | areia 200 `#e2d8c3` |
+| Borda de controle (3:1) | `--input` | areia 600 `#827968` |
+| Ponto discreto (status em repouso, digitação) | `--indicator-muted` | areia 600 `#827968` |
+| Texto e ícone de segundo plano | `--muted-foreground` | areia 700 `#625b4e` |
+| Tinta (texto, ícone sobre âmbar) | `--foreground` | `#1c1a16` |
+| Âmbar: ativo / aconteceu | `--primary` / `--primary-soft` | `#ffb020` / `#ffe2b1` |
 
-O âmbar só sinaliza que algo **aconteceu**: linha escrita, foco, item ativo. Não serve para enfeitar chip. São três planos de profundidade: fundo creme (`--page`), cartão branco com borda fina e sem sombra (`--shadow-card` vale `none`), e foco com sombra macia (`--shadow-raise` no hover, `--shadow-pop` no que está aberto ou arrastado) mais barra âmbar. Sombra em cartão parado está fora do padrão, e texto esmaecido por `opacity` também: o que fica em segundo plano muda de cor (tinta → `--mute-l`), para não cair abaixo de AA.
+As folhas antigas fora da lib (`components/onepage/shell.module.css:8-45`: `--page`, `--surface` **branco**, `--c2`, `--cl`, `--mute-l`, `--action`) ainda seguem a paleta da v3 com cartão branco. Elas não são referência para trabalho novo; um bloco que migra para a lib passa a ler os papéis acima.
+
+### Papéis de cor (cenas e janelas de produto)
+
+Decisões medidas na cena do Relloo em 22/10, com contraste e motivo item a item em `~/code/control/portfolio/site-redesign/scene-kit/colour-decisions.md`.
+
+- **Duas superfícies de profundidade:** a casca da janela (barra de título, painel lateral, lista) é `--card`, e o painel onde o olho trabalha (histórico, detalhe) é `--background`. A linha selecionada da lista também usa `--background`, porque se une ao painel que abre.
+- **A areia 200 só serve como linha ou anel**, nunca como área grande: sobre o creme ela amarela, e esse foi o motivo citado pela equipe da lib. Divisória, borda de painel e anel de marca neutra usam `--border`.
+- **A areia 700 (`--muted-foreground`) só aparece em texto e ícone**, nunca em fundo ou preenchimento, nem perto de um preenchimento âmbar (operador: "forte demais" como fundo, "contrasta mal com amber"). Ponto ou preenchimento discreto usa `--indicator-muted`. O teste `components/scene-kit/scene-colour.test.ts` reprova `--muted-foreground`, `#625b4e` ou alias dele em `background`/`fill` no kit, e qualquer cor crua nas folhas do kit.
+- **Marcas** (círculos de ícone):
+  - neutra: `--card`, ou `--background` sobre a casca, com anel `--border` e ícone em `--muted-foreground`;
+  - do sujeito do painel: ícone em tinta;
+  - âmbar: sem anel e com ícone sempre em tinta.
+- **Âmbar:**
+  - `--primary` só no que está chegando agora, uma linha por vez, e só como sinal pequeno: barra à esquerda de 3 a 4 px, ponto ou marca do ícone;
+  - linha ou chip **nunca** é preenchido com `--primary` (decisão do operador): o item ativo fica em `--background`, com texto em tinta e barra âmbar;
+  - `--primary-soft` no que já chegou (marca, chip e selo cheios, sem contorno).
+- **Linha clicável feita com `Button` `ghost` da lib:**
+  - o hover da lib é tinta a 18 %, onde a areia 700 cai para cerca de 3,9:1, então hover e pressionado passam para `--background`;
+  - a barra âmbar é `background-image`, nunca `box-shadow`, porque o `box-shadow` apaga o anel de foco da lib.
+- **Bolhas:**
+  - recebida: `--card` com anel `--border` e texto em tinta;
+  - recebida chegando: anel `--primary`;
+  - enviada: `--secondary`, sem anel e com texto em tinta;
+  - evento do sistema ou do registro: sem fundo, com anel `--border` e texto `--muted-foreground`.
+- **Controle inerte** (compositor de cena): botão `appearance="soft"`, nunca `solid` em tinta, para não virar a maior massa escura da janela.
+- **Contraste medido:** texto de segundo plano a 5,71:1 na casca e 6,18:1 no papel; ponto discreto a 3,66:1; tinta sobre âmbar a 9,50:1. Pelo mesmo motivo, a areia 500 não serve para ponto: dá 2,42:1 sobre `--card`.
+
+O âmbar só sinaliza que algo **aconteceu** ou está acontecendo: linha escrita, foco, item ativo. Não serve para enfeitar chip. Texto esmaecido por `opacity` está fora do padrão: o que fica em segundo plano muda de cor (tinta → `--muted-foreground`), para não cair abaixo de AA.
 
 ## 5. Tipo, espaço e alinhamento
 

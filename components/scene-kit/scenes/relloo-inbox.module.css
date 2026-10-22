@@ -1,17 +1,20 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
 /* Layout only: the lib paints the controls (Button, Badge, InputGroup), this sheet places them and draws the marks.
-   Colours are the lib's `welabs` role tokens as-is, as in the Domus front (white background and card, neutral muted
-   fill and border, ink and muted ink); amber (--primary, --primary-soft) only for a channel that arrived (happened) or
-   is arriving (active). Every icon sits in a box whose centre is the centre of the line it labels (one flex line, align
-   center), so text and icon share one axis. */
+   Colours are the role tokens of app/lib.css, one role each (decisions: control/portfolio/site-redesign/scene-kit/
+   colour-decisions.md): the inbox is the sand 100 shell, the history is the cream 50 paper, sand 200 (--border) only
+   draws lines and rings, ink for what is read first, sand 700 (--muted-foreground) for text and icons that come second
+   and never as a fill. Amber (--primary) marks the one channel arriving now; amber soft (--primary-soft) a channel that
+   arrived. Every icon sits in a box whose centre is the centre of the line it labels (one flex line, align center), so
+   text and icon share one axis. */
 .split {
   height: auto;
   min-height: 0;
 }
 
 /* INBOX DOS CANAIS */
+/* The shell of the window: the same sand 100 as the chrome and the card, never the sand 200 (yellow on the cream) */
 .list {
-  background: var(--muted);
+  background: var(--card);
 }
 
 .paneHead {
@@ -39,18 +42,29 @@
   border-top: 1px solid var(--border);
 }
 
-/* The row (the lib's Button): an amber bar on the left while its channel arrives */
+/* The row (the lib's Button) is never filled with amber: amber is only its 3 px leading bar and its mark. While its
+   channel arrives the row takes the cream paper of the history (the selected row joins the pane it opens); hover and
+   press take the same cream instead of the lib's ghost hover (ink at 18 %, on which the sand 700 text drops to about
+   3.9:1). The bar is a background image, not a box-shadow, so the lib's focus ring (a box-shadow) still shows. */
 .rows [data-state] {
   gap: var(--sp-3);
   align-items: center;
-  box-shadow: inset 0 0 0 0 var(--primary);
-  transition: box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.rows [data-state]:hover,
+.rows [data-state]:active,
+.rows [data-state="active"] {
+  background-color: var(--background);
 }
 .rows [data-state="active"] {
-  box-shadow: inset 3px 0 0 0 var(--primary);
-  background: var(--card);
+  background-size: 3px 100%;
 }
 
+/* A neutral mark is a ring of sand line on a light fill, its icon in sand 700; an amber mark has no ring and an ink
+   icon (sand 700 never sits on amber) */
 .rowMark,
 .recordMark,
 .mark {
@@ -59,24 +73,28 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--r-dot);
-  background: var(--muted);
-  color: var(--foreground);
-  transition: background-color var(--dur-2) var(--ease-out);
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out);
 }
 
+/* On the sand 100 inbox a waiting channel is an empty cream slot */
 .rowMark {
   width: 32px;
   height: 32px;
-  background: var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
+  background: var(--background);
 }
 [data-state="done"] > .rowMark {
   background: var(--primary-soft);
   box-shadow: none;
+  color: var(--foreground);
 }
 [data-state="active"] > .rowMark {
   background: var(--primary);
   box-shadow: none;
+  color: var(--foreground);
 }
 
 .rowText {
@@ -128,9 +146,11 @@
   padding: var(--sp-4) var(--sp-5);
 }
 
+/* The contact is the subject of the pane: its icon reads in ink */
 .recordMark {
   width: 40px;
   height: 40px;
+  color: var(--foreground);
 }
 
 .recordText {
@@ -162,12 +182,31 @@
   gap: var(--sp-2);
   padding: 0 var(--sp-5) var(--sp-4);
 }
+/* A chip is the row in small and follows it: never filled with amber. Waiting is a sand-ringed chip in sand 700, arrived
+   is a filled amber soft chip (like the seal, no ring around the amber), arriving is the cream paper with the 3 px
+   amber leading bar; hover and press take the cream instead of the lib's ink at 18 % */
+.chips [data-state] {
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.chips [data-state]:hover,
+.chips [data-state]:active {
+  background-color: var(--background);
+}
+.chips [data-state="waiting"] {
+  border-color: var(--border);
+  color: var(--muted-foreground);
+}
 .chips [data-state="done"] {
-  background: var(--primary-soft);
+  background-color: var(--primary-soft);
+  border-color: var(--primary-soft);
 }
 .chips [data-state="active"] {
-  background: var(--primary);
-  border-color: var(--primary);
+  background-color: var(--background);
+  background-size: 3px 100%;
+  border-color: var(--border);
 }
 @media (min-width: 1024px) {
   .chips {
@@ -197,6 +236,8 @@
 }
 .entry[data-fresh="true"] .mark {
   background: var(--primary);
+  box-shadow: none;
+  color: var(--foreground);
 }
 
 .meta {
@@ -214,15 +255,17 @@
   color: var(--muted-foreground);
 }
 
-/* What was said reads as a message, as wide as its text, never as a field */
+/* What was said reads as a message, as wide as its text, never as a field: an incoming message is a sand 100 bubble
+   ringed by the sand line on the cream paper (amber ring while it arrives); a record event (system) has no fill and
+   reads in sand 700, so it never passes for something the contact said */
 .said {
   grid-column: 2;
   justify-self: start;
   max-width: 100%;
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-card);
-  background: var(--muted);
-  box-shadow: inset 0 0 0 1px transparent;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
   font-size: var(--t-label);
   line-height: 20px;
   color: var(--foreground);
@@ -230,6 +273,10 @@
 }
 .entry[data-fresh="true"] .said {
   box-shadow: inset 0 0 0 1px var(--primary);
+}
+.entry[data-kind="system"] .said {
+  background: transparent;
+  color: var(--muted-foreground);
 }
 
 .typing {
