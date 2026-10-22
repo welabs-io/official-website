@@ -1,0 +1,105 @@
+/* CENA DA HOME: A MENSAGEM E O SEU CAMINHO */
+/* Layout only (the lib paints Badge and the button; the kit's shared parts, components/scene-kit/parts.module.css, paint
+   the marks and their tones, the station states, the stacked text, the bubble and the seal). Every value is a token of
+   app/lib.css (colour roles: control/portfolio/site-redesign/scene-kit/colour-decisions.md): the window is the cream
+   paper, the track a row of five stations split by the sand line (a column on a phone), the record a sand 100 card. */
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+}
+
+/* A MENSAGEM */
+.message {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+}
+.said {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.text {
+  margin-top: var(--sp-1);
+}
+
+/* O CAMINHO */
+.track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.station {
+  display: flex;
+  min-height: var(--row-min);
+  align-items: center;
+  padding: var(--sp-3) var(--sp-4);
+}
+.station + .station {
+  border-left: var(--rule) solid var(--border);
+}
+.stationLine {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+/* Before the message reaches a product its name waits in second plan and its effect keeps its place unseen */
+.station[data-state="waiting"] .stationText > b {
+  color: var(--muted-foreground);
+}
+.stationText > [data-shown="false"] {
+  visibility: hidden;
+}
+
+/* O REGISTRO NO DOMUS */
+.record {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.recordText {
+  flex: 1;
+}
+
+/* TELAS ESTREITAS */
+/* The track becomes a column of rows */
+@media (max-width: 860px) {
+  .track {
+    grid-template-columns: minmax(0, 1fr);
+    border-top: var(--rule) solid var(--border);
+  }
+  .station + .station {
+    border-left: 0;
+    border-top: var(--rule) solid var(--border);
+  }
+}
+@media (max-width: 640px) {
+  .message,
+  .station {
+    padding-inline: var(--sp-3);
+  }
+  .record {
+    flex-wrap: wrap;
+    margin: var(--sp-3);
+    padding-inline: var(--sp-3);
+  }
+  .recordText {
+    flex-basis: calc(100% - var(--mark-lg) - var(--sp-3));
+  }
+  .seal {
+    margin-left: calc(var(--mark-lg) + var(--sp-3));
+  }
+}

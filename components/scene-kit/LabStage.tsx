@@ -10,6 +10,7 @@ import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
 import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
+import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
 import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
 import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
@@ -48,6 +49,11 @@ const SCENES: Record<SceneId, Entry> = {
     steps: KNOWLY_ANSWER_STEPS,
     Component: KnowlyAnswer,
     takeFrom: "profile",
+  },
+  "home-message": {
+    steps: HOME_MESSAGE_STEPS,
+    Component: HomeMessageScene,
+    takeFrom: "tuner",
   },
 };
 

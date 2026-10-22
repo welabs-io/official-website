@@ -57,6 +57,14 @@ const SCENES: Entry[] = [
     pairs: 9,
     cycleMs: 7000,
   },
+  {
+    id: "home-message",
+    figure: /mensagem atravessa/,
+    trigger: /^Enviar a mensagem/,
+    final: "done",
+    pairs: 7,
+    cycleMs: 6100,
+  },
 ];
 
 // The icon/text pairs of the live layer whose centres are off by more than 1 px, and how many were measured
