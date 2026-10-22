@@ -1,13 +1,14 @@
 /* CENA DO DOMUS: MÓDULOS NO ANEL DA MARCA */
-/* Layout and state paint only (the lib paints Card, Badge, the button and the fields). Colours are the role tokens of
-   app/lib.css, one role each (control/portfolio/site-redesign/scene-kit/colour-decisions.md): the stage around the ring
-   is the sand 100 shell, the inside of the ring is the cream paper, a module is a sand 100 tile ringed by the sand line,
-   its mark a cream well ringed by the sand line with a sand 700 icon. The ring is the ink of the logo (the pilot drew it
-   in the graphite of the logo: house.module.css .frame), at the logo's rule outer corner = inner corner + stroke. Amber
-   (--primary) is only the module being born, square like the amber square of the logo; amber soft once it is saved. */
+/* Layout and state paint only (the lib paints Card, Badge, the button and the fields; the kit's shared parts,
+   components/scene-kit/parts.module.css, paint the marks, the pane heads, the stacked text and the seal). Every value is
+   a token of app/lib.css (colour roles: control/portfolio/site-redesign/scene-kit/colour-decisions.md): the stage
+   around the ring is the sand 100 shell, the inside of the ring is the cream paper, a module is a sand 100 tile ringed
+   by the sand line, its mark a cream well. The ring is the ink of the logo (the pilot drew it in the graphite of the
+   logo: house.module.css .frame), at the logo's rule outer corner = inner corner + stroke. Amber (--primary) is only
+   the module being born, square like the amber square of the logo; amber soft once it is saved. */
 .root {
-  --ring: 10px;
-  --ring-inner: 18px;
+  --ring: var(--domus-ring-scene);
+  --ring-inner: var(--r-domus-inner);
   padding: var(--sp-4);
   background: var(--card);
 }
@@ -15,7 +16,7 @@
 .ring {
   display: grid;
   gap: var(--sp-4);
-  padding: var(--sp-4) var(--sp-4) var(--sp-4);
+  padding: var(--sp-4);
   border: var(--ring) solid var(--foreground);
   border-radius: calc(var(--ring-inner) + var(--ring));
   background: var(--background);
@@ -27,25 +28,16 @@
 }
 .floor + .floor {
   padding-top: var(--sp-4);
-  border-top: 1px solid var(--border);
+  border-top: var(--rule) solid var(--border);
 }
 
-/* The name of the floor and, on the floor made to measure, its button: one line of control height */
+/* The name of the floor and, on the floor made to measure, its button: one line of the small mark's height */
 .floorHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
-  min-height: 32px;
-}
-.floorName {
-  margin: 0;
-  font-size: var(--t-micro);
-  line-height: 20px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted-foreground);
+  min-height: var(--mark-md);
 }
 
 .rooms {
@@ -58,36 +50,22 @@
 }
 
 /* MÓDULO */
-/* Mark and text on one centre line; the tag sits after the name and wraps under it when the tile is narrow */
-/* Mark-to-text gap of 8 px: at 1040 px a tile is 181 px, and "Fiscal" with its tag needs 112 of them on one line */
+/* Mark and text on one centre line; the tag sits after the name and wraps under it when the tile is narrow. Mark-to-
+   text gap of 8 px: at 1040 px a tile is 181 px, and "Fiscal" with its tag needs 112 of them on one line */
 .room,
 .born {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  min-height: 56px;
+  min-height: var(--row-min);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-card);
   background: var(--card);
-  box-shadow: inset 0 0 0 1px var(--border);
+  box-shadow: var(--edge-ring);
   color: var(--foreground);
   font-size: var(--t-label);
-  line-height: 20px;
-  font-weight: 500;
-}
-
-.mark,
-.seed {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-ctl);
-  background: var(--background);
-  box-shadow: inset 0 0 0 1px var(--border);
-  color: var(--muted-foreground);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
 }
 
 .text {
@@ -103,12 +81,8 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
-.tag,
-.seal {
+.tag {
   flex: none;
-}
-.seal {
-  gap: var(--sp-1);
 }
 
 /* O MÓDULO NOVO */
@@ -126,32 +100,22 @@
   display: grid;
 }
 .empty {
-  min-height: 56px;
-  border: 1.5px dashed var(--input);
+  min-height: var(--row-min);
+  border: var(--rule-dashed) dashed var(--input);
   border-radius: var(--r-card);
 }
 
-/* The module being born: amber ring on its tile, the amber square of the logo as its mark (ink icon, no ring). Once
+/* The module being born: amber ring on its tile (its mark is the amber square of the logo, data-tone="active"); once
    saved the ring goes back to the sand line and the square settles into amber soft */
 .born[data-state="active"] {
-  box-shadow: inset 0 0 0 1px var(--primary);
+  box-shadow: var(--edge-ring-active);
 }
-.seed {
+.born {
+  transition: box-shadow var(--dur-2) var(--ease-out);
+}
+/* Two classes: the local corner wins over the shared round mark whatever the order of the sheets */
+.mark.seed {
   border-radius: var(--r-card);
-}
-[data-state="active"] .seed {
-  background: var(--primary);
-  box-shadow: none;
-  color: var(--foreground);
-}
-[data-state="done"] .seed {
-  background: var(--primary-soft);
-  box-shadow: none;
-  color: var(--foreground);
-}
-.born,
-.seed {
-  transition: box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
 }
 
 /* A TELA DO MÓDULO */
@@ -166,21 +130,6 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-}
-.screenTitle {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-}
-.screenTitle b {
-  font-size: var(--t-label);
-  line-height: 20px;
-  font-weight: 600;
-}
-.screenTitle span {
-  font-size: var(--t-micro);
-  line-height: 16px;
-  color: var(--muted-foreground);
 }
 .fields {
   display: grid;
@@ -203,8 +152,8 @@
 
 @media (max-width: 640px) {
   .root {
-    --ring: 6px;
-    --ring-inner: 12px;
+    --ring: var(--domus-ring-scene-sm);
+    --ring-inner: var(--r-domus-inner-sm);
     padding: var(--sp-2);
   }
   .ring {
@@ -224,7 +173,7 @@
   .room,
   .born,
   .empty {
-    min-height: 40px;
+    min-height: calc(var(--row-min) - var(--sp-4));
   }
   .room,
   .born {
@@ -233,10 +182,8 @@
   .text {
     flex-wrap: nowrap;
   }
-  .mark,
-  .seed {
-    width: 28px;
-    height: 28px;
+  .ring .mark {
+    --mark-size: var(--mark-sm);
   }
   .floor + .floor {
     padding-top: var(--sp-3);

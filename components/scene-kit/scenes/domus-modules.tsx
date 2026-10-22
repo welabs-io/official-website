@@ -39,6 +39,7 @@ import { AnimatedList } from "@/components/lib/scene";
 import { DOMUS_MODULES, HOME_DOMUS } from "@/lib/content/home";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
+import p from "../parts.module.css";
 import d from "./domus-modules.module.css";
 
 // ROTEIRO DA CENA
@@ -98,7 +99,7 @@ function RoomTile({ room }: { room: Room }) {
   const Icon = ROOM_ICON[room.name] ?? Package;
   return (
     <li className={d.room} data-axis="room">
-      <span className={d.mark} aria-hidden="true">
+      <span className={`${p.mark} ${p.markMd} ${p.markSquare} ${d.mark}`} data-tone="well" aria-hidden="true">
         <Icon size={16} strokeWidth={2} />
       </span>
       <span className={d.text}>
@@ -116,15 +117,17 @@ function RoomTile({ room }: { room: Room }) {
 function DomusModulesView({ scene }: { scene: SceneApi }) {
   const born = scene.reached("born");
   const saved = scene.reached("saved");
-  // The new module is amber while it is being born and filled, amber soft once saved
+  // The new module is amber while it is being born and filled, amber soft once saved (its mark: the shared mark with
+  // the square corner of the logo's amber square, painted by data-tone)
   const state = saved ? "done" : "active";
+  const seed = `${p.mark} ${p.markMd} ${d.mark} ${d.seed}`;
   return (
     <div className={d.root}>
       {/* The ring of the Domus logo: the whole management inside it */}
       <div className={d.ring}>
         <section className={d.floor} aria-label={HOME_DOMUS.standard}>
           <div className={d.floorHead}>
-            <p className={d.floorName}>{HOME_DOMUS.standard}</p>
+            <p className={p.paneHead}>{HOME_DOMUS.standard}</p>
           </div>
           <ul className={d.rooms}>
             {DOMUS_MODULES.standard.map((room) => (
@@ -135,7 +138,7 @@ function DomusModulesView({ scene }: { scene: SceneApi }) {
 
         <section className={d.floor} aria-label={HOME_DOMUS.custom}>
           <div className={d.floorHead}>
-            <p className={d.floorName}>{HOME_DOMUS.custom}</p>
+            <p className={p.paneHead}>{HOME_DOMUS.custom}</p>
             <ActionButton icon={<Plus />} size="xs" onClick={() => scene.take("born")}>
               {HOME_DOMUS.add}
             </ActionButton>
@@ -149,13 +152,13 @@ function DomusModulesView({ scene }: { scene: SceneApi }) {
               <AnimatedList className={d.slotStack} distance={6} duration={0.32}>
                 {born ? (
                   <div key="born" className={d.born} data-state={state} data-axis="born">
-                    <span className={d.seed} aria-hidden="true">
+                    <span className={seed} data-tone={state} aria-hidden="true">
                       <ClipboardCheck size={16} strokeWidth={2} />
                     </span>
                     <span className={d.text}>
                       <span className={d.name}>{HOME_DOMUS.born}</span>
                       {saved ? (
-                        <Badge variant="primary" appearance="soft" className={d.seal}>
+                        <Badge variant="primary" appearance="soft" className={p.seal}>
                           <Check size={12} strokeWidth={2.5} aria-hidden="true" />
                           {HOME_DOMUS.bornTag}
                         </Badge>
@@ -175,10 +178,10 @@ function DomusModulesView({ scene }: { scene: SceneApi }) {
           {scene.reached("screen") ? (
             <Card key="screen" size="sm" className={d.screen} data-state={state}>
               <div className={d.screenHead} data-axis="screen">
-                <span className={d.seed} aria-hidden="true">
+                <span className={seed} data-tone={state} aria-hidden="true">
                   <ClipboardCheck size={16} strokeWidth={2} />
                 </span>
-                <span className={d.screenTitle}>
+                <span className={p.stack}>
                   <b>{HOME_DOMUS.born}</b>
                   <span>{COPY.screen}</span>
                 </span>
