@@ -88,7 +88,9 @@ function KnowlyAnswerView({ scene }: { scene: SceneApi }) {
   // The line of the plan cited by the sentence arriving now, and the lines cited so far
   const cited = new Set(goals.flatMap((s) => (s.line === null ? [] : [s.line])));
   const freshLine = goals.find((s) => s.key === freshKey)?.line ?? null;
-  const locked = finance ? K.answers.goalsFinance.flatMap((s) => (s.source === null ? [s.line] : [])) : [];
+  const locked: number[] = finance
+    ? K.answers.goalsFinance.flatMap((s) => (s.source === null ? [s.line] : []))
+    : [];
   const personal = scene.reached("personal");
   return (
     <div className={k.split}>
@@ -120,7 +122,8 @@ function KnowlyAnswerView({ scene }: { scene: SceneApi }) {
               <div key={s.key} className={k.sentence} data-axis="sentence" data-fresh={!done && s.key === freshKey}>
                 <span
                   className={`${p.mark} ${p.markSm} ${k.number}`}
-                  data-tone={s.key === freshKey && !done ? "active" : s.line === null ? undefined : "done"}
+                  // A closed sentence stays neutral even while it arrives: its text is sand 700, never next to amber
+                  data-tone={s.line === null ? undefined : s.key === freshKey && !done ? "active" : "done"}
                   aria-hidden="true"
                 >
                   {s.line === null ? <Lock size={14} strokeWidth={2} /> : "1"}
