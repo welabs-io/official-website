@@ -265,24 +265,24 @@
 :root,
 [data-theme="welabs"] {
   --background: #f7f7f5;
-  /* Round 3: the text ink is the welabs preset's own (#1c1a16, 17.5:1 on white), written out so the page outside the
-     lib reads the same ink; the black of the action stays --primary */
-  --foreground: #1c1a16;
+  /* Operator (2026-10-22): the text is true black, never the preset's brownish graphite (#1c1a16 / #625b4e read as
+     "grafite"); the ink is the same black as the action (--primary) */
+  --foreground: #121212;
   --card: #ffffff;
-  --card-foreground: #1c1a16;
+  --card-foreground: #121212;
   --popover: #ffffff;
-  --popover-foreground: #1c1a16;
+  --popover-foreground: #121212;
   --muted: #efefeb;
   --secondary: #efefeb;
-  --secondary-foreground: #1c1a16;
+  --secondary-foreground: #121212;
   --border: #e5e5e1;
   --edge-subtle: var(--border);
   --edge-strong: var(--border);
   /* Round 3: the field edge is the line (the default brand of the lib draws --input = --border); the welabs preset's
      oklch(0.6 0 0) is the dark edge the operator rejected (e2e/lib-parity.spec.ts ALLOWED, with the WCAG note) */
   --input: var(--border);
-  /* The welabs preset's own secondary text (sand 700): 6.72:1 on white, 5.83:1 on the chrome, 6.12:1 on amber-50 */
-  --muted-foreground: #625b4e;
+  /* Secondary text is a neutral grey, not the preset's warm sand 700 (operator: "texto muito pro grafite") */
+  --muted-foreground: #55565b;
   --indicator-muted: #8a8a86;
   --primary: #121212;
   --primary-foreground: #ffffff;
