@@ -97,7 +97,7 @@ type Room = { name: string; tag?: string };
 function RoomTile({ room }: { room: Room }) {
   const Icon = ROOM_ICON[room.name] ?? Package;
   return (
-    <li className={d.room} data-align="room">
+    <li className={d.room} data-axis="room">
       <span className={d.mark} aria-hidden="true">
         <Icon size={16} strokeWidth={2} />
       </span>
@@ -148,7 +148,7 @@ function DomusModulesView({ scene }: { scene: SceneApi }) {
             <li className={d.slot}>
               <AnimatedList className={d.slotStack} distance={6} duration={0.32}>
                 {born ? (
-                  <div key="born" className={d.born} data-state={state} data-align="born">
+                  <div key="born" className={d.born} data-state={state} data-axis="born">
                     <span className={d.seed} aria-hidden="true">
                       <ClipboardCheck size={16} strokeWidth={2} />
                     </span>
@@ -174,7 +174,7 @@ function DomusModulesView({ scene }: { scene: SceneApi }) {
         <AnimatedList className={d.screenStack} distance={10} duration={0.32}>
           {scene.reached("screen") ? (
             <Card key="screen" size="sm" className={d.screen} data-state={state}>
-              <div className={d.screenHead} data-align="screen">
+              <div className={d.screenHead} data-axis="screen">
                 <span className={d.seed} aria-hidden="true">
                   <ClipboardCheck size={16} strokeWidth={2} />
                 </span>

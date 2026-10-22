@@ -205,7 +205,7 @@
   .root {
     --ring: 6px;
     --ring-inner: 12px;
-    padding: var(--sp-3);
+    padding: var(--sp-2);
   }
   .ring {
     gap: var(--sp-4);
@@ -237,6 +237,9 @@
   .seed {
     width: 28px;
     height: 28px;
+  }
+  .floor + .floor {
+    padding-top: var(--sp-3);
   }
   .screen {
     padding: var(--sp-3);

@@ -1,8 +1,9 @@
 // PROVA DAS CENAS DO KIT NO LAB
 // The pattern of e2e/scene-kit.spec.ts (the Relloo scene) applied to every other kit scene, one entry per scene: it
 // autoplays and loops, a click on its control takes over and gives the scene back, reduced motion shows the settled
-// frame with nothing running, every icon sits on the axis of the text it labels (1 px, the `data-align` pairs: first
-// child the mark, second the text), no text is cut, and the window keeps one height over the loop (1 px).
+// frame with nothing running, every icon sits on the axis of the text it labels (1 px, the `data-axis` pairs: first
+// child the mark, second the text; not `data-align`, which the lib's InputGroupAddon writes), no text is cut, and the
+// window keeps one height over the loop (1 px).
 import { expect, test, type Page } from "@playwright/test";
 import {
   expectContinuousLoop,
@@ -43,11 +44,11 @@ async function axisOffsets(page: Page, id: string) {
       return r.top + r.height / 2;
     };
     const out: { name: string; dy: number }[] = [];
-    live.querySelectorAll("[data-align]").forEach((e, i) => {
+    live.querySelectorAll("[data-axis]").forEach((e, i) => {
       const el = e as HTMLElement;
       if (el.offsetParent === null || getComputedStyle(el).visibility === "hidden") return;
       out.push({
-        name: `${el.dataset.align} ${i}`,
+        name: `${el.dataset.axis} ${i}`,
         dy: Math.abs(mid(e.children[0]) - mid(e.children[1])),
       });
     });
