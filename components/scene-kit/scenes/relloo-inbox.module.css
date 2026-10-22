@@ -1,8 +1,9 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
 /* Layout only: the lib paints the controls (Button, Badge, InputGroup), this sheet places them and draws the marks.
-   Cream for the panes, white for what is said, amber only for a channel that arrived (happened) or is arriving
-   (active). Every icon sits in a box whose centre is the centre of the line it labels (one flex line, align center),
-   so text and icon share one axis. */
+   Colours are the lib's `welabs` role tokens as-is, as in the Domus front (white background and card, neutral muted
+   fill and border, ink and muted ink); amber (--primary, --primary-soft) only for a channel that arrived (happened) or
+   is arriving (active). Every icon sits in a box whose centre is the centre of the line it labels (one flex line, align
+   center), so text and icon share one axis. */
 .split {
   height: auto;
   min-height: 0;
@@ -10,7 +11,7 @@
 
 /* INBOX DOS CANAIS */
 .list {
-  background: var(--surface-band);
+  background: var(--muted);
 }
 
 .paneHead {
@@ -25,7 +26,7 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }
 
 .rows {
@@ -35,19 +36,19 @@
 }
 
 .rows > li + li {
-  border-top: 1px solid var(--cl);
+  border-top: 1px solid var(--border);
 }
 
 /* The row (the lib's Button): an amber bar on the left while its channel arrives */
 .rows [data-state] {
   gap: var(--sp-3);
   align-items: center;
-  box-shadow: inset 0 0 0 0 var(--a);
+  box-shadow: inset 0 0 0 0 var(--primary);
   transition: box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
 }
 .rows [data-state="active"] {
-  box-shadow: inset 3px 0 0 0 var(--a);
-  background: var(--surface);
+  box-shadow: inset 3px 0 0 0 var(--primary);
+  background: var(--card);
 }
 
 .rowMark,
@@ -58,20 +59,24 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--r-dot);
-  background: var(--c2);
-  color: var(--ink);
+  background: var(--muted);
+  color: var(--foreground);
   transition: background-color var(--dur-2) var(--ease-out);
 }
 
 .rowMark {
   width: 32px;
   height: 32px;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 [data-state="done"] > .rowMark {
-  background: var(--a-100);
+  background: var(--primary-soft);
+  box-shadow: none;
 }
 [data-state="active"] > .rowMark {
-  background: var(--a);
+  background: var(--primary);
+  box-shadow: none;
 }
 
 .rowText {
@@ -88,7 +93,7 @@
   gap: var(--sp-2);
   font-size: var(--t-label);
   line-height: 20px;
-  color: var(--ink);
+  color: var(--foreground);
 }
 .rowTop b {
   font-weight: 600;
@@ -98,7 +103,7 @@
   font-size: var(--t-micro);
   line-height: 16px;
   font-weight: 400;
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }
 .preview {
   overflow: hidden;
@@ -106,14 +111,14 @@
   white-space: nowrap;
 }
 [data-state="waiting"] .rowTop b {
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }
 
 /* HISTÓRICO DO CONTATO */
 .detail {
   display: flex;
   flex-direction: column;
-  background: var(--page);
+  background: var(--background);
 }
 
 .record {
@@ -126,7 +131,6 @@
 .recordMark {
   width: 40px;
   height: 40px;
-  background: var(--c2);
 }
 
 .recordText {
@@ -143,7 +147,7 @@
 .recordText span {
   font-size: var(--t-micro);
   line-height: 16px;
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }
 
 .seal {
@@ -159,11 +163,11 @@
   padding: 0 var(--sp-5) var(--sp-4);
 }
 .chips [data-state="done"] {
-  background: var(--a-100);
+  background: var(--primary-soft);
 }
 .chips [data-state="active"] {
-  background: var(--a);
-  border-color: var(--a);
+  background: var(--primary);
+  border-color: var(--primary);
 }
 @media (min-width: 1024px) {
   .chips {
@@ -192,7 +196,7 @@
   height: 28px;
 }
 .entry[data-fresh="true"] .mark {
-  background: var(--a);
+  background: var(--primary);
 }
 
 .meta {
@@ -207,7 +211,7 @@
 }
 .meta time {
   font-size: var(--t-micro);
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }
 
 /* What was said reads as a message, as wide as its text, never as a field */
@@ -216,29 +220,29 @@
   justify-self: start;
   max-width: 100%;
   padding: var(--sp-2) var(--sp-3);
-  border: 1px solid var(--cl);
   border-radius: var(--r-card);
-  background: var(--surface);
+  background: var(--muted);
+  box-shadow: inset 0 0 0 1px transparent;
   font-size: var(--t-label);
   line-height: 20px;
-  color: var(--ink);
-  transition: border-color var(--dur-2) var(--ease-out);
+  color: var(--foreground);
+  transition: box-shadow var(--dur-2) var(--ease-out);
 }
 .entry[data-fresh="true"] .said {
-  border-color: var(--a-300);
+  box-shadow: inset 0 0 0 1px var(--primary);
 }
 
 .typing {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }
 
 .composer {
   margin-top: auto;
   padding: var(--sp-3) var(--sp-5) var(--sp-4);
-  border-top: 1px solid var(--cl);
+  border-top: 1px solid var(--border);
 }
 
 @media (max-width: 640px) {

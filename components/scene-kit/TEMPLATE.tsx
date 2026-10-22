@@ -8,7 +8,9 @@
 // under reduced motion, the window (Card + chrome bar) with the height of the settled frame, the easing tokens.
 // Rules of a scene: render ONLY from `scene` (no useState/useEffect/setTimeout of your own); every control calls
 // `scene.take(stepId)`; pieces come from the lib (components/lib/ui.tsx, components/lib/scene.tsx), icons from
-// lucide-react; amber only for what happened or is active; no person, name, face, initial or vendor.
+// lucide-react; colours only from the lib's welabs role tokens (--background, --card, --foreground, --muted,
+// --muted-foreground, --border, --primary, --primary-soft), never the site's cream/sand; amber (--primary) only for
+// what happened or is active; no person, name, face, initial or vendor.
 // Proof: copy e2e/scene-kit.spec.ts for the new id (loop + take, reduced motion, icon/text axis within 1 px).
 import { Check } from "lucide-react";
 import { Badge, Button } from "@/components/lib/ui";

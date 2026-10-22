@@ -1,8 +1,12 @@
 /* LAB DE CENAS */
-/* The workbench page of a kit scene: the cream floor, the scene centred, a toolbar above it. */
-.main {
+/* The workbench page of a kit scene: the lib's welabs background (white, as in the Domus front), the scene centred,
+   a toolbar above it. The attribute selector outranks the cream floor of shell.module.css .page, whose scales (space,
+   type, motion) the lab still reads. */
+.main[data-theme="welabs"] {
   min-height: 100vh;
   padding: var(--sp-7) var(--sp-4);
+  background: var(--background);
+  color: var(--foreground);
 }
 
 .stage {
@@ -24,5 +28,5 @@
   margin-right: auto;
   font-size: var(--t-label);
   font-weight: 600;
-  color: var(--mute-l);
+  color: var(--muted-foreground);
 }

@@ -1,5 +1,5 @@
 // LAB DE UMA CENA DO KIT
-// /lab/scenes/<id>: one kit scene alone on the cream floor, to build and approve it in isolation before it is mounted
+// /lab/scenes/<id>: one kit scene alone on the lib's welabs background, to build and approve it in isolation before it is mounted
 // in the site. Never indexed.
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -24,7 +24,7 @@ export default async function SceneLabPage({
   const { id } = await params;
   if (!isSceneId(id)) notFound();
   return (
-    <div className={`${shell.page} ${k.main}`}>
+    <div className={`${shell.page} ${k.main}`} data-theme="welabs">
       <LabStage id={id} />
     </div>
   );

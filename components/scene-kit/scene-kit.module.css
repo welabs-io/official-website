@@ -1,13 +1,14 @@
 /* MOLDURA E PALCO DO KIT DE CENAS */
-/* The window of every kit scene: the lib's Card (white, the sand hairline) with a chrome bar of the product, and a
-   stage whose height is the settled frame's (the hidden copy and the live step share one grid cell). Off-screen or
-   under reduced motion (data-on="false") no CSS animation runs; reduced motion also drops every transition. Colours,
-   type, space and motion come from the site's tokens (components/onepage/shell.module.css). */
+/* The window of every kit scene: the lib's Card with a chrome bar of the product, and a stage whose height is the
+   settled frame's (the hidden copy and the live step share one grid cell). Off-screen or under reduced motion
+   (data-on="false") no CSS animation runs; reduced motion also drops every transition. Colours are the lib's `welabs`
+   role tokens as-is (the frame carries data-theme="welabs"), as in the Domus front: no cream, no sand. Type, space and
+   motion come from the site's scales (components/onepage/shell.module.css). */
 .frame {
   width: 100%;
   max-width: 1040px;
   margin-inline: auto;
-  color: var(--ink);
+  color: var(--foreground);
 }
 
 .chrome {
@@ -15,23 +16,23 @@
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-4);
-  border-bottom: 1px solid var(--cl);
-  background: var(--surface-band);
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
   font-size: var(--t-label);
   line-height: 20px;
 }
 
-/* The status of the window: amber while the scene is playing (something happens), the hairline when it rests */
+/* The status of the window: amber while the scene is playing (something happens), the border grey when it rests */
 .status {
   width: 8px;
   height: 8px;
   flex: none;
   border-radius: var(--r-dot);
-  background: var(--cl);
+  background: var(--border);
   transition: background-color var(--dur-2) var(--ease-out);
 }
 .status[data-on="true"] {
-  background: var(--a);
+  background: var(--primary);
 }
 
 .product {
@@ -39,7 +40,7 @@
 }
 
 .title {
-  color: var(--mute-l);
+  color: var(--muted-foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
