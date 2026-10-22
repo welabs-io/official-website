@@ -7,13 +7,14 @@
 // take and give-back (sequence complete or 8 s idle), no timer and no CSS animation off-screen, the last step static
 // under reduced motion, the window (Card + chrome bar) with the height of the settled frame, the easing tokens.
 // Rules of a scene: render ONLY from `scene` (no useState/useEffect/setTimeout of your own); every control calls
-// `scene.take(stepId)`; pieces come from the lib (components/lib/ui.tsx, components/lib/scene.tsx), icons from
+// `scene.take(stepId)`; pieces come from the lib (components/lib/ui.tsx, components/lib/scene.tsx), every button and
+// field is a site primitive (ActionButton, IconButton, RowButton, TextField) with its required icon, icons from
 // lucide-react; colours only from the lib's welabs role tokens (--background, --card, --foreground, --muted,
 // --muted-foreground, --border, --primary, --primary-soft), never the site's cream/sand; amber (--primary) only for
 // what happened or is active; no person, name, face, initial or vendor.
 // Proof: copy e2e/scene-kit.spec.ts for the new id (loop + take, reduced motion, icon/text axis within 1 px).
-import { Check } from "lucide-react";
-import { Badge, Button } from "@/components/lib/ui";
+import { Check, RotateCcw } from "lucide-react";
+import { ActionButton, Badge } from "@/components/lib/ui";
 import { AnimatedList } from "@/components/lib/scene";
 import { Scene, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
@@ -46,9 +47,9 @@ export function TemplateScene({ timeline }: { timeline?: SceneTimeline }) {
       {(scene) => (
         <div>
           {/* A control: a human event takes over from this step */}
-          <Button size="sm" variant="neutral" appearance="outline" onClick={() => scene.take("first")}>
+          <ActionButton icon={<RotateCcw />} onClick={() => scene.take("first")}>
             Repetir
-          </Button>
+          </ActionButton>
           {/* Items that arrive: keyed, filtered by the step reached */}
           <AnimatedList>
             {ITEMS.filter((item) => scene.reached(item.step)).map((item) => (

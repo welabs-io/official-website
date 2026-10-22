@@ -1,5 +1,6 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
-/* Layout only: the lib paints the controls (Button, Badge, InputGroup), this sheet places them and draws the marks.
+/* Layout only: the lib and the site primitives paint the controls (RowButton, ActionButton, TextField, Badge: their
+   look is app/lib.css CONTROLES), this sheet places them, draws the marks and the state paint of the scene.
    Colours are the role tokens of app/lib.css, one role each (decisions: control/portfolio/site-redesign/scene-kit/
    colour-decisions.md): the inbox is the sand 100 shell, the history is the cream 50 paper, sand 200 (--border) only
    draws lines and rings, ink for what is read first, sand 700 (--muted-foreground) for text and icons that come second
@@ -43,7 +44,7 @@
   border-top: 1px solid var(--border);
 }
 
-/* The row (the lib's Button) is never filled with amber: amber is only its 3 px leading bar and its mark. While its
+/* The row (the site's RowButton, the lib's quiet Button) is never filled with amber: amber is only its 3 px leading bar and its mark. While its
    channel arrives the row takes the cream paper of the history (the selected row joins the pane it opens); hover and
    press take the same cream instead of the lib's ghost hover (ink at 18 %, on which the sand 700 text drops to about
    3.9:1). The bar is a background image, not a box-shadow, so the lib's focus ring (a box-shadow) still shows. */
@@ -81,16 +82,11 @@
     color var(--dur-2) var(--ease-out);
 }
 
-/* On the sand 100 inbox a waiting channel is an empty cream slot */
+/* At rest (waiting or done) a channel mark is the same neutral mark as the conversation's (operator, 2026-10-22);
+   only the active channel turns amber, like the fresh entry of the history */
 .rowMark {
   width: 32px;
   height: 32px;
-  background: var(--background);
-}
-[data-state="done"] > .rowMark {
-  background: var(--primary-soft);
-  box-shadow: none;
-  color: var(--foreground);
 }
 [data-state="active"] > .rowMark {
   background: var(--primary);
@@ -183,9 +179,10 @@
   gap: var(--sp-2);
   padding: 0 var(--sp-5) var(--sp-4);
 }
-/* A chip is the row in small and follows it: never filled with amber. Waiting is a sand-ringed chip in sand 700, arrived
-   is a filled amber soft chip (like the seal, no ring around the amber), arriving is the cream paper with the 3 px
-   amber leading bar; hover and press take the cream instead of the lib's ink at 18 % */
+/* A chip (the site's ActionButton, soft, no edge: app/lib.css CONTROLES) is the row in small and follows it: never
+   filled with amber. Waiting keeps the soft fill with its label in sand 700 (5.25:1), arrived is a filled amber soft
+   chip (like the seal), arriving takes the amber wash of the selected row with the 3 px amber leading bar; hover and
+   press take that same wash instead of the lib's ink at 22 %. Only state paint lives here, never the control's edge. */
 .chips [data-state] {
   background-image: linear-gradient(var(--primary), var(--primary));
   background-repeat: no-repeat;
@@ -194,20 +191,17 @@
 }
 .chips [data-state]:hover,
 .chips [data-state]:active {
-  background-color: var(--background);
+  background-color: var(--surface-raised);
 }
 .chips [data-state="waiting"] {
-  border-color: var(--border);
   color: var(--muted-foreground);
 }
 .chips [data-state="done"] {
   background-color: var(--primary-soft);
-  border-color: var(--primary-soft);
 }
 .chips [data-state="active"] {
-  background-color: var(--background);
+  background-color: var(--surface-raised);
   background-size: 3px 100%;
-  border-color: var(--border);
 }
 @media (min-width: 1024px) {
   .chips {

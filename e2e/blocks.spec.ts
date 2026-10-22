@@ -126,14 +126,24 @@ test.describe("(a) the tokens of the ERP front", () => {
       return {
         body: getComputedStyle(document.body).backgroundColor,
         page: cs("#top").backgroundColor,
+        // The single theme token of the floor (app/lib.css --background), resolved as a colour
+        token: (() => {
+          const probe = document.createElement("i");
+          probe.style.backgroundColor = "var(--background)";
+          document.body.append(probe);
+          const value = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return value;
+        })(),
         ctaBg: cta.backgroundColor,
         ctaFg: cta.color,
         ctaRadius: cta.borderRadius,
       };
     });
-    // v3 (F2, plano.md 4.1): the floor is the cream of the brand (sand-50), no longer the white of v2.1
-    expect(t.body).toBe("rgb(250, 245, 234)");
-    expect(t.page).toBe("rgb(250, 245, 234)");
+    // The floor follows the single theme token (app/lib.css --background, the light cream since 2026-10-22), never a
+    // colour pinned per sheet
+    expect(t.body).toBe(t.token);
+    expect(t.page).toBe(t.token);
     // ERP --action #25272a with --action-foreground #faf5ea, round control (22 px)
     expect(t.ctaBg).toBe("rgb(37, 39, 42)");
     expect(t.ctaFg).toBe("rgb(250, 245, 234)");

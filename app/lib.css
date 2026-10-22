@@ -57,7 +57,8 @@
 /* SUPERFÍCIES CREME DO DOMUS SOBRE O PRESET */
 /* Operator decision (2026-10-22): the lib 0.18.0 moved the light surfaces to white and neutral greys (lib 8a1539e8,
    2026-10-14); the site keeps the Domus surfaces of the preset it pins (lib 1d34ba5, erpnext/front package.json):
-   cream page and popover, sand card, sand hairline for muted/accent/border, warm input. Override only, no canary.
+   cream page and popover, sand card, sand hairline for muted/accent/border, a light sand field edge (the CONTROLES
+   block below). Override only, no canary.
    Depth goes light to dark in two surfaces only (cream 50 for paper, sand 100 for the shell); sand 200 is a line, never
    a large fill (it reads yellow on the cream). The lib's own hairline (--edge-subtle, ink at 6-8 %: Separator, the ring
    of Card) takes the sand line too, so a window has one hairline colour. --indicator-muted (sand 600) is the quiet dot:
@@ -66,17 +67,19 @@
    to amber); components/scene-kit/scene-colour.test.ts fails on it as a fill. */
 :root,
 [data-theme="welabs"] {
-  --background: #faf5ea;
-  /* The one surface lighter than the cream: a selected row rises to it */
-  --surface-raised: #ffffff;
-  --popover: #faf5ea;
+  /* Operator (2026-10-22): the page is a light cream, lighter than the Domus #faf5ea (approved on 5178, 2026-10-19) */
+  --background: #fdf9f1;
+  /* A selected row takes a light amber wash on the cream, never white */
+  --surface-raised: color-mix(in srgb, #ffb020 10%, #fdf9f1);
+  --popover: #fdf9f1;
   --card: #f3ecdd;
   --secondary: color-mix(in srgb, #1c1a16 6%, #f3ecdd);
   --muted: #e2d8c3;
   --accent: #e2d8c3;
   --border: #e2d8c3;
   --edge-subtle: var(--border);
-  --input: #827968;
+  /* The field edge at rest (sand 300) and its fill and hover edge: the CONTROLES block below */
+  --input: #d4c7ab;
   --indicator-muted: #827968;
   --muted-foreground: #625b4e;
 }
@@ -84,6 +87,47 @@
    TypingDots), which no stylesheet rule outranks without !important: the dots follow the colour of their slot */
 [data-slot="typing-dots"] {
   color: var(--indicator-muted);
+}
+
+/* CONTROLES: CAMPO E BOTÃO SECUNDÁRIO */
+/* Operator (2026-10-22): the 1 px sand 600 edge of every field and the ink-at-30 % outline of the secondary buttons
+   read as legacy. One look for every control of the site, decided here and applied by the site primitives of
+   components/lib/ui.tsx (ActionButton, IconButton, TextField, RowButton), never per call site:
+   - field: a white well (--field) with a sand 300 hairline at rest (--input, one step above the sand 200 layout line,
+     so a control edge never reads as a divider), the sand 600 edge on hover (--input-hover) and the site's one focus
+     ring around the whole field. At rest the edge is 1.59:1 on the page and 1.67:1 on the white fill, under the 3:1 of
+     WCAG 1.4.11 on purpose: the field is identified by its required leading icon and its text (sand 700, 6.72:1 on the
+     white fill), and the states that matter keep 3:1 (hover edge 4.30:1, focus ring of ink 16.54:1 on the page);
+   - secondary button: the lib's `soft` appearance as it ships (ink at 10 %, 1.22:1 fill on the page, ink at 22 % on
+     hover), no edge; the label (13.57:1) and the required icon carry the affordance, as 1.4.11 allows for a button
+     with visible text, and focus is the site's ring (16.54:1).
+   --input is also the lib's edge of Checkbox, Switch, Radio and Slider; the site renders none of them from the lib (its
+   choices are the native state machine of the plays), so the lighter edge reaches fields only. */
+:root,
+[data-theme="welabs"] {
+  --field: #ffffff;
+  --input-hover: #827968;
+}
+/* The lib paints the field transparent (fieldSurfaceClasses in its dist): the well takes --field, except while disabled
+   (the lib's input/50 wash). Unlayered, so it outranks the lib's layered utilities without !important. */
+[data-slot="input-group"]:not(:has(:disabled)),
+[data-slot="input"]:not(:disabled) {
+  background-color: var(--field);
+}
+/* Focus: the site's one ring (app/globals.css :focus-visible, a gap in the page colour then 2 px of ink) goes on the
+   whole field, not on the text control inside it, so a group never shows two rings */
+[data-slot="input-group-control"]:focus-visible {
+  box-shadow: none;
+}
+[data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible) {
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--foreground);
+}
+/* The edge deepens on hover only: focus keeps the lib's transparent edge under the ring, an invalid field its red edge */
+[data-slot="input-group"]:hover:not(:focus-within, :has(:disabled, [aria-invalid="true"])),
+[data-slot="input"]:hover:not(:focus, :disabled, [aria-invalid="true"]) {
+  border-color: var(--input-hover);
 }
 
 /* CAMADA DO SITE SOBRE A MARCA WELABS */

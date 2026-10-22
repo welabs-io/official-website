@@ -4,7 +4,8 @@
 // human take (the same `take` a scene control calls). The lab is a workbench, so the toolbar is allowed here and only
 // here (the site has no pause or replay control: scripts/check-portfolio.mjs).
 import type { ComponentType } from "react";
-import { Button } from "@/components/lib/ui";
+import { MousePointerClick, RotateCcw } from "lucide-react";
+import { ActionButton } from "@/components/lib/ui";
 import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
@@ -34,18 +35,16 @@ export function LabStage({ id }: { id: SceneId }) {
     <div className={k.stage}>
       <div className={k.toolbar} data-theme="welabs">
         <span className={k.name}>{id}</span>
-        <Button size="sm" variant="neutral" appearance="outline" onClick={timeline.restart}>
+        <ActionButton icon={<RotateCcw />} onClick={timeline.restart}>
           Recomeçar
-        </Button>
-        <Button
-          size="sm"
-          variant="neutral"
-          appearance="outline"
+        </ActionButton>
+        <ActionButton
+          icon={<MousePointerClick />}
           data-lab="take"
           onClick={() => timeline.take(entry.takeFrom)}
         >
           Simular gesto
-        </Button>
+        </ActionButton>
       </div>
       <Component timeline={timeline} />
     </div>

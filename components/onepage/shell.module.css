@@ -21,7 +21,8 @@
      band that stands apart is a deeper cream (sand 100 over the floor); highlight, selected and chips stay sand 100
      (--surface-accent). Before v3 the floor was white, the band a neutral grey and every card had a shadow, so nothing
      stood apart. Components read these names; none carries its own colour. */
-  --page: #faf5ea;
+  /* The floor follows the single theme token (app/lib.css --background) */
+  --page: var(--background, #fdf9f1);
   --surface: #ffffff;
   /* Sand 100 at 55 % over the floor, written as its sRGB result (a color-mix computes to oklch(), which the contrast
      readers of the specs do not parse) */
@@ -401,34 +402,10 @@
   margin-left: var(--sp-1);
 }
 @media (max-width: 860px) {
-  /* v3 (F2): the lib's Button paints the control (44 px, the 10 px control radius, the sand edge); here only shown */
+  /* The site's IconButton paints the control (44 px, the 10 px control radius, the soft fill, the Menu/X icon); here
+     only shown */
   .menuButton {
     display: inline-flex;
-  }
-  /* Three bars drawn by one element and its two pseudo-elements */
-  .burger,
-  .burger::before,
-  .burger::after {
-    display: block;
-    width: 18px;
-    height: 2px;
-    border-radius: 1px;
-    background: currentcolor;
-  }
-  .burger {
-    position: relative;
-  }
-  .burger::before,
-  .burger::after {
-    content: "";
-    position: absolute;
-    left: 0;
-  }
-  .burger::before {
-    top: -6px;
-  }
-  .burger::after {
-    top: 6px;
   }
   .nav {
     position: absolute;

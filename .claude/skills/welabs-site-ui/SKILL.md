@@ -52,7 +52,8 @@ Esta é a paleta de tudo que a lib pinta (cenas do kit, bloco do Domus). A escal
 | Página, popover, papel de trabalho | `--background`, `--popover` | creme 50 `#faf5ea` |
 | Cartão, casca da janela (barra, painel lateral) | `--card` | areia 100 `#f3ecdd` |
 | Linha fina, anel | `--border`, `--edge-subtle` (e `--muted`/`--accent`, que a lib usa como fundo de hover) | areia 200 `#e2d8c3` |
-| Borda de controle (3:1) | `--input` | areia 600 `#827968` |
+| Borda de campo em repouso / no hover | `--input` / `--input-hover` | areia 300 `#d4c7ab` / areia 600 `#827968` |
+| Fundo de campo | `--field` | branco `#ffffff` |
 | Ponto discreto (status em repouso, digitação) | `--indicator-muted` | areia 600 `#827968` |
 | Texto e ícone de segundo plano | `--muted-foreground` | areia 700 `#625b4e` |
 | Tinta (texto, ícone sobre âmbar) | `--foreground` | `#1c1a16` |
@@ -75,16 +76,33 @@ Decisões medidas na cena do Relloo em 22/10, com contraste e motivo item a item
   - `--primary` só no que está chegando agora, uma linha por vez, e só como sinal pequeno: barra à esquerda de 3 a 4 px, ponto ou marca do ícone;
   - linha ou chip **nunca** é preenchido com `--primary` (decisão do operador): o item ativo fica em `--background`, com texto em tinta e barra âmbar;
   - `--primary-soft` no que já chegou (marca, chip e selo cheios, sem contorno).
-- **Linha clicável feita com `Button` `ghost` da lib:**
-  - o hover da lib é tinta a 18 %, onde a areia 700 cai para cerca de 3,9:1, então hover e pressionado passam para `--background`;
+- **Linha clicável (`RowButton`, o `ghost` da lib):**
+  - o hover da lib é tinta a 18 %, onde a areia 700 cai para cerca de 3,9:1, então hover, pressionado e ativo passam para `--surface-raised`;
   - a barra âmbar é `background-image`, nunca `box-shadow`, porque o `box-shadow` apaga o anel de foco da lib.
 - **Bolhas:**
   - recebida: `--card` com anel `--border` e texto em tinta;
   - recebida chegando: anel `--primary`;
   - enviada: `--secondary`, sem anel e com texto em tinta;
   - evento do sistema ou do registro: sem fundo, com anel `--border` e texto `--muted-foreground`.
-- **Controle inerte** (compositor de cena): botão `appearance="soft"`, nunca `solid` em tinta, para não virar a maior massa escura da janela.
+- **Controle inerte** (compositor de cena): a ação do `TextField` já é `soft`, nunca `solid` em tinta, para não virar a maior massa escura da janela.
 - **Contraste medido:** texto de segundo plano a 5,71:1 na casca e 6,18:1 no papel; ponto discreto a 3,66:1; tinta sobre âmbar a 9,50:1. Pelo mesmo motivo, a areia 500 não serve para ponto: dá 2,42:1 sobre `--card`.
+
+### Controles
+
+Decisão do operador de 22/10: o contorno escuro de 1 px nos campos e o `outline` dos botões secundários pareciam legado. Um ponto só de mudança, sem estilo por chamada.
+
+- **Primitivas** (`components/lib/ui.tsx`), as únicas portas para botão e campo:
+  - `ActionButton`: ícone + texto. `emphasis` é `secondary` (padrão, `soft` da lib), `primary` (âmbar `solid`) ou `quiet` (`ghost`);
+  - `IconButton`: só ícone, com `label` obrigatório como nome acessível;
+  - `RowButton`: linha de lista em largura total, com o ícone dentro de uma marca que a cena pinta por estado (`markClassName`);
+  - `TextField`: ícone à esquerda obrigatório, ação de ícone opcional à direita (`action`), `label` opcional (o `Field` da lib) e `size` `sm`/`md`.
+- **Regra do ícone:** todo botão e todo campo levam ícone, e a prop `icon` é obrigatória, recebida como elemento (`icon={<RotateCcw />}`), para que um Server Component possa passá-lo. O padrão é `lucide-react`; as cenas antigas (`components/scenes`, `components/plays`, a casa do Domus) seguem com o `Glyph` desenhado, para uma cena não misturar duas famílias. A lib centra o ícone no texto: medido 0,5 px nos botões e 0 px nos campos, em 1440 e em 390.
+- **Tokens de borda** (`app/lib.css`, bloco CONTROLES):
+  - campo: fundo `--field` branco, linha `--input` areia 300 em repouso (1,59:1 no papel), `--input-hover` areia 600 no hover (4,30:1) e o anel único do site no foco, em volta do campo inteiro (tinta, 16,54:1);
+  - a borda em repouso fica abaixo de 3:1 de propósito: quem identifica o campo é o ícone e o texto (areia 700, 6,72:1);
+  - botão secundário: o `soft` da lib sem mudança (tinta a 10 %, sem borda), e o rótulo (13,57:1) e o ícone carregam a afordância.
+- `--input` também é a borda de Checkbox, Switch, Radio e Slider da lib; o site não usa nenhum deles da lib.
+- **Teste:** `components/lib/ui-boundary.test.ts` reprova `Button`, `Input`, `InputGroup*` ou `Field` da lib fora da fronteira, primitiva sem `icon=`, e `className` com `bg-`/`border-`/`ring-`/`shadow-`/`outline-` numa chamada. A cena só pinta **estado** (âmbar de chegou ou ativo), nunca a borda ou o fundo do controle.
 
 O âmbar só sinaliza que algo **aconteceu** ou está acontecendo: linha escrita, foco, item ativo. Não serve para enfeitar chip. Texto esmaecido por `opacity` está fora do padrão: o que fica em segundo plano muda de cor (tinta → `--muted-foreground`), para não cair abaixo de AA.
 

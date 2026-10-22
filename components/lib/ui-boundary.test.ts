@@ -114,15 +114,17 @@ describe("UI primitives come from the lib", () => {
 const PRIMITIVE_CLASS =
   /^(?:badge|chip|pill|tag|card|button|btn|input|field|table)(?:[A-Z]\w*)?$|[a-z](?:Badge|Chip|Pill|Tag|Card|Button|Btn|Input|Field|Table)$/;
 
-// The names the boundary exports: the components of the lib the site uses
-const LIB_NAMES = BOUNDARY.flatMap((f) =>
-  [...stripJs(read(f)).matchAll(/export\s*\{([^}]*)\}/g)].flatMap((m) =>
+// The names the boundary exports: the components of the lib the site uses, and the site primitives built on them
+// (`export function ActionButton`)
+const LIB_NAMES = BOUNDARY.flatMap((f) => [
+  ...[...stripJs(read(f)).matchAll(/export\s*\{([^}]*)\}/g)].flatMap((m) =>
     m[1]
       .split(",")
       .map((s) => s.trim().split(/\s+as\s+/).pop()!)
-      .filter(Boolean),
+      .filter((s) => s && !s.startsWith("type ")),
   ),
-);
+  ...[...stripJs(read(f)).matchAll(/export\s+function\s+(\w+)/g)].map((m) => m[1]),
+]);
 
 // The opening tag that starts at `at`, up to its closing `>` outside of braces (an arrow `=>` inside {} is skipped)
 const openingTag = (src: string, at: number) => {
@@ -229,5 +231,87 @@ describe("one theme-mapping layer", () => {
       ].map((m) => `${f}: ${m[0]}`);
     });
     expect(found).toEqual([]);
+  });
+});
+
+// CONTROLES DO SITE
+// Every button and field of the site goes through the control primitives of components/lib/ui.tsx (operator,
+// 2026-10-22): one point of change for their look (app/lib.css CONTROLES) and a required icon on each. A raw lib
+// Button/Input/InputGroup/Field outside the boundary, a primitive without its icon, or a call site that paints the
+// control's edge or fill by utility class fails here.
+const PRIMITIVES = ["ActionButton", "IconButton", "RowButton", "TextField"];
+const RAW_CONTROLS = [
+  "Button",
+  "Input",
+  "InputGroup",
+  "InputGroupAddon",
+  "InputGroupButton",
+  "InputGroupInput",
+  "InputGroupText",
+  "InputGroupTextarea",
+  "Field",
+];
+const UI = "components/lib/ui.tsx";
+const CALL_SITES = SOURCES.filter((f) => /\.tsx$/.test(f) && !f.startsWith("components/lib/"));
+
+describe("site controls go through the primitives", () => {
+  it("the boundary re-exports no raw lib control", () => {
+    const exported = [...stripJs(read(UI)).matchAll(/export\s*\{([^}]*)\}/g)].flatMap((m) =>
+      m[1].split(",").map((s) => s.trim().split(/\s+as\s+/).pop()!),
+    );
+    expect(exported.filter((n) => RAW_CONTROLS.includes(n))).toEqual([]);
+  });
+
+  it("no call site imports a raw lib control", () => {
+    const found = CALL_SITES.flatMap((f) =>
+      [...stripJs(read(f)).matchAll(/import\s*\{([^}]*)\}\s*from\s*["']@\/components\/lib\/[^"']+["']/g)].flatMap(
+        (m) =>
+          m[1]
+            .split(",")
+            .map((s) => s.trim().split(/\s+as\s+/)[0])
+            .filter((n) => RAW_CONTROLS.includes(n))
+            .map((n) => `${f}: ${n}`),
+      ),
+    );
+    expect(found).toEqual([]);
+  });
+
+  it("every primitive requires its icon", () => {
+    const src = stripJs(read(UI));
+    for (const name of PRIMITIVES) {
+      const at = src.search(new RegExp(`export function ${name}\\b`));
+      expect(at, name).toBeGreaterThan(-1);
+      // The props type of the function, up to its body
+      const signature = src.slice(at, src.indexOf(") {", at));
+      expect(signature, name).toMatch(/\bicon: ControlIcon;/);
+    }
+  });
+
+  it("every button and field of the site carries an icon, and no call site paints its edge or fill", () => {
+    const tag = new RegExp(`<(${PRIMITIVES.join("|")})\\b`, "g");
+    const missing: string[] = [];
+    const painted: string[] = [];
+    let seen = 0;
+    for (const f of CALL_SITES) {
+      const src = stripJs(read(f));
+      for (const m of src.matchAll(tag)) {
+        seen++;
+        const open = openingTag(src, m.index);
+        // `icon=` at the top level of the tag (an action's `icon:` inside braces does not count)
+        let depth = 0;
+        let top = "";
+        for (const ch of open) {
+          if (ch === "{") depth++;
+          else if (ch === "}") depth--;
+          else if (depth === 0) top += ch;
+        }
+        if (!/\sicon=/.test(top)) missing.push(`${f}: <${m[1]}>`);
+        for (const c of open.matchAll(/className="([^"]*)"/g))
+          if (/(?:^|\s)(?:bg|border|ring|shadow|outline)-/.test(c[1])) painted.push(`${f}: <${m[1]}> ${c[1]}`);
+      }
+    }
+    expect(seen).toBeGreaterThan(0);
+    expect(missing).toEqual([]);
+    expect(painted).toEqual([]);
   });
 });

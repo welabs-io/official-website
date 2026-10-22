@@ -106,12 +106,21 @@ for (const viewport of VIEWPORTS)
         return {
           floor: cs("#top").backgroundColor,
           header: cs("header").backgroundColor,
+          // The single theme token of the floor (app/lib.css --background), resolved as a colour
+          token: (() => {
+            const probe = document.createElement("i");
+            probe.style.backgroundColor = "var(--background)";
+            document.body.append(probe);
+            const value = getComputedStyle(probe).backgroundColor;
+            probe.remove();
+            return value;
+          })(),
           card: card.backgroundColor,
           cardShadow: card.boxShadow,
         };
       });
-      expect(planes.floor).toBe("rgb(250, 245, 234)");
-      expect(planes.header).toBe("rgb(250, 245, 234)");
+      expect(planes.floor).toBe(planes.token);
+      expect(planes.header).toBe(planes.token);
       expect(planes.card).toBe("rgb(255, 255, 255)");
       expect(planes.cardShadow).toBe("none");
     });

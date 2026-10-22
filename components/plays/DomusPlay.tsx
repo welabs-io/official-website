@@ -7,17 +7,13 @@
 import {
   Badge,
   Card,
-  Field,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+  TextField,
 } from "@/components/lib/ui";
 import { DragToCheck } from "@/components/template/DragToCheck";
 import { Glyph, GLYPHS } from "@/components/scenes/icons";
@@ -41,6 +37,8 @@ const KIND_GLYPH: Record<string, string> = {
   status: GLYPHS.tag,
   text: GLYPHS.pen,
 };
+// The leading icon of the two base fields of the form, in the order of DOMUS_PLAY.base (Pedido, Motivo)
+const BASE_GLYPH = [GLYPHS.bag, GLYPHS.chat];
 
 // The status of a record: open (the amber of what is new), in review (sand) and done (success), the lib's Badge
 const STATUS_TONE = [
@@ -89,7 +87,7 @@ export function DomusPlay() {
     </>
   );
 
-  // v3 (F3): the screen of the new record is the lib's (Field and Input in the form, Table in the list, Badge for the
+  // v3 (F3): the screen of the new record is the lib's (the site's TextField in the form, Table in the list, Badge for the
   // status, Card for the flow of the approval), under its welabs theme; the form is a drawing of a screen, its fields
   // read-only and out of the tab order (not inert: it is the drop target of the dragged kinds). Each part that belongs
   // to a state keeps its `data-ev` (the CSS state machine of domus.module.css shows it).
@@ -97,11 +95,14 @@ export function DomusPlay() {
     <div className={d.screen} data-theme="welabs">
       <div id="dp-form" className={d.form}>
         <p className={d.paneTitle}>{D.form}</p>
-        {D.base.map((name) => (
+        {D.base.map((name, i) => (
           <div key={name} className={d.slot}>
-            <Field label={name}>
-              <Input readOnly tabIndex={-1} />
-            </Field>
+            <TextField
+              label={name}
+              icon={<Glyph d={BASE_GLYPH[i]} size={16} />}
+              readOnly
+              tabIndex={-1}
+            />
           </div>
         ))}
         {D.fields.map((f) => (
@@ -112,14 +113,13 @@ export function DomusPlay() {
             data-kind={f.id}
             style={at(0)}
           >
-            <Field label={f.name}>
-              <InputGroup>
-                <InputGroupInput readOnly tabIndex={-1} aria-label={f.name} />
-                <InputGroupAddon align="inline-end">
-                  <Glyph d={KIND_GLYPH[f.id]} size={14} />
-                </InputGroupAddon>
-              </InputGroup>
-            </Field>
+            {/* The kind's glyph leads the field, the same glyph as its palette chip */}
+            <TextField
+              label={f.name}
+              icon={<Glyph d={KIND_GLYPH[f.id]} size={16} />}
+              readOnly
+              tabIndex={-1}
+            />
           </div>
         ))}
       </div>

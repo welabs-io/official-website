@@ -3,7 +3,7 @@
 // (v2.module.css); the only client piece is the drag shortcut of the message (DragToCheck). Every interaction works
 // with no script and with a keyboard (a checkbox and its visible label), and under reduced motion shows its final frame.
 import Link from "next/link";
-import { Badge, Card, CardContent, Field, Input } from "@/components/lib/ui";
+import { Badge, Card, CardContent, TextField } from "@/components/lib/ui";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import shell from "@/components/onepage/shell.module.css";
 import { Glyph, GLYPHS, ROOM_GLYPHS } from "@/components/scenes/icons";
@@ -40,6 +40,8 @@ const ROOM_D: Record<string, string> = {
   box: ROOM_GLYPHS.Estoque,
   coin: ROOM_GLYPHS.Financeiro,
 };
+// The leading icon of each field of the new module's screen, in the order of HOME_DOMUS.bornFields (Local, Data, Foto)
+const BORN_FIELD_GLYPH = [GLYPHS.pin, GLYPHS.calendar, GLYPHS.image];
 
 // ABERTURA
 // Title with the word that turns (M1), one line, one button, and the stage of the five products that follows the word
@@ -219,7 +221,7 @@ export function HomeMessage() {
 // Pilot of @imagineapps-team/react 0.18.0 (2026-10-21): the house with a roof became the rounded square of the Domus
 // logo (public/brands/welabs/products/domus-light.svg: ring and amber square), a bit smaller, holding the same modules.
 // The new module plays in a loop by itself: the dashed slot becomes "Vistorias" (its icon is the amber square of the
-// logo) and its screen opens (the lib's Card, Field and Input), then everything resets and the loop goes on.
+// logo) and its screen opens (the lib's Card and the site's TextField, each with its icon), then everything resets and the loop goes on.
 // "+ Novo módulo" (a label over the checkbox) restarts the sequence from its first frame; it plays to the end, holds,
 // resets and keeps looping, so no click leaves the block frozen. The tags, the seal and the screen are the real
 // components of the lib (components/lib/ui.tsx is their client boundary), painted by its welabs theme (app/lib.css,
@@ -306,19 +308,17 @@ function DomusHouseBody({ id }: { id: string }) {
               <Card size="sm" className={house.screen}>
                 <CardContent className={house.fields}>
                   {HOME_DOMUS.bornFields.map((f, i) => (
-                    <Field
+                    <TextField
                       key={f.label}
                       label={f.label}
-                      className={house.field}
-                      style={{ "--i": i } as React.CSSProperties}
-                    >
-                      <Input
-                        readOnly
-                        tabIndex={-1}
-                        value={f.value}
-                        className={house.value}
-                      />
-                    </Field>
+                      icon={<Glyph d={BORN_FIELD_GLYPH[i]} size={16} />}
+                      fieldClassName={house.field}
+                      fieldStyle={{ "--i": i } as React.CSSProperties}
+                      readOnly
+                      tabIndex={-1}
+                      value={f.value}
+                      className={house.value}
+                    />
                   ))}
                 </CardContent>
               </Card>

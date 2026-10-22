@@ -2,9 +2,9 @@
 // CENA DO RELLOO: CANAIS QUE VIRAM UM HISTÓRICO
 // Conversations from four channel categories (Mensagem, E-mail, Voz, Chat do site) arrive one by one and land in ONE
 // conversation history, the record of a contact (STORY.who). No person, name, face, initial or vendor: the channel is
-// its category and the contact is its record id. Built from the lib: SplitView (inbox list + detail), Button rows and
-// chips (the scene controls), AnimatedList (entries arriving), TypingDots, Badge, Separator, InputGroup (composer) and
-// lucide icons. Amber marks only what happened or is active. The continuity (autoplay, loop, human take, off-screen,
+// its category and the contact is its record id. Built from the lib: SplitView (inbox list + detail), the site's control
+// primitives (RowButton rows and ActionButton chips as the scene controls, TextField as the composer), AnimatedList
+// (entries arriving), TypingDots, Badge, Separator and lucide icons. Amber marks only what happened or is active. The continuity (autoplay, loop, human take, off-screen,
 // reduced motion) is the kit's (components/scene-kit/Scene.tsx); this file only renders from `scene`.
 import {
   Check,
@@ -14,17 +14,11 @@ import {
   MessagesSquare,
   Package,
   Phone,
+  Reply,
   SendHorizontal,
   type LucideIcon,
 } from "lucide-react";
-import {
-  Badge,
-  Button,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/lib/ui";
+import { ActionButton, Badge, RowButton, TextField } from "@/components/lib/ui";
 import {
   AnimatedList,
   Separator,
@@ -168,17 +162,13 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
             const Icon = ch.icon;
             return (
               <li key={ch.step}>
-                <Button
-                  variant="neutral"
-                  appearance="ghost"
-                  className="h-auto w-full justify-start whitespace-normal rounded-none px-4 py-3 text-left"
+                <RowButton
+                  icon={<Icon strokeWidth={2} />}
+                  markClassName={r.rowMark}
                   data-state={stateOf(scene, ch)}
                   data-channel={ch.step}
                   onClick={() => scene.take(ch.step)}
                 >
-                  <span className={r.rowMark} aria-hidden="true">
-                    <Icon size={16} strokeWidth={2} />
-                  </span>
                   <span className={r.rowText}>
                     <span className={r.rowTop}>
                       <b>{ch.label}</b>
@@ -186,7 +176,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
                     </span>
                     <span className={r.preview}>{ch.preview}</span>
                   </span>
-                </Button>
+                </RowButton>
               </li>
             );
           })}
@@ -216,17 +206,15 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
           {CHANNELS.map((ch) => {
             const Icon = ch.icon;
             return (
-              <Button
+              <ActionButton
                 key={ch.step}
                 size="xs"
-                variant="neutral"
-                appearance="outline"
+                icon={<Icon strokeWidth={2} />}
                 data-state={stateOf(scene, ch)}
                 onClick={() => scene.take(ch.step)}
               >
-                <Icon size={14} strokeWidth={2} aria-hidden="true" />
                 {ch.label}
-              </Button>
+              </ActionButton>
             );
           })}
         </div>
@@ -273,20 +261,14 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
         {/* The composer is inert here: a soft send button, so the darkest mass of the window is not a control the
             scene never uses */}
         <div className={r.composer} aria-hidden="true" inert>
-          <InputGroup>
-            <InputGroupInput readOnly tabIndex={-1} placeholder={COPY.reply} aria-label={COPY.reply} />
-            <InputGroupAddon align="inline-end">
-              <InputGroupButton
-                size="icon-xs"
-                variant="neutral"
-                appearance="soft"
-                tabIndex={-1}
-                aria-label={COPY.send}
-              >
-                <SendHorizontal size={14} strokeWidth={2} />
-              </InputGroupButton>
-            </InputGroupAddon>
-          </InputGroup>
+          <TextField
+            icon={<Reply />}
+            action={{ icon: <SendHorizontal />, label: COPY.send, tabIndex: -1 }}
+            readOnly
+            tabIndex={-1}
+            placeholder={COPY.reply}
+            aria-label={COPY.reply}
+          />
         </div>
       </SplitViewDetail>
     </SplitView>
