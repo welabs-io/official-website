@@ -29,6 +29,7 @@ const ALLOWED: Record<string, string> = {
   "solid|color": "white on the black action (as send|color)",
   "segment|color":
     "the idle options read in the neutral secondary text #55565b (operator decision, 2026-10-22: the preset's sand 700 #625b4e read as graphite)",
+  "segment-item|color": "the idle option's label, the same neutral secondary text (as segment|color)",
   "segment-active|backgroundColor":
     "the chosen option is the black primary with white text (Welabs UI v3 Selection: 'Segmento: trilho stone-100, opção ativa primary'); the lib draws a white pill on the rail",
   "segment-active|color": "white on the black chosen option, as above",

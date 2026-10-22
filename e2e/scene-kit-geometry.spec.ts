@@ -253,7 +253,8 @@ const V3_SCENES: GeoScene[] = [
     header: { actions: false },
     columns: {
       "message, track and record": { selectors: ["[data-message]", "[data-track]", "[data-record]"] },
-      "record fields": { selectors: ["[data-field] > :first-child", "[data-field] > :last-child"] },
+      "record identity and first field": { selectors: ['[data-align="record"]', "[data-field]:first-child"] },
+      "record title and meta": { selectors: ['[data-align="record"] > :last-child > *'] },
     },
     rows: { "track marks": '[data-station] [data-slot="avatar"]', "track names": "[data-station] b" },
   },

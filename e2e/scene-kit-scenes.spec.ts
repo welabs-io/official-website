@@ -70,8 +70,9 @@ const SCENES: Entry[] = [
     figure: /mensagem atravessa/,
     trigger: /^Enviar a mensagem/,
     final: "done",
-    pairs: 6,
-    cycleMs: 8400,
+    // The record's identity on its text block (the track's marks and names are checked by the geometry spec)
+    pairs: 1,
+    cycleMs: 8200,
     handoff: { 1440: ["relloo", "knowly", "magneto", "domus"], 390: ["relloo", "knowly", "magneto", "domus"] },
   },
 ];
