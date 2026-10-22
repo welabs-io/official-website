@@ -54,12 +54,25 @@
   vertical-align: baseline;
 }
 
+/* SUPERFÍCIES CREME DO DOMUS SOBRE O PRESET */
+/* Operator decision (2026-10-22): the lib 0.18.0 moved the light surfaces to white and neutral greys (lib 8a1539e8,
+   2026-10-14); the site keeps the Domus surfaces of the preset it pins (lib 1d34ba5, erpnext/front package.json):
+   cream page and popover, sand card, sand hairline for muted/accent/border, warm input. Override only, no canary. */
+:root,
+[data-theme="welabs"] {
+  --background: #faf5ea;
+  --popover: #faf5ea;
+  --card: #f3ecdd;
+  --secondary: color-mix(in srgb, #1c1a16 6%, #f3ecdd);
+  --muted: #e2d8c3;
+  --accent: #e2d8c3;
+  --border: #e2d8c3;
+  --input: #827968;
+  --muted-foreground: #625b4e;
+}
+
 /* CAMADA DO SITE SOBRE A MARCA WELABS */
-/* Colour: none here. The lib's `welabs` preset paints every role token as-is, exactly as in the Domus front
-   (erpnext/front 8a357993, src/ui-kit/theme/PROVENANCE.md: its layer paints no colour): white background and card,
-   ink #1c1a16, amber primary, neutral greys for muted/secondary/accent, border and input.
-   Operator correction (2026-10-22): the cream/sand mapping of v3 F2 (--background to the cream, the fills to sand 100,
-   --border/--input to the sand hairline and warm border, warm shadows) was an outdated palette and is gone.
+/* Colour: only the surface block above; ink, amber primary and status come from the `welabs` preset as-is.
    Structure: the ERP front's role tokens (front/src/ui-kit/theme/tabela-theme.css: control 44/36 px, 8 px surfaces)
    with the field radius (10 px) as the control radius, since the site uses the lib for fields and badges, not for its
    pill buttons. */
