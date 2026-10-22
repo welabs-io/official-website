@@ -12,6 +12,15 @@
   background: var(--card);
 }
 
+/* Amber budget across a hand-off: a mark that stops being live drops its amber at once, only the one becoming live
+   eases in, so the outgoing and incoming marks never overlap into a fourth piece of amber */
+.split [data-slot="avatar-fallback"] {
+  transition: none;
+}
+.split [data-state="active"] [data-slot="avatar-fallback"] {
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+
 /* BUSCA DA BARRA DA JANELA */
 .search {
   display: block;
@@ -175,7 +184,7 @@
   display: inline-block;
   font-weight: var(--weight-label);
   color: var(--foreground);
-  animation: rise var(--dur-2) var(--ease-out) var(--dur-3) both;
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
 }
 
 /* The Domus StatusLabel: the chrome pill, an 8 px dot, the label at the meta step in ink */
@@ -192,7 +201,7 @@
   line-height: var(--line-micro);
   font-weight: var(--weight-label);
   color: var(--foreground);
-  animation: fade var(--dur-2) var(--ease-out) var(--dur-3) both;
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
 }
 .dot {
   width: var(--dot);
@@ -237,7 +246,7 @@
   font-weight: var(--weight-text);
   font-variant-numeric: tabular-nums;
   color: var(--muted-foreground);
-  animation: rise var(--dur-2) var(--ease-out) var(--dur-3) both;
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
 }
 @media (min-width: 1024px) {
   .chips {
@@ -353,11 +362,11 @@
   padding: 0 var(--sp-3) 0 calc(var(--sp-2) + var(--sp-1) / 2);
   border-radius: var(--r-sm);
   background: var(--muted);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
   font-weight: var(--weight-label);
   color: var(--foreground);
-  animation: fade var(--dur-2) var(--ease-out) var(--dur-3) both;
+  animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
 }
 .origin > svg {
   width: var(--icon-md);
@@ -370,9 +379,11 @@
     transform: translateY(var(--sp-2));
   }
 }
-@keyframes fade {
+/* What updates in place (a count, the status, the chip of origin) never vanishes: it dims and steps up into place */
+@keyframes swap {
   from {
-    opacity: 0;
+    opacity: 0.2;
+    transform: translateY(var(--sp-1));
   }
 }
 @keyframes pop {
