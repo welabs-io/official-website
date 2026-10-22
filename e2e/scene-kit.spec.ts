@@ -63,5 +63,53 @@ test.describe("scene kit: relloo-inbox", () => {
       expect(off.length).toBeGreaterThan(5);
       for (const { name, dy } of off) expect(dy, name).toBeLessThanOrEqual(1);
     });
+
+    // RODADA 2: ALTURA, ORÇAMENTO DE ÂMBAR E CONECTOR
+    // Over one loop (9.3 s), sampled on every animation frame: the window keeps one height (1 px), no frame shows more
+    // than 3 pieces of amber (#ffb020 or a blend more than half way to it, as a fill), and at 1440 every arrival draws
+    // the hand-off trace from its row to its history line while the settled frame draws none
+    test(`one height, at most 3 amber pieces and the hand-off trace over a loop at ${width}`, async ({ page }) => {
+      test.setTimeout(40_000);
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(LAB);
+      await page.getByRole("figure", { name: /Relloo/ }).scrollIntoViewIfNeeded();
+      await page.getByRole("button", { name: "Recomeçar" }).click();
+      const seen = await page.evaluate(async () => {
+        const figure = document.querySelector('[role="figure"]')!;
+        const stage = figure.querySelector("[data-scene]")!;
+        const live = stage.lastElementChild!;
+        const amber = (c: string) => {
+          const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
+          if (!m) return false;
+          const [r, g, b] = m.slice(1, 4).map(Number);
+          const a = m[4] === undefined ? 1 : Number(m[4]);
+          return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
+        };
+        const heights = new Set<number>();
+        const ambers: Record<string, number> = {};
+        const traced: Record<string, boolean> = {};
+        const t0 = performance.now();
+        while (performance.now() - t0 < 9500) {
+          await new Promise((r) => requestAnimationFrame(r));
+          const step = stage.getAttribute("data-step")!;
+          heights.add(Math.round(figure.getBoundingClientRect().height));
+          const n = [...live.querySelectorAll("*")].filter((el) => {
+            const cs = getComputedStyle(el);
+            return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
+          }).length;
+          ambers[step] = Math.max(ambers[step] ?? 0, n);
+          traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+        }
+        return { heights: [...heights], ambers, traced };
+      });
+      expect(Math.max(...seen.heights) - Math.min(...seen.heights), seen.heights.join(",")).toBeLessThanOrEqual(1);
+      for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
+      expect(seen.ambers.merged, "the settled frame keeps only the live status dot").toBe(1);
+      if (width === 1440) {
+        for (const step of ["message", "email", "voice", "typing", "site"])
+          expect(seen.traced[step], `hand-off trace at ${step}`).toBe(true);
+      }
+      expect(seen.traced.merged ?? false, "no trace on the settled frame").toBe(false);
+    });
   }
 });

@@ -264,7 +264,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
                 onClick={() => scene.take(ch.step)}
               >
                 {ch.label}
-                <span key={state} className={r.chipCount}>
+                <span key={state} className={r.tally}>
                   {state === "waiting" ? 0 : 1}
                 </span>
               </ActionButton>

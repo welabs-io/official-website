@@ -241,7 +241,7 @@
   background-color: var(--selected);
   box-shadow: none;
 }
-.chipCount {
+.tally {
   display: inline-block;
   font-weight: var(--weight-text);
   font-variant-numeric: tabular-nums;
