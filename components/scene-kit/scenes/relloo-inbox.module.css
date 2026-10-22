@@ -348,12 +348,20 @@
     align-items: flex-start;
     gap: var(--sp-3);
   }
-  /* On a phone the title and its status keep one line with room to spare (a 3 px margin wrapped the status under
-     other font metrics): the identity steps down to the lib's lg mark, the title to the title step (20/28) and the
-     gap to the status to 8 px; e2e/scene-kit-geometry.spec.ts holds the status on the title's line */
+  /* On a phone the title and its status keep one line with at least 24 px to spare in any engine (a 3 px, then a
+     15.8 px margin still wrapped or nearly wrapped it): the identity steps down to the Domus LogoThumb `sm` (32 px)
+     with 8 px to the text, the title to the title step (20/28) and the gap to the status to 8 px;
+     e2e/scene-kit-geometry.spec.ts holds the status on the title's line with that room */
+  .recordMain {
+    gap: var(--sp-2);
+  }
   .identity {
-    width: var(--mark-lg);
-    height: var(--mark-lg);
+    width: var(--mark-md);
+    height: var(--mark-md);
+  }
+  .identity > svg {
+    width: var(--icon-md);
+    height: var(--icon-md);
   }
   .recordTop {
     column-gap: var(--sp-2);

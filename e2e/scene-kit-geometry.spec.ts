@@ -168,10 +168,10 @@ for (const width of [1440, 390]) {
       const { identity, block, title, status, meta, actions } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
       expect(Math.abs(identity.mid - block.mid), `identity ${identity.mid} vs text block ${block.mid}`).toBeLessThanOrEqual(1);
       expect(Math.abs(status.mid - title.mid), `status ${status.mid} vs title ${title.mid}`).toBeLessThanOrEqual(1);
-      // The status keeps its line with room to spare (16 px before the actions, or before the header's edge on a phone),
-      // so other font metrics do not wrap it under the title
+      // The status keeps its line with room to spare (24 px before the actions, or before the header's edge on a phone),
+      // so the font metrics of another engine do not wrap it under the title
       const limit = width >= 640 ? actions.left : h.inner;
-      expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(16);
+      expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(24);
       expect(block.left).toBeLessThan(status.left);
       expect(Math.abs(meta.left - title.left), `meta ${meta.left} vs title ${title.left}`).toBeLessThanOrEqual(1);
       // Below sm the Domus header wraps its actions under the title block instead of squeezing it
