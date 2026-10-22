@@ -107,6 +107,49 @@ async function columns(page: Page) {
   });
 }
 
+// CABEÇALHO NO PADRÃO DetailHeader DO DOMUS
+// The Domus DetailHeader (erpnext front ui-kit/components/detail-header.tsx): `items-center` on the identity and the
+// text block, so the identity's centre is the block's; the status sits on the title's line; the meta starts on the
+// title's left edge; the actions are centred on the header's line, which is the identity's (wrapped under it below sm)
+async function expectDetailHeader(page: Page, id: string, width: number) {
+  const h = await page.evaluate((sceneId) => {
+    const live = document.querySelector(`[data-scene="${sceneId}"] > :last-child`)!;
+    const r = (k: string) => {
+      const el = live.querySelector(`[data-header="${k}"]`);
+      if (!el) return null;
+      const b = el.getBoundingClientRect();
+      return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, mid: b.top + b.height / 2 };
+    };
+    // The header's own box, inside its padding: the room a phone gives the title line
+    const head = live.querySelector('[data-header="actions"]')!.parentElement!;
+    const hs = getComputedStyle(head);
+    const inner = head.getBoundingClientRect().right - parseFloat(hs.paddingRight);
+    return {
+      identity: r("identity"),
+      block: r("block"),
+      title: r("title"),
+      status: r("status"),
+      meta: r("meta"),
+      actions: r("actions"),
+      inner,
+    };
+  }, id);
+  for (const [k, v] of Object.entries(h)) expect(v, `header part ${k}`).not.toBeNull();
+  const { identity, block, title, status, meta, actions } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
+  expect(Math.abs(identity.mid - block.mid), `identity ${identity.mid} vs text block ${block.mid}`).toBeLessThanOrEqual(1);
+  expect(Math.abs(status.mid - title.mid), `status ${status.mid} vs title ${title.mid}`).toBeLessThanOrEqual(1);
+  // The status keeps its line with room to spare (24 px before the actions, or before the header's edge on a phone),
+  // so the font metrics of another engine do not wrap it under the title
+  const limit = width >= 640 ? actions.left : h.inner;
+  expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(24);
+  expect(block.left).toBeLessThan(status.left);
+  expect(Math.abs(meta.left - title.left), `meta ${meta.left} vs title ${title.left}`).toBeLessThanOrEqual(1);
+  // Below sm the Domus header wraps its actions under the title block instead of squeezing it
+  if (width >= 640)
+    expect(Math.abs(actions.mid - identity.mid), `actions ${actions.mid} vs identity ${identity.mid}`).toBeLessThanOrEqual(1);
+  else expect(actions.top, "actions under the title block").toBeGreaterThanOrEqual(identity.bottom);
+}
+
 for (const width of [1440, 390]) {
   test.describe(`relloo geometry at ${width}`, () => {
     test.beforeEach(async ({ page }) => {
@@ -138,46 +181,8 @@ for (const width of [1440, 390]) {
       for (const { name, dy } of pairs) expect(dy, name).toBeLessThanOrEqual(1);
     });
 
-    // The Domus DetailHeader (erpnext front ui-kit/components/detail-header.tsx): `items-center` on the identity and the
-    // text block, so the identity's centre is the block's; the status sits on the title's line; the meta starts on the
-    // title's left edge; the actions are centred on the header's line, which is the identity's (wrapped under it below sm)
     test("the record header keeps the Domus DetailHeader geometry", async ({ page }) => {
-      const h = await page.evaluate(() => {
-        const live = document.querySelector('[data-scene="relloo-inbox"] > :last-child')!;
-        const r = (k: string) => {
-          const el = live.querySelector(`[data-header="${k}"]`);
-          if (!el) return null;
-          const b = el.getBoundingClientRect();
-          return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, mid: b.top + b.height / 2 };
-        };
-        // The header's own box, inside its padding: the room a phone gives the title line
-        const head = live.querySelector('[data-header="actions"]')!.parentElement!;
-        const hs = getComputedStyle(head);
-        const inner = head.getBoundingClientRect().right - parseFloat(hs.paddingRight);
-        return {
-          identity: r("identity"),
-          block: r("block"),
-          title: r("title"),
-          status: r("status"),
-          meta: r("meta"),
-          actions: r("actions"),
-          inner,
-        };
-      });
-      for (const [k, v] of Object.entries(h)) expect(v, `header part ${k}`).not.toBeNull();
-      const { identity, block, title, status, meta, actions } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
-      expect(Math.abs(identity.mid - block.mid), `identity ${identity.mid} vs text block ${block.mid}`).toBeLessThanOrEqual(1);
-      expect(Math.abs(status.mid - title.mid), `status ${status.mid} vs title ${title.mid}`).toBeLessThanOrEqual(1);
-      // The status keeps its line with room to spare (24 px before the actions, or before the header's edge on a phone),
-      // so the font metrics of another engine do not wrap it under the title
-      const limit = width >= 640 ? actions.left : h.inner;
-      expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(24);
-      expect(block.left).toBeLessThan(status.left);
-      expect(Math.abs(meta.left - title.left), `meta ${meta.left} vs title ${title.left}`).toBeLessThanOrEqual(1);
-      // Below sm the Domus header wraps its actions under the title block instead of squeezing it
-      if (width >= 640)
-        expect(Math.abs(actions.mid - identity.mid), `actions ${actions.mid} vs identity ${identity.mid}`).toBeLessThanOrEqual(1);
-      else expect(actions.top, "actions under the title block").toBeGreaterThanOrEqual(identity.bottom);
+      await expectDetailHeader(page, "relloo-inbox", width);
     });
 
     test("the columns of each list share their left edge", async ({ page }) => {
@@ -189,4 +194,102 @@ for (const width of [1440, 390]) {
       }
     });
   });
+}
+
+// GEOMETRIA DAS CENAS V3 DO DOMUS E DO MAGNETO
+// The same contract on the scenes rebuilt after the Relloo pilot (brief-v3-scenes, 2026-10-22): every field centres its
+// pieces with equal insets, every icon of a control, chip or status sits on its text line, the record header is the
+// Domus DetailHeader with 24 px of room after the status, and the columns of each list share their left edge. The
+// columns are named selectors inside the live layer; a column with `wide` is measured only from that width up.
+type Columns = Record<string, { sel: string[]; wide?: number }>;
+const V3: { id: string; figure: RegExp; fields: [number, number]; pairs: [number, number]; columns: Columns }[] = [
+  {
+    id: "domus-modules",
+    figure: /^Domus/,
+    // The fields of the new module (3 at 1440, 3 on a phone in 2 + 1)
+    fields: [3, 3],
+    // "Novo módulo" (header action), the status, and the lab's two toolbar buttons
+    pairs: [4, 4],
+    columns: {
+      // The name of each floor, its first module and the new module's card start on the ring's inner edge
+      "floor heads and first cards": { sel: ["[data-floor] > :first-child", "[data-floor] li:first-child", "[data-born]"] },
+      // Inside the new module: its mark and its first field
+      "new module mark and fields": { sel: ["[data-born-head] > :first-child", "[data-born-fields] > :first-child"] },
+      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
+    },
+  },
+  {
+    id: "magneto-approval",
+    figure: /^Magneto/,
+    // No field: the scene is steps and a record
+    fields: [0, 0],
+    // The two value chips, the status, and the lab's two toolbar buttons
+    pairs: [5, 5],
+    columns: {
+      "step marks": { sel: ["[data-step] > :first-child"] },
+      "step titles and metas": { sel: ["[data-step] > :nth-child(2) > *"] },
+      "order pane": { sel: ['[data-pane="order"] > *'] },
+      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
+    },
+  },
+];
+
+for (const s of V3) {
+  for (const width of [1440, 390]) {
+    test.describe(`${s.id} geometry at ${width}`, () => {
+      test.beforeEach(async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await page.goto(`/lab/scenes/${s.id}`);
+        await page.getByRole("figure", { name: s.figure }).waitFor();
+      });
+
+      test("every piece of a field is centred, with equal leading and trailing insets", async ({ page }) => {
+        const all = await fields(page);
+        expect(all.length).toBeGreaterThanOrEqual(s.fields[width === 1440 ? 0 : 1]);
+        for (const f of all) {
+          expect(f.pieces.length, `${f.name}: pieces`).toBeGreaterThanOrEqual(2);
+          for (const p of f.pieces) {
+            const above = p.top - f.inner.top;
+            const below = f.inner.bottom - p.bottom;
+            expect(Math.abs(above - below), `${f.name} / ${p.name}: top ${above.toFixed(1)} bottom ${below.toFixed(1)}`).toBeLessThanOrEqual(1);
+          }
+          const lead = f.pieces[0].left - f.inner.left;
+          const trail = f.inner.right - f.pieces[f.pieces.length - 1].right;
+          expect(Math.abs(lead - trail), `${f.name}: leading ${lead.toFixed(1)} trailing ${trail.toFixed(1)}`).toBeLessThanOrEqual(1);
+        }
+      });
+
+      test("every icon of a control, chip or status sits on its text line", async ({ page }) => {
+        const pairs = await iconAxis(page);
+        expect(pairs.length).toBeGreaterThanOrEqual(s.pairs[width === 1440 ? 0 : 1]);
+        for (const { name, dy } of pairs) expect(dy, name).toBeLessThanOrEqual(1);
+      });
+
+      test("the record header keeps the Domus DetailHeader geometry", async ({ page }) => {
+        await expectDetailHeader(page, s.id, width);
+      });
+
+      test("the columns of each list share their left edge", async ({ page }) => {
+        const cols = await page.evaluate(
+          ({ id, columns }) => {
+            const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+            const lefts = (sel: string) =>
+              [...live.querySelectorAll<HTMLElement>(sel)]
+                .filter((e) => e.offsetParent !== null && e.getBoundingClientRect().width > 0)
+                .map((e) => Math.round(e.getBoundingClientRect().left * 100) / 100);
+            return Object.fromEntries(
+              Object.entries(columns).map(([name, c]) => [name, { xs: c.sel.flatMap(lefts), wide: c.wide }]),
+            );
+          },
+          { id: s.id, columns: s.columns },
+        );
+        for (const [name, { xs, wide }] of Object.entries(cols)) {
+          if (wide && width < wide) continue;
+          expect(xs.length, name).toBeGreaterThan(1);
+          expect(Math.max(...xs) - Math.min(...xs), `${name}: ${xs.join(", ")}`).toBeLessThanOrEqual(1);
+        }
+      });
+    });
+  }
 }

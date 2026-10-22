@@ -141,3 +141,138 @@ test.describe("lab controls match the published lib (welabs brand)", () => {
     await compare(page, "send", send, refSm, ["height", "paddingLeft", "fontSize", "fontWeight", "backgroundColor", "color"]);
   });
 });
+
+// PARIDADE DE TODOS OS CONTROLES DAS CENAS V3
+// Domus and Magneto (brief-v3-scenes, 2026-10-22): not a sample, EVERY field (data-slot="input-group") and EVERY button
+// (data-slot="button" / "input-group-button") of the scene's live layer, on the settled frame and on the steps where a
+// control shows only for a moment, is held to the lib story of its own size: the geometry (height, radius, side
+// padding, type, edge width) to components-button--sizes and the field to components-inputgroup--default, so a control
+// can never be shrunk below the lib's size (a 30 px field slipped through a one-sample check). Colours are compared to
+// the story of the same variant and appearance; a pair with no story fails, so a new look needs a story or a reason here.
+const SCENE_CONTROLS: { id: string; steps: string[] }[] = [
+  { id: "domus-modules", steps: ["start", "date"] },
+  { id: "magneto-approval", steps: ["high", "waiting", "failed"] },
+];
+
+// DESVIOS PERMITIDOS DOS CONTROLES DAS CENAS
+// `variant/appearance|property` → why the site differs from the lib's welabs brand on purpose
+const SCENE_ALLOWED: Record<string, string> = {
+  "field|borderTopColor": ALLOWED["field|borderTopColor"],
+  "primary/solid|backgroundColor": ALLOWED["send|backgroundColor"],
+  "primary/solid|color": ALLOWED["send|color"],
+  "neutral/outline|color": ALLOWED["toolbar|color"],
+};
+
+type Control = { kind: "field" | "button"; name: string; size: string; look: string; state: string | null; style: Style };
+
+// Every visible field and button of the live layer of a scene, with its computed style
+async function controlsOf(page: Page, id: string): Promise<Control[]> {
+  return page.evaluate(
+    ({ id, props }) => {
+      const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+      const read = (el: HTMLElement) => {
+        const s = getComputedStyle(el);
+        const out: Record<string, string> = {};
+        for (const p of props) out[p] = String(s[p as keyof CSSStyleDeclaration]);
+        out.height = String(el.getBoundingClientRect().height);
+        const control = el.querySelector('[data-slot="input-group-control"]');
+        if (control) out.controlFontSize = getComputedStyle(control).fontSize;
+        return out;
+      };
+      return [...live.querySelectorAll<HTMLElement>('[data-slot="input-group"], [data-slot="button"], [data-slot="input-group-button"]')]
+        .filter((el) => el.offsetParent !== null && el.getBoundingClientRect().width > 0)
+        .map((el) => ({
+          kind: el.dataset.slot === "input-group" ? ("field" as const) : ("button" as const),
+          name: (el.textContent || el.getAttribute("aria-label") || (el.querySelector("input")?.placeholder ?? "")).trim().slice(0, 24),
+          size: el.dataset.size ?? "md",
+          look: `${el.dataset.variant}/${el.dataset.appearance}`,
+          state: el.getAttribute("data-state"),
+          style: read(el),
+        }));
+    },
+    { id, props: [...PROPS] },
+  );
+}
+
+test.describe("every control of the v3 scenes matches the published lib (welabs brand)", () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+  test.setTimeout(120_000);
+
+  test("fields and buttons of domus-modules and magneto-approval", async ({ page, context }) => {
+    // REFERÊNCIA: AS HISTÓRIAS DA LIB
+    const sb = await context.newPage();
+    await sb.setViewportSize({ width: 1440, height: 900 });
+    await sb.goto(STORY("components-inputgroup--default"), { waitUntil: "networkidle" });
+    const refField = (await styleOf(sb, '[data-slot="input-group"]'))!;
+    // Geometry by size: the sizes story draws one primary button per size
+    const bySize: Record<string, Style> = {};
+    await sb.goto(STORY("components-button--sizes"), { waitUntil: "networkidle" });
+    for (const size of ["xs", "sm", "md", "lg", "icon-xs", "icon-sm", "icon", "icon-lg"]) {
+      const ref = await styleOf(sb, `[data-slot="button"][data-size="${size}"]`);
+      if (ref) bySize[size] = ref;
+    }
+    // Colours by look: the appearances (primary) and with-icon (neutral outline, neutral ghost) stories
+    const byLook: Record<string, Style> = {};
+    for (const story of ["components-button--appearances", "components-button--with-icon"]) {
+      await sb.goto(STORY(story), { waitUntil: "networkidle" });
+      for (const look of ["primary/solid", "primary/outline", "primary/soft", "primary/ghost", "neutral/outline", "neutral/ghost"]) {
+        const [variant, appearance] = look.split("/");
+        const ref = await styleOf(sb, `[data-slot="button"][data-variant="${variant}"][data-appearance="${appearance}"]`);
+        if (ref && !byLook[look]) byLook[look] = ref;
+      }
+    }
+    expect(refField && bySize.md && bySize.sm && byLook["neutral/outline"], "every story renders its control").toBeTruthy();
+
+    const GEOMETRY = ["height", "borderTopLeftRadius", "borderTopWidth", "paddingLeft", "fontSize", "fontWeight"];
+    const COLOURS = ["borderTopColor", "backgroundColor", "color"];
+    const FIELD = ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "controlFontSize"];
+
+    for (const scene of SCENE_CONTROLS) {
+      const seen: Control[] = [];
+      // The settled frame (reduced motion), then each step whose controls show only for a moment
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(`/lab/scenes/${scene.id}`);
+      await page.locator(`[data-scene="${scene.id}"]`).waitFor();
+      seen.push(...(await controlsOf(page, scene.id)));
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto(`/lab/scenes/${scene.id}`);
+      await page.getByRole("button", { name: "Recomeçar" }).click();
+      for (const step of scene.steps) {
+        await expect(page.locator(`[data-scene="${scene.id}"]`)).toHaveAttribute("data-step", step, { timeout: 15_000 });
+        await page.waitForTimeout(150);
+        seen.push(...(await controlsOf(page, scene.id)));
+      }
+      expect(seen.length, `${scene.id}: controls measured`).toBeGreaterThan(0);
+
+      for (const c of seen) {
+        const where = `${scene.id} ${c.kind} "${c.name}" (${c.size}, ${c.look})`;
+        if (c.kind === "field") {
+          for (const p of FIELD) {
+            if (SCENE_ALLOWED[`field|${p}`]) continue;
+            if (/Color$/.test(p)) {
+              const d = deltaE(await rgbOverWhite(page, c.style[p]), await rgbOverWhite(page, refField[p]));
+              expect(d, `${where} ${p}: ours ${c.style[p]}, lib ${refField[p]}`).toBeLessThanOrEqual(3);
+            } else
+              expect(Math.abs(parseFloat(c.style[p]) - parseFloat(refField[p])), `${where} ${p}: ours ${c.style[p]}, lib ${refField[p]}`).toBeLessThanOrEqual(0.5);
+          }
+          continue;
+        }
+        const geo = bySize[c.size];
+        expect(geo, `${where}: the lib has a story for its size`).toBeTruthy();
+        for (const p of GEOMETRY)
+          expect(Math.abs(parseFloat(c.style[p]) - parseFloat(geo[p])), `${where} ${p}: ours ${c.style[p]}, lib ${geo[p]}`).toBeLessThanOrEqual(0.5);
+        const ref = byLook[c.look];
+        expect(ref, `${where}: the lib has a story for its look`).toBeTruthy();
+        for (const p of COLOURS) {
+          if (SCENE_ALLOWED[`${c.look}|${p}`]) continue;
+          // A chip that follows a state of the scene (data-state) paints its own fill: amber-50 while chosen, the
+          // muted label while waiting (components/scene-kit/parts.module.css ESTADOS DE CHIP); its edge stays the lib's
+          if (c.state && p !== "borderTopColor") continue;
+          const d = deltaE(await rgbOverWhite(page, c.style[p]), await rgbOverWhite(page, ref[p]));
+          expect(d, `${where} ${p}: ours ${c.style[p]}, lib ${ref[p]}`).toBeLessThanOrEqual(3);
+        }
+      }
+      console.log(`[parity] ${scene.id}: ${seen.length} controls (${[...new Set(seen.map((c) => `${c.kind} ${c.size} ${c.look}`))].join("; ")})`);
+    }
+  });
+});
