@@ -348,10 +348,18 @@
     align-items: flex-start;
     gap: var(--sp-3);
   }
-  /* The identity steps down to the lib's lg mark, so the title and its status keep one line on a phone */
+  /* On a phone the title and its status keep one line with room to spare (a 3 px margin wrapped the status under
+     other font metrics): the identity steps down to the lib's lg mark, the title to the title step (20/28) and the
+     gap to the status to 8 px; e2e/scene-kit-geometry.spec.ts holds the status on the title's line */
   .identity {
     width: var(--mark-lg);
     height: var(--mark-lg);
+  }
+  .recordTop {
+    column-gap: var(--sp-2);
+  }
+  .recordTop > b {
+    font-size: var(--t-title);
   }
   .record,
   .history,

@@ -148,14 +148,31 @@ for (const width of [1440, 390]) {
           const el = live.querySelector(`[data-header="${k}"]`);
           if (!el) return null;
           const b = el.getBoundingClientRect();
-          return { left: b.left, top: b.top, bottom: b.bottom, mid: b.top + b.height / 2 };
+          return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, mid: b.top + b.height / 2 };
         };
-        return { identity: r("identity"), block: r("block"), title: r("title"), status: r("status"), meta: r("meta"), actions: r("actions") };
+        // The header's own box, inside its padding: the room a phone gives the title line
+        const head = live.querySelector('[data-header="actions"]')!.parentElement!;
+        const hs = getComputedStyle(head);
+        const inner = head.getBoundingClientRect().right - parseFloat(hs.paddingRight);
+        return {
+          identity: r("identity"),
+          block: r("block"),
+          title: r("title"),
+          status: r("status"),
+          meta: r("meta"),
+          actions: r("actions"),
+          inner,
+        };
       });
       for (const [k, v] of Object.entries(h)) expect(v, `header part ${k}`).not.toBeNull();
-      const { identity, block, title, status, meta, actions } = h as Record<string, NonNullable<(typeof h)["title"]>>;
+      const { identity, block, title, status, meta, actions } = h as unknown as Record<string, NonNullable<(typeof h)["title"]>>;
       expect(Math.abs(identity.mid - block.mid), `identity ${identity.mid} vs text block ${block.mid}`).toBeLessThanOrEqual(1);
       expect(Math.abs(status.mid - title.mid), `status ${status.mid} vs title ${title.mid}`).toBeLessThanOrEqual(1);
+      // The status keeps its line with room to spare (16 px before the actions, or before the header's edge on a phone),
+      // so other font metrics do not wrap it under the title
+      const limit = width >= 640 ? actions.left : h.inner;
+      expect(limit - status.right, `room after the status: ${(limit - status.right).toFixed(1)}`).toBeGreaterThanOrEqual(16);
+      expect(block.left).toBeLessThan(status.left);
       expect(Math.abs(meta.left - title.left), `meta ${meta.left} vs title ${title.left}`).toBeLessThanOrEqual(1);
       // Below sm the Domus header wraps its actions under the title block instead of squeezing it
       if (width >= 640)

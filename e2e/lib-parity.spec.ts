@@ -15,6 +15,9 @@ const LAB = "/lab/scenes/relloo-inbox";
 const ALLOWED: Record<string, string> = {
   "field|borderTopColor":
     "the lib's welabs preset draws the field edge in --input oklch(0.6 0 0) (4.23:1 on white), the dark line the operator rejected twice (rounds 1 and 2); the site draws the default brand's edge, the --border hairline. Below the 3:1 of WCAG 1.4.11: operator decision pending",
+  "toolbar|color":
+    "the text ink is black #121212 (operator decision, 2026-10-22: the preset's #1c1a16 read as a brownish graphite)",
+  "action|color": "the icon takes the same black ink #121212 (operator decision, as above)",
   "send|backgroundColor":
     "the action is black (Welabs UI v3: --primary #121212 with white text); the lib's welabs primary is the amber, which the site keeps for what is live (--signal)",
   "send|color": "white on the black action, as above (the lib's welabs solid primary has ink text on amber)",

@@ -16,9 +16,9 @@ const kitFiles = (ext: RegExp) =>
     .filter((f) => ext.test(f) && !/\.test\.tsx?$/.test(f));
 const stripCss = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
-// Round 3 (2026-10-22): the text-only tone is the welabs preset's sand 700 #625b4e again (#6b6a64 in round 2,
-// stone-700 #4a4a48 before it)
-const SAND_700 = /#625b4e\b|rgba?\(\s*98\s*,\s*91\s*,\s*78\b/i;
+// Round 3 (2026-10-22): the text-only tone is the neutral #55565b (operator: the preset's #625b4e read as graphite;
+// #6b6a64 in round 2, stone-700 #4a4a48 before it)
+const SAND_700 = /#55565b\b|rgba?\(\s*85\s*,\s*86\s*,\s*91\b/i;
 
 // The custom properties of a sheet that resolve to the sand 700, through any chain of var() aliases
 function textOnlyTokens(themeCss: string): Set<string> {
@@ -57,7 +57,7 @@ function sandFills(css: string, tokens: Set<string>): string[] {
 function sandFillClasses(src: string, tokens: Set<string>): string[] {
   const names = [...tokens].map((t) => t.slice(2)).join("|");
   const re = new RegExp(
-    `\\b(?:bg|fill|from|via|to)-(?:(?:${names})\\b|\\[(?:#625b4e|var\\(--(?:${names})\\))\\]|\\(--(?:${names})\\))`,
+    `\\b(?:bg|fill|from|via|to)-(?:(?:${names})\\b|\\[(?:#55565b|var\\(--(?:${names})\\))\\]|\\(--(?:${names})\\))`,
     "gi",
   );
   return [...src.matchAll(re)].map((m) => m[0]);
@@ -67,19 +67,19 @@ const TOKENS = textOnlyTokens(read("app/lib.css"));
 
 describe("the detectors", () => {
   it("resolve the aliases of the sand 700 and flag only fills", () => {
-    const tokens = textOnlyTokens(":root { --a: #625B4E; --b: var(--a); --c: var(--card); }");
+    const tokens = textOnlyTokens(":root { --a: #55565B; --b: var(--a); --c: var(--card); }");
     expect([...tokens].sort()).toEqual(["--a", "--b", "--muted-foreground"]);
     const css = `.x { color: var(--b); background: var(--card); }
-      .y { background-color: var(--b); } .z { fill: rgb(98, 91, 78) } .w { box-shadow: inset 0 0 0 1px var(--a) }
+      .y { background-color: var(--b); } .z { fill: rgb(85, 86, 91) } .w { box-shadow: inset 0 0 0 1px var(--a) }
       .v { background: linear-gradient(var(--muted-foreground), transparent) }`;
     expect(sandFills(css, tokens)).toEqual([
       ".y { background-color: var(--b) }",
-      ".z { fill: rgb(98, 91, 78) }",
+      ".z { fill: rgb(85, 86, 91) }",
       ".v { background: linear-gradient(var(--muted-foreground), transparent) }",
     ]);
     expect(
-      sandFillClasses('className="text-muted-foreground bg-muted-foreground fill-[#625b4e] bg-card"', tokens),
-    ).toEqual(["bg-muted-foreground", "fill-[#625b4e]"]);
+      sandFillClasses('className="text-muted-foreground bg-muted-foreground fill-[#55565b] bg-card"', tokens),
+    ).toEqual(["bg-muted-foreground", "fill-[#55565b]"]);
   });
 
   it("find the sand 700 among the tokens of app/lib.css", () => {
