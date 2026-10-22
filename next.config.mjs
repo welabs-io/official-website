@@ -67,6 +67,8 @@ const nextConfig = {
   agentRules: false,
   // Allows a second local build next to a running preview without sharing .next
   ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
+  // The dev server serves its chunks and HMR to 127.0.0.1 too (the operator opens the lab there); dev only
+  allowedDevOrigins: ["127.0.0.1"],
   async redirects() {
     return redirects;
   },
