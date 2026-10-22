@@ -199,6 +199,11 @@
   --dot: 8px;
   --dot-sm: 6px;
   --chrome-h: 44px;
+  /* Welabs UI v3 geometry of a drawn screen: the 2 px gap between list rows (rows separate by space, never a line),
+     the 68 px header of a record and the 220 px search field of a chrome bar */
+  --gap-row: 2px;
+  --record-h: 68px;
+  --search-w: 220px;
   --scene-width: 1040px;
 
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
@@ -370,8 +375,9 @@
   background-color: var(--signal);
   color: var(--signal-foreground);
 }
+/* v3: a mark has no ring (the lib draws one in its ::after) */
 [data-slot="avatar"]::after {
-  transition: border-color var(--dur-2) var(--ease-out);
+  border-color: transparent;
 }
 [data-slot="avatar"][data-tone="active"]::after,
 [data-state="active"] [data-slot="avatar"]::after {

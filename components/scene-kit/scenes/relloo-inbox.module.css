@@ -1,44 +1,66 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
-/* Layout only: the lib and the site primitives paint the controls (RowButton, ActionButton, TextField, Badge: their
-   look is app/lib.css CONTROLES) and the marks and history (Avatar, Timeline: app/lib.css TIMELINE E AVATAR); the
-   kit's shared parts (components/scene-kit/parts.module.css) paint only what the lib has no part for: the row and chip
-   states, the pane head, the stacked text and the bubbles; this sheet places them. Every value is a token
-   of app/lib.css (decisions: control/portfolio/site-redesign/scene-kit/colour-decisions.md). Every icon sits in a box
-   whose centre is the centre of the line it labels (one flex line, align center), so text and icon share one axis. */
+/* Layout of the Welabs UI v3 pilot (approved drawing InboxV3): the lib and the site primitives paint the controls
+   (RowButton, ActionButton, TextField, Badge: app/lib.css CONTROLES) and the marks (Avatar: app/lib.css TIMELINE E
+   AVATAR); the kit's shared parts (components/scene-kit/parts.module.css) paint the row and chip states, the pane head
+   and the bubbles; this sheet places them. Every value is a token of app/lib.css. Every icon sits in a box whose centre
+   is the centre of the line it labels (one flex line, align center), so text and icon share one axis. */
 .split {
   height: auto;
   min-height: 0;
+  background: var(--card);
+}
+
+/* BUSCA DA BARRA DA JANELA */
+.search {
+  display: block;
+  width: var(--search-w);
+}
+@media (max-width: 640px) {
+  .search {
+    display: none;
+  }
 }
 
 /* INBOX DOS CANAIS */
-/* The list takes the cream paper of the history (operator, 2026-10-22: the sand 100 read as amber here); the pane
-   line alone separates them, and the active row takes the amber wash */
+/* The white list, split from the record by the line between panels only; rows separate by space, never a line */
 .list {
-  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-row);
+  padding: var(--sp-3) var(--sp-2);
+  background: var(--card);
 }
 
 .paneHead {
   display: flex;
+  min-height: var(--control-height-sm);
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-4);
+  padding: 0 var(--sp-2);
+}
+.count {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-variant-numeric: tabular-nums;
 }
 
 .rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-row);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.rows > li + li {
-  border-top: var(--rule) solid var(--border);
-}
-
-/* The row (the site's RowButton) lays its mark and text on one centre line; its state paint is the shared rowStates */
+/* The row (the site's RowButton) lays its mark and text on one centre line, 52 px tall, its state paint is the
+   shared rowStates (the ink veil on hover, amber-50 while active) */
 .rows [data-state] {
+  min-height: var(--row-min);
   gap: var(--sp-3);
   align-items: center;
+  padding: 0 var(--sp-2);
 }
 
 .rowText {
@@ -60,38 +82,89 @@
 .rowTop b {
   font-weight: var(--weight-title);
 }
-.rowTop time,
-.preview {
+.rowTop time {
   font-size: var(--t-micro);
   line-height: var(--line-micro);
-  font-weight: var(--weight-text);
+  font-weight: var(--weight-label);
+  font-variant-numeric: tabular-nums;
   color: var(--muted-foreground);
 }
 .preview {
   overflow: hidden;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-text);
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-[data-state="waiting"] .rowTop b {
   color: var(--muted-foreground);
+}
+/* The active row reads in ink: its time in the title weight, its preview in ink */
+[data-state="active"] .rowTop time {
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+[data-state="active"] .preview {
+  color: var(--foreground);
 }
 
 /* HISTÓRICO DO CONTATO */
 .detail {
   display: flex;
   flex-direction: column;
-  background: var(--background);
+  background: var(--card);
 }
 
+/* The header of the record: the square mark at rest, the title step, the order and the live badge, the line under it */
 .record {
   display: flex;
+  min-height: var(--record-h);
   align-items: center;
   gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-5);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.recordMark {
+  display: inline-flex;
+  flex: none;
+}
+.recordMark [data-slot="avatar"],
+.recordMark [data-slot="avatar-fallback"] {
+  border-radius: var(--r-ctl);
+}
+.recordText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+.recordText > b {
+  font-size: var(--t-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-heading);
+}
+.recordText > span {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
 }
 
-.recordText {
-  flex: 1;
+/* The live badge: the lib's black Badge (primary) with the amber dot (signal), at the meta step */
+.status {
+  height: var(--sp-5);
+  flex: none;
+  gap: var(--sp-2);
+  padding: 0 calc(var(--sp-2) + var(--sp-1) / 2);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+}
+.live {
+  width: var(--dot-sm);
+  height: var(--dot-sm);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--signal);
 }
 
 /* Below lg the channels are chips under the record (the inbox pane is off screen); at lg and up the inbox shows them */
@@ -99,7 +172,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
-  padding: 0 var(--sp-5) var(--sp-4);
+  padding: var(--sp-3) var(--sp-5) 0;
 }
 @media (min-width: 1024px) {
   .chips {
@@ -107,16 +180,57 @@
   }
 }
 
-/* The lib's Timeline spaces its lines and draws the line between marks (app/lib.css TIMELINE E AVATAR); the
-   AnimatedList gap would cut that line between two entries, so it is closed here */
+/* The history: no rail (the lib's line between marks is hidden), lines apart by space; each line is the 28 px mark,
+   the meta line (label and time) centred on it, and the bubble under the meta */
 .history {
-  gap: 0;
-  padding: var(--sp-4) var(--sp-5);
+  gap: var(--sp-4);
+  padding: calc(var(--sp-4) + var(--sp-1)) var(--sp-5);
+}
+.history [data-slot="timeline"] > li > :first-child > :not(:first-child) {
+  display: none;
+}
+.history [data-slot="timeline"] > li > :last-child {
+  padding-bottom: 0;
+}
+.history [data-slot="timeline"] > li > :last-child > :first-child {
+  min-height: var(--mark-sm);
+  justify-content: flex-start;
+  gap: var(--sp-1);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+}
+.history [data-slot="timeline"] > li > :last-child > :first-child > p {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+}
+.history [data-slot="timeline"] > li > :last-child > :last-child {
+  margin-top: var(--sp-1);
+}
+.history [data-slot="avatar"] {
+  width: var(--mark-sm);
+  height: var(--mark-sm);
+}
+.history [data-slot="avatar-fallback"] > svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
-/* What was said is as wide as its text, under the label */
-.said {
-  width: fit-content;
+/* The system event of the record: a meta line in stone-700 with its icon, never a bubble */
+.event {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.event > svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
 }
 
 .typing {
@@ -126,28 +240,78 @@
   color: var(--muted-foreground);
 }
 
+/* COMPOSITOR */
+/* The 40 px field with the 3:1 control edge, the channel chip of origin and the black send */
 .composer {
   margin-top: auto;
-  padding: var(--sp-3) var(--sp-5) var(--sp-4);
+}
+.composer > [data-slot="input-group"] {
+  width: auto;
+  margin: var(--sp-3) var(--sp-5) var(--sp-4);
+}
+.composerField {
+  min-height: var(--control-height-lg);
+  padding: 0 var(--sp-1) 0 calc(var(--sp-1) + var(--sp-1) / 2);
+}
+.composerField [data-slot="input-group-addon"] {
+  padding: 0;
+}
+.composerField [data-slot="input-group-control"] {
+  padding-inline: var(--sp-2);
+  font-size: var(--t-label);
+}
+.composerField [data-slot="input-group-addon"] button {
+  height: var(--control-height-sm);
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-sm);
+  font-size: var(--t-label);
+  font-weight: var(--weight-label);
+}
+.composerField [data-slot="input-group-addon"] button svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+.channelChip {
+  display: inline-flex;
+  height: var(--mark-sm);
+  flex: none;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  background: var(--muted);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--foreground);
+}
+.channelChip > svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 @media (max-width: 640px) {
   .record,
   .history,
-  .composer {
-    padding-inline: var(--sp-4);
-  }
   .chips {
     padding-inline: var(--sp-4);
   }
-  /* The seal wraps under the record name, on the name's left edge */
+  .composer > [data-slot="input-group"] {
+    margin-inline: var(--sp-4);
+  }
+  /* The badge wraps under the record name, on the name's left edge */
   .record {
     flex-wrap: wrap;
   }
   .recordText {
     flex-basis: calc(100% - var(--mark-lg) - var(--sp-3));
   }
-  .seal {
+  .status {
     margin-left: calc(var(--mark-lg) + var(--sp-3));
+  }
+  /* The chip of origin gives its room to the reply on a phone */
+  .channelChip {
+    display: none;
   }
 }

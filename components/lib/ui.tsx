@@ -129,29 +129,37 @@ export function RowButton({
   );
 }
 
-/** A text field: a required leading icon, an optional trailing icon action, an optional label above (the lib's
- *  Field). `className` places or animates the text control itself; `fieldClassName`/`fieldStyle` the labelled block. */
+/** A text field: a required leading icon (or, for a composer, a leading chip `lead` such as the channel it answers
+ *  on), an optional trailing icon action or a labelled primary `submit` (icon + text, Welabs UI v3 "Enviar"), an
+ *  optional label above (the lib's Field). `className` places or animates the text control itself; `groupClassName`
+ *  the field box; `fieldClassName`/`fieldStyle` the labelled block. */
 export function TextField({
   icon,
+  lead,
   action,
+  submit,
   label,
   size = "md",
   className,
+  groupClassName,
   fieldClassName,
   fieldStyle,
   ...input
 }: Omit<ComponentProps<"input">, "size"> & {
-  icon: ControlIcon;
   action?: { icon: ControlIcon; label: string; onClick?: () => void; tabIndex?: number };
+  submit?: { icon: ControlIcon; label: string; onClick?: () => void; tabIndex?: number };
   label?: string;
   size?: "sm" | "md";
+  groupClassName?: string;
   fieldClassName?: string;
   fieldStyle?: CSSProperties;
-}) {
+} & ({ icon: ControlIcon; lead?: never } | { icon?: never; lead: ReactNode })) {
   const group = (
-    <InputGroup className={size === "sm" ? "min-h-control-sm" : undefined}>
-      <InputGroupAddon align="inline-start" aria-hidden="true">
-        {icon}
+    <InputGroup
+      className={[size === "sm" ? "min-h-control-sm" : "", groupClassName].filter(Boolean).join(" ") || undefined}
+    >
+      <InputGroupAddon align="inline-start" aria-hidden={lead ? undefined : "true"}>
+        {lead ?? icon}
       </InputGroupAddon>
       <InputGroupInput
         className={[size === "sm" ? "text-sm" : "", className].filter(Boolean).join(" ") || undefined}
@@ -169,6 +177,16 @@ export function TextField({
             onClick={action.onClick}
           >
             {action.icon}
+          </InputGroupButton>
+        </InputGroupAddon>
+      ) : null}
+      {submit ? (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton size="sm" {...EMPHASIS.primary} tabIndex={submit.tabIndex} onClick={submit.onClick}>
+            <span data-icon="inline-start" aria-hidden="true" className="contents">
+              {submit.icon}
+            </span>
+            {submit.label}
           </InputGroupButton>
         </InputGroupAddon>
       ) : null}

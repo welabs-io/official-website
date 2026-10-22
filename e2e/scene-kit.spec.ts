@@ -50,8 +50,9 @@ test.describe("scene kit: relloo-inbox", () => {
         live.querySelectorAll('[data-slot="timeline"] > li').forEach((e, i) =>
           pairs.push([`entry ${i}`, e.children[0].children[0], e.children[1].children[0]]),
         );
-        live.querySelectorAll('[data-align="record"]').forEach((e) =>
-          pairs.push(["record", e.children[0], e.children[1]]),
+        // The record header and the system event line (Welabs UI v3: a meta line with its icon, no mark)
+        live.querySelectorAll("[data-align]").forEach((e) =>
+          pairs.push([e.getAttribute("data-align")!, e.children[0], e.children[1]]),
         );
         live.querySelectorAll("[data-channel]").forEach((e) => {
           if ((e as HTMLElement).offsetParent === null || getComputedStyle(e).visibility === "hidden") return;

@@ -2,23 +2,24 @@
 // CENA DO RELLOO: CANAIS QUE VIRAM UM HISTÓRICO
 // Conversations from four channel categories (Mensagem, E-mail, Voz, Chat do site) arrive one by one and land in ONE
 // conversation history, the record of a contact (STORY.who). No person, name, face, initial or vendor: the channel is
-// its category and the contact is its record id. Built from the lib first: SplitView (inbox list + detail), Avatar with
-// an icon fallback as every mark (rows, record, history; painted by state in app/lib.css), Timeline/TimelineItem as the
-// history, the site's control primitives (RowButton rows and ActionButton chips as the scene controls, TextField as the
-// composer), AnimatedList (entries arriving), TypingDots, Badge, Separator and lucide icons. Local markup is left only
-// where the lib has no part: the row text of an inbox item, the record title and the chat bubble. Amber marks only what
-// is active. The continuity (autoplay, loop, human take, off-screen, reduced motion) is the kit's
-// (components/scene-kit/Scene.tsx); this file only renders from `scene`.
+// its category and the contact is its record id. Pilot of Welabs UI v3 (approved drawing InboxV3, 2026-10-22): the
+// chrome bar with a search field, the channel list with no lines between rows, the record header with the black
+// "Em atendimento" badge, the history with no rail (received bubbles on the chrome, the arriving one on amber-50, the
+// system event as a meta line) and the composer with the channel chip and the black "Enviar". Built from the lib
+// through the site primitives: SplitView, Avatar (every mark), Timeline/TimelineItem (each history line, rail hidden),
+// RowButton, ActionButton, TextField, Badge, Separator, AnimatedList and TypingDots. Amber budget: at most 3 pieces of
+// amber at any frame (the active row's mark, the arriving line's mark, the badge's live dot). The continuity (autoplay,
+// loop, human take, off-screen, reduced motion) is the kit's (components/scene-kit/Scene.tsx); this file only renders
+// from `scene`.
 import {
-  Check,
   Contact,
   Mail,
   MessageCircle,
   MessagesSquare,
   Package,
   Phone,
-  Reply,
-  SendHorizontal,
+  Search,
+  Send,
   type LucideIcon,
 } from "lucide-react";
 import { ActionButton, Badge, RowButton, TextField } from "@/components/lib/ui";
@@ -42,7 +43,7 @@ import r from "./relloo-inbox.module.css";
 
 // ROTEIRO DA CENA
 // One step per channel arriving, a "typing" beat before the chat of the site, and the settled frame (merged). The
-// merged step lasts 1.6 s: its marks and seal settle in about 0.4 s, so the frame stands still for about 1 s (the hold)
+// merged step lasts 1.6 s: its marks settle in about 0.4 s, so the frame stands still for about 1 s (the hold)
 export const RELLOO_INBOX_STEPS: readonly SceneStep[] = [
   { id: "start", hold: 1100 },
   { id: "message", hold: 1100 },
@@ -58,6 +59,8 @@ type Channel = {
   label: string;
   icon: LucideIcon;
   time: string;
+  // The meta of the history line after the time (the length of a call), when there is one
+  note?: string;
   preview: string;
   text: string;
 };
@@ -69,7 +72,7 @@ const CHANNELS: readonly Channel[] = [
     label: "Mensagem",
     icon: MessageCircle,
     time: "09:12",
-    preview: "Meu pedido já saiu?",
+    preview: "Meu pedido 1234 já saiu?",
     text: "Meu pedido 1234 já saiu para entrega?",
   },
   {
@@ -85,8 +88,9 @@ const CHANNELS: readonly Channel[] = [
     label: "Voz",
     icon: Phone,
     time: "10:05",
-    preview: "Ligação de 0:42",
-    text: "Ligação de 0:42, transcrita: pediu para mudar o endereço.",
+    note: "0:42, transcrita",
+    preview: "Ligação de 0:42, transcrita",
+    text: "Pediu para mudar o endereço de entrega.",
   },
   {
     step: "site",
@@ -100,13 +104,15 @@ const CHANNELS: readonly Channel[] = [
 
 const COPY = {
   product: "Relloo",
-  title: "Contatos / Histórico",
+  title: "Contatos",
+  search: "Buscar contato",
   label: "Relloo: quatro canais chegam no histórico de um único contato",
   channels: "Canais",
   history: "Histórico do contato",
-  created: { label: "Pedido", time: "08:55", text: "Pedido 1234 criado, 3 itens." },
+  status: "Em atendimento",
+  created: "Pedido 1234 criado · 3 itens · 08:55",
   typing: "digitando",
-  merged: `${CHANNELS.length} canais, 1 histórico`,
+  merged: `${CHANNELS.length} canais na mesma conversa`,
   reply: "Responder pelo canal de origem",
   send: "Enviar",
 };
@@ -120,56 +126,43 @@ const stateOf = (scene: SceneApi, ch: Channel) =>
       : "waiting";
 
 // MARCA DE ÍCONE
-// The lib's Avatar with the channel icon as its fallback; its tone (rest, subject, active) is painted by app/lib.css
-function Mark({
-  icon: Icon,
-  size,
-  tone,
-}: {
-  icon: LucideIcon;
-  size?: "default" | "lg";
-  tone?: "active" | "subject";
-}) {
+// The lib's Avatar with the channel icon as its fallback; its tone (rest, active) is painted by app/lib.css
+function Mark({ icon: Icon, size, tone }: { icon: LucideIcon; size?: "default" | "lg"; tone?: "active" }) {
   return (
     <Avatar size={size} data-tone={tone} aria-hidden="true">
       <AvatarFallback>
-        <Icon strokeWidth={2} />
+        <Icon strokeWidth={1.75} />
       </AvatarFallback>
     </Avatar>
   );
 }
 
-// One line of the history: what the contact said (incoming) or an event of the record itself (system). A one-item
-// lib Timeline, because the lib's AnimatedList wraps each child in its own div (an `li` cannot sit there); the line
-// to the next mark is the lib's, ended on the newest line (`last`)
+// One line of the history: the channel mark, its meta line (label and time) and what the contact said. A one-item lib
+// Timeline, because the lib's AnimatedList wraps each child in its own div (an `li` cannot sit there); its rail is
+// hidden (relloo-inbox.module.css), since v3 draws no rail
 function Entry({
-  icon,
-  label,
-  time,
+  channel,
   fresh,
-  last,
-  kind = "incoming",
   children,
 }: {
-  icon: LucideIcon;
-  label: string;
-  time?: string;
+  channel: Channel;
   fresh: boolean;
-  last: boolean;
-  kind?: "incoming" | "system";
   children: React.ReactNode;
 }) {
   return (
-    <Timeline data-fresh={fresh} data-kind={kind}>
+    <Timeline data-fresh={fresh}>
       <TimelineItem
-        icon={<Mark icon={icon} tone={fresh ? "active" : undefined} />}
-        title={label}
-        aside={time ? <time>{time}</time> : undefined}
-        isLast={last}
+        icon={<Mark icon={channel.icon} tone={fresh ? "active" : undefined} />}
+        title={channel.label}
+        aside={
+          <time>
+            {channel.time}
+            {channel.note ? ` · ${channel.note}` : ""}
+          </time>
+        }
+        isLast
       >
-        <div className={`${p.bubble} ${r.said}`} data-kind={kind}>
-          {children}
-        </div>
+        <div className={p.bubble}>{children}</div>
       </TimelineItem>
     </Timeline>
   );
@@ -182,14 +175,12 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
   const merged = scene.reached("merged");
   const newest = shown.at(-1)?.step;
   return (
-    <SplitView detailOpen listWidth="17rem" className={r.split}>
+    <SplitView detailOpen listWidth="18.75rem" className={r.split}>
       {/* The inbox of the channels: each row is a control that replays the scene from its channel */}
       <SplitViewList aria-label={COPY.channels} className={r.list}>
         <p className={`${p.paneHead} ${r.paneHead}`}>
           <span>{COPY.channels}</span>
-          <Badge variant="neutral" appearance="soft">
-            {CHANNELS.length}
-          </Badge>
+          <span className={r.count}>{CHANNELS.length}</span>
         </p>
         <ul className={`${p.rowStates} ${r.rows}`}>
           {CHANNELS.map((ch) => (
@@ -216,17 +207,21 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
       {/* The record of the contact: one history, whatever the channel */}
       <SplitViewDetail aria-label={COPY.history} className={r.detail}>
         <div className={r.record} data-align="record">
-          <Mark icon={Contact} size="lg" tone="subject" />
-          <span className={`${p.stack} ${p.stackLead} ${r.recordText}`}>
-            <b>{STORY.who}</b>
-            <span>{STORY.order}</span>
+          <span className={r.recordMark}>
+            <Mark icon={Contact} size="lg" />
           </span>
-          {merged ? (
-            <Badge variant="primary" appearance="soft" className={`${p.seal} ${r.seal}`} data-merged="">
-              <Check size={14} strokeWidth={2.5} aria-hidden="true" />
-              {COPY.merged}
-            </Badge>
-          ) : null}
+          <span className={r.recordText}>
+            <b>{STORY.who}</b>
+            <span>
+              {STORY.order}
+              {merged ? ` · ${COPY.merged}` : ""}
+            </span>
+          </span>
+          {/* The live status of the conversation: the black badge (primary) with the amber dot (signal) */}
+          <Badge variant="primary" appearance="solid" className={r.status}>
+            <span className={r.live} aria-hidden="true" />
+            {COPY.status}
+          </Badge>
         </div>
 
         {/* Below lg the inbox pane is off screen (SplitView shows one pane): the channels become chips */}
@@ -237,7 +232,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
               <ActionButton
                 key={ch.step}
                 size="xs"
-                icon={<Icon strokeWidth={2} />}
+                icon={<Icon strokeWidth={1.75} />}
                 data-state={stateOf(scene, ch)}
                 onClick={() => scene.take(ch.step)}
               >
@@ -247,54 +242,43 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
           })}
         </div>
 
-        <Separator />
-
         {/* One amber line at a time: the newest line until the record settles. The typing line is the chat of the site
             under its own key, in the same list as the others, so it turns into that message in place (as a separate
             child it got another key from the lib's Children.toArray, and its exit stacked with the message's enter for
             the length of the exit, pushing the window 48 to 80 px taller) */}
         <AnimatedList className={r.history} distance={10} duration={0.32}>
-          <Entry
-            key="created"
-            icon={Package}
-            label={COPY.created.label}
-            time={COPY.created.time}
-            fresh={false}
-            last={!newest}
-            kind="system"
-          >
-            {COPY.created.text}
-          </Entry>
+          <p key="created" className={r.event} data-align="event">
+            <Package strokeWidth={1.75} aria-hidden="true" />
+            <span>{COPY.created}</span>
+          </p>
           {shown.map((ch) =>
             typing && ch.step === "site" ? (
-              <Entry key={ch.step} icon={ch.icon} label={ch.label} fresh last>
+              <Entry key={ch.step} channel={ch} fresh>
                 <span className={r.typing}>
                   {COPY.typing}
                   <TypingDots size={5} gap={3} />
                 </span>
               </Entry>
             ) : (
-              <Entry
-                key={ch.step}
-                icon={ch.icon}
-                label={ch.label}
-                time={ch.time}
-                fresh={!merged && ch.step === newest}
-                last={ch.step === newest}
-              >
+              <Entry key={ch.step} channel={ch} fresh={!merged && ch.step === newest}>
                 {ch.text}
               </Entry>
             ),
           )}
         </AnimatedList>
 
-        {/* The composer is inert here: a soft send button, so the darkest mass of the window is not a control the
-            scene never uses */}
-        <Separator />
+        {/* The composer is inert here: it answers on the channel of origin (the chip), with the black send */}
         <div className={r.composer} aria-hidden="true" inert>
+          <Separator />
           <TextField
-            icon={<Reply />}
-            action={{ icon: <SendHorizontal />, label: COPY.send, tabIndex: -1 }}
+            lead={
+              <span className={r.channelChip}>
+                <MessagesSquare strokeWidth={1.75} aria-hidden="true" />
+                {CHANNELS.at(-1)?.label}
+              </span>
+            }
+            submit={{ icon: <Send strokeWidth={1.75} />, label: COPY.send, tabIndex: -1 }}
+            groupClassName={r.composerField}
             readOnly
             tabIndex={-1}
             placeholder={COPY.reply}
@@ -306,6 +290,22 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
   );
 }
 
+// The search of the chrome bar: a decorative field, inert like the composer
+function ChromeSearch() {
+  return (
+    <span className={r.search} aria-hidden="true" inert>
+      <TextField
+        icon={<Search strokeWidth={1.75} />}
+        size="sm"
+        readOnly
+        tabIndex={-1}
+        placeholder={COPY.search}
+        aria-label={COPY.search}
+      />
+    </span>
+  );
+}
+
 export function RellooInbox({ timeline }: { timeline?: SceneTimeline }) {
   return (
     <Scene
@@ -313,6 +313,7 @@ export function RellooInbox({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={COPY.title}
+      tools={<ChromeSearch />}
       steps={RELLOO_INBOX_STEPS}
       timeline={timeline}
     >
