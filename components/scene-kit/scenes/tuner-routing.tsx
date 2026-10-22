@@ -24,6 +24,7 @@ import { AnimatedList, Separator } from "@/components/lib/scene";
 import { TUNER_PLAY as T } from "@/lib/content/plays";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
+import p from "../parts.module.css";
 import t from "./tuner-routing.module.css";
 
 // ROTEIRO DA CENA
@@ -65,26 +66,40 @@ function teamStatus(scene: SceneApi, key: string): { text: string; tone: BadgeTo
 }
 
 // The lines of the conversation, each from its step on
-const LINES: { key: string; from: string; time: string; icon: LucideIcon; text: string; meta?: string }[] = [
+const LINES: {
+  key: string;
+  from: string;
+  time: string;
+  icon: LucideIcon;
+  text: string;
+  meta?: string;
+  quote?: string;
+}[] = [
   { key: "ring", from: "ring", time: "10:05", icon: PhoneIncoming, text: T.call },
   { key: "pressed", from: "pressed", time: "10:05", icon: ListOrdered, text: T.chose(CHOSEN.key, CHOSEN.label) },
   { key: "hold", from: "hold", time: "10:05", icon: Hourglass, text: T.hold },
   { key: "taken", from: "taken", time: "10:06", icon: Headset, text: T.answeredBy(CHOSEN.team), meta: T.contextLine },
+  // The recording lands with its transcript, as a received message
+  { key: "recorded", from: "recorded", time: "10:07", icon: AudioLines, text: T.land, quote: T.transcript },
 ];
 
 function TunerRoutingView({ scene }: { scene: SceneApi }) {
   const done = scene.reached("done");
   const lines = LINES.filter((l) => scene.reached(l.from));
-  const newest = scene.reached("recorded") ? "recorded" : lines.at(-1)?.key;
+  const newest = lines.at(-1)?.key;
   return (
     <div className={t.split}>
       {/* The call and the menu of the call: each option sends it to a team */}
       <section className={t.call} aria-label={T.menu}>
-        <div className={t.caller} data-axis="caller" data-state={scene.is("ring") ? "active" : "done"}>
-          <span className={t.mark} aria-hidden="true">
+        <div className={`${p.ruleBottom} ${t.caller}`} data-axis="caller">
+          <span
+            className={`${p.mark} ${p.markMd}`}
+            data-tone={scene.is("ring") ? "active" : "done"}
+            aria-hidden="true"
+          >
             <Phone size={16} strokeWidth={2} />
           </span>
-          <span className={t.callerText}>
+          <span className={`${p.stack} ${t.callerText}`}>
             <b>{T.call}</b>
             <span>{T.caller}</span>
           </span>
@@ -92,8 +107,8 @@ function TunerRoutingView({ scene }: { scene: SceneApi }) {
             {COPY.again}
           </ActionButton>
         </div>
-        <p className={t.paneHead}>{T.menu}</p>
-        <ol className={t.options}>
+        <p className={`${p.paneHead} ${t.paneHead}`}>{T.menu}</p>
+        <ol className={`${p.rowStates} ${t.options}`}>
           {T.options.map((o) => {
             const status = teamStatus(scene, o.key);
             const chosen = o.key === CHOSEN.key;
@@ -107,10 +122,14 @@ function TunerRoutingView({ scene }: { scene: SceneApi }) {
             return (
               <li key={o.key} className={t.option} data-state={state}>
                 <span className={t.optionLine} data-axis="option">
-                  <span className={t.key} aria-hidden="true">
+                  <span
+                    className={`${p.mark} ${p.markMd} ${t.key}`}
+                    data-tone={state === "active" || state === "done" ? state : undefined}
+                    aria-hidden="true"
+                  >
                     {o.key}
                   </span>
-                  <span className={t.optionText}>
+                  <span className={`${p.stack} ${t.optionText}`}>
                     <b>{o.label}</b>
                     <span>{o.team}</span>
                   </span>
@@ -127,12 +146,12 @@ function TunerRoutingView({ scene }: { scene: SceneApi }) {
       {/* The conversation of the order: where the call lands, recorded and transcribed */}
       <section className={t.conversation} aria-label={COPY.conversation}>
         <div className={t.head} data-axis="head">
-          <span className={t.mark} aria-hidden="true">
+          <span className={`${p.mark} ${p.markMd}`} data-tone="subject" aria-hidden="true">
             <MessagesSquare size={16} strokeWidth={2} />
           </span>
           <span className={t.headTitle}>{COPY.conversation}</span>
           {done ? (
-            <Badge variant="primary" appearance="soft" className={t.seal}>
+            <Badge variant="primary" appearance="soft" className={`${p.seal} ${t.seal}`}>
               <Check size={12} strokeWidth={2.5} aria-hidden="true" />
               {T.record}
             </Badge>
@@ -141,45 +160,31 @@ function TunerRoutingView({ scene }: { scene: SceneApi }) {
         <Separator />
         {/* Keyed by the loop: the lines of the last call leave at once when the next one rings (an animated exit
             stacked with the first line of the new call) */}
-        <AnimatedList key={scene.cycle} className={t.lines} distance={8} duration={0.28}>
-          {[
-            ...lines.map((l) => {
-              const Icon = l.icon;
-              return (
-                <div key={l.key} className={t.line} data-fresh={!done && l.key === newest}>
-                  <span className={t.lineHead} data-axis="line">
-                    <span className={t.dot} aria-hidden="true">
-                      <Icon size={12} strokeWidth={2.25} />
-                    </span>
-                    <span className={t.lineText}>
-                      <time>{l.time}</time>
-                      {l.text}
-                    </span>
+        <AnimatedList key={scene.cycle} className={`${p.list} ${t.lines}`} distance={8} duration={0.28}>
+          {lines.map((l) => {
+            const Icon = l.icon;
+            const fresh = !done && l.key === newest;
+            return (
+              <div key={l.key} className={t.line} data-fresh={fresh}>
+                <span className={t.lineHead} data-axis="line">
+                  <span className={`${p.mark} ${p.markXs}`} data-tone={fresh ? "active" : undefined} aria-hidden="true">
+                    <Icon size={12} strokeWidth={2.25} />
                   </span>
-                  {l.meta ? <span className={t.lineMeta}>{l.meta}</span> : null}
-                </div>
-              );
-            }),
-            ...(scene.reached("recorded")
-              ? [
-                  <div key="recorded" className={t.line} data-fresh={!done}>
-                    <span className={t.lineHead} data-axis="line">
-                      <span className={t.dot} aria-hidden="true">
-                        <AudioLines size={12} strokeWidth={2.25} />
-                      </span>
-                      <span className={t.lineText}>
-                        <time>10:07</time>
-                        {T.land}
-                      </span>
-                    </span>
-                    <blockquote className={t.transcript}>
-                      <span>{COPY.duration}</span>
-                      {T.transcript}
-                    </blockquote>
-                  </div>,
-                ]
-              : []),
-          ]}
+                  <span className={t.lineText}>
+                    <time className={p.time}>{l.time}</time>
+                    {l.text}
+                  </span>
+                </span>
+                {l.meta ? <span className={t.lineMeta}>{l.meta}</span> : null}
+                {l.quote ? (
+                  <blockquote className={`${p.bubble} ${t.transcript}`}>
+                    <span>{COPY.duration}</span>
+                    {l.quote}
+                  </blockquote>
+                ) : null}
+              </div>
+            );
+          })}
         </AnimatedList>
       </section>
     </div>
