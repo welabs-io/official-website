@@ -1,7 +1,8 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
 /* Layout only: the lib and the site primitives paint the controls (RowButton, ActionButton, TextField, Badge: their
-   look is app/lib.css CONTROLES), the kit's shared parts (components/scene-kit/parts.module.css) paint the marks, the
-   row and chip states, the stacked text, the meta line and the bubbles; this sheet places them. Every value is a token
+   look is app/lib.css CONTROLES) and the marks and history (Avatar, Timeline: app/lib.css TIMELINE E AVATAR); the
+   kit's shared parts (components/scene-kit/parts.module.css) paint only what the lib has no part for: the row and chip
+   states, the pane head, the stacked text and the bubbles; this sheet places them. Every value is a token
    of app/lib.css (decisions: control/portfolio/site-redesign/scene-kit/colour-decisions.md). Every icon sits in a box
    whose centre is the centre of the line it labels (one flex line, align center), so text and icon share one axis. */
 .split {
@@ -106,21 +107,16 @@
   }
 }
 
+/* The lib's Timeline spaces its lines and draws the line between marks (app/lib.css TIMELINE E AVATAR); the
+   AnimatedList gap would cut that line between two entries, so it is closed here */
 .history {
+  gap: 0;
   padding: var(--sp-4) var(--sp-5);
 }
 
-/* One entry: the mark and the meta line share the first row (same height, one centre); what was said sits below */
-.entry {
-  display: grid;
-  grid-template-columns: var(--mark-sm) minmax(0, 1fr);
-  grid-template-rows: var(--mark-sm) auto;
-  column-gap: var(--sp-3);
-  row-gap: var(--sp-1);
-}
-
+/* What was said is as wide as its text, under the label */
 .said {
-  grid-column: 2;
+  width: fit-content;
 }
 
 .typing {

@@ -258,6 +258,71 @@
   color: var(--indicator-muted);
 }
 
+/* TIMELINE E AVATAR: AS MARCAS DAS CENAS */
+/* The mark of a scene (a channel, a record, a history line) is the lib's Avatar with an icon fallback, painted once
+   here with the colour roles of the kit (control/portfolio/site-redesign/scene-kit/colour-decisions.md): neutral at
+   rest (the sand 100 well inside the lib's sand ring, the icon in sand 700), `data-tone="subject"` an ink icon, and
+   amber only while active (`data-tone="active"` on the Avatar, or the Avatar inside a `[data-state="active"]` row):
+   the amber fill with the ink icon and no ring, since sand 700 never sits on amber. The icon takes the size step of the
+   Avatar (default 32 px = --mark-md, lg 40 px = --mark-lg). Unlayered, so it outranks the lib's layered utilities. */
+[data-slot="avatar-fallback"] {
+  background-color: var(--card);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+[data-slot="avatar-fallback"] > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+[data-slot="avatar"][data-size="lg"] [data-slot="avatar-fallback"] > svg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+}
+[data-slot="avatar"][data-tone~="subject"] > [data-slot="avatar-fallback"] {
+  color: var(--foreground);
+}
+[data-slot="avatar"][data-tone="active"] > [data-slot="avatar-fallback"],
+[data-state="active"] [data-slot="avatar"] > [data-slot="avatar-fallback"] {
+  background-color: var(--primary);
+  color: var(--foreground);
+}
+[data-slot="avatar"]::after {
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+[data-slot="avatar"][data-tone="active"]::after,
+[data-state="active"] [data-slot="avatar"]::after {
+  border-color: transparent;
+}
+/* The lib's Timeline (its slot comes from components/lib/scene.tsx): the marker holds an Avatar, so the lib's own
+   cream ring around it steps aside and the column takes the Avatar's width; the title row is as tall as the mark and
+   centred on it, so the label and the icon share one axis; the title at the label step, the aside (a time) in sand 700
+   at the micro step */
+[data-slot="timeline"] > li > :first-child > :first-child {
+  width: auto;
+  height: auto;
+  background: none;
+  box-shadow: none;
+}
+[data-slot="timeline"] > li > :last-child {
+  min-width: 0;
+  padding-top: 0;
+}
+[data-slot="timeline"] > li > :last-child > :first-child {
+  min-height: var(--mark-md);
+  align-items: center;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+[data-slot="timeline"] > li > :last-child > :first-child > p {
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+[data-slot="timeline"] > li > :last-child > :first-child > time {
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+
 /* CONTROLES: CAMPO E BOTÃO SECUNDÁRIO */
 /* Operator (2026-10-22): the 1 px sand 600 edge of every field and the ink-at-30 % outline of the secondary buttons
    read as legacy. One look for every control of the site, decided here and applied by the site primitives of

@@ -46,8 +46,9 @@ test.describe("scene kit: relloo-inbox", () => {
           return r.top + r.height / 2;
         };
         const pairs: [string, Element, Element][] = [];
-        live.querySelectorAll('[data-align="entry"]').forEach((e, i) =>
-          pairs.push([`entry ${i}`, e.children[0], e.children[1]]),
+        // A history line is the lib's TimelineItem: its marker (first column) against its title row (second column)
+        live.querySelectorAll('[data-slot="timeline"] > li').forEach((e, i) =>
+          pairs.push([`entry ${i}`, e.children[0].children[0], e.children[1].children[0]]),
         );
         live.querySelectorAll('[data-align="record"]').forEach((e) =>
           pairs.push(["record", e.children[0], e.children[1]]),

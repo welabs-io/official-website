@@ -211,7 +211,7 @@
 }
 
 /* LISTAS E DIVISÓRIAS */
-/* The gap of a list of entries, and the sand line between sections of a pane */
+/* The gap of a list of entries, and the sand line under a section of a pane (above one: the lib's Separator) */
 .list {
   display: flex;
   flex-direction: column;
@@ -219,9 +219,6 @@
 }
 .listTight {
   gap: var(--sp-2);
-}
-.ruleTop {
-  border-top: var(--rule) solid var(--border);
 }
 .ruleBottom {
   border-bottom: var(--rule) solid var(--border);

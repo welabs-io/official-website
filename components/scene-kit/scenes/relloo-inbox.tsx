@@ -2,10 +2,13 @@
 // CENA DO RELLOO: CANAIS QUE VIRAM UM HISTÓRICO
 // Conversations from four channel categories (Mensagem, E-mail, Voz, Chat do site) arrive one by one and land in ONE
 // conversation history, the record of a contact (STORY.who). No person, name, face, initial or vendor: the channel is
-// its category and the contact is its record id. Built from the lib: SplitView (inbox list + detail), the site's control
-// primitives (RowButton rows and ActionButton chips as the scene controls, TextField as the composer), AnimatedList
-// (entries arriving), TypingDots, Badge, Separator and lucide icons. Amber marks only what happened or is active. The continuity (autoplay, loop, human take, off-screen,
-// reduced motion) is the kit's (components/scene-kit/Scene.tsx); this file only renders from `scene`.
+// its category and the contact is its record id. Built from the lib first: SplitView (inbox list + detail), Avatar with
+// an icon fallback as every mark (rows, record, history; painted by state in app/lib.css), Timeline/TimelineItem as the
+// history, the site's control primitives (RowButton rows and ActionButton chips as the scene controls, TextField as the
+// composer), AnimatedList (entries arriving), TypingDots, Badge, Separator and lucide icons. Local markup is left only
+// where the lib has no part: the row text of an inbox item, the record title and the chat bubble. Amber marks only what
+// is active. The continuity (autoplay, loop, human take, off-screen, reduced motion) is the kit's
+// (components/scene-kit/Scene.tsx); this file only renders from `scene`.
 import {
   Check,
   Contact,
@@ -21,10 +24,14 @@ import {
 import { ActionButton, Badge, RowButton, TextField } from "@/components/lib/ui";
 import {
   AnimatedList,
+  Avatar,
+  AvatarFallback,
   Separator,
   SplitView,
   SplitViewDetail,
   SplitViewList,
+  Timeline,
+  TimelineItem,
   TypingDots,
 } from "@/components/lib/scene";
 import { STORY } from "@/lib/scenes/story";
@@ -112,12 +119,35 @@ const stateOf = (scene: SceneApi, ch: Channel) =>
       ? "done"
       : "waiting";
 
-// One line of the history: what the contact said (incoming) or an event of the record itself (system)
-function Entry({
+// MARCA DE ÍCONE
+// The lib's Avatar with the channel icon as its fallback; its tone (rest, subject, active) is painted by app/lib.css
+function Mark({
   icon: Icon,
+  size,
+  tone,
+}: {
+  icon: LucideIcon;
+  size?: "default" | "lg";
+  tone?: "active" | "subject";
+}) {
+  return (
+    <Avatar size={size} data-tone={tone} aria-hidden="true">
+      <AvatarFallback>
+        <Icon strokeWidth={2} />
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+
+// One line of the history: what the contact said (incoming) or an event of the record itself (system). A one-item
+// lib Timeline, because the lib's AnimatedList wraps each child in its own div (an `li` cannot sit there); the line
+// to the next mark is the lib's, ended on the newest line (`last`)
+function Entry({
+  icon,
   label,
   time,
   fresh,
+  last,
   kind = "incoming",
   children,
 }: {
@@ -125,26 +155,23 @@ function Entry({
   label: string;
   time?: string;
   fresh: boolean;
+  last: boolean;
   kind?: "incoming" | "system";
   children: React.ReactNode;
 }) {
   return (
-    <div className={r.entry} data-fresh={fresh} data-kind={kind} data-align="entry">
-      <span
-        className={`${p.mark} ${p.markSm}`}
-        data-tone={fresh ? "active" : undefined}
-        aria-hidden="true"
+    <Timeline data-fresh={fresh} data-kind={kind}>
+      <TimelineItem
+        icon={<Mark icon={icon} tone={fresh ? "active" : undefined} />}
+        title={label}
+        aside={time ? <time>{time}</time> : undefined}
+        isLast={last}
       >
-        <Icon size={14} strokeWidth={2} />
-      </span>
-      <span className={p.meta}>
-        <b>{label}</b>
-        {time ? <time>{time}</time> : null}
-      </span>
-      <div className={`${p.bubble} ${r.said}`} data-kind={kind}>
-        {children}
-      </div>
-    </div>
+        <div className={`${p.bubble} ${r.said}`} data-kind={kind}>
+          {children}
+        </div>
+      </TimelineItem>
+    </Timeline>
   );
 }
 
@@ -165,37 +192,31 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
           </Badge>
         </p>
         <ul className={`${p.rowStates} ${r.rows}`}>
-          {CHANNELS.map((ch) => {
-            const Icon = ch.icon;
-            return (
-              <li key={ch.step}>
-                <RowButton
-                  icon={<Icon strokeWidth={2} />}
-                  markClassName={`${p.mark} ${p.markMd}`}
-                  data-state={stateOf(scene, ch)}
-                  data-channel={ch.step}
-                  onClick={() => scene.take(ch.step)}
-                >
-                  <span className={r.rowText}>
-                    <span className={r.rowTop}>
-                      <b>{ch.label}</b>
-                      <time>{ch.time}</time>
-                    </span>
-                    <span className={r.preview}>{ch.preview}</span>
+          {CHANNELS.map((ch) => (
+            <li key={ch.step}>
+              <RowButton
+                icon={<Mark icon={ch.icon} />}
+                data-state={stateOf(scene, ch)}
+                data-channel={ch.step}
+                onClick={() => scene.take(ch.step)}
+              >
+                <span className={r.rowText}>
+                  <span className={r.rowTop}>
+                    <b>{ch.label}</b>
+                    <time>{ch.time}</time>
                   </span>
-                </RowButton>
-              </li>
-            );
-          })}
+                  <span className={r.preview}>{ch.preview}</span>
+                </span>
+              </RowButton>
+            </li>
+          ))}
         </ul>
       </SplitViewList>
 
       {/* The record of the contact: one history, whatever the channel */}
       <SplitViewDetail aria-label={COPY.history} className={r.detail}>
         <div className={r.record} data-align="record">
-          <span className={`${p.mark} ${p.markLg}`} data-tone="subject" aria-hidden="true">
-            <Contact size={18} strokeWidth={2} />
-          </span>
+          <Mark icon={Contact} size="lg" tone="subject" />
           <span className={`${p.stack} ${p.stackLead} ${r.recordText}`}>
             <b>{STORY.who}</b>
             <span>{STORY.order}</span>
@@ -232,20 +253,21 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
             under its own key, in the same list as the others, so it turns into that message in place (as a separate
             child it got another key from the lib's Children.toArray, and its exit stacked with the message's enter for
             the length of the exit, pushing the window 48 to 80 px taller) */}
-        <AnimatedList className={`${p.list} ${r.history}`} distance={10} duration={0.32}>
+        <AnimatedList className={r.history} distance={10} duration={0.32}>
           <Entry
             key="created"
             icon={Package}
             label={COPY.created.label}
             time={COPY.created.time}
             fresh={false}
+            last={!newest}
             kind="system"
           >
             {COPY.created.text}
           </Entry>
           {shown.map((ch) =>
             typing && ch.step === "site" ? (
-              <Entry key={ch.step} icon={ch.icon} label={ch.label} fresh>
+              <Entry key={ch.step} icon={ch.icon} label={ch.label} fresh last>
                 <span className={r.typing}>
                   {COPY.typing}
                   <TypingDots size={5} gap={3} />
@@ -258,6 +280,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
                 label={ch.label}
                 time={ch.time}
                 fresh={!merged && ch.step === newest}
+                last={ch.step === newest}
               >
                 {ch.text}
               </Entry>
@@ -267,7 +290,8 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
 
         {/* The composer is inert here: a soft send button, so the darkest mass of the window is not a control the
             scene never uses */}
-        <div className={`${p.ruleTop} ${r.composer}`} aria-hidden="true" inert>
+        <Separator />
+        <div className={r.composer} aria-hidden="true" inert>
           <TextField
             icon={<Reply />}
             action={{ icon: <SendHorizontal />, label: COPY.send, tabIndex: -1 }}
