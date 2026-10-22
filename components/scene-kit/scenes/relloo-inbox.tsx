@@ -17,6 +17,7 @@ import {
   Mail,
   MessageSquare,
   MessagesSquare,
+  MoreHorizontal,
   Package,
   Phone,
   Search,
@@ -24,7 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { ActionButton, RowButton, TextField } from "@/components/lib/ui";
+import { ActionButton, Badge, IconButton, RowButton, TextField } from "@/components/lib/ui";
 import {
   Avatar,
   AvatarFallback,
@@ -119,8 +120,13 @@ const COPY = {
   createdNote: "3 itens",
   createdTime: "08:55",
   typing: "digitando",
-  reply: "Escreva uma resposta",
+  reply: "Responder",
   send: "Enviar",
+  call: "Ligar",
+  more: "Mais ações",
+  // The order of the story ("Pedido 1234") split into its label (muted) and its value (ink) for the meta line
+  orderLabel: STORY.order.split(" ")[0],
+  orderNumber: STORY.order.split(" ").slice(1).join(" "),
 };
 
 // "1 canal", "2 canais"
@@ -147,14 +153,14 @@ function Mark({ icon: Icon, size, tone }: { icon: LucideIcon; size?: "default" |
   );
 }
 
-// RÓTULO DE STATUS (StatusLabel DO DOMUS)
-// Port of the Domus StatusLabel (erpnext front ui-kit/components/status-dot.tsx): a soft pill with an 8 px dot before
-// the label, inline with the record's title, never a black chip. Live is the amber dot (an area); at rest the quiet
-// dot. The caller keys it by status, so a change lands with a pop of the dot instead of a cut.
+// RÓTULO DE STATUS (MINIDOT DO DOMUS)
+// The status the Domus DetailHeader asks for, "a StatusLabel minidot, never a chip": the 8 px ToneDot of the Domus
+// (erpnext front ui-kit/components/status-dot.tsx) before the label, inline with the title, no fill. Live is the amber
+// dot (an area); at rest the quiet dot. The caller keys it by status, so a change lands with a pop of the dot.
 function StatusLabel({ live, label }: { live: boolean; label: string }) {
   return (
-    <span className={r.state} data-live={live}>
-      <span className={r.dot} aria-hidden="true" />
+    <span className={r.state} data-live={live} data-header="status" data-axis-pair="">
+      <span className={r.dot} data-dot="" aria-hidden="true" />
       {label}
     </span>
   );
@@ -197,7 +203,10 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
       <SplitViewList aria-label={COPY.channels} className={r.list}>
         <p className={`${p.paneHead} ${r.paneHead}`}>
           <span>{COPY.channels}</span>
-          <span className={r.count}>{CHANNELS.length}</span>
+          {/* The count is the lib's Badge as its count story draws it (components-badge--count) */}
+          <Badge variant="neutral" appearance="soft">
+            {CHANNELS.length}
+          </Badge>
         </p>
         <ul className={`${p.rowStates} ${r.rows}`}>
           {CHANNELS.map((ch) => (
@@ -231,34 +240,46 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
 
       {/* The record of the contact: one history, whatever the channel */}
       <SplitViewDetail aria-label={COPY.history} className={r.detail}>
-        {/* The Domus DetailHeader: identity, the title with its status inline, one meta line, the line under it */}
-        <div className={r.record} data-align="record">
-          <span className={r.recordMark}>
-            <Mark icon={Contact} size="lg" />
-          </span>
-          <span className={r.recordText}>
-            <span className={r.recordTop}>
-              <b>{STORY.who}</b>
-              <StatusLabel
-                key={arrived > 0 ? "live" : "waiting"}
-                live={arrived > 0}
-                label={arrived > 0 ? COPY.live : COPY.waiting}
-              />
+        {/* The Domus DetailHeader (erpnext front ui-kit/components/detail-header.tsx):
+              [identity]  H1 ● Status ................ [actions]
+                          meta (values in ink, labels muted)
+            the identity and the text block centred on one another, the actions on the same line (under it below sm),
+            the hairline under it. Inert here: the actions show the record's tools, they do nothing */}
+        <div className={r.record}>
+          <div className={r.recordMain} data-align="record">
+            {/* The Domus LogoThumb frame: the chrome well with the hairline, the contact's icon, no initials */}
+            <span className={r.identity} data-header="identity" aria-hidden="true">
+              <Contact />
             </span>
-            <span className={r.recordMeta}>
-              {STORY.order} ·{" "}
-              {/* The count of the record updates as each line lands: keyed, so the new number rolls in */}
-              <span key={arrived} className={r.roll}>
-                {arrived}
-              </span>{" "}
-              {channelsLabel(arrived)}, uma conversa
+            <span className={r.recordText} data-header="block">
+              <span className={r.recordTop}>
+                <b data-header="title">{STORY.who}</b>
+                <StatusLabel
+                  key={arrived > 0 ? "live" : "waiting"}
+                  live={arrived > 0}
+                  label={arrived > 0 ? COPY.live : COPY.waiting}
+                />
+              </span>
+              <span className={r.recordMeta} data-header="meta">
+                {COPY.orderLabel} <b>{COPY.orderNumber}</b>
+                <span aria-hidden="true"> · </span>
+                {/* The count of the record updates as each line lands: keyed, so the new number rolls in */}
+                <b key={arrived} className={r.roll}>
+                  {arrived}
+                </b>{" "}
+                {channelsLabel(arrived)} na conversa
+              </span>
             </span>
-          </span>
+          </div>
+          <div className={r.actions} data-header="actions" aria-hidden="true" inert>
+            <IconButton icon={<Phone />} label={COPY.call} emphasis="outline" tabIndex={-1} />
+            <IconButton icon={<MoreHorizontal />} label={COPY.more} emphasis="outline" tabIndex={-1} />
+          </div>
         </div>
 
         {/* Below lg the inbox pane is off screen (SplitView shows one pane): the channels become the Domus count
             chips under the header, each with the number of its lines in the history */}
-        <div className={`${p.choiceStates} ${r.chips}`}>
+        <div className={r.chips}>
           {CHANNELS.map((ch) => {
             const Icon = ch.icon;
             const state = stateOf(scene, ch);
@@ -266,6 +287,7 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
               <ActionButton
                 key={ch.step}
                 size="xs"
+                emphasis="outline"
                 icon={<Icon />}
                 data-state={state}
                 data-chip={ch.step}
@@ -324,18 +346,18 @@ function RellooInboxView({ scene }: { scene: SceneApi }) {
           })}
         </Timeline>
 
-        {/* The composer is inert here: it answers on the channel of origin (the chip follows the newest line), with
-            the black send; every piece inside the 40 px field is 32 px, 4 px from the edge */}
+        {/* The composer is inert here: it answers on the channel of origin (the lib's Badge with the channel's icon,
+            following the newest line), with the black send; the field and its pieces are the lib's, centred by
+            app/lib.css CONTROLES */}
         <div className={r.composer} aria-hidden="true" inert>
           <TextField
             lead={
-              <span key={origin.step} className={r.origin}>
-                <OriginIcon aria-hidden="true" />
+              <Badge key={origin.step} variant="neutral" appearance="soft" className={r.origin}>
+                <OriginIcon data-icon="inline-start" aria-hidden="true" />
                 {origin.label}
-              </span>
+              </Badge>
             }
             submit={{ icon: <Send />, label: COPY.send, tabIndex: -1 }}
-            groupClassName={r.composerField}
             readOnly
             tabIndex={-1}
             placeholder={COPY.reply}
@@ -358,7 +380,6 @@ function ChromeSearch() {
     <span className={r.search} aria-hidden="true" inert>
       <TextField
         icon={<Search />}
-        size="sm"
         readOnly
         tabIndex={-1}
         placeholder={COPY.search}

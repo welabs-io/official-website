@@ -1,10 +1,9 @@
 /* CENA DO RELLOO: INBOX E HISTÓRICO */
-/* Layout of the round 2 (Domus patterns, control/portfolio/site-redesign/scene-kit/relloo-round2.md): the lib and the
-   site primitives paint the controls (RowButton, ActionButton, TextField: app/lib.css CONTROLES) and the marks
-   (Avatar: app/lib.css TIMELINE E AVATAR); the kit's shared parts (components/scene-kit/parts.module.css) paint the
-   row and chip states, the pane head and the bubbles; this sheet places them and choreographs each arrival. Every
-   value is a token of app/lib.css, on the 4 px grid; the type is the closed scale (title 20/28, body and label 14/20,
-   meta 12/16). Every icon sits in a box whose centre is the centre of the line it labels. */
+/* Layout of round 3 (2026-10-22): every control is the published lib's, as its stories draw it (Button, InputGroup,
+   Badge, Avatar: e2e/lib-parity.spec.ts), and the record header is the Domus DetailHeader; this sheet only places them,
+   paints the scene's states (the active row, the arriving line) and choreographs each arrival. Every value is a token
+   of app/lib.css; the radii are the lib's (a row, a bubble and the identity at its control radius, the window at its
+   surface radius). The alignment is held by numbers, not by eye: e2e/scene-kit-geometry.spec.ts. */
 .split {
   position: relative;
   height: auto;
@@ -37,52 +36,37 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
-  padding: var(--sp-4) var(--sp-2);
+  gap: var(--sp-2);
+  padding: var(--sp-5) var(--sp-3);
   background: var(--card);
 }
 
-/* "Canais" and its count, the count in the chrome well like the count of a Domus count chip */
+/* "Canais" and its count (the lib's Badge) */
 .paneHead {
   display: flex;
   min-height: var(--control-height-sm);
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);
-  padding: 0 var(--sp-2);
-}
-.count {
-  display: inline-flex;
-  min-width: var(--sp-5);
-  height: var(--sp-5);
-  align-items: center;
-  justify-content: center;
-  padding: 0 var(--sp-2);
-  border-radius: var(--r-dot);
-  background: var(--muted);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-label);
-  font-variant-numeric: tabular-nums;
-  color: var(--muted-foreground);
+  padding: 0 var(--sp-3);
 }
 
 .rows {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-row);
+  gap: var(--sp-1);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 /* The row (the site's RowButton, the whole row is the target as the Domus list row): mark and text on one centre
-   line, 52 px tall; its state paint is the shared rowStates (the ink veil on hover, amber-50 while active) */
+   line; its state paint is the shared rowStates (the ink veil on hover, amber-50 while active) */
 .rows [data-state] {
   min-height: var(--row-min);
   gap: var(--sp-3);
   align-items: center;
-  padding: var(--sp-1) var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
 }
 
 .rowText {
@@ -104,7 +88,6 @@
 }
 .rowTop b {
   font-weight: var(--weight-label);
-  transition: font-weight var(--dur-2) var(--ease-out);
 }
 .rowTop time {
   font-size: var(--t-micro);
@@ -138,26 +121,43 @@
 }
 
 /* CABEÇALHO DO REGISTRO (DetailHeader DO DOMUS) */
-/* The square mark, the title with its status inline, one meta line, the line under it */
+/* `flex items-center justify-between gap-6 border-b`: the identity and the text block on one centre (gap 12), the
+   title (22/28, 600, tight) with its status minidot on its line, the meta under the title (14/20, labels in the lib's
+   muted text, values in ink), the actions on the right; below sm the actions wrap under the block */
 .record {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-5);
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
   border-bottom: var(--rule) solid var(--border);
 }
-.recordMark {
-  display: inline-flex;
-  flex: none;
+.recordMain {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
 }
-.recordMark [data-slot="avatar"],
-.recordMark [data-slot="avatar-fallback"] {
+/* The Domus LogoThumb frame: the chrome well, the hairline, the lib's control radius, the icon in the muted text */
+.identity {
+  display: inline-flex;
+  width: var(--mark-xl);
+  height: var(--mark-xl);
+  flex: none;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--r-ctl);
+  background: var(--muted);
+  box-shadow: var(--edge-ring);
+  color: var(--muted-foreground);
+}
+.identity > svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
 }
 .recordText {
   display: flex;
   min-width: 0;
-  flex: 1;
   flex-direction: column;
   gap: var(--sp-1);
 }
@@ -168,10 +168,11 @@
   gap: var(--sp-1) var(--sp-3);
 }
 .recordTop > b {
-  font-size: var(--t-title);
+  font-size: var(--t-page-title);
   line-height: var(--line-title);
   font-weight: var(--weight-title);
-  letter-spacing: var(--ls-heading);
+  letter-spacing: var(--ls-display);
+  color: var(--foreground);
 }
 .recordMeta {
   font-size: var(--t-label);
@@ -179,26 +180,30 @@
   font-variant-numeric: tabular-nums;
   color: var(--muted-foreground);
 }
+.recordMeta b {
+  font-weight: var(--weight-label);
+  color: var(--foreground);
+}
 /* The count of the record rolls in when a line lands (keyed by the number) */
 .roll {
   display: inline-block;
-  font-weight: var(--weight-label);
-  color: var(--foreground);
   animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
 }
+.actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sp-2);
+}
 
-/* The Domus StatusLabel: the chrome pill, an 8 px dot, the label at the meta step in ink */
+/* The status minidot: the 8 px dot and the label (14/20, 500, ink), no fill */
 .state {
   display: inline-flex;
-  height: var(--sp-5);
   flex: none;
   align-items: center;
   gap: calc(var(--sp-1) + var(--sp-1) / 2);
-  padding: 0 calc(var(--sp-2) + var(--sp-1) / 2);
-  border-radius: var(--r-dot);
-  background: var(--muted);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
   font-weight: var(--weight-label);
   color: var(--foreground);
   animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
@@ -215,31 +220,19 @@
   animation: pop var(--dur-3) var(--ease-spring) var(--dur-3) both;
 }
 
-/* Below lg the channels are the Domus count chips under the record (the inbox pane is off screen): a round chip on
-   the white surface with the hairline, the label, and the count in stone, which rolls when its line lands */
+/* Below lg the channels are the lib's outline buttons under the record (the inbox pane is off screen), each with the
+   number of its lines; the one arriving takes the amber-50 veil of the selected row */
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-5) 0;
-}
-.chips [data-chip][data-state] {
-  height: var(--mark-sm);
-  gap: calc(var(--sp-1) + var(--sp-1) / 2);
-  padding: 0 calc(var(--sp-2) + var(--sp-1) / 2);
-  border-radius: var(--r-dot);
-  background-color: var(--card);
-  box-shadow: var(--edge-ring);
-  font-size: var(--t-label);
-  font-weight: var(--weight-label);
-  color: var(--foreground);
+  padding: var(--sp-4) var(--sp-5) 0;
 }
 .chips [data-chip][data-state="waiting"] {
   color: var(--muted-foreground);
 }
 .chips [data-chip][data-state="active"] {
   background-color: var(--selected);
-  box-shadow: none;
 }
 .tally {
   display: inline-block;
@@ -255,27 +248,18 @@
 }
 
 /* LINHA DO TEMPO (ActivityFeed DO DOMUS) */
-/* ONE lib Timeline with its rail: each line is the 28 px mark, the title row (the channel and its time) centred on
-   it, and the bubble under it; the rail runs from one mark to the next, 4 px clear of each */
+/* ONE lib Timeline with its rail: each line is the mark, the title row (the channel and its time) centred on it, and
+   the bubble under it; the rail runs from one mark to the next, 4 px clear of each */
 .history {
   flex: 1;
   padding: var(--sp-5);
 }
-.history [data-slot="avatar"] {
-  width: var(--mark-sm);
-  height: var(--mark-sm);
-}
-.history [data-slot="avatar-fallback"] > svg {
-  width: var(--icon-md);
-  height: var(--icon-md);
-}
 .markSlot {
   display: inline-flex;
 }
-/* The title row: the channel at the label step, weight 500, its time and note in stone at the meta step */
+/* The title row: the channel at the label step, weight 500, its time and note in the muted text at the meta step */
 /* (.history before .entry: one class more than app/lib.css's Timeline rules, which these refine) */
 .history .entry > :last-child > :first-child {
-  min-height: var(--mark-sm);
   justify-content: flex-start;
   gap: var(--sp-2);
 }
@@ -293,7 +277,7 @@
   color: var(--muted-foreground);
 }
 /* The rail (the lib's line under a mark) grows down from the mark when the next line lands; the rail into the line
-   arriving now is the sand control edge, the others the line between panels */
+   arriving now is the ink at the lib's outline weight, the others the line between panels */
 .entry > :first-child > :last-child:not(:first-child) {
   margin-bottom: var(--sp-1);
   transform-origin: top;
@@ -301,7 +285,7 @@
   animation: grow var(--dur-3) var(--ease-out) var(--dur-1) both;
 }
 .entry:has(+ .fresh) > :first-child > :last-child:not(:first-child) {
-  background-color: var(--input);
+  background-color: var(--edge-drawn);
 }
 
 /* A line lands: it rises a step and fades in after the trace has left the row, its amber mark pops on the spring */
@@ -323,54 +307,15 @@
 }
 
 /* COMPOSITOR */
-/* The 40 px field with the line above it; every piece inside is 32 px, 4 px from the field's edge: the chip of the
-   channel of origin (it follows the newest line) and the black send */
+/* The lib's field with the line above it; its pieces (the channel's Badge, the black send) are centred by app/lib.css
+   CONTROLES. The chip of origin swaps in place when the newest line changes. */
 .composer {
   margin-top: auto;
   padding: var(--sp-4) var(--sp-5);
   border-top: var(--rule) solid var(--border);
 }
-.composerField {
-  min-height: var(--control-height-lg);
-  padding: 0 var(--sp-1);
-}
-.composerField [data-slot="input-group-addon"] {
-  padding: 0;
-}
-.composerField [data-slot="input-group-control"] {
-  padding-inline: var(--sp-3);
-  font-size: var(--t-label);
-}
-.composerField [data-slot="input-group-addon"] button {
-  height: var(--control-height-sm);
-  gap: calc(var(--sp-1) + var(--sp-1) / 2);
-  padding: 0 var(--sp-3);
-  border-radius: var(--r-sm);
-  font-size: var(--t-label);
-  font-weight: var(--weight-label);
-}
-.composerField [data-slot="input-group-addon"] button svg {
-  width: var(--icon-md);
-  height: var(--icon-md);
-}
 .origin {
-  display: inline-flex;
-  height: var(--control-height-sm);
-  flex: none;
-  align-items: center;
-  gap: calc(var(--sp-1) + var(--sp-1) / 2);
-  padding: 0 var(--sp-3) 0 calc(var(--sp-2) + var(--sp-1) / 2);
-  border-radius: var(--r-sm);
-  background: var(--muted);
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-label);
-  color: var(--foreground);
   animation: swap var(--dur-2) var(--ease-out) var(--dur-2) backwards;
-}
-.origin > svg {
-  width: var(--icon-md);
-  height: var(--icon-md);
 }
 
 @keyframes rise {
@@ -398,19 +343,20 @@
 }
 
 @media (max-width: 640px) {
+  .record {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+  /* The identity steps down to the lib's lg mark, so the title and its status keep one line on a phone */
+  .identity {
+    width: var(--mark-lg);
+    height: var(--mark-lg);
+  }
   .record,
   .history,
-  .chips {
-    padding-inline: var(--sp-4);
-  }
+  .chips,
   .composer {
     padding-inline: var(--sp-4);
-  }
-  /* The chip of origin keeps only its icon on a phone, so the reply keeps its room */
-  .origin {
-    width: var(--control-height-sm);
-    justify-content: center;
-    padding: 0;
-    font-size: 0;
   }
 }

@@ -8,9 +8,9 @@
 /* Every token of the site (colour, surface, line, radius, space, type, shadow, motion, icon) lives in ONE place:
    app/lib.css, block TOKENS DO SITE (operator, 2026-10-22: one change there reflects on the whole site). This sheet only
    reads them. The one remap kept here: on the page outside the lib's components, --input is the 3:1 edge of a drawn
-   control (sand 600, --input-hover), while the lib's fields keep their lighter edge (app/lib.css CONTROLES). */
+   control (sand 600, --edge-drawn), while the lib's fields keep their lighter edge (app/lib.css CONTROLES). */
 .page {
-  --input: var(--input-hover);
+  --input: var(--edge-drawn);
   background:
     var(--halo) no-repeat,
     var(--page);

@@ -13,7 +13,7 @@ const LAB = "/lab/scenes/relloo-inbox";
 // DESVIOS PERMITIDOS
 // `control|property` → why the site differs from the lib's welabs brand on purpose
 const ALLOWED: Record<string, string> = {
-  "field|borderColor":
+  "field|borderTopColor":
     "the lib's welabs preset draws the field edge in --input oklch(0.6 0 0) (4.23:1 on white), the dark line the operator rejected twice (rounds 1 and 2); the site draws the default brand's edge, the --border hairline. Below the 3:1 of WCAG 1.4.11: operator decision pending",
   "send|backgroundColor":
     "the action is black (Welabs UI v3: --primary #121212 with white text); the lib's welabs primary is the amber, which the site keeps for what is live (--signal)",

@@ -93,6 +93,8 @@
      meta 12/16 (the label and micro steps above) */
   --t-title: 20px;
   --t-subtitle: 16px;
+  /* The H1 of a record, the Domus `text-page-title` (erpnext front welabs-theme.css: 22/28, 600) */
+  --t-page-title: 22px;
   --line-title: 28px;
   --text-hero: var(--t-display);
   --text-display: var(--t-display);
@@ -152,6 +154,8 @@
   --bar-active: 3px;
   --edge-ring: inset 0 0 0 var(--rule) var(--border);
   --edge-control: inset 0 0 0 var(--rule) var(--input);
+  /* The 3:1 edge of a control drawn on the page outside the lib (sand 600, 4.30:1 on white; shell.module.css) */
+  --edge-drawn: #827968;
   --edge-ring-active: inset 0 0 0 var(--rule) var(--primary);
   /* The ring of the Domus logo (domus-light.svg: outer corner = inner corner + stroke): 12 px on the page, 10 px (6 px on
      a phone) around the modules of a product window, with an inner corner of 18 px (12 px) */
@@ -161,11 +165,8 @@
   --domus-ring-scene-sm: 6px;
   --r-domus-inner: 18px;
   --r-domus-inner-sm: 12px;
-  /* The control heights of Welabs UI v3 under the lib's own names: 36 px for a field or a button, 40 px for the
-     composer of a conversation (-lg), 32 px for a small control (-sm) */
-  --control-height: 36px;
-  --control-height-lg: 40px;
-  --control-height-sm: 32px;
+  /* Control heights and radii are the lib's own (--control-height-* and --control-radius of its theme, 40 px and 14 px
+     at md): round 3 (2026-10-22) drops the site's 36/32 px and 8 px, e2e/lib-parity.spec.ts holds them to the lib */
 
   /* SOMBRAS */
   /* A card at rest has none; --shadow-raise is the v3 md (what lifts on hover), --shadow-pop the v3 lg (the window and
@@ -194,6 +195,9 @@
   --mark-sm: 28px;
   --mark-md: 32px;
   --mark-lg: 40px;
+  /* The identity of a record: the Domus LogoThumb at md (48 px) with a 20 px icon (its size-5) */
+  --mark-xl: 48px;
+  --icon-xl: 20px;
   --row-min: 52px;
   /* The status dot of a window's chrome, and the widest a product window gets */
   --dot: 8px;
@@ -244,38 +248,41 @@
      --card, --popover   surface   white      #ffffff / #1a1a1d (window, card, field, received bubble, menu)
      --muted, --secondary chrome   stone-100  #efefeb / #202024 (window bar, tab rail, neutral chip, mark at rest)
      --border            line      stone-200  #e5e5e1 / #2c2c30 (between panels only, never between list rows)
-     --input             control   sand edge  #9d927e / #77777d (3.07:1 on white / 3.9:1), --input-hover the lib's
-                                   and Domus's sand 600 #827968 (4.30:1); round 2 (2026-10-22): the neutral #8a8a86
-                                   read as a black line, the brand's sand at the 3:1 floor replaces it
-     --foreground        ink       #121212 / #f5f5f3; --muted-foreground #6b6a64 / #b4b4b0 (text only; round 2: the
-                                   old #4a4a48 at 8.9:1 read as the ink, this one is 5.43:1 on white, 4.71:1 on the
-                                   chrome and 4.94:1 on amber-50, every surface secondary text sits on)
+     --input             control   the line (--border), as the lib's default brand; round 3 (2026-10-22): the dark
+                                   edges (#8a8a86, #9d927e, the preset's oklch(0.6 0 0)) read as black lines
+     --foreground        ink       the preset's #1c1a16 / #f5f5f3; --muted-foreground the preset's sand 700 #625b4e / #b4b4b0
+                                   (text only; 6.72:1 on white, 5.83:1 on the chrome)
      --primary           black     #121212 + white text, inverted on dark: buttons, anchor-buttons, badges and
                                    chips, the active segment, checkbox, switch, the chosen day, the sent bubble
      --signal            amber     #ffb020 only for what is live now (at most 3 pieces per still screen, always an
                                    area, never text nor a thin line); --signal-soft amber-50 the selected row and the
                                    arriving bubble; --signal-ink amber-700, amber as text only when unavoidable
      --success           done      #1e7a4c on --success-soft #e8f4ed: the end is never amber
-     --accent            veil      ink at 4 % (hover of a ghost control or a row), --veil-press ink at 7 %
+     --veil-hover        veil      ink at 4 % (hover of a row of the kit), --veil-press ink at 7 %; the ghost
+                                   control's hover (--accent) and the focus ring (--ring) are the lib's
    --muted-foreground is a text and icon tone only, never a fill; components/scene-kit/scene-colour.test.ts fails on
    it as a fill. --indicator-muted (stone-300) is the quiet dot at 3:1: a resting status, the typing dots. */
 :root,
 [data-theme="welabs"] {
   --background: #f7f7f5;
-  --foreground: #121212;
+  /* Round 3: the text ink is the welabs preset's own (#1c1a16, 17.5:1 on white), written out so the page outside the
+     lib reads the same ink; the black of the action stays --primary */
+  --foreground: #1c1a16;
   --card: #ffffff;
-  --card-foreground: #121212;
+  --card-foreground: #1c1a16;
   --popover: #ffffff;
-  --popover-foreground: #121212;
+  --popover-foreground: #1c1a16;
   --muted: #efefeb;
   --secondary: #efefeb;
-  --secondary-foreground: #121212;
+  --secondary-foreground: #1c1a16;
   --border: #e5e5e1;
   --edge-subtle: var(--border);
   --edge-strong: var(--border);
-  --input: #9d927e;
-  --input-hover: #827968;
-  --muted-foreground: #6b6a64;
+  /* Round 3: the field edge is the line (the default brand of the lib draws --input = --border); the welabs preset's
+     oklch(0.6 0 0) is the dark edge the operator rejected (e2e/lib-parity.spec.ts ALLOWED, with the WCAG note) */
+  --input: var(--border);
+  /* The welabs preset's own secondary text (sand 700): 6.72:1 on white, 5.83:1 on the chrome, 6.12:1 on amber-50 */
+  --muted-foreground: #625b4e;
   --indicator-muted: #8a8a86;
   --primary: #121212;
   --primary-foreground: #ffffff;
@@ -288,11 +295,8 @@
   --signal-soft: #fff3dd;
   --signal-ink: #875f21;
   --selected: var(--signal-soft);
-  --accent: rgb(18 18 18 / 0.04);
-  --accent-foreground: #121212;
   --veil-hover: rgb(18 18 18 / 0.04);
   --veil-press: rgb(18 18 18 / 0.07);
-  --ring: #121212;
   --success: #1e7a4c;
   --success-foreground: #ffffff;
   --success-soft: #e8f4ed;
@@ -317,8 +321,7 @@
   --border: #2c2c30;
   --edge-subtle: var(--border);
   --edge-strong: var(--border);
-  --input: #77777d;
-  --input-hover: #a6a6a2;
+  --input: var(--border);
   --muted-foreground: #b4b4b0;
   --indicator-muted: #77777d;
   --primary: #f5f5f3;
@@ -330,11 +333,8 @@
   --signal-foreground: #121212;
   --signal-soft: #2c2416;
   --signal-ink: #ffcc74;
-  --accent: rgb(245 245 243 / 0.06);
-  --accent-foreground: #f5f5f3;
   --veil-hover: rgb(245 245 243 / 0.06);
   --veil-press: rgb(245 245 243 / 0.1);
-  --ring: #f5f5f3;
   --success: #6fcf97;
   --success-foreground: #121212;
   --success-soft: #173525;
@@ -379,14 +379,7 @@
   background-color: var(--signal);
   color: var(--signal-foreground);
 }
-/* v3: a mark has no ring (the lib draws one in its ::after) */
-[data-slot="avatar"]::after {
-  border-color: transparent;
-}
-[data-slot="avatar"][data-tone="active"]::after,
-[data-state="active"] [data-slot="avatar"]::after {
-  border-color: transparent;
-}
+/* Round 3: the mark keeps the lib's own ring (its ::after hairline), as the Avatar stories draw it */
 /* The lib's Timeline (its slot comes from components/lib/scene.tsx): the marker holds an Avatar, so the lib's own
    cream ring around it steps aside and the column takes the Avatar's width; the title row is as tall as the mark and
    centred on it, so the label and the icon share one axis; the title at the label step, the aside (a time) in sand 700
@@ -417,62 +410,49 @@
   color: var(--muted-foreground);
 }
 
-/* CONTROLES: CAMPO E BOTÃO SECUNDÁRIO */
-/* Welabs UI v3 (2026-10-22): every control edge at 3:1, as WCAG 1.4.11 asks. One look for every control of the site,
-   decided here and applied by the site primitives of components/lib/ui.tsx (ActionButton, IconButton, TextField,
-   RowButton), never per call site:
-   - field (round 2, the Domus field): the white surface (--field) with the brand's sand edge at rest (--input, 3.07:1
-     on white), the sand 600 of the lib and of the Domus on hover (--input-hover, 4.30:1) and the Domus fine focus
-     (the edge in ink, doubled inward, no outer band);
-   - primary button: black with white text (--primary), --primary-hover on hover; never a pill (--r-ctl, 8 px);
-   - secondary button: the lib's `soft` appearance on the chrome, the ghost one on the ink veil (--accent).
-   --input is also the lib's edge of Checkbox, Switch, Radio and Slider. */
-:root,
-[data-theme="welabs"] {
-  --field: var(--card);
+/* CONTROLES: A LIB COMO REFERÊNCIA */
+/* Round 3 (2026-10-22): the published lib (Storybook, welabs brand) is the reference for every control; the site no
+   longer paints the field's fill, hover or focus, the button's appearances, nor the control's height or radius
+   (e2e/lib-parity.spec.ts compares them with the stories). What stays here is only the inside of a field: the lib's
+   addon pads its pieces by its own rules, so a chip or a button in an addon sat off centre (the "Mensagem" chip 8 px
+   from the top and 0 from the bottom, "Enviar" flush on the right edge); a piece of the size of a small control now
+   sits as far from the side of the field as from its top and bottom (e2e/scene-kit-geometry.spec.ts). */
+:root {
+  /* The gap around a small control inside a md field: (field − its 2 borders − the small control) / 2 */
+  --field-inset: calc((var(--control-height-md) - 2 * var(--rule) - var(--control-height-sm)) / 2);
 }
-/* The lib paints the field transparent (fieldSurfaceClasses in its dist): the well takes --field, except while disabled
-   (the lib's input/50 wash). Unlayered, so it outranks the lib's layered utilities without !important. */
-[data-slot="input-group"]:not(:has(:disabled)),
-[data-slot="input"]:not(:disabled) {
-  background-color: var(--field);
+[data-slot="input-group"] > [data-slot="input-group-addon"]:has(> :is([data-slot="button"], [data-field-piece])) {
+  padding-block: 0;
 }
-/* Focus, round 2 (2026-10-22): the Domus fine focus (erpnext front welabs-theme.css "ANEL DENTRO DO CAMPO E FOCO
-   FINO"): no band outside the field, its own edge turns to the ring colour and doubles inward (2 px of ink, 18.7:1
-   on white), so the field keeps its outline and never grows a 4 px halo. The text control inside draws nothing. */
-:root,
-[data-theme="welabs"] {
-  --field-focus: inset 0 0 0 var(--rule) var(--ring);
+[data-slot="input-group"] > [data-slot="input-group-addon"][data-align="inline-start"]:has(> [data-field-piece]) {
+  margin-inline: 0;
+  padding-inline: var(--field-inset) 0;
 }
-[data-slot="input-group-control"]:focus-visible {
-  box-shadow: none;
+[data-slot="input-group"] > [data-slot="input-group-addon"][data-align="inline-end"]:has(> [data-slot="button"]) {
+  margin-inline: 0;
+  padding-inline: 0 var(--field-inset);
 }
-[data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible:not([aria-invalid="true"])),
-[data-slot="input"]:focus-visible:not([aria-invalid="true"]) {
-  border-color: var(--ring);
-  box-shadow: var(--field-focus);
-  outline: none;
+/* A field with only a leading icon (a search): the icon and the end of the text sit at the lib's small control
+   padding from either side */
+[data-slot="input-group"] > [data-slot="input-group-addon"][data-align="inline-start"]:has(> svg:only-child) {
+  padding-inline-start: var(--control-px-sm);
 }
-/* The edge deepens on hover only: focus keeps the lib's transparent edge under the ring, an invalid field its red edge */
-[data-slot="input-group"]:hover:not(:focus-within, :has(:disabled, [aria-invalid="true"])),
-[data-slot="input"]:hover:not(:focus, :disabled, [aria-invalid="true"]) {
-  border-color: var(--input-hover);
+[data-slot="input-group"]:not(:has(> [data-align="inline-end"])) > [data-slot="input-group-control"] {
+  padding-inline-end: var(--control-px-sm);
+}
+[data-slot="input-group"] > [data-slot="input-group-addon"] > [data-field-piece] {
+  height: var(--control-height-sm);
 }
 
 /* CAMADA DO SITE SOBRE A MARCA WELABS */
-/* Colour: only the PAPÉIS DE COR block above. Structure: Welabs UI v3 (control 36 px, composer 40 px, small 32 px,
-   control radius 8 px, surface radius 12 px), under the lib's own names. */
+/* Colour: only the PAPÉIS DE COR block above. Structure: the lib's own (its control heights, radii, paddings and
+   surfaces); the kit's radius names follow them, so a window is the lib's surface and a row, a bubble or a square
+   mark the lib's control. */
 [data-theme="welabs"] {
   --font-sans: "Inter", system-ui, sans-serif;
   --font-heading: "Inter", system-ui, sans-serif;
-  --control-height: 2.25rem;
-  --control-height-md: 2.25rem;
-  --control-height-lg: 2.5rem;
-  --control-height-sm: 2rem;
-  --control-px-md: 0.75rem;
-  --control-radius: 0.5rem;
-  --surface-radius: 0.75rem;
-  --surface-px: 1rem;
-  --surface-py: 1rem;
-  --surface-gap: 0.75rem;
+  --r-ctl: var(--control-radius);
+  --r-card: var(--control-radius);
+  --r-win: var(--surface-radius);
+  --r-pill: var(--control-radius);
 }

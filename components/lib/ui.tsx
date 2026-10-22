@@ -14,10 +14,6 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
 } from "@imagineapps-team/react/ui";
 
 export {
@@ -43,10 +39,13 @@ export {
 /** A rendered icon, e.g. `<RotateCcw />` from lucide-react */
 export type ControlIcon = ReactElement;
 
-// Emphasis -> the lib's axes. Secondary is the lib's `soft` as it ships: no edge, the label and the icon carry it
+// Emphasis -> the lib's axes, as its stories pair them (components-button--with-icon, components-buttongroup--icons).
+// Secondary is the lib's `soft` as it ships: no edge, the label and the icon carry it; outline is the lib's neutral
+// outline (ink at 30 % for the edge), the pattern of a toolbar and of the actions of a record
 const EMPHASIS = {
   primary: { variant: "primary", appearance: "solid" },
   secondary: { variant: "neutral", appearance: "soft" },
+  outline: { variant: "neutral", appearance: "outline" },
   quiet: { variant: "neutral", appearance: "ghost" },
 } as const;
 type Emphasis = keyof typeof EMPHASIS;
@@ -70,9 +69,9 @@ export function ActionButton({
 }) {
   return (
     <Button type={type} size={size} {...EMPHASIS[emphasis]} {...rest}>
-      {/* `contents`: the SVG itself is the flex item, centred on the label by the lib; data-icon gives it the lib's
-          tighter leading padding */}
-      <span data-icon="inline-start" aria-hidden="true" className="contents">
+      {/* `contents`: the SVG itself is the flex item, centred on the label by the lib. No data-icon: the lib's own
+          with-icon story keeps the full padding of its size (round 3, e2e/lib-parity.spec.ts) */}
+      <span aria-hidden="true" className="contents">
         {icon}
       </span>
       {children}
@@ -102,47 +101,6 @@ export function IconButton({
         {icon}
       </span>
     </Button>
-  );
-}
-
-// AÇÃO SÓ DE ÍCONE COM DICA (PADRÃO DO DOMUS)
-// Port of the Domus IconAction (erpnext front/src/ui-kit/components/icon-action.tsx): the lib's Button at the icon size
-// (36 px), neutral outline, round, the 16 px lucide icon at its default stroke, its name in the lib's Tooltip and in
-// the aria-label. Site-agnostic subset: no loading or inert state (no consumer needs one). The provider is local, since
-// the site has no app-wide TooltipProvider.
-/** An icon-only action named by its tooltip (the Domus IconAction) */
-export function IconAction({
-  icon,
-  label,
-  side,
-  type = "button",
-  ...rest
-}: Omit<ButtonBase, "aria-label"> & {
-  icon: ControlIcon;
-  label: string;
-  side?: ComponentProps<typeof TooltipContent>["side"];
-}) {
-  return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            type={type}
-            size="icon"
-            variant="neutral"
-            appearance="outline"
-            aria-label={label}
-            {...rest}
-            className={["rounded-full", rest.className].filter(Boolean).join(" ")}
-          >
-            <span aria-hidden="true" className="contents">
-              {icon}
-            </span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side={side}>{label}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }
 
@@ -204,7 +162,15 @@ export function TextField({
       className={[size === "sm" ? "min-h-control-sm" : "", groupClassName].filter(Boolean).join(" ") || undefined}
     >
       <InputGroupAddon align="inline-start" aria-hidden={lead ? undefined : "true"}>
-        {lead ?? icon}
+        {/* A lead (a chip) is a piece of the field: a small control's height, as far from the side as from the top
+            and the bottom (app/lib.css CONTROLES) */}
+        {lead ? (
+          <span data-field-piece="" className="inline-flex items-center">
+            {lead}
+          </span>
+        ) : (
+          icon
+        )}
       </InputGroupAddon>
       <InputGroupInput
         className={[size === "sm" ? "text-sm" : "", className].filter(Boolean).join(" ") || undefined}
@@ -228,7 +194,7 @@ export function TextField({
       {submit ? (
         <InputGroupAddon align="inline-end">
           <InputGroupButton size="sm" {...EMPHASIS.primary} tabIndex={submit.tabIndex} onClick={submit.onClick}>
-            <span data-icon="inline-start" aria-hidden="true" className="contents">
+            <span aria-hidden="true" className="contents">
               {submit.icon}
             </span>
             {submit.label}

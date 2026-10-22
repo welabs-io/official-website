@@ -4,8 +4,8 @@
 // human take (the same `take` a scene control calls). The lab is a workbench, so the toolbar is allowed here and only
 // here (the site has no pause or replay control: scripts/check-portfolio.mjs).
 import type { ComponentType } from "react";
-import { MousePointerClick, RotateCcw } from "lucide-react";
-import { IconAction } from "@/components/lib/ui";
+import { Play, RefreshCw } from "lucide-react";
+import { ActionButton } from "@/components/lib/ui";
 import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
@@ -65,14 +65,20 @@ export function LabStage({ id }: { id: SceneId }) {
     <div className={k.stage}>
       <div className={k.toolbar} data-theme="welabs">
         <span className={k.name}>{id}</span>
-        {/* The Domus icon action: round outline, 16 px icon at lucide's stroke, the name in the tooltip */}
-        <IconAction icon={<RotateCcw />} label="Recomeçar" onClick={timeline.restart} />
-        <IconAction
-          icon={<MousePointerClick />}
-          label="Simular gesto"
+        {/* The lib's Button with its icon (components-button--with-icon): neutral outline at md, the label beside the
+            icon; the Domus glyphs, RefreshCw (its Auto Repeat) to replay and Play (its flow's start) for a take */}
+        <ActionButton icon={<RefreshCw />} emphasis="outline" size="md" onClick={timeline.restart}>
+          Recomeçar
+        </ActionButton>
+        <ActionButton
+          icon={<Play />}
+          emphasis="outline"
+          size="md"
           data-lab="take"
           onClick={() => timeline.take(entry.takeFrom)}
-        />
+        >
+          Simular gesto
+        </ActionButton>
       </div>
       <Component timeline={timeline} />
     </div>
