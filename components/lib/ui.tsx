@@ -14,6 +14,10 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@imagineapps-team/react/ui";
 
 export {
@@ -98,6 +102,47 @@ export function IconButton({
         {icon}
       </span>
     </Button>
+  );
+}
+
+// AÇÃO SÓ DE ÍCONE COM DICA (PADRÃO DO DOMUS)
+// Port of the Domus IconAction (erpnext front/src/ui-kit/components/icon-action.tsx): the lib's Button at the icon size
+// (36 px), neutral outline, round, the 16 px lucide icon at its default stroke, its name in the lib's Tooltip and in
+// the aria-label. Site-agnostic subset: no loading or inert state (no consumer needs one). The provider is local, since
+// the site has no app-wide TooltipProvider.
+/** An icon-only action named by its tooltip (the Domus IconAction) */
+export function IconAction({
+  icon,
+  label,
+  side,
+  type = "button",
+  ...rest
+}: Omit<ButtonBase, "aria-label"> & {
+  icon: ControlIcon;
+  label: string;
+  side?: ComponentProps<typeof TooltipContent>["side"];
+}) {
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type={type}
+            size="icon"
+            variant="neutral"
+            appearance="outline"
+            aria-label={label}
+            {...rest}
+            className={["rounded-full", rest.className].filter(Boolean).join(" ")}
+          >
+            <span aria-hidden="true" className="contents">
+              {icon}
+            </span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side={side}>{label}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

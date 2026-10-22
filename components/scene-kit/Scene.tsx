@@ -37,6 +37,15 @@ export const SCENE_EASE = {
   spring: "var(--ease-spring)",
 } as const;
 
+// The same three curves as numbers, for the motion library (a layout morph cannot read a CSS variable); they mirror
+// --ease-out, --ease-in-out and --ease-spring of app/lib.css, and --dur-2 in seconds
+export const SCENE_CURVE = {
+  out: [0.2, 0.7, 0.2, 1],
+  inOut: [0.65, 0, 0.35, 1],
+  spring: [0.34, 1.36, 0.64, 1],
+  dur2: 0.28,
+} as const;
+
 export type SceneApi = SceneSnapshot & {
   // The scene is at this step or past it
   reached: (id: string) => boolean;
@@ -152,7 +161,8 @@ export function Scene({
     >
       <div className={k.chrome}>
         <span className={k.product}>{product}</span>
-        <ChevronRight className={k.chevron} strokeWidth={1.75} aria-hidden="true" />
+        {/* lucide's own stroke, as every icon of the Domus */}
+        <ChevronRight className={k.chevron} aria-hidden="true" />
         <span className={k.title}>{title}</span>
         {tools ? <span className={k.tools}>{tools}</span> : null}
       </div>

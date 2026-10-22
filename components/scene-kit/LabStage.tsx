@@ -5,7 +5,7 @@
 // here (the site has no pause or replay control: scripts/check-portfolio.mjs).
 import type { ComponentType } from "react";
 import { MousePointerClick, RotateCcw } from "lucide-react";
-import { ActionButton } from "@/components/lib/ui";
+import { IconAction } from "@/components/lib/ui";
 import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
@@ -65,16 +65,14 @@ export function LabStage({ id }: { id: SceneId }) {
     <div className={k.stage}>
       <div className={k.toolbar} data-theme="welabs">
         <span className={k.name}>{id}</span>
-        <ActionButton icon={<RotateCcw />} onClick={timeline.restart}>
-          Recomeçar
-        </ActionButton>
-        <ActionButton
+        {/* The Domus icon action: round outline, 16 px icon at lucide's stroke, the name in the tooltip */}
+        <IconAction icon={<RotateCcw />} label="Recomeçar" onClick={timeline.restart} />
+        <IconAction
           icon={<MousePointerClick />}
+          label="Simular gesto"
           data-lab="take"
           onClick={() => timeline.take(entry.takeFrom)}
-        >
-          Simular gesto
-        </ActionButton>
+        />
       </div>
       <Component timeline={timeline} />
     </div>
