@@ -2,7 +2,13 @@
 // Walks the section list of a PageConfig (lib/site-config.ts) and renders it: the same template serves the home and the
 // five product pages. `Sections` is the part without the frame (header and footer), which the tests render on its own.
 import type { SectionConfig, PageConfig } from "@/lib/site-config";
-import { FiveProducts, HomeContact, HomeIntro, HomeMessage, Platforms } from "./Home";
+import {
+  FiveProducts,
+  HomeContact,
+  HomeIntro,
+  HomeMessage,
+  Platforms,
+} from "./Home";
 import {
   DomusAreas,
   ProductCenter,

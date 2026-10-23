@@ -49,7 +49,11 @@ export function HomeIntro() {
 export function HomeMessage() {
   return (
     <div className={shell.wrap}>
-      <SectionHead title={HOME_CHAIN.title} lead={HOME_CHAIN.lead} variant="chapter" />
+      <SectionHead
+        title={HOME_CHAIN.title}
+        lead={HOME_CHAIN.lead}
+        variant="chapter"
+      />
       <Chain />
     </div>
   );
@@ -61,7 +65,11 @@ export function HomeMessage() {
 export function FiveProducts() {
   return (
     <div className={shell.wrap}>
-      <SectionHead title={HOME_ACCORDION.title} lead={HOME_ACCORDION.lead} variant="chapter" />
+      <SectionHead
+        title={HOME_ACCORDION.title}
+        lead={HOME_ACCORDION.lead}
+        variant="chapter"
+      />
       <ProductAccordion />
     </div>
   );

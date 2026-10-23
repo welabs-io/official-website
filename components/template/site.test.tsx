@@ -151,7 +151,14 @@ describe("the home", () => {
   // v4 (brief-v4, 2026-10-23): the opening in blades, the chain the scroll walks, the accordion of the products, the
   // contact and where we run; the Domus band and what changes left (the blades and the accordion show them)
   it("has the sections of the v4, in order", () => {
-    const order = ["top", "intro", "message", "products", "contact", "platforms"];
+    const order = [
+      "top",
+      "intro",
+      "message",
+      "products",
+      "contact",
+      "platforms",
+    ];
     for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);
     for (let i = 1; i < order.length; i++)
       expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
@@ -181,12 +188,26 @@ describe("the home", () => {
     const intro = home.slice(at("intro"), at("message"));
     expect(intro).toContain('data-hub="blades"');
     expect(intro).toContain('data-frame="domus"');
-    expect(intro.match(/data-blade|class="[^"]*blade[^"]*"/g)?.length).toBeGreaterThanOrEqual(51);
+    expect(
+      intro.match(/data-blade|class="[^"]*blade[^"]*"/g)?.length,
+    ).toBeGreaterThanOrEqual(51);
     // TypeIn draws the turning word one character per span
-    expect(visibleText(intro).replace(/\s/g, "")).toContain(HOME_INTRO.words[0].text.replace(/\s/g, ""));
-    const strip = intro.slice(intro.indexOf(`aria-label="${HOME_INTRO.stage}"`));
-    const marks = [...strip.matchAll(/<li[^>]*><img[^>]*alt="([^"]+)"/g)].map((m) => m[1]);
-    expect(marks).toEqual(["Domus by Welabs", "Relloo", "Magneto", "Tuner", "Knowly"]);
+    expect(visibleText(intro).replace(/\s/g, "")).toContain(
+      HOME_INTRO.words[0].text.replace(/\s/g, ""),
+    );
+    const strip = intro.slice(
+      intro.indexOf(`aria-label="${HOME_INTRO.stage}"`),
+    );
+    const marks = [...strip.matchAll(/<li[^>]*><img[^>]*alt="([^"]+)"/g)].map(
+      (m) => m[1],
+    );
+    expect(marks).toEqual([
+      "Domus by Welabs",
+      "Relloo",
+      "Magneto",
+      "Tuner",
+      "Knowly",
+    ]);
   });
 
   // v4: the chain the scroll walks; the server draws it settled, the order in the Domus with one line per product
@@ -194,7 +215,9 @@ describe("the home", () => {
     const msg = home.slice(at("message"), at("products"));
     expect(msg).toContain("data-chain");
     expect(msg.match(/data-station="[a-z]+"/g)).toEqual(
-      ["tuner", "relloo", "knowly", "magneto", "domus"].map((s) => `data-station="${s}"`),
+      ["tuner", "relloo", "knowly", "magneto", "domus"].map(
+        (s) => `data-station="${s}"`,
+      ),
     );
     expect(msg).toContain("data-record");
     expect(visibleText(msg)).toContain("Pedido 1234");
@@ -216,7 +239,9 @@ describe("the home", () => {
   it("the accordion opens the Domus at rest, and every panel has its frame, its question and the call to action", () => {
     const part = home.slice(at("products"), at("contact"));
     expect(part.match(/data-panel="[a-z]+"/g)).toHaveLength(5);
-    expect(part).toMatch(/data-grow="panel" data-open="true"[^>]*data-panel="domus"/);
+    expect(part).toMatch(
+      /data-grow="panel" data-open="true"[^>]*data-panel="domus"/,
+    );
     expect(part.match(/data-open="true"/g)).toHaveLength(1);
     expect(part.match(/href="\/#contact"/g)).toHaveLength(5);
     expect(part).toContain('data-frame="domus"');

@@ -11,7 +11,10 @@
 import { Check } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Badge } from "@/components/lib/ui";
-import { Connector, type ConnectorState } from "@/components/scene-kit/Connector";
+import {
+  Connector,
+  type ConnectorState,
+} from "@/components/scene-kit/Connector";
 import { TypeIn, typeDuration } from "@/components/scene-kit/TypeIn";
 import { HOME_CHAIN } from "@/lib/content";
 import { productAlt, productBySlug, productLogo } from "@/lib/products";
@@ -65,7 +68,13 @@ export function Chain() {
 
   return (
     <>
-      <div ref={ref} className={c.stage} data-chain="" data-step={step} data-mini="chain">
+      <div
+        ref={ref}
+        className={c.stage}
+        data-chain=""
+        data-step={step}
+        data-mini="chain"
+      >
         <ol className={c.stations}>
           {STATIONS.map((s, i) => {
             const state = i < step ? "done" : i === step ? "live" : "next";
@@ -75,7 +84,11 @@ export function Chain() {
                 className={c.station}
                 data-station={s.product}
                 data-state={state}
-                data-focus={(i === step || (settled && i === STATIONS.length - 1)) || undefined}
+                data-focus={
+                  i === step ||
+                  (settled && i === STATIONS.length - 1) ||
+                  undefined
+                }
               >
                 <span className={c.stationTop}>
                   <img
@@ -92,7 +105,11 @@ export function Chain() {
                 <span className={c.stationText}>
                   <span className={c.stationLabel}>{s.label}</span>
                   <span className={c.stationSub}>
-                    {state === "done" ? s.done : state === "live" ? s.now : s.next}
+                    {state === "done"
+                      ? s.done
+                      : state === "live"
+                        ? s.now
+                        : s.next}
                   </span>
                 </span>
               </li>
@@ -121,18 +138,32 @@ export function Chain() {
           />
         ))}
         {settled ? (
-          <Connector from='[data-station="domus"]' to="[data-record]" route="drop" inset={0} gap={6} state="active" />
+          <Connector
+            from='[data-station="domus"]'
+            to="[data-record]"
+            route="drop"
+            inset={0}
+            gap={6}
+            state="active"
+          />
         ) : null}
 
         <div className={c.detail}>
           <div className={c.caption} aria-live="polite">
-            <span className={c.captionProduct}>{productBySlug(current.product)!.name}</span>
+            <span className={c.captionProduct}>
+              {productBySlug(current.product)!.name}
+            </span>
             <p className={c.phrase}>
               {lines.map((line, j) => (
-                <span key={`${step}-${j}`} className={j ? c.phraseQuiet : c.phraseLine}>
+                <span
+                  key={`${step}-${j}`}
+                  className={j ? c.phraseQuiet : c.phraseLine}
+                >
                   <TypeIn
                     text={line}
-                    delay={lines.slice(0, j).reduce((ms, l) => ms + typeDuration(l), 0)}
+                    delay={lines
+                      .slice(0, j)
+                      .reduce((ms, l) => ms + typeDuration(l), 0)}
                     caret={j === lines.length - 1}
                   />
                 </span>
@@ -144,7 +175,11 @@ export function Chain() {
               <ul className={c.chips}>
                 {STATIONS.slice(0, step).map((s) => (
                   <li key={s.product}>
-                    <Badge variant="secondary" appearance="solid" className={c.chip}>
+                    <Badge
+                      variant="secondary"
+                      appearance="solid"
+                      className={c.chip}
+                    >
                       <Check aria-hidden="true" />
                       {s.chip}
                     </Badge>
@@ -157,7 +192,11 @@ export function Chain() {
           <div className={c.aside}>
             {step === 0 ? (
               <p className={c.bubble}>
-                <Badge variant="secondary" appearance="solid" className={c.bubbleChannel}>
+                <Badge
+                  variant="secondary"
+                  appearance="solid"
+                  className={c.bubbleChannel}
+                >
                   {HOME_CHAIN.bubble.channel}
                 </Badge>
                 <span className={c.bubbleText}>{HOME_CHAIN.bubble.text}</span>
@@ -167,9 +206,15 @@ export function Chain() {
             {settled ? (
               <div className={c.record} data-record="">
                 <span className={c.recordHead}>
-                  <span className={c.recordTitle}>{HOME_CHAIN.record.title}</span>
+                  <span className={c.recordTitle}>
+                    {HOME_CHAIN.record.title}
+                  </span>
                   <span className={c.recordWho}>{HOME_CHAIN.record.who}</span>
-                  <Badge variant="success" appearance="soft" className={c.recordTag}>
+                  <Badge
+                    variant="success"
+                    appearance="soft"
+                    className={c.recordTag}
+                  >
                     {HOME_CHAIN.record.tag}
                   </Badge>
                 </span>

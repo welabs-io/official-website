@@ -213,7 +213,8 @@
 /* "digitando" for its hold, then the answer types and the label goes */
 .typing {
   align-self: flex-end;
-  animation: frame-hide var(--dur-1) var(--ease-hover) var(--typing-hold) forwards;
+  animation: frame-hide var(--dur-1) var(--ease-hover) var(--typing-hold)
+    forwards;
 }
 .stages {
   position: relative;

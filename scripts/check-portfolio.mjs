@@ -111,15 +111,13 @@ const hasMenu = (html) => {
   );
 };
 
-// HOME: abertura, mensagem, Domus, produtos, o que muda, contato, onde rodamos (v2.1: o encaixe saiu)
+// HOME: abertura em lâminas, cadeia, acordeão de produtos, contato, onde rodamos (v4: o Domus e o que muda saíram)
 const home = await page("/");
 const HOME_ORDER = [
   "top",
   "intro",
   "message",
-  "domus",
   "products",
-  "operation",
   "contact",
   "platforms",
 ];
@@ -131,7 +129,15 @@ for (let i = 1; i < HOME_ORDER.length; i++)
       home.indexOf(`id="${HOME_ORDER[i]}"`),
     `sections come in order: ${HOME_ORDER.join(", ")}`,
   );
-for (const gone of ["how", "audience", "integrations", "faq", "connectors"])
+for (const gone of [
+  "how",
+  "audience",
+  "integrations",
+  "faq",
+  "connectors",
+  "domus",
+  "operation",
+])
   assert(!home.includes(`id="${gone}"`), `the section #${gone} left the home`);
 assert(hasMenu(home), "the home header has the menu and the logo link");
 // The bands carry an id; a `<section>` inside a kit scene is a pane of its screen, paused by the kit itself
@@ -144,22 +150,23 @@ assert(
   /<h1[\s\S]*?Software para/.test(home),
   "the title of the home is its h1",
 );
-assert(home.includes('data-hub="cycle"'), "the stage of the opening cycles");
+// v4 (brief-v4, 2026-10-23): the stage in blades, the chain the scroll walks and the accordion of the products
 assert(
-  home.includes('id="area-add"') && home.includes('for="area-add"'),
-  "the interaction #area-add has a native control and a visible label",
+  home.includes('data-hub="blades"'),
+  "the stage of the opening assembles in blades",
 );
-// v3 (2026-10-23): the chain is the kit scene home-message (SceneSlot)
 assert(
   home
-    .slice(home.indexOf('id="message"'), home.indexOf('id="domus"'))
-    .includes('data-kit="home-message"'),
-  "the message band mounts the kit scene home-message",
+    .slice(home.indexOf('id="message"'), home.indexOf('id="products"'))
+    .includes("data-chain"),
+  "the message band holds the chain",
 );
 assert(
-  (home.slice(home.indexOf('id="operation"')).match(/data-mini="s\d"/g) ?? [])
-    .length === 3,
-  "what changes shows three still native scenes",
+  (
+    home.slice(home.indexOf('id="products"')).match(/data-panel="[a-z]+"/g) ??
+    []
+  ).length === 5,
+  "the products band is the accordion of the five products",
 );
 assert(!/mailto:|wa\.me|<form/.test(home), "the contact is the button only");
 assert(
@@ -168,8 +175,9 @@ assert(
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the contact section");
 const words = countWords(home);
-// The v2 budget: 200 to 300 visible words on the home (700 to 1000 before it)
-assert(words >= 200 && words <= 300, `home has ${words} visible words`);
+// The v2 budget was 200 to 300 visible words on the home (700 to 1000 before it); v4: the approved accordion gives each
+// product its title, line, points and question, so the ceiling is 400 (components/template/site.test.tsx)
+assert(words >= 200 && words <= 400, `home has ${words} visible words`);
 // Five product cards, each leading to its page, in weight order
 const cards = home.match(/<a [^>]*data-card="[a-z]+"[^>]*>/g) ?? [];
 assert.deepEqual(

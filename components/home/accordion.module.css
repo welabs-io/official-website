@@ -175,20 +175,29 @@
     box-shadow: var(--shadow-pop);
   }
   .panel:is(:hover, :focus-within) .head,
-  .row:not(:has(> .panel:hover, > .panel:focus-within)) > .panel[data-open] .head {
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .head {
     top: var(--sp-5);
     left: var(--sp-5);
   }
   .panel:is(:hover, :focus-within) .logo img,
-  .row:not(:has(> .panel:hover, > .panel:focus-within)) > .panel[data-open] .logo img {
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .logo
+    img {
     height: var(--mark-xl);
   }
   .panel:is(:hover, :focus-within) .closed,
-  .row:not(:has(> .panel:hover, > .panel:focus-within)) > .panel[data-open] .closed {
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .closed {
     opacity: 0;
   }
   .panel:is(:hover, :focus-within) .open,
-  .row:not(:has(> .panel:hover, > .panel:focus-within)) > .panel[data-open] .open {
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .open {
     opacity: 1;
     visibility: visible;
     transition:

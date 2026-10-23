@@ -14,7 +14,13 @@ import { GrowItem, GrowRow } from "@/components/motion/Grow";
 import { ActionButton, Badge, IconButton } from "@/components/lib/ui";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { HOME_ACCORDION } from "@/lib/content";
-import { CTA_LABEL, productAlt, productBySlug, productLogo, type ProductSlug } from "@/lib/products";
+import {
+  CTA_LABEL,
+  productAlt,
+  productBySlug,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
 import { ProductFrame } from "./frames";
 import a from "./accordion.module.css";
 
@@ -90,9 +96,13 @@ const GLYPHS: Record<ProductSlug, ReactElement> = {
 
 export function ProductAccordion() {
   // The panel whose frame plays (and how many times it opened, to mount the frame again), and the one open on a phone
-  const [play, setPlay] = useState<{ slug: ProductSlug; n: number }>({ slug: "domus", n: 0 });
+  const [play, setPlay] = useState<{ slug: ProductSlug; n: number }>({
+    slug: "domus",
+    n: 0,
+  });
   const [phoneOpen, setPhoneOpen] = useState<ProductSlug>("domus");
-  const open = (slug: ProductSlug) => setPlay((p) => (p.slug === slug ? p : { slug, n: p.n + 1 }));
+  const open = (slug: ProductSlug) =>
+    setPlay((p) => (p.slug === slug ? p : { slug, n: p.n + 1 }));
 
   return (
     <GrowRow className={a.row} data-accordion="">
@@ -111,7 +121,12 @@ export function ProductAccordion() {
             onFocus={() => open(p.slug)}
           >
             <div className={a.head}>
-              <Link href={`/products/${p.slug}`} prefetch={false} className={a.logo} data-card={p.slug}>
+              <Link
+                href={`/products/${p.slug}`}
+                prefetch={false}
+                className={a.logo}
+                data-card={p.slug}
+              >
                 <img
                   src={productLogo(p.slug, "light", "row", 48)}
                   alt={productAlt(p.slug, "row")}
@@ -156,13 +171,22 @@ export function ProductAccordion() {
                   ))}
                 </ul>
                 <p className={a.question}>{p.question}</p>
-                <ActionButton href={CONTACT_HREF} emphasis="primary" size="md" icon={<CalendarDays />} className={a.cta}>
+                <ActionButton
+                  href={CONTACT_HREF}
+                  emphasis="primary"
+                  size="md"
+                  icon={<CalendarDays />}
+                  className={a.cta}
+                >
                   {CTA_LABEL}
                 </ActionButton>
               </div>
               <div className={a.well} data-mini={`panel-${p.slug}`}>
                 {play.slug === p.slug || p.slug === "domus" ? (
-                  <ProductFrame key={`${p.slug}-${play.slug === p.slug ? play.n : 0}`} slug={p.slug} />
+                  <ProductFrame
+                    key={`${p.slug}-${play.slug === p.slug ? play.n : 0}`}
+                    slug={p.slug}
+                  />
                 ) : null}
               </div>
               <span data-mini-end="" hidden />

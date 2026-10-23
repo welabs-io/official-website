@@ -65,10 +65,20 @@ export function HeroBlades() {
         </h1>
         <p className={h.lead}>{HOME_INTRO.lead}</p>
         <div className={h.actions}>
-          <ActionButton href={CONTACT_HREF} emphasis="primary" size="md" icon={<CalendarDays />}>
+          <ActionButton
+            href={CONTACT_HREF}
+            emphasis="primary"
+            size="md"
+            icon={<CalendarDays />}
+          >
             {CTA_LABEL}
           </ActionButton>
-          <ActionButton href="/#products" emphasis="outline" size="md" icon={<ArrowDown />}>
+          <ActionButton
+            href="/#products"
+            emphasis="outline"
+            size="md"
+            icon={<ArrowDown />}
+          >
             {HOME_HERO.see}
           </ActionButton>
         </div>
@@ -86,7 +96,12 @@ export function HeroBlades() {
             {index + 1} / {words.length}
           </span>
         </p>
-        <div className={h.well} data-mini={`hero-${product}`} role="img" aria-label={`${seal.title}, ${seal.line}`}>
+        <div
+          className={h.well}
+          data-mini={`hero-${product}`}
+          role="img"
+          aria-label={`${seal.title}, ${seal.line}`}
+        >
           <div key={`frame-${index}`} className={h.frame} aria-hidden="true">
             <ProductFrame slug={product} />
           </div>
@@ -95,7 +110,12 @@ export function HeroBlades() {
               <span
                 key={`${b.c}-${b.r}`}
                 className={h.blade}
-                style={{ "--in": `${b.in}ms`, "--out": `${b.out}ms` } as CSSProperties}
+                style={
+                  {
+                    "--in": `${b.in}ms`,
+                    "--out": `${b.out}ms`,
+                  } as CSSProperties
+                }
               />
             ))}
             {THREADS.map((t) => (
@@ -121,12 +141,21 @@ export function HeroBlades() {
             </span>
           </div>
           {/* The clock of the frame: its end hands the stage to the next product */}
-          <span key={`clock-${index}`} className={h.clock} onAnimationEnd={next} aria-hidden="true" />
+          <span
+            key={`clock-${index}`}
+            className={h.clock}
+            onAnimationEnd={next}
+            aria-hidden="true"
+          />
         </div>
         <span data-mini-end="" hidden />
         <ul className={h.marks} aria-label={HOME_INTRO.stage}>
           {words.map((w, i) => (
-            <li key={w.product} className={h.mark} data-active={i === index || undefined}>
+            <li
+              key={w.product}
+              className={h.mark}
+              data-active={i === index || undefined}
+            >
               <img
                 src={productLogo(w.product, "light", "row", 28)}
                 // The first mention of the Domus on the home names its brand line (brand-config IDENTITY_PLACES)

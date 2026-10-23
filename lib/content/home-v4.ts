@@ -22,7 +22,12 @@ export const HOME_HERO = {
 } as const;
 
 // The modules of the Domus frame: the standard ones (filled) and the ones made to measure (outlined), the newest last
-export type FrameModule = { name: string; icon: string; tag?: string; kind: "standard" | "custom" | "new" };
+export type FrameModule = {
+  name: string;
+  icon: string;
+  tag?: string;
+  kind: "standard" | "custom" | "new";
+};
 export const DOMUS_FRAME = {
   title: "Módulos",
   sub: "da sua empresa",
@@ -116,7 +121,11 @@ export const HOME_CHAIN = {
   eyebrow: "A cadeia",
   title: "Uma mensagem, a operação inteira",
   lead: "Do canal ao pedido registrado no Domus, enquanto você rola.",
-  bubble: { channel: "Mensagem", text: RELLOO_FRAME.incoming, time: RELLOO_FRAME.time },
+  bubble: {
+    channel: "Mensagem",
+    text: RELLOO_FRAME.incoming,
+    time: RELLOO_FRAME.time,
+  },
   stations: [
     {
       product: "tuner",
@@ -151,7 +160,10 @@ export const HOME_CHAIN = {
       next: "a seguir",
       now: "Proposta 905",
       done: "e assinado",
-      caption: ["A proposta passa pela aprovação", "e o contrato pela assinatura."],
+      caption: [
+        "A proposta passa pela aprovação",
+        "e o contrato pela assinatura.",
+      ],
       chip: "Contrato assinado",
     },
     {
@@ -203,7 +215,11 @@ export const HOME_ACCORDION = {
       area: "Gestão",
       title: "A gestão inteira, com o que só a sua operação tem.",
       lead: "Financeiro, fiscal, contratos e pessoas no mesmo lugar. Os outros quatro trabalham sobre ele.",
-      points: ["Padrão e sob medida", "Assistente com o dado real", "Regras brasileiras"],
+      points: [
+        "Padrão e sob medida",
+        "Assistente com o dado real",
+        "Regras brasileiras",
+      ],
       question: "Quanto da sua operação cabe no Domus?",
     },
     {
@@ -211,7 +227,11 @@ export const HOME_ACCORDION = {
       area: "Relacionamento",
       title: "Cada pessoa, todas as conversas.",
       lead: "A mensagem chega, encontra quem cuida dela e vira oportunidade, sem ninguém copiar nada.",
-      points: ["Caixa de entrada única", "IA que passa a vez", "Funil que anda sozinho"],
+      points: [
+        "Caixa de entrada única",
+        "IA que passa a vez",
+        "Funil que anda sozinho",
+      ],
       question: "Quanto se perde entre a mensagem e a proposta?",
     },
     {
@@ -219,7 +239,11 @@ export const HOME_ACCORDION = {
       area: "Processos",
       title: "Cada aprovação no caminho certo.",
       lead: "O fluxo leva a proposta por quem aprova e pela assinatura, e avisa o próximo passo.",
-      points: ["Fluxo desenhado na tela", "Aprovação em um toque", "Prazo com aviso"],
+      points: [
+        "Fluxo desenhado na tela",
+        "Aprovação em um toque",
+        "Prazo com aviso",
+      ],
       question: "Quantas aprovações esperam numa caixa de e-mail?",
     },
     {
@@ -235,7 +259,11 @@ export const HOME_ACCORDION = {
       area: "Memória",
       title: "O que a empresa aprende fica lembrado.",
       lead: "A resposta vem do contrato, do chamado ou da reunião, com a fonte ao lado.",
-      points: ["Resposta com a fonte", "Memória que cresce", "Busca no que já foi dito"],
+      points: [
+        "Resposta com a fonte",
+        "Memória que cresce",
+        "Busca no que já foi dito",
+      ],
       question: "Quanto do combinado só existe na cabeça de alguém?",
     },
   ] as const satisfies readonly AccordionPanel[],

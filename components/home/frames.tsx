@@ -30,7 +30,11 @@ import {
 import type { ReactElement } from "react";
 import { Badge } from "@/components/lib/ui";
 import { Connector } from "@/components/scene-kit/Connector";
-import { TYPING_MS, TypeIn, TypingIndicator } from "@/components/scene-kit/TypeIn";
+import {
+  TYPING_MS,
+  TypeIn,
+  TypingIndicator,
+} from "@/components/scene-kit/TypeIn";
 import {
   DOMUS_FRAME,
   KNOWLY_FRAME,
@@ -57,11 +61,26 @@ const MODULE_ICON: Record<string, ReactElement> = {
 };
 
 // The modules a narrow frame keeps (the accordion panel): two columns of three
-const COMPACT = new Set(["Financeiro", "Contratos", "Fiscal", "Pessoas", "Chamados", "Vistoria"]);
+const COMPACT = new Set([
+  "Financeiro",
+  "Contratos",
+  "Fiscal",
+  "Pessoas",
+  "Chamados",
+  "Vistoria",
+]);
 const USERS = ["relloo", "magneto", "tuner", "knowly"] as const;
 
 // The title bar of a frame: its name, a quiet line beside it and an optional piece at the end
-function Bar({ title, sub, end }: { title: string; sub?: string; end?: ReactElement }) {
+function Bar({
+  title,
+  sub,
+  end,
+}: {
+  title: string;
+  sub?: string;
+  end?: ReactElement;
+}) {
   return (
     <div className={f.bar}>
       <span className={f.barTitle}>{title}</span>
@@ -131,7 +150,14 @@ function DomusFrame() {
         </ul>
         <p className={f.usesLine}>{d.usesLine}</p>
         {USERS.map((slug) => (
-          <Connector key={slug} from="[data-modules]" to={`[data-use="${slug}"]`} route="drop" inset={0} gap={6} />
+          <Connector
+            key={slug}
+            from="[data-modules]"
+            to={`[data-use="${slug}"]`}
+            route="drop"
+            inset={0}
+            gap={6}
+          />
         ))}
       </div>
     </>
@@ -168,7 +194,11 @@ function RellooFrame() {
           <TypeIn text={r.answer} delay={TYPING_MS} />
         </p>
         <span className={f.typing}>
-          <TypingIndicator label={r.typing} showLabel className={f.typingDots} />
+          <TypingIndicator
+            label={r.typing}
+            showLabel
+            className={f.typingDots}
+          />
         </span>
       </div>
       <div className={f.stages}>
@@ -184,7 +214,13 @@ function RellooFrame() {
           </span>
         ))}
         {r.stages.slice(1).map((stage, i) => (
-          <Connector key={stage} from={`[data-stage="${i}"]`} to={`[data-stage="${i + 1}"]`} inset={0} gap={4} />
+          <Connector
+            key={stage}
+            from={`[data-stage="${i}"]`}
+            to={`[data-stage="${i + 1}"]`}
+            inset={0}
+            gap={4}
+          />
         ))}
       </div>
     </>
@@ -208,7 +244,11 @@ function MagnetoFrame() {
       <div className={f.body}>
         <ol className={f.steps}>
           {m.steps.map((s, i) => (
-            <li key={s.name} className={f.step} data-step-state={s.done ? "done" : i === live ? "live" : "next"}>
+            <li
+              key={s.name}
+              className={f.step}
+              data-step-state={s.done ? "done" : i === live ? "live" : "next"}
+            >
               <span className={f.stepMark} data-mark={i} aria-hidden="true">
                 {s.done ? <Check /> : null}
               </span>
@@ -234,7 +274,11 @@ function MagnetoFrame() {
 }
 
 // TUNER: CADA CANAL NA MESMA CONVERSA
-const CHANNEL_ICON = [<MessageCircle key="m" />, <Phone key="p" />, <Mail key="e" />];
+const CHANNEL_ICON = [
+  <MessageCircle key="m" />,
+  <Phone key="p" />,
+  <Mail key="e" />,
+];
 
 function TunerFrame() {
   const t = TUNER_FRAME;
@@ -295,7 +339,14 @@ function KnowlyFrame() {
             {k.source}
           </Badge>
         </div>
-        <Connector from="[data-answer]" to="[data-source]" route="drop" inset={0} gap={6} state="live" />
+        <Connector
+          from="[data-answer]"
+          to="[data-source]"
+          route="drop"
+          inset={0}
+          gap={6}
+          state="live"
+        />
       </div>
     </>
   );
@@ -310,10 +361,19 @@ const FRAMES: Record<ProductSlug, () => ReactElement> = {
 };
 
 /** The frame of one product, a white window filling its parent */
-export function ProductFrame({ slug, className }: { slug: ProductSlug; className?: string }) {
+export function ProductFrame({
+  slug,
+  className,
+}: {
+  slug: ProductSlug;
+  className?: string;
+}) {
   const Frame = FRAMES[slug];
   return (
-    <div className={className ? `${f.window} ${className}` : f.window} data-frame={slug}>
+    <div
+      className={className ? `${f.window} ${className}` : f.window}
+      data-frame={slug}
+    >
       <Frame />
     </div>
   );
