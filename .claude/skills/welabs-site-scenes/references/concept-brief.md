@@ -23,7 +23,7 @@ Regra de raiz: **conceito é a visão do produto no ecossistema, não um retrato
 - Registros só os do fio; nenhum dado real, nenhuma métrica inventada (volume, SLA, número de empresas), nenhuma pilha interna, nenhum fornecedor de modelo de IA, nenhum marcador de fase. "Versão 3 · publicada" no Magneto é a versão do fluxo da empresa, não do produto.
 - Cada quadro passa no teste de cópia ("ensina alguém a copiar?"); o que ensina o "como" fica só na ficha.
 - Marque a divergência entre documento e código quando achar; não corrija o código para caber na ficha.
-- A ficha vai ao canvas do Claude Design **depois** de pronta e antes de qualquer código.
+- A ficha vai ao canvas de design **depois** de pronta e antes de qualquer código.
 
 ## Proibições por produto (candidatas a `phrases` em `copy-rules.json`)
 
