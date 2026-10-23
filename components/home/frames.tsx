@@ -173,7 +173,13 @@ function RellooFrame() {
       </div>
       <div className={f.stages}>
         {r.stages.map((stage, i) => (
-          <span key={stage} className={f.stage} data-stage={i} data-current={i === 0 || undefined}>
+          <span
+            key={stage}
+            className={f.stage}
+            data-stage={i}
+            data-current={i === 0 || undefined}
+            data-wide-only={i === r.stages.length - 1 ? "" : undefined}
+          >
             {stage}
           </span>
         ))}

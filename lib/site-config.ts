@@ -52,10 +52,10 @@ export const HOME_CONFIG: PageConfig = {
   home: true,
   sections: [
     { id: "intro", kind: "intro", pad: "intro" },
-    // v4 (brief-v4, 2026-10-23): the chain on the page, the accordion on the soft band; the Domus band and what changes
-    // left (the blades and the accordion show the Domus and its effect)
-    { id: "message", kind: "message", pad: "block" },
-    { id: "products", kind: "products", pad: "block", surface: "band" },
+    // v4 (brief-v4, 2026-10-23): the chain on the soft band, the accordion on the page (its closed panels are the
+    // chrome); the Domus band and what changes left (the blades and the accordion show the Domus and its effect)
+    { id: "message", kind: "message", pad: "block", surface: "band" },
+    { id: "products", kind: "products", pad: "block" },
     { id: "contact", kind: "contact", pad: "contact", surface: "contact" },
     platforms,
   ],

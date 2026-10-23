@@ -120,19 +120,20 @@
     visibility 0s linear var(--dur-hover);
 }
 .copy {
-  flex: 0 0 312px;
+  flex: 0 0 328px;
   display: flex;
   flex-direction: column;
-  padding: 96px var(--sp-2) var(--sp-6) var(--sp-6);
+  padding: 88px var(--sp-2) var(--sp-6) var(--sp-6);
 }
 .title {
   margin: 0;
   font-size: var(--text-2xl);
   line-height: var(--lh-heading);
   font-weight: var(--weight-title);
-  letter-spacing: var(--ls-heading);
+  letter-spacing: var(--ls-display);
 }
-.lead {
+/* Two classes, so the margins outrank the reset of the page's paragraphs (shell.module.css .page p) */
+.copy > .lead {
   margin: var(--sp-3) 0 0;
   font-size: var(--text-sm);
   line-height: var(--line-label);
@@ -146,8 +147,9 @@
   padding: 0;
   list-style: none;
 }
-.question {
+.copy > .question {
   margin: auto 0 0;
+  padding-top: var(--sp-4);
   font-size: var(--text-md);
   line-height: var(--line-lead);
   font-weight: var(--weight-title);
