@@ -282,10 +282,17 @@
   .stationTop {
     flex-direction: row-reverse;
   }
+  /* Each part keeps the room of its tallest step, so the page under the chain never moves while it is walked */
   .detail {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-5);
     margin-top: var(--sp-6);
+  }
+  .caption {
+    min-height: 260px;
+  }
+  .aside {
+    min-height: 180px;
   }
 }
 

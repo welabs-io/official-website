@@ -15,7 +15,8 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 // v3 (F3): one loop of the new module is 6 s, its filled screen held about a second (house.module.css)
 const CYCLE = 6000;
 
-async function open(page: Page, width: number, path = "/") {
+// v4 (brief-v4, 2026-10-23): the house left the home; it lives on the Domus page (#areas) only
+async function open(page: Page, width: number, path = "/products/domus") {
   await page.setViewportSize({ width, height: 900 });
   await page.goto(path, { waitUntil: "load" });
   const band = page.locator(path === "/" ? "#domus" : "#areas");
@@ -36,7 +37,7 @@ const state = (band: Locator) =>
   });
 
 for (const width of [1440, 1024, 390])
-  for (const path of ["/", "/products/domus"])
+  for (const path of ["/products/domus"])
     test(`the Domus ring and its alignment at ${width} on ${path}`, async ({
       page,
     }) => {

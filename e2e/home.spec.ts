@@ -148,6 +148,11 @@ test.describe("the v4 home", () => {
     await scrollAt(1.2);
     await expect(chain).toHaveAttribute("data-step", "5");
     await expect(page.locator("[data-chain] [data-record]")).toBeVisible();
+    // The stage keeps one height on every step, so the page under it never moves while it is walked
+    expect(
+      Math.abs((await box(page, "[data-chain]")).h - before.h),
+    ).toBeLessThanOrEqual(1);
+    expect(Math.abs(after.h - before.h)).toBeLessThanOrEqual(1);
     await scrollAt(0.1);
     await expect(chain).toHaveAttribute("data-step", "0");
     expect(await page.locator("[role='progressbar']").count()).toBe(0);

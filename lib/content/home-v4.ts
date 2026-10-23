@@ -14,7 +14,7 @@ export const HOME_HERO = {
   // The dark seal over the frame: what just happened in the product of the frame (its amber dot is the live one)
   seals: {
     domus: { title: "Vistoria 318", line: "acendeu os outros quatro" },
-    relloo: { title: "Conversa 2210", line: "na pessoa certa" },
+    relloo: { title: "Conversa 2210", line: "com o dono certo" },
     magneto: { title: "Proposta 905", line: "aprovada às 10:14" },
     tuner: { title: "Mensagem nova", line: "chegou pelo canal" },
     knowly: { title: "Prazo de 48 h", line: "lembrado, com a fonte" },
@@ -138,7 +138,8 @@ export const HOME_CHAIN = {
     },
     {
       product: "relloo",
-      label: "Na pessoa certa",
+      // Copy rule (e2e/copy.spec.ts): never "a pessoa certa"; the artboard's line becomes the owner of the conversation
+      label: "Com o dono certo",
       next: "a seguir",
       now: "Conversa 2210",
       done: "Conversa 2210",
@@ -185,7 +186,7 @@ export const HOME_CHAIN = {
     tag: "Recorrente",
     lines: [
       { product: "Tuner", text: "Chegou pela mensagem" },
-      { product: "Relloo", text: "Na pessoa certa, no prazo" },
+      { product: "Relloo", text: "Com o dono certo, no prazo" },
       { product: "Knowly", text: "Combinado lembrado, com a fonte" },
       { product: "Magneto", text: "Aprovado e assinado" },
     ],
@@ -225,7 +226,7 @@ export const HOME_ACCORDION = {
     {
       slug: "relloo",
       area: "Relacionamento",
-      title: "Cada pessoa, todas as conversas.",
+      title: "Cada contato, todas as conversas.",
       lead: "A mensagem chega, encontra quem cuida dela e vira oportunidade, sem ninguém copiar nada.",
       points: [
         "Caixa de entrada única",
