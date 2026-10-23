@@ -1,670 +1,458 @@
-/* CENA DO KNOWLY: A MEMÓRIA DE UM ASSUNTO, EM 4 QUADROS */
-/* Layout of the approved frames V3Knowly-1..4: the canvas (--background) with white pieces, ONE track of five events
-   (card, stem, dot on the line, day) that every frame reuses, and in frame 4 the white panel of the assistant beside
-   it. Amber is only the live piece of a frame (the amber-50 area with its amber ring); the chosen decision keeps the
-   ink ring; paid is green. Every value is a token of app/lib.css; the controls are the lib's at its own size. */
+/* CENA DO KNOWLY: O GRAFO DE MEMÓRIA, EM 4 QUADROS */
+/* Layout of the approved frame KnowlyGraph (brief v4): one white pane of fixed height (the window never changes size),
+   the graph drawn in it by one camera, the frame's name and zoom at the top, and in frame 4 the closing question and
+   the legend in the left column (under the graph on a phone). Links at rest are the three line levels of the site,
+   the newest link is amber, nodes are small. Every value is a token of app/lib.css. */
 
-/* PALCO E QUADROS */
-/* All frames sit in one cell: the hidden copy stacks the four (the window takes the tallest), the live layer holds the
-   current one and, for a moment, the one leaving */
-.stage {
-  display: grid;
-  min-width: 0;
-  background: var(--background);
+/* A CÂMERA */
+/* One registered number, the zoom, glides between the steps' values; the SVG group, the labels and the globe all read
+   it, so the whole world rides one transition. The pan opens the left column in frame 4. */
+@property --z {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
 }
 
-.frame {
-  display: grid;
-  grid-area: 1 / 1;
-  min-width: 0;
+@property --pan-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
 }
 
-.lineFrame {
+@property --pan-y {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+.root {
+  --pane-h: calc(var(--sp-9) * 6.5);
+  --close-w: calc(var(--sp-9) * 4.5);
+  /* The world's origin sits a little under the middle, clear of the head */
+  --origin-y: var(--sp-5);
   position: relative;
-  display: flex;
+  height: var(--pane-h);
   min-width: 0;
-  flex-direction: column;
-  gap: var(--sp-7);
-  padding: var(--sp-6) var(--sp-7);
+  overflow: hidden;
+  background: var(--card);
 }
 
-/* The track sits in the middle of what the head leaves */
-.lineFrame > .track {
-  margin-block: auto;
+.world {
+  position: absolute;
+  inset: 0;
 }
 
-/* CABEÇA DO QUADRO */
-.head {
-  display: flex;
-  flex-direction: column;
+.camera {
+  /* How much of a world unit a screen pixel holds, per axis: the zoom times the fit of the width */
+  --fx: 1;
+  --fy: 1;
+  --sx: calc(var(--z) * var(--fx));
+  --sy: calc(var(--z) * var(--fy));
+  position: absolute;
+  inset: 0;
+  transition:
+    --z var(--glide) var(--ease-enter),
+    --pan-x var(--dur-draw) var(--ease-swap),
+    --pan-y var(--dur-draw) var(--ease-swap);
+}
+
+/* Inside a frame the camera drifts at an even pace, so it never stops between two steps */
+.camera[data-move="drift"] {
+  transition-timing-function: linear, var(--ease-swap), var(--ease-swap);
+}
+
+.camera[data-frame="4"] {
+  --pan-x: calc(var(--close-w) / 2);
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.lens {
+  transform: translate(var(--pan-x), calc(var(--origin-y) + var(--pan-y))) scale(var(--sx), var(--sy));
+}
+
+/* AS LIGAÇÕES */
+/* Curves with no arrow, drawn from end to end as they arrive (the far ones in a wave from the centre outwards); their
+   width does not scale with the zoom */
+.link {
+  fill: none;
+  stroke: var(--hairline-14);
+  stroke-width: var(--rule-dashed);
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke-dashoffset var(--dur-enter) var(--ease-enter) calc(var(--wave) * var(--dur-draw));
+}
+
+.link[data-level="30"] {
+  stroke: var(--hairline-30);
+}
+
+.link[data-level="8"] {
+  stroke: var(--hairline-8);
+  stroke-width: var(--rule);
+}
+
+.link[data-in="true"] {
+  stroke-dashoffset: 0;
+}
+
+/* The newest link: amber, a little wider, drawn in about 1.2 s */
+.link[data-live="true"] {
+  stroke: var(--signal);
+  stroke-width: var(--rule-strong);
+  transition-duration: var(--dur-draw);
+}
+
+/* OS NÓS */
+/* A dot is a round cap on a line of no length: its stroke does not scale, so a node keeps its size at every zoom */
+.dot {
+  fill: none;
+  stroke: var(--indicator-muted);
+  stroke-width: var(--dot-sm);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transition: opacity var(--dur-swap) var(--ease-enter) calc(var(--wave) * var(--dur-draw));
+}
+
+.dot[data-kind="fact"] {
+  stroke-width: calc(var(--dot-sm) * 0.75);
+}
+
+.dot[data-kind="core"],
+.dot[data-kind="hub"] {
+  stroke: var(--foreground);
+  stroke-width: var(--dot);
+}
+
+.dot[data-in="true"] {
+  opacity: 1;
+}
+
+.dot[data-live="true"] {
+  stroke: var(--signal);
+  stroke-width: calc(var(--dot) * 1.5);
+}
+
+/* O GLOBO DO KNOWLY */
+/* The brand's mark at the world's origin, on a white disc (the links stop under it); it shrinks with the zoom, never
+   below about a third */
+.globe {
+  position: absolute;
+  top: calc(50% + var(--origin-y) + var(--pan-y));
+  left: calc(50% + var(--pan-x));
+  width: var(--mark-xl);
+  height: var(--mark-xl);
+  border-radius: var(--r-dot);
+  background: var(--card);
+  transform: translate(-50%, -50%) scale(calc(0.3 + 0.7 * var(--z)));
+}
+
+.globe img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* OS RÓTULOS */
+/* Placed on their node by the same zoom as the graph (a transform), then set beside it by their own size */
+.label {
+  --ax: -50%;
+  --ay: -50%;
+  position: absolute;
+  top: calc(50% + var(--origin-y));
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
   gap: var(--sp-1);
-}
-
-.headTitle {
-  font-size: var(--t-page-title);
-  line-height: var(--line-title);
-  font-weight: var(--weight-title);
-  letter-spacing: var(--ls-heading);
-}
-
-.head[data-big] .headTitle {
-  font-size: var(--t-h3);
-  line-height: var(--lh-heading);
-}
-
-.headNote {
-  font-size: var(--t-label);
-  line-height: var(--line-label);
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-xs);
+  background: var(--card);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
   font-weight: var(--weight-label);
   color: var(--muted-foreground);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(
+      calc(var(--pan-x) + var(--x) * var(--sx) * var(--rule)),
+      calc(var(--pan-y) + var(--y) * var(--sy) * var(--rule))
+    )
+    translate(var(--ax), var(--ay));
+  transition: opacity var(--dur-swap) var(--ease-swap);
 }
 
-
-/* A LINHA DO TEMPO */
-/* Five columns, one per event; each event is a subgrid over five rows (card, stem, dot, day, part), so every dot sits on
-   one line and every stem meets it. The line itself is drawn by each dot's cell, across its column and half the gap on
-   each side, so it runs unbroken under the dots. */
-.track {
-  --gap: var(--sp-5);
-  display: grid;
-  min-width: 0;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: auto var(--sp-5) auto auto auto;
-  column-gap: var(--gap);
+.label[data-in="true"] {
+  opacity: 1;
 }
 
-.event {
-  display: grid;
-  min-width: 0;
-  grid-row: 1 / span 5;
-  /* One column as wide as the event's own (a part wider than it spills out of its cell, not into the column) */
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: subgrid;
-  justify-items: center;
+.label[data-place="above"] {
+  --ay: calc(-100% - var(--sp-2));
 }
 
-.pieceSlot {
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  align-items: flex-end;
-  justify-content: center;
+.label[data-place="below"] {
+  --ay: var(--sp-2);
 }
 
-.piece {
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  flex-direction: column;
-  gap: var(--rule);
-  padding: var(--sp-3);
-  border-radius: var(--r-card);
-  background: var(--card);
-  box-shadow: var(--edge-ring);
-  transition: box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+.label[data-place="left"] {
+  --ax: calc(-100% - var(--sp-2));
 }
 
-/* Live: the amber-50 area with its amber ring, raised (the one piece of amber of the frame) */
-.piece[data-tone="live"] {
-  background: var(--signal-soft);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+.label[data-place="right"] {
+  --ax: var(--sp-2);
 }
 
-/* Chosen: the decision the frame is about, with the ink ring */
-.piece[data-tone="chosen"] {
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--foreground), var(--shadow-raise);
-}
-
-.kind {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-title);
+.label > svg {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+  flex: none;
   color: var(--muted-foreground);
 }
 
-.piece[data-tone="live"] .kind {
+.label[data-tone="strong"] {
+  font-weight: var(--weight-title);
   color: var(--foreground);
 }
 
-.pieceTitle {
+/* Frame 1: the first sources are chips, the node itself */
+.label[data-tone="chip"],
+.label[data-tone="subject"],
+.label[data-tone="note"] {
+  height: var(--mark-sm);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-md);
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+
+.label[data-tone="chip"] {
+  box-shadow: inset 0 0 0 var(--rule) var(--hairline-14);
+}
+
+/* The live source of frame 1: the amber-50 area with its amber ring (one piece of amber, with its link) */
+.label[data-tone="chip"][data-live="true"] {
+  background: var(--signal-soft);
+  box-shadow: inset 0 0 0 var(--rule-strong) var(--signal);
+}
+
+.label[data-tone="chip"][data-live="true"] > svg {
+  color: var(--foreground);
+}
+
+/* The subject itself, under the globe: the black chip */
+.label[data-tone="subject"] {
+  --ay: var(--sp-6);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.label[data-label="subject"] {
+  --ay: var(--sp-4);
+}
+
+/* A note on the graph (the decision, the newest link): a white chip, raised */
+.label[data-tone="note"] {
+  box-shadow: 0 0 0 var(--rule) var(--hairline-14), var(--shadow-raise);
+}
+
+/* A CABEÇA DO QUADRO */
+/* The frame's name and its zoom, every frame's stacked in one cell */
+.head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+}
+
+.stack {
+  display: grid;
+}
+
+.stack > * {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity var(--dur-swap) var(--ease-swap);
+}
+
+.stack > [data-in="true"] {
+  opacity: 1;
+}
+
+.frameName {
   font-size: var(--t-label);
   line-height: var(--line-label);
   font-weight: var(--weight-title);
+  white-space: nowrap;
 }
 
-/* The decision while it lands: its title and count on one baseline, its proofs under them */
-.piece[data-big] {
-  gap: var(--sp-2);
-  padding: var(--sp-3) var(--sp-4);
-}
-
-.decisionTop {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-2);
-}
-
-.decisionTitle {
-  font-size: var(--t-subtitle);
-  line-height: var(--line-lead);
-  font-weight: var(--weight-title);
-}
-
-.count {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-title);
-}
-
-.proofs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-1);
-}
-
-/* A proof is white on the amber-50 card, and arrives (its place is held) */
-.proof {
-  background-color: var(--card);
-  color: var(--foreground);
-  opacity: 0;
-  transform: translateY(var(--sp-1));
-  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring);
-}
-
-.proof[data-in="true"] {
-  opacity: 1;
-  transform: none;
-}
-
-.proof + .proof {
-  transition-delay: var(--dur-2);
-}
-
-/* The stem from a card down to the line */
-.stem {
-  width: calc(var(--rule) * 2);
-  height: 100%;
-  background: var(--foreground);
-}
-
-.stem[data-on="false"] {
-  visibility: hidden;
-}
-
-.dotCell {
-  position: relative;
-  display: flex;
-  width: 100%;
+.zoom > * {
+  display: inline-flex;
   height: var(--mark-xs);
   align-items: center;
   justify-content: center;
-}
-
-.dotCell::before {
-  position: absolute;
-  top: 50%;
-  right: calc(var(--gap) / -2);
-  left: calc(var(--gap) / -2);
-  height: var(--bar-active);
-  background: var(--foreground);
-  content: "";
-  transform: translateY(-50%);
-}
-
-/* The dot of an event: past in ink, now larger, the decision a white ring, paid in green, future a hollow grey ring */
-.dot {
-  position: relative;
-  z-index: 1;
-  width: calc(var(--dot) + var(--rule) * 2);
-  height: calc(var(--dot) + var(--rule) * 2);
-  border-radius: var(--r-dot);
-  background: var(--foreground);
-  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
-}
-
-.dot[data-look="now"],
-.dot[data-look="decision"] {
-  width: calc(var(--dot) + var(--sp-1) + var(--rule) * 2);
-  height: calc(var(--dot) + var(--sp-1) + var(--rule) * 2);
-}
-
-.dot[data-look="decision"] {
-  background: var(--card);
-  box-shadow: inset 0 0 0 var(--bar-active) var(--foreground);
-}
-
-.dot[data-look="paid"] {
-  background: var(--success);
-}
-
-.dot[data-look="future"] {
-  background: var(--card);
-  box-shadow: inset 0 0 0 calc(var(--rule) * 2) var(--indicator-muted);
-}
-
-.day {
-  margin-top: var(--sp-2);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-sm);
+  background: var(--muted);
   font-size: var(--t-micro);
   line-height: var(--line-micro);
-  font-weight: var(--weight-label);
+  font-weight: var(--weight-title);
   font-variant-numeric: tabular-nums;
   color: var(--muted-foreground);
   white-space: nowrap;
 }
 
-.day[data-look="now"] {
-  font-weight: var(--weight-title);
-  color: var(--foreground);
-}
-
-/* Frame 3: the days step aside, right of their dot, so each part's arrow runs up to its dot outside them (a shift of
-   the label itself: the column keeps its width) */
-.track[data-frame="3"] .day {
-  transform: translateX(calc(50% + var(--sp-3)));
-}
-
-/* QUEM PARTICIPOU */
-/* Under the line, centred on the column of the day it acted on (wider than its column, it spills evenly on both
-   sides, where no other part sits) */
-.partSlot {
-  display: flex;
-  width: 100%;
-  align-items: flex-start;
-  justify-content: center;
-  margin-top: var(--sp-6);
-}
-
-.partSlot:empty {
-  display: none;
-}
-
-.part {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  gap: var(--sp-1);
-  padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--r-card);
-  background: var(--card);
-  box-shadow: var(--edge-ring);
-}
-
-.part[data-tone="live"] {
-  background: var(--signal-soft);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
-}
-
-.partTop {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-
-/* The role's marker: a ring for who asked, filled for who led */
-.role {
-  width: var(--icon-xs);
-  height: var(--icon-xs);
-  flex: none;
-  border-radius: var(--r-dot);
-  box-shadow: inset 0 0 0 calc(var(--rule) * 2) var(--foreground);
-}
-
-.role[data-lead] {
-  background: var(--foreground);
-}
-
-.who {
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-title);
-  white-space: nowrap;
-}
-
-.part[data-tone="live"] .act {
-  background-color: var(--card);
-}
-
-.partNote {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-label);
-  color: var(--muted-foreground);
-}
-
-/* Each live piece lands on the spring, a beat after its frame entered */
-.land {
-  animation: land var(--dur-3) var(--ease-spring) var(--dur-2) both;
-}
-
-@keyframes land {
-  from {
-    opacity: 0;
-    transform: translateY(var(--sp-2)) scale(0.96);
-  }
-}
-
-/* QUADRO 4: A RESPOSTA */
-/* The line (shrunk) and the closing question on the canvas, the assistant's white panel beside them, split by the line
-   between panels */
-.answerFrame {
-  position: relative;
-  display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
-}
-
-.lead {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: var(--sp-7);
-  padding: var(--sp-6);
-}
-
-.track[data-frame="4"] {
-  --gap: var(--sp-3);
-}
-
-.track[data-frame="4"] .piece {
-  padding: var(--sp-2) var(--sp-3);
-}
-
-/* The decision stands out of the shrunk line: taller, with the ink ring */
-.track[data-frame="4"] .piece[data-tone="chosen"] {
-  padding: var(--sp-3);
-}
-
-/* After the last event the line goes on, dashed, to the day of the question */
-.track[data-frame="4"] .event:last-child .dotCell::before {
-  right: 50%;
-}
-
-.track[data-frame="4"] .event:last-child .dotCell::after {
-  position: absolute;
-  top: 50%;
-  right: calc(var(--sp-2) * -1);
-  left: calc(50% + var(--dot));
-  border-top: var(--bar-active) dashed var(--indicator-muted);
-  content: "";
-  transform: translateY(-50%);
-}
-
+/* O FECHAMENTO */
+/* Frame 4: the left column (under the graph on a phone): the question, its note and the call to action, then the
+   legend. Its place is held from the start, so nothing moves under the reader */
 .close {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: var(--close-w);
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+  transition: opacity var(--dur-swap) var(--ease-swap), visibility var(--dur-swap);
+}
+
+.close[data-in="false"],
+.ask[data-in="false"] {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.ask {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--sp-3);
-  margin-top: auto;
+  transition:
+    opacity var(--dur-enter) var(--ease-enter),
+    transform var(--dur-enter) var(--ease-enter),
+    visibility var(--dur-enter);
 }
 
-.closeTitle {
-  font-size: var(--t-h3);
-  line-height: var(--lh-heading);
-  font-weight: var(--weight-title);
-  letter-spacing: var(--ls-heading);
+.ask[data-in="false"] {
+  transform: translateY(var(--rise-enter));
 }
 
-/* A piece of frame 4 that lights on its step holds its place until then (nothing moves under the reader) */
-.close,
-.cited,
-.missing,
-.typing,
-.said {
-  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring), visibility var(--dur-2);
-}
-
-.close[data-in="false"],
-.cited[data-in="false"],
-.missing[data-in="false"],
-.typing[data-in="false"],
-.said[data-in="false"] {
-  visibility: hidden;
-  opacity: 0;
-  transform: translateY(var(--sp-1));
-  transition: none;
-}
-
-/* O PAINEL DO ASSISTENTE */
-.panel {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: var(--sp-4);
-  padding: var(--sp-5);
-  border-left: var(--rule) solid var(--border);
-  background: var(--card);
-  box-shadow: var(--shadow-raise);
-}
-
-.panelHead {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-
-/* The assistant's mark is the black primary, its icon white */
-.assistantMark {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.panelName {
-  flex: 1;
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-title);
-}
-
-.panelWhere {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-label);
-  color: var(--muted-foreground);
-}
-
-.subject {
-  align-self: flex-start;
-}
-
-/* The question as asked: the text in a ringed box */
 .question {
-  margin: 0;
-  padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--r-card);
-  box-shadow: var(--edge-ring);
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-label);
-}
-
-.answer,
-.cited {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--sp-2);
-}
-
-.label {
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-title);
-  color: var(--muted-foreground);
-}
-
-/* The typing dots and the answer share one cell: the answer's place is held while the memory types */
-.answerBody {
-  display: grid;
-}
-
-.typing,
-.said {
-  grid-area: 1 / 1;
-}
-
-.typing {
-  display: flex;
-  align-self: start;
-  min-height: var(--line-title);
-  align-items: center;
-}
-
-.said {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-
-.answerTitle {
-  font-size: var(--t-h3);
-  line-height: var(--lh-heading);
+  font-size: var(--t-figure);
+  line-height: var(--line-figure);
   font-weight: var(--weight-title);
   letter-spacing: var(--ls-heading);
 }
 
-.answerText {
+.note {
   font-size: var(--t-label);
   line-height: var(--line-label);
-}
-
-/* A citation: the lib's outline Button across the panel, its icon and label from the start */
-.cite {
-  width: 100%;
-  justify-content: flex-start;
-}
-
-/* What is still missing: a note with its icon, in the secondary text, on a quiet ring */
-.missing {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-card);
-  box-shadow: inset 0 0 0 var(--rule-dashed) var(--indicator-muted);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-title);
   color: var(--muted-foreground);
 }
 
-.missing > svg {
-  width: var(--icon-sm);
-  height: var(--icon-sm);
-  flex: none;
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
 }
 
-/* ABAIXO DE LG */
-/* The track turns into a column (the line on the left, the day, then the card with its part under it); frame 4 keeps
-   the line with its dots and days under its head, then the panel, then the closing question */
-@media (max-width: 1023px) {
-  .lineFrame {
-    gap: var(--sp-5);
-    padding: var(--sp-5) var(--sp-4);
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+
+.swatch {
+  flex: none;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: var(--r-dot);
+  background: var(--foreground);
+}
+
+.swatch[data-swatch="fact"] {
+  width: var(--dot-sm);
+  height: var(--dot-sm);
+  background: var(--indicator-muted);
+}
+
+.swatch[data-swatch="link"],
+.swatch[data-swatch="newest"] {
+  width: var(--sp-4);
+  height: var(--rule-dashed);
+  border-radius: var(--r-xs);
+  background: var(--hairline-30);
+}
+
+.swatch[data-swatch="newest"] {
+  height: var(--rule-strong);
+  background: var(--signal);
+}
+
+/* NUM TELEFONE */
+/* A taller pane: the graph above, the closing block under it in frame 4 (the world pans up to leave it room); the
+   world is fitted to the narrow width, a little less on the width than on the height, and the far labels step aside */
+@media (max-width: 767px) {
+  .root {
+    --pane-h: calc(var(--sp-9) * 7.5);
   }
 
-  .track:not([data-frame="4"]) {
-    position: relative;
-    grid-template-columns: var(--mark-xs) var(--mark-xl) minmax(0, 1fr);
-    grid-template-rows: none;
-    column-gap: var(--sp-3);
-    row-gap: var(--sp-2);
+  .camera {
+    --fx: 0.42;
+    --fy: 0.62;
   }
 
-  /* The line, down the column of the dots */
-  .track:not([data-frame="4"])::before {
-    position: absolute;
-    top: var(--sp-5);
-    bottom: var(--sp-5);
-    left: calc((var(--mark-xs) - var(--bar-active)) / 2);
-    width: var(--bar-active);
-    background: var(--foreground);
-    content: "";
+  .camera[data-frame="4"] {
+    --pan-x: 0px;
+    --pan-y: calc(var(--sp-9) * -1.5);
   }
 
-  .track:not([data-frame="4"]) .event {
-    grid-row: auto;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-    grid-template-rows: auto auto;
-    /* A day with no card yet keeps the step of a row, so the line reads at an even pace */
-    min-height: var(--row-min);
-    align-items: center;
-    justify-items: stretch;
-    row-gap: var(--sp-2);
-  }
-
-  .track:not([data-frame="4"]) .pieceSlot {
-    grid-row: 1;
-    grid-column: 3;
-  }
-
-  .track:not([data-frame="4"]) .stem {
-    display: none;
-  }
-
-  .track:not([data-frame="4"]) .dotCell {
-    grid-row: 1;
-    grid-column: 1;
-  }
-
-  .track:not([data-frame="4"]) .dotCell::before {
-    display: none;
-  }
-
-  .track:not([data-frame="4"]) .day {
-    grid-row: 1;
-    grid-column: 2;
-    margin-top: 0;
-    justify-self: start;
-    transform: none;
-  }
-
-  .track:not([data-frame="4"]) .partSlot {
-    grid-row: 2;
-    grid-column: 3;
-    justify-content: flex-start;
-    margin-top: 0;
-  }
-
-  .track:not([data-frame="4"]) .part {
-    flex: auto;
-  }
-
-  .partTop {
-    flex-wrap: wrap;
-  }
-
-  .answerFrame {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-5);
-    padding: var(--sp-5) var(--sp-4);
-  }
-
-  .lead {
-    display: contents;
-  }
-
-  .track[data-frame="4"] .pieceSlot,
-  .track[data-frame="4"] .stem {
-    display: none;
-  }
-
-  .track[data-frame="4"] .event:last-child .dotCell::after {
-    right: calc(var(--sp-1) * -1);
-  }
-
-  .panel {
-    order: 1;
+  .head {
     padding: var(--sp-4);
-    border-left: none;
-    border-radius: var(--r-card);
-    box-shadow: var(--edge-ring);
+  }
+
+  .label[data-sm="off"],
+  .camera[data-frame="4"] .label[data-tone="muted"] {
+    display: none;
   }
 
   .close {
-    order: 2;
-    margin-top: 0;
+    right: 0;
+    width: auto;
+    gap: var(--sp-4);
+    padding: var(--sp-4);
+  }
+
+  .question {
+    font-size: var(--t-title);
+    line-height: var(--line-title);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .camera,
+  .link,
+  .dot,
+  .label,
+  .stack > *,
+  .close,
+  .ask {
+    transition: none;
   }
 }
