@@ -50,6 +50,14 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
+  // A story renders after `networkidle` at times (measured 2026-10-22: the with-icon story read with no button at all),
+  // so wait for the story's first lib piece to be laid out before reading (a story renders all of it at once); a
+  // story without the control still reads as null
+  await page
+    .locator("[data-slot]")
+    .first()
+    .waitFor({ state: "visible", timeout: 10_000 })
+    .catch(() => undefined);
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
