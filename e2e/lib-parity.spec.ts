@@ -327,3 +327,40 @@ test.describe("every control of the v3 scenes matches the published lib (welabs 
     }
   });
 });
+
+// CONTROLES DA HOME V4
+// The actions of the opening (solid and outline), the call to action of the open accordion panel and, on a phone, the
+// "+" of each panel (the lib's quiet icon button, compared on shape and size only: the story's icon button is outlined)
+test.describe("every control of the v4 home matches the published lib (welabs brand)", () => {
+  test.setTimeout(180_000);
+
+  test("the actions of the opening and of the accordion at 1440 and 390", async ({ page, context }) => {
+    const sb = await context.newPage();
+    await sb.setViewportSize({ width: 1440, height: 900 });
+    await sb.goto(STORY("components-button--with-icon"), { waitUntil: "networkidle" });
+    const refSolid = (await styleOf(sb, '[data-slot="button"][data-variant="primary"][data-appearance="solid"]'))!;
+    const refOutline = (await styleOf(sb, '[data-slot="button"][data-variant="neutral"][data-appearance="outline"]'))!;
+    await sb.goto(STORY("components-buttongroup--icons"), { waitUntil: "networkidle" });
+    const refIcon = (await styleOf(sb, '[data-slot="button"][data-size="icon"]'))!;
+    expect(refSolid && refOutline && refIcon).toBeTruthy();
+    const BUTTON = ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "paddingLeft", "fontSize", "fontWeight", "color"];
+
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto("/");
+      const solid = (await styleOf(page, '#intro [data-slot="button"][data-appearance="solid"]'))!;
+      const outline = (await styleOf(page, '#intro [data-slot="button"][data-appearance="outline"]'))!;
+      const cta = (await styleOf(page, '#products [data-panel="domus"] [data-slot="button"][data-appearance="solid"]'))!;
+      expect(solid && outline && cta, `controls found at ${width}`).toBeTruthy();
+      for (const [name, ours] of [["solid", solid], ["solid", cta]] as const) await compare(page, name, ours, refSolid, BUTTON);
+      await compare(page, "outline", outline, refOutline, BUTTON);
+      for (const s of [solid, outline, cta]) expect(parseFloat(s.height)).toBeGreaterThanOrEqual(40 - 0.5);
+      if (width < 768) {
+        const toggle = (await styleOf(page, '#products [data-panel="relloo"] [data-slot="button"][data-size="icon"]'))!;
+        expect(toggle, "the + of a panel").toBeTruthy();
+        await compare(page, "icon", toggle, refIcon, ["borderTopLeftRadius", "height"]);
+      }
+    }
+  });
+});

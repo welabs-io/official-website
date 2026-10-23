@@ -112,9 +112,11 @@ describe("little text, no slogan", () => {
   it("the home and every product page stay inside the word budget of the v2", () => {
     // v2 (2026-10-20): the home went from 700-1000 words to about 250, a product page from 400-700 to about 200; the
     // floor guards against a section losing its words, the ceiling against text creeping back in. Frame included.
+    // v4 (brief-v4, 2026-10-23): the approved accordion gives each of the five products its title, line, three points
+    // and question, in place of the product cards, the Domus band and what changes, so the ceiling of the home is 400
     const homeWords = wordCount(home);
     expect(homeWords, `home: ${homeWords}`).toBeGreaterThanOrEqual(200);
-    expect(homeWords, `home: ${homeWords}`).toBeLessThanOrEqual(300);
+    expect(homeWords, `home: ${homeWords}`).toBeLessThanOrEqual(400);
     for (const { slug, html } of productPages) {
       const n = wordCount(html);
       expect(n, `${slug}: ${n}`).toBeGreaterThanOrEqual(110);
@@ -146,21 +148,13 @@ describe("little text, no slogan", () => {
 
 describe("the home", () => {
   const at = (id: string) => home.indexOf(`id="${id}"`);
-  it("has the sections of the v2, in order", () => {
-    const order = [
-      "top",
-      "intro",
-      "message",
-      "domus",
-      "products",
-      "operation",
-      "contact",
-      "platforms",
-    ];
+  // v4 (brief-v4, 2026-10-23): the opening in blades, the chain the scroll walks, the accordion of the products, the
+  // contact and where we run; the Domus band and what changes left (the blades and the accordion show them)
+  it("has the sections of the v4, in order", () => {
+    const order = ["top", "intro", "message", "products", "contact", "platforms"];
     for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);
     for (let i = 1; i < order.length; i++)
       expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
-    // v2.1: the film of the fitting pieces (#chain) left, a drawing with no function
     for (const gone of [
       "how",
       "audience",
@@ -168,6 +162,8 @@ describe("the home", () => {
       "faq",
       "connectors",
       "chain",
+      "domus",
+      "operation",
     ])
       expect(at(gone), gone).toBe(-1);
   });
@@ -180,42 +176,29 @@ describe("the home", () => {
     expect(visibleText(intro)).toContain("Agendar uma demonstração");
   });
 
-  it("the stage lights the products in the order of the turning word, every product a link", () => {
+  // v4: the stage in blades opens on the Domus frame, with its seal, and the five marks in the order of the word
+  it("the stage in blades opens on the Domus frame, with its seal and the five marks in the order of the turning word", () => {
     const intro = home.slice(at("intro"), at("message"));
-    expect(intro).toContain('data-hub="cycle"');
-    for (const p of PRODUCTS)
-      expect(intro).toContain(`href="/products/${p.slug}"`);
-    // v2.1: four ties to the record (each carries its packet) and the record of the Domus with one line per product
-    expect(
-      intro.match(
-        /<span[^>]*data-of="(relloo|magneto|tuner|knowly)"[^>]*aria-hidden="true"/g,
-      ),
-    ).toHaveLength(4);
-    // ...and every piece that lights in the cycle carries its window: 4 ties and 5 lines of the record
-    expect(
-      intro.match(/data-of="(domus|relloo|magneto|tuner|knowly)" style/g),
-    ).toHaveLength(9);
-    expect(visibleText(intro)).toContain(HOME_INTRO.record.title);
+    expect(intro).toContain('data-hub="blades"');
+    expect(intro).toContain('data-frame="domus"');
+    expect(intro.match(/data-blade|class="[^"]*blade[^"]*"/g)?.length).toBeGreaterThanOrEqual(51);
+    // TypeIn draws the turning word one character per span
+    expect(visibleText(intro).replace(/\s/g, "")).toContain(HOME_INTRO.words[0].text.replace(/\s/g, ""));
+    const strip = intro.slice(intro.indexOf(`aria-label="${HOME_INTRO.stage}"`));
+    const marks = [...strip.matchAll(/<li[^>]*><img[^>]*alt="([^"]+)"/g)].map((m) => m[1]);
+    expect(marks).toEqual(["Domus by Welabs", "Relloo", "Magneto", "Tuner", "Knowly"]);
   });
 
-  // v3 (2026-10-23): the chain is the kit scene home-message, mounted by SceneSlot (it plays by itself on screen)
-  it("the message is the kit scene that crosses the five products and lands in the Domus", () => {
-    const msg = home.slice(at("message"), at("domus"));
-    expect(msg).toContain('data-kit="home-message"');
-    expect(msg).toContain('data-scene="home-message"');
-    expect(msg).not.toContain('id="msg-go"');
-    for (const p of PRODUCTS) expect(visibleText(msg)).toContain(p.name);
-  });
-
-  it("the Domus is the whole company, with a room the visitor makes and the other products on its ground", () => {
-    const domus = home.slice(at("domus"), at("products"));
-    for (const area of ["Vendas", "Compras", "Estoque", "Produção", "Projetos"])
-      expect(visibleText(domus)).toContain(area);
-    expect(domus).toMatch(/<input type="checkbox" id="area-add"/);
-    expect(domus).toMatch(/<label[^>]*for="area-add"/);
-    for (const p of PRODUCTS.filter((x) => x.slug !== "domus"))
-      expect(domus).toContain(`href="/products/${p.slug}"`);
-    expect(domus).toContain('href="/products/domus"');
+  // v4: the chain the scroll walks; the server draws it settled, the order in the Domus with one line per product
+  it("the chain crosses the five products and settles as the order in the Domus", () => {
+    const msg = home.slice(at("message"), at("products"));
+    expect(msg).toContain("data-chain");
+    expect(msg.match(/data-station="[a-z]+"/g)).toEqual(
+      ["tuner", "relloo", "knowly", "magneto", "domus"].map((s) => `data-station="${s}"`),
+    );
+    expect(msg).toContain("data-record");
+    expect(visibleText(msg)).toContain("Pedido 1234");
+    expect(msg).not.toMatch(/role="progressbar"/);
   });
 
   it("shows five product cards, each leading to its page, with its line", () => {
@@ -229,9 +212,14 @@ describe("the home", () => {
     }
   });
 
-  it("what changes is three still native scenes, the outcome only", () => {
-    const part = home.slice(at("operation"), at("contact"));
-    expect(part.match(/data-mini="s\d"/g)).toHaveLength(3);
+  // v4: the accordion of the products, the Domus open at rest, each panel with its question and the call to action
+  it("the accordion opens the Domus at rest, and every panel has its frame, its question and the call to action", () => {
+    const part = home.slice(at("products"), at("contact"));
+    expect(part.match(/data-panel="[a-z]+"/g)).toHaveLength(5);
+    expect(part).toMatch(/data-grow="panel" data-open="true"[^>]*data-panel="domus"/);
+    expect(part.match(/data-open="true"/g)).toHaveLength(1);
+    expect(part.match(/href="\/#contact"/g)).toHaveLength(5);
+    expect(part).toContain('data-frame="domus"');
   });
 
   // v3 (F1): every button of the site lands on this band, so it never links to itself (the loop of plano.md 1.3); its

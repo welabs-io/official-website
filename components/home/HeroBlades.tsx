@@ -129,7 +129,8 @@ export function HeroBlades() {
             <li key={w.product} className={h.mark} data-active={i === index || undefined}>
               <img
                 src={productLogo(w.product, "light", "row", 28)}
-                alt={productAlt(w.product, "row")}
+                // The first mention of the Domus on the home names its brand line (brand-config IDENTITY_PLACES)
+                alt={productAlt(w.product, i === 0 ? "first-mention" : "row")}
                 width={1005}
                 height={550}
                 className={h.markLogo}
