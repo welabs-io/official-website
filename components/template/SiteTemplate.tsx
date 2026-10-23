@@ -5,8 +5,6 @@ import type { SectionConfig, PageConfig } from "@/lib/site-config";
 import {
   FiveProducts,
   HomeContact,
-  HomeDomus,
-  HomeEffects,
   HomeIntro,
   HomeMessage,
   Platforms,
@@ -26,12 +24,8 @@ function Body({ section }: { section: SectionConfig }) {
       return <HomeIntro />;
     case "message":
       return <HomeMessage />;
-    case "domus":
-      return <HomeDomus />;
     case "products":
       return <FiveProducts />;
-    case "effects":
-      return <HomeEffects />;
     case "contact":
       return section.slug ? (
         <ProductContact slug={section.slug} />

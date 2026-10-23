@@ -23,9 +23,10 @@ const BLOCKS: Block[] = [
   // The 6 s loop of the new module, its filled screen held 1.2 s (it held 3.2 s on 155fb83)
   {
     name: "the new module of the Domus",
-    path: "/",
-    block: "#domus",
-    trigger: '#domus label[for="area-add"]',
+    // v4 (2026-10-23): the house left the home; it lives on the Domus page
+    path: "/products/domus",
+    block: "#areas",
+    trigger: '#areas label[for="area-add-page"]',
   },
   // v3 (2026-10-23): the message of the home and the plays of the products left; the kit scenes that replace them hold
   // the same contract on their pages (e2e/scene-kit-scenes.spec.ts, "scene kit on the site")

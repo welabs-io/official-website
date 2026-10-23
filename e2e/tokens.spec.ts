@@ -11,6 +11,11 @@ const TOKENS = [
   "cubic-bezier(0.65, 0, 0.35, 1)",
   "cubic-bezier(0.34, 1.36, 0.64, 1)",
   "linear",
+  // v4 (brief-v4, app/lib.css AS TRÊS CURVAS DA V4): enter and hover (swap is the in-out above), and the per-character
+  // step of TypeIn
+  "cubic-bezier(0.22, 1, 0.36, 1)",
+  "cubic-bezier(0.4, 0, 0.2, 1)",
+  "steps(1)",
 ];
 
 for (const path of ["/", "/products/magneto"])

@@ -1,0 +1,310 @@
+/* A CADEIA LIGADA À ROLAGEM */
+/* components/home/Chain.tsx (brief-v4, artboard Chain): a white stage with the five stations in a zigzag (the 1st, 3rd
+   and 5th lower, by margin and never by transform, since the Connector measures the layout), the traces between them,
+   and under them the caption of the live station beside the message (first step) or the record of the order (settled).
+   A station changes state on the swap curve. On a phone the stations stack in one column. */
+.stage {
+  position: relative;
+  margin-top: var(--sp-7);
+  padding: var(--sp-7);
+  border-radius: var(--r-win);
+  background: var(--card);
+  /* A white card on the soft band: no shadow at rest (Welabs UI v3) */
+  box-shadow: none;
+}
+
+.stations {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  column-gap: var(--sp-8);
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.station {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  min-width: 0;
+  min-height: 112px;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+  transition:
+    box-shadow var(--dur-swap) var(--ease-swap),
+    color var(--dur-swap) var(--ease-swap);
+}
+.station:nth-child(odd) {
+  margin-top: var(--sp-9);
+}
+.station[data-focus] {
+  box-shadow:
+    inset 0 0 0 var(--rule-dashed) var(--foreground),
+    var(--shadow-pop);
+}
+.stationTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.stationLogo {
+  display: block;
+  width: auto;
+  height: var(--mark-md);
+  margin-left: calc(var(--sp-1) * -1);
+  transition: opacity var(--dur-swap) var(--ease-swap);
+}
+.station[data-state="next"] .stationLogo {
+  opacity: 0.45;
+}
+.status {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-dot);
+  box-shadow: inset 0 0 0 var(--rule-dashed) var(--trace-rest);
+  transition:
+    background var(--dur-swap) var(--ease-swap),
+    width var(--dur-swap) var(--ease-swap),
+    height var(--dur-swap) var(--ease-swap);
+}
+.station[data-state="live"] .status {
+  width: var(--sp-3);
+  height: var(--sp-3);
+  background: var(--signal);
+  box-shadow: none;
+}
+.station[data-state="done"] .status {
+  width: var(--sp-5);
+  height: var(--sp-5);
+  background: var(--success-soft);
+  color: var(--success);
+  box-shadow: none;
+}
+.status svg {
+  width: var(--icon-xs);
+  height: var(--icon-xs);
+  stroke-width: 3;
+}
+.stationText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.stationLabel {
+  font-size: var(--text-sm);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.station[data-state="next"] .stationLabel {
+  color: var(--muted-foreground);
+}
+.stationSub {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 352px);
+  gap: var(--sp-7);
+  align-items: start;
+  min-height: 220px;
+  margin-top: var(--sp-7);
+}
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.captionProduct {
+  font-size: var(--text-sm);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.phrase {
+  margin: 0;
+  font-size: var(--text-2xl);
+  line-height: var(--lh-heading);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-heading);
+}
+.phraseLine,
+.phraseQuiet {
+  display: block;
+}
+.phraseQuiet {
+  color: var(--muted-foreground);
+}
+.caption > .closing {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--text-md);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-label);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.chip svg {
+  color: var(--success);
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+}
+.bubble {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg) var(--r-lg) var(--r-lg) var(--r-xs);
+  background: var(--signal-soft);
+  box-shadow: inset 0 0 0 var(--rule-strong) var(--signal);
+  animation: chain-in var(--dur-enter) var(--ease-enter) both;
+}
+.bubbleChannel {
+  align-self: flex-start;
+}
+.bubbleText {
+  font-size: var(--text-md);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-label);
+}
+.bubbleTime {
+  align-self: flex-end;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+}
+
+.record {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-pop);
+  animation: chain-in var(--dur-enter) var(--ease-enter) both;
+}
+.recordHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--mark-sm);
+}
+.recordTitle {
+  font-size: var(--text-sm);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.recordWho {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.recordTag {
+  margin-left: auto;
+}
+.recordLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.recordLine {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-micro);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.recordCheck {
+  flex: none;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  color: var(--success);
+}
+.recordProduct {
+  flex: none;
+  width: var(--sp-9);
+  color: var(--muted-foreground);
+}
+
+@keyframes chain-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise-enter));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A narrow window: the stations stack in one column, each a row, and the record goes under the caption */
+@media (max-width: 899px) {
+  .stage {
+    padding: var(--sp-4);
+  }
+  .stations {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-6);
+  }
+  .station,
+  .station:nth-child(odd) {
+    flex-direction: row;
+    align-items: center;
+    min-height: var(--row-min);
+    margin-top: 0;
+  }
+  .stationTop {
+    flex-direction: row-reverse;
+  }
+  /* Each part keeps the room of its tallest step, so the page under the chain never moves while it is walked */
+  .detail {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-5);
+    margin-top: var(--sp-6);
+  }
+  .caption {
+    min-height: 288px;
+  }
+  .aside {
+    min-height: 216px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble,
+  .record {
+    animation: none;
+  }
+  .station,
+  .status,
+  .stationLogo {
+    transition: none;
+  }
+}

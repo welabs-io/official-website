@@ -1,0 +1,293 @@
+/* ACORDEÃO DOS CINCO PRODUTOS */
+/* components/home/ProductAccordion.tsx (brief-v4, artboards Accordion and AccordionMobile). The width is the
+   foundation's (GrowRow, GrowItem); this sheet only draws a panel in its two faces. A panel is open while it is pointed
+   at or holds the focus, or, while no other is, when it is the one open at rest (the same rule as
+   components/motion/motion.module.css). The open face has the width of an open panel from the start (the row is a size
+   container), so nothing reflows while the width grows: the panel clips it. The closed face fades in the hover time,
+   the open one comes in on the swap curve after 250 ms. On a phone the panels stack and the "+" opens one at a time. */
+.row {
+  container: accordion / inline-size;
+  height: 480px;
+  margin-top: var(--sp-7);
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-win);
+  background: var(--muted);
+  transition:
+    flex-grow var(--dur-grow) var(--ease-enter),
+    background var(--dur-hover) var(--ease-hover),
+    box-shadow var(--dur-hover) var(--ease-hover);
+}
+
+/* The logo, the link to the product: small at the top of a closed panel, at the head of the copy when it opens */
+.head {
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-1);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  transition:
+    top var(--dur-swap) var(--ease-swap),
+    left var(--dur-swap) var(--ease-swap);
+}
+.logo {
+  display: block;
+  border-radius: var(--r-md);
+}
+.logo img {
+  display: block;
+  width: auto;
+  height: var(--sp-6);
+  transition: height var(--dur-swap) var(--ease-swap);
+}
+.logo:focus-visible {
+  outline: var(--rule-strong) solid var(--ring);
+  outline-offset: var(--rule-strong);
+}
+.phoneArea,
+.toggle {
+  display: none;
+}
+
+/* The closed face: the glyph, the area written upwards and the number */
+.closed {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-hover) var(--ease-hover);
+}
+.glyph {
+  position: absolute;
+  left: var(--sp-5);
+  top: 150px;
+  width: var(--sp-9);
+  height: auto;
+  fill: none;
+  stroke: var(--muted-foreground);
+  stroke-opacity: 0.55;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.glyph [data-fill] {
+  fill: var(--muted-foreground);
+  fill-opacity: 0.18;
+}
+.glyph [data-dot] {
+  fill: var(--muted-foreground);
+  fill-opacity: 0.55;
+  stroke: none;
+}
+.glyph [data-dot="faint"] {
+  fill-opacity: 0.25;
+}
+.area,
+.number {
+  position: absolute;
+  bottom: var(--sp-5);
+  font-size: var(--text-sm);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.area {
+  left: var(--sp-4);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.number {
+  right: var(--sp-4);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The open face: the copy and the frame of the product, at the width of an open panel */
+.open {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc((100cqw - 4 * var(--sp-4)) * 0.6);
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-hover) var(--ease-hover),
+    visibility 0s linear var(--dur-hover);
+}
+.copy {
+  flex: 0 0 328px;
+  display: flex;
+  flex-direction: column;
+  padding: 88px var(--sp-2) var(--sp-6) var(--sp-6);
+}
+.title {
+  margin: 0;
+  font-size: var(--text-2xl);
+  line-height: var(--lh-heading);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+}
+/* Two classes, so the margins outrank the reset of the page's paragraphs (shell.module.css .page p) */
+.copy > .lead {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--text-sm);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+}
+.points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.copy > .question {
+  margin: auto 0 0;
+  padding-top: var(--sp-4);
+  font-size: var(--text-md);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+}
+.cta {
+  align-self: flex-start;
+  margin-top: var(--sp-3);
+}
+.well {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  margin: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-2);
+  padding: var(--sp-5);
+  border-radius: var(--r-lg);
+  background: var(--muted);
+}
+
+@media (min-width: 768px) {
+  .panel:is(:hover, :focus-within),
+  .row:not(:has(> .panel:hover, > .panel:focus-within)) > .panel[data-open] {
+    background: var(--card);
+    box-shadow: var(--shadow-pop);
+  }
+  .panel:is(:hover, :focus-within) .head,
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .head {
+    top: var(--sp-5);
+    left: var(--sp-5);
+  }
+  .panel:is(:hover, :focus-within) .logo img,
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .logo
+    img {
+    height: var(--mark-xl);
+  }
+  .panel:is(:hover, :focus-within) .closed,
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .closed {
+    opacity: 0;
+  }
+  .panel:is(:hover, :focus-within) .open,
+  .row:not(:has(> .panel:hover, > .panel:focus-within))
+    > .panel[data-open]
+    .open {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity var(--dur-swap) var(--ease-swap) 250ms,
+      visibility 0s linear 0s;
+  }
+}
+
+/* A row too narrow for the copy and the frame side by side keeps the copy only */
+@container accordion (max-width: 1080px) {
+  .well {
+    display: none;
+  }
+  .copy {
+    flex: 1 1 auto;
+    padding-right: var(--sp-6);
+  }
+}
+
+/* A phone: the panels stack, each a row with its logo, its area and its "+"; the open one shows its copy and frame */
+@media (max-width: 767px) {
+  .row {
+    height: auto;
+    gap: var(--sp-2);
+  }
+  .panel {
+    border-radius: var(--r-lg);
+  }
+  .panel[data-phone-open] {
+    background: var(--card);
+    box-shadow: var(--shadow-pop);
+  }
+  .head {
+    position: static;
+    min-height: 72px;
+    padding: 0 var(--sp-4) 0 var(--sp-1);
+  }
+  .logo img {
+    height: var(--mark-lg);
+  }
+  .phoneArea {
+    display: block;
+    flex: 1;
+    font-size: var(--text-sm);
+    line-height: var(--line-label);
+    font-weight: var(--weight-label);
+    color: var(--muted-foreground);
+  }
+  .toggle {
+    display: inline-flex;
+  }
+  .closed {
+    display: none;
+  }
+  .open {
+    position: static;
+    width: auto;
+    display: none;
+    flex-direction: column;
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+  }
+  .panel[data-phone-open] .open {
+    display: flex;
+  }
+  .copy {
+    flex: none;
+    padding: 0 var(--sp-5);
+  }
+  .question {
+    margin-top: var(--sp-4);
+  }
+  .cta {
+    align-self: stretch;
+  }
+  .well {
+    display: block;
+    height: 260px;
+    margin: var(--sp-4) var(--sp-5) var(--sp-5);
+    padding: var(--sp-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .head,
+  .logo img,
+  .closed,
+  .open {
+    transition: none;
+  }
+}
