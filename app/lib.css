@@ -96,6 +96,9 @@
   /* The H1 of a record, the Domus `text-page-title` (erpnext front welabs-theme.css: 22/28, 600) */
   --t-page-title: 22px;
   --line-title: 28px;
+  /* The big number of a drawn screen (carousels v3, operator 2026-10-22: large and bold, 22 to 28 px), in bold */
+  --t-stat: 28px;
+  --weight-stat: 700;
   --text-hero: var(--t-display);
   --text-display: var(--t-display);
   --text-title: var(--t-h2);

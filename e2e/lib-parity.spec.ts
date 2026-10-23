@@ -162,7 +162,6 @@ test.describe("lab controls match the published lib (welabs brand)", () => {
 // can never be shrunk below the lib's size (a 30 px field slipped through a one-sample check). Colours are compared to
 // the story of the same variant and appearance; a pair with no story fails, so a new look needs a story or a reason here.
 const SCENE_CONTROLS: { id: string; steps: string[] }[] = [
-  { id: "domus-modules", steps: ["start", "date"] },
   { id: "magneto-approval", steps: ["high", "waiting", "failed"] },
 ];
 
@@ -212,7 +211,9 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // with components-buttongroup--icons, a list row (the lib's ghost button laid out as a row) with the ghost of the same
 // story (its height may only grow), a field with components-inputgroup--default, a segmented control with
 // components-segmentedcontrol--default. Only ALLOWED differs.
-const V3_LABS = ["tuner-routing", "knowly-answer", "home-message"] as const;
+// The Domus carousel (brief-v3-carousel) is measured here too: its four frames are laid out at once, so the settled
+// frame's pass reads every control of the loop (the new type's row, Confirmar, Desfazer, the call to action)
+const V3_LABS = ["tuner-routing", "knowly-answer", "home-message", "domus-carousel"] as const;
 
 // Every control of the live layer of the scene, with its kind and its computed style
 async function controlsOf(page: Page, id: string) {
@@ -275,7 +276,8 @@ test.describe("every field and button of domus and magneto match the published l
   test.use({ viewport: { width: 1440, height: 900 } });
   test.setTimeout(120_000);
 
-  test("fields and buttons of domus-modules and magneto-approval", async ({ page, context }) => {
+  // The Domus left this list for V3_LABS with its carousel (domus-modules is gone)
+  test("fields and buttons of magneto-approval", async ({ page, context }) => {
     // REFERÊNCIA: AS HISTÓRIAS DA LIB
     const sb = await context.newPage();
     await sb.setViewportSize({ width: 1440, height: 900 });

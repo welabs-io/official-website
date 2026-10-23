@@ -1,0 +1,731 @@
+/* CENA DO DOMUS: CARROSSEL EM QUATRO QUADROS */
+/* The frames V3Domus-1..4 on the neutral canvas, white surfaces, black primary and marks, amber only on what is live in
+   the current frame, green for what is done. The four frames share one grid cell (the window keeps the tallest's
+   height); the leaving frame slides out on the in-out curve, the coming one slides in on the out curve after it, and
+   each piece inside reveals by its own `data-in` state on the out curve, with the spring for what is born. The lib
+   paints the buttons and the badges; this sheet places them and paints the states. Every value is a token of
+   app/lib.css; e2e/scene-kit-geometry.spec.ts holds the alignment by numbers. */
+.root {
+  display: grid;
+  min-width: 0;
+  background: var(--background);
+}
+
+/* QUADROS E TRANSIÇÃO */
+/* The current frame in place; the others out of sight, the past to the left and the future to the right, so the
+   carousel always reads forward. Visibility follows the opacity (it turns hidden only once the fade is over). */
+.frame {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  grid-area: 1 / 1;
+  transition:
+    opacity var(--dur-3) var(--ease-out) var(--dur-1),
+    translate var(--dur-3) var(--ease-out) var(--dur-1),
+    visibility var(--dur-1) step-start;
+}
+.frame[data-pos="past"],
+.frame[data-pos="future"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-2) var(--ease-in-out),
+    translate var(--dur-2) var(--ease-in-out),
+    visibility var(--dur-2) step-end;
+}
+.frame[data-pos="past"] {
+  translate: calc(var(--sp-6) * -1) 0;
+}
+.frame[data-pos="future"] {
+  translate: var(--sp-6) 0;
+}
+
+/* A piece arrives (in its frame's order, `--i`) and leaves only once its frame is out of sight; its place is kept,
+   so no frame changes height */
+.root [data-in] {
+  transition:
+    opacity var(--dur-3) var(--ease-out) calc(var(--dur-1) / 4 * var(--i, 0)),
+    translate var(--dur-3) var(--ease-spring) calc(var(--dur-1) / 4 * var(--i, 0)),
+    scale var(--dur-3) var(--ease-spring) calc(var(--dur-1) / 4 * var(--i, 0)),
+    background-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+.root [data-in="false"] {
+  opacity: 0;
+  translate: 0 var(--sp-3);
+  transition:
+    opacity var(--dur-1) var(--ease-out) var(--dur-3),
+    translate var(--dur-1) var(--ease-out) var(--dur-3),
+    scale var(--dur-1) var(--ease-out) var(--dur-3),
+    background-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+
+/* INDICADOR DE QUADRO */
+/* Four numbered dots at the end of the chrome bar: white on the chrome, the current one black */
+.dots {
+  display: inline-flex;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+}
+.dotNum {
+  display: inline-flex;
+  width: var(--mark-xs);
+  height: var(--mark-xs);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-dot);
+  background: var(--card);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-stat);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.dotNum[data-current="true"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* PEÇAS COMUNS */
+/* The black mark of a record, a type or a product (two classes over the shared mark), and the status minidot */
+.ink.ink {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+.statusDot {
+  width: var(--dot);
+  height: var(--dot);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--foreground);
+}
+.status[data-tone="done"] {
+  color: var(--success);
+}
+.status[data-tone="done"] .statusDot {
+  background: var(--success);
+}
+.badge {
+  flex: none;
+}
+
+/* QUADRO 1: AS ÁREAS DA EMPRESA */
+.areas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6) var(--sp-7);
+}
+.areasHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-5);
+}
+.count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-3);
+}
+/* The big number: bold, at the stat step (operator: 22 to 28 px) */
+.stat {
+  font-size: var(--t-stat);
+  line-height: var(--lh-display);
+  font-weight: var(--weight-stat);
+  letter-spacing: var(--ls-display);
+  font-variant-numeric: tabular-nums;
+}
+.countText {
+  font-size: var(--t-lead);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+}
+.legend {
+  display: flex;
+  gap: var(--sp-4);
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.swatch {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
+  border-radius: var(--r-xs);
+}
+.swatch[data-tone="standard"] {
+  background: var(--card);
+  box-shadow: inset 0 0 0 var(--rule) var(--indicator-muted);
+}
+/* Made to measure: the light field edge as a fill, one step darker than the chrome (the frame's tone) */
+.swatch[data-tone="custom"] {
+  background: var(--border);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.area {
+  display: flex;
+  min-width: 0;
+  min-height: calc(var(--row-min) + var(--sp-6));
+  align-items: center;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-card);
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+}
+.area[data-tone="standard"] {
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.area[data-tone="custom"] {
+  background: var(--border);
+}
+.area[data-tone="rest"] {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.restText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.restText > span {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+
+/* The tile that makes a new type: the dashed place of what is not yet, the lib's row button inside it; lit (the
+   amber-50 veil and the amber mark) while it is the live piece of the frame */
+.newTile {
+  display: grid;
+  min-width: 0;
+  border-radius: var(--r-ctl);
+  outline: var(--rule-dashed) dashed var(--indicator-muted);
+  outline-offset: calc(var(--rule-dashed) * -1);
+}
+.newTile > [data-slot="button"] {
+  min-height: calc(var(--row-min) + var(--sp-6));
+  gap: var(--sp-3);
+  padding-inline: var(--sp-4);
+  border-radius: var(--r-ctl);
+}
+.newTile[data-lit="true"] > [data-slot="button"] {
+  background-color: var(--selected);
+}
+.newMark {
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out),
+    scale var(--dur-3) var(--ease-spring);
+}
+[data-state="active"] > .newMark {
+  scale: 1.08;
+}
+.newLabel {
+  min-width: 0;
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+}
+
+/* QUADRO 2: O TIPO NOVO VIRA TELA */
+/* The new type and its screen on one centre line, the connector across the gap between them */
+.typeRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 5fr);
+  align-items: center;
+  column-gap: var(--sp-9);
+  padding: var(--sp-6) var(--sp-7);
+}
+.sheet {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.sheetHead {
+  display: flex;
+  min-height: var(--mark-lg);
+  align-items: center;
+  gap: var(--sp-3);
+}
+.sheetHeadText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.typeName {
+  font-size: var(--t-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-stat);
+  letter-spacing: var(--ls-heading);
+}
+/* A field of the new type: its icon and its name on the canvas well (a definition, not an input) */
+.typeLine {
+  display: flex;
+  min-height: var(--row-min);
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-ctl);
+  background: var(--background);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.typeLine > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex: none;
+  color: var(--muted-foreground);
+}
+
+/* The screen the type gets: its head with the green seal, its column heads on the canvas, three empty rows. Live (the
+   amber ring of the frame) once it is born. */
+.screen {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.screen[data-live="true"] {
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-pop);
+}
+.screenHead,
+.listHead {
+  display: flex;
+  min-height: calc(var(--sp-7) + var(--sp-2));
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+}
+.screenHead > b,
+.listHead > b {
+  font-weight: var(--weight-stat);
+}
+.screenCols,
+.screenRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-4);
+}
+.screenCols,
+.listCols {
+  min-height: calc(var(--sp-6) + var(--sp-1));
+  background: var(--background);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+.screenRow {
+  min-height: calc(var(--sp-7) - var(--sp-1));
+}
+.screenRow + .screenRow {
+  box-shadow: inset 0 var(--rule) 0 var(--muted);
+}
+.bar {
+  height: var(--sp-2);
+  border-radius: var(--r-dot);
+  background: var(--muted);
+}
+.screenRow[data-first="true"] .bar {
+  background: var(--border);
+}
+
+/* QUADRO 3: O ASSISTENTE CRIA O REGISTRO */
+/* The list on the canvas and the assistant as a white side panel of the whole height, the line between them */
+.assist {
+  position: relative;
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+.canvasSide {
+  min-width: 0;
+  padding: var(--sp-6) var(--sp-7);
+}
+.list {
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.listCols,
+.listRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 2fr);
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-4);
+}
+.listRow {
+  min-height: var(--sp-7);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-variant-numeric: tabular-nums;
+}
+.listRow + .listRow {
+  box-shadow: inset 0 var(--rule) 0 var(--border);
+}
+.listRow > b {
+  font-weight: var(--weight-stat);
+}
+/* The record that lands: the amber-50 veil of the selected row while it is new */
+.listRow[data-lit="true"] {
+  background-color: var(--selected);
+}
+
+.panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  background: var(--card);
+  box-shadow: inset var(--rule) 0 0 0 var(--border), var(--shadow-raise);
+}
+.root .panel[data-in="false"] {
+  translate: var(--sp-6) 0;
+}
+.panelHead {
+  display: flex;
+  min-height: var(--mark-sm);
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.panelHead > b {
+  font-weight: var(--weight-title);
+}
+.context {
+  align-self: flex-start;
+}
+/* What a person asked, in words: the white box with the line ring */
+.ask {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  box-shadow: var(--edge-ring);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.proposal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.proposalBox {
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--background);
+}
+.confirm {
+  display: grid;
+}
+.confirm > [data-slot="button"] {
+  width: 100%;
+}
+/* Done: the green banner, its solid green mark, the record and the undo at hand */
+.created {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-card);
+  background: var(--success-soft);
+}
+.doneMark.doneMark {
+  background: var(--success);
+  color: var(--success-foreground);
+}
+.createdText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.createdText > b {
+  font-weight: var(--weight-stat);
+}
+
+/* QUADRO 4: O REGISTRO LIGA OS OUTROS PRODUTOS */
+/* The record in the middle, two neighbours on each side at their own line (the connector leaves the record from a
+   port at that line, so every trace is straight), the question and its button below */
+.center {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-7);
+  padding: var(--sp-6) var(--sp-7);
+}
+.hub {
+  position: relative;
+  display: grid;
+  grid-template-areas: "w record e";
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--sp-8);
+}
+.record {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--sp-3);
+  grid-area: record;
+  padding: var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-pop);
+}
+.root .record[data-in="false"] {
+  translate: 0;
+  scale: 0.96;
+}
+.recordHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.recordTitle {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.recordTitle > b {
+  font-size: var(--t-page-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-stat);
+  letter-spacing: var(--ls-display);
+}
+.recordLine {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.recordLine > span {
+  color: var(--muted-foreground);
+}
+.recordLine > b {
+  font-weight: var(--weight-title);
+}
+/* A port: a point on the record's edge at the line of a neighbour (half a record header from the top or the bottom) */
+.port {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.port[data-port^="w"] {
+  left: 0;
+}
+.port[data-port^="e"] {
+  right: 0;
+}
+.port[data-port$="0"] {
+  top: calc(var(--record-h) / 2);
+}
+.port[data-port$="1"] {
+  bottom: calc(var(--record-h) / 2);
+}
+.side {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: repeat(2, var(--record-h));
+  row-gap: var(--sp-4);
+}
+.side[data-side="w"] {
+  grid-area: w;
+}
+.side[data-side="e"] {
+  grid-area: e;
+}
+.neighbour {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.root .side[data-side="w"] .neighbour[data-in="false"] {
+  translate: var(--sp-6) 0;
+}
+.root .side[data-side="e"] .neighbour[data-in="false"] {
+  translate: calc(var(--sp-6) * -1) 0;
+}
+/* The flow that goes on by itself: the live piece of the frame (the amber-50 veil and the amber ring) */
+.neighbour[data-live="true"] {
+  background: var(--selected);
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+}
+.ctaBand {
+  display: flex;
+  min-height: calc(var(--sp-9) + var(--sp-6));
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-6);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.question {
+  min-width: 0;
+  font-size: var(--t-h3);
+  line-height: var(--lh-heading);
+  font-weight: var(--weight-stat);
+  letter-spacing: var(--ls-display);
+}
+
+/* TELAS ESTREITAS */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .typeRow {
+    column-gap: var(--sp-7);
+  }
+  .hub {
+    column-gap: var(--sp-6);
+  }
+}
+
+/* CELULAR */
+/* Every frame in one column at the phone's inset: the areas in two columns, the type above its screen, the list above
+   the assistant, the record above its four neighbours (two columns), the question above its button. Side by side no
+   more, so no connector is drawn (Connector.tsx draws only across a gap, and the ports leave the layout). */
+@media (max-width: 640px) {
+  .areas,
+  .typeRow,
+  .canvasSide,
+  .center {
+    padding: var(--sp-4);
+  }
+  .areas {
+    gap: var(--sp-4);
+  }
+  .stat {
+    font-size: var(--t-page-title);
+  }
+  .countText {
+    font-size: var(--t-subtitle);
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+  .area,
+  .newTile > [data-slot="button"] {
+    min-height: var(--row-min);
+    padding-inline: var(--sp-3);
+    font-size: var(--t-label);
+    line-height: var(--line-label);
+  }
+  .newLabel {
+    font-size: var(--t-label);
+    line-height: var(--line-label);
+  }
+  .restText > span {
+    font-size: var(--t-micro);
+    line-height: var(--line-micro);
+  }
+  .typeRow {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-4);
+  }
+  .sheet {
+    padding: var(--sp-4);
+  }
+  .assist {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .listCols,
+  .listRow {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 4fr);
+    gap: var(--sp-2);
+    padding: 0 var(--sp-3);
+  }
+  .panel {
+    padding: var(--sp-4);
+    box-shadow: inset 0 var(--rule) 0 0 var(--border);
+  }
+  .root .panel[data-in="false"] {
+    translate: 0 var(--sp-3);
+  }
+  .center {
+    gap: var(--sp-5);
+  }
+  .hub {
+    grid-template-areas:
+      "record record"
+      "w e";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--sp-3);
+  }
+  .port {
+    display: none;
+  }
+  .neighbour {
+    gap: var(--sp-2);
+    padding: 0 var(--sp-3);
+  }
+  .ctaBand {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--sp-4);
+  }
+}

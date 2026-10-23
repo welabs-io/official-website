@@ -1,7 +1,9 @@
 /* CONECTOR ENTRE PEÇAS DE UMA CENA */
-/* The trace of components/scene-kit/Connector.tsx: the sand control edge (--input) at the dashed width, drawn on with
-   the in-out curve, and an ink dot that rides it once with the out curve. Under the content it would cross, above the
-   panes' paint, deaf to the pointer. Every value is a token of app/lib.css. */
+/* The trace of components/scene-kit/Connector.tsx: a solid ink line at 2.5 hairlines (carousels v3, 2026-10-22: solid,
+   2 to 3.5 px, with an arrow), drawn on with the in-out curve, its arrowhead landing with the spring once the line has
+   arrived, and an ink dot that rides it once with the out curve. Under the content it would cross, above the panes'
+   paint, deaf to the pointer. It stays at full ink: the link is the point of the frame. Every value is a token of
+   app/lib.css. */
 .layer {
   position: absolute;
   inset: 0;
@@ -12,23 +14,30 @@
   pointer-events: none;
 }
 
-/* Drawn on, then it recedes once the line has landed (the hand-off is done, the link stays readable but quiet) */
-.path {
+.path,
+.arrow {
   fill: none;
-  stroke: var(--input);
-  stroke-width: var(--rule-dashed);
+  stroke: var(--foreground);
+  stroke-width: calc(var(--rule) * 2.5);
   stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation:
-    draw var(--dur-3) var(--ease-in-out) forwards,
-    recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  stroke-linejoin: round;
 }
 
-/* The anchor on the row: a sand dot where the trace leaves, receding with it */
+/* At rest the trace is whole (a settled frame under reduced motion keeps it); the motion only plays it in */
+.path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: draw var(--dur-3) var(--ease-in-out) backwards;
+}
+
+/* The arrowhead lands where the line ends, once it got there */
+.arrow {
+  animation: land var(--dur-2) var(--ease-spring) var(--dur-3) backwards;
+}
+
+/* The anchor on the source: an ink dot where the trace leaves */
 .anchor {
-  fill: var(--input);
-  animation: recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  fill: var(--foreground);
 }
 
 .dot {
@@ -40,14 +49,14 @@
 }
 
 @keyframes draw {
-  to {
-    stroke-dashoffset: 0;
+  from {
+    stroke-dashoffset: 1;
   }
 }
 
-@keyframes recede {
-  to {
-    opacity: 0.45;
+@keyframes land {
+  from {
+    opacity: 0;
   }
 }
 

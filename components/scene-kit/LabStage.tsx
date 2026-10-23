@@ -9,7 +9,7 @@ import { ActionButton } from "@/components/lib/ui";
 import { useSceneTimeline, type SceneStep } from "./Scene";
 import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
-import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
+import { DOMUS_CAROUSEL_STEPS, DomusCarousel } from "./scenes/domus-carousel";
 import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
 import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
 import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
@@ -30,10 +30,10 @@ const SCENES: Record<SceneId, Entry> = {
     Component: RellooInbox,
     takeFrom: "email",
   },
-  "domus-modules": {
-    steps: DOMUS_MODULES_STEPS,
-    Component: DomusModules,
-    takeFrom: "born",
+  "domus-carousel": {
+    steps: DOMUS_CAROUSEL_STEPS,
+    Component: DomusCarousel,
+    takeFrom: "type",
   },
   "magneto-approval": {
     steps: MAGNETO_APPROVAL_STEPS,
