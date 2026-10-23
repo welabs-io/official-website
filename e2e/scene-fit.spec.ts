@@ -171,11 +171,13 @@ for (const viewport of VIEWPORTS)
         // Every page has a scene: the home its minis and its message, a product its carousel (the kit window follows
         // its settled frame by construction, Scene.tsx; the empty strip is measured on the windows of the minis)
         expect(scanned.length, "scenes scanned").toBeGreaterThan(0);
-        if (route === "/") expect(empty.length).toBeGreaterThan(0);
+        // v4 (2026-10-23): the home's frames are the blades, the chain and the accordion (data-mini), with no window
+        // of the older minis, so no route requires an empty-strip measure any more
         for (const e of empty) expect(e.px, e.where).toBeLessThanOrEqual(24);
       });
 
-    for (const route of ["/", "/products/relloo"])
+    // v4 (2026-10-23): the stage of the home is the blades, whose marks carry no text beside them
+    for (const route of ["/products/relloo"])
       test(`${route}: the stage logos start on the edge of their text`, async ({
         page,
       }) => {

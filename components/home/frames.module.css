@@ -1,0 +1,435 @@
+/* QUADROS DOS CINCO PRODUTOS */
+/* components/home/frames.tsx: a white window per product, a size container, so the stage of the opening (wide) and the
+   open panel of the accordion (narrow) share one frame. Every value is a token of app/lib.css; the links are the kit's
+   Connector, laid over the positioned body they live in. */
+.window {
+  container: frame / inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--shadow-pop);
+  color: var(--foreground);
+}
+
+.bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--row-min);
+  padding: 0 var(--sp-4);
+  box-shadow: inset 0 calc(var(--rule) * -1) 0 var(--border);
+}
+.barTitle {
+  white-space: nowrap;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.barSub,
+.ownerLabel,
+.time,
+.useLine,
+.usesLine,
+.stepLine,
+.channelLine {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.barEnd {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The body of a frame: the positioned box its connectors measure in */
+.body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  min-height: 0;
+}
+
+/* Domus */
+.legend {
+  display: inline-flex;
+  gap: var(--sp-3);
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.legendItem::before {
+  content: "";
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-xs);
+  background: var(--muted);
+}
+.legendItem[data-kind="custom"]::before {
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+
+.modules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.module {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  min-height: var(--mark-xl);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--background);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+}
+.module[data-kind="custom"] {
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.module[data-kind="new"] {
+  background: var(--success-soft);
+  box-shadow: inset 0 0 0 var(--rule-dashed) var(--success);
+}
+.moduleIcon {
+  display: inline-flex;
+  color: var(--muted-foreground);
+}
+.moduleIcon svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+.module[data-kind="new"] .moduleIcon {
+  color: var(--success);
+}
+.moduleName {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.uses {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.use {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  min-height: var(--record-h);
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.useLogo {
+  display: block;
+  width: auto;
+  height: var(--mark-sm);
+}
+.usesLine {
+  margin: 0;
+}
+
+/* Relloo */
+.owner {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--mark-lg);
+  padding: 0 var(--sp-4);
+  box-shadow: inset 0 calc(var(--rule) * -1) 0 var(--border);
+}
+.thread {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--background);
+  min-height: 0;
+}
+.bubbleIn,
+.bubbleOut {
+  margin: 0;
+  max-width: 78%;
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.bubbleIn {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  border-radius: var(--r-lg) var(--r-lg) var(--r-lg) var(--r-xs);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.time {
+  align-self: flex-end;
+}
+.bubbleOut {
+  align-self: flex-end;
+  border-radius: var(--r-lg) var(--r-lg) var(--r-xs) var(--r-lg);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+/* "digitando" for its hold, then the answer types and the label goes */
+.typing {
+  align-self: flex-end;
+  animation: frame-hide var(--dur-1) var(--ease-hover) var(--typing-hold)
+    forwards;
+}
+.stages {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-4);
+  overflow: hidden;
+  box-shadow: inset 0 var(--rule) 0 var(--border);
+}
+.stage {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--mark-sm);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-md);
+  box-shadow: var(--edge-ring);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+.stage[data-current] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: none;
+}
+
+/* Magneto */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--mark-lg);
+}
+.stepMark {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mark-sm);
+  height: var(--mark-sm);
+  border-radius: var(--r-dot);
+  box-shadow: var(--edge-ring);
+}
+.stepMark svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+.step[data-step-state="done"] .stepMark {
+  background: var(--success-soft);
+  color: var(--success);
+  box-shadow: none;
+}
+.step[data-step-state="live"] .stepMark {
+  box-shadow: var(--edge-ring-active);
+}
+.stepName {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.step[data-step-state="next"] .stepName {
+  color: var(--muted-foreground);
+}
+.stepLine {
+  margin-left: auto;
+}
+
+/* Tuner */
+.hub {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  padding: var(--sp-4);
+}
+.channels {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.channel,
+.hubThread {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--row-min);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.channelIcon {
+  display: inline-flex;
+  color: var(--muted-foreground);
+}
+.channelIcon svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+.channelText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.channelName {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+}
+.channelLine {
+  overflow-wrap: anywhere;
+}
+.hubThread {
+  flex: 0 1 40%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Knowly */
+.answerBody {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-4);
+}
+.question {
+  align-self: flex-end;
+  max-width: 80%;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-lg) var(--r-lg) var(--r-xs) var(--r-lg);
+  background: var(--muted);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.answer {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.answerIcon {
+  display: inline-flex;
+  padding-top: var(--sp-1);
+  color: var(--muted-foreground);
+}
+.answerIcon svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+.source {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* A narrow frame (the open panel of the accordion): six modules in two columns, the marks without their lines, the
+   channels over the conversation */
+@container frame (max-width: 460px) {
+  .modules {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .module[data-wide-only],
+  .useLine,
+  .legend,
+  .barSub,
+  .stage[data-wide-only] {
+    display: none;
+  }
+  .stages {
+    gap: var(--sp-4);
+  }
+  .uses {
+    margin-top: var(--sp-5);
+  }
+  .hub {
+    gap: var(--sp-6);
+  }
+}
+
+@keyframes frame-hide {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing {
+    animation: none;
+    opacity: 0;
+  }
+}

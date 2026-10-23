@@ -172,68 +172,34 @@ test.describe("(a) the tokens of the ERP front", () => {
 });
 
 test.describe("(c) the motions act", () => {
-  test("the stage of the home cycles: a product lights, its packet travels, its line lights in the record", async ({
+  // v4 (brief-v4, 2026-10-23): the stage of the home assembles in blades, one product per 7 s; the blades leave in a
+  // cascade and come back (the geometry and the cycle are in e2e/home.spec.ts). What changed in the v3 effects band
+  // left the home with it.
+  test("the stage of the home assembles in blades: they leave in a cascade, then come back", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "load" });
-    await page.waitForTimeout(600);
     const seen = await page.evaluate(async () => {
-      const lit = new Set<string>();
-      const packets = new Set<string>();
+      const covered: number[] = [];
       const t0 = performance.now();
       while (performance.now() - t0 < 6000) {
-        for (const el of document.querySelectorAll<HTMLElement>(
-          "#intro [role=group] [data-of]",
-        )) {
-          const before = getComputedStyle(el, "::before").opacity;
-          if (Number(before) > 0.5) lit.add(el.dataset.of!);
-        }
-        for (const p of document.querySelectorAll<HTMLElement>(
-          "#intro [role=group] i",
-        )) {
-          const s = getComputedStyle(p);
-          if (Number(s.opacity) > 0.5) packets.add(s.transform);
-        }
-        await new Promise((r) => requestAnimationFrame(r));
+        const blades = [
+          ...document.querySelectorAll<HTMLElement>(
+            "[data-hub='blades'] [data-mini] > div:nth-child(2) > span",
+          ),
+        ].slice(0, 51);
+        covered.push(
+          blades.filter((b) => b.getBoundingClientRect().width > 4).length,
+        );
+        await new Promise((r) => setTimeout(r, 100));
       }
-      return { lit: [...lit], packets: packets.size };
+      return covered;
     });
-    // In 6 s the cycle (2.5 s per product) lights at least two products, and a packet is seen in several places
-    expect(seen.lit.length).toBeGreaterThanOrEqual(2);
-    expect(seen.packets).toBeGreaterThan(5);
-  });
-
-  test("the outcomes of the home play again and again while on screen", async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("/", { waitUntil: "load" });
-    await page.locator("#operation").scrollIntoViewIfNeeded();
-    await page.waitForTimeout(1500);
-    const phases: string[] = [];
-    let running = 0;
-    for (let i = 0; i < 14; i++) {
-      const s = await page.evaluate(() => ({
-        phases: [
-          ...document.querySelectorAll<HTMLElement>("#operation [data-replay]"),
-        ]
-          .map((e) => e.dataset.phase)
-          .join(""),
-        running: document
-          .querySelector("#operation")!
-          .getAnimations({ subtree: true })
-          .filter((a) => a.playState === "running").length,
-      }));
-      phases.push(s.phases);
-      running = Math.max(running, s.running);
-      await page.waitForTimeout(500);
-    }
-    expect(
-      phases.every((p) => p === "playplayplay"),
-      phases.join(","),
-    ).toBe(true);
-    expect(running).toBeGreaterThan(5);
+    // Covered at some moment, open at another (the frame is shown), and covered again before the next product
+    const open = seen.findIndex((n) => n === 0);
+    expect(open, seen.join(",")).toBeGreaterThan(-1);
+    expect(Math.max(...seen.slice(open))).toBeGreaterThan(40);
   });
 
   // v3 (2026-10-23): the opening of a product is its carousel (a kit scene), which walks its steps by itself
@@ -264,8 +230,9 @@ test.describe("(e) the house of the Domus", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("/", { waitUntil: "load" });
-    const house = page.locator("#domus");
+    // v4 (2026-10-23): the house left the home; it lives on the Domus page
+    await page.goto("/products/domus", { waitUntil: "load" });
+    const house = page.locator("#areas");
     await house.scrollIntoViewIfNeeded();
     const floors = await house
       .locator("ul")

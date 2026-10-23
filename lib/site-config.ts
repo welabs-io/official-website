@@ -29,9 +29,7 @@ type Base = {
 export type SectionConfig =
   | (Base & { kind: "intro" })
   | (Base & { kind: "message" })
-  | (Base & { kind: "domus" })
   | (Base & { kind: "products" })
-  | (Base & { kind: "effects" })
   | (Base & { kind: "contact"; slug?: ProductSlug })
   | (Base & { kind: "platforms" })
   | (Base & { kind: "opening"; slug: ProductSlug })
@@ -54,10 +52,10 @@ export const HOME_CONFIG: PageConfig = {
   home: true,
   sections: [
     { id: "intro", kind: "intro", pad: "intro" },
+    // v4 (brief-v4, 2026-10-23): the chain on the soft band, the accordion on the page (its closed panels are the
+    // chrome); the Domus band and what changes left (the blades and the accordion show the Domus and its effect)
     { id: "message", kind: "message", pad: "block", surface: "band" },
-    { id: "domus", kind: "domus", pad: "block" },
-    { id: "products", kind: "products", pad: "products", surface: "band" },
-    { id: "operation", kind: "effects", pad: "block" },
+    { id: "products", kind: "products", pad: "block" },
     { id: "contact", kind: "contact", pad: "contact", surface: "contact" },
     platforms,
   ],

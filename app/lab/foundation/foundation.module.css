@@ -1,0 +1,103 @@
+/* LAB DA FUNDAÇÃO V4 */
+/* The layout of /lab/foundation only: the samples of the connector, the typing, the growing row and the entry, every
+   value a token of app/lib.css. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-7);
+  max-width: var(--scene-width);
+  margin-inline: auto;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+/* A connector sample: two pieces placed for the route, on a white surface with the 8 % edge */
+.link {
+  position: relative;
+  flex: 1 1 var(--search-w);
+  height: calc(var(--sp-9) * 2);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: inset 0 0 0 var(--rule) var(--hairline-8);
+}
+.node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  height: var(--sp-6);
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--card);
+  box-shadow: inset 0 0 0 var(--rule) var(--hairline-14);
+  font-size: var(--t-micro);
+  font-weight: var(--weight-title);
+  line-height: var(--line-micro);
+}
+.link[data-layout="diagonal"] [data-end="from"] {
+  left: var(--sp-4);
+  bottom: var(--sp-5);
+}
+.link[data-layout="diagonal"] [data-end="to"] {
+  right: var(--sp-4);
+  top: var(--sp-5);
+}
+.link[data-layout="level"] [data-end="from"] {
+  left: var(--sp-4);
+  top: var(--sp-8);
+}
+.link[data-layout="level"] [data-end="to"] {
+  right: var(--sp-4);
+  top: var(--sp-8);
+}
+.link[data-layout="stacked"] [data-end="from"] {
+  left: var(--sp-5);
+  top: var(--sp-4);
+}
+.link[data-layout="stacked"] [data-end="to"] {
+  left: var(--sp-5);
+  bottom: var(--sp-4);
+}
+.caption {
+  position: absolute;
+  right: var(--sp-4);
+  bottom: var(--sp-3);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+}
+
+.bubble {
+  flex: 1 1 100%;
+  max-width: var(--scene-width);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: inset 0 0 0 var(--rule) var(--hairline-8);
+  font-size: var(--t-body);
+  line-height: var(--line-lead);
+}
+
+.row {
+  flex: 1 1 100%;
+}
+.panel {
+  min-height: calc(var(--sp-9) * 2);
+  padding: var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: inset 0 0 0 var(--rule) var(--hairline-8);
+  font-size: var(--t-body);
+  font-weight: var(--weight-title);
+}
+
+.below {
+  margin-top: 100vh;
+}
+.below > * {
+  flex: 1 1 var(--search-w);
+}

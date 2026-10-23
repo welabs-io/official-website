@@ -33,6 +33,7 @@ import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
+import { TypeIn } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import g from "./magneto-carousel.module.css";
@@ -71,6 +72,10 @@ const frameOf = (step: string): FrameN =>
   ).n;
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
+// v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome
+const FRAME_NAMES = ["Começa sozinho", "Divide", "Espera", "Conclui"] as const;
+// A line types in once its piece has landed (the second piece of a step lands one --dur-1 later, on --dur-3)
+const TYPE_LAND_MS = 400;
 
 // CONTEÚDO DA CENA
 // The text of the approved frames, word for word
@@ -297,7 +302,18 @@ function TriggerFrame({ scene, on }: FrameProps) {
         >
           <Line icon={<Zap />}>{COPY.f1.started}</Line>
           <span className={g.figure}>{COPY.proposal}</span>
-          <span className={g.liveMeta}>{COPY.f1.nobody}</span>
+          {/* v4: the line under the live step types in once it has landed, once per loop */}
+          <span className={g.liveMeta}>
+            {on("trigger") ? (
+              <TypeIn
+                key={scene.cycle}
+                text={COPY.f1.nobody}
+                delay={TYPE_LAND_MS}
+              />
+            ) : (
+              COPY.f1.nobody
+            )}
+          </span>
         </Piece>
         <Down shown={on("next")} />
         <Piece shown={on("next")} data-id="next">
@@ -309,12 +325,7 @@ function TriggerFrame({ scene, on }: FrameProps) {
           <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} />
         ) : null}
         {on("next") ? (
-          <Connector
-            from='[data-id="live"]'
-            to='[data-id="next"]'
-            inset={0}
-            tone="quiet"
-          />
+          <Connector from='[data-id="live"]' to='[data-id="next"]' inset={0} />
         ) : null}
       </Traces>
     </>
@@ -477,6 +488,7 @@ function WaitFrame({ scene, on }: FrameProps) {
         </Piece>
       </div>
       <Traces scene={scene}>
+        {/* v4: the split run in frame 2 rests grey; only what moves now is in ink */}
         {on("wait") ? (
           <Connector
             from='[data-id="check"]'
@@ -510,7 +522,6 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="approval"]'
             to='[data-id="next"]'
             inset={0}
-            tone="quiet"
           />
         ) : null}
       </Traces>
@@ -539,7 +550,15 @@ function CloseFrame({ scene, on }: FrameProps) {
           </Line>
           <span className={g.reveal} data-in={on("done")}>
             <Line icon={<Check />} tone="done">
-              {COPY.f4.concluded}
+              {on("done") ? (
+                <TypeIn
+                  key={scene.cycle}
+                  text={COPY.f4.concluded}
+                  caret={false}
+                />
+              ) : (
+                COPY.f4.concluded
+              )}
             </Line>
           </span>
         </Piece>
@@ -646,7 +665,13 @@ export function MagnetoCarousel({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={COPY.title}
-      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} />}
+      tools={(scene) => (
+        <FrameIndicator
+          scene={scene}
+          frames={FRAME_STEPS}
+          names={FRAME_NAMES}
+        />
+      )}
       steps={MAGNETO_CAROUSEL_STEPS}
       timeline={timeline}
     >

@@ -188,6 +188,8 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
           to={`[data-station="${live}"] [data-slot="avatar"]`}
           inset={0}
           gap={4}
+          // v4: the hop carries the live message from one station to the next
+          state="live"
         />
       ) : null}
     </div>

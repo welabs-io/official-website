@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-70.20 -75.00 1005.06 434.10"><style>
+.mv-sym,.mv-name,.mv-w1,.mv-w2,.mv-p1,.mv-p2,.mv-p3,.mv-sig{transform-box:fill-box;transform-origin:center}
+@keyframes sym{0%,4%{transform:scale(.2);opacity:0}20%{transform:scale(1.08);opacity:1}28%,86%{transform:none;opacity:1}96%,100%{opacity:0}}
+@keyframes sig{0%,26%{opacity:0;transform:scale(.4)}34%{opacity:1;transform:scale(1.15)}40%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes name-after{0%,30%{clip-path:inset(-20% 100% -20% 0)}56%,86%{clip-path:inset(-20% 0 -20% 0);opacity:1}96%,100%{opacity:0}}
+@keyframes name-first{0%,4%{clip-path:inset(-20% 100% -20% 0)}34%,86%{clip-path:inset(-20% 0 -20% 0);opacity:1}96%,100%{opacity:0}}
+@keyframes w1{0%,36%{opacity:0;transform:translateX(-12px) scale(.7)}46%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes w2{0%,46%{opacity:0;transform:translateX(-12px) scale(.7)}56%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes ring{0%,2%{stroke-dashoffset:1}24%,86%{stroke-dashoffset:0;opacity:1}96%,100%{opacity:0}}
+@keyframes p1{0%,38%{opacity:0;transform:scaleX(.2)}46%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes p2{0%,44%{opacity:0;transform:scaleX(.2)}52%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes p3{0%,50%{opacity:0;transform:scaleX(.2)}58%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+.side .mv-sym{animation:sym 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+.side .mv-sym [fill="#FFB020"],.side .mv-sym [stroke="#FFB020"]{animation:sig 4.8s cubic-bezier(.3,1.4,.5,1) infinite;transform-box:fill-box;transform-origin:center}
+.side .mv-name{animation:name-after 4.8s cubic-bezier(.6,0,.2,1) infinite}
+.word .mv-name{animation:name-first 4.8s cubic-bezier(.6,0,.2,1) infinite}
+.word .mv-w1{animation:w1 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+.word .mv-w2{animation:w2 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+.globe .mv-ring{stroke-dasharray:1;stroke-dashoffset:1;animation:ring 4.8s cubic-bezier(.6,0,.2,1) infinite}
+.globe .mv-name{animation:name-first 4.8s cubic-bezier(.6,0,.2,1) infinite}
+.globe .mv-p1{animation:p1 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+.globe .mv-p2{animation:p2 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+.globe .mv-p3{animation:p3 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+@keyframes link{0%,34%{opacity:0;transform:translateY(-70px)}46%{opacity:1;transform:translateY(6px)}52%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+.link .mv-name{animation:name-first 4.8s cubic-bezier(.6,0,.2,1) infinite}
+.link .mv-link{animation:link 4.8s cubic-bezier(.3,1.2,.5,1) infinite}
+@keyframes block{0%,4%{transform:scaleX(0)}26%,86%{transform:none;opacity:1}96%,100%{opacity:0}}
+@keyframes we{0%,8%{opacity:0;transform:scale(.6)}26%{opacity:1;transform:scale(1.06)}32%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+.brand .mv-block{transform-box:fill-box;transform-origin:left center;animation:block 4.8s cubic-bezier(.6,0,.2,1) infinite}
+.brand .mv-we{transform-box:fill-box;transform-origin:center;animation:we 4.8s cubic-bezier(.3,1.3,.5,1) infinite}
+.brand .mv-name{animation:name-after 4.8s cubic-bezier(.6,0,.2,1) infinite}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;clip-path:none!important;stroke-dashoffset:0!important}}
+</style><rect x="-70.20" y="-75.00" width="1005.06" height="434.10" fill="#FAF5EA"/><g class="side"><g class="mv-sym"><rect x="188.64" y="75.90" width="119.10" height="118.80" rx="34.79" fill="none" stroke="#10141C" stroke-width="36.0"/><rect x="221.35" y="108.46" width="53.69" height="53.69" fill="#FFB020"/></g><g class="mv-name"><path d="M123.90 0.00V74.70C116.70 65.40 101.10 57.60 79.50 57.60C36.00 57.60 4.80 88.80 4.80 135.30C4.80 181.50 36.00 212.40 81.30 212.40C125.40 212.40 159.90 183.60 159.90 135.30V0.00ZM40.80 135.00C40.80 107.10 57.30 90.60 82.20 90.60C107.40 90.60 123.90 107.10 123.90 135.00C123.90 162.90 107.40 179.40 82.20 179.40C57.30 179.40 40.80 162.90 40.80 135.00Z" fill="#10141C"/><path d="M78.00 57.30C28.50 57.30 9.00 94.50 9.00 120.60V210.00H45.00V121.50C45.00 100.20 60.60 90.60 78.00 90.60C95.40 90.60 111.00 100.20 111.00 121.50V210.00H147.00V121.50C147.00 100.20 162.60 90.60 180.00 90.60C197.40 90.60 213.00 100.20 213.00 121.50V210.00H249.00V120.60C249.00 94.50 229.50 57.30 180.00 57.30C153.90 57.30 138.30 67.80 129.00 81.30C119.70 67.80 104.10 57.30 78.00 57.30Z M332.94 212.70C382.44 212.70 401.94 175.50 401.94 149.40V60.00H365.94V148.50C365.94 169.50 350.34 179.40 332.94 179.40C315.54 179.40 299.94 169.50 299.94 148.50V60.00H263.94V149.40C263.94 175.50 283.44 212.70 332.94 212.70Z M450.78 100.50C450.78 94.50 457.08 90.60 468.78 90.60C481.08 90.60 496.68 95.10 512.58 108.30L531.78 80.40C518.58 69.60 499.08 57.60 469.38 57.60C435.48 57.60 414.78 73.50 414.78 101.10C414.78 156.00 496.38 140.10 496.38 165.90C496.38 174.60 487.08 178.80 474.78 178.80C460.08 178.80 444.18 172.80 431.58 160.80L412.38 189.00C421.68 197.40 442.08 211.80 473.88 211.80C508.08 211.80 532.38 195.30 532.38 164.70C532.38 108.60 450.78 122.40 450.78 100.50Z" fill="#10141C" transform="translate(327.48 0)"/></g></g></svg>

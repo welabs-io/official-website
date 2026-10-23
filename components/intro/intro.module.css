@@ -1,82 +1,37 @@
 /* PALCO DA ABERTURA DE MARCA */
-/* The white sheet the opening plays on (intro-run.ts): over the page, under the fixed header (z-index 50), with the warm
-   halo of the page at its top. The stage is the 1920x1080 frame of the round, scaled to the window by transform. The
-   round clipped its frame (what waits outside it, like the magnets of the Magneto before they enter, must not show), so
-   the stage clips too, with its edges faded, so a piece that flies in comes out of the white instead of a hard line. */
+/* v4 (brief-v4, artboard 8): the sheet the opening plays on (intro-run.ts) is the canvas of the page (--background,
+   #f7f7f5) from the first frame to the last, over the page and under the fixed header (z-index 50). The logo sits in
+   its centre under the header at --intro-logo (~30 % of the window's width): the brand's motion file over the seal
+   band of the endorsed file, both vectors at their display size, never scaled by a transform nor blurred. */
 .sheet {
   position: fixed;
   inset: 0;
   z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--header-h);
   overflow: hidden;
-  /* v3 (F2): the cream floor of the page (shell.module.css --page), so the hand-over to the product never flashes white */
-  background:
-    radial-gradient(60% 55% at 50% 0%, oklch(0.66 0.21 28 / 0.06), transparent 70%),
-    #faf5ea;
+  background: var(--background);
   will-change: clip-path, opacity;
   cursor: pointer;
 }
-.stage {
+.mark {
+  position: relative;
+  width: var(--intro-logo);
+}
+/* The seal: the endorsed file at the size of the mark, clipped to the band under the motion's drawing */
+.seal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+/* The motion file (in its shadow root) on the top of the mark, the height of its own viewBox */
+.motion {
   position: absolute;
   top: 0;
   left: 0;
-  width: 1920px;
-  height: 1080px;
-  overflow: hidden;
-  transform-origin: 0 0;
-  font-family: "Inter", system-ui, sans-serif;
-  color: #1c1a16;
-  mask:
-    linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent),
-    linear-gradient(transparent, #000 5%, #000 95%, transparent);
-  mask-composite: intersect;
-}
-/* The camera layer the Magneto flow wraps around the magnets (the other openings style theirs inline) */
-.stage :global(.zoom) {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1920px;
-  height: 1080px;
-  transform-origin: 0 0;
-}
-.stage :global(svg) {
-  max-width: none;
-  overflow: visible;
-}
-/* The wrapper of the endorsed logo (laid out by the choreography in the round's box) and the light file inside it */
-.wm {
-  overflow: visible;
-}
-.wmImg {
-  position: absolute;
-  max-width: none;
-}
-.role {
-  position: absolute;
-  left: 0;
-  width: 1920px;
-  height: 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.bar {
-  display: block;
-  width: 72px;
-  height: 4px;
-  border-radius: 2px;
-  background: #ffb020;
-  transform-origin: 50% 50%;
-  transform: scaleX(0);
-}
-/* The logo that travels from the closing frame to the opening of the product, over the sheet */
-.fly {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 46;
-  max-width: none;
-  transform-origin: 0 0;
-  pointer-events: none;
-  will-change: transform;
+  width: 100%;
 }

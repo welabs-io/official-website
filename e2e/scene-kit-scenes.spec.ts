@@ -48,12 +48,14 @@ const SCENES: Entry[] = [
     id: "relloo-carousel",
     figure: /^Relloo/,
     // The frame indicator of the chrome (the kit's FrameIndicator, the lib's SegmentedControl): its options are radios
-    trigger: /^Momento 2$/,
+    // v4: a named stage tab, read as "Momento 2: Passa a vez"
+    trigger: /^Momento 2\b/,
     triggerRole: "radio",
     final: "f4-ask",
     // The Domus card under the funnel (its mark on its two lines)
     pairs: 1,
-    cycleMs: 15200,
+    // v4: the conversation types in, with its "digitando" steps
+    cycleMs: 20_208,
     handoff: {
       1440: ["f2-handoff", "f2-summary", "f3-born", "f4-domus"],
       // On a phone the panes of frame 3 stack and its trace stays off (it would cross the conversation)
@@ -72,7 +74,8 @@ const SCENES: Entry[] = [
     final: "cta",
     // The settled frame: the record's head and its four neighbours (the other frames are hidden)
     pairs: 5,
-    cycleMs: 12_900,
+    // v4: the request to the assistant types in
+    cycleMs: 14_398,
     // The new type to its screen, the confirmed record to its row, the record to its neighbours (side by side only)
     handoff: { 1440: ["screen", "linked", "links", "cta"], 390: [] },
     amberMax: 2,
@@ -86,7 +89,7 @@ const SCENES: Entry[] = [
     figure: /^Magneto/,
     // The frame indicator (a click on a frame plays from it). Frame 3: from there the sequence and its last hold end
     // inside the kit's 8 s of human idle (from frame 2 the idle cuts the hold)
-    trigger: /^Momento 3$/,
+    trigger: /^Momento 3\b/,
     triggerRole: "radio",
     final: "ask",
     // The last frame: the approved step, the live step and its two lines, and the two products it reached
@@ -118,16 +121,23 @@ const SCENES: Entry[] = [
   {
     id: "knowly-carousel",
     figure: /^Knowly/,
-    // A citation of the answer (frame 4) replays the answer, its proofs and their traces
-    trigger: /^Reunião · dia 3/,
+    // v4, the memory graph: the frame indicator (frame 3 plays 7.7 s to the end, inside the kit's 8 s of human idle)
+    trigger: /^Momento 3$/,
+    triggerRole: "radio",
     final: "done",
-    // The assistant's head (mark + name) and the note of what is missing (icon + text)
-    pairs: 2,
-    cycleMs: 11900,
-    // Frame 3: each part points up at its day; frame 4: each citation points back at the decision
-    handoff: { 1440: ["asked", "approved", "cite", "done"], 390: [] },
+    // The four items of the legend (swatch + word) on the settled frame
+    pairs: 4,
+    cycleMs: 12900,
+    // The graph's links are drawn traces (pathLength): the live link of each frame is drawn at its step, and the
+    // whole memory stays drawn on the settled frame
+    handoff: {
+      1440: ["f1-link", "f2-decision", "f3-bridge", "f4-new"],
+      390: ["f1-link", "f2-decision", "f3-bridge", "f4-new"],
+    },
     amberMax: 2,
-    finalTrace: [1440],
+    // The legend's "Mais recente" swatch (the newest link itself is an SVG stroke, counted by e2e/knowly-graph.spec.ts)
+    finalAmber: 1,
+    finalTrace: [1440, 390],
     frames: 4,
   },
   {
@@ -460,7 +470,7 @@ for (const s of SCENES) {
 
 // AS CENAS MONTADAS NO SITE
 // v3 (2026-10-23): each kit scene is mounted on its page through SceneSlot (components/scene-kit/SceneSlot.tsx): the
-// carousel of a product opens its page, the message crosses the home. The same contract holds there, inside the page:
+// carousel of a product opens its page. The same contract holds there, inside the page:
 // it autoplays and loops, a click takes over and gives it back, it pauses off screen, reduced motion shows the settled
 // frame, and no text is cut nor any icon off its text at 1440 and at 390 (the page gutter is narrower than the lab's).
 const SITE: Record<string, string> = {
@@ -469,10 +479,11 @@ const SITE: Record<string, string> = {
   "magneto-carousel": "/products/magneto",
   "tuner-carousel": "/products/tuner",
   "knowly-carousel": "/products/knowly",
-  "home-message": "/",
 };
 
-for (const s of SCENES) {
+// v4 (brief-v4, 2026-10-23): home-message left the home for the chain the scroll walks (components/home/Chain.tsx,
+// measured by e2e/home.spec.ts), so it is checked only in the lab above
+for (const s of SCENES.filter((entry) => entry.id in SITE)) {
   const path = SITE[s.id];
 
   test.describe(`scene kit on the site: ${s.id} on ${path}`, () => {

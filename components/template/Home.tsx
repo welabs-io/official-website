@@ -1,35 +1,25 @@
-// SEÇÕES DA HOME (V2)
-// The home of the v2 content: few words, the rest is motion the visitor plays. Server markup and CSS
-// (v2.module.css); v3 (2026-10-23): the message that crosses the products is a kit scene (SceneSlot), the only client
-// piece. Every other interaction works with no script and with a keyboard (a checkbox and its visible label), and under
-// reduced motion shows its final frame.
-import Link from "next/link";
+// SEÇÕES DA HOME (V4)
+// v4 (brief-v4, 2026-10-23): the home opens in blades (HeroBlades), the scroll walks the chain of one message across the
+// five products (Chain) and the products band is the accordion whose panels gain width on hover (ProductAccordion);
+// those three are the client pieces of components/home. The Domus with its modules and what changes left the home (the
+// blades and the accordion show them). The Domus house stays here for the Domus page (Product.tsx); the contact and
+// where we run are server markup and CSS (v2.module.css).
 import { Badge, Card, CardContent, TextField } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
 import shell from "@/components/onepage/shell.module.css";
 import { Glyph, GLYPHS, ROOM_GLYPHS } from "@/components/scenes/icons";
-import { MiniScene } from "@/components/scenes/MiniScene";
+import { Chain } from "@/components/home/Chain";
+import { HeroBlades } from "@/components/home/HeroBlades";
+import { ProductAccordion } from "@/components/home/ProductAccordion";
 import {
   CLOSING,
   DOMUS_MODULES,
+  HOME_ACCORDION,
+  HOME_CHAIN,
   HOME_CONTACT,
   HOME_DOMUS,
-  HOME_EFFECTS,
-  HOME_INTRO,
-  HOME_MESSAGE,
-  HOME_PRODUCTS,
   type Room,
 } from "@/lib/content";
 import { PLATFORM_LOGOS } from "@/lib/partners";
-import {
-  CTA_LABEL,
-  LOGO_PAD,
-  PRODUCTS,
-  productAlt,
-  productLogo,
-} from "@/lib/products";
-import { SceneSlot } from "@/components/scene-kit/SceneSlot";
-import { Orbit } from "./Orbit";
 import { SectionHead } from "./SectionHead";
 import house from "./house.module.css";
 import styles from "./v2.module.css";
@@ -44,53 +34,43 @@ const ROOM_D: Record<string, string> = {
 const BORN_FIELD_GLYPH = [GLYPHS.pin, GLYPHS.calendar, GLYPHS.image];
 
 // ABERTURA
-// Title with the word that turns (M1), one line, one button, and the stage of the five products that follows the word
-// (I1). The h1 of the page is the title itself; the turning word is one line of its own, so nothing reflows.
+// v4: the title with the word that turns and its caret, the line, two actions and the stage in blades
+// (components/home/HeroBlades.tsx). The h1 of the page is the title itself.
 export function HomeIntro() {
-  const words = [...HOME_INTRO.words, HOME_INTRO.words[0]];
   return (
-    <div className={`${shell.wrap} ${styles.intro}`}>
-      <div className={styles.introText}>
-        <h1 className={styles.introTitle}>
-          {HOME_INTRO.before}{" "}
-          {/* data-mask: the box clips on purpose (only one word of the track shows), e2e/layout.spec.ts skips it */}
-          <span className={styles.turn} data-mask>
-            {/* The first word is the one read by assistive technology and by a still page */}
-            <span className={styles.srOnly}>{HOME_INTRO.words[0].text}</span>
-            <span className={styles.turnTrack} aria-hidden="true">
-              {words.map((w, i) => (
-                <span key={i} className={styles.turnWord}>
-                  {w.text}
-                </span>
-              ))}
-            </span>
-          </span>{" "}
-          {HOME_INTRO.after}
-        </h1>
-        <p className={styles.introLead}>{HOME_INTRO.lead}</p>
-        <a href={CONTACT_HREF} className={`${shell.cta} ${shell.ctaBig}`}>
-          {CTA_LABEL}
-        </a>
-      </div>
-      <Orbit label={HOME_INTRO.stage} />
+    <div className={shell.wrap}>
+      <HeroBlades />
     </div>
   );
 }
 
 // A MENSAGEM QUE ATRAVESSA
-// v3 (2026-10-23): the chain of the home is the kit scene `home-message` (components/scene-kit/scenes/home-message.tsx,
-// approved at /lab/scenes/home-message): a message from a channel crosses the five products and lands as the record of
-// the order in the Domus. It plays by itself on screen, pauses off screen and settles under reduced motion (the kit's
-// continuity); the drag-and-drop message of the v2 left with it.
+// v4: the chain the scroll walks (components/home/Chain.tsx), in place of the kit scene that played by itself
 export function HomeMessage() {
   return (
     <div className={shell.wrap}>
       <SectionHead
-        title={HOME_MESSAGE.title}
-        lead={HOME_MESSAGE.lead}
+        title={HOME_CHAIN.title}
+        lead={HOME_CHAIN.lead}
         variant="chapter"
       />
-      <SceneSlot id="home-message" className={styles.kitScene} />
+      <Chain />
+    </div>
+  );
+}
+
+// OS CINCO PRODUTOS
+// v4: the accordion of the five products (components/home/ProductAccordion.tsx), the Domus open at rest; each logo
+// keeps `data-card`, the piece the descent grows into its product page
+export function FiveProducts() {
+  return (
+    <div className={shell.wrap}>
+      <SectionHead
+        title={HOME_ACCORDION.title}
+        lead={HOME_ACCORDION.lead}
+        variant="chapter"
+      />
+      <ProductAccordion />
     </div>
   );
 }
@@ -208,94 +188,6 @@ function DomusHouseBody({ id }: { id: string }) {
           </ul>
         </div>
       </div>
-    </div>
-  );
-}
-
-export function HomeDomus() {
-  return (
-    <div className={shell.wrap}>
-      <DomusHouse
-        id="area-add"
-        title={HOME_DOMUS.title}
-        lead={HOME_DOMUS.lead}
-      />
-      <ul className={styles.ground} aria-label={HOME_DOMUS.ground}>
-        {PRODUCTS.filter((p) => p.slug !== "domus").map(({ slug }) => (
-          <li key={slug}>
-            <Link href={`/products/${slug}`} prefetch={false}>
-              <img
-                src={productLogo(slug, "light", "row", 20)}
-                alt={productAlt(slug, "row")}
-                width={1005}
-                height={550}
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <p className={styles.more}>
-        <Link href="/products/domus" prefetch={false} className={styles.link}>
-          {HOME_DOMUS.more}
-        </Link>
-      </p>
-    </div>
-  );
-}
-
-// OS CINCO PRODUTOS
-// The cards the descent grows into a product (`data-card`, components/onepage/Descent.tsx): logo and a line of 3 to 4
-// words. The Domus is the graphite card.
-export function FiveProducts() {
-  return (
-    <div className={shell.wrap}>
-      <SectionHead title={HOME_PRODUCTS.title} />
-      <ul className={styles.five}>
-        {PRODUCTS.map(({ slug, line }) => (
-          <li key={slug} data-main={slug === "domus" ? "" : undefined}>
-            <Link
-              href={`/products/${slug}`}
-              prefetch={false}
-              className={styles.card}
-              data-card={slug}
-            >
-              <img
-                className={styles.cardLogo}
-                src={productLogo(
-                  slug,
-                  slug === "domus" ? "dark" : "light",
-                  "row",
-                )}
-                alt={productAlt(slug, "row")}
-                width={1005}
-                height={550}
-                style={{ "--pad": LOGO_PAD[slug] } as React.CSSProperties}
-              />
-              <span className={styles.cardLine}>{line}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-// O QUE MUDA NA OPERAÇÃO
-// The settled frame of three native scenes, the outcome only, each with a short caption
-export function HomeEffects() {
-  return (
-    <div className={shell.wrap}>
-      <SectionHead title={HOME_EFFECTS.title} />
-      <ul className={styles.effects}>
-        {HOME_EFFECTS.items.map(({ scene, text }) => (
-          <li key={scene}>
-            <div className={styles.shot}>
-              <MiniScene id={scene} phone />
-            </div>
-            <p>{text}</p>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

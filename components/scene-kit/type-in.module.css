@@ -1,0 +1,62 @@
+/* DIGITAÇÃO DO KIT */
+/* components/scene-kit/TypeIn.tsx (brief-v4): every character is laid out from the first frame and only its opacity
+   waits for its turn, so the box of the phrase never changes while it types. Character i shows at
+   delay + (i + 1) x --type-char (the `backwards` fill holds it invisible until then); the caret is a pseudo-element of
+   the last character shown, absolutely placed so it takes no room, visible for one step on each character and for the
+   pause after the phrase on the last one. Reduced motion drops the animations: the phrase whole, no caret. */
+.root {
+  --type-delay: 0ms;
+}
+
+.ch {
+  position: relative;
+  animation: type-wait var(--type-char) steps(1, end) calc(var(--type-delay) + var(--i) * var(--type-char)) backwards;
+}
+
+.root[data-caret] .ch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(var(--rule-strong) * -1);
+  width: var(--rule-strong);
+  background: currentColor;
+  opacity: 0;
+  animation: caret var(--type-char) steps(1, end) calc(var(--type-delay) + (var(--i) + 1) * var(--type-char));
+}
+.root[data-caret] .ch:last-child::after {
+  animation-duration: var(--phrase-pause);
+}
+
+/* The "digitando" indicator: the lib's dots (coloured by app/lib.css) and the optional label, on one axis */
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.label {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+}
+
+@keyframes type-wait {
+  from,
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes caret {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch,
+  .root[data-caret] .ch::after {
+    animation: none;
+  }
+}

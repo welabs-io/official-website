@@ -57,7 +57,8 @@ export const SCENES: Record<SceneId, SceneEntry> = {
   "knowly-carousel": {
     steps: KNOWLY_CAROUSEL_STEPS,
     Component: KnowlyCarousel,
-    takeFrom: "answer",
+    // v4: the memory graph plays from frame 3 (knowly-carousel.tsx)
+    takeFrom: "f3-subjects",
   },
   "home-message": {
     steps: HOME_MESSAGE_STEPS,

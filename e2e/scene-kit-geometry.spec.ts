@@ -361,18 +361,14 @@ const V3: GeoScene[] = [
     id: "knowly-carousel",
     figure: /^Knowly/,
     fields: [0, 0],
-    // The lab's two buttons, the two citations, the call to action, the subject chip, the assistant's head and the
-    // note of what is missing
-    pairs: [8, 8],
+    // v4, the memory graph. The lab's two buttons, the call to action, the four items of the legend and, beside the
+    // graph (not on a phone), the note of the newest link
+    pairs: [8, 7],
     columns: {
-      // The settled frame (4): the head, the closing question and its button on one left edge
-      "head, question and call to action": { sel: ["[data-lead]"] },
-      // The assistant's panel: every part, then the answer and the proofs inside it
-      "panel parts": { sel: ["[data-panel] > *"] },
-      "answer and proofs": { sel: ["[data-answer] > *", "[data-proofs] > *"] },
+      // The settled frame (4): the frame's head, the closing question, its note, its button and the legend on one
+      // left edge
+      "head, question, call to action and legend": { sel: ["[data-lead]"] },
     },
-    // The line of the subject: its five dots on one line, and their days
-    rows: { "line dots": "[data-event] [data-dot]", "line days": "[data-event] [data-day]" },
   },
   {
     id: "home-message",

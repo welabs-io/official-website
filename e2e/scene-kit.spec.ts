@@ -1,8 +1,8 @@
 // PROVA DO CARROSSEL DO RELLOO NO LAB
 // What the Relloo carousel adds to the kit's contract (e2e/scene-kit-scenes.spec.ts holds the loop, the take, reduced
 // motion, the frames reached, the amber budget, the cut text and the height): the frames cross with a fade (never a
-// cut), the chrome names the frame's screen and marks its number, and the connector is the v3 brief's (solid ink,
-// 2 to 3.5 px, with an arrowhead, routed outside the pieces it links).
+// cut), the chrome names the frame's screen and marks its number, and the connector is the v4 brief's trace at rest
+// (curved, the soft grey at 1.75 px, with an arrowhead, routed outside the pieces it links).
 import { expect, test, type Page } from "@playwright/test";
 
 const LAB = "/lab/scenes/relloo-carousel";
@@ -12,9 +12,13 @@ const SETTLED = { 1: "f1-message", 2: "f2-summary", 3: "f3-born", 4: "f4-ask" } 
 // Plays the scene from frame `n` (the visitor's gesture on the chrome's picker) and waits for its pieces to land
 async function showFrame(page: Page, n: 1 | 2 | 3 | 4) {
   await page.getByRole("radio", { name: `Momento ${n}` }).click();
-  await expect(page.locator('[data-scene="relloo-carousel"]')).toHaveAttribute("data-step", SETTLED[n], {
-    timeout: 10_000,
-  });
+  // Polled on every animation frame: the expect's backoff saw the step up to ~0.9 s late (measured 2026-10-23), which
+  // with the 900 ms below landed past the 1.8 s hold, on the next frame
+  await page.waitForFunction(
+    (step) => document.querySelector('[data-scene="relloo-carousel"]')?.getAttribute("data-step") === step,
+    SETTLED[n],
+    { timeout: 10_000, polling: "raf" },
+  );
   await page.waitForTimeout(900);
   // Only the frame on screen: the one that left is gone and the one that came has stopped moving
   await expect
@@ -53,6 +57,9 @@ async function traces(page: Page) {
         width: parseFloat(cs.strokeWidth),
         colour: cs.stroke,
         dashed: cs.strokeDasharray !== "none" && path.getAttribute("pathLength") === null,
+        // v4: only cubics after the move, never a straight segment
+        curved: /^M [\d.-]+ [\d.-]+ C /.test(path.getAttribute("d") ?? "") && !/[LHVlhv]/.test(path.getAttribute("d") ?? ""),
+        opacity: Number(cs.opacity) * Number(cs.strokeOpacity),
         head: !!path.parentElement!.querySelectorAll("path").item(1),
         crossed: [...crossed],
       };
@@ -66,7 +73,7 @@ test.describe("relloo carousel", () => {
   });
 
   for (const width of [1440, 390]) {
-    test(`the connector is solid ink, 2 to 3.5 px, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
+    test(`the connector is curved, soft grey at rest, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
       test.setTimeout(60_000);
       await page.setViewportSize({ width, height: 900 });
       await page.goto(LAB);
@@ -78,9 +85,11 @@ test.describe("relloo carousel", () => {
         const all = await traces(page);
         expect(all.length, `frame ${n}: a trace`).toBeGreaterThan(0);
         for (const t of all) {
-          expect(t.width, `frame ${n}: stroke`).toBeGreaterThanOrEqual(2);
-          expect(t.width, `frame ${n}: stroke`).toBeLessThanOrEqual(3.5);
-          expect(t.colour, `frame ${n}: ink`).toBe("rgb(18, 18, 18)");
+          expect(t.width, `frame ${n}: stroke`).toBe(1.75);
+          expect(t.curved, `frame ${n}: curved`).toBe(true);
+          expect(t.opacity, `frame ${n}: opacity`).toBe(1);
+          // v4 (operator, 23/10): a scene's connector rests in the soft grey (#55565b at 40 %)
+          expect(t.colour, `frame ${n}: rest grey`).toBe("rgba(85, 86, 91, 0.4)");
           expect(t.dashed, `frame ${n}: solid`).toBe(false);
           expect(t.head, `frame ${n}: arrowhead`).toBe(true);
           expect(t.crossed, `frame ${n}: pieces under the trace`).toEqual([]);

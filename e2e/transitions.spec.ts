@@ -20,6 +20,7 @@ async function record(page: Page, ms: number) {
       opacity: string;
       draw: string;
       fly: boolean;
+      seal: string;
       y: number;
       path: string;
     };
@@ -28,15 +29,18 @@ async function record(page: Page, ms: number) {
       const t0 = performance.now();
       const tick = () => {
         const sheet = document.querySelector<HTMLElement>("[data-intro]");
-        // A cheap fingerprint of what the opening draws: the transforms of its first groups
-        const draw = sheet
-          ? [...sheet.querySelectorAll("svg [transform], .zoom")]
+        // A cheap fingerprint of what the opening draws. v4 (brief-v4): the brand's logo motion in the shadow root of the
+        // mark, so the computed transform, opacity and clip of its moving parts (the mv-* classes of the brand file)
+        const shadow = sheet?.querySelector(
+          "[data-intro-logo] > div",
+        )?.shadowRoot;
+        const draw = shadow
+          ? [...shadow.querySelectorAll("[class^='mv-'], [class*=' mv-']")]
               .slice(0, 6)
-              .map(
-                (el) =>
-                  el.getAttribute("transform") ??
-                  (el as HTMLElement).style.transform,
-              )
+              .map((el) => {
+                const cs = getComputedStyle(el);
+                return `${cs.transform} ${cs.opacity} ${cs.clipPath} ${cs.strokeDashoffset}`;
+              })
               .join("|")
           : "";
         out.push({
@@ -46,6 +50,10 @@ async function record(page: Page, ms: number) {
           opacity: sheet?.style.opacity ?? "",
           draw,
           fly: !!document.querySelector("body > img[class]"),
+          seal: (() => {
+            const img = sheet?.querySelector("[data-intro-logo] img");
+            return img ? getComputedStyle(img).opacity : "";
+          })(),
           y: Math.round(scrollY),
           path: location.pathname,
         });
@@ -98,13 +106,16 @@ async function expectOpening(
     expect(withSheet.length, "frames with the flash").toBeGreaterThan(15);
     expect(withSheet.length, "frames with the flash").toBeLessThan(70);
   }
-  // The hand-over: the logo travelled and the sheet faded over several frames
+  // The hand-over. v4 (brief-v4, artboard 8): no logo travels any more (its raster was scaled in flight, which blurred
+  // it); the logo fades on the canvas over several frames (the seal under it follows the brand cycle) and the page
+  // comes in under the same canvas
   expect(
     f.some((x) => x.fly),
-    "travelling logo",
-  ).toBe(true);
+    "no travelling logo",
+  ).toBe(false);
   expect(
-    new Set(withSheet.map((x) => x.opacity)).size,
+    // The sheet fading in (the flash covers the window in 120 ms) and the logo fading out, frame by frame
+    new Set(withSheet.map((x) => `${x.opacity}/${x.seal}`)).size,
     "fade frames",
   ).toBeGreaterThan(8);
   // It landed: the product is the route, the sheet is gone, the opening of the product sits under the header
@@ -157,6 +168,10 @@ test(`a card of the home plays the opening of its product, ${RUNS} of ${RUNS}`, 
     await page.waitForTimeout(i % 2 ? 1200 : 50);
     const card = page.locator('a[data-card="relloo"]');
     await card.scrollIntoViewIfNeeded();
+    // v4: the card is the logo of an accordion panel, which gains width under the pointer (~700 ms); the pointer rests
+    // on it first, as a visitor's does, so the click is not held by Playwright waiting for the logo to stop moving
+    await card.hover();
+    await page.waitForTimeout(900);
     await expectOpening(page, "relloo", () => card.click());
   }
 });
