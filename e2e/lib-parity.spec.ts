@@ -50,6 +50,10 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
+  // A story may render after `networkidle` (measured 2026-10-22: the InputGroup story drew its field ~4 s later, on a
+  // host whose network flapped), so the reference waits for the story's first lib control before it is read
+  if (page.url().startsWith("https://react-lib.welabs.space/"))
+    await page.locator("#storybook-root [data-slot]").first().waitFor({ timeout: 20_000 });
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
