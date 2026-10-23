@@ -47,7 +47,12 @@ export function DifferCards({
                   className={c.toggle}
                   aria-expanded={open}
                   aria-controls={bodyId}
-                  onClick={() => setPinned(open ? null : i)}
+                  onClick={(e) => {
+                    setPinned(open ? null : i);
+                    // A pointer's x closes the card for good: the focus it leaves would keep it wide (GrowItem grows on
+                    // focus-within); a keyboard keeps its place
+                    if (open && e.detail > 0) e.currentTarget.blur();
+                  }}
                 />
               </div>
               {/* The sentence: laid out at rest with no height, it opens on its grid row as the card grows */}
