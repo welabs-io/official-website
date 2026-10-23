@@ -1,7 +1,9 @@
 /* CONECTOR ENTRE PEÇAS DE UMA CENA */
-/* The trace of components/scene-kit/Connector.tsx: the sand control edge (--input) at the dashed width, drawn on with
-   the in-out curve, and an ink dot that rides it once with the out curve. Under the content it would cross, above the
-   panes' paint, deaf to the pointer. Every value is a token of app/lib.css. */
+/* The trace of components/scene-kit/Connector.tsx: a solid ink line at the width of an active bar (3 px, inside the
+   2 to 3.5 px of brief-v3-carousel), drawn on with the in-out curve, an ink dot that rides it once with the out curve,
+   and an open arrowhead that lands with the spring once the line has arrived. It stays solid after landing (it no
+   longer recedes). Under the content it would cross, above the panes' paint, deaf to the pointer. Every value is a
+   token of app/lib.css. */
 .layer {
   position: absolute;
   inset: 0;
@@ -12,23 +14,30 @@
   pointer-events: none;
 }
 
-/* Drawn on, then it recedes once the line has landed (the hand-off is done, the link stays readable but quiet) */
-.path {
+.path,
+.arrow {
   fill: none;
-  stroke: var(--input);
-  stroke-width: var(--rule-dashed);
+  stroke: var(--foreground);
+  stroke-width: var(--bar-active);
   stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation:
-    draw var(--dur-3) var(--ease-in-out) forwards,
-    recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  stroke-linejoin: round;
 }
 
-/* The anchor on the row: a sand dot where the trace leaves, receding with it */
+.path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw var(--dur-3) var(--ease-in-out) forwards;
+}
+
+/* The tip lands when the line reaches it */
+.arrow {
+  opacity: 0;
+  animation: land var(--dur-2) var(--ease-spring) var(--dur-3) forwards;
+}
+
+/* The anchor where the trace leaves its source */
 .anchor {
-  fill: var(--input);
-  animation: recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  fill: var(--foreground);
 }
 
 .dot {
@@ -39,15 +48,25 @@
   animation: ride var(--dur-3) var(--ease-out) var(--dur-1) forwards;
 }
 
+/* Reduced motion (the kit drops every animation): the trace is shown already drawn, with its tip */
+@media (prefers-reduced-motion: reduce) {
+  .path {
+    stroke-dashoffset: 0;
+  }
+  .arrow {
+    opacity: 1;
+  }
+}
+
 @keyframes draw {
   to {
     stroke-dashoffset: 0;
   }
 }
 
-@keyframes recede {
+@keyframes land {
   to {
-    opacity: 0.45;
+    opacity: 1;
   }
 }
 

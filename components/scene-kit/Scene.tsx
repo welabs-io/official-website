@@ -97,10 +97,11 @@ type SceneProps = {
   id: string;
   // Accessible name of the window
   label: string;
-  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end
+  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end; the
+  // tools may follow the scene (a carousel's frame indicator), rendered from the same `scene` as the stage
   product: string;
   title: string;
-  tools?: ReactNode;
+  tools?: ReactNode | ((scene: SceneApi) => ReactNode);
   // Either the steps, or a clock made with useSceneTimeline
   steps?: readonly SceneStep[];
   timeline?: SceneTimeline;
@@ -164,7 +165,7 @@ export function Scene({
         {/* lucide's own stroke, as every icon of the Domus */}
         <ChevronRight className={k.chevron} aria-hidden="true" />
         <span className={k.title}>{title}</span>
-        {tools ? <span className={k.tools}>{tools}</span> : null}
+        {tools ? <span className={k.tools}>{typeof tools === "function" ? tools(api) : tools}</span> : null}
       </div>
       <div
         ref={ref}

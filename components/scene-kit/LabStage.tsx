@@ -11,7 +11,7 @@ import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
 import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
 import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
-import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
+import { KNOWLY_CAROUSEL_STEPS, KnowlyCarousel } from "./scenes/knowly-carousel";
 import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
 import { TUNER_ROUTING_STEPS, TunerRouting } from "./scenes/tuner-routing";
@@ -45,10 +45,10 @@ const SCENES: Record<SceneId, Entry> = {
     Component: TunerRouting,
     takeFrom: "ring",
   },
-  "knowly-answer": {
-    steps: KNOWLY_ANSWER_STEPS,
-    Component: KnowlyAnswer,
-    takeFrom: "profile",
+  "knowly-carousel": {
+    steps: KNOWLY_CAROUSEL_STEPS,
+    Component: KnowlyCarousel,
+    takeFrom: "decision",
   },
   "home-message": {
     steps: HOME_MESSAGE_STEPS,

@@ -452,6 +452,12 @@
 [data-slot="input-group"] > [data-slot="input-group-addon"] > [data-field-piece] {
   height: var(--control-height-sm);
 }
+/* A button that is a link (components/lib/ui.tsx LinkButton): the reset of app/globals.css (`a { color: inherit }`,
+   unlayered) outranked the lib's layered text colour and left the label ink on the black primary; the link gives the
+   colour back to the lib */
+a[data-slot="button"] {
+  color: revert-layer;
+}
 
 /* CAMADA DO SITE SOBRE A MARCA WELABS */
 /* Colour: only the PAPÉIS DE COR block above. Structure: the lib's own (its control heights, radii, paddings and
