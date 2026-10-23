@@ -11,7 +11,7 @@
 // is amber (with its node, when it has one): at most 2 pieces of amber per frame, the brand's globe aside. The graph
 // itself is data (knowly-graph.ts, seeded). The continuity (autoplay, loop, human take, off-screen, reduced motion =
 // the settled frame) is the kit's (components/scene-kit/Scene.tsx); this file only renders from `scene`.
-import type { CSSProperties } from "react";
+import { memo, type CSSProperties } from "react";
 import { CalendarDays, ClipboardList, FileText, Link2, MessageCircle, Video, type LucideIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { ActionButton } from "@/components/lib/ui";
@@ -20,7 +20,7 @@ import { CTA_LABEL } from "@/lib/products";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
-import { GRAPH, LIVE, type GraphNode, type GraphStep } from "./knowly-graph";
+import { GRAPH, LIVE, type GraphLink, type GraphNode, type GraphStep } from "./knowly-graph";
 import k from "./knowly-carousel.module.css";
 
 // ROTEIRO DA CENA
@@ -123,14 +123,14 @@ const LABELS: readonly Label[] = [
   { id: "ticket", at: "ticket", text: "Chamado 140", frames: [2], tone: "muted", place: "below", sm: false },
   { id: "contract", at: "contract", text: "Contrato 52", frames: [2], tone: "muted", place: "above", sm: false },
   { id: "invoice", at: "invoice", text: "Fatura 7710", frames: [2], tone: "muted", place: "below", sm: false },
-  { id: "order", at: "order", text: "Pedido 1234", frames: [2], tone: "muted", place: "below" },
+  { id: "order", at: "order", text: "Pedido 1234", frames: [2], tone: "muted", place: "below", sm: false },
   { id: "decision", at: "decision", text: "Decisão · 2 provas", frames: [2], tone: "note", place: "below", step: "f2-decision" },
   { id: "subject", at: "subject", text: "Contato 4821", frames: [3, 4], tone: "strong", place: "below" },
   { id: "billing", at: "billing", text: "Faturamento", frames: [3, 4], tone: "muted", place: "above" },
-  { id: "rules", at: "rules", text: "Normas internas", frames: [3, 4], tone: "muted", place: "above" },
+  { id: "rules", at: "rules", text: "Normas", frames: [3, 4], tone: "muted", place: "above" },
   { id: "block", at: "block", text: "Bloco B", frames: [3, 4], tone: "muted", place: "below" },
   { id: "purchases", at: "purchases", text: "Compras", frames: [3, 4], tone: "muted", place: "below" },
-  { id: "newest", at: NEW_MID, text: COPY.newest, frames: [4], tone: "note", place: "below", icon: Link2, step: "f4-new" },
+  { id: "newest", at: NEW_MID, text: COPY.newest, frames: [4], tone: "note", place: "above", icon: Link2, step: "f4-new", sm: false },
 ];
 
 // O QUE CADA PASSO MOSTRA
@@ -145,22 +145,39 @@ const liveNode = (id: string, view: View) => LIVE[view.frame].node === id && isI
 const varStyle = (vars: Record<string, string | number>) => vars as CSSProperties;
 
 // The dot of a node: a zero-length round-capped line, so it keeps its size on screen at every zoom (its stroke does not
-// scale), and the subject is the brand's globe (drawn over the graph, not as a dot). The first sources are chips in
-// frame 1, dots after it
-function Dot({ node, view }: { node: GraphNode; view: View }) {
-  if (node.kind === "subject") return null;
-  const shown = isIn(node.step, view) && !(node.kind === "core" && view.frame === 1);
+// scale). The subject is the brand's globe (drawn over the graph, not as a dot); the first sources are chips in frame 1,
+// dots after it
+const DOTS = GRAPH.nodes.filter((n) => n.kind !== "subject");
+
+// Memoised on its two flags: a step re-renders only the pieces whose state it changes (some 600 in the world)
+const Dot = memo(function Dot({ node, shown, live }: { node: GraphNode; shown: boolean; live: boolean }) {
   return (
     <path
       className={k.dot}
       d={`M${Math.round(node.x)} ${Math.round(node.y)}h0`}
       data-kind={node.kind}
+      data-far={node.step === "f4-whole" ? "" : undefined}
       data-in={shown}
-      data-live={liveNode(node.id, view)}
+      data-live={live}
       style={varStyle({ "--wave": node.wave.toFixed(3) })}
     />
   );
-}
+});
+
+// A link, drawn from end to end as it arrives; the live one draws at once, out of the wave of its step
+const LinkPath = memo(function LinkPath({ link, shown, live }: { link: GraphLink; shown: boolean; live: boolean }) {
+  return (
+    <path
+      className={k.link}
+      d={link.d}
+      pathLength={1}
+      data-level={link.level}
+      data-in={shown}
+      data-live={live}
+      style={varStyle({ "--wave": live ? 0 : link.wave.toFixed(3) })}
+    />
+  );
+});
 
 function LabelView({ label, view }: { label: Label; view: View }) {
   const at = typeof label.at === "string" ? nodeById.get(label.at)! : label.at;
@@ -177,6 +194,7 @@ function LabelView({ label, view }: { label: Label; view: View }) {
       data-live={live}
       data-sm={label.sm === false ? "off" : undefined}
       data-axis={Icon ? "label" : undefined}
+      data-axis-pair={Icon ? "" : undefined}
       style={varStyle({ "--x": Math.round(at.x), "--y": Math.round(at.y) })}
     >
       {Icon ? <Icon aria-hidden="true" /> : null}
@@ -201,27 +219,19 @@ function World({ view, beat }: { view: View; beat: Beat }) {
       <svg className={k.svg} aria-hidden="true">
         <svg x="50%" y="50%" overflow="visible">
           <g className={k.lens}>
-            <g className={k.links}>
-              {GRAPH.links.map((l) => {
-                const live = liveLink(l.id, view);
-                return (
-                  <path
-                    key={l.id}
-                    className={k.link}
-                    d={l.d}
-                    pathLength={1}
-                    data-level={l.level}
-                    data-in={isIn(l.step, view)}
-                    data-live={live}
-                    // The live link draws at once, out of the wave of its step
-                    style={varStyle({ "--wave": live ? 0 : l.wave.toFixed(3) })}
-                  />
-                );
-              })}
+            <g>
+              {GRAPH.links.map((l) => (
+                <LinkPath key={l.id} link={l} shown={isIn(l.step, view)} live={liveLink(l.id, view)} />
+              ))}
             </g>
             <g>
-              {GRAPH.nodes.map((n) => (
-                <Dot key={n.id} node={n} view={view} />
+              {DOTS.map((n) => (
+                <Dot
+                  key={n.id}
+                  node={n}
+                  shown={isIn(n.step, view) && !(n.kind === "core" && view.frame === 1)}
+                  live={liveNode(n.id, view)}
+                />
               ))}
             </g>
           </g>
@@ -281,8 +291,8 @@ function Close({ view }: { view: View }) {
       </div>
       <span className={k.legend} data-lead="">
         {COPY.legend.map((item) => (
-          <span key={item.id} className={k.legendItem} data-axis="legend">
-            <span className={k.swatch} data-swatch={item.id} aria-hidden="true" />
+          <span key={item.id} className={k.legendItem} data-axis="legend" data-axis-pair="">
+            <span className={k.swatch} data-swatch={item.id} data-dot="" aria-hidden="true" />
             <span>{item.text}</span>
           </span>
         ))}

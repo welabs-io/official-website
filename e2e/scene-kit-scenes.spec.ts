@@ -118,16 +118,23 @@ const SCENES: Entry[] = [
   {
     id: "knowly-carousel",
     figure: /^Knowly/,
-    // A citation of the answer (frame 4) replays the answer, its proofs and their traces
-    trigger: /^Reunião · dia 3/,
+    // v4, the memory graph: the frame indicator (frame 3 plays 7.4 s to the end, inside the kit's 8 s of human idle)
+    trigger: /^Momento 3$/,
+    triggerRole: "radio",
     final: "done",
-    // The assistant's head (mark + name) and the note of what is missing (icon + text)
-    pairs: 2,
-    cycleMs: 11900,
-    // Frame 3: each part points up at its day; frame 4: each citation points back at the decision
-    handoff: { 1440: ["asked", "approved", "cite", "done"], 390: [] },
+    // The four items of the legend (swatch + word) on the settled frame
+    pairs: 4,
+    cycleMs: 12600,
+    // The graph's links are drawn traces (pathLength): the live link of each frame is drawn at its step, and the
+    // whole memory stays drawn on the settled frame
+    handoff: {
+      1440: ["f1-link", "f2-decision", "f3-bridge", "f4-new"],
+      390: ["f1-link", "f2-decision", "f3-bridge", "f4-new"],
+    },
     amberMax: 2,
-    finalTrace: [1440],
+    // The legend's "Mais recente" swatch (the newest link itself is an SVG stroke, counted by e2e/knowly-graph.spec.ts)
+    finalAmber: 1,
+    finalTrace: [1440, 390],
     frames: 4,
   },
   {

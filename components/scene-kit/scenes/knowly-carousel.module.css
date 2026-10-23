@@ -133,6 +133,11 @@
   stroke-width: var(--dot);
 }
 
+/* The far subjects are smaller than the named ones */
+.dot[data-kind="hub"][data-far] {
+  stroke-width: var(--dot-sm);
+}
+
 .dot[data-in="true"] {
   opacity: 1;
 }
@@ -188,11 +193,14 @@
       calc(var(--pan-y) + var(--y) * var(--sy) * var(--rule))
     )
     translate(var(--ax), var(--ay));
-  transition: opacity var(--dur-swap) var(--ease-swap);
+  /* A label leaves at once, before the camera has moved it onto another */
+  transition: opacity var(--dur-2) var(--ease-swap);
 }
 
+/* A label comes in once the camera has mostly pulled back (the glide starts fast), so it never shows on its way in */
 .label[data-in="true"] {
   opacity: 1;
+  transition: opacity var(--dur-swap) var(--ease-swap) var(--dur-swap);
 }
 
 .label[data-place="above"] {
@@ -414,7 +422,7 @@
   }
 
   .camera {
-    --fx: 0.42;
+    --fx: 0.45;
     --fy: 0.62;
   }
 

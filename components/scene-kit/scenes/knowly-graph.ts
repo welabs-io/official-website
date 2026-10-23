@@ -96,27 +96,27 @@ function curve(a: { x: number; y: number }, b: { x: number; y: number }, bend: n
 const CORE_NODES: readonly Omit<GraphNode, "wave">[] = [
   { id: "subject", x: 0, y: 0, kind: "subject", step: "f1-seed" },
   // Frame 1: the subject's first sources
-  { id: "talk", x: -190, y: -105, kind: "core", step: "f1-seed" },
-  { id: "visit", x: 195, y: -115, kind: "core", step: "f1-seed" },
-  { id: "proposal", x: 205, y: 105, kind: "core", step: "f1-seed" },
-  { id: "meeting", x: -195, y: 110, kind: "core", step: "f1-link" },
+  { id: "talk", x: -190, y: -135, kind: "core", step: "f1-seed" },
+  { id: "visit", x: 195, y: -140, kind: "core", step: "f1-seed" },
+  { id: "proposal", x: 205, y: 140, kind: "core", step: "f1-seed" },
+  { id: "meeting", x: -195, y: 140, kind: "core", step: "f1-link" },
   // Frame 2: what hangs from them, and the decision with its two proofs
-  { id: "policy", x: -20, y: -300, kind: "fact", step: "f2-grow" },
+  { id: "policy", x: -20, y: -260, kind: "fact", step: "f2-grow" },
   { id: "warranty", x: -520, y: -30, kind: "fact", step: "f2-grow" },
-  { id: "ticket", x: -470, y: 290, kind: "fact", step: "f2-grow" },
+  { id: "ticket", x: -470, y: 250, kind: "fact", step: "f2-grow" },
   { id: "contract", x: 540, y: -40, kind: "fact", step: "f2-grow" },
-  { id: "invoice", x: 480, y: 290, kind: "fact", step: "f2-grow" },
-  { id: "order", x: 175, y: 340, kind: "fact", step: "f2-grow" },
+  { id: "invoice", x: 480, y: 250, kind: "fact", step: "f2-grow" },
+  { id: "order", x: 190, y: 280, kind: "fact", step: "f2-grow" },
   { id: "f2a", x: -340, y: -250, kind: "fact", step: "f2-grow" },
   { id: "f2b", x: 330, y: -265, kind: "fact", step: "f2-grow" },
   { id: "f2c", x: -640, y: 170, kind: "fact", step: "f2-grow" },
   { id: "f2d", x: 650, y: 160, kind: "fact", step: "f2-grow" },
-  { id: "decision", x: -150, y: 300, kind: "fact", step: "f2-decision" },
+  { id: "decision", x: -130, y: 250, kind: "fact", step: "f2-decision" },
   // Frame 3: other subjects that link in
-  { id: "billing", x: -950, y: -560, kind: "hub", step: "f3-subjects" },
-  { id: "rules", x: 930, y: -590, kind: "hub", step: "f3-subjects" },
-  { id: "block", x: 990, y: 560, kind: "hub", step: "f3-subjects" },
-  { id: "purchases", x: -980, y: 570, kind: "hub", step: "f3-subjects" },
+  { id: "billing", x: -900, y: -560, kind: "hub", step: "f3-subjects" },
+  { id: "rules", x: 880, y: -590, kind: "hub", step: "f3-subjects" },
+  { id: "block", x: 940, y: 560, kind: "hub", step: "f3-subjects" },
+  { id: "purchases", x: -930, y: 570, kind: "hub", step: "f3-subjects" },
 ];
 
 const CORE_LINKS: readonly [string, string, GraphStep, LinkLevel, number][] = [
@@ -169,7 +169,9 @@ export const LIVE: Record<1 | 2 | 3 | 4, { link: string; node?: string; step: Gr
 
 // A PARTE DISTANTE, GERADA PELA SEMENTE
 // Subjects scattered in the lobes at a least distance from each other, each with its facts around it; facts link to
-// their subject and now and then to a neighbour fact, subjects link to their two nearest subjects
+// their subject and now and then to a neighbour fact, subjects link to their nearest subjects. Many small subjects
+// (rather than a few big ones) give the dense, even texture of a brain at 8 %
+const FAR = { subjects: 44, spacing: 540, facts: 3, neighbours: 3 };
 export function buildGraph(seed = GRAPH_SEED) {
   const rand = seeded(seed);
   const nodes: GraphNode[] = CORE_NODES.map((n) => ({ ...n, wave: 0 }));
@@ -203,22 +205,22 @@ export function buildGraph(seed = GRAPH_SEED) {
   // The subjects of the whole memory
   const far: GraphNode[] = [];
   const taken = [...hubs3, byId.get("subject")!];
-  for (let tries = 0; tries < 4000 && far.length < 24; tries++) {
+  for (let tries = 0; tries < 6000 && far.length < FAR.subjects; tries++) {
     const x = (rand() * 2 - 1) * BRAIN_HALF.x;
     const y = (rand() * 2 - 1) * BRAIN_HALF.y;
     if (!inBrain(x, y) || inCore(x, y)) continue;
-    if (taken.some((h) => Math.hypot(h.x - x, h.y - y) < 760)) continue;
+    if (taken.some((h) => Math.hypot(h.x - x, h.y - y) < FAR.spacing)) continue;
     const hub: GraphNode = { id: `h${far.length}`, x, y, kind: "hub", step: "f4-whole", wave: 0 };
     far.push(hub);
     taken.push(hub);
   }
   nodes.push(...far);
   for (const hub of far) {
-    const count = 6 + Math.floor(rand() * 3);
+    const count = FAR.facts + Math.floor(rand() * 3);
     const facts: GraphNode[] = [];
     for (let i = 0; i < count; i++) {
       const a = (i / count) * Math.PI * 2 + rand() * 0.7;
-      const r = 130 + rand() * 230;
+      const r = 100 + rand() * 200;
       const x = hub.x + Math.cos(a) * r;
       const y = hub.y + Math.sin(a) * r;
       if (!inBrain(x, y)) continue;
@@ -226,23 +228,24 @@ export function buildGraph(seed = GRAPH_SEED) {
       if (facts.length && rand() < 0.5)
         links.push({ id: `${f.id}-n`, from: facts[facts.length - 1].id, to: f.id, step: "f4-whole", level: 8, d: "", wave: 0 });
       facts.push(f);
-      links.push({ id: `${hub.id}-${f.id}`, from: hub.id, to: f.id, step: "f4-whole", level: 14, d: "", wave: 0 });
+      // Far away the lines step down a level (brief v4: thinner and lighter far than near)
+      links.push({ id: `${hub.id}-${f.id}`, from: hub.id, to: f.id, step: "f4-whole", level: 8, d: "", wave: 0 });
     }
     nodes.push(...facts);
   }
-  // Each far subject to its two nearest subjects (the frame-3 ones included), once per pair
+  // Each far subject to its nearest subjects (the frame-3 ones included), once per pair
   const subjects = [...hubs3, ...far];
   const paired = new Set<string>();
   for (const hub of far) {
     const near = subjects
       .filter((h) => h !== hub)
       .sort((a, b) => Math.hypot(a.x - hub.x, a.y - hub.y) - Math.hypot(b.x - hub.x, b.y - hub.y))
-      .slice(0, 2);
+      .slice(0, FAR.neighbours);
     for (const other of near) {
       const key = [hub.id, other.id].sort().join("|");
       if (paired.has(key)) continue;
       paired.add(key);
-      links.push({ id: `${hub.id}-${other.id}`, from: other.id, to: hub.id, step: "f4-whole", level: 30, d: "", wave: 0 });
+      links.push({ id: `${hub.id}-${other.id}`, from: other.id, to: hub.id, step: "f4-whole", level: 14, d: "", wave: 0 });
     }
   }
   // The newest link of the whole memory: the farthest subject of the right lobe reaches a subject of frame 3
