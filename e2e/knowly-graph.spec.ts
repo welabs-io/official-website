@@ -191,6 +191,12 @@ test.describe("knowly memory graph", () => {
     await page.goto(LAB);
     const scene = page.getByRole("figure", { name: FIGURE });
     await scene.scrollIntoViewIfNeeded();
+    // Hydrated on the settled step, and past the lib's own first paint (the helper of the kit waits as long)
+    await expect(scene.locator("[data-scene]")).toHaveAttribute(
+      "data-step",
+      "done",
+    );
+    await page.waitForTimeout(500);
     const state = await scene.evaluate((figure) => {
       const live = figure.querySelector("[data-scene]")!.lastElementChild!;
       const dots = [...live.querySelectorAll("path[data-kind]")];
