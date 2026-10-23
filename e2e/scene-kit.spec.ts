@@ -1,8 +1,8 @@
 // PROVA DO CARROSSEL DO RELLOO NO LAB
 // What the Relloo carousel adds to the kit's contract (e2e/scene-kit-scenes.spec.ts holds the loop, the take, reduced
 // motion, the frames reached, the amber budget, the cut text and the height): the frames cross with a fade (never a
-// cut), the chrome names the frame's screen and marks its number, and the connector is the v4 brief's active trace
-// (curved, solid ink at 2 px, with an arrowhead, routed outside the pieces it links).
+// cut), the chrome names the frame's screen and marks its number, and the connector is the v4 brief's trace at rest
+// (curved, the soft grey at 1.75 px, with an arrowhead, routed outside the pieces it links).
 import { expect, test, type Page } from "@playwright/test";
 
 const LAB = "/lab/scenes/relloo-carousel";
@@ -69,7 +69,7 @@ test.describe("relloo carousel", () => {
   });
 
   for (const width of [1440, 390]) {
-    test(`the connector is curved, solid ink at 2 px, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
+    test(`the connector is curved, soft grey at rest, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
       test.setTimeout(60_000);
       await page.setViewportSize({ width, height: 900 });
       await page.goto(LAB);
@@ -81,10 +81,11 @@ test.describe("relloo carousel", () => {
         const all = await traces(page);
         expect(all.length, `frame ${n}: a trace`).toBeGreaterThan(0);
         for (const t of all) {
-          expect(t.width, `frame ${n}: stroke`).toBe(2);
+          expect(t.width, `frame ${n}: stroke`).toBe(1.75);
           expect(t.curved, `frame ${n}: curved`).toBe(true);
           expect(t.opacity, `frame ${n}: opacity`).toBe(1);
-          expect(t.colour, `frame ${n}: ink`).toBe("rgb(18, 18, 18)");
+          // v4 (operator, 23/10): a scene's connector rests in the soft grey (#55565b at 40 %)
+          expect(t.colour, `frame ${n}: rest grey`).toBe("rgba(85, 86, 91, 0.4)");
           expect(t.dashed, `frame ${n}: solid`).toBe(false);
           expect(t.head, `frame ${n}: arrowhead`).toBe(true);
           expect(t.crossed, `frame ${n}: pieces under the trace`).toEqual([]);

@@ -207,7 +207,7 @@ export function Connector({
   );
 
   return (
-    <svg ref={ref} className={c.layer} data-state={state} aria-hidden="true">
+    <svg ref={ref} className={c.layer} data-trace-state={state} aria-hidden="true">
       {trace ? (
         // Keyed by the target: a new hand-off draws again, a re-measure of the same one only moves it
         <g key={to}>

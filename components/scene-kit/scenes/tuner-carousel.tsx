@@ -176,8 +176,8 @@ function MessageFrame({ at, traced }: FrameProps) {
       <Node id="magneto" icon={Workflow} title={COPY.magneto.title} meta={COPY.magneto.meta} />
       <LiveCard data-message="" {...COPY.message} />
       <Node id="tuner" icon={RadioTower} title={COPY.tuner.title} meta={COPY.tuner.meta} waiting={!at("handed")} />
-      {traced ? <Connector from='[data-node="magneto"]' to="[data-message]" inset={-6} state="active" /> : null}
-      {traced && at("handed") ? <Connector from="[data-message]" to='[data-node="tuner"]' inset={-6} state="active" /> : null}
+      {traced ? <Connector from='[data-node="magneto"]' to="[data-message]" inset={-6} /> : null}
+      {traced && at("handed") ? <Connector from="[data-message]" to='[data-node="tuner"]' inset={-6} /> : null}
     </div>
   );
 }
@@ -221,7 +221,7 @@ function SendFrame({ scene, at, traced }: FrameProps) {
         <span>{COPY.stat.note}</span>
       </span>
       {traced
-        ? CHANNELS.map((c) => <Connector key={c.key} from="[data-hub]" to={`[data-channel="${c.key}"]`} inset={-6} state="active" />)
+        ? CHANNELS.map((c) => <Connector key={c.key} from="[data-hub]" to={`[data-channel="${c.key}"]`} inset={-6} />)
         : null}
     </div>
   );
@@ -276,8 +276,8 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
         <Node id="message" icon={MessageCircle} title={COPY.replyFrom.title} meta={COPY.replyFrom.meta} />
         <LiveCard data-reply="" {...COPY.reply} />
         <Node id="relloo" icon={MessagesSquare} title={COPY.relloo.title} meta={COPY.relloo.meta} waiting={!done} />
-        {traced ? <Connector from='[data-node="message"]' to="[data-reply]" inset={-6} state="active" /> : null}
-        {traced && done ? <Connector from="[data-reply]" to='[data-node="relloo"]' inset={-6} state="active" /> : null}
+        {traced ? <Connector from='[data-node="message"]' to="[data-reply]" inset={-6} /> : null}
+        {traced && done ? <Connector from="[data-reply]" to='[data-node="relloo"]' inset={-6} /> : null}
       </div>
       {/* The other channels: each one replays the send */}
       <div className={t.more} data-band="" data-more="">

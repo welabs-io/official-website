@@ -16,11 +16,11 @@
   overflow: visible;
   pointer-events: none;
 }
-.layer[data-state="active"] {
+.layer[data-trace-state="active"] {
   --trace: var(--trace-active);
   --trace-width: var(--trace-active-width);
 }
-.layer[data-state="live"] {
+.layer[data-trace-state="live"] {
   --trace: var(--trace-live);
   --trace-width: var(--trace-live-width);
 }
