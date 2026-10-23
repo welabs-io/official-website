@@ -32,7 +32,6 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
-import { linkState } from "../link-state";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import { TypeIn } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
@@ -323,20 +322,10 @@ function TriggerFrame({ scene, on }: FrameProps) {
       </div>
       <Traces scene={scene}>
         {on("trigger") ? (
-          <Connector
-            from='[data-id="domus"]'
-            to='[data-id="live"]'
-            inset={0}
-            state={linkState(scene, "trigger")}
-          />
+          <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} />
         ) : null}
         {on("next") ? (
-          <Connector
-            from='[data-id="live"]'
-            to='[data-id="next"]'
-            inset={0}
-            state={linkState(scene, "next")}
-          />
+          <Connector from='[data-id="live"]' to='[data-id="next"]' inset={0} />
         ) : null}
       </Traces>
     </>
@@ -405,7 +394,6 @@ function SplitFrame({ scene, on }: FrameProps) {
             from='[data-id="trigger"]'
             to='[data-id="check"]'
             inset={0}
-            state={linkState(scene, "check")}
           />
         ) : null}
         {on("split") ? (
@@ -413,7 +401,6 @@ function SplitFrame({ scene, on }: FrameProps) {
             from='[data-id="check"]'
             to='[data-id="approval"]'
             inset={0}
-            state={linkState(scene, "split")}
           />
         ) : null}
         {on("split") ? (
@@ -421,7 +408,6 @@ function SplitFrame({ scene, on }: FrameProps) {
             from='[data-id="check"]'
             to='[data-id="contract"]'
             inset={0}
-            state={linkState(scene, "split")}
           />
         ) : null}
       </Traces>
@@ -522,7 +508,6 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="approval"]'
             to='[data-id="domus"]'
             inset={0}
-            state={linkState(scene, "wait")}
           />
         ) : null}
         {on("ready") ? (
@@ -530,7 +515,6 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="contract"]'
             to='[data-id="next"]'
             inset={0}
-            state={linkState(scene, "ready")}
           />
         ) : null}
         {on("ready") ? (
@@ -611,24 +595,13 @@ function CloseFrame({ scene, on }: FrameProps) {
             from='[data-id="approved"]'
             to='[data-id="live"]'
             inset={0}
-            state={linkState(scene, "retry")}
           />
         ) : null}
         {on("done") ? (
-          <Connector
-            from='[data-id="live"]'
-            to='[data-id="domus"]'
-            inset={0}
-            state={linkState(scene, "done")}
-          />
+          <Connector from='[data-id="live"]' to='[data-id="domus"]' inset={0} />
         ) : null}
         {on("done") ? (
-          <Connector
-            from='[data-id="live"]'
-            to='[data-id="tuner"]'
-            inset={0}
-            state={linkState(scene, "done")}
-          />
+          <Connector from='[data-id="live"]' to='[data-id="tuner"]' inset={0} />
         ) : null}
       </Traces>
     </>

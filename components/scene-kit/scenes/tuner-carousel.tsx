@@ -31,7 +31,6 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
-import { linkState } from "../link-state";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import { TypeIn } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
@@ -210,7 +209,7 @@ function LiveCard({
 }
 
 // QUADRO 1: A MENSAGEM
-function MessageFrame({ scene, at, traced }: FrameProps) {
+function MessageFrame({ at, traced }: FrameProps) {
   return (
     <div className={t.flow} data-band="">
       <Node
@@ -232,16 +231,10 @@ function MessageFrame({ scene, at, traced }: FrameProps) {
           from='[data-node="magneto"]'
           to="[data-message]"
           inset={-6}
-          state={linkState(scene, "message")}
         />
       ) : null}
       {traced && at("handed") ? (
-        <Connector
-          from="[data-message]"
-          to='[data-node="tuner"]'
-          inset={-6}
-          state={linkState(scene, "handed")}
-        />
+        <Connector from="[data-message]" to='[data-node="tuner"]' inset={-6} />
       ) : null}
     </div>
   );
@@ -303,7 +296,6 @@ function SendFrame({ scene, at, traced }: FrameProps) {
               from="[data-hub]"
               to={`[data-channel="${c.key}"]`}
               inset={-6}
-              state={linkState(scene, "fanout")}
             />
           ))
         : null}
@@ -385,16 +377,10 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
             from='[data-node="message"]'
             to="[data-reply]"
             inset={-6}
-            state={linkState(scene, "reply")}
           />
         ) : null}
         {traced && done ? (
-          <Connector
-            from="[data-reply]"
-            to='[data-node="relloo"]'
-            inset={-6}
-            state={linkState(scene, "done")}
-          />
+          <Connector from="[data-reply]" to='[data-node="relloo"]' inset={-6} />
         ) : null}
       </div>
       {/* The other channels: each one replays the send */}

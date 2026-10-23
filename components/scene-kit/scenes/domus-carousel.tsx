@@ -34,7 +34,6 @@ import { DOMUS_MODULES, HOME_DOMUS } from "@/lib/content/home";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
-import { linkState } from "../link-state";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import { TypeIn, typeDuration } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
@@ -371,13 +370,7 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
         ))}
       </div>
       {on && screen && !scene.ghost ? (
-        <Connector
-          from="[data-type]"
-          to="[data-screen]"
-          inset={0}
-          gap={8}
-          state={linkState(scene, "screen")}
-        />
+        <Connector from="[data-type]" to="[data-screen]" inset={0} gap={8} />
       ) : null}
     </div>
   );
@@ -497,7 +490,6 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           route="elbow"
           inset={0}
           gap={8}
-          state={linkState(scene, "linked")}
         />
       ) : null}
     </div>
@@ -578,7 +570,6 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
                 to={`[data-neighbour="${port}"]`}
                 inset={0}
                 gap={8}
-                state={linkState(scene, "links")}
               />
             ))
           : null}

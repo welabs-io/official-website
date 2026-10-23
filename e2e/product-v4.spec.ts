@@ -15,7 +15,7 @@ type Stage = { id: string; cycleMs: number; names: string[] };
 const STAGES: Stage[] = [
   {
     id: "relloo-carousel",
-    cycleMs: 22_008,
+    cycleMs: 20_208,
     names: ["Chega", "Passa a vez", "Vira oportunidade", "Anda no funil"],
   },
   {
@@ -113,7 +113,9 @@ for (const s of STAGES) {
                 live
                   .querySelectorAll<SVGPathElement>("path[data-trace]")
                   .forEach((p) => {
-                    const state = p.closest("svg")?.getAttribute("data-trace-state");
+                    const state = p
+                      .closest("svg")
+                      ?.getAttribute("data-trace-state");
                     if (state === "live") amberTraces++;
                     if (state === "active") activeTraces++;
                   });
