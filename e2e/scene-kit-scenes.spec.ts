@@ -55,7 +55,7 @@ const SCENES: Entry[] = [
     // The Domus card under the funnel (its mark on its two lines)
     pairs: 1,
     // v4: the conversation types in, with its "digitando" steps
-    cycleMs: 22_008,
+    cycleMs: 20_208,
     handoff: {
       1440: ["f2-handoff", "f2-summary", "f3-born", "f4-domus"],
       // On a phone the panes of frame 3 stack and its trace stays off (it would cross the conversation)
@@ -470,7 +470,7 @@ for (const s of SCENES) {
 
 // AS CENAS MONTADAS NO SITE
 // v3 (2026-10-23): each kit scene is mounted on its page through SceneSlot (components/scene-kit/SceneSlot.tsx): the
-// carousel of a product opens its page, the message crosses the home. The same contract holds there, inside the page:
+// carousel of a product opens its page. The same contract holds there, inside the page:
 // it autoplays and loops, a click takes over and gives it back, it pauses off screen, reduced motion shows the settled
 // frame, and no text is cut nor any icon off its text at 1440 and at 390 (the page gutter is narrower than the lab's).
 const SITE: Record<string, string> = {
@@ -479,10 +479,11 @@ const SITE: Record<string, string> = {
   "magneto-carousel": "/products/magneto",
   "tuner-carousel": "/products/tuner",
   "knowly-carousel": "/products/knowly",
-  "home-message": "/",
 };
 
-for (const s of SCENES) {
+// v4 (brief-v4, 2026-10-23): home-message left the home for the chain the scroll walks (components/home/Chain.tsx,
+// measured by e2e/home.spec.ts), so it is checked only in the lab above
+for (const s of SCENES.filter((entry) => entry.id in SITE)) {
   const path = SITE[s.id];
 
   test.describe(`scene kit on the site: ${s.id} on ${path}`, () => {

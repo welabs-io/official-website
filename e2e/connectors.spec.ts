@@ -47,8 +47,10 @@ const measure = (page: Page, sel: string) =>
     );
   }, sel);
 
+// v4 (brief-v4, 2026-10-23): the home opening is the stage in blades (data-hub="blades"), which has no ties, so the
+// cycling stage left the home; its chain draws kit Connectors, measured by e2e/home.spec.ts. The still stage stays.
 for (const width of [1440, 1024])
-  for (const path of ["/", "/products/relloo"])
+  for (const path of ["/products/relloo"])
     test(`ties at ${width} on ${path}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(path, { waitUntil: "load" });
