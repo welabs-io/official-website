@@ -16,6 +16,15 @@ async function showFrame(page: Page, n: 1 | 2 | 3 | 4) {
     timeout: 10_000,
   });
   await page.waitForTimeout(900);
+  // Only the frame on screen: the one that left is gone and the one that came has stopped moving
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const frames = [...document.querySelectorAll('[data-scene="relloo-carousel"] > :last-child [data-frame]')];
+        return frames.length === 1 && getComputedStyle(frames[0].parentElement!).transform === "none";
+      }),
+    )
+    .toBe(true);
 }
 
 // The drawn traces of the live layer: stroke, colour, arrowhead, and the pieces each one crosses between its ends

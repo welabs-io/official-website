@@ -199,6 +199,16 @@ for (const width of [1440, 390]) {
           timeout: 10_000,
         });
         await page.waitForTimeout(900);
+        // Only the frame on screen is measured: the one that left is gone and the one that came has stopped moving
+        // (a loaded machine can stretch the crossing past the wait)
+        await expect
+          .poll(() =>
+            page.evaluate(() => {
+              const frames = [...document.querySelectorAll('[data-scene="relloo-carousel"] > :last-child [data-frame]')];
+              return frames.length === 1 && getComputedStyle(frames[0].parentElement!).transform === "none";
+            }),
+          )
+          .toBe(true);
 
         const all = await fields(page);
         expect(all.length, "fields").toBeGreaterThanOrEqual(n === 1 ? 1 : 0);
