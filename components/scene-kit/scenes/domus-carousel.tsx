@@ -34,7 +34,9 @@ import { DOMUS_MODULES, HOME_DOMUS } from "@/lib/content/home";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
+import { linkState } from "../link-state";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
+import { TypeIn, typeDuration } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import d from "./domus-carousel.module.css";
@@ -43,13 +45,17 @@ import d from "./domus-carousel.module.css";
 // Four frames, twelve steps (12.9 s): each frame holds 2.1 to 3.8 s, every step stays under the 2 s a human take may
 // hold still; the record lands in the list ("created") before the connector ties it ("linked"), so the trace is
 // measured on the row in its place; the last step holds 1.8 s, so the call to action reads before the loop goes back
+// v4 (Stage.dc.html, brief-v4): the request to the assistant types in once its panel has come in (ASK_DELAY_MS), so
+// "ask" holds the panel's entry, the typing (18 ms per character) and a short read. One loop: 14.4 s.
+const ASK = "agende a vistoria do Contato 4821 para amanhã às 9h";
+const ASK_DELAY_MS = 280;
 export const DOMUS_CAROUSEL_STEPS: readonly SceneStep[] = [
   { id: "areas", hold: 1300 },
   { id: "new", hold: 800 },
   { id: "type", hold: 900 },
   { id: "fields", hold: 900 },
   { id: "screen", hold: 1500 },
-  { id: "ask", hold: 1000 },
+  { id: "ask", hold: ASK_DELAY_MS + typeDuration(ASK) + 1300 },
   { id: "proposal", hold: 1100 },
   { id: "created", hold: 700 },
   { id: "linked", hold: 1000 },
@@ -70,6 +76,8 @@ const FRAMES = [
 const frameOf = (step: string) => Math.max(0, FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)));
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
+// The name of each moment, on the stage tabs of the chrome (Stage.dc.html)
+const FRAME_NAMES = ["Áreas", "Tipo novo", "Assistente", "Tudo ligado"] as const;
 
 // CONTEÚDO DA CENA
 // The areas are the real modules of lib/content/home.ts DOMUS_MODULES (standard + made to measure: 18), not the
@@ -94,7 +102,7 @@ const COPY = {
   ready: "Pronta para usar",
   assistant: "Assistente",
   context: "Oportunidade 562",
-  ask: "agende a vistoria do Contato 4821 para amanhã às 9h",
+  ask: ASK,
   proposalHead: "Proposta",
   record: "Vistoria 318",
   recordLine: "amanhã, 09:00 · Contato 4821",
@@ -258,7 +266,7 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           </div>
         ))}
       </div>
-      {on && screen && !scene.ghost ? <Connector from="[data-type]" to="[data-screen]" inset={0} gap={8} state="active" /> : null}
+      {on && screen && !scene.ghost ? <Connector from="[data-type]" to="[data-screen]" inset={0} gap={8} state={linkState(scene, "screen")} /> : null}
     </div>
   );
 }
@@ -309,8 +317,10 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           <Link aria-hidden="true" />
           {COPY.context}
         </Badge>
+        {/* v4: the request types in, once per loop, its whole text reserved (keyed by the loop, so a take within it
+            does not type it again) */}
         <p className={d.ask} data-in={scene.reached("ask")}>
-          {COPY.ask}
+          {scene.reached("ask") ? <TypeIn key={scene.cycle} text={COPY.ask} delay={ASK_DELAY_MS} /> : COPY.ask}
         </p>
         <div className={d.proposal} data-in={scene.reached("proposal")}>
           <span className={p.paneHead}>{COPY.proposalHead}</span>
@@ -343,7 +353,7 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
         </div>
       </div>
       {on && scene.reached("linked") && !scene.ghost ? (
-        <Connector from="[data-created]" to='[data-row="318"]' route="elbow" inset={0} gap={8} state="active" />
+        <Connector from="[data-created]" to='[data-row="318"]' route="elbow" inset={0} gap={8} state={linkState(scene, "linked")} />
       ) : null}
     </div>
   );
@@ -407,7 +417,7 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
         ))}
         {on && links && !scene.ghost
           ? (["w0", "w1", "e0", "e1"] as const).map((port) => (
-              <Connector key={port} from={`[data-port="${port}"]`} to={`[data-neighbour="${port}"]`} inset={0} gap={8} state="active" />
+              <Connector key={port} from={`[data-port="${port}"]`} to={`[data-neighbour="${port}"]`} inset={0} gap={8} state={linkState(scene, "links")} />
             ))
           : null}
       </div>
@@ -453,7 +463,7 @@ export function DomusCarousel({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={(scene) => FRAMES[frameOf(scene.id)].title}
-      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} />}
+      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} names={FRAME_NAMES} />}
       steps={DOMUS_CAROUSEL_STEPS}
       timeline={timeline}
     >

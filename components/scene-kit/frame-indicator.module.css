@@ -21,3 +21,30 @@
 .indicator [data-slot="segmented-control-item"][data-state="active"] {
   color: var(--primary-foreground);
 }
+
+/* ABAS NOMEADAS (V4) */
+/* Stage.dc.html: each tab is the name of its moment, a frame already run carries the green check before it; the
+   number is the phone's label (under 768 px the four names do not fit the chrome bar) */
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.done {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
+  color: var(--success);
+}
+.num {
+  display: none;
+}
+@media (max-width: 767px) {
+  .name,
+  .done {
+    display: none;
+  }
+  .num {
+    display: inline;
+  }
+}

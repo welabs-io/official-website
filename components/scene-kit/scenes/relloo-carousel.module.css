@@ -291,9 +291,19 @@
 .received {
   align-self: flex-start;
   box-shadow: var(--edge-ring);
+  /* v4: it replaces its "digitando" and types in, so it rises at once */
+  animation: rise var(--dur-3) var(--ease-out) backwards;
 }
-.later {
-  animation: rise var(--dur-3) var(--ease-out) var(--dur-3) backwards;
+/* DIGITANDO (V4) */
+/* The "digitando" indicator before a phrase (the kit's TypingIndicator): a quiet bubble on the side of who writes,
+   rising in like the bubble that replaces it */
+.typing {
+  align-self: flex-start;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card) var(--r-card) var(--r-card) var(--r-xs);
+  box-shadow: var(--edge-ring);
+  color: var(--muted-foreground);
+  animation: rise var(--dur-3) var(--ease-out) backwards;
 }
 
 /* The summary for whoever takes the conversation: a note with the line around it, the icon on its first line */

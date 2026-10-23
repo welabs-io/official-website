@@ -31,7 +31,9 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
+import { linkState } from "../link-state";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
+import { TypeIn } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import t from "./tuner-carousel.module.css";
@@ -67,6 +69,10 @@ const TAKE_FROM = "fanout";
 const frameOf = (step: string) => Math.max(0, FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)));
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
+// v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome
+const FRAME_NAMES = ["Mensagem", "Envio", "Leitura", "Resposta"] as const;
+// The note of a live card types in once the card has landed (the frame's entry)
+const TYPE_LAND_MS = 400;
 
 // CONTEÚDO DA CENA
 const COPY = {
@@ -164,20 +170,25 @@ function LiveCard({ eyebrow, figure, note, ...rest }: { eyebrow: string; figure:
     <div className={t.live} {...rest}>
       <span className={t.eyebrow}>{eyebrow}</span>
       <b className={t.figure}>{figure}</b>
-      <span className={t.note}>{note}</span>
+      {/* v4: the note types in as the card lands (the frame mounts per loop, so it types once per frame shown) */}
+      <span className={t.note}>
+        <TypeIn text={note} delay={TYPE_LAND_MS} />
+      </span>
     </div>
   );
 }
 
 // QUADRO 1: A MENSAGEM
-function MessageFrame({ at, traced }: FrameProps) {
+function MessageFrame({ scene, at, traced }: FrameProps) {
   return (
     <div className={t.flow} data-band="">
       <Node id="magneto" icon={Workflow} title={COPY.magneto.title} meta={COPY.magneto.meta} />
       <LiveCard data-message="" {...COPY.message} />
       <Node id="tuner" icon={RadioTower} title={COPY.tuner.title} meta={COPY.tuner.meta} waiting={!at("handed")} />
-      {traced ? <Connector from='[data-node="magneto"]' to="[data-message]" inset={-6} state="active" /> : null}
-      {traced && at("handed") ? <Connector from="[data-message]" to='[data-node="tuner"]' inset={-6} state="active" /> : null}
+      {traced ? <Connector from='[data-node="magneto"]' to="[data-message]" inset={-6} state={linkState(scene, "message")} /> : null}
+      {traced && at("handed") ? (
+        <Connector from="[data-message]" to='[data-node="tuner"]' inset={-6} state={linkState(scene, "handed")} />
+      ) : null}
     </div>
   );
 }
@@ -221,7 +232,9 @@ function SendFrame({ scene, at, traced }: FrameProps) {
         <span>{COPY.stat.note}</span>
       </span>
       {traced
-        ? CHANNELS.map((c) => <Connector key={c.key} from="[data-hub]" to={`[data-channel="${c.key}"]`} inset={-6} state="active" />)
+        ? CHANNELS.map((c) => (
+            <Connector key={c.key} from="[data-hub]" to={`[data-channel="${c.key}"]`} inset={-6} state={linkState(scene, "fanout")} />
+          ))
         : null}
     </div>
   );
@@ -276,8 +289,10 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
         <Node id="message" icon={MessageCircle} title={COPY.replyFrom.title} meta={COPY.replyFrom.meta} />
         <LiveCard data-reply="" {...COPY.reply} />
         <Node id="relloo" icon={MessagesSquare} title={COPY.relloo.title} meta={COPY.relloo.meta} waiting={!done} />
-        {traced ? <Connector from='[data-node="message"]' to="[data-reply]" inset={-6} state="active" /> : null}
-        {traced && done ? <Connector from="[data-reply]" to='[data-node="relloo"]' inset={-6} state="active" /> : null}
+        {traced ? <Connector from='[data-node="message"]' to="[data-reply]" inset={-6} state={linkState(scene, "reply")} /> : null}
+        {traced && done ? (
+          <Connector from="[data-reply]" to='[data-node="relloo"]' inset={-6} state={linkState(scene, "done")} />
+        ) : null}
       </div>
       {/* The other channels: each one replays the send */}
       <div className={t.more} data-band="" data-more="">
@@ -372,7 +387,7 @@ function FrameTools({ scene }: { scene: SceneApi }) {
   return (
     <span className={t.indicator}>
       <span className={t.caption}>{FRAMES[frameOf(scene.id)].caption}</span>
-      <FrameIndicator scene={scene} frames={FRAME_STEPS} />
+      <FrameIndicator scene={scene} frames={FRAME_STEPS} names={FRAME_NAMES} />
     </span>
   );
 }
