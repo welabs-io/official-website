@@ -1,7 +1,8 @@
 // CATÁLOGO DE CENAS DO KIT
 // The ids of the kit scenes, server-safe (the lab page validates its route against it). The components live in
 // LabStage.tsx, a client module, keyed by the same ids.
-export const SCENE_IDS = ["relloo-inbox", "domus-modules", "magneto-carousel", "tuner-routing", "knowly-answer", "home-message"] as const;
+// The v3 carousels (brief-v3-carousel, 2026-10-22) replace the single-screen scenes, one per product
+export const SCENE_IDS = ["relloo-inbox", "domus-carousel", "magneto-carousel", "tuner-routing", "knowly-answer", "home-message"] as const;
 export type SceneId = (typeof SCENE_IDS)[number];
 
 export const isSceneId = (id: string): id is SceneId =>

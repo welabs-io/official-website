@@ -32,18 +32,29 @@ type Entry = {
   // the frame on screen as `data-frame`), and no frame shows more than `amber` pieces of amber; the last frame is an
   // approved frame of its own, so it may keep its live piece
   carousel?: { frames: number; amber: number };
+  // Carousels v3 (brief-v3-carousel): the number of frames the loop must reach (the live layer's `data-frame`), the
+  // amber budget per frame when it is tighter than 3, and whether the settled frame keeps its connector (the last
+  // frame of a carousel may end on its links)
+  frames?: number;
+  amberMax?: number;
+  settledTrace?: boolean;
 };
 
 const SCENES: Entry[] = [
   {
-    id: "domus-modules",
+    id: "domus-carousel",
     figure: /^Domus/,
-    trigger: /^Novo módulo/,
-    final: "saved",
-    // Each module card and the new module's head (6 modules on a phone)
-    pairs: 7,
-    cycleMs: 5300,
-    handoff: { 1440: [], 390: [] },
+    // Confirmar (frame 3): the take plays the rest of the loop (5.4 s), so its settled frame holds inside the window
+    trigger: /^Confirmar/,
+    final: "cta",
+    // The settled frame: the record's head and its four neighbours (the other frames are hidden)
+    pairs: 5,
+    cycleMs: 12_900,
+    // The new type to its screen, the confirmed record to its row, the record to its neighbours (side by side only)
+    handoff: { 1440: ["screen", "linked", "links", "cta"], 390: [] },
+    frames: 4,
+    amberMax: 2,
+    settledTrace: true,
   },
   {
     id: "magneto-carousel",
@@ -193,7 +204,8 @@ for (const s of SCENES) {
       // Sampled on every animation frame over one loop from the first step: no frame shows more than 3 pieces of amber
       // (#ffb020 or a blend more than half way to it, as a fill), the settled frame shows none, and the connector is
       // drawn at each hand-off step of this width and never on the settled frame (the measure of e2e/scene-kit.spec.ts
-      // for the Relloo)
+      // for the Relloo); a carousel also reaches each of its frames, within its own amber budget, and may end on its
+      // links
       const handoff = s.handoff;
       if (handoff) {
         test(`at most 3 amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
@@ -214,10 +226,13 @@ for (const s of SCENES) {
             };
             const ambers: Record<string, number> = {};
             const traced: Record<string, boolean> = {};
+            const frames = new Set<string>();
             const t0 = performance.now();
             while (performance.now() - t0 < ms) {
               await new Promise((r) => requestAnimationFrame(r));
               const step = stage.getAttribute("data-step")!;
+              const frame = live.querySelector("[data-frame]")?.getAttribute("data-frame");
+              if (frame) frames.add(frame);
               const n = [...live.querySelectorAll("*")].filter((el) => {
                 const cs = getComputedStyle(el);
                 return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
@@ -225,12 +240,14 @@ for (const s of SCENES) {
               ambers[step] = Math.max(ambers[step] ?? 0, n);
               traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
             }
-            return { ambers, traced };
+            return { ambers, traced, frames: [...frames] };
           }, s.cycleMs + 500);
-          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
+          for (const [step, n] of Object.entries(seen.ambers))
+            expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(s.amberMax ?? 3);
           expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
           for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
-          expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+          if (!s.settledTrace) expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+          if (s.frames) expect(seen.frames.sort(), "every frame of the carousel is reached").toHaveLength(s.frames);
         });
       }
 

@@ -232,19 +232,29 @@ type GeoScene = {
 };
 const V3: GeoScene[] = [
   {
-    id: "domus-modules",
+    // The four frames are laid out at once (one grid cell, the hidden ones out of sight), so every frame is measured
+    id: "domus-carousel",
     figure: /^Domus/,
-    header: { actions: true },
-    // The fields of the new module (3 at 1440, 3 on a phone in 2 + 1)
-    fields: [3, 3],
-    // "Novo módulo" (header action), the status, and the lab's two toolbar buttons
-    pairs: [4, 4],
+    // No text field: the new type lists its fields, it does not fill them
+    fields: [0, 0],
+    // The lab's two buttons, the new type's row, "Pronta para usar", the context chip, Confirmar, Desfazer, the two
+    // status dots and the call to action
+    pairs: [10, 10],
     columns: {
-      // The name of each floor, its first module and the new module's card start on the ring's inner edge
-      "floor heads and first cards": { sel: ["[data-floor] > :first-child", "[data-floor] li:first-child", "[data-born]"] },
-      // Inside the new module: its mark and its first field
-      "new module mark and fields": { sel: ["[data-born-head] > :first-child", "[data-born-fields] > :first-child"] },
-      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
+      // Frame 1: the count and the first tile of the grid start on the frame's inset; every tile of a column shares it
+      "areas head and first column": { sel: ["[data-areas-head]", "[data-area]:nth-child(4n + 1)"], wide: 1025 },
+      // Frame 2: the new type's head and its field rows; the screen's head, column heads and rows
+      "type head and fields": { sel: ["[data-type] > *"] },
+      "screen head and columns": { sel: ["[data-screen] > *"] },
+      // Frame 3: each column of the list, head and rows; every piece of the assistant
+      "list first column": { sel: ['[data-list] [data-cell="0"]'] },
+      "list second column": { sel: ['[data-list] [data-cell="1"]'] },
+      "list third column": { sel: ['[data-list] [data-cell="2"]'] },
+      "assistant pieces": { sel: ["[data-assistant] > *"] },
+      // Frame 4: the record's head and lines; the neighbours of each side; the question and its band
+      "record head and lines": { sel: ["[data-record] > :not([data-port])"] },
+      "neighbours west": { sel: ['[data-side="w"] > *'] },
+      "neighbours east": { sel: ['[data-side="e"] > *'] },
     },
   },
   {

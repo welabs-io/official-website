@@ -100,6 +100,9 @@
      22 on a phone, in the strong weight */
   --t-figure: clamp(22px, 1.9444vw, 28px);
   --weight-strong: 700;
+  /* The big number of a drawn screen (carousels v3, operator 2026-10-22: large and bold, 22 to 28 px), in bold */
+  --t-stat: 28px;
+  --weight-stat: 700;
   --text-hero: var(--t-display);
   --text-display: var(--t-display);
   --text-title: var(--t-h2);
@@ -459,6 +462,12 @@
 }
 [data-slot="input-group"] > [data-slot="input-group-addon"] > [data-field-piece] {
   height: var(--control-height-sm);
+}
+/* A link drawn as the lib's button (ActionButton with `href`, the carousels' call to action): the page's unlayered
+   `a { color: inherit }` (app/globals.css) would paint its label with the parent's ink, black on the black primary;
+   the lib's own colour of the button comes back */
+a[data-slot="button"] {
+  color: revert-layer;
 }
 
 /* CAMADA DO SITE SOBRE A MARCA WELABS */

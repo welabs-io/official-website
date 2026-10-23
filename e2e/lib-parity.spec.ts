@@ -50,15 +50,10 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
-  // A story mounts its controls after the network settles (measured 2026-10-22: the with-icon buttons 1.7 s after
-  // networkidle), so on a Storybook page wait for the story to render a lib piece before reading
-  await page
-    .waitForFunction(
-      () => !document.querySelector("#storybook-root") || !!document.querySelector("#storybook-root [data-slot]"),
-      null,
-      { timeout: 15_000 },
-    )
-    .catch(() => {});
+  // A story may render after `networkidle` (measured 2026-10-22: the InputGroup story drew its field ~4 s later, on a
+  // host whose network flapped), so the reference waits for the story's first lib control before it is read
+  if (page.url().startsWith("https://react-lib.welabs.space/"))
+    await page.locator("#storybook-root [data-slot]").first().waitFor({ timeout: 20_000 });
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
@@ -171,7 +166,6 @@ test.describe("lab controls match the published lib (welabs brand)", () => {
 // can never be shrunk below the lib's size (a 30 px field slipped through a one-sample check). Colours are compared to
 // the story of the same variant and appearance; a pair with no story fails, so a new look needs a story or a reason here.
 const SCENE_CONTROLS: { id: string; steps: string[] }[] = [
-  { id: "domus-modules", steps: ["start", "date"] },
 ];
 
 // DESVIOS PERMITIDOS DOS CONTROLES DAS CENAS
@@ -221,8 +215,8 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // story (its height may only grow), a field with components-inputgroup--default, a segmented control with
 // components-segmentedcontrol--default. Only ALLOWED differs.
 // The carousels (brief-v3-carousel) join them: their frame indicator is a segmented control, their call to action
-// the black primary
-const V3_LABS = ["tuner-routing", "knowly-answer", "home-message", "magneto-carousel"] as const;
+// the black primary; the Domus lays its four frames out at once, so its settled pass reads every control of the loop
+const V3_LABS = ["tuner-routing", "knowly-answer", "home-message", "magneto-carousel", "domus-carousel"] as const;
 
 // Every control of the live layer of the scene, with its kind and its computed style
 async function controlsOf(page: Page, id: string) {
@@ -285,7 +279,8 @@ test.describe("every field and button of domus and magneto match the published l
   test.use({ viewport: { width: 1440, height: 900 } });
   test.setTimeout(120_000);
 
-  test("fields and buttons of domus-modules", async ({ page, context }) => {
+  // The Domus and the Magneto left this list for V3_LABS with their carousels
+  test("fields and buttons of the single-screen scenes", async ({ page, context }) => {
     // REFERÊNCIA: AS HISTÓRIAS DA LIB
     const sb = await context.newPage();
     await sb.setViewportSize({ width: 1440, height: 900 });

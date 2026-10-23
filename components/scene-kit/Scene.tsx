@@ -97,10 +97,11 @@ type SceneProps = {
   id: string;
   // Accessible name of the window
   label: string;
-  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end
+  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end. A
+  // carousel scene changes screen per frame, so the title and the tools may also be drawn from the live scene
   product: string;
-  title: string;
-  tools?: ReactNode;
+  title: string | ((scene: SceneApi) => ReactNode);
+  tools?: ReactNode | ((scene: SceneApi) => ReactNode);
   // Either the steps, or a clock made with useSceneTimeline
   steps?: readonly SceneStep[];
   timeline?: SceneTimeline;
@@ -151,6 +152,10 @@ export function Scene({
     [timeline, reduced],
   );
 
+  // A title or tools given as a function follow the live step (never the hidden copy: the chrome is drawn once)
+  const chromeTitle = typeof title === "function" ? title(api) : title;
+  const chromeTools = typeof tools === "function" ? tools(api) : tools;
+
   return (
     <Card
       flush
@@ -163,8 +168,8 @@ export function Scene({
         <span className={k.product}>{product}</span>
         {/* lucide's own stroke, as every icon of the Domus */}
         <ChevronRight className={k.chevron} aria-hidden="true" />
-        <span className={k.title}>{title}</span>
-        {tools ? <span className={k.tools}>{tools}</span> : null}
+        <span className={k.title}>{chromeTitle}</span>
+        {chromeTools ? <span className={k.tools}>{chromeTools}</span> : null}
       </div>
       <div
         ref={ref}
