@@ -127,12 +127,8 @@
   color: var(--success);
 }
 .moduleName {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.moduleTag {
-  margin-left: auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .uses {
@@ -343,9 +339,7 @@
   font-weight: var(--weight-title);
 }
 .channelLine {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .hubThread {
   flex: 0 1 40%;
@@ -410,15 +404,11 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .module[data-wide-only],
-  .moduleTag,
   .useLine,
   .legend,
   .barSub,
   .stage[data-wide-only] {
     display: none;
-  }
-  .module[data-kind="new"] .moduleTag {
-    display: inline-flex;
   }
   .stages {
     gap: var(--sp-4);

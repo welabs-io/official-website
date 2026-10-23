@@ -269,6 +269,11 @@
   .stage {
     flex-basis: 100%;
   }
+  /* A phone: the well is as tall as the narrow frame needs (the square of the desktop would cut the Domus frame) */
+  .well {
+    aspect-ratio: auto;
+    height: 440px;
+  }
   .frame {
     inset: var(--sp-3);
   }

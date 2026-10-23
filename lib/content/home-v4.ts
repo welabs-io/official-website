@@ -40,12 +40,12 @@ export const DOMUS_FRAME = {
     { name: "Financeiro", icon: "coins", kind: "standard" },
     { name: "Contratos", icon: "pen", kind: "standard" },
     { name: "Pessoas", icon: "users", kind: "standard" },
-    { name: "Fiscal", icon: "file", tag: "NFS-e", kind: "custom" },
-    { name: "Bancos", icon: "bank", tag: "PIX", kind: "custom" },
+    { name: "Fiscal", icon: "file", kind: "custom" },
+    { name: "Bancos", icon: "bank", kind: "custom" },
     { name: "Chamados", icon: "chat", kind: "custom" },
     { name: "Aprovações", icon: "check", kind: "custom" },
     { name: "Jurídico", icon: "scale", kind: "custom" },
-    { name: "Vistoria", icon: "clipboard", tag: "Novo", kind: "new" },
+    { name: "Vistoria", icon: "clipboard", kind: "new" },
   ] as const satisfies readonly FrameModule[],
   // What each of the other four does with the new module, and the line under them
   uses: {

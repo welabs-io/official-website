@@ -289,10 +289,10 @@
     margin-top: var(--sp-6);
   }
   .caption {
-    min-height: 260px;
+    min-height: 288px;
   }
   .aside {
-    min-height: 180px;
+    min-height: 216px;
   }
 }
 

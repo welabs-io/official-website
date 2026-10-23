@@ -121,16 +121,9 @@ function DomusFrame() {
               <span className={f.moduleIcon} aria-hidden="true">
                 {MODULE_ICON[m.icon]}
               </span>
+              {/* The tags of the artboard (NFS-e, PIX, Novo) cut the name in a three-column frame (e2e/scene-fit.spec.ts):
+                  the module made to measure is outlined and the newest one green, with no tag */}
               <span className={f.moduleName}>{m.name}</span>
-              {"tag" in m ? (
-                <Badge
-                  variant={m.kind === "new" ? "success" : "secondary"}
-                  appearance={m.kind === "new" ? "soft" : "solid"}
-                  className={f.moduleTag}
-                >
-                  {m.tag}
-                </Badge>
-              ) : null}
             </li>
           ))}
         </ul>
