@@ -48,12 +48,14 @@ const SCENES: Entry[] = [
     id: "relloo-carousel",
     figure: /^Relloo/,
     // The frame indicator of the chrome (the kit's FrameIndicator, the lib's SegmentedControl): its options are radios
-    trigger: /^Momento 2$/,
+    // v4: a named stage tab, read as "Momento 2: Passa a vez"
+    trigger: /^Momento 2\b/,
     triggerRole: "radio",
     final: "f4-ask",
     // The Domus card under the funnel (its mark on its two lines)
     pairs: 1,
-    cycleMs: 15200,
+    // v4: the conversation types in, with its "digitando" steps
+    cycleMs: 22_008,
     handoff: {
       1440: ["f2-handoff", "f2-summary", "f3-born", "f4-domus"],
       // On a phone the panes of frame 3 stack and its trace stays off (it would cross the conversation)
@@ -72,7 +74,8 @@ const SCENES: Entry[] = [
     final: "cta",
     // The settled frame: the record's head and its four neighbours (the other frames are hidden)
     pairs: 5,
-    cycleMs: 12_900,
+    // v4: the request to the assistant types in
+    cycleMs: 14_398,
     // The new type to its screen, the confirmed record to its row, the record to its neighbours (side by side only)
     handoff: { 1440: ["screen", "linked", "links", "cta"], 390: [] },
     amberMax: 2,
@@ -86,7 +89,7 @@ const SCENES: Entry[] = [
     figure: /^Magneto/,
     // The frame indicator (a click on a frame plays from it). Frame 3: from there the sequence and its last hold end
     // inside the kit's 8 s of human idle (from frame 2 the idle cuts the hold)
-    trigger: /^Momento 3$/,
+    trigger: /^Momento 3\b/,
     triggerRole: "radio",
     final: "ask",
     // The last frame: the approved step, the live step and its two lines, and the two products it reached

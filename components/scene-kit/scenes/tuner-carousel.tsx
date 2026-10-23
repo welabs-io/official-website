@@ -31,7 +31,9 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
+import { linkState } from "../link-state";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
+import { TypeIn } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import t from "./tuner-carousel.module.css";
@@ -64,9 +66,17 @@ const FRAMES = [
 // the send from there
 const TAKE_FROM = "fanout";
 
-const frameOf = (step: string) => Math.max(0, FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)));
+const frameOf = (step: string) =>
+  Math.max(
+    0,
+    FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)),
+  );
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
+// v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome
+const FRAME_NAMES = ["Mensagem", "Envio", "Leitura", "Resposta"] as const;
+// The note of a live card types in once the card has landed (the frame's entry)
+const TYPE_LAND_MS = 400;
 
 // CONTEÚDO DA CENA
 const COPY = {
@@ -76,7 +86,11 @@ const COPY = {
     "Tuner: uma mensagem sai por todos os canais de uma vez, a leitura volta por canal e a resposta cai na conversa certa",
   magneto: { title: "Magneto", meta: "pede o envio" },
   tuner: { title: "Tuner", meta: "central de canais" },
-  message: { eyebrow: "Uma mensagem · 17:03", figure: "Proposta 905", note: "para o Contato 4821, onde ele estiver" },
+  message: {
+    eyebrow: "Uma mensagem · 17:03",
+    figure: "Proposta 905",
+    note: "para o Contato 4821, onde ele estiver",
+  },
   inFlight: "1 envio",
   sending: "Enviando",
   sent: "Enviado",
@@ -85,7 +99,11 @@ const COPY = {
   read: "Lido",
   stat: { figure: "3", note: "canais no mesmo envio" },
   replyFrom: { title: "Mensagem", meta: "dia 4 · 11:20" },
-  reply: { eyebrow: "Resposta recebida", figure: "Aceito", note: "volta para a conversa certa, venha de onde vier" },
+  reply: {
+    eyebrow: "Resposta recebida",
+    figure: "Aceito",
+    note: "volta para a conversa certa, venha de onde vier",
+  },
   relloo: { title: "Relloo", meta: "Conversa 2210" },
   more: "E mais canais",
   ask: "Quais canais a sua empresa usaria?",
@@ -100,7 +118,10 @@ const CHANNELS: readonly { key: string; name: string; icon: LucideIcon }[] = [
 
 // What each channel reports in frame 3, after sent and delivered: the e-mail is read now (the live piece), the message
 // was read (done, green), the integration stays delivered
-const READ: Record<string, { label: string; tone: "live" | "done" } | undefined> = {
+const READ: Record<
+  string,
+  { label: string; tone: "live" | "done" } | undefined
+> = {
   email: { label: COPY.readNow, tone: "live" },
   message: { label: COPY.read, tone: "done" },
 };
@@ -128,7 +149,10 @@ const ALL = () => true;
 // well until the message reaches it
 function InkMark({ icon: Icon, large }: { icon: LucideIcon; large?: boolean }) {
   return (
-    <span className={`${p.mark} ${large ? p.markLg : p.markMd} ${t.ink}`} aria-hidden="true">
+    <span
+      className={`${p.mark} ${large ? p.markLg : p.markMd} ${t.ink}`}
+      aria-hidden="true"
+    >
       <Icon />
     </span>
   );
@@ -148,7 +172,12 @@ function Node({
   waiting?: boolean;
 }) {
   return (
-    <div className={t.node} data-node={id} data-state={waiting ? "waiting" : "idle"} data-axis="node">
+    <div
+      className={t.node}
+      data-node={id}
+      data-state={waiting ? "waiting" : "idle"}
+      data-axis="node"
+    >
       <InkMark icon={icon} />
       <span className={p.stack}>
         <b>{title}</b>
@@ -159,25 +188,61 @@ function Node({
 }
 
 // The live card of a frame (the message, the answer): amber-50 with the amber ring, its figure big and bold
-function LiveCard({ eyebrow, figure, note, ...rest }: { eyebrow: string; figure: string; note: string } & Record<`data-${string}`, string>) {
+function LiveCard({
+  eyebrow,
+  figure,
+  note,
+  ...rest
+}: { eyebrow: string; figure: string; note: string } & Record<
+  `data-${string}`,
+  string
+>) {
   return (
     <div className={t.live} {...rest}>
       <span className={t.eyebrow}>{eyebrow}</span>
       <b className={t.figure}>{figure}</b>
-      <span className={t.note}>{note}</span>
+      {/* v4: the note types in as the card lands (the frame mounts per loop, so it types once per frame shown) */}
+      <span className={t.note}>
+        <TypeIn text={note} delay={TYPE_LAND_MS} />
+      </span>
     </div>
   );
 }
 
 // QUADRO 1: A MENSAGEM
-function MessageFrame({ at, traced }: FrameProps) {
+function MessageFrame({ scene, at, traced }: FrameProps) {
   return (
     <div className={t.flow} data-band="">
-      <Node id="magneto" icon={Workflow} title={COPY.magneto.title} meta={COPY.magneto.meta} />
+      <Node
+        id="magneto"
+        icon={Workflow}
+        title={COPY.magneto.title}
+        meta={COPY.magneto.meta}
+      />
       <LiveCard data-message="" {...COPY.message} />
-      <Node id="tuner" icon={RadioTower} title={COPY.tuner.title} meta={COPY.tuner.meta} waiting={!at("handed")} />
-      {traced ? <Connector from='[data-node="magneto"]' to="[data-message]" inset={-6} /> : null}
-      {traced && at("handed") ? <Connector from="[data-message]" to='[data-node="tuner"]' inset={-6} /> : null}
+      <Node
+        id="tuner"
+        icon={RadioTower}
+        title={COPY.tuner.title}
+        meta={COPY.tuner.meta}
+        waiting={!at("handed")}
+      />
+      {traced ? (
+        <Connector
+          from='[data-node="magneto"]'
+          to="[data-message]"
+          inset={-6}
+          state={linkState(scene, "message")}
+        />
+      ) : null}
+      {traced && at("handed") ? (
+        <Connector
+          from="[data-message]"
+          to='[data-node="tuner"]'
+          inset={-6}
+          state={linkState(scene, "handed")}
+        />
+      ) : null}
     </div>
   );
 }
@@ -190,7 +255,12 @@ function SendFrame({ scene, at, traced }: FrameProps) {
       <div className={t.hub} data-hub="">
         <InkMark icon={RadioTower} large />
         <b>{COPY.tuner.title}</b>
-        <Badge variant="neutral" appearance="soft" className={t.flight} data-tone="live">
+        <Badge
+          variant="neutral"
+          appearance="soft"
+          className={t.flight}
+          data-tone="live"
+        >
           {COPY.inFlight}
         </Badge>
       </div>
@@ -208,7 +278,13 @@ function SendFrame({ scene, at, traced }: FrameProps) {
               onClick={() => scene.take(TAKE_FROM)}
             >
               <span className={t.channelName}>{c.name}</span>
-              <Badge key={sent ? "sent" : "sending"} variant="neutral" appearance="soft" className={t.state} data-sent={sent}>
+              <Badge
+                key={sent ? "sent" : "sending"}
+                variant="neutral"
+                appearance="soft"
+                className={t.state}
+                data-sent={sent}
+              >
                 {sent ? <Check aria-hidden="true" /> : null}
                 {sent ? COPY.sent : COPY.sending}
               </Badge>
@@ -221,7 +297,15 @@ function SendFrame({ scene, at, traced }: FrameProps) {
         <span>{COPY.stat.note}</span>
       </span>
       {traced
-        ? CHANNELS.map((c) => <Connector key={c.key} from="[data-hub]" to={`[data-channel="${c.key}"]`} inset={-6} />)
+        ? CHANNELS.map((c) => (
+            <Connector
+              key={c.key}
+              from="[data-hub]"
+              to={`[data-channel="${c.key}"]`}
+              inset={-6}
+              state={linkState(scene, "fanout")}
+            />
+          ))
         : null}
     </div>
   );
@@ -252,8 +336,17 @@ function ReadFrame({ at }: FrameProps) {
               </Badge>
               {last ? (
                 <>
-                  <span className={`${t.line} ${t.lineIn}`} data-tone={last.tone} aria-hidden="true" />
-                  <Badge variant="neutral" appearance="soft" className={`${t.stop} ${t.stopIn}`} data-tone={last.tone}>
+                  <span
+                    className={`${t.line} ${t.lineIn}`}
+                    data-tone={last.tone}
+                    aria-hidden="true"
+                  />
+                  <Badge
+                    variant="neutral"
+                    appearance="soft"
+                    className={`${t.stop} ${t.stopIn}`}
+                    data-tone={last.tone}
+                  >
                     <CheckCheck aria-hidden="true" />
                     {last.label}
                   </Badge>
@@ -273,11 +366,36 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
   return (
     <>
       <div className={t.reply} data-band="">
-        <Node id="message" icon={MessageCircle} title={COPY.replyFrom.title} meta={COPY.replyFrom.meta} />
+        <Node
+          id="message"
+          icon={MessageCircle}
+          title={COPY.replyFrom.title}
+          meta={COPY.replyFrom.meta}
+        />
         <LiveCard data-reply="" {...COPY.reply} />
-        <Node id="relloo" icon={MessagesSquare} title={COPY.relloo.title} meta={COPY.relloo.meta} waiting={!done} />
-        {traced ? <Connector from='[data-node="message"]' to="[data-reply]" inset={-6} /> : null}
-        {traced && done ? <Connector from="[data-reply]" to='[data-node="relloo"]' inset={-6} /> : null}
+        <Node
+          id="relloo"
+          icon={MessagesSquare}
+          title={COPY.relloo.title}
+          meta={COPY.relloo.meta}
+          waiting={!done}
+        />
+        {traced ? (
+          <Connector
+            from='[data-node="message"]'
+            to="[data-reply]"
+            inset={-6}
+            state={linkState(scene, "reply")}
+          />
+        ) : null}
+        {traced && done ? (
+          <Connector
+            from="[data-reply]"
+            to='[data-node="relloo"]'
+            inset={-6}
+            state={linkState(scene, "done")}
+          />
+        ) : null}
       </div>
       {/* The other channels: each one replays the send */}
       <div className={t.more} data-band="" data-more="">
@@ -296,7 +414,12 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
       </div>
       <div className={t.ask} data-band="" data-ask="">
         <b>{COPY.ask}</b>
-        <ActionButton emphasis="primary" size="md" icon={<CalendarDays />} href={CONTACT_HREF}>
+        <ActionButton
+          emphasis="primary"
+          size="md"
+          icon={<CalendarDays />}
+          href={CONTACT_HREF}
+        >
           {CTA_LABEL}
         </ActionButton>
       </div>
@@ -336,7 +459,14 @@ function TunerCarouselView({ scene }: { scene: SceneApi }) {
     return (
       <div className={t.root}>
         {FRAMES.map((f, i) => (
-          <Frame key={f.caption + i} index={i} phase="still" scene={scene} at={ALL} traced={false} />
+          <Frame
+            key={f.caption + i}
+            index={i}
+            phase="still"
+            scene={scene}
+            at={ALL}
+            traced={false}
+          />
         ))}
       </div>
     );
@@ -352,7 +482,14 @@ function TunerCarouselView({ scene }: { scene: SceneApi }) {
   return (
     <div className={t.root}>
       {leaving ? (
-        <Frame key={`${prev}:${prevCycle}`} index={prev} phase="leave" scene={scene} at={ALL} traced />
+        <Frame
+          key={`${prev}:${prevCycle}`}
+          index={prev}
+          phase="leave"
+          scene={scene}
+          at={ALL}
+          traced
+        />
       ) : null}
       <Frame
         key={`${index}:${scene.cycle}`}
@@ -372,7 +509,7 @@ function FrameTools({ scene }: { scene: SceneApi }) {
   return (
     <span className={t.indicator}>
       <span className={t.caption}>{FRAMES[frameOf(scene.id)].caption}</span>
-      <FrameIndicator scene={scene} frames={FRAME_STEPS} />
+      <FrameIndicator scene={scene} frames={FRAME_STEPS} names={FRAME_NAMES} />
     </span>
   );
 }

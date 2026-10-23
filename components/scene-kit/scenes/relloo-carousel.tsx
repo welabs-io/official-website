@@ -32,27 +32,12 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
+import { linkState } from "../link-state";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
+import { TYPING_MS, TypeIn, TypingIndicator, typeDuration } from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import r from "./relloo-carousel.module.css";
-
-// ROTEIRO DA CENA
-// Four frames, each a group of steps; every step holds 0.9 to 1.8 s (the kit's contract: something moves at least every
-// 2 s) and the last step of each frame holds 1.8 s to be read. One loop: 15.2 s.
-export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
-  { id: "f1-history", hold: 1100 },
-  { id: "f1-message", hold: 1800 },
-  { id: "f2-reply", hold: 1200 },
-  { id: "f2-handoff", hold: 1400 },
-  { id: "f2-summary", hold: 1800 },
-  { id: "f3-record", hold: 1100 },
-  { id: "f3-born", hold: 1800 },
-  { id: "f4-funnel", hold: 900 },
-  { id: "f4-move", hold: 1100 },
-  { id: "f4-domus", hold: 1200 },
-  { id: "f4-ask", hold: 1800 },
-];
 
 // CONTEÚDO DA CENA
 const COPY = {
@@ -99,6 +84,44 @@ const COPY = {
   question: "Quem responde primeiro na sua empresa?",
 };
 
+// ROTEIRO DA CENA
+// Four frames, each a group of steps; every step holds 0.9 to 1.8 s (the kit's contract: something moves at least every
+// 2 s) and the last step of each frame holds 1.8 s to be read.
+// v4 (Stage.dc.html, brief-v4): the conversation types in. Each phrase is preceded by the "digitando" indicator (1 s,
+// its own step) and its step holds the typing (18 ms per character) plus the pause after it; the agent's reply types as
+// frame 2 comes in. The pause after a phrase is 1.4 s (the brief's ~2 s between phrases counts the "digitando" that
+// follows; a still longer than 2 s would read as a frozen scene). One loop: 22.0 s.
+// The frame slides in (FRAME_MOTION, ~0.48 s) before its first phrase types
+const TYPE_ENTER_MS = Math.round(SCENE_CURVE.dur2 * 1.7 * 1000);
+const AFTER_PHRASE_MS = 1400;
+export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
+  { id: "f1-history", hold: 1100 },
+  { id: "f1-typing", hold: TYPING_MS },
+  { id: "f1-message", hold: typeDuration(COPY.asked) + AFTER_PHRASE_MS },
+  {
+    id: "f2-reply",
+    hold: TYPE_ENTER_MS + typeDuration(COPY.agentSaid) + AFTER_PHRASE_MS,
+  },
+  { id: "f2-typing", hold: TYPING_MS },
+  { id: "f2-answer", hold: typeDuration(COPY.answer) + AFTER_PHRASE_MS },
+  { id: "f2-handoff", hold: 1400 },
+  { id: "f2-summary", hold: 1800 },
+  { id: "f3-record", hold: 1100 },
+  { id: "f3-born", hold: 1800 },
+  { id: "f4-funnel", hold: 900 },
+  { id: "f4-move", hold: 1100 },
+  { id: "f4-domus", hold: 1200 },
+  { id: "f4-ask", hold: 1800 },
+];
+
+// The name of each moment, on the stage tabs of the chrome (Stage.dc.html)
+const FRAME_NAMES = [
+  "Chega",
+  "Passa a vez",
+  "Vira oportunidade",
+  "Anda no funil",
+] as const;
+
 // The channels the contact used before, in the history of frame 1 (the Domus glyphs: Mail, Phone)
 const PAST = [
   { date: "12/08", icon: Mail, text: "E-mail · orçamento de limpeza de dutos" },
@@ -109,13 +132,13 @@ const PAST = [
 const FRAMES = [
   {
     n: 1,
-    steps: ["f1-history", "f1-message"],
+    steps: ["f1-history", "f1-typing", "f1-message"],
     screen: "Caixa de entrada",
     area: "Atendimento",
   },
   {
     n: 2,
-    steps: ["f2-reply", "f2-handoff", "f2-summary"],
+    steps: ["f2-reply", "f2-typing", "f2-answer", "f2-handoff", "f2-summary"],
     screen: "Caixa de entrada",
     area: "Atendimento",
   },
@@ -175,7 +198,10 @@ const FRAME_STEPS = FRAMES.map((f) => f.steps);
 
 // QUADRO 1: A MENSAGEM CHEGA
 // The conversation already holds the channels used before; the new message lands as the live piece
+// v4: the "digitando" indicator holds the place of the message for 1 s, then the message types in, its whole text
+// reserved from the first character
 function FrameArrives({ scene }: { scene: SceneApi }) {
+  const typing = scene.reached("f1-typing");
   const arrived = scene.reached("f1-message");
   return (
     <div className={`${r.body} ${r.centred}`} data-frame="1">
@@ -218,7 +244,7 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
           <p className={r.day} data-col="lead">
             {COPY.today}
           </p>
-          {arrived ? (
+          {typing ? (
             <div className={r.arrival} data-col="lead">
               <Badge
                 variant="neutral"
@@ -229,10 +255,14 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
                 <MessageSquare data-icon="inline-start" aria-hidden="true" />
                 {COPY.message}
               </Badge>
-              <p className={`${r.said} ${r.live}`} data-said="asked">
-                <span>{COPY.asked}</span>
-                <time>{COPY.askedAt}</time>
-              </p>
+              {arrived ? (
+                <p className={`${r.said} ${r.live}`} data-said="asked">
+                  <TypeIn text={COPY.asked} />
+                  <time>{COPY.askedAt}</time>
+                </p>
+              ) : (
+                <TypingIndicator className={r.typing} />
+              )}
             </div>
           ) : null}
         </div>
@@ -261,7 +291,11 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
 // QUADRO 2: A CONVERSA PASSA A VEZ
 // The agent answers, the contact asks for a proposal, the conversation changes hands (the trace runs from the agent to
 // the team, the team becomes the live piece) and the summary is ready for whoever takes it
+// v4: the agent's reply types in as the frame comes in, the contact's answer after its "digitando"; the trace is in ink
+// only while the hand-off happens, then rests grey
 function FrameHandoff({ scene }: { scene: SceneApi }) {
+  const typing = scene.reached("f2-typing");
+  const answered = scene.reached("f2-answer");
   const handed = scene.reached("f2-handoff");
   const summed = scene.reached("f2-summary");
   return (
@@ -303,6 +337,7 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
                 to='[data-holder="now"]'
                 inset={0}
                 gap={8}
+                state={linkState(scene, "f2-handoff")}
               />
               <Connector
                 from='[data-holder="before"]'
@@ -310,6 +345,7 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
                 route="drop"
                 inset={0}
                 gap={8}
+                state={linkState(scene, "f2-handoff")}
               />
             </>
           ) : null}
@@ -320,12 +356,16 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
             <span className={r.saidBy}>
               {COPY.agent} · {COPY.agentAt}
             </span>
-            <span>{COPY.agentSaid}</span>
+            <TypeIn text={COPY.agentSaid} delay={TYPE_ENTER_MS} />
           </p>
-          <p className={`${r.said} ${r.received} ${r.later}`} data-col="lead">
-            <span>{COPY.answer}</span>
-            <time>{COPY.answerAt}</time>
-          </p>
+          {answered ? (
+            <p className={`${r.said} ${r.received}`} data-col="lead">
+              <TypeIn text={COPY.answer} />
+              <time>{COPY.answerAt}</time>
+            </p>
+          ) : typing ? (
+            <TypingIndicator className={r.typing} />
+          ) : null}
           {summed ? (
             <p className={`${r.note} ${r.landing}`} data-col="lead">
               <StickyNote aria-hidden="true" />
@@ -437,6 +477,7 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
           lane="[data-lane]"
           inset={0}
           gap={6}
+          state={linkState(scene, "f3-born")}
         />
       ) : null}
     </div>
@@ -520,6 +561,7 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
           route="drop"
           inset={-2}
           gap={8}
+          state={linkState(scene, "f4-domus")}
         />
       ) : null}
 
@@ -560,7 +602,13 @@ function RellooCarouselView({ scene }: { scene: SceneApi }) {
   return (
     <div className={r.frames}>
       <AnimatePresence initial={false}>
-        <motion.div key={frame.n} className={r.frame} {...FRAME_MOTION}>
+        {/* v4: keyed by the mode too, so a visitor's take of the frame on screen plays it in again and its phrases
+            type again (the give-back comes with the reset to frame 1, a new frame anyway) */}
+        <motion.div
+          key={`${frame.n}:${scene.mode}`}
+          className={r.frame}
+          {...FRAME_MOTION}
+        >
           <Body scene={scene} />
         </motion.div>
       </AnimatePresence>
@@ -576,7 +624,13 @@ export function RellooCarousel({ timeline }: { timeline?: SceneTimeline }) {
       className={r.window}
       product={(scene) => <ChromeScreen text={frameOf(scene).screen} />}
       title={(scene) => <ChromeArea text={frameOf(scene).area} />}
-      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} />}
+      tools={(scene) => (
+        <FrameIndicator
+          scene={scene}
+          frames={FRAME_STEPS}
+          names={FRAME_NAMES}
+        />
+      )}
       steps={RELLOO_CAROUSEL_STEPS}
       timeline={timeline}
     >
