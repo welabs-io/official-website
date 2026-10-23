@@ -1,8 +1,8 @@
 // PROVA DO CARROSSEL DO RELLOO NO LAB
 // What the Relloo carousel adds to the kit's contract (e2e/scene-kit-scenes.spec.ts holds the loop, the take, reduced
 // motion, the frames reached, the amber budget, the cut text and the height): the frames cross with a fade (never a
-// cut), the chrome names the frame's screen and marks its number, and the connector is the v3 brief's (solid ink,
-// 2 to 3.5 px, with an arrowhead, routed outside the pieces it links).
+// cut), the chrome names the frame's screen and marks its number, and the connector is the v4 brief's active trace
+// (curved, solid ink at 2 px, with an arrowhead, routed outside the pieces it links).
 import { expect, test, type Page } from "@playwright/test";
 
 const LAB = "/lab/scenes/relloo-carousel";
@@ -53,6 +53,9 @@ async function traces(page: Page) {
         width: parseFloat(cs.strokeWidth),
         colour: cs.stroke,
         dashed: cs.strokeDasharray !== "none" && path.getAttribute("pathLength") === null,
+        // v4: only cubics after the move, never a straight segment
+        curved: /^M [\d.-]+ [\d.-]+ C /.test(path.getAttribute("d") ?? "") && !/[LHVlhv]/.test(path.getAttribute("d") ?? ""),
+        opacity: Number(cs.opacity) * Number(cs.strokeOpacity),
         head: !!path.parentElement!.querySelectorAll("path").item(1),
         crossed: [...crossed],
       };
@@ -66,7 +69,7 @@ test.describe("relloo carousel", () => {
   });
 
   for (const width of [1440, 390]) {
-    test(`the connector is solid ink, 2 to 3.5 px, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
+    test(`the connector is curved, solid ink at 2 px, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
       test.setTimeout(60_000);
       await page.setViewportSize({ width, height: 900 });
       await page.goto(LAB);
@@ -78,8 +81,9 @@ test.describe("relloo carousel", () => {
         const all = await traces(page);
         expect(all.length, `frame ${n}: a trace`).toBeGreaterThan(0);
         for (const t of all) {
-          expect(t.width, `frame ${n}: stroke`).toBeGreaterThanOrEqual(2);
-          expect(t.width, `frame ${n}: stroke`).toBeLessThanOrEqual(3.5);
+          expect(t.width, `frame ${n}: stroke`).toBe(2);
+          expect(t.curved, `frame ${n}: curved`).toBe(true);
+          expect(t.opacity, `frame ${n}: opacity`).toBe(1);
           expect(t.colour, `frame ${n}: ink`).toBe("rgb(18, 18, 18)");
           expect(t.dashed, `frame ${n}: solid`).toBe(false);
           expect(t.head, `frame ${n}: arrowhead`).toBe(true);
