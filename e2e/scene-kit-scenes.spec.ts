@@ -28,6 +28,10 @@ type Entry = {
   // end is green or neutral, never amber), and the connector (the Relloo's trace with its riding dot) drawn at each of
   // these steps, per width, and never on the settled frame
   handoff?: { 1440: string[]; 390: string[] };
+  // Carousel scenes (brief-v3-carousel): over one loop the frame indicator walks every frame (the scene's root carries
+  // the frame on screen as `data-frame`), and no frame shows more than `amber` pieces of amber; the last frame is an
+  // approved frame of its own, so it may keep its live piece
+  carousel?: { frames: number; amber: number };
 };
 
 const SCENES: Entry[] = [
@@ -42,14 +46,16 @@ const SCENES: Entry[] = [
     handoff: { 1440: [], 390: [] },
   },
   {
-    id: "magneto-approval",
+    id: "magneto-carousel",
     figure: /^Magneto/,
-    trigger: /^R\$ 4\.800/,
-    final: "done",
-    // The five steps and the record of the order
+    // The frame indicator of the header (the lib's SegmentedControl): a click on a frame plays from it
+    trigger: /^2$/,
+    triggerRole: "radio",
+    final: "ask",
+    // The last frame: the approved step, the live step and its two lines, and the two products it reached
     pairs: 6,
-    cycleMs: 7800,
-    handoff: { 1440: ["low", "high"], 390: [] },
+    cycleMs: 12600,
+    carousel: { frames: 4, amber: 2 },
   },
   {
     id: "tuner-routing",
@@ -224,6 +230,49 @@ for (const s of SCENES) {
           expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
           for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
           expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+        });
+      }
+
+      // QUADROS DO CARROSSEL (CENAS V3 EM CARROSSEL)
+      // Sampled on every animation frame over one loop from the first step: the scene shows each of its frames, in
+      // order, and no frame (the crossfade between two included) shows more than the carousel's amber pieces
+      const carousel = s.carousel;
+      if (carousel) {
+        test(`every frame reached, at most ${carousel.amber} amber pieces per frame at ${width}`, async ({ page }) => {
+          test.setTimeout(60_000);
+          await page.setViewportSize({ width, height: 900 });
+          await page.goto(LAB);
+          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
+          await page.getByRole("button", { name: "Recomeçar" }).click();
+          const seen = await page.evaluate(async (ms) => {
+            const stage = document.querySelector('[role="figure"] [data-scene]')!;
+            const live = stage.lastElementChild!;
+            const amber = (c: string) => {
+              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
+              if (!m) return false;
+              const [r, g, b] = m.slice(1, 4).map(Number);
+              const a = m[4] === undefined ? 1 : Number(m[4]);
+              return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
+            };
+            const order: string[] = [];
+            const ambers: Record<string, number> = {};
+            const t0 = performance.now();
+            while (performance.now() - t0 < ms) {
+              await new Promise((r) => requestAnimationFrame(r));
+              const frame = live.querySelector("[data-frame]")?.getAttribute("data-frame") ?? "none";
+              if (order[order.length - 1] !== frame) order.push(frame);
+              const n = [...live.querySelectorAll("*")].filter((el) => {
+                const cs = getComputedStyle(el);
+                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
+              }).length;
+              ambers[frame] = Math.max(ambers[frame] ?? 0, n);
+            }
+            return { order, ambers };
+          }, s.cycleMs + 500);
+          const frames = Array.from({ length: carousel.frames }, (_, i) => String(i + 1));
+          expect(seen.order.slice(0, carousel.frames), "the frames, in order").toEqual(frames);
+          for (const [frame, n] of Object.entries(seen.ambers))
+            expect(n, `amber pieces at frame ${frame}`).toBeLessThanOrEqual(carousel.amber);
         });
       }
     }

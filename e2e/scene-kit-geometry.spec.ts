@@ -226,6 +226,9 @@ type GeoScene = {
   columns: Record<string, { sel: string[]; wide?: number }>;
   // Name → selector whose matches share one centre line (a horizontal track)
   rows?: Record<string, string>;
+  // Selector of blocks whose pieces (their children, as one box) sit in the middle of the block (|left − right gap|
+  // ≤ 1 px): a carousel frame centred in its canvas
+  centred?: string;
 };
 const V3: GeoScene[] = [
   {
@@ -245,20 +248,23 @@ const V3: GeoScene[] = [
     },
   },
   {
-    id: "magneto-approval",
+    id: "magneto-carousel",
     figure: /^Magneto/,
-    header: { actions: true },
-    // No field: the scene is steps and a record
+    // No field: the scene is the run of a flow, frame by frame
     fields: [0, 0],
-    // The two value chips, the status, and the lab's two toolbar buttons
-    pairs: [5, 5],
+    // The status of the flow, the call to action, the lines of the live steps, and the lab's two toolbar buttons
+    pairs: [8, 8],
     columns: {
-      // `li`: the kit's stage carries data-step too (the step of the clock), and the live layer is its second child
-      "step marks": { sel: ["li[data-step] > :first-child"] },
-      "step titles and metas": { sel: ["li[data-step] > :nth-child(2) > *"] },
-      "order pane": { sel: ['[data-pane="order"] > *'] },
-      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
+      // Each frame (data-at) keeps its parallel steps on one left edge, and the call to action under the first column
+      "frame 2: the two fronts": { sel: ['[data-at="2"] [data-branch]'] },
+      "frame 3: approval and contract": { sel: ['[data-at="3"] [data-branch]'] },
+      "frame 3: what follows": { sel: ['[data-at="3"] [data-after]'] },
+      "frame 4: the products it reached": { sel: ['[data-at="4"] [data-branch]'] },
+      "frame 4: first column and call to action": { sel: ['[data-at="4"] [data-lead]', '[data-at="4"] [data-ask]'] },
+      "the text of every step": { sel: ['[data-at="4"] [data-node="live"] > *'] },
     },
+    // Every frame's flow sits in the middle of the canvas, as far from its left edge as from its right
+    centred: "[data-flow]",
   },
   {
     id: "tuner-routing",
@@ -396,6 +402,33 @@ for (const s of V3) {
             expect(ys.length, name).toBe(5);
             expect(Math.max(...ys) - Math.min(...ys), `${name}: ${ys.join(", ")}`).toBeLessThanOrEqual(1);
           }
+        });
+      }
+
+      if (s.centred) {
+        const centred = s.centred;
+        test("every frame sits in the middle of its canvas", async ({ page }) => {
+          const gaps = await page.evaluate(
+            ({ id, sel }) => {
+              const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+              return [...live.querySelectorAll<HTMLElement>(sel)]
+                .filter((e) => e.offsetParent !== null)
+                .map((block) => {
+                  const r = block.getBoundingClientRect();
+                  const s = getComputedStyle(block);
+                  const kids = [...block.children]
+                    .filter((c) => (c as HTMLElement).offsetParent !== null && c.getBoundingClientRect().width > 0)
+                    .map((c) => c.getBoundingClientRect());
+                  const left = Math.min(...kids.map((k) => k.left)) - (r.left + parseFloat(s.paddingLeft));
+                  const right = r.right - parseFloat(s.paddingRight) - Math.max(...kids.map((k) => k.right));
+                  return { name: block.closest("[data-at]")?.getAttribute("data-at") ?? "?", left, right };
+                });
+            },
+            { id: s.id, sel: centred },
+          );
+          expect(gaps.length).toBeGreaterThan(0);
+          for (const g of gaps)
+            expect(Math.abs(g.left - g.right), `frame ${g.name}: left ${g.left.toFixed(1)} right ${g.right.toFixed(1)}`).toBeLessThanOrEqual(1);
         });
       }
     });

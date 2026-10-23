@@ -1,8 +1,11 @@
 /* CONECTOR ENTRE PEÇAS DE UMA CENA */
-/* The trace of components/scene-kit/Connector.tsx: the sand control edge (--input) at the dashed width, drawn on with
-   the in-out curve, and an ink dot that rides it once with the out curve. Under the content it would cross, above the
-   panes' paint, deaf to the pointer. Every value is a token of app/lib.css. */
+/* The trace of components/scene-kit/Connector.tsx: a solid ink line at the trace width (brief-v3-carousel: 2 to
+   3.5 px, with an arrow), drawn on with the in-out curve, its arrowhead landing with the out curve once the line has
+   arrived, and an ink dot that rides it once with the out curve. The quiet tone (the way to a step still to come) is
+   the indicator grey. Under the content it would cross, above the panes' paint, deaf to the pointer. Every value is a
+   token of app/lib.css. */
 .layer {
+  --trace: var(--foreground);
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -11,24 +14,35 @@
   overflow: visible;
   pointer-events: none;
 }
+.layer[data-tone="quiet"] {
+  --trace: var(--indicator-muted);
+}
 
-/* Drawn on, then it recedes once the line has landed (the hand-off is done, the link stays readable but quiet) */
+/* Drawn on, then it stays: the hand-off is a fact of the frame, read as a solid line */
 .path {
   fill: none;
-  stroke: var(--input);
-  stroke-width: var(--rule-dashed);
+  stroke: var(--trace);
+  stroke-width: var(--rule-trace);
   stroke-linecap: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation:
-    draw var(--dur-3) var(--ease-in-out) forwards,
-    recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  animation: draw var(--dur-3) var(--ease-in-out) forwards;
 }
 
-/* The anchor on the row: a sand dot where the trace leaves, receding with it */
+/* The arrowhead: the same stroke, shown once the line reaches it */
+.head {
+  fill: none;
+  stroke: var(--trace);
+  stroke-width: var(--rule-trace);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  animation: land var(--dur-2) var(--ease-out) var(--dur-3) forwards;
+}
+
+/* The anchor on the source: a dot of the trace's tone where the line leaves (the split point of a fork) */
 .anchor {
-  fill: var(--input);
-  animation: recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  fill: var(--trace);
 }
 
 .dot {
@@ -39,15 +53,26 @@
   animation: ride var(--dur-3) var(--ease-out) var(--dur-1) forwards;
 }
 
+/* Reduced motion drops every animation of the kit (scene-kit.module.css): the trace and its head are then simply
+   there, and the dot does not ride */
+@media (prefers-reduced-motion: reduce) {
+  .path {
+    stroke-dashoffset: 0;
+  }
+  .head {
+    opacity: 1;
+  }
+}
+
 @keyframes draw {
   to {
     stroke-dashoffset: 0;
   }
 }
 
-@keyframes recede {
+@keyframes land {
   to {
-    opacity: 0.45;
+    opacity: 1;
   }
 }
 

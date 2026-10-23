@@ -53,28 +53,43 @@ type Emphasis = keyof typeof EMPHASIS;
 type LibButtonProps = ComponentProps<typeof Button>;
 type ButtonBase = Omit<LibButtonProps, "variant" | "appearance" | "asChild" | "children" | "size">;
 
-/** A labelled action: icon + text, secondary (soft) unless said otherwise */
+/** A labelled action: icon + text, secondary (soft) unless said otherwise; with `href`, a link drawn as the same
+ *  control (a call to action such as "Agendar uma demonstração") */
 export function ActionButton({
   icon,
   emphasis = "secondary",
   size = "sm",
   type = "button",
+  href,
   children,
   ...rest
 }: ButtonBase & {
   icon: ControlIcon;
   emphasis?: Emphasis;
   size?: "xs" | "sm" | "md";
+  href?: string;
   children: ReactNode;
 }) {
-  return (
-    <Button type={type} size={size} {...EMPHASIS[emphasis]} {...rest}>
+  const content = (
+    <>
       {/* `contents`: the SVG itself is the flex item, centred on the label by the lib. No data-icon: the lib's own
           with-icon story keeps the full padding of its size (round 3, e2e/lib-parity.spec.ts) */}
       <span aria-hidden="true" className="contents">
         {icon}
       </span>
       {children}
+    </>
+  );
+  // A link keeps the lib's Button look through its own asChild (the anchor takes its slot, classes and data-*)
+  if (href)
+    return (
+      <Button asChild size={size} {...EMPHASIS[emphasis]} {...rest}>
+        <a href={href}>{content}</a>
+      </Button>
+    );
+  return (
+    <Button type={type} size={size} {...EMPHASIS[emphasis]} {...rest}>
+      {content}
     </Button>
   );
 }

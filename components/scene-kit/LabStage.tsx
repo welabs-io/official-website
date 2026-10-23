@@ -12,7 +12,7 @@ import type { SceneId } from "./registry";
 import { DOMUS_MODULES_STEPS, DomusModules } from "./scenes/domus-modules";
 import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
 import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
-import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
+import { MAGNETO_CAROUSEL_STEPS, MagnetoCarousel } from "./scenes/magneto-carousel";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
 import { TUNER_ROUTING_STEPS, TunerRouting } from "./scenes/tuner-routing";
 import k from "./lab.module.css";
@@ -35,10 +35,10 @@ const SCENES: Record<SceneId, Entry> = {
     Component: DomusModules,
     takeFrom: "born",
   },
-  "magneto-approval": {
-    steps: MAGNETO_APPROVAL_STEPS,
-    Component: MagnetoApproval,
-    takeFrom: "high",
+  "magneto-carousel": {
+    steps: MAGNETO_CAROUSEL_STEPS,
+    Component: MagnetoCarousel,
+    takeFrom: "check",
   },
   "tuner-routing": {
     steps: TUNER_ROUTING_STEPS,
