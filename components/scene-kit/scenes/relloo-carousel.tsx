@@ -89,16 +89,18 @@ const COPY = {
 // 2 s) and the last step of each frame holds 1.8 s to be read.
 // v4 (Stage.dc.html, brief-v4): the conversation types in. Each phrase is preceded by the "digitando" indicator (1 s,
 // its own step) and its step holds the typing (18 ms per character) plus the pause after it; the agent's reply types as
-// frame 2 comes in. One loop: 21.1 s.
+// frame 2 comes in. The pause after a phrase is 1.4 s (the brief's ~2 s between phrases counts the "digitando" that
+// follows; a still longer than 2 s would read as a frozen scene). One loop: 22.0 s.
 // The frame slides in (FRAME_MOTION, ~0.48 s) before its first phrase types
 const TYPE_ENTER_MS = Math.round(SCENE_CURVE.dur2 * 1.7 * 1000);
+const AFTER_PHRASE_MS = 1400;
 export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
   { id: "f1-history", hold: 1100 },
   { id: "f1-typing", hold: TYPING_MS },
-  { id: "f1-message", hold: typeDuration(COPY.asked) + 1400 },
-  { id: "f2-reply", hold: TYPE_ENTER_MS + typeDuration(COPY.agentSaid) + 900 },
+  { id: "f1-message", hold: typeDuration(COPY.asked) + AFTER_PHRASE_MS },
+  { id: "f2-reply", hold: TYPE_ENTER_MS + typeDuration(COPY.agentSaid) + AFTER_PHRASE_MS },
   { id: "f2-typing", hold: TYPING_MS },
-  { id: "f2-answer", hold: typeDuration(COPY.answer) + 1000 },
+  { id: "f2-answer", hold: typeDuration(COPY.answer) + AFTER_PHRASE_MS },
   { id: "f2-handoff", hold: 1400 },
   { id: "f2-summary", hold: 1800 },
   { id: "f3-record", hold: 1100 },
@@ -599,7 +601,11 @@ function RellooCarouselView({ scene }: { scene: SceneApi }) {
       <AnimatePresence initial={false}>
         {/* v4: keyed by the mode too, so a visitor's take of the frame on screen plays it in again and its phrases
             type again (the give-back comes with the reset to frame 1, a new frame anyway) */}
-        <motion.div key={`${frame.n}:${scene.mode}`} className={r.frame} {...FRAME_MOTION}>
+        <motion.div
+          key={`${frame.n}:${scene.mode}`}
+          className={r.frame}
+          {...FRAME_MOTION}
+        >
           <Body scene={scene} />
         </motion.div>
       </AnimatePresence>

@@ -55,7 +55,7 @@ const SCENES: Entry[] = [
     // The Domus card under the funnel (its mark on its two lines)
     pairs: 1,
     // v4: the conversation types in, with its "digitando" steps
-    cycleMs: 21_108,
+    cycleMs: 22_008,
     handoff: {
       1440: ["f2-handoff", "f2-summary", "f3-born", "f4-domus"],
       // On a phone the panes of frame 3 stack and its trace stays off (it would cross the conversation)
