@@ -32,9 +32,14 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
-import { linkState } from "../link-state";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
-import { TYPING_MS, TypeIn, TypingIndicator, typeDuration } from "../TypeIn";
+import {
+  PHRASE_PAUSE_MS,
+  TYPING_MS,
+  TypeIn,
+  TypingIndicator,
+  typeDuration,
+} from "../TypeIn";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import r from "./relloo-carousel.module.css";
@@ -90,7 +95,11 @@ const COPY = {
 // v4 (Stage.dc.html, brief-v4): the conversation types in. Each phrase is preceded by the "digitando" indicator (1 s,
 // its own step) and its step holds the typing (18 ms per character) plus the pause after it; the agent's reply types as
 // frame 2 comes in. The pause after a phrase is 1.4 s (the brief's ~2 s between phrases counts the "digitando" that
-// follows; a still longer than 2 s would read as a frozen scene). One loop: 22.0 s.
+// follows; a still longer than 2 s would read as a frozen scene).
+// Frame 2 fits the kit's 8 s of human idle (HUMAN_IDLE): a visitor who picks "Passa a vez" reads its summary for its
+// whole 1.8 s before the give-back (at 9.6 s the reset cut it 0.2 s in). Inside it the reply is followed by the
+// brief's ~2 s to the next phrase (PHRASE_PAUSE_MS, the "digitando" included), and the answer by the handoff, which
+// holds 1.4 s while its trace draws. Frame 2: 7.8 s. One loop: 20.2 s.
 // The frame slides in (FRAME_MOTION, ~0.48 s) before its first phrase types
 const TYPE_ENTER_MS = Math.round(SCENE_CURVE.dur2 * 1.7 * 1000);
 const AFTER_PHRASE_MS = 1400;
@@ -100,10 +109,13 @@ export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
   { id: "f1-message", hold: typeDuration(COPY.asked) + AFTER_PHRASE_MS },
   {
     id: "f2-reply",
-    hold: TYPE_ENTER_MS + typeDuration(COPY.agentSaid) + AFTER_PHRASE_MS,
+    hold:
+      TYPE_ENTER_MS +
+      typeDuration(COPY.agentSaid) +
+      (PHRASE_PAUSE_MS - TYPING_MS),
   },
   { id: "f2-typing", hold: TYPING_MS },
-  { id: "f2-answer", hold: typeDuration(COPY.answer) + AFTER_PHRASE_MS },
+  { id: "f2-answer", hold: typeDuration(COPY.answer) },
   { id: "f2-handoff", hold: 1400 },
   { id: "f2-summary", hold: 1800 },
   { id: "f3-record", hold: 1100 },
@@ -337,7 +349,6 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
                 to='[data-holder="now"]'
                 inset={0}
                 gap={8}
-                state={linkState(scene, "f2-handoff")}
               />
               <Connector
                 from='[data-holder="before"]'
@@ -345,7 +356,6 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
                 route="drop"
                 inset={0}
                 gap={8}
-                state={linkState(scene, "f2-handoff")}
               />
             </>
           ) : null}
@@ -477,7 +487,6 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
           lane="[data-lane]"
           inset={0}
           gap={6}
-          state={linkState(scene, "f3-born")}
         />
       ) : null}
     </div>
@@ -561,7 +570,6 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
           route="drop"
           inset={-2}
           gap={8}
-          state={linkState(scene, "f4-domus")}
         />
       ) : null}
 
