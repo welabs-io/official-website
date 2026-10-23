@@ -10,8 +10,7 @@
 
 .ch {
   position: relative;
-  animation: type-wait var(--type-char) steps(1, end)
-    calc(var(--type-delay) + var(--i) * var(--type-char)) backwards;
+  animation: type-wait var(--type-char) steps(1, end) calc(var(--type-delay) + var(--i) * var(--type-char)) backwards;
 }
 
 .root[data-caret] .ch::after {
@@ -23,8 +22,7 @@
   width: var(--rule-strong);
   background: currentColor;
   opacity: 0;
-  animation: caret var(--type-char) steps(1, end)
-    calc(var(--type-delay) + (var(--i) + 1) * var(--type-char));
+  animation: caret var(--type-char) steps(1, end) calc(var(--type-delay) + (var(--i) + 1) * var(--type-char));
 }
 .root[data-caret] .ch:last-child::after {
   animation-duration: var(--phrase-pause);

@@ -57,8 +57,7 @@ const FRAMES = [
   ["ask", "answer", "cite", "done"],
 ] as const;
 
-const indexOf = (id: string) =>
-  KNOWLY_CAROUSEL_STEPS.findIndex((s) => s.id === id);
+const indexOf = (id: string) => KNOWLY_CAROUSEL_STEPS.findIndex((s) => s.id === id);
 // The frame (1 to 4) a step belongs to
 const frameAt = (index: number) =>
   FRAMES.findIndex((ids) => ids.some((id) => indexOf(id) === index)) + 1;
@@ -71,12 +70,7 @@ const EVENTS: readonly LineEvent[] = [
   { id: "talk", kind: "Conversa", title: "Pedido", day: "Dia 1" },
   { id: "visit", kind: "Vistoria", title: "Registro", day: "Dia 2" },
   { id: "decision", kind: "2 provas", title: "Decisão", day: "Dia 3" },
-  {
-    id: "contract",
-    kind: "Registro",
-    title: "Contrato assinado",
-    day: "Dia 5",
-  },
+  { id: "contract", kind: "Registro", title: "Contrato assinado", day: "Dia 5" },
   { id: "paid", kind: "Registro", title: "Fatura paga", day: "Dia 35" },
 ];
 
@@ -84,12 +78,7 @@ const EVENTS: readonly LineEvent[] = [
 type Proof = { id: string; label: string; cite: string; icon: LucideIcon };
 const PROOFS: readonly Proof[] = [
   { id: "meeting", label: "Reunião", cite: "Reunião · dia 3", icon: Video },
-  {
-    id: "proposal",
-    label: "Proposta",
-    cite: "Proposta 905 · dia 3",
-    icon: FileText,
-  },
+  { id: "proposal", label: "Proposta", cite: "Proposta 905 · dia 3", icon: FileText },
 ];
 
 // A click on a citation replays the answer: the proofs are cited again and their traces run back to the decision. The
@@ -98,14 +87,7 @@ const PROOFS: readonly Proof[] = [
 const TAKE_FROM = "answer";
 
 // Who took part, under the day they acted on (no name, no face: a role and a number)
-type Part = {
-  id: string;
-  who: string;
-  acts: readonly string[];
-  note?: string;
-  on: EventId;
-  step: string;
-};
+type Part = { id: string; who: string; acts: readonly string[]; note?: string; on: EventId; step: string };
 const PARTS: readonly Part[] = [
   { id: "asker", who: "Pessoa 2", acts: ["Pediu"], on: "talk", step: "asked" },
   {
@@ -135,8 +117,7 @@ const COPY = {
   question: "por que o contrato do Contato 4821 mudou?",
   answerLabel: "Resposta pela memória",
   answer: "Decidido no dia 3",
-  answerText:
-    "As condições mudaram na reunião, e a proposta foi revisada e aprovada no mesmo dia.",
+  answerText: "As condições mudaram na reunião, e a proposta foi revisada e aprovada no mesmo dia.",
   cited: "Provas citadas",
   missing: "Avisa o que ainda falta: 1 ligação",
   close: "O que a sua empresa já decidiu e esqueceu?",
@@ -173,12 +154,10 @@ type Look = {
 function lookOf(ev: LineEvent, beat: Beat): Look {
   if (beat.frame === 1) {
     if (ev.id === "talk") return { card: "rest", dot: "past", day: "past" };
-    if (ev.id === "visit" && beat.reached("record"))
-      return { card: "live", dot: "now", day: "now" };
+    if (ev.id === "visit" && beat.reached("record")) return { card: "live", dot: "now", day: "now" };
     return { card: "none", dot: "future", day: "future" };
   }
-  const dot =
-    ev.id === "decision" ? "decision" : ev.id === "paid" ? "paid" : "past";
+  const dot = ev.id === "decision" ? "decision" : ev.id === "paid" ? "paid" : "past";
   const day = ev.id === "decision" ? "now" : "past";
   if (ev.id !== "decision") return { card: "rest", dot, day };
   return { card: beat.frame === 2 ? "live" : "chosen", dot, day };
@@ -214,15 +193,7 @@ function DecisionLive({ beat }: { beat: Beat }) {
   );
 }
 
-function EventCard({
-  ev,
-  look,
-  beat,
-}: {
-  ev: LineEvent;
-  look: Look;
-  beat: Beat;
-}) {
+function EventCard({ ev, look, beat }: { ev: LineEvent; look: Look; beat: Beat }) {
   if (look.card === "none") return <span className={k.pieceSlot} />;
   const live = look.card === "live";
   return (
@@ -249,25 +220,12 @@ function EventCard({
 // A part (who took part) under the day it acted on: the role's marker, the number, the acts as the lib's Badge
 function PartChip({ part, live }: { part: Part; live: boolean }) {
   return (
-    <span
-      className={`${k.part} ${k.land}`}
-      data-part={part.id}
-      data-tone={live ? "live" : "rest"}
-    >
+    <span className={`${k.part} ${k.land}`} data-part={part.id} data-tone={live ? "live" : "rest"}>
       <span className={k.partTop}>
-        <span
-          className={k.role}
-          data-lead={part.note ? "" : undefined}
-          aria-hidden="true"
-        />
+        <span className={k.role} data-lead={part.note ? "" : undefined} aria-hidden="true" />
         <b className={k.who}>{part.who}</b>
         {part.acts.map((act) => (
-          <Badge
-            key={act}
-            variant="neutral"
-            appearance="soft"
-            className={k.act}
-          >
+          <Badge key={act} variant="neutral" appearance="soft" className={k.act}>
             {act}
           </Badge>
         ))}
@@ -287,18 +245,11 @@ function Track({ beat }: { beat: Beat }) {
     <div className={k.track} data-frame={frame}>
       {EVENTS.map((ev) => {
         const look = lookOf(ev, beat);
-        const part =
-          frame === 3
-            ? PARTS.find((x) => x.on === ev.id && beat.reached(x.step))
-            : undefined;
+        const part = frame === 3 ? PARTS.find((x) => x.on === ev.id && beat.reached(x.step)) : undefined;
         return (
           <div key={ev.id} className={k.event} data-event={ev.id}>
             <EventCard ev={ev} look={look} beat={beat} />
-            <span
-              className={k.stem}
-              data-on={look.card !== "none"}
-              aria-hidden="true"
-            />
+            <span className={k.stem} data-on={look.card !== "none"} aria-hidden="true" />
             <span className={k.dotCell} aria-hidden="true">
               <span className={k.dot} data-dot={ev.id} data-look={look.dot} />
             </span>
@@ -306,13 +257,7 @@ function Track({ beat }: { beat: Beat }) {
               {ev.day}
             </span>
             <span className={k.partSlot}>
-              {part ? (
-                <PartChip
-                  key={part.id}
-                  part={part}
-                  live={beat.is("approved") && part.id === "lead"}
-                />
-              ) : null}
+              {part ? <PartChip key={part.id} part={part} live={beat.is("approved") && part.id === "lead"} /> : null}
             </span>
           </div>
         );
@@ -322,15 +267,7 @@ function Track({ beat }: { beat: Beat }) {
 }
 
 // A head of a frame: the title (a big line in ink) and its note (secondary text)
-function Head({
-  title,
-  note,
-  big,
-}: {
-  title: string;
-  note: string;
-  big?: boolean;
-}) {
+function Head({ title, note, big }: { title: string; note: string; big?: boolean }) {
   return (
     <span className={k.head} data-big={big ? "" : undefined} data-lead="">
       <b className={k.headTitle}>{title}</b>
@@ -349,10 +286,7 @@ function Assistant({ beat }: { beat: Beat }) {
   return (
     <aside className={k.panel} data-panel="" aria-label={COPY.assistant}>
       <span className={k.panelHead} data-axis="assistant" data-axis-pair="">
-        <span
-          className={`${p.mark} ${p.markSm} ${p.markSquare} ${k.assistantMark}`}
-          aria-hidden="true"
-        >
+        <span className={`${p.mark} ${p.markSm} ${p.markSquare} ${k.assistantMark}`} aria-hidden="true">
           <Sparkles />
         </span>
         <span className={k.panelName}>{COPY.assistant}</span>
@@ -397,12 +331,7 @@ function Assistant({ beat }: { beat: Beat }) {
           );
         })}
       </span>
-      <span
-        className={k.missing}
-        data-in={beat.reached("done")}
-        data-axis="missing"
-        data-axis-pair=""
-      >
+      <span className={k.missing} data-in={beat.reached("done")} data-axis="missing" data-axis-pair="">
         <CircleAlert aria-hidden="true" />
         <span>{COPY.missing}</span>
       </span>
@@ -426,12 +355,7 @@ function FrameView({ beat }: { beat: Beat }) {
               {COPY.close}
             </b>
             <span data-lead="">
-              <ActionButton
-                emphasis="primary"
-                size="md"
-                icon={<CalendarDays />}
-                href={CONTACT_HREF}
-              >
+              <ActionButton emphasis="primary" size="md" icon={<CalendarDays />} href={CONTACT_HREF}>
                 {CTA_LABEL}
               </ActionButton>
             </span>
@@ -457,23 +381,13 @@ function FrameView({ beat }: { beat: Beat }) {
   }
   return (
     <div className={k.lineFrame}>
-      {frame === 1 ? (
-        <Head title={COPY.subject} note={COPY.subjectNote} />
-      ) : null}
-      {frame === 2 ? (
-        <Head title={COPY.decisionHead} note={COPY.decisionNote} />
-      ) : null}
+      {frame === 1 ? <Head title={COPY.subject} note={COPY.subjectNote} /> : null}
+      {frame === 2 ? <Head title={COPY.decisionHead} note={COPY.decisionNote} /> : null}
       <Track beat={beat} />
       {/* Frame 3: each part points up at the day it acted on (lg only: on a phone the part sits under its card) */}
       {traces && frame === 3
         ? PARTS.filter((part) => beat.reached(part.step)).map((part) => (
-            <Connector
-              key={part.id}
-              route="up"
-              from={`[data-part="${part.id}"]`}
-              to={`[data-dot="${part.on}"]`}
-              state="active"
-            />
+            <Connector key={part.id} route="up" from={`[data-part="${part.id}"]`} to={`[data-dot="${part.on}"]`} state="active" />
           ))
         : null}
     </div>
@@ -509,17 +423,9 @@ function KnowlyCarouselView({ scene }: { scene: SceneApi }) {
           animate={{
             opacity: 1,
             y: 0,
-            transition: {
-              duration: SCENE_CURVE.dur2 * 1.5,
-              ease: SCENE_CURVE.out,
-              delay: SCENE_CURVE.dur2 / 2,
-            },
+            transition: { duration: SCENE_CURVE.dur2 * 1.5, ease: SCENE_CURVE.out, delay: SCENE_CURVE.dur2 / 2 },
           }}
-          exit={{
-            opacity: 0,
-            y: -8,
-            transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut },
-          }}
+          exit={{ opacity: 0, y: -8, transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut } }}
         >
           <FrameView beat={beat} />
         </motion.div>

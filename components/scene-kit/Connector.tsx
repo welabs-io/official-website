@@ -55,18 +55,12 @@ function offsetIn(el: HTMLElement, root: HTMLElement): Box | null {
 
 // The first match of the selector that is laid out (a pane hidden at this width has no offsetParent)
 const visible = (root: HTMLElement, selector: string) =>
-  [...root.querySelectorAll<HTMLElement>(selector)].find(
-    (el) => el.offsetParent !== null,
-  ) ?? null;
+  [...root.querySelectorAll<HTMLElement>(selector)].find((el) => el.offsetParent !== null) ?? null;
 
 const round = (n: number) => Math.round(n * 100) / 100;
 const pt = (p: Point) => `${round(p.x)} ${round(p.y)}`;
-const mid = (a: Point, b: Point) => ({
-  x: (a.x + b.x) / 2,
-  y: (a.y + b.y) / 2,
-});
-const clamp = (n: number, lo: number, hi: number) =>
-  Math.min(hi, Math.max(lo, n));
+const mid = (a: Point, b: Point) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
 // The open chevron of the arrowhead: its tip on the end of the trace, pointing along the tangent that arrives there
 // (from the last control point to the tip)
@@ -75,24 +69,14 @@ function headAt(tip: Point, from: Point) {
   const dy = tip.y - from.y;
   const len = Math.hypot(dx, dy) || 1;
   const dir = { x: dx / len, y: dy / len };
-  const back = {
-    x: tip.x - dir.x * CONNECTOR_HEAD.length,
-    y: tip.y - dir.y * CONNECTOR_HEAD.length,
-  };
-  const side = {
-    x: -dir.y * CONNECTOR_HEAD.half,
-    y: dir.x * CONNECTOR_HEAD.half,
-  };
+  const back = { x: tip.x - dir.x * CONNECTOR_HEAD.length, y: tip.y - dir.y * CONNECTOR_HEAD.length };
+  const side = { x: -dir.y * CONNECTOR_HEAD.half, y: dir.x * CONNECTOR_HEAD.half };
   return `M ${pt({ x: back.x + side.x, y: back.y + side.y })} L ${pt(tip)} L ${pt({ x: back.x - side.x, y: back.y - side.y })}`;
 }
 
 // One cubic from `start` to `tip` with the two control points given
 function cubic(start: Point, c1: Point, c2: Point, tip: Point): Trace {
-  return {
-    d: `M ${pt(start)} C ${pt(c1)}, ${pt(c2)}, ${pt(tip)}`,
-    start,
-    head: headAt(tip, c2),
-  };
+  return { d: `M ${pt(start)} C ${pt(c1)}, ${pt(c2)}, ${pt(tip)}`, start, head: headAt(tip, c2) };
 }
 
 // A lane (a polyline of corners) drawn whole in curves: each corner is a cubic with both handles on it, joined at the
@@ -113,28 +97,13 @@ function smoothLane(points: Point[]): Trace {
 function bowedVertical(start: Point, tip: Point): Trace {
   const h = tip.y - start.y;
   const bow = clamp(Math.abs(h) * BOW.share, BOW.min, BOW.max);
-  return cubic(
-    start,
-    { x: start.x + bow, y: start.y + h * HANDLE },
-    { x: tip.x + bow, y: tip.y - h * HANDLE },
-    tip,
-  );
+  return cubic(start, { x: start.x + bow, y: start.y + h * HANDLE }, { x: tip.x + bow, y: tip.y - h * HANDLE }, tip);
 }
 
-type Plan = {
-  route: ConnectorRoute;
-  inset: number;
-  gap: number;
-  lane: Box | null;
-  clearance: number;
-};
+type Plan = { route: ConnectorRoute; inset: number; gap: number; lane: Box | null; clearance: number };
 
 // The trace of a route between two boxes, or null when the pieces do not sit as the route expects
-function plan(
-  a: Box,
-  b: Box,
-  { route, inset, gap, lane, clearance }: Plan,
-): Trace | null {
+function plan(a: Box, b: Box, { route, inset, gap, lane, clearance }: Plan): Trace | null {
   if (route === "drop") {
     const left = Math.max(a.x, b.x);
     const right = Math.min(a.x + a.w, b.x + b.w);
@@ -155,13 +124,7 @@ function plan(
     const laneX = a.x - clearance;
     const top = b.y - clearance;
     const x = b.x + b.w / 2;
-    return smoothLane([
-      start,
-      { x: laneX, y: start.y },
-      { x: laneX, y: top },
-      { x, y: top },
-      { x, y: b.y - gap },
-    ]);
+    return smoothLane([start, { x: laneX, y: start.y }, { x: laneX, y: top }, { x, y: top }, { x, y: b.y - gap }]);
   }
   // Curve and elbow: side by side, either way (on a phone the source sits above the target and a trace would cross)
   const rightward = a.x + a.w <= b.x;
@@ -169,22 +132,14 @@ function plan(
   if (!rightward && !leftward) return null;
   // +1 runs to the right, -1 to the left
   const dir = rightward ? 1 : -1;
-  const start = {
-    x: rightward ? a.x + a.w - inset : a.x + inset,
-    y: a.y + a.h / 2,
-  };
+  const start = { x: rightward ? a.x + a.w - inset : a.x + inset, y: a.y + a.h / 2 };
   const tip = { x: rightward ? b.x - gap : b.x + b.w + gap, y: b.y + b.h / 2 };
   const span = Math.abs(tip.x - start.x);
   // Two ends on one line (within a pixel of layout rounding): a shallow arc over the gap, never a straight trace
   if (Math.abs(tip.y - start.y) < 1) {
     const bow = clamp(span * BOW.share, BOW.min, BOW.max);
     const handle = dir * span * HANDLE;
-    return cubic(
-      start,
-      { x: start.x + handle, y: start.y - bow },
-      { x: tip.x - handle, y: tip.y - bow },
-      tip,
-    );
+    return cubic(start, { x: start.x + handle, y: start.y - bow }, { x: tip.x - handle, y: tip.y - bow }, tip);
   }
   if (route === "elbow") {
     // The lane: midway between the lane piece's edge facing the target (the source's container) and the target, or
@@ -195,12 +150,7 @@ function plan(
   }
   // Horizontal tangents at both ends, the handles at ~45 % of the distance
   const dx = dir * Math.max(MIN_HANDLE, span * HANDLE);
-  return cubic(
-    start,
-    { x: start.x + dx, y: start.y },
-    { x: tip.x - dx, y: tip.y },
-    tip,
-  );
+  return cubic(start, { x: start.x + dx, y: start.y }, { x: tip.x - dx, y: tip.y }, tip);
 }
 
 export function Connector({
@@ -239,19 +189,8 @@ export function Connector({
         const pa = a && offsetIn(a, root);
         const pb = b && offsetIn(b, root);
         const l = lane ? visible(root, lane) : null;
-        const next =
-          pa && pb
-            ? plan(pa, pb, {
-                route,
-                inset,
-                gap,
-                lane: l && offsetIn(l, root),
-                clearance,
-              })
-            : null;
-        setTrace((prev) =>
-          prev?.d === next?.d && prev?.head === next?.head ? prev : next,
-        );
+        const next = pa && pb ? plan(pa, pb, { route, inset, gap, lane: l && offsetIn(l, root), clearance }) : null;
+        setTrace((prev) => (prev?.d === next?.d && prev?.head === next?.head ? prev : next));
       };
       measure();
       const observer = new ResizeObserver(measure);
@@ -274,13 +213,7 @@ export function Connector({
         <g key={to}>
           <path d={trace.d} pathLength={1} className={c.path} data-trace="" />
           <path d={trace.head} className={c.head} />
-          {state === "live" ? (
-            <circle
-              r={6}
-              className={c.bead}
-              style={{ offsetPath: `path("${trace.d}")` }}
-            />
-          ) : null}
+          {state === "live" ? <circle r={6} className={c.bead} style={{ offsetPath: `path("${trace.d}")` }} /> : null}
         </g>
       ) : null}
     </svg>

@@ -34,19 +34,12 @@ export const KNOWN_PERSONS: readonly Known[] = rules.known.persons;
 export const KNOWN_STACK: readonly Known[] = rules.known.stack as Known[];
 
 const listMatcher = (list: readonly string[]) =>
-  new RegExp(
-    `(?:^|[^\\p{L}])(${list.map(escape).join("|")})(?=[^\\p{L}]|$)`,
-    "gu",
-  );
+  new RegExp(`(?:^|[^\\p{L}])(${list.map(escape).join("|")})(?=[^\\p{L}]|$)`, "gu");
 const PERSONS = listMatcher(rules.persons);
 const STACK = listMatcher(rules.stack);
 
 // The first value of the list in the text that is not tolerated, or null
-const firstOf = (
-  matcher: RegExp,
-  text: string,
-  tolerated: readonly Known[],
-) => {
+const firstOf = (matcher: RegExp, text: string, tolerated: readonly Known[]) => {
   const skip = new Set(tolerated.map((k) => k.value));
   for (const m of text.matchAll(matcher)) if (!skip.has(m[1])) return m[1];
   return null;

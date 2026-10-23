@@ -61,10 +61,7 @@
 .frames {
   display: grid;
   background-color: var(--background);
-  background-image: radial-gradient(
-    color-mix(in srgb, var(--indicator-muted) 40%, transparent) var(--rule),
-    transparent var(--rule)
-  );
+  background-image: radial-gradient(color-mix(in srgb, var(--indicator-muted) 40%, transparent) var(--rule), transparent var(--rule));
   background-size: var(--sp-4) var(--sp-4);
 }
 
@@ -209,9 +206,7 @@
 }
 .frame[data-active="true"] .live {
   background: var(--signal-soft);
-  box-shadow:
-    inset 0 0 0 var(--rule-strong) var(--signal),
-    var(--shadow-lg);
+  box-shadow: inset 0 0 0 var(--rule-strong) var(--signal), var(--shadow-lg);
 }
 .liveHead {
   display: flex;

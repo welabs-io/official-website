@@ -36,9 +36,7 @@
   border-radius: var(--r-dot);
   background: var(--muted);
   color: var(--muted-foreground);
-  transition:
-    background-color var(--dur-2) var(--ease-out),
-    color var(--dur-2) var(--ease-out);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
 }
 .mark > svg {
   width: var(--mark-icon);
@@ -109,9 +107,7 @@
    stone-700, done is the success soft chip, active the amber-50 veil. Only state paint, never the control's edge
    (app/lib.css CONTROLES). */
 .choiceStates [data-state] {
-  transition:
-    background-color var(--dur-2) var(--ease-out),
-    color var(--dur-2) var(--ease-out);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
 }
 .choiceStates [data-state]:hover {
   background-color: var(--veil-hover);

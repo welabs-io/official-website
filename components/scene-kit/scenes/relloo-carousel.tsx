@@ -98,7 +98,10 @@ export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
   { id: "f1-history", hold: 1100 },
   { id: "f1-typing", hold: TYPING_MS },
   { id: "f1-message", hold: typeDuration(COPY.asked) + AFTER_PHRASE_MS },
-  { id: "f2-reply", hold: TYPE_ENTER_MS + typeDuration(COPY.agentSaid) + AFTER_PHRASE_MS },
+  {
+    id: "f2-reply",
+    hold: TYPE_ENTER_MS + typeDuration(COPY.agentSaid) + AFTER_PHRASE_MS,
+  },
   { id: "f2-typing", hold: TYPING_MS },
   { id: "f2-answer", hold: typeDuration(COPY.answer) + AFTER_PHRASE_MS },
   { id: "f2-handoff", hold: 1400 },

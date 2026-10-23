@@ -94,8 +94,7 @@ const apiOf = (
 
 // A slot of the chrome bar: fixed, or drawn from the live scene
 type ChromeSlot = ReactNode | ((scene: SceneApi) => ReactNode);
-const slot = (value: ChromeSlot, scene: SceneApi) =>
-  typeof value === "function" ? value(scene) : value;
+const slot = (value: ChromeSlot, scene: SceneApi) => (typeof value === "function" ? value(scene) : value);
 
 type SceneProps = {
   // Name of the scene (data-scene, the lab's address)

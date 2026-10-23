@@ -47,8 +47,7 @@
 .root [data-in] {
   transition:
     opacity var(--dur-3) var(--ease-out) calc(var(--dur-1) / 4 * var(--i, 0)),
-    translate var(--dur-3) var(--ease-spring)
-      calc(var(--dur-1) / 4 * var(--i, 0)),
+    translate var(--dur-3) var(--ease-spring) calc(var(--dur-1) / 4 * var(--i, 0)),
     scale var(--dur-3) var(--ease-spring) calc(var(--dur-1) / 4 * var(--i, 0)),
     background-color var(--dur-2) var(--ease-out),
     box-shadow var(--dur-2) var(--ease-out);
@@ -300,9 +299,7 @@
   box-shadow: var(--edge-ring), var(--shadow-raise);
 }
 .screen[data-live="true"] {
-  box-shadow:
-    0 0 0 calc(var(--rule) * 2) var(--signal),
-    var(--shadow-pop);
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-pop);
 }
 .screenHead,
 .listHead {
@@ -401,9 +398,7 @@
   gap: var(--sp-3);
   padding: var(--sp-5);
   background: var(--card);
-  box-shadow:
-    inset var(--rule) 0 0 0 var(--border),
-    var(--shadow-raise);
+  box-shadow: inset var(--rule) 0 0 0 var(--border), var(--shadow-raise);
 }
 .root .panel[data-in="false"] {
   translate: var(--sp-6) 0;
@@ -591,9 +586,7 @@
 /* The flow that goes on by itself: the live piece of the frame (the amber-50 veil and the amber ring) */
 .neighbour[data-live="true"] {
   background: var(--selected);
-  box-shadow:
-    0 0 0 calc(var(--rule) * 2) var(--signal),
-    var(--shadow-raise);
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
 }
 .ctaBand {
   display: flex;
