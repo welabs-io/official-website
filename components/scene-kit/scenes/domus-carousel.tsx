@@ -60,7 +60,8 @@ export const DOMUS_CAROUSEL_STEPS: readonly SceneStep[] = [
 // The frames, by the steps they hold, and the screen each one shows in the chrome bar
 const FRAMES = [
   { title: "Módulos", label: "As áreas da empresa", steps: ["areas", "new"] },
-  { title: "Novo tipo de registro", label: "O tipo novo vira tela", steps: ["type", "fields", "screen"] },
+  // "Tipo de registro", not the frame's "Novo tipo de registro": the chrome of a phone cuts the longer one
+  { title: "Tipo de registro", label: "O tipo novo vira tela", steps: ["type", "fields", "screen"] },
   { title: "Vistorias", label: "O assistente cria o registro", steps: ["ask", "proposal", "created", "linked"] },
   { title: "Vistoria 318", label: "O registro liga os outros produtos", steps: ["record", "links", "cta"] },
 ] as const;
@@ -205,6 +206,8 @@ function AreasFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
             icon={<Plus />}
             markClassName={`${p.mark} ${p.markLg} ${p.markSquare} ${d.newMark}`}
             data-state={lit ? "active" : "idle"}
+            // A row: its mark centres on the label's two lines (measured through data-axis, not on the first line)
+            data-row=""
             data-axis="new"
             onClick={() => scene.take("type")}
           >

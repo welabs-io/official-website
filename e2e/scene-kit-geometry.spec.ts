@@ -239,8 +239,7 @@ const V3: GeoScene[] = [
     pairs: [10, 10],
     columns: {
       // Frame 1: the count and the first tile of the grid start on the frame's inset; every tile of a column shares it
-      "areas head and first column": { sel: ["[data-areas-head]", "[data-area]:nth-child(4n + 1)"], wide: 641 },
-      "areas head and first column (phone)": { sel: ["[data-areas-head]", "[data-area]:nth-child(2n + 1)"] },
+      "areas head and first column": { sel: ["[data-areas-head]", "[data-area]:nth-child(4n + 1)"], wide: 1025 },
       // Frame 2: the new type's head and its field rows; the screen's head, column heads and rows
       "type head and fields": { sel: ["[data-type] > *"] },
       "screen head and columns": { sel: ["[data-screen] > *"] },

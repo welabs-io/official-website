@@ -142,7 +142,7 @@
 /* The big number: bold, at the stat step (operator: 22 to 28 px) */
 .stat {
   font-size: var(--t-stat);
-  line-height: var(--lh-display);
+  line-height: var(--lh-heading);
   font-weight: var(--weight-stat);
   letter-spacing: var(--ls-display);
   font-variant-numeric: tabular-nums;
@@ -511,6 +511,8 @@
   display: grid;
   grid-template-areas: "w record e";
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  /* The record is as tall as its two neighbours, so each port sits on a neighbour's line */
+  grid-template-rows: calc(var(--record-h) * 2 + var(--sp-4));
   column-gap: var(--sp-8);
 }
 .record {
@@ -521,7 +523,7 @@
   justify-content: center;
   gap: var(--sp-3);
   grid-area: record;
-  padding: var(--sp-5);
+  padding: var(--sp-4) var(--sp-5);
   border-radius: var(--r-card);
   background: var(--card);
   box-shadow: var(--edge-ring), var(--shadow-pop);
@@ -714,6 +716,7 @@
       "record record"
       "w e";
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto;
     gap: var(--sp-3);
   }
   .port {

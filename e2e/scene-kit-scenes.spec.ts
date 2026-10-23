@@ -40,7 +40,8 @@ const SCENES: Entry[] = [
   {
     id: "domus-carousel",
     figure: /^Domus/,
-    trigger: /^Novo tipo de registro/,
+    // Confirmar (frame 3): the take plays the rest of the loop (5.4 s), so its settled frame holds inside the window
+    trigger: /^Confirmar/,
     final: "cta",
     // The settled frame: the record's head and its four neighbours (the other frames are hidden)
     pairs: 5,

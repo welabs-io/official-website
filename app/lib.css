@@ -455,6 +455,12 @@
 [data-slot="input-group"] > [data-slot="input-group-addon"] > [data-field-piece] {
   height: var(--control-height-sm);
 }
+/* A link drawn as the lib's button (ActionButton with `href`, the carousels' call to action): the page's unlayered
+   `a { color: inherit }` (app/globals.css) would paint its label with the parent's ink, black on the black primary;
+   the lib's own colour of the button comes back */
+a[data-slot="button"] {
+  color: revert-layer;
+}
 
 /* CAMADA DO SITE SOBRE A MARCA WELABS */
 /* Colour: only the PAPÉIS DE COR block above. Structure: the lib's own (its control heights, radii, paddings and
