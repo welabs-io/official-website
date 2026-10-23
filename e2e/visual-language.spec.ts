@@ -102,7 +102,9 @@ for (const viewport of VIEWPORTS)
         expect(Math.min(...sizes, ...kit), route).toBeGreaterThanOrEqual(12);
         for (const s of sizes) all.add(Math.round(s * 100) / 100);
         // Every page mounts a kit scene, and its text stays on the type tokens
-        expect(kit.length, `${route}: kit scene text`).toBeGreaterThan(0);
+        // v4 (2026-10-23): the home draws its own frames (components/home), with no kit scene; a product page mounts one
+        if (route !== "/")
+          expect(kit.length, `${route}: kit scene text`).toBeGreaterThan(0);
         const off = [...new Set(kit)].filter(
           (s) => !steps.some((t) => Math.abs(t - s) < 0.01),
         );
@@ -155,8 +157,8 @@ for (const viewport of VIEWPORTS)
       const planes = await page.evaluate(() => {
         const cs = (sel: string) =>
           getComputedStyle(document.querySelector(sel)!);
-        // A module of the Domus: a white card with the sand hairline
-        const card = cs("#domus ul li");
+        // v4: the stage of the chain, a white card on the soft band with no shadow at rest (the Domus band left)
+        const card = cs("#message [data-chain]");
         return {
           floor: cs("#top").backgroundColor,
           header: cs("header").backgroundColor,

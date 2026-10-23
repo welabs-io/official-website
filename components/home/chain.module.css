@@ -9,7 +9,8 @@
   padding: var(--sp-7);
   border-radius: var(--r-win);
   background: var(--card);
-  box-shadow: var(--shadow-raise);
+  /* A white card on the soft band: no shadow at rest (Welabs UI v3) */
+  box-shadow: none;
 }
 
 .stations {
