@@ -83,7 +83,9 @@ const SETTLED = CYCLE * 0.86;
 // Milliseconds the formed logo holds before the end plays, of the opening of the sheet, and of the end (86 -> 100 %)
 const HOLD = 200;
 const OPEN_MS = 450;
-const LAND_MS = CYCLE - SETTLED;
+// The logo is gone at 96 % of the cycle (the brand file fades it from 86 %)
+const FADED = CYCLE * 0.96;
+const LAND_MS = FADED - SETTLED;
 // v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector:
 // it starts on the formed logo, the sheet opens faster and the end is shorter (about 700 ms from the click to the page)
 export const FLASH = { open: 120, hold: 0, land: 260 } as const;
@@ -232,17 +234,25 @@ export async function open(
       listen(false);
       cancelAnimationFrame(raf);
       // The end of the brand cycle: the logo fades on the canvas (the flash plays it faster)
-      await tween(flash ? FLASH.land : LAND_MS, (t) => render(mix(SETTLED, CYCLE, t)));
+      await tween(flash ? FLASH.land : LAND_MS, (t) => render(mix(SETTLED, FADED, t)));
+      // The whole opening: the page comes in under the same canvas, and the sheet (hidden, so the page shows) stays in
+      // the document until the page has settled, which is what "the opening has left" means to the rest of the site.
+      // The flash only uncovers the page: its rise would double the ~700 ms budget of a swap.
+      const slot = flash ? null : target?.closest<HTMLElement>("[data-descent-slot]");
+      if (slot) {
+        const page = pageIn();
+        sheet.style.visibility = "hidden";
+        await slot
+          .animate(
+            [
+              { opacity: 0, transform: `translateY(${page.rise})` },
+              { opacity: 1, transform: "none" },
+            ],
+            { duration: page.ms, easing: page.easing },
+          )
+          .finished.catch(() => {});
+      }
       sheet.remove();
-      // The page comes in under the same canvas
-      const page = pageIn();
-      target?.closest<HTMLElement>("[data-descent-slot]")?.animate(
-        [
-          { opacity: 0, transform: `translateY(${page.rise})` },
-          { opacity: 1, transform: "none" },
-        ],
-        { duration: page.ms, easing: page.easing },
-      );
     },
     abort() {
       listen(false);
