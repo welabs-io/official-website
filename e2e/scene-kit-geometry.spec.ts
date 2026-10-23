@@ -226,6 +226,10 @@ type GeoScene = {
   columns: Record<string, { sel: string[]; wide?: number }>;
   // Name → selector whose matches share one centre line (a horizontal track)
   rows?: Record<string, string>;
+  // Name → selector of a block whose content (its laid-out children, absolute layers aside) sits at equal insets from
+  // its left and right edges and from its top and bottom edges: centred, with the same recuo on both sides (v3
+  // carousel, brief-v3-carousel)
+  insets?: Record<string, string>;
 };
 const V3: GeoScene[] = [
   {
@@ -261,28 +265,21 @@ const V3: GeoScene[] = [
     },
   },
   {
-    id: "tuner-routing",
+    id: "tuner-carousel",
     figure: /^Tuner/,
-    // No field minimum: any field the scene draws still keeps the contract
+    // No field: the frames are pieces, tracks and buttons
     fields: [0, 0],
-    // 1440: the lab's two buttons and the status; 390: also the three option buttons
-    pairs: [3, 6],
-    header: { actions: true },
+    // The settled frame 4: the four other channels and the button to the contact, and the lab's two toolbar buttons
+    pairs: [7, 7],
     columns: {
-      "menu marks": { sel: ["[data-option] > :first-child"], wide: 1024 },
-      "menu texts": { sel: ["[data-option] > :last-child", "[data-option] > :last-child > *"], wide: 1024 },
-      "history marks": { sel: ['[data-slot="timeline"] > li > :first-child'] },
-      "history titles and bubbles": {
-        sel: [
-          '[data-slot="timeline"] > li > :last-child > :first-child',
-          '[data-slot="timeline"] > li > :last-child > :last-child:not(:first-child) > *',
-        ],
-      },
-      "record title and meta": { sel: ['[data-align="record"] > :last-child > *'] },
-      "record, team and history": {
-        sel: ['[data-align="record"]', "[data-team]", '[data-slot="timeline"] > li'],
-      },
+      // The answer's band, the other channels and the question start on the frame's inset
+      "bands of the frame": { sel: ["[data-frame] > [data-band]"] },
+      "message node title and meta": { sel: ['[data-node="message"] > :last-child > *'] },
+      "relloo node title and meta": { sel: ['[data-node="relloo"] > :last-child > *'] },
     },
+    // The frame's bands sit at one inset on every side (centred on the stage), and the question and its button at the
+    // same inset from the edges of their piece
+    insets: { frame: "[data-frame]", question: "[data-ask]" },
   },
   {
     id: "knowly-answer",
@@ -371,6 +368,42 @@ for (const s of V3) {
           expect(Math.max(...xs) - Math.min(...xs), `${name}: ${xs.join(", ")}`).toBeLessThanOrEqual(1);
         }
       });
+
+      if (s.insets) {
+        const insets = s.insets;
+        test("every block is centred, with equal insets on both sides", async ({ page }) => {
+          const found = await page.evaluate(
+            ({ id, insets }) => {
+              const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+              return Object.entries(insets).flatMap(([name, sel]) =>
+                [...live.querySelectorAll<HTMLElement>(sel)]
+                  .filter((e) => e.offsetParent !== null)
+                  .map((el) => {
+                    const r = el.getBoundingClientRect();
+                    const kids = [...el.children]
+                      .filter((c) => c.getBoundingClientRect().width > 0 && getComputedStyle(c).position !== "absolute")
+                      .map((c) => c.getBoundingClientRect());
+                    return {
+                      name,
+                      kids: kids.length,
+                      left: Math.min(...kids.map((k) => k.left)) - r.left,
+                      right: r.right - Math.max(...kids.map((k) => k.right)),
+                      top: Math.min(...kids.map((k) => k.top)) - r.top,
+                      bottom: r.bottom - Math.max(...kids.map((k) => k.bottom)),
+                    };
+                  }),
+              );
+            },
+            { id: s.id, insets },
+          );
+          expect(new Set(found.map((f) => f.name)).size, "every block is found").toBe(Object.keys(insets).length);
+          for (const f of found) {
+            expect(f.kids, `${f.name}: content`).toBeGreaterThan(0);
+            expect(Math.abs(f.left - f.right), `${f.name}: left ${f.left.toFixed(1)} right ${f.right.toFixed(1)}`).toBeLessThanOrEqual(1);
+            expect(Math.abs(f.top - f.bottom), `${f.name}: top ${f.top.toFixed(1)} bottom ${f.bottom.toFixed(1)}`).toBeLessThanOrEqual(1);
+          }
+        });
+      }
 
       if (s.rows) {
         const rows = s.rows;

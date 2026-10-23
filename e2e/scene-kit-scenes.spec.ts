@@ -28,6 +28,10 @@ type Entry = {
   // end is green or neutral, never amber), and the connector (the Relloo's trace with its riding dot) drawn at each of
   // these steps, per width, and never on the settled frame
   handoff?: { 1440: string[]; 390: string[] };
+  // v3 carousel scenes (brief-v3-carousel): the number of frames (`[data-frame]`, the current one `data-current`), all
+  // reached over one loop with the chrome's indicator on the same number, at most `amberMax` amber pieces in any frame
+  // (the signal or amber-50 as a fill, or the signal as a ring) and no text cut in any frame
+  carousel?: { frames: number; amberMax: number };
 };
 
 const SCENES: Entry[] = [
@@ -52,13 +56,15 @@ const SCENES: Entry[] = [
     handoff: { 1440: ["low", "high"], 390: [] },
   },
   {
-    id: "tuner-routing",
+    id: "tuner-carousel",
     figure: /^Tuner/,
-    trigger: /^Financeiro/,
+    // A channel row of frame 2 (the click waits for the frame to come round)
+    trigger: /^E-mail/,
     final: "done",
-    pairs: 1,
-    cycleMs: 9400,
-    handoff: { 1440: ["pressed", "taken"], 390: [] },
+    // The nodes of the settled frame: the channel the answer came from and the conversation it goes to
+    pairs: 2,
+    cycleMs: 12200,
+    carousel: { frames: 4, amberMax: 2 },
   },
   {
     id: "knowly-answer",
@@ -224,6 +230,89 @@ for (const s of SCENES) {
           expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
           for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
           expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+        });
+      }
+
+      // QUADROS DO CARROSSEL (CENAS V3 EM CARROSSEL)
+      // Sampled on every animation frame over one loop from the first step: every frame is reached, the chrome's
+      // indicator marks the same number as the current frame, no frame shows more than `amberMax` amber pieces, and,
+      // once each step has landed (800 ms in), no text of the current frame is cut
+      const carousel = s.carousel;
+      if (carousel) {
+        test(`every frame reached, its indicator, at most ${carousel.amberMax} amber pieces and no text cut at ${width}`, async ({ page }) => {
+          test.setTimeout(60_000);
+          await page.setViewportSize({ width, height: 900 });
+          await page.goto(LAB);
+          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
+          await page.getByRole("button", { name: "Recomeçar" }).click();
+          const seen = await page.evaluate(async (ms) => {
+            const figure = document.querySelector('[role="figure"]')!;
+            const stage = figure.querySelector("[data-scene]")!;
+            const live = stage.lastElementChild!;
+            const rgb = (c: string) => {
+              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
+              return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] } : null;
+            };
+            // The signal (#ffb020) or amber-50 (#fff3dd) as a fill, or the signal in a ring (box-shadow)
+            const amberFill = (c: string) => {
+              const x = rgb(c);
+              if (!x || x.a <= 0.5) return false;
+              const signal = x.r > 230 && x.g > 140 && x.g < 210 && x.b < 140;
+              const soft = x.r > 250 && x.g > 235 && x.g < 250 && x.b > 200 && x.b < 230;
+              return signal || soft;
+            };
+            const amberRing = (s: string) => /rgba?\(255, 176, 32/.test(s);
+            const frames: Record<string, { amber: number; indicator: string[]; cut: string[] }> = {};
+            const checked = new Set<string>();
+            let step = "";
+            let since = 0;
+            const t0 = performance.now();
+            while (performance.now() - t0 < ms) {
+              await new Promise((r) => requestAnimationFrame(r));
+              const now = performance.now();
+              const id = stage.getAttribute("data-step")!;
+              if (id !== step) {
+                step = id;
+                since = now;
+              }
+              const current = live.querySelector<HTMLElement>('[data-frame][data-current="true"]');
+              if (!current) continue;
+              const n = current.dataset.frame!;
+              const f = (frames[n] ??= { amber: 0, indicator: [], cut: [] });
+              const amber = [current, ...current.querySelectorAll("*")].filter((el) => {
+                const cs = getComputedStyle(el);
+                return (
+                  el.getBoundingClientRect().width > 0 &&
+                  Number(cs.opacity) > 0.05 &&
+                  (amberFill(cs.backgroundColor) || amberRing(cs.boxShadow))
+                );
+              }).length;
+              f.amber = Math.max(f.amber, amber);
+              const mark = figure.querySelector('[aria-current="step"]')?.textContent ?? "";
+              if (!f.indicator.includes(mark)) f.indicator.push(mark);
+              if (now - since > 800 && !checked.has(step)) {
+                checked.add(step);
+                current.querySelectorAll<HTMLElement>("*").forEach((el) => {
+                  if (!el.childNodes.length || el.offsetParent === null) return;
+                  const ownText = [...el.childNodes].some((c) => c.nodeType === 3 && c.textContent!.trim());
+                  if (!ownText) return;
+                  if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
+                    f.cut.push(`${step}: ${el.tagName.toLowerCase()} "${el.textContent!.trim().slice(0, 40)}"`);
+                });
+              }
+            }
+            return { frames, checked: [...checked] };
+          }, s.cycleMs + 500);
+          const numbers = Array.from({ length: carousel.frames }, (_, i) => String(i + 1));
+          expect(Object.keys(seen.frames).sort(), "every frame is reached").toEqual(numbers);
+          expect(seen.checked.length, "every step was checked for cut text").toBeGreaterThanOrEqual(carousel.frames);
+          // The counter measures what it should: a live piece is seen somewhere in the loop
+          expect(Object.values(seen.frames).some((f) => f.amber > 0), "the amber counter sees the live pieces").toBe(true);
+          for (const [n, f] of Object.entries(seen.frames)) {
+            expect(f.indicator, `the indicator of frame ${n}`).toEqual([n]);
+            expect(f.amber, `amber pieces in frame ${n}`).toBeLessThanOrEqual(carousel.amberMax);
+            expect(f.cut, `text cut in frame ${n}`).toEqual([]);
+          }
         });
       }
     }

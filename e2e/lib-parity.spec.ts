@@ -21,7 +21,7 @@ const ALLOWED: Record<string, string> = {
   "send|backgroundColor":
     "the action is black (Welabs UI v3: --primary #121212 with white text); the lib's welabs primary is the amber, which the site keeps for what is live (--signal)",
   "send|color": "white on the black action, as above (the lib's welabs solid primary has ink text on amber)",
-  // The v3 scenes (tuner-routing, knowly-answer, home-message): the same three decisions, per kind of control
+  // The v3 scenes (tuner-carousel, knowly-answer, home-message): the same three decisions, per kind of control
   "outline|color": "the label and icon take the black ink #121212 (operator decision, as toolbar|color)",
   "icon|color": "the icon takes the black ink #121212 (operator decision, as action|color)",
   "row|color": "the row's text is the black ink #121212 (operator decision, as toolbar|color)",
@@ -212,7 +212,10 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // with components-buttongroup--icons, a list row (the lib's ghost button laid out as a row) with the ghost of the same
 // story (its height may only grow), a field with components-inputgroup--default, a segmented control with
 // components-segmentedcontrol--default. Only ALLOWED differs.
-const V3_LABS = ["tuner-routing", "knowly-answer", "home-message"] as const;
+const V3_LABS = ["tuner-carousel", "knowly-answer", "home-message"] as const;
+// The steps of a v3 scene whose controls show only for a moment (a carousel frame before the settled one), measured
+// too: the channel rows of the Tuner's frame 2
+const V3_STEPS: Partial<Record<(typeof V3_LABS)[number], string[]>> = { "tuner-carousel": ["sent"] };
 
 // Every control of the live layer of the scene, with its kind and its computed style
 async function controlsOf(page: Page, id: string) {
@@ -393,13 +396,25 @@ test.describe("every control of the tuner, knowly and home scenes matches the pu
       "segment-active": { ref: refActive, props: ["backgroundColor", "color", "height"] },
     };
 
-    await page.emulateMedia({ reducedMotion: "reduce" });
     for (const id of V3_LABS) {
       for (const width of [1440, 390]) {
         await page.setViewportSize({ width, height: 900 });
+        // The settled frame (reduced motion), then each step of V3_STEPS on the running clock
+        await page.emulateMedia({ reducedMotion: "reduce" });
         await page.goto(`/lab/scenes/${id}`);
         await page.locator(`[data-scene="${id}"]`).waitFor();
         const controls = await controlsOf(page, id);
+        const steps = V3_STEPS[id] ?? [];
+        if (steps.length) {
+          await page.emulateMedia({ reducedMotion: "no-preference" });
+          await page.goto(`/lab/scenes/${id}`);
+          await page.getByRole("button", { name: "Recomeçar" }).click();
+          for (const step of steps) {
+            await expect(page.locator(`[data-scene="${id}"]`)).toHaveAttribute("data-step", step, { timeout: 20_000 });
+            await page.waitForTimeout(150);
+            controls.push(...(await controlsOf(page, id)));
+          }
+        }
         expect(controls.length, `${id} at ${width}: controls found`).toBeGreaterThan(0);
         for (const c of controls) {
           const r = REF[c.kind];
