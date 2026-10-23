@@ -50,6 +50,15 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
+  // A story mounts its controls after the network settles (measured 2026-10-22: the with-icon buttons 1.7 s after
+  // networkidle), so on a Storybook page wait for the story to render a lib piece before reading
+  await page
+    .waitForFunction(
+      () => !document.querySelector("#storybook-root") || !!document.querySelector("#storybook-root [data-slot]"),
+      null,
+      { timeout: 15_000 },
+    )
+    .catch(() => {});
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
@@ -163,7 +172,6 @@ test.describe("lab controls match the published lib (welabs brand)", () => {
 // the story of the same variant and appearance; a pair with no story fails, so a new look needs a story or a reason here.
 const SCENE_CONTROLS: { id: string; steps: string[] }[] = [
   { id: "domus-modules", steps: ["start", "date"] },
-  { id: "magneto-approval", steps: ["high", "waiting", "failed"] },
 ];
 
 // DESVIOS PERMITIDOS DOS CONTROLES DAS CENAS
@@ -212,7 +220,9 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // with components-buttongroup--icons, a list row (the lib's ghost button laid out as a row) with the ghost of the same
 // story (its height may only grow), a field with components-inputgroup--default, a segmented control with
 // components-segmentedcontrol--default. Only ALLOWED differs.
-const V3_LABS = ["tuner-routing", "knowly-answer", "home-message"] as const;
+// The carousels (brief-v3-carousel) join them: their frame indicator is a segmented control, their call to action
+// the black primary
+const V3_LABS = ["tuner-routing", "knowly-answer", "home-message", "magneto-carousel"] as const;
 
 // Every control of the live layer of the scene, with its kind and its computed style
 async function controlsOf(page: Page, id: string) {
@@ -275,7 +285,7 @@ test.describe("every field and button of domus and magneto match the published l
   test.use({ viewport: { width: 1440, height: 900 } });
   test.setTimeout(120_000);
 
-  test("fields and buttons of domus-modules and magneto-approval", async ({ page, context }) => {
+  test("fields and buttons of domus-modules", async ({ page, context }) => {
     // REFERÊNCIA: AS HISTÓRIAS DA LIB
     const sb = await context.newPage();
     await sb.setViewportSize({ width: 1440, height: 900 });

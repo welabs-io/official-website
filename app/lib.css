@@ -96,6 +96,10 @@
   /* The H1 of a record, the Domus `text-page-title` (erpnext front welabs-theme.css: 22/28, 600) */
   --t-page-title: 22px;
   --line-title: 28px;
+  /* The big number or the closing question of a carousel frame (brief-v3-carousel: 22 to 28 px, in bold): 28 at 1440,
+     22 on a phone, in the strong weight */
+  --t-figure: clamp(22px, 1.9444vw, 28px);
+  --weight-strong: 700;
   --text-hero: var(--t-display);
   --text-display: var(--t-display);
   --text-title: var(--t-h2);
@@ -151,6 +155,10 @@
   --r-dot: 999px;
   --rule: 1px;
   --rule-dashed: 1.5px;
+  /* The carousels (brief-v3-carousel): the 2 px ring of the live piece and the dashed edge of the step still to come,
+     and the 2.5 px solid trace of the kit's connector (2 to 3.5 px, operator) */
+  --rule-strong: 2px;
+  --rule-trace: 2.5px;
   --bar-active: 3px;
   --edge-ring: inset 0 0 0 var(--rule) var(--border);
   --edge-control: inset 0 0 0 var(--rule) var(--input);
