@@ -89,7 +89,7 @@ const COPY = {
 // 2 s) and the last step of each frame holds 1.8 s to be read.
 // v4 (Stage.dc.html, brief-v4): the conversation types in. Each phrase is preceded by the "digitando" indicator (1 s,
 // its own step) and its step holds the typing (18 ms per character) plus the pause after it; the agent's reply types as
-// frame 2 comes in. One loop: 22.1 s.
+// frame 2 comes in. One loop: 21.1 s.
 // The frame slides in (FRAME_MOTION, ~0.48 s) before its first phrase types
 const TYPE_ENTER_MS = Math.round(SCENE_CURVE.dur2 * 1.7 * 1000);
 export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [

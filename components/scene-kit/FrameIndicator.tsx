@@ -63,7 +63,7 @@ export function FrameIndicator({
               <span className="sr-only">
                 {option} {i + 1}: {names[i]}
               </span>
-              <span className={f.tab} aria-hidden="true">
+              <span className={f.tab} aria-hidden="true" data-tab="">
                 {i < current ? <Check className={f.done} data-done="" /> : null}
                 <span className={f.num}>{i + 1}</span>
                 <span className={f.name}>{names[i]}</span>
