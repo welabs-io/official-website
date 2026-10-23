@@ -1,0 +1,23 @@
+/* INDICADOR DE QUADRO DE UM CARROSSEL */
+/* The look of components/scene-kit/FrameIndicator.tsx on the chrome bar: the lib's segmented control at its own size
+   (md, 40 px) on a white rail with the hairline, so the four numbers read as one control on the chrome's tone; the
+   chosen number is the black primary with white text (Welabs UI v3 Selection, as knowly-answer's profiles). Every
+   value is a token of app/lib.css. */
+.indicator {
+  display: inline-flex;
+}
+.indicator [data-slot="segmented-control"] {
+  background-color: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.indicator [data-slot="segmented-control-indicator"],
+.indicator [data-slot="segmented-control-item"][data-state="active"]:not(:has(> [data-slot="segmented-control-indicator"])) {
+  background-color: var(--primary);
+  box-shadow: none;
+}
+.indicator [data-slot="segmented-control-item"] {
+  font-variant-numeric: tabular-nums;
+}
+.indicator [data-slot="segmented-control-item"][data-state="active"] {
+  color: var(--primary-foreground);
+}

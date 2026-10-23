@@ -59,36 +59,6 @@
   color: var(--muted-foreground);
 }
 
-/* INDICADOR DO QUADRO (BARRA DA JANELA) */
-/* Four numbered dots on the chrome bar: white at rest with the secondary text, the current one in ink */
-.indicator {
-  display: flex;
-  gap: var(--sp-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.indicator > li {
-  display: inline-flex;
-  width: var(--mark-xs);
-  height: var(--mark-xs);
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-dot);
-  background: var(--card);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-title);
-  font-variant-numeric: tabular-nums;
-  color: var(--muted-foreground);
-  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
-}
-
-.indicator > li[data-current="true"] {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
 
 /* A LINHA DO TEMPO */
 /* Five columns, one per event; each event is a subgrid over five rows (card, stem, dot, day, part), so every dot sits on

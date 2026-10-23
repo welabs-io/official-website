@@ -7,8 +7,8 @@
 // to the decision), and the frame closes with the short question and the lib's primary "Agendar uma demonstração".
 // The appetizer shows the effect, never the mechanism. One kit Scene: each frame is a group of steps; the frames cross
 // with the site's three curves (the outgoing one leaves on the in-out curve, the incoming one enters on the out curve,
-// the live piece of each frame lands on the spring), never a cut. The indicator of the frame (1 to 4) sits in the chrome
-// bar, as in the frames. Amber budget: one piece per frame (the live card), none on the settled frame. The continuity
+// the live piece of each frame lands on the spring), never a cut. The indicator of the frame (1 to 4, the kit's
+// FrameIndicator) sits in the chrome bar, as in the frames. Amber budget: one piece per frame (the live card), none on the settled frame. The continuity
 // (autoplay, loop, human take, off-screen, reduced motion = the settled frame) is the kit's (components/scene-kit/
 // Scene.tsx); this file only renders from `scene`.
 import {
@@ -21,11 +21,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { ActionButton, Badge, LinkButton } from "@/components/lib/ui";
+import { ActionButton, Badge } from "@/components/lib/ui";
 import { TypingDots } from "@/components/lib/scene";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
+import { FrameIndicator } from "../FrameIndicator";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
@@ -104,7 +105,6 @@ const COPY = {
   title: "Memória",
   label:
     "Knowly: a memória de um assunto numa linha do tempo, a decisão com as suas provas, quem participou, e a resposta que mostra de onde veio",
-  moments: "Momento",
   subject: "Contato 4821 · manutenção",
   subjectNote: "tudo o que aconteceu no assunto, numa linha só",
   decisionHead: "Uma decisão, com as provas junto",
@@ -355,9 +355,9 @@ function FrameView({ beat }: { beat: Beat }) {
               {COPY.close}
             </b>
             <span data-lead="">
-              <LinkButton icon={<CalendarDays />} href={CONTACT_HREF}>
+              <ActionButton emphasis="primary" size="md" icon={<CalendarDays />} href={CONTACT_HREF}>
                 {CTA_LABEL}
-              </LinkButton>
+              </ActionButton>
             </span>
           </div>
         </div>
@@ -371,7 +371,7 @@ function FrameView({ beat }: { beat: Beat }) {
                 route="around"
                 from={`[data-cite="${proof.id}"]`}
                 to='[data-card="decision"]'
-                lane={40}
+                clearance={40}
               />
             ))
           : null}
@@ -433,21 +433,6 @@ function KnowlyCarouselView({ scene }: { scene: SceneApi }) {
   );
 }
 
-// O INDICADOR DO QUADRO
-// The frame in the chrome bar, as in the frames: four numbered dots, the current one in ink
-function FrameIndicator({ scene }: { scene: SceneApi }) {
-  const frame = frameAt(scene.index);
-  return (
-    <ol className={k.indicator} aria-label={`${COPY.moments} ${frame} de ${FRAMES.length}`}>
-      {FRAMES.map((_, i) => (
-        <li key={i} data-current={i + 1 === frame} aria-current={i + 1 === frame ? "step" : undefined}>
-          {i + 1}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 export function KnowlyCarousel({ timeline }: { timeline?: SceneTimeline }) {
   return (
     <Scene
@@ -455,7 +440,7 @@ export function KnowlyCarousel({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={COPY.title}
-      tools={(scene) => <FrameIndicator scene={scene} />}
+      tools={(scene) => <FrameIndicator scene={scene} frames={FRAMES} />}
       steps={KNOWLY_CAROUSEL_STEPS}
       timeline={timeline}
     >

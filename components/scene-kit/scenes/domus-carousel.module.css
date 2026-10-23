@@ -63,32 +63,6 @@
     box-shadow var(--dur-2) var(--ease-out);
 }
 
-/* INDICADOR DE QUADRO */
-/* Four numbered dots at the end of the chrome bar: white on the chrome, the current one black */
-.dots {
-  display: inline-flex;
-  gap: calc(var(--sp-1) + var(--sp-1) / 2);
-}
-.dotNum {
-  display: inline-flex;
-  width: var(--mark-xs);
-  height: var(--mark-xs);
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-dot);
-  background: var(--card);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-stat);
-  font-variant-numeric: tabular-nums;
-  color: var(--muted-foreground);
-  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
-}
-.dotNum[data-current="true"] {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
 /* PEÇAS COMUNS */
 /* The black mark of a record, a type or a product (two classes over the shared mark), and the status minidot */
 .ink.ink {
@@ -139,11 +113,11 @@
   align-items: baseline;
   gap: var(--sp-1) var(--sp-3);
 }
-/* The big number: bold, at the stat step (operator: 22 to 28 px) */
+/* The big number: the figure set of app/lib.css (operator: 22 to 28 px, in bold) */
 .stat {
-  font-size: var(--t-stat);
-  line-height: var(--lh-heading);
-  font-weight: var(--weight-stat);
+  font-size: var(--t-figure);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
   font-variant-numeric: tabular-nums;
 }
@@ -292,7 +266,7 @@
 .typeName {
   font-size: var(--t-title);
   line-height: var(--line-title);
-  font-weight: var(--weight-stat);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-heading);
 }
 /* A field of the new type: its icon and its name on the canvas well (a definition, not an input) */
@@ -340,7 +314,7 @@
 }
 .screenHead > b,
 .listHead > b {
-  font-weight: var(--weight-stat);
+  font-weight: var(--weight-figure);
 }
 .screenCols,
 .screenRow {
@@ -410,7 +384,7 @@
   box-shadow: inset 0 var(--rule) 0 var(--border);
 }
 .listRow > b {
-  font-weight: var(--weight-stat);
+  font-weight: var(--weight-figure);
 }
 /* The record that lands: the amber-50 veil of the selected row while it is new */
 .listRow[data-lit="true"] {
@@ -494,7 +468,7 @@
   line-height: var(--line-label);
 }
 .createdText > b {
-  font-weight: var(--weight-stat);
+  font-weight: var(--weight-figure);
 }
 
 /* QUADRO 4: O REGISTRO LIGA OS OUTROS PRODUTOS */
@@ -547,7 +521,7 @@
 .recordTitle > b {
   font-size: var(--t-page-title);
   line-height: var(--line-title);
-  font-weight: var(--weight-stat);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
 }
 .recordLine {
@@ -629,7 +603,7 @@
   min-width: 0;
   font-size: var(--t-h3);
   line-height: var(--lh-heading);
-  font-weight: var(--weight-stat);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
 }
 

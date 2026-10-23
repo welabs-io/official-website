@@ -33,6 +33,7 @@ import { CONTACT_HREF } from "@/components/onepage/contact";
 import { DOMUS_MODULES, HOME_DOMUS } from "@/lib/content/home";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
+import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
@@ -67,6 +68,8 @@ const FRAMES = [
 ] as const;
 
 const frameOf = (step: string) => Math.max(0, FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)));
+// The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
+const FRAME_STEPS = FRAMES.map((f) => f.steps);
 
 // CONTEÚDO DA CENA
 // The areas are the real modules of lib/content/home.ts DOMUS_MODULES (standard + made to measure: 18), not the
@@ -134,19 +137,6 @@ const NEIGHBOURS = [
 // The order of a piece among its siblings, for the stagger of its reveal (a custom property read by the sheet)
 const order = (i: number) => ({ "--i": i }) as CSSProperties;
 
-// INDICADOR DE QUADRO
-// The frame's place in the carousel, in the chrome bar as in the frames: four numbered dots, the current one black
-function FrameDots({ current }: { current: number }) {
-  return (
-    <span className={d.dots} role="img" aria-label={`Quadro ${current + 1} de ${FRAMES.length}`}>
-      {FRAMES.map((f, i) => (
-        <span key={f.title} className={d.dotNum} data-current={i === current} aria-hidden="true">
-          {i + 1}
-        </span>
-      ))}
-    </span>
-  );
-}
 
 // STATUS (MINIDOT)
 // The status of a record: the 8 px dot before the label, no fill; scheduled in ink, done in green
@@ -463,7 +453,7 @@ export function DomusCarousel({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={(scene) => FRAMES[frameOf(scene.id)].title}
-      tools={(scene) => <FrameDots current={frameOf(scene.id)} />}
+      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} />}
       steps={DOMUS_CAROUSEL_STEPS}
       timeline={timeline}
     >

@@ -7,12 +7,12 @@
 // shows the effect, never the mechanism (the appetizer rule). Each frame is a group of steps of the kit's clock; the
 // four frames share one grid cell, so the window keeps the height of the tallest, and they cross-fade with the
 // site's three curves (the outgoing frame leaves on the in-out, the incoming one arrives on the out, its pieces pop
-// on the spring). The frame indicator of the header is the lib's SegmentedControl: a click on a frame plays from it.
+// on the spring). The frame indicator is the kit's FrameIndicator in the chrome: a click on a frame plays from it.
 // The pieces are joined by the kit's Connector, side by side only (on a phone the flow is a column with arrows).
 // Amber budget: the live piece of the frame, at most 2 pieces with the cross-fade; what is done is green. Built from
-// the lib (Badge, SegmentedControl, the site's ActionButton), lucide 0.545 with the Domus' choices. The continuity
+// the lib (Badge, the site's ActionButton), lucide 0.545 with the Domus' choices. The continuity
 // (autoplay, loop, human take, off-screen, reduced motion = the last frame) is the kit's (components/scene-kit/Scene.tsx).
-import { Fragment, type CSSProperties, type MouseEvent, type ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import {
   ArrowDown,
   Building2,
@@ -28,10 +28,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ActionButton, Badge } from "@/components/lib/ui";
-import { SegmentedControl } from "@/components/lib/scene";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
+import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
@@ -66,7 +66,8 @@ type FrameN = (typeof FRAMES)[number]["n"];
 
 const frameOf = (step: string): FrameN =>
   (FRAMES.find((f) => (f.steps as readonly string[]).includes(step)) ?? FRAMES[0]).n;
-const firstStepOf = (n: string) => (FRAMES.find((f) => f.n === n) ?? FRAMES[0]).steps[0];
+// The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
+const FRAME_STEPS = FRAMES.map((f) => f.steps);
 
 // CONTEÚDO DA CENA
 // The text of the approved frames, word for word
@@ -77,7 +78,6 @@ const COPY = {
     "Magneto: a proposta começa o fluxo sozinha, ele divide o trabalho, espera a aprovação e conclui sem nada em dobro",
   flow: "Aprovação de proposta",
   active: "Ativo",
-  indicator: "Momento",
   domus: "Domus",
   tuner: "Tuner",
   proposal: "Proposta 905",
@@ -391,14 +391,9 @@ const FRAME_VIEWS: Record<FrameN, (props: FrameProps) => ReactNode> = {
 function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
   const frame = frameOf(scene.id);
   const on = (step: string) => scene.reached(step);
-  // A click on the frame on screen plays it again (the lib's control reports only a change of value)
-  const replay = (e: MouseEvent<HTMLElement>) => {
-    const item = (e.target as HTMLElement).closest('[data-slot="segmented-control-item"]');
-    if (item?.getAttribute("data-state") === "active") scene.take(firstStepOf(frame));
-  };
   return (
     <div className={g.root} data-frame={scene.ghost ? undefined : frame}>
-      {/* O CABEÇALHO DO FLUXO: its name, its status and the frame on screen */}
+      {/* O CABEÇALHO DO FLUXO: its name and its status (the frame on screen is the chrome's FrameIndicator) */}
       <div className={g.head}>
         <span className={g.headTitle}>
           <b>{COPY.flow}</b>
@@ -406,14 +401,6 @@ function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
             <span className={g.dot} data-tone="current" data-dot="" aria-hidden="true" />
             {COPY.active}
           </Badge>
-        </span>
-        <span className={g.indicator} onClick={replay}>
-          <SegmentedControl
-            aria-label={COPY.indicator}
-            value={frame}
-            onValueChange={(v) => scene.take(firstStepOf(v))}
-            items={FRAMES.map((f) => ({ value: f.n, label: f.n }))}
-          />
         </span>
       </div>
 
@@ -440,6 +427,7 @@ export function MagnetoCarousel({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={COPY.title}
+      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} />}
       steps={MAGNETO_CAROUSEL_STEPS}
       timeline={timeline}
     >

@@ -257,12 +257,13 @@ for (const width of [1440, 390]) {
   });
 }
 
-// GEOMETRIA DAS CENAS V3 (DOMUS, MAGNETO, TUNER, KNOWLY, HOME)
-// The same contract on the scenes rebuilt after the Relloo pilot (brief-v3-scenes, 2026-10-22): every field centres its
-// pieces with equal insets, every icon of a control, chip or status sits on its text line, the record header (when the
-// scene has one) is the Domus DetailHeader with 24 px of room after the status, the columns of each list share their
-// left edge, and the steps of a horizontal track sit on one centre line. The columns are named selectors inside the
-// live layer; a column with `wide` is measured only from that width up.
+// GEOMETRIA DAS CENAS V3 (OS CINCO CARROSSÉIS E A HOME)
+// The same contract on every v3 scene, one entry per scene in one table (brief-v3-scenes and brief-v3-carousel,
+// 2026-10-22): every field centres its pieces with equal insets, every icon of a control, chip or status sits on its
+// text line, the record header (when the scene has one) is the Domus DetailHeader with 24 px of room after the status,
+// the columns of each list share their left edge, the steps of a horizontal track sit on one centre line, and a
+// carousel's blocks sit centred with equal insets. The columns are named selectors inside the live layer; a column
+// with `wide` is measured only from that width up.
 type GeoScene = {
   id: string;
   figure: RegExp;
@@ -276,13 +277,11 @@ type GeoScene = {
   columns: Record<string, { sel: string[]; wide?: number }>;
   // Name → selector whose matches share one centre line (a horizontal track)
   rows?: Record<string, string>;
-  // Selector of blocks whose pieces (their children, as one box) sit in the middle of the block (|left − right gap|
-  // ≤ 1 px): a carousel frame centred in its canvas
-  centred?: string;
-  // Name → selector of a block whose content (its laid-out children, absolute layers aside) sits at equal insets from
-  // its left and right edges and from its top and bottom edges: centred, with the same recuo on both sides (v3
-  // carousel, brief-v3-carousel)
-  insets?: Record<string, string>;
+  // Name → selector of blocks whose content (their laid-out children as one box, absolute layers aside) sits at equal
+  // insets inside the block's padding: from its left and right edges (|left − right| ≤ 1 px), and with `vertical`
+  // also from its top and bottom edges: a carousel frame centred in its canvas, with the same recuo on both sides
+  // (brief-v3-carousel)
+  insets?: Record<string, { sel: string; vertical?: boolean }>;
 };
 const V3: GeoScene[] = [
   {
@@ -339,7 +338,7 @@ const V3: GeoScene[] = [
       "the text of every step": { sel: ['[data-at="4"] [data-node="live"] > *'] },
     },
     // Every frame's flow sits in the middle of the canvas, as far from its left edge as from its right
-    centred: "[data-flow]",
+    insets: { flow: { sel: "[data-flow]" } },
   },
   {
     id: "tuner-carousel",
@@ -356,7 +355,7 @@ const V3: GeoScene[] = [
     },
     // The frame's bands sit at one inset on every side (centred on the stage), and the question and its button at the
     // same inset from the edges of their piece
-    insets: { frame: "[data-frame]", question: "[data-ask]" },
+    insets: { frame: { sel: "[data-frame]", vertical: true }, question: { sel: "[data-ask]", vertical: true } },
   },
   {
     id: "knowly-carousel",
@@ -456,32 +455,42 @@ for (const s of V3) {
           const found = await page.evaluate(
             ({ id, insets }) => {
               const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
-              return Object.entries(insets).flatMap(([name, sel]) =>
+              return Object.entries(insets).flatMap(([name, { sel, vertical }]) =>
                 [...live.querySelectorAll<HTMLElement>(sel)]
                   .filter((e) => e.offsetParent !== null)
-                  .map((el) => {
+                  .map((el, i) => {
+                    // The block's room inside its padding, and its laid-out content (absolute layers aside)
                     const r = el.getBoundingClientRect();
+                    const cs = getComputedStyle(el);
                     const kids = [...el.children]
-                      .filter((c) => c.getBoundingClientRect().width > 0 && getComputedStyle(c).position !== "absolute")
+                      .filter(
+                        (c) =>
+                          (c as HTMLElement).offsetParent !== null &&
+                          c.getBoundingClientRect().width > 0 &&
+                          getComputedStyle(c).position !== "absolute",
+                      )
                       .map((c) => c.getBoundingClientRect());
                     return {
-                      name,
+                      name: `${name} ${el.closest("[data-at]")?.getAttribute("data-at") ?? i + 1}`,
+                      block: name,
+                      vertical: !!vertical,
                       kids: kids.length,
-                      left: Math.min(...kids.map((k) => k.left)) - r.left,
-                      right: r.right - Math.max(...kids.map((k) => k.right)),
-                      top: Math.min(...kids.map((k) => k.top)) - r.top,
-                      bottom: r.bottom - Math.max(...kids.map((k) => k.bottom)),
+                      left: Math.min(...kids.map((k) => k.left)) - (r.left + parseFloat(cs.paddingLeft)),
+                      right: r.right - parseFloat(cs.paddingRight) - Math.max(...kids.map((k) => k.right)),
+                      top: Math.min(...kids.map((k) => k.top)) - (r.top + parseFloat(cs.paddingTop)),
+                      bottom: r.bottom - parseFloat(cs.paddingBottom) - Math.max(...kids.map((k) => k.bottom)),
                     };
                   }),
               );
             },
             { id: s.id, insets },
           );
-          expect(new Set(found.map((f) => f.name)).size, "every block is found").toBe(Object.keys(insets).length);
+          expect(new Set(found.map((f) => f.block)).size, "every block is found").toBe(Object.keys(insets).length);
           for (const f of found) {
             expect(f.kids, `${f.name}: content`).toBeGreaterThan(0);
             expect(Math.abs(f.left - f.right), `${f.name}: left ${f.left.toFixed(1)} right ${f.right.toFixed(1)}`).toBeLessThanOrEqual(1);
-            expect(Math.abs(f.top - f.bottom), `${f.name}: top ${f.top.toFixed(1)} bottom ${f.bottom.toFixed(1)}`).toBeLessThanOrEqual(1);
+            if (f.vertical)
+              expect(Math.abs(f.top - f.bottom), `${f.name}: top ${f.top.toFixed(1)} bottom ${f.bottom.toFixed(1)}`).toBeLessThanOrEqual(1);
           }
         });
       }
@@ -513,32 +522,6 @@ for (const s of V3) {
         });
       }
 
-      if (s.centred) {
-        const centred = s.centred;
-        test("every frame sits in the middle of its canvas", async ({ page }) => {
-          const gaps = await page.evaluate(
-            ({ id, sel }) => {
-              const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
-              return [...live.querySelectorAll<HTMLElement>(sel)]
-                .filter((e) => e.offsetParent !== null)
-                .map((block) => {
-                  const r = block.getBoundingClientRect();
-                  const s = getComputedStyle(block);
-                  const kids = [...block.children]
-                    .filter((c) => (c as HTMLElement).offsetParent !== null && c.getBoundingClientRect().width > 0)
-                    .map((c) => c.getBoundingClientRect());
-                  const left = Math.min(...kids.map((k) => k.left)) - (r.left + parseFloat(s.paddingLeft));
-                  const right = r.right - parseFloat(s.paddingRight) - Math.max(...kids.map((k) => k.right));
-                  return { name: block.closest("[data-at]")?.getAttribute("data-at") ?? "?", left, right };
-                });
-            },
-            { id: s.id, sel: centred },
-          );
-          expect(gaps.length).toBeGreaterThan(0);
-          for (const g of gaps)
-            expect(Math.abs(g.left - g.right), `frame ${g.name}: left ${g.left.toFixed(1)} right ${g.right.toFixed(1)}`).toBeLessThanOrEqual(1);
-        });
-      }
     });
   }
 }

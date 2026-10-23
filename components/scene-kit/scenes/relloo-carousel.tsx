@@ -8,7 +8,7 @@
 // off-screen pause, reduced motion = the settled last frame). The frames slide in and out on the site's three curves
 // (motion's AnimatePresence: out to enter, in-out to leave, spring for what lands), never a cut; the hidden copy of the
 // kit stacks the four frames, so the window has the height of the tallest one in every frame. The chrome names the
-// screen of the frame and shows which frame it is on (the lib's SegmentedControl, the visitor's gesture).
+// screen of the frame and shows which frame it is on (the kit's FrameIndicator, the visitor's gesture).
 // Reused from the validated relloo-inbox: the record header of the Domus DetailHeader (frame 3), the composer (the
 // lib's field with the channel of origin and the black send, frame 1) and the kit's connector. Amber is the live piece
 // only (amber-50 with the amber ring, one per frame); done is green. No person, name, face or vendor.
@@ -28,10 +28,10 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { ActionButton, Badge, TextField } from "@/components/lib/ui";
-import { SegmentedControl } from "@/components/lib/scene";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
+import { FrameIndicator } from "../FrameIndicator";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
@@ -57,8 +57,6 @@ export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
 // CONTEÚDO DA CENA
 const COPY = {
   label: "Relloo: uma mensagem vira oportunidade e anda no funil, em quatro momentos",
-  frames: "Momentos",
-  moment: "Momento",
   conversation: "Conversa 2210",
   contact: "Contato 4821",
   linked: "Ligada à gestão",
@@ -139,30 +137,8 @@ function ChromeArea({ text }: { text: string }) {
   );
 }
 
-// INDICADOR DE QUADRO
-// Which of the four frames is on screen (the numbers of the frames' header), as the lib's SegmentedControl: choosing a
-// number is the visitor's gesture, the scene plays from that frame, holds its end and gives the loop back
-function FramePicker({ scene }: { scene: SceneApi }) {
-  const frame = frameOf(scene);
-  return (
-    <span className={r.picker}>
-      <SegmentedControl
-        aria-label={COPY.frames}
-        value={String(frame.n)}
-        onValueChange={(v) => scene.take(FRAMES[Number(v) - 1].steps[0])}
-        items={FRAMES.map((f) => ({
-          value: String(f.n),
-          label: (
-            <>
-              <span className="sr-only">{COPY.moment} </span>
-              {f.n}
-            </>
-          ),
-        }))}
-      />
-    </span>
-  );
-}
+// The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
+const FRAME_STEPS = FRAMES.map((f) => f.steps);
 
 // QUADRO 1: A MENSAGEM CHEGA
 // The conversation already holds the channels used before; the new message lands as the live piece
@@ -503,7 +479,7 @@ export function RellooCarousel({ timeline }: { timeline?: SceneTimeline }) {
       className={r.window}
       product={(scene) => <ChromeScreen text={frameOf(scene).screen} />}
       title={(scene) => <ChromeArea text={frameOf(scene).area} />}
-      tools={(scene) => <FramePicker scene={scene} />}
+      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} />}
       steps={RELLOO_CAROUSEL_STEPS}
       timeline={timeline}
     >

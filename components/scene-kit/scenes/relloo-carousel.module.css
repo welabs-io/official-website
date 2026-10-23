@@ -34,31 +34,12 @@
 }
 
 /* CABEÇALHO DA JANELA */
-/* The screen and its area step into place when the frame changes screen; the frame picker is the lib's segmented
-   control on a white rail, its chosen number the black primary (Welabs UI v3 Selection, as knowly-answer) */
+/* The screen and its area step into place when the frame changes screen (the frame indicator is the kit's,
+   components/scene-kit/frame-indicator.module.css) */
 .swap {
   display: inline-block;
   white-space: nowrap;
   animation: swap var(--dur-2) var(--ease-out) backwards;
-}
-.picker {
-  display: inline-flex;
-}
-.picker [data-slot="segmented-control"] {
-  background-color: var(--card);
-  box-shadow: var(--edge-ring);
-}
-.picker [data-slot="segmented-control-indicator"],
-.picker [data-slot="segmented-control-item"][data-state="active"]:not(:has(> [data-slot="segmented-control-indicator"])) {
-  background-color: var(--primary);
-  box-shadow: none;
-}
-.picker [data-slot="segmented-control-item"] {
-  font-variant-numeric: tabular-nums;
-  font-weight: var(--weight-title);
-}
-.picker [data-slot="segmented-control-item"][data-state="active"] {
-  color: var(--primary-foreground);
 }
 
 /* PEÇA VIVA E RÓTULOS */

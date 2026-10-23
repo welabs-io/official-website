@@ -8,7 +8,7 @@
 // and the settled frame under reduced motion. The frames share one grid cell: the hidden copy (ghost) stacks all four
 // so the window keeps the height of the tallest, and the live layer holds the current frame and, during its first step,
 // the one leaving, so a frame never cuts to the next (it leaves on the in-out curve, the next enters on the out curve,
-// its pieces land on the spring). The frame indicator (1 to 4) lives in the chrome bar. Amber: one piece per frame
+// its pieces land on the spring). The frame indicator (1 to 4, the kit's FrameIndicator) lives in the chrome bar. Amber: one piece per frame
 // (the message, the send in flight, the read now, the answer). This file only renders from `scene`.
 import {
   CalendarDays,
@@ -26,10 +26,11 @@ import {
   Workflow,
   type LucideIcon,
 } from "lucide-react";
-import { ActionButton, Badge, LinkButton, RowButton } from "@/components/lib/ui";
+import { ActionButton, Badge, RowButton } from "@/components/lib/ui";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { CTA_LABEL } from "@/lib/products";
 import { Connector } from "../Connector";
+import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
@@ -64,6 +65,8 @@ const FRAMES = [
 const TAKE_FROM = "fanout";
 
 const frameOf = (step: string) => Math.max(0, FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)));
+// The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
+const FRAME_STEPS = FRAMES.map((f) => f.steps);
 
 // CONTEÚDO DA CENA
 const COPY = {
@@ -71,7 +74,6 @@ const COPY = {
   title: "Canais",
   label:
     "Tuner: uma mensagem sai por todos os canais de uma vez, a leitura volta por canal e a resposta cai na conversa certa",
-  frames: "Momentos da cena",
   magneto: { title: "Magneto", meta: "pede o envio" },
   tuner: { title: "Tuner", meta: "central de canais" },
   message: { eyebrow: "Uma mensagem · 17:03", figure: "Proposta 905", note: "para o Contato 4821, onde ele estiver" },
@@ -294,9 +296,9 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
       </div>
       <div className={t.ask} data-band="" data-ask="">
         <b>{COPY.ask}</b>
-        <LinkButton icon={<CalendarDays />} href={CONTACT_HREF}>
+        <ActionButton emphasis="primary" size="md" icon={<CalendarDays />} href={CONTACT_HREF}>
           {CTA_LABEL}
-        </LinkButton>
+        </ActionButton>
       </div>
     </>
   );
@@ -365,19 +367,12 @@ function TunerCarouselView({ scene }: { scene: SceneApi }) {
 }
 
 // INDICADOR DE QUADRO
-// In the chrome bar, as in the frames: the caption of the frame and the four numbers, the current one in ink
-function FrameIndicator({ scene }: { scene: SceneApi }) {
-  const index = frameOf(scene.id);
+// In the chrome bar, as in the frames: the caption of the frame, then the kit's frame indicator
+function FrameTools({ scene }: { scene: SceneApi }) {
   return (
     <span className={t.indicator}>
-      <span className={t.caption}>{FRAMES[index].caption}</span>
-      <ol className={t.dots} aria-label={COPY.frames} data-frame-indicator={index + 1}>
-        {FRAMES.map((f, i) => (
-          <li key={f.caption + i} aria-current={i === index ? "step" : undefined}>
-            {i + 1}
-          </li>
-        ))}
-      </ol>
+      <span className={t.caption}>{FRAMES[frameOf(scene.id)].caption}</span>
+      <FrameIndicator scene={scene} frames={FRAME_STEPS} />
     </span>
   );
 }
@@ -391,7 +386,7 @@ export function TunerCarousel({ timeline }: { timeline?: SceneTimeline }) {
       title={COPY.title}
       steps={TUNER_CAROUSEL_STEPS}
       timeline={timeline}
-      tools={(scene) => <FrameIndicator scene={scene} />}
+      tools={(scene) => <FrameTools scene={scene} />}
     >
       {(scene) => <TunerCarouselView scene={scene} />}
     </Scene>

@@ -29,8 +29,8 @@ type Entry = {
   cycleMs: number;
   // v3 scenes (brief-v3-scenes): the steps, per width, at which the connector (the kit's trace) is drawn
   handoff?: Record<Width, string[]>;
-  // The most pieces of amber any step may show (default 3; the carousels allow 2), counted as fills (the signal, a
-  // blend more than half way to it, or amber-50) and as rings (the signal in a box-shadow)
+  // The most pieces of amber any step may show on screen (default 3; the carousels allow 2), counted as fills (the
+  // signal or a blend more than half way to it; in a carousel also amber-50) and as rings (the same in a box-shadow)
   amberMax?: number;
   // How many of them the settled frame keeps (default 0: the end is green or neutral; a carousel's last frame may keep
   // its live piece, as the approved frames draw it)
@@ -76,6 +76,8 @@ const SCENES: Entry[] = [
     // The new type to its screen, the confirmed record to its row, the record to its neighbours (side by side only)
     handoff: { 1440: ["screen", "linked", "links", "cta"], 390: [] },
     amberMax: 2,
+    // The neighbour still live on the last frame (the flow that goes on, amber-50 with the ring)
+    finalAmber: 1,
     finalTrace: [1440],
     frames: 4,
   },
@@ -91,6 +93,10 @@ const SCENES: Entry[] = [
     pairs: 6,
     cycleMs: 12600,
     amberMax: 2,
+    // The live step of the last frame: its area and its running mark
+    finalAmber: 2,
+    // The last frame ends on its links to the products it reached (side by side only)
+    finalTrace: [1440],
     frames: 4,
   },
   {
@@ -103,6 +109,10 @@ const SCENES: Entry[] = [
     pairs: 2,
     cycleMs: 12200,
     amberMax: 2,
+    // The answer, live on the last frame
+    finalAmber: 1,
+    // The answer's track to the conversation it goes to (side by side only)
+    finalTrace: [1440],
     frames: 4,
   },
   {
@@ -246,7 +256,7 @@ for (const s of SCENES) {
           await page.goto(LAB);
           await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
           await page.getByRole("button", { name: "Recomeçar" }).click();
-          const seen = await page.evaluate(async (ms) => {
+          const seen = await page.evaluate(async ({ ms, carousel }) => {
             const figure = document.querySelector('[role="figure"]')!;
             const stage = figure.querySelector("[data-scene]")!;
             const live = stage.lastElementChild!;
@@ -254,13 +264,22 @@ for (const s of SCENES) {
               const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
               return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] } : null;
             };
-            // The signal (#ffb020) or a blend more than half way to it, or amber-50 (#fff3dd)
+            // The signal (#ffb020) or a blend more than half way to it; in a carousel also amber-50 (#fff3dd), the
+            // area of its live piece
             const amber = (c: string) => {
               const x = rgb(c);
               if (!x || x.a <= 0.5) return false;
               const signal = x.r > 230 && x.g > 140 && x.g < 210 && x.b < 140;
               const soft = x.r > 250 && x.g > 235 && x.g < 250 && x.b > 200 && x.b < 230;
-              return signal || soft;
+              return signal || (carousel && soft);
+            };
+            // Seen on screen: laid out, not hidden, and more than 5 % opaque once its ancestors' opacity is applied (a
+            // carousel lays out its hidden frames in the same cell, faded to nothing)
+            const shown = (el: Element) => {
+              if (!(el.getBoundingClientRect().width > 0) || getComputedStyle(el).visibility === "hidden") return false;
+              let o = 1;
+              for (let n: Element | null = el; n && n !== live; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
+              return o > 0.05;
             };
             // Every colour of a shadow list: an amber ring (a live piece's edge) is a piece of amber too
             const ring = (shadow: string) => (shadow.match(/rgba?\([^)]*\)/g) ?? []).some(amber);
@@ -284,11 +303,7 @@ for (const s of SCENES) {
               }
               const n = [...live.querySelectorAll("*")].filter((el) => {
                 const cs = getComputedStyle(el);
-                return (
-                  el.getBoundingClientRect().width > 0 &&
-                  Number(cs.opacity) > 0.05 &&
-                  (amber(cs.backgroundColor) || ring(cs.boxShadow))
-                );
+                return (amber(cs.backgroundColor) || ring(cs.boxShadow)) && shown(el);
               }).length;
               ambers[step] = Math.max(ambers[step] ?? 0, n);
               traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
@@ -316,7 +331,7 @@ for (const s of SCENES) {
               }
             }
             return { ambers, traced, order, marks, cut, checked: checked.size };
-          }, s.cycleMs + 500);
+          }, { ms: s.cycleMs + 500, carousel: !!s.frames });
 
           for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(amberMax);
           expect(seen.ambers[s.final], "amber on the settled frame").toBe(s.finalAmber ?? 0);

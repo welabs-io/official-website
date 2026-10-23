@@ -239,7 +239,7 @@ describe("one theme-mapping layer", () => {
 // 2026-10-22): one point of change for their look (app/lib.css CONTROLES) and a required icon on each. A raw lib
 // Button/Input/InputGroup/Field outside the boundary, a primitive without its icon, or a call site that paints the
 // control's edge or fill by utility class fails here.
-const PRIMITIVES = ["ActionButton", "LinkButton", "IconButton", "RowButton", "TextField"];
+const PRIMITIVES = ["ActionButton", "IconButton", "RowButton", "TextField"];
 const RAW_CONTROLS = [
   "Button",
   "Input",

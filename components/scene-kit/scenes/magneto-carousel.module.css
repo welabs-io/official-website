@@ -1,6 +1,6 @@
 /* CENA DO MAGNETO EM CARROSSEL */
-/* The layout of components/scene-kit/scenes/magneto-carousel.tsx: the flow's header (its name, its status, the frame
-   indicator), then the canvas where the four frames share one grid cell and cross-fade. A frame is a row of steps
+/* The layout of components/scene-kit/scenes/magneto-carousel.tsx: the flow's header (its name and its status; the frame
+   indicator is the kit's, in the chrome), then the canvas where the four frames share one grid cell and cross-fade. A frame is a row of steps
    joined by the kit's Connector from 880 px of window up, a column with arrows below. Every value is a token of
    app/lib.css (components/scene-kit/tokens.test.ts); the alignment is held by e2e/scene-kit-geometry.spec.ts. */
 .root {
@@ -37,18 +37,6 @@
 }
 .status {
   gap: var(--sp-2);
-}
-.indicator {
-  display: inline-flex;
-}
-/* The chosen frame is the black primary (Welabs UI v3 Selection), as the knowly-answer's profiles */
-.indicator [data-slot="segmented-control-indicator"],
-.indicator [data-slot="segmented-control-item"][data-state="active"]:not(:has(> [data-slot="segmented-control-indicator"])) {
-  background-color: var(--primary);
-  box-shadow: none;
-}
-.indicator [data-slot="segmented-control-item"][data-state="active"] {
-  color: var(--primary-foreground);
 }
 
 /* A minidot: the green of the status, the ink of "now", a ring for "at the same time" */
@@ -201,7 +189,9 @@
 }
 
 /* O PASSO VIVO */
-/* The step running now: the amber-50 area with the amber ring, raised; its head, its lines */
+/* The step running now: the amber-50 area with the amber ring, raised; its head, its lines. Amber only on screen, as
+   the live mark: the frame that leaves in the cross-fade hands its step back to the white surface at once, so the
+   cross-fade never shows two live pieces (amber budget of e2e/scene-kit-scenes.spec.ts, rings counted) */
 .live {
   display: flex;
   min-width: 0;
@@ -211,6 +201,10 @@
   gap: var(--sp-2);
   padding: var(--sp-4) var(--sp-5);
   border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-lg);
+}
+.frame[data-active="true"] .live {
   background: var(--signal-soft);
   box-shadow: inset 0 0 0 var(--rule-strong) var(--signal), var(--shadow-lg);
 }
@@ -227,8 +221,8 @@
 /* The number of the frame: big and in bold */
 .figure {
   font-size: var(--t-figure);
-  line-height: var(--lh-heading);
-  font-weight: var(--weight-strong);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
 }
 .liveMeta {
@@ -298,8 +292,8 @@
 .question {
   margin: 0;
   font-size: var(--t-figure);
-  line-height: var(--lh-heading);
-  font-weight: var(--weight-strong);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
 }
 

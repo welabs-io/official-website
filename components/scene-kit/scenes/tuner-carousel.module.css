@@ -90,12 +90,12 @@
 .eyebrow {
   font-size: var(--t-micro);
   line-height: var(--line-micro);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
 }
 .figure {
   font-size: var(--t-figure);
   line-height: var(--line-figure);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
   font-variant-numeric: tabular-nums;
 }
@@ -141,10 +141,10 @@
 .hub > b {
   font-size: var(--t-subtitle);
   line-height: var(--line-lead);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
 }
 .flight {
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
 }
 .channels {
   display: flex;
@@ -177,7 +177,7 @@
 }
 .state {
   flex: none;
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
   animation: pop var(--dur-3) var(--ease-spring) both;
 }
 .state[data-sent="false"] {
@@ -233,7 +233,7 @@
 .trackHead > b {
   font-size: var(--t-subtitle);
   line-height: var(--line-lead);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
 }
 .stops {
   display: grid;
@@ -249,7 +249,7 @@
   border-radius: var(--r-dot);
   font-size: var(--t-label);
   line-height: var(--line-label);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
 }
 :is(.stop, .flight)[data-tone="live"] {
   background-color: var(--signal);
@@ -315,12 +315,12 @@
   min-width: 0;
   font-size: var(--t-figure);
   line-height: var(--line-figure);
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-figure);
   letter-spacing: var(--ls-display);
 }
 
 /* INDICADOR DE QUADRO (BARRA DA JANELA) */
-/* The caption of the frame and the four numbers: the current one in ink, the others white on the chrome */
+/* The caption of the frame, then the kit's frame indicator (components/scene-kit/frame-indicator.module.css) */
 .indicator {
   display: inline-flex;
   align-items: center;
@@ -331,32 +331,6 @@
   line-height: var(--line-label);
   color: var(--muted-foreground);
   white-space: nowrap;
-}
-.dots {
-  display: inline-flex;
-  gap: calc(var(--sp-1) + var(--sp-1) / 2);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.dots > li {
-  display: inline-flex;
-  width: var(--mark-xs);
-  height: var(--mark-xs);
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--r-dot);
-  background: var(--card);
-  color: var(--muted-foreground);
-  font-size: var(--t-micro);
-  line-height: var(--line-micro);
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
-  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
-}
-.dots > li[aria-current="step"] {
-  background: var(--primary);
-  color: var(--primary-foreground);
 }
 
 @keyframes frameIn {
