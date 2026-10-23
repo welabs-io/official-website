@@ -140,6 +140,7 @@
   padding: var(--sp-5);
   background: var(--background);
 }
+/* The date in its own column (as wide as a large mark), then the channel's mark and the subject on one centre line */
 .past {
   display: flex;
   align-items: center;
@@ -147,20 +148,25 @@
   margin: 0;
   color: var(--muted-foreground);
 }
-.pastText {
+.date {
+  width: var(--mark-xl);
+  flex: none;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+}
+.pastLine {
   display: flex;
   min-width: 0;
-  align-items: baseline;
+  align-items: center;
   gap: var(--sp-3);
+}
+.pastText {
+  min-width: 0;
   font-size: var(--t-label);
   line-height: var(--line-label);
   font-weight: var(--weight-label);
-}
-.date {
-  flex: none;
-  font-size: var(--t-micro);
-  font-weight: var(--weight-title);
-  font-variant-numeric: tabular-nums;
 }
 .day {
   display: flex;
@@ -607,6 +613,7 @@
 .booked > svg {
   width: var(--icon-sm);
   height: var(--icon-sm);
+  flex: none;
 }
 
 /* The question and the demo request: the band that closes the carousel */
@@ -727,6 +734,11 @@
   }
   .ticketWord {
     display: none;
+  }
+  /* The Domus card stays inside the canvas's gutter: a closer inset */
+  .domus {
+    gap: var(--sp-2);
+    padding-inline: var(--sp-3);
   }
   .below {
     margin-block: var(--sp-6);

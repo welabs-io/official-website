@@ -196,13 +196,13 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
 
         <div className={r.feed}>
           {PAST.map(({ date, icon: Icon, text }) => (
-            <p key={date} className={r.past} data-axis="past" data-col="lead">
-              <span className={`${p.mark} ${p.markSm}`} aria-hidden="true">
-                <Icon />
-              </span>
-              <span className={r.pastText}>
-                <time className={r.date}>{date}</time>
-                {text}
+            <p key={date} className={r.past} data-col="lead">
+              <time className={r.date}>{date}</time>
+              <span className={r.pastLine} data-axis="past">
+                <span className={`${p.mark} ${p.markSm}`} aria-hidden="true">
+                  <Icon />
+                </span>
+                <span className={r.pastText}>{text}</span>
               </span>
             </p>
           ))}
