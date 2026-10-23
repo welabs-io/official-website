@@ -48,8 +48,9 @@ const SCENES: Entry[] = [
   {
     id: "magneto-carousel",
     figure: /^Magneto/,
-    // The frame indicator of the header (the lib's SegmentedControl): a click on a frame plays from it
-    trigger: /^2$/,
+    // The frame indicator of the header (the lib's SegmentedControl): a click on a frame plays from it. Frame 3: from
+    // there the sequence and its last hold end inside the kit's 8 s of human idle (from frame 2 the idle cuts the hold)
+    trigger: /^3$/,
     triggerRole: "radio",
     final: "ask",
     // The last frame: the approved step, the live step and its two lines, and the two products it reached

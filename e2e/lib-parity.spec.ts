@@ -50,6 +50,15 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
+  // A story mounts its controls after the network settles (measured 2026-10-22: the with-icon buttons 1.7 s after
+  // networkidle), so on a Storybook page wait for the story to render a lib piece before reading
+  await page
+    .waitForFunction(
+      () => !document.querySelector("#storybook-root") || !!document.querySelector("#storybook-root [data-slot]"),
+      null,
+      { timeout: 15_000 },
+    )
+    .catch(() => {});
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
