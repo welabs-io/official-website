@@ -55,7 +55,7 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     differs: [
       {
         title: "Moldado à operação",
-        body: "O tipo de registro novo já nasce com tela e permissão.",
+        body: "O tipo de registro novo nasce com tela e permissão.",
         details: [4],
       },
       {
@@ -65,7 +65,7 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       },
       {
         title: "A base dos outros produtos",
-        body: "Conversas, fluxos e respostas trabalham sobre os mesmos registros e acessos.",
+        body: "Conversas, fluxos e respostas usam os mesmos registros e acessos.",
         details: [5],
       },
     ],
