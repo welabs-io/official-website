@@ -96,9 +96,9 @@
   /* The H1 of a record, the Domus `text-page-title` (erpnext front welabs-theme.css: 22/28, 600) */
   --t-page-title: 22px;
   --line-title: 28px;
-  /* The big number or the closing question of a carousel frame (brief-v3-carousel: 22 to 28 px, in bold): 28 at 1440,
-     22 on a phone, in the strong weight */
-  --t-figure: clamp(22px, 1.9444vw, 28px);
+  /* The figure of a carousel frame (brief-v3-carousel, 2026-10-22: big numbers 22-28 px, bold): 28/32 at --weight-bold */
+  --t-figure: 28px;
+  --line-figure: 32px;
   --weight-strong: 700;
   /* The big number of a drawn screen (carousels v3, operator 2026-10-22: large and bold, 22 to 28 px), in bold */
   --t-stat: 28px;
@@ -122,6 +122,7 @@
   --weight-text: 400;
   --weight-label: 500;
   --weight-title: 600;
+  --weight-bold: 700;
   --ls-display: -0.02em;
   --ls-heading: -0.01em;
   --ls-caps: 0.04em;
@@ -158,10 +159,10 @@
   --r-dot: 999px;
   --rule: 1px;
   --rule-dashed: 1.5px;
-  /* The carousels (brief-v3-carousel): the 2 px ring of the live piece and the dashed edge of the step still to come,
-     and the 2.5 px solid trace of the kit's connector (2 to 3.5 px, operator) */
+  /* The carousels (brief-v3-carousel): the 2 px ring of the live piece and the dashed edge of the step still to come */
   --rule-strong: 2px;
-  --rule-trace: 2.5px;
+  /* The solid ink trace of the kit's Connector and of a drawn track (brief-v3-carousel: 2 to 3.5 px, with its arrow) */
+  --rule-trace: 3px;
   --bar-active: 3px;
   --edge-ring: inset 0 0 0 var(--rule) var(--border);
   --edge-control: inset 0 0 0 var(--rule) var(--input);

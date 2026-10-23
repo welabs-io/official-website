@@ -43,9 +43,8 @@ svg {
   display: block;
   max-width: 100%;
 }
-/* A link drawn as a lib control (the site's ActionButton with `href`) keeps the colour of its control: this unlayered
-   rule would outrank the lib's layered text utilities */
-a:not([data-slot]) {
+/* A link drawn as the lib's Button takes its colour back in app/lib.css (`a[data-slot="button"]`, the one rule) */
+a {
   color: inherit;
 }
 /* FOCO VISÍVEL */
