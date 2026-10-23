@@ -2,60 +2,14 @@
 // PALCO DO LAB DE CENAS
 // One kit scene alone, with a toolbar that drives its clock from outside: replay from the first step, or simulate a
 // human take (the same `take` a scene control calls). The lab is a workbench, so the toolbar is allowed here and only
-// here (the site has no pause or replay control: scripts/check-portfolio.mjs).
-import type { ComponentType } from "react";
+// here (the site has no pause or replay control: scripts/check-portfolio.mjs). The scenes come from the catalog the
+// site mounts (SceneSlot.tsx), so the lab and the site show the same scene.
 import { Play, RefreshCw } from "lucide-react";
 import { ActionButton } from "@/components/lib/ui";
-import { useSceneTimeline, type SceneStep } from "./Scene";
-import type { SceneTimeline } from "./timeline";
+import { useSceneTimeline } from "./Scene";
 import type { SceneId } from "./registry";
-import { DOMUS_CAROUSEL_STEPS, DomusCarousel } from "./scenes/domus-carousel";
-import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
-import { KNOWLY_CAROUSEL_STEPS, KnowlyCarousel } from "./scenes/knowly-carousel";
-import { MAGNETO_CAROUSEL_STEPS, MagnetoCarousel } from "./scenes/magneto-carousel";
-import { RELLOO_CAROUSEL_STEPS, RellooCarousel } from "./scenes/relloo-carousel";
-import { TUNER_CAROUSEL_STEPS, TunerCarousel } from "./scenes/tuner-carousel";
+import { SCENES } from "./SceneSlot";
 import k from "./lab.module.css";
-
-type Entry = {
-  steps: readonly SceneStep[];
-  Component: ComponentType<{ timeline?: SceneTimeline }>;
-  // The step a simulated human take jumps to
-  takeFrom: string;
-};
-
-const SCENES: Record<SceneId, Entry> = {
-  "relloo-carousel": {
-    steps: RELLOO_CAROUSEL_STEPS,
-    Component: RellooCarousel,
-    takeFrom: "f2-reply",
-  },
-  "domus-carousel": {
-    steps: DOMUS_CAROUSEL_STEPS,
-    Component: DomusCarousel,
-    takeFrom: "type",
-  },
-  "magneto-carousel": {
-    steps: MAGNETO_CAROUSEL_STEPS,
-    Component: MagnetoCarousel,
-    takeFrom: "check",
-  },
-  "tuner-carousel": {
-    steps: TUNER_CAROUSEL_STEPS,
-    Component: TunerCarousel,
-    takeFrom: "fanout",
-  },
-  "knowly-carousel": {
-    steps: KNOWLY_CAROUSEL_STEPS,
-    Component: KnowlyCarousel,
-    takeFrom: "answer",
-  },
-  "home-message": {
-    steps: HOME_MESSAGE_STEPS,
-    Component: HomeMessageScene,
-    takeFrom: "tuner",
-  },
-};
 
 export function LabStage({ id }: { id: SceneId }) {
   const entry = SCENES[id];
@@ -67,7 +21,12 @@ export function LabStage({ id }: { id: SceneId }) {
         <span className={k.name}>{id}</span>
         {/* The lib's Button with its icon (components-button--with-icon): neutral outline at md, the label beside the
             icon; the Domus glyphs, RefreshCw (its Auto Repeat) to replay and Play (its flow's start) for a take */}
-        <ActionButton icon={<RefreshCw />} emphasis="outline" size="md" onClick={timeline.restart}>
+        <ActionButton
+          icon={<RefreshCw />}
+          emphasis="outline"
+          size="md"
+          onClick={timeline.restart}
+        >
           Recomeçar
         </ActionButton>
         <ActionButton

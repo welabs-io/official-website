@@ -56,7 +56,8 @@ export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
 
 // CONTEÚDO DA CENA
 const COPY = {
-  label: "Relloo: uma mensagem vira oportunidade e anda no funil, em quatro momentos",
+  label:
+    "Relloo: uma mensagem vira oportunidade e anda no funil, em quatro momentos",
   conversation: "Conversa 2210",
   contact: "Contato 4821",
   linked: "Ligada à gestão",
@@ -73,12 +74,14 @@ const COPY = {
   previous: "Antes",
   now: "Dona agora",
   why: "pediu proposta",
-  agentSaid: "Qual o modelo dos aparelhos? Já deixo tudo pronto para a proposta.",
+  agentSaid:
+    "Qual o modelo dos aparelhos? Já deixo tudo pronto para a proposta.",
   agentAt: "08:12",
   answer: "São 3 aparelhos de 12 mil BTUs. Quero uma proposta.",
   answerAt: "08:19",
   summaryReady: "Resumo pronto para a equipe",
-  summaryLong: "Manutenção mensal, 3 aparelhos de 12 mil BTUs no bloco B. Pediu proposta.",
+  summaryLong:
+    "Manutenção mensal, 3 aparelhos de 12 mil BTUs no bloco B. Pediu proposta.",
   summary: "Resumo",
   summaryShort: "Manutenção mensal, 3 aparelhos no bloco B. Pediu proposta.",
   history: "3 canais · um histórico só",
@@ -92,7 +95,8 @@ const COPY = {
   funnel: "Funil",
   domus: "Domus",
   visit: "Vistoria 318 agendada",
-  question: "Quem atende primeiro na sua empresa?",
+  // v3 (2026-10-23): "atende" is a banned verb of copy-rules.json `words`; the same question, with "responde"
+  question: "Quem responde primeiro na sua empresa?",
 };
 
 // The channels the contact used before, in the history of frame 1 (the Domus glyphs: Mail, Phone)
@@ -103,21 +107,50 @@ const PAST = [
 
 // The four frames: their steps, and the screen the chrome names (the screen, then its area)
 const FRAMES = [
-  { n: 1, steps: ["f1-history", "f1-message"], screen: "Caixa de entrada", area: "Atendimento" },
-  { n: 2, steps: ["f2-reply", "f2-handoff", "f2-summary"], screen: "Caixa de entrada", area: "Atendimento" },
-  { n: 3, steps: ["f3-record", "f3-born"], screen: COPY.contact, area: "Pessoa" },
-  { n: 4, steps: ["f4-funnel", "f4-move", "f4-domus", "f4-ask"], screen: COPY.contact, area: "Pessoa" },
+  {
+    n: 1,
+    steps: ["f1-history", "f1-message"],
+    screen: "Caixa de entrada",
+    area: "Atendimento",
+  },
+  {
+    n: 2,
+    steps: ["f2-reply", "f2-handoff", "f2-summary"],
+    screen: "Caixa de entrada",
+    area: "Atendimento",
+  },
+  {
+    n: 3,
+    steps: ["f3-record", "f3-born"],
+    screen: COPY.contact,
+    area: "Pessoa",
+  },
+  {
+    n: 4,
+    steps: ["f4-funnel", "f4-move", "f4-domus", "f4-ask"],
+    screen: COPY.contact,
+    area: "Pessoa",
+  },
 ] as const;
 type Frame = (typeof FRAMES)[number];
 
 const frameOf = (scene: SceneApi): Frame =>
-  FRAMES.find((f) => (f.steps as readonly string[]).includes(scene.id)) ?? FRAMES[FRAMES.length - 1];
+  FRAMES.find((f) => (f.steps as readonly string[]).includes(scene.id)) ??
+  FRAMES[FRAMES.length - 1];
 
 // The frame enters on the out curve and leaves on the in-out one, sliding a step the way the story goes
 const FRAME_MOTION = {
   initial: { opacity: 0, x: 32 },
-  animate: { opacity: 1, x: 0, transition: { duration: SCENE_CURVE.dur2 * 1.7, ease: SCENE_CURVE.out } },
-  exit: { opacity: 0, x: -32, transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut } },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: SCENE_CURVE.dur2 * 1.7, ease: SCENE_CURVE.out },
+  },
+  exit: {
+    opacity: 0,
+    x: -32,
+    transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut },
+  },
 } as const;
 
 // CABEÇALHO DO QUADRO
@@ -187,7 +220,12 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
           </p>
           {arrived ? (
             <div className={r.arrival} data-col="lead">
-              <Badge variant="neutral" appearance="outline" className={r.channel} data-axis-pair="">
+              <Badge
+                variant="neutral"
+                appearance="outline"
+                className={r.channel}
+                data-axis-pair=""
+              >
                 <MessageSquare data-icon="inline-start" aria-hidden="true" />
                 {COPY.message}
               </Badge>
@@ -260,8 +298,19 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
           {/* Side by side the trace runs across; stacked (a phone) it drops from one seat to the next */}
           {handed && !scene.ghost ? (
             <>
-              <Connector from='[data-holder="before"]' to='[data-holder="now"]' inset={0} gap={8} />
-              <Connector from='[data-holder="before"]' to='[data-holder="now"]' route="drop" inset={0} gap={8} />
+              <Connector
+                from='[data-holder="before"]'
+                to='[data-holder="now"]'
+                inset={0}
+                gap={8}
+              />
+              <Connector
+                from='[data-holder="before"]'
+                to='[data-holder="now"]'
+                route="drop"
+                inset={0}
+                gap={8}
+              />
             </>
           ) : null}
         </div>
@@ -330,13 +379,21 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
             the identity and the text block on one centre, the status a minidot on the title's line */}
         <div className={r.record} data-header-root="">
           <div className={r.recordMain} data-align="record" data-col="right">
-            <span className={r.identity} data-header="identity" aria-hidden="true">
+            <span
+              className={r.identity}
+              data-header="identity"
+              aria-hidden="true"
+            >
               <Contact />
             </span>
             <span className={r.recordText} data-header="block">
               <span className={r.recordTop}>
                 <b data-header="title">{COPY.contact}</b>
-                <span className={r.state} data-header="status" data-axis-pair="">
+                <span
+                  className={r.state}
+                  data-header="status"
+                  data-axis-pair=""
+                >
                   <span className={r.dot} data-dot="" aria-hidden="true" />
                   {COPY.linked}
                 </span>
@@ -352,7 +409,11 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
             {COPY.deals}
           </p>
           {born ? (
-            <article className={`${r.deal} ${r.live} ${r.landing}`} data-deal="" data-col="right">
+            <article
+              className={`${r.deal} ${r.live} ${r.landing}`}
+              data-deal=""
+              data-col="right"
+            >
               <span className={r.dealTop}>
                 <b>{COPY.born}</b>
                 <Badge variant="neutral" appearance="outline" className={r.now}>
@@ -369,7 +430,14 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
       </section>
 
       {born && !scene.ghost ? (
-        <Connector from="[data-quote]" to="[data-deal]" route="elbow" lane="[data-lane]" inset={0} gap={6} />
+        <Connector
+          from="[data-quote]"
+          to="[data-deal]"
+          route="elbow"
+          lane="[data-lane]"
+          inset={0}
+          gap={6}
+        />
       ) : null}
     </div>
   );
@@ -385,7 +453,10 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
   const chip = (
     <motion.span
       layoutId={scene.ghost ? undefined : "relloo-deal"}
-      transition={{ duration: SCENE_CURVE.dur2 * 1.7, ease: SCENE_CURVE.spring }}
+      transition={{
+        duration: SCENE_CURVE.dur2 * 1.7,
+        ease: SCENE_CURVE.spring,
+      }}
       className={`${r.ticket} ${r.live}`}
     >
       <span className={r.ticketWord}>{COPY.deal} </span>
@@ -401,10 +472,18 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
         <span>{COPY.moves}</span>
       </p>
       <ol className={r.funnel} aria-label={COPY.funnel} data-col="funnel">
-        <li className={r.stage} data-stage="1" data-state={moved ? "done" : "active"}>
+        <li
+          className={r.stage}
+          data-stage="1"
+          data-state={moved ? "done" : "active"}
+        >
           {moved ? <Check className={r.done} aria-hidden="true" /> : chip}
         </li>
-        <li className={r.stage} data-stage="2" data-state={moved ? "active" : "waiting"}>
+        <li
+          className={r.stage}
+          data-stage="2"
+          data-state={moved ? "active" : "waiting"}
+        >
           {moved ? chip : null}
         </li>
         <li className={r.stage} data-stage="3" data-state="waiting" />
@@ -413,8 +492,15 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
       {/* The same four columns, so the Domus sits centred under the second stage (columns 1 to 3 share its centre) */}
       <div className={r.below}>
         {booked ? (
-          <div className={`${r.domus} ${r.landing}`} data-domus="" data-axis="domus">
-            <span className={`${p.mark} ${p.markSquare} ${r.ink}`} aria-hidden="true">
+          <div
+            className={`${r.domus} ${r.landing}`}
+            data-domus=""
+            data-axis="domus"
+          >
+            <span
+              className={`${p.mark} ${p.markSquare} ${r.ink}`}
+              aria-hidden="true"
+            >
               <Building2 />
             </span>
             <span className={r.domusText}>
@@ -428,13 +514,24 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
         ) : null}
       </div>
       {booked && !scene.ghost ? (
-        <Connector from='[data-stage="2"]' to="[data-domus]" route="drop" inset={-2} gap={8} />
+        <Connector
+          from='[data-stage="2"]'
+          to="[data-domus]"
+          route="drop"
+          inset={-2}
+          gap={8}
+        />
       ) : null}
 
       {asked ? (
         <div className={`${r.ask} ${r.landing}`} data-col="funnel" data-ask="">
           <p className={r.question}>{COPY.question}</p>
-          <ActionButton emphasis="primary" size="md" icon={<CalendarDays />} href={CONTACT_HREF}>
+          <ActionButton
+            emphasis="primary"
+            size="md"
+            icon={<CalendarDays />}
+            href={CONTACT_HREF}
+          >
             {CTA_LABEL}
           </ActionButton>
         </div>

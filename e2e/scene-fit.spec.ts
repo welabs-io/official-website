@@ -20,22 +20,30 @@ const VIEWPORTS = [
   { width: 390, height: 844 },
 ];
 
-// Cut texts and empty strips of every scene, minis and stage tiles
+// Cut texts and empty strips of every scene, minis and kit scenes
 const scanScenes = (page: Page) =>
   page.evaluate(() => {
     const cuts: string[] = [];
     const empty: { where: string; px: number }[] = [];
+    // The scenes scanned (the counter that guards against a page whose scenes were not found)
+    const scanned: string[] = [];
     const scan = (root: Element, label: string) => {
+      scanned.push(label);
       for (const el of root.querySelectorAll<HTMLElement>("*")) {
         if (!el.textContent?.trim() || el.children.length > 3) continue;
         if (!el.getBoundingClientRect().width) continue;
+        // Text for assistive technology only (the lib's `sr-only`, a 1 px clipped box: "Momento" of the frame
+        // indicator of a kit carousel) is never painted, so it cannot be cut
+        if (el.classList.contains("sr-only")) continue;
         const cs = getComputedStyle(el);
         if (cs.display === "none" || cs.visibility === "hidden") continue;
         if (
           el.scrollWidth > el.clientWidth + 1 &&
           (cs.textOverflow === "ellipsis" || cs.overflowX === "hidden")
         )
-          cuts.push(`${label}: "${el.textContent.trim().slice(0, 30)}" ${el.scrollWidth}>${el.clientWidth}`);
+          cuts.push(
+            `${label}: "${el.textContent.trim().slice(0, 30)}" ${el.scrollWidth}>${el.clientWidth}`,
+          );
       }
       // The body of each window, down to the lowest thing it paints: a text, a picture, a field, an edge or a fill (a
       // pane that spans the whole body is the body itself and does not count)
@@ -46,12 +54,20 @@ const scanScenes = (page: Page) =>
         let low = b.top;
         for (const el of body.querySelectorAll("*")) {
           const cs = getComputedStyle(el);
-          if (cs.display === "none" || cs.visibility === "hidden" || Number(cs.opacity) < 0.05) continue;
+          if (
+            cs.display === "none" ||
+            cs.visibility === "hidden" ||
+            Number(cs.opacity) < 0.05
+          )
+            continue;
           const r = el.getBoundingClientRect();
-          if (r.width < 1 || r.height < 1 || r.height >= b.height * 0.9) continue;
+          if (r.width < 1 || r.height < 1 || r.height >= b.height * 0.9)
+            continue;
           const paints =
             el.matches("img, svg, input") ||
-            [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent?.trim()) ||
+            [...el.childNodes].some(
+              (n) => n.nodeType === 3 && n.textContent?.trim(),
+            ) ||
             cs.borderBottomWidth !== "0px" ||
             cs.backgroundColor !== "rgba(0, 0, 0, 0)";
           if (paints && r.bottom <= b.bottom + 1) low = Math.max(low, r.bottom);
@@ -59,13 +75,19 @@ const scanScenes = (page: Page) =>
         empty.push({ where: label, px: b.bottom - low });
       }
     };
-    document.querySelectorAll("[data-mini]").forEach((d) => scan(d, `mini ${d.getAttribute("data-mini")}`));
-    const tiles = [...document.querySelectorAll<HTMLElement>("[data-descent-slot] [data-tile]")];
-    tiles.forEach((tile, i) => {
-      tiles.forEach((t, k) => (t.dataset.pos = String(k === i ? 0 : k > i ? 1 : -1)));
-      scan(tile, `tile ${tile.dataset.tile}`);
-    });
-    return { cuts, empty };
+    document
+      .querySelectorAll("[data-mini]")
+      .forEach((d) => scan(d, `mini ${d.getAttribute("data-mini")}`));
+    // v3 (2026-10-23): the kit scenes mounted on the pages (SceneSlot), their stage (the drawn screen, as the kit's own
+    // cut check in e2e/scene-kit-scenes.spec.ts reads it); the chrome bar of the kit window truncates its breadcrumb
+    // by design (Scene.tsx, scene-kit.module.css .title), the same in the lab; the stage tiles of the product openings
+    // left with the carousels that replace them
+    document
+      .querySelectorAll("[data-kit] [data-scene]")
+      .forEach((d) =>
+        scan(d, `kit ${d.closest("[data-kit]")!.getAttribute("data-kit")}`),
+      );
+    return { cuts, empty, scanned };
   });
 
 // The first letter of each text under a stage logo, against the start of the logo's ink (from its file)
@@ -75,13 +97,16 @@ const logoOffsets = (page: Page) =>
     const ink = async (src: string) => {
       if (inkOf.has(src)) return inkOf.get(src)!;
       const holder = document.createElement("div");
-      holder.style.cssText = "position:absolute;left:-9999px;top:0;width:1000px";
+      holder.style.cssText =
+        "position:absolute;left:-9999px;top:0;width:1000px";
       holder.innerHTML = await (await fetch(src)).text();
       document.body.append(holder);
       const svg = holder.querySelector("svg")!;
       const vb = svg.viewBox.baseVal;
       let x0 = Infinity;
-      for (const el of svg.querySelectorAll<SVGGraphicsElement>("path,rect,circle,ellipse,polygon,line,polyline")) {
+      for (const el of svg.querySelectorAll<SVGGraphicsElement>(
+        "path,rect,circle,ellipse,polygon,line,polyline",
+      )) {
         const bb = el.getBBox();
         const rel = svg.getCTM()!.inverse().multiply(el.getCTM()!);
         for (const [x, y] of [
@@ -137,20 +162,28 @@ for (const viewport of VIEWPORTS)
     test.use({ viewport, contextOptions: { reducedMotion: "reduce" } });
 
     for (const route of PATHS)
-      test(`${route}: no scene text is cut and no window keeps an empty strip`, async ({ page }) => {
+      test(`${route}: no scene text is cut and no window keeps an empty strip`, async ({
+        page,
+      }) => {
         await page.goto(route, { waitUntil: "load" });
-        const { cuts, empty } = await scanScenes(page);
+        const { cuts, empty, scanned } = await scanScenes(page);
         expect(cuts).toEqual([]);
-        expect(empty.length).toBeGreaterThan(0);
+        // Every page has a scene: the home its minis and its message, a product its carousel (the kit window follows
+        // its settled frame by construction, Scene.tsx; the empty strip is measured on the windows of the minis)
+        expect(scanned.length, "scenes scanned").toBeGreaterThan(0);
+        if (route === "/") expect(empty.length).toBeGreaterThan(0);
         for (const e of empty) expect(e.px, e.where).toBeLessThanOrEqual(24);
       });
 
     for (const route of ["/", "/products/relloo"])
-      test(`${route}: the stage logos start on the edge of their text`, async ({ page }) => {
+      test(`${route}: the stage logos start on the edge of their text`, async ({
+        page,
+      }) => {
         await page.goto(route, { waitUntil: "load" });
         await page.waitForTimeout(300);
         const offsets = await logoOffsets(page);
         expect(offsets.length).toBeGreaterThanOrEqual(8);
-        for (const o of offsets) expect(Math.abs(o.dx), o.what).toBeLessThanOrEqual(1);
+        for (const o of offsets)
+          expect(Math.abs(o.dx), o.what).toBeLessThanOrEqual(1);
       });
   });

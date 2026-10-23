@@ -14,7 +14,7 @@ Cada etapa só começa depois de a anterior fechar. Quando o operador nomeia um 
 1. **Ficha de conceito** (8 partes, `references/concept-brief.md`). Nada se desenha antes dela: quadros tirados direto de ficha ensinaram o "como" e foram descartados.
 2. **Canvas de design.** O conceito é desenhado como quadros estáticos (um arquivo por quadro, 1120 x 700, mesma paleta da §5) no canvas do projeto, com as duas ou três direções do **mesmo** arquétipo quando houver dúvida. O endereço do canvas vigente fica fora do repo, no registro de orquestração do redesenho (`site-redesign/v3-plan/orchestration.md` da pasta de controle do portfólio). Valide o conceito novo aqui, nunca em código.
 3. **Aprovação do operador** sobre o canvas. Sem "sim" explícito, não se escreve cena.
-4. **Cena do kit.** Copie `components/scene-kit/TEMPLATE.tsx` para `components/scene-kit/scenes/<produto>-<ideia>.tsx`, registre em `registry.ts` e `LabStage.tsx`, aprove sozinha em `/lab/scenes/<id>` (1440 e 390), e só então monte no site com uma linha. Id do carrossel: `<produto>-carousel`.
+4. **Cena do kit.** Copie `components/scene-kit/TEMPLATE.tsx` para `components/scene-kit/scenes/<produto>-<ideia>.tsx`, registre em `registry.ts` e no catálogo `SCENES` de `SceneSlot.tsx` (que o lab também lê), aprove sozinha em `/lab/scenes/<id>` (1440 e 390), e só então monte no site com uma linha: `<SceneSlot id="<id>" />`. Id do carrossel: `<produto>-carousel`. A entrada da cena na tabela de `e2e/scene-kit-scenes.spec.ts` ganha também a rota onde ela está montada (`SITE`), que roda o mesmo contrato na página.
 5. **Specs** (§8), escritas **antes** do estilo. Pronto = verdes 3 vezes seguidas.
 
 Itere um componente por vez e pare para validação a cada bloco; a cena lê o canvas, o canvas não se improvisa em código.
@@ -32,23 +32,25 @@ Oito partes, nesta ordem (modelo completo, com as perguntas de cada parte, em `r
 
 O que fez as cenas parecerem "tudo chat" foi o mesmo cabeçalho com lista vertical embaixo. Cada produto tem objeto central, tipo de tela e movimento próprios (tabela completa e anti-padrões em `references/archetypes.md`).
 
-| Produto | Tipo de tela exclusivo | Movimento |
-|---|---|---|
-| Domus | mapa de módulos com o construtor (lista de campos tipados) | o campo nasce, a tela se forma, os outros produtos acendem |
-| Relloo | caixa de entrada, pessoa e funil: única com bolha e histórico vertical | a conversa vira oportunidade e muda de etapa |
-| Magneto | trilha da execução em grafo (passos, espera, ramos) | passos acendem um a um; um espera, outro se refaz |
-| Tuner | leque de um envio para N canais, com a situação de cada um | o envio se abre e os selos avançam |
-| Knowly | linha do tempo horizontal de um assunto | fontes chegam, o fato se funde, o trecho-prova aparece |
+| Produto | Tipo de tela exclusivo                                                 | Movimento                                                  |
+| ------- | ---------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Domus   | mapa de módulos com o construtor (lista de campos tipados)             | o campo nasce, a tela se forma, os outros produtos acendem |
+| Relloo  | caixa de entrada, pessoa e funil: única com bolha e histórico vertical | a conversa vira oportunidade e muda de etapa               |
+| Magneto | trilha da execução em grafo (passos, espera, ramos)                    | passos acendem um a um; um espera, outro se refaz          |
+| Tuner   | leque de um envio para N canais, com a situação de cada um             | o envio se abre e os selos avançam                         |
+| Knowly  | linha do tempo horizontal de um assunto                                | fontes chegam, o fato se funde, o trecho-prova aparece     |
 
 Regras: o elemento exclusivo de um produto **não aparece** na cena de outro; nenhuma cena abre com o mesmo cabeçalho e uma lista embaixo; o painel do assistente é o único elemento comum, de propósito (mesma forma nos cinco, até 1/3 da largura, um momento por cena). Cada cena declara o arquétipo na ficha. (Hoje essa regra é cobrada por revisão; o `data-archetype` por cena e a spec que barra o elemento fora da exclusividade são proposta ainda não implementada. Regra só em texto não mudou comportamento: implemente a spec quando for a segunda cena.)
 
 ## 4. Carrossel e aperitivo
 
 **Carrossel.** Cada produto mostra **3 a 4 quadros leves, um conceito cada**, percorridos como passos de uma cena do kit. Nunca um quadro denso com tudo: foi julgado confuso, pesado e cansativo. Régua do quadro: **um objeto central, uma ideia, um conector, no máximo 1 a 2 peças em âmbar**.
+
 - Transição fluida entre quadros, com as 3 curvas do site (`SCENE_EASE`), nunca corte seco. O indicador de quadro (1 a N) fica no cabeçalho.
 - Assenta no último quadro; é ele que o servidor e o movimento reduzido mostram.
 
 **Aperitivo: efeito, nunca mecanismo.** O site existe para a pessoa agendar uma demonstração: mostra impacto e deixa a dúvida nos "detalhes".
+
 - Mostre o **efeito**. Número vira escala ou resultado; nada de valor de negócio, regra interna, chamada de código, tipo de campo, prazo interno, "releitura", regra de etapa ou passo de merge.
 - **Teste de cópia**, em todo quadro: "isto ensina alguém a copiar?". Se sim, corte.
 - O último quadro fecha com **uma pergunta de curiosidade** curta e o botão primário da lib **"Agendar uma demonstração"** (ícone de calendário), que leva a `#contact` da home.
@@ -81,7 +83,7 @@ Toda peça vem de `@imagineapps-team/react` pela fronteira; escrever à mão é 
 
 O contrato é código do kit (`components/scene-kit/timeline.ts`, coberto por `timeline.test.ts`). A cena **não reimplementa nada** dele: declara `steps` (`{ id, at?, hold?, gate? }`), renderiza **só** a partir de `scene` (`scene.reached(id)`, `scene.is(id)`, `scene.cycle`) e todo controle chama `scene.take(id)`. Sem `useState`, `useEffect` nem `setTimeout` próprios.
 
-O kit garante: roda sozinho ao entrar na tela (`useInView`, limiar 0,4); faz loop com ~1 s de hold no último passo; o gesto assume e devolve (toca até o fim, ou 8 s parado, segura ~1 s, reseta e retoma); fora da tela nenhum timer nem animação CSS roda (`data-on="false"`); sob movimento reduzido mostra o último passo estático (é o que o servidor desenha); a janela tem a altura do quadro assentado; três curvas de easing em `SCENE_EASE`. Durações, tokens de easing e o contrato legado (`components/scenes`, `components/plays`, a casa do Domus) em `references/continuity.md`. Passo de 400 a 1200 ms, ciclo de 6 a 10 s.
+O kit garante: roda sozinho ao entrar na tela (`useInView`, limiar 0,4); faz loop com ~1 s de hold no último passo; o gesto assume e devolve (toca até o fim, ou 8 s parado, segura ~1 s, reseta e retoma); fora da tela nenhum timer nem animação CSS roda (`data-on="false"`); sob movimento reduzido mostra o último passo estático (é o que o servidor desenha); a janela tem a altura do quadro assentado; três curvas de easing em `SCENE_EASE`. Durações, tokens de easing e o contrato legado (`components/scenes`, a casa do Domus) em `references/continuity.md`. Passo de 400 a 1200 ms, ciclo de 6 a 10 s.
 
 ## 8. Método de teste: "pronto" é medido
 

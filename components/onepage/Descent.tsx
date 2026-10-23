@@ -1,9 +1,9 @@
 "use client";
-// DESCIDA CONTÍNUA
-// The home and the product pages are one page (app/(site)/layout.tsx). This piece renders nothing: it fetches the engine
-// of the descent (descent-run.ts, a chunk of its own, outside the initial JS) right after hydration and tells it every
-// time a new route is in the DOM. What the engine does: any link to a product opens the brand opening of that product
-// and lands on it, the browser's back runs the way back, and scrolling up past a product returns to the home.
+// TRANSIÇÃO ENTRE PÁGINAS
+// The header and the footer stay mounted across the pages of the site (app/(site)/layout.tsx). This piece renders
+// nothing: it fetches the engine of the move (descent-run.ts, a chunk of its own, outside the initial JS) right after
+// hydration and tells it every time a new route is in the DOM. What the engine does: any link to a product opens the
+// brand opening of that product and lands on it; the way home and the browser's back and forward cross a plain sheet.
 // v2.1: a click on a link of the home or of a product that arrives while the chunk is still downloading is held and
 // handed to the engine when it lands (measured: the menu swapped the page with no move when clicked early), so the move
 // runs on every click, not only on the late ones.
@@ -27,7 +27,7 @@ export function Descent() {
     let dead = false;
     let held: HTMLAnchorElement | null = null;
     // Registered here, synchronously and in the capture phase, so it runs before the router's own listener (which
-    // commits the previous route at once): the reverse move reads the product while it is still in the DOM
+    // commits the previous route at once): the sheet covers the page before it changes
     const onPop = () => engine?.hooks.pop();
     // Until the engine lands, a plain click on a link to the home or to a product is held (the last one wins)
     const onEarly = (event: MouseEvent) => {

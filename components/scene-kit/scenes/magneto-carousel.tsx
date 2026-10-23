@@ -65,7 +65,10 @@ const FRAMES = [
 type FrameN = (typeof FRAMES)[number]["n"];
 
 const frameOf = (step: string): FrameN =>
-  (FRAMES.find((f) => (f.steps as readonly string[]).includes(step)) ?? FRAMES[0]).n;
+  (
+    FRAMES.find((f) => (f.steps as readonly string[]).includes(step)) ??
+    FRAMES[0]
+  ).n;
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
 
@@ -88,7 +91,13 @@ const COPY = {
     nextLabel: "Próximo passo",
     nextStep: "Conferir proposta",
   },
-  f2: { trigger: "Gatilho", approval: "Aprovação da gerência", now: "agora", contract: "Preparar contrato", same: "ao mesmo tempo" },
+  f2: {
+    trigger: "Gatilho",
+    approval: "Aprovação da gerência",
+    now: "agora",
+    contract: "Preparar contrato",
+    same: "ao mesmo tempo",
+  },
   f3: {
     waiting: "Aguardando a gerência",
     warned: "avisou a gerência",
@@ -104,17 +113,28 @@ const COPY = {
     concluded: "Concluído, sem nada em dobro",
     order: "Pedido 1234 criado",
     sent: "contrato enviado",
-    question: "Como ele sabe o que já foi feito?",
+    // v3 (2026-10-23): no personification ("Como ele sabe...": copy-rules.json `words`), the effect as the question
+    question: "Quanto trabalho é refeito na sua empresa?",
   },
 };
 
 // PEÇAS DO QUADRO
 // A piece arrives (data-in) when its step is reached; `i` staggers the pieces that arrive on the same step
-type PieceProps = { shown: boolean; i?: number; children: ReactNode; className?: string } & Record<`data-${string}`, string | boolean | undefined>;
+type PieceProps = {
+  shown: boolean;
+  i?: number;
+  children: ReactNode;
+  className?: string;
+} & Record<`data-${string}`, string | boolean | undefined>;
 
 function Piece({ shown, i = 0, children, className, ...data }: PieceProps) {
   return (
-    <div className={`${g.piece} ${className ?? ""}`} data-in={shown} style={{ "--i": i } as CSSProperties} {...data}>
+    <div
+      className={`${g.piece} ${className ?? ""}`}
+      data-in={shown}
+      style={{ "--i": i } as CSSProperties}
+      {...data}
+    >
       {children}
     </div>
   );
@@ -130,10 +150,21 @@ function Down({ shown }: { shown: boolean }) {
 }
 
 // A product that took part: its square ink mark and what it did
-function ProductNode({ icon: Icon, name, children }: { icon: LucideIcon; name: string; children: ReactNode }) {
+function ProductNode({
+  icon: Icon,
+  name,
+  children,
+}: {
+  icon: LucideIcon;
+  name: string;
+  children: ReactNode;
+}) {
   return (
     <span className={g.node} data-axis="product">
-      <span className={`${p.mark} ${p.markMd} ${g.square} ${g.ink}`} aria-hidden="true">
+      <span
+        className={`${p.mark} ${p.markMd} ${g.square} ${g.ink}`}
+        aria-hidden="true"
+      >
         <Icon />
       </span>
       <span className={p.stack}>
@@ -145,10 +176,26 @@ function ProductNode({ icon: Icon, name, children }: { icon: LucideIcon; name: s
 }
 
 // A step that is done: the green mark with its check, its name and what it left (`pop`: it just turned done)
-function DoneNode({ name, meta, pop }: { name: string; meta?: string; pop?: boolean }) {
+function DoneNode({
+  name,
+  meta,
+  pop,
+}: {
+  name: string;
+  meta?: string;
+  pop?: boolean;
+}) {
   return (
-    <span className={`${g.node} ${pop ? g.pop : ""}`} data-node="done" data-axis="done">
-      <span className={`${p.mark} ${p.markSm} ${g.square}`} data-tone="done" aria-hidden="true">
+    <span
+      className={`${g.node} ${pop ? g.pop : ""}`}
+      data-node="done"
+      data-axis="done"
+    >
+      <span
+        className={`${p.mark} ${p.markSm} ${g.square}`}
+        data-tone="done"
+        aria-hidden="true"
+      >
         <Check />
       </span>
       <span className={p.stack}>
@@ -163,7 +210,10 @@ function DoneNode({ name, meta, pop }: { name: string; meta?: string; pop?: bool
 function NextNode({ label, name }: { label: string; name: string }) {
   return (
     <span className={g.node} data-node="next" data-axis="next">
-      <span className={`${p.mark} ${p.markSm} ${g.square} ${g.slot}`} aria-hidden="true" />
+      <span
+        className={`${p.mark} ${p.markSm} ${g.square} ${g.slot}`}
+        aria-hidden="true"
+      />
       <span className={p.stack}>
         <span>{label}</span>
         <b>{name}</b>
@@ -173,9 +223,22 @@ function NextNode({ label, name }: { label: string; name: string }) {
 }
 
 // A line of a step: its icon (or dot) and a short phrase, on one axis
-function Line({ icon, tone, children }: { icon: ReactNode; tone?: "done" | "muted"; children: ReactNode }) {
+function Line({
+  icon,
+  tone,
+  children,
+}: {
+  icon: ReactNode;
+  tone?: "done" | "muted";
+  children: ReactNode;
+}) {
   return (
-    <span className={g.line} data-tone={tone} data-axis-pair="" data-axis="line">
+    <span
+      className={g.line}
+      data-tone={tone}
+      data-axis-pair=""
+      data-axis="line"
+    >
       {icon}
       <span>{children}</span>
     </span>
@@ -183,10 +246,21 @@ function Line({ icon, tone, children }: { icon: ReactNode; tone?: "done" | "mute
 }
 
 // The head of the live step: its mark (amber while it runs, ink while it waits) and its name
-function LiveHead({ icon: Icon, tone, name }: { icon: LucideIcon; tone: "signal" | "ink"; name: string }) {
+function LiveHead({
+  icon: Icon,
+  tone,
+  name,
+}: {
+  icon: LucideIcon;
+  tone: "signal" | "ink";
+  name: string;
+}) {
   return (
     <span className={g.liveHead} data-axis="live">
-      <span className={`${p.mark} ${p.markMd} ${g.square} ${tone === "signal" ? g.signal : g.ink}`} aria-hidden="true">
+      <span
+        className={`${p.mark} ${p.markMd} ${g.square} ${tone === "signal" ? g.signal : g.ink}`}
+        aria-hidden="true"
+      >
         <Icon />
       </span>
       <b>{name}</b>
@@ -214,7 +288,13 @@ function TriggerFrame({ scene, on }: FrameProps) {
           </ProductNode>
         </Piece>
         <Down shown={on("trigger")} />
-        <Piece shown={on("trigger")} i={1} className={g.live} data-id="live" data-node="live">
+        <Piece
+          shown={on("trigger")}
+          i={1}
+          className={g.live}
+          data-id="live"
+          data-node="live"
+        >
           <Line icon={<Zap />}>{COPY.f1.started}</Line>
           <span className={g.figure}>{COPY.proposal}</span>
           <span className={g.liveMeta}>{COPY.f1.nobody}</span>
@@ -225,8 +305,17 @@ function TriggerFrame({ scene, on }: FrameProps) {
         </Piece>
       </div>
       <Traces scene={scene}>
-        {on("trigger") ? <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} /> : null}
-        {on("next") ? <Connector from='[data-id="live"]' to='[data-id="next"]' inset={0} tone="quiet" /> : null}
+        {on("trigger") ? (
+          <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} />
+        ) : null}
+        {on("next") ? (
+          <Connector
+            from='[data-id="live"]'
+            to='[data-id="next"]'
+            inset={0}
+            tone="quiet"
+          />
+        ) : null}
       </Traces>
     </>
   );
@@ -239,7 +328,10 @@ function SplitFrame({ scene, on }: FrameProps) {
         <Piece shown={on("check")} data-id="trigger">
           <span className={g.node} data-node="trigger">
             <span className={p.stack}>
-              <Line icon={<span className={g.dot} data-tone="done" data-dot="" />} tone="done">
+              <Line
+                icon={<span className={g.dot} data-tone="done" data-dot="" />}
+                tone="done"
+              >
                 {COPY.f2.trigger}
               </Line>
               <b>{COPY.proposal}</b>
@@ -252,19 +344,33 @@ function SplitFrame({ scene, on }: FrameProps) {
         </Piece>
         <Down shown={on("split")} />
         <div className={g.fork}>
-          <Piece shown={on("split")} className={g.live} data-id="approval" data-node="live" data-branch="">
+          <Piece
+            shown={on("split")}
+            className={g.live}
+            data-id="approval"
+            data-node="live"
+            data-branch=""
+          >
             <LiveHead icon={UserCheck} tone="signal" name={COPY.f2.approval} />
-            <Line icon={<span className={g.dot} data-dot="" />}>{COPY.f2.now}</Line>
+            <Line icon={<span className={g.dot} data-dot="" />}>
+              {COPY.f2.now}
+            </Line>
           </Piece>
           <Piece shown={on("split")} i={1} data-id="contract" data-branch="">
             <span className={`${g.node} ${g.column}`}>
               <span className={g.liveHead} data-axis="contract">
-                <span className={`${p.mark} ${p.markMd} ${g.square}`} aria-hidden="true">
+                <span
+                  className={`${p.mark} ${p.markMd} ${g.square}`}
+                  aria-hidden="true"
+                >
                   <FileText />
                 </span>
                 <b>{COPY.f2.contract}</b>
               </span>
-              <Line icon={<span className={g.dot} data-tone="ring" data-dot="" />} tone="muted">
+              <Line
+                icon={<span className={g.dot} data-tone="ring" data-dot="" />}
+                tone="muted"
+              >
                 {COPY.f2.same}
               </Line>
             </span>
@@ -272,9 +378,27 @@ function SplitFrame({ scene, on }: FrameProps) {
         </div>
       </div>
       <Traces scene={scene}>
-        {on("check") ? <Connector from='[data-id="trigger"]' to='[data-id="check"]' inset={0} /> : null}
-        {on("split") ? <Connector from='[data-id="check"]' to='[data-id="approval"]' inset={0} /> : null}
-        {on("split") ? <Connector from='[data-id="check"]' to='[data-id="contract"]' inset={0} /> : null}
+        {on("check") ? (
+          <Connector
+            from='[data-id="trigger"]'
+            to='[data-id="check"]'
+            inset={0}
+          />
+        ) : null}
+        {on("split") ? (
+          <Connector
+            from='[data-id="check"]'
+            to='[data-id="approval"]'
+            inset={0}
+          />
+        ) : null}
+        {on("split") ? (
+          <Connector
+            from='[data-id="check"]'
+            to='[data-id="contract"]'
+            inset={0}
+          />
+        ) : null}
       </Traces>
     </>
   );
@@ -288,19 +412,40 @@ function WaitFrame({ scene, on }: FrameProps) {
           <DoneNode name={COPY.f1.nextStep} />
         </Piece>
         <Down shown={on("wait")} />
-        <Piece shown={on("wait")} i={1} className={`${g.live} ${g.topMid}`} data-id="approval" data-node="live" data-branch="">
+        <Piece
+          shown={on("wait")}
+          i={1}
+          className={`${g.live} ${g.topMid}`}
+          data-id="approval"
+          data-node="live"
+          data-branch=""
+        >
           <LiveHead icon={UserCheck} tone="ink" name={COPY.f2.approval} />
           <span className={g.waiting} data-axis-pair="" data-axis="waiting">
             <Clock aria-hidden="true" />
             <span>{COPY.f3.waiting}</span>
           </span>
         </Piece>
-        <Piece shown={on("wait")} i={2} className={g.bottomMid} data-id="contract" data-branch="">
+        <Piece
+          shown={on("wait")}
+          i={2}
+          className={g.bottomMid}
+          data-id="contract"
+          data-branch=""
+        >
           {on("ready") ? (
-            <DoneNode key="ready" pop name={COPY.f2.contract} meta={COPY.f3.ready} />
+            <DoneNode
+              key="ready"
+              pop
+              name={COPY.f2.contract}
+              meta={COPY.f3.ready}
+            />
           ) : (
             <span key="running" className={g.node} data-axis="contract">
-              <span className={`${p.mark} ${p.markSm} ${g.square}`} aria-hidden="true">
+              <span
+                className={`${p.mark} ${p.markSm} ${g.square}`}
+                aria-hidden="true"
+              >
                 <FileText />
               </span>
               <span className={p.stack}>
@@ -311,21 +456,63 @@ function WaitFrame({ scene, on }: FrameProps) {
           )}
         </Piece>
         <Down shown={on("ready")} />
-        <Piece shown={on("wait")} i={3} className={g.topEnd} data-id="domus" data-after="">
+        <Piece
+          shown={on("wait")}
+          i={3}
+          className={g.topEnd}
+          data-id="domus"
+          data-after=""
+        >
           <ProductNode icon={Building2} name={COPY.domus}>
             <span>{COPY.f3.warned}</span>
           </ProductNode>
         </Piece>
-        <Piece shown={on("ready")} className={g.bottomEnd} data-id="next" data-after="">
+        <Piece
+          shown={on("ready")}
+          className={g.bottomEnd}
+          data-id="next"
+          data-after=""
+        >
           <NextNode label={COPY.f3.afterLabel} name={COPY.f3.afterStep} />
         </Piece>
       </div>
       <Traces scene={scene}>
-        {on("wait") ? <Connector from='[data-id="check"]' to='[data-id="approval"]' inset={0} /> : null}
-        {on("wait") ? <Connector from='[data-id="check"]' to='[data-id="contract"]' inset={0} /> : null}
-        {on("wait") ? <Connector from='[data-id="approval"]' to='[data-id="domus"]' inset={0} /> : null}
-        {on("ready") ? <Connector from='[data-id="contract"]' to='[data-id="next"]' inset={0} /> : null}
-        {on("ready") ? <Connector from='[data-id="approval"]' to='[data-id="next"]' inset={0} tone="quiet" /> : null}
+        {on("wait") ? (
+          <Connector
+            from='[data-id="check"]'
+            to='[data-id="approval"]'
+            inset={0}
+          />
+        ) : null}
+        {on("wait") ? (
+          <Connector
+            from='[data-id="check"]'
+            to='[data-id="contract"]'
+            inset={0}
+          />
+        ) : null}
+        {on("wait") ? (
+          <Connector
+            from='[data-id="approval"]'
+            to='[data-id="domus"]'
+            inset={0}
+          />
+        ) : null}
+        {on("ready") ? (
+          <Connector
+            from='[data-id="contract"]'
+            to='[data-id="next"]'
+            inset={0}
+          />
+        ) : null}
+        {on("ready") ? (
+          <Connector
+            from='[data-id="approval"]'
+            to='[data-id="next"]'
+            inset={0}
+            tone="quiet"
+          />
+        ) : null}
       </Traces>
     </>
   );
@@ -339,7 +526,13 @@ function CloseFrame({ scene, on }: FrameProps) {
           <DoneNode name={COPY.f4.approved} meta={COPY.f4.by} />
         </Piece>
         <Down shown={on("retry")} />
-        <Piece shown={on("retry")} i={1} className={g.live} data-id="live" data-node="live">
+        <Piece
+          shown={on("retry")}
+          i={1}
+          className={g.live}
+          data-id="live"
+          data-node="live"
+        >
           <LiveHead icon={RotateCcw} tone="signal" name={COPY.f4.sign} />
           <Line icon={<X />} tone="muted">
             {COPY.f4.failure}
@@ -367,15 +560,30 @@ function CloseFrame({ scene, on }: FrameProps) {
         </div>
         <Piece shown={on("ask")} className={g.ask} data-ask="">
           <p className={g.question}>{COPY.f4.question}</p>
-          <ActionButton size="md" emphasis="primary" icon={<CalendarDays />} href={CONTACT_HREF}>
+          <ActionButton
+            size="md"
+            emphasis="primary"
+            icon={<CalendarDays />}
+            href={CONTACT_HREF}
+          >
             {CTA_LABEL}
           </ActionButton>
         </Piece>
       </div>
       <Traces scene={scene}>
-        {on("retry") ? <Connector from='[data-id="approved"]' to='[data-id="live"]' inset={0} /> : null}
-        {on("done") ? <Connector from='[data-id="live"]' to='[data-id="domus"]' inset={0} /> : null}
-        {on("done") ? <Connector from='[data-id="live"]' to='[data-id="tuner"]' inset={0} /> : null}
+        {on("retry") ? (
+          <Connector
+            from='[data-id="approved"]'
+            to='[data-id="live"]'
+            inset={0}
+          />
+        ) : null}
+        {on("done") ? (
+          <Connector from='[data-id="live"]' to='[data-id="domus"]' inset={0} />
+        ) : null}
+        {on("done") ? (
+          <Connector from='[data-id="live"]' to='[data-id="tuner"]' inset={0} />
+        ) : null}
       </Traces>
     </>
   );
@@ -398,7 +606,12 @@ function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
         <span className={g.headTitle}>
           <b>{COPY.flow}</b>
           <Badge variant="success" appearance="soft" className={g.status}>
-            <span className={g.dot} data-tone="current" data-dot="" aria-hidden="true" />
+            <span
+              className={g.dot}
+              data-tone="current"
+              data-dot=""
+              aria-hidden="true"
+            />
             {COPY.active}
           </Badge>
         </span>
@@ -410,7 +623,13 @@ function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
           const View = FRAME_VIEWS[f.n];
           return (
             // The frames off screen are inert: laid out (they hold the height), out of reach and of the reading order
-            <section key={f.n} className={g.frame} data-at={f.n} data-active={f.n === frame} inert={f.n !== frame}>
+            <section
+              key={f.n}
+              className={g.frame}
+              data-at={f.n}
+              data-active={f.n === frame}
+              inert={f.n !== frame}
+            >
               <View scene={scene} on={on} />
             </section>
           );

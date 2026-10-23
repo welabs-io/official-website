@@ -138,14 +138,19 @@ const SCENES: Entry[] = [
     // The record's identity on its text block (the track's marks and names are checked by the geometry spec)
     pairs: 1,
     cycleMs: 8200,
-    handoff: { 1440: ["relloo", "knowly", "magneto", "domus"], 390: ["relloo", "knowly", "magneto", "domus"] },
+    handoff: {
+      1440: ["relloo", "knowly", "magneto", "domus"],
+      390: ["relloo", "knowly", "magneto", "domus"],
+    },
   },
 ];
 
 // The icon/text pairs of the live layer whose centres are off by more than 1 px, and how many were measured
 async function axisOffsets(page: Page, id: string) {
   return page.evaluate((sceneId) => {
-    const live = document.querySelector(`[data-scene="${sceneId}"] > :last-child`)!;
+    const live = document.querySelector(
+      `[data-scene="${sceneId}"] > :last-child`,
+    )!;
     const mid = (el: Element) => {
       const r = el.getBoundingClientRect();
       return r.top + r.height / 2;
@@ -153,7 +158,11 @@ async function axisOffsets(page: Page, id: string) {
     const out: { name: string; dy: number }[] = [];
     live.querySelectorAll("[data-axis]").forEach((e, i) => {
       const el = e as HTMLElement;
-      if (el.offsetParent === null || getComputedStyle(el).visibility === "hidden") return;
+      if (
+        el.offsetParent === null ||
+        getComputedStyle(el).visibility === "hidden"
+      )
+        return;
       out.push({
         name: `${el.dataset.axis} ${i}`,
         dy: Math.abs(mid(e.children[0]) - mid(e.children[1])),
@@ -166,15 +175,24 @@ async function axisOffsets(page: Page, id: string) {
 // Elements of the live layer whose text overflows their box (cut by an ellipsis or a hidden overflow)
 async function cutTexts(page: Page, id: string) {
   return page.evaluate((sceneId) => {
-    const live = document.querySelector(`[data-scene="${sceneId}"] > :last-child`)!;
+    const live = document.querySelector(
+      `[data-scene="${sceneId}"] > :last-child`,
+    )!;
     const cut: string[] = [];
     live.querySelectorAll<HTMLElement>("*").forEach((el) => {
       if (!el.childNodes.length || el.offsetParent === null) return;
-      const ownText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent!.trim());
+      const ownText = [...el.childNodes].some(
+        (n) => n.nodeType === 3 && n.textContent!.trim(),
+      );
       const isInput = el instanceof HTMLInputElement && el.value;
       if (!ownText && !isInput) return;
-      if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
-        cut.push(`${el.tagName.toLowerCase()} "${(el.textContent || (el as HTMLInputElement).value).trim().slice(0, 40)}"`);
+      if (
+        el.scrollWidth > el.clientWidth + 1 ||
+        el.scrollHeight > el.clientHeight + 1
+      )
+        cut.push(
+          `${el.tagName.toLowerCase()} "${(el.textContent || (el as HTMLInputElement).value).trim().slice(0, 40)}"`,
+        );
     });
     return cut;
   }, id);
@@ -192,14 +210,18 @@ for (const s of SCENES) {
       await request.get(LAB, { timeout: 60_000 });
     });
 
-    test("autoplays, loops, and after a click plays, holds, resets and resumes", async ({ page }) => {
+    test("autoplays, loops, and after a click plays, holds, resets and resumes", async ({
+      page,
+    }) => {
       test.setTimeout(60_000);
       await page.goto(LAB);
       const scene = page.getByRole("figure", { name: s.figure });
       await expectContinuousLoop(scene, {
         windowMs: 10_000,
         afterMs: 10_000,
-        trigger: scene.getByRole(s.triggerRole ?? "button", { name: s.trigger }),
+        trigger: scene.getByRole(s.triggerRole ?? "button", {
+          name: s.trigger,
+        }),
       });
     });
 
@@ -208,13 +230,21 @@ for (const s of SCENES) {
       await page.goto(LAB);
       const scene = page.getByRole("figure", { name: s.figure });
       await expectFinalFrameUnderReducedMotion(page, scene);
-      await expect(scene.locator("[data-scene]")).toHaveAttribute("data-step", s.final);
+      await expect(scene.locator("[data-scene]")).toHaveAttribute(
+        "data-step",
+        s.final,
+      );
       await page.waitForTimeout(1500);
-      await expect(scene.locator("[data-scene]")).toHaveAttribute("data-step", s.final);
+      await expect(scene.locator("[data-scene]")).toHaveAttribute(
+        "data-step",
+        s.final,
+      );
     });
 
     for (const width of [1440, 390] as const) {
-      test(`icons on the axis of their text, no text cut, at ${width}`, async ({ page }) => {
+      test(`icons on the axis of their text, no text cut, at ${width}`, async ({
+        page,
+      }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.emulateMedia({ reducedMotion: "reduce" });
         await page.goto(LAB);
@@ -239,7 +269,10 @@ for (const s of SCENES) {
           await page.waitForTimeout(80);
         }
         const all = [...heights];
-        expect(Math.max(...all) - Math.min(...all), all.join(",")).toBeLessThanOrEqual(1);
+        expect(
+          Math.max(...all) - Math.min(...all),
+          all.join(","),
+        ).toBeLessThanOrEqual(1);
       });
 
       // ORÇAMENTO DE ÂMBAR, CONECTOR E QUADROS (CENAS V3)
@@ -250,105 +283,264 @@ for (const s of SCENES) {
       // in), no text of the frame shown is cut
       if (s.handoff || s.frames) {
         const amberMax = s.amberMax ?? 3;
-        test(`at most ${amberMax} amber pieces, the connector at each hand-off${s.frames ? " and every frame" : ""} at ${width}`, async ({ page }) => {
+        test(`at most ${amberMax} amber pieces, the connector at each hand-off${s.frames ? " and every frame" : ""} at ${width}`, async ({
+          page,
+        }) => {
           test.setTimeout(60_000);
           await page.setViewportSize({ width, height: 900 });
           await page.goto(LAB);
-          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
+          await page
+            .getByRole("figure", { name: s.figure })
+            .scrollIntoViewIfNeeded();
           await page.getByRole("button", { name: "Recomeçar" }).click();
-          const seen = await page.evaluate(async ({ ms, carousel }) => {
-            const figure = document.querySelector('[role="figure"]')!;
-            const stage = figure.querySelector("[data-scene]")!;
-            const live = stage.lastElementChild!;
-            const rgb = (c: string) => {
-              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
-              return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] } : null;
-            };
-            // The signal (#ffb020) or a blend more than half way to it; in a carousel also amber-50 (#fff3dd), the
-            // area of its live piece
-            const amber = (c: string) => {
-              const x = rgb(c);
-              if (!x || x.a <= 0.5) return false;
-              const signal = x.r > 230 && x.g > 140 && x.g < 210 && x.b < 140;
-              const soft = x.r > 250 && x.g > 235 && x.g < 250 && x.b > 200 && x.b < 230;
-              return signal || (carousel && soft);
-            };
-            // Seen on screen: laid out, not hidden, and more than 5 % opaque once its ancestors' opacity is applied (a
-            // carousel lays out its hidden frames in the same cell, faded to nothing)
-            const shown = (el: Element) => {
-              if (!(el.getBoundingClientRect().width > 0) || getComputedStyle(el).visibility === "hidden") return false;
-              let o = 1;
-              for (let n: Element | null = el; n && n !== live; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
-              return o > 0.05;
-            };
-            // Every colour of a shadow list: an amber ring (a live piece's edge) is a piece of amber too
-            const ring = (shadow: string) => (shadow.match(/rgba?\([^)]*\)/g) ?? []).some(amber);
-            const ambers: Record<string, number> = {};
-            const traced: Record<string, boolean> = {};
-            // The frames in the order they are first shown, the indicator's frame seen with each, and the cut texts
-            const order: string[] = [];
-            const marks: Record<string, string[]> = {};
-            const cut: string[] = [];
-            const checked = new Set<string>();
-            let step = "";
-            let since = 0;
-            const t0 = performance.now();
-            while (performance.now() - t0 < ms) {
-              await new Promise((r) => requestAnimationFrame(r));
-              const now = performance.now();
-              const id = stage.getAttribute("data-step")!;
-              if (id !== step) {
-                step = id;
-                since = now;
-              }
-              const n = [...live.querySelectorAll("*")].filter((el) => {
-                const cs = getComputedStyle(el);
-                return (amber(cs.backgroundColor) || ring(cs.boxShadow)) && shown(el);
-              }).length;
-              ambers[step] = Math.max(ambers[step] ?? 0, n);
-              traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+          const seen = await page.evaluate(
+            async ({ ms, carousel }) => {
+              const figure = document.querySelector('[role="figure"]')!;
+              const stage = figure.querySelector("[data-scene]")!;
+              const live = stage.lastElementChild!;
+              const rgb = (c: string) => {
+                const m = c.match(
+                  /rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/,
+                );
+                return m
+                  ? {
+                      r: +m[1],
+                      g: +m[2],
+                      b: +m[3],
+                      a: m[4] === undefined ? 1 : +m[4],
+                    }
+                  : null;
+              };
+              // The signal (#ffb020) or a blend more than half way to it; in a carousel also amber-50 (#fff3dd), the
+              // area of its live piece
+              const amber = (c: string) => {
+                const x = rgb(c);
+                if (!x || x.a <= 0.5) return false;
+                const signal = x.r > 230 && x.g > 140 && x.g < 210 && x.b < 140;
+                const soft =
+                  x.r > 250 && x.g > 235 && x.g < 250 && x.b > 200 && x.b < 230;
+                return signal || (carousel && soft);
+              };
+              // Seen on screen: laid out, not hidden, and more than 5 % opaque once its ancestors' opacity is applied (a
+              // carousel lays out its hidden frames in the same cell, faded to nothing)
+              const shown = (el: Element) => {
+                if (
+                  !(el.getBoundingClientRect().width > 0) ||
+                  getComputedStyle(el).visibility === "hidden"
+                )
+                  return false;
+                let o = 1;
+                for (
+                  let n: Element | null = el;
+                  n && n !== live;
+                  n = n.parentElement
+                )
+                  o *= Number(getComputedStyle(n).opacity);
+                return o > 0.05;
+              };
+              // Every colour of a shadow list: an amber ring (a live piece's edge) is a piece of amber too
+              const ring = (shadow: string) =>
+                (shadow.match(/rgba?\([^)]*\)/g) ?? []).some(amber);
+              const ambers: Record<string, number> = {};
+              const traced: Record<string, boolean> = {};
+              // The frames in the order they are first shown, the indicator's frame seen with each, and the cut texts
+              const order: string[] = [];
+              const marks: Record<string, string[]> = {};
+              const cut: string[] = [];
+              const checked = new Set<string>();
+              let step = "";
+              let since = 0;
+              const t0 = performance.now();
+              while (performance.now() - t0 < ms) {
+                await new Promise((r) => requestAnimationFrame(r));
+                const now = performance.now();
+                const id = stage.getAttribute("data-step")!;
+                if (id !== step) {
+                  step = id;
+                  since = now;
+                }
+                const n = [...live.querySelectorAll("*")].filter((el) => {
+                  const cs = getComputedStyle(el);
+                  return (
+                    (amber(cs.backgroundColor) || ring(cs.boxShadow)) &&
+                    shown(el)
+                  );
+                }).length;
+                ambers[step] = Math.max(ambers[step] ?? 0, n);
+                traced[step] =
+                  traced[step] || !!live.querySelector("svg path[pathLength]");
 
-              // The frame shown: the one marked current, or the only one laid out (none while two cross)
-              const all = [...live.querySelectorAll<HTMLElement>("[data-frame]")];
-              const current =
-                all.find((f) => f.dataset.current === "true") ??
-                (new Set(all.map((f) => f.dataset.frame)).size === 1 ? all[0] : undefined);
-              if (!current) continue;
-              const frame = current.dataset.frame!;
-              if (!order.includes(frame)) order.push(frame);
-              const checkedOption = figure.querySelector('[data-frame-indicator] [role="radio"][aria-checked="true"]');
-              const mark = checkedOption?.textContent?.match(/\d+/)?.[0] ?? "none";
-              if (!(marks[frame] ??= []).includes(mark)) marks[frame].push(mark);
-              if (now - since > 800 && !checked.has(step)) {
-                checked.add(step);
-                current.querySelectorAll<HTMLElement>("*").forEach((el) => {
-                  if (!el.childNodes.length || el.offsetParent === null) return;
-                  const ownText = [...el.childNodes].some((c) => c.nodeType === 3 && c.textContent!.trim());
-                  if (!ownText) return;
-                  if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
-                    cut.push(`${step}: ${el.tagName.toLowerCase()} "${el.textContent!.trim().slice(0, 40)}"`);
-                });
+                // The frame shown: the one marked current, or the only one laid out (none while two cross)
+                const all = [
+                  ...live.querySelectorAll<HTMLElement>("[data-frame]"),
+                ];
+                const current =
+                  all.find((f) => f.dataset.current === "true") ??
+                  (new Set(all.map((f) => f.dataset.frame)).size === 1
+                    ? all[0]
+                    : undefined);
+                if (!current) continue;
+                const frame = current.dataset.frame!;
+                if (!order.includes(frame)) order.push(frame);
+                const checkedOption = figure.querySelector(
+                  '[data-frame-indicator] [role="radio"][aria-checked="true"]',
+                );
+                const mark =
+                  checkedOption?.textContent?.match(/\d+/)?.[0] ?? "none";
+                if (!(marks[frame] ??= []).includes(mark))
+                  marks[frame].push(mark);
+                if (now - since > 800 && !checked.has(step)) {
+                  checked.add(step);
+                  current.querySelectorAll<HTMLElement>("*").forEach((el) => {
+                    if (!el.childNodes.length || el.offsetParent === null)
+                      return;
+                    const ownText = [...el.childNodes].some(
+                      (c) => c.nodeType === 3 && c.textContent!.trim(),
+                    );
+                    if (!ownText) return;
+                    if (
+                      el.scrollWidth > el.clientWidth + 1 ||
+                      el.scrollHeight > el.clientHeight + 1
+                    )
+                      cut.push(
+                        `${step}: ${el.tagName.toLowerCase()} "${el.textContent!.trim().slice(0, 40)}"`,
+                      );
+                  });
+                }
               }
-            }
-            return { ambers, traced, order, marks, cut, checked: checked.size };
-          }, { ms: s.cycleMs + 500, carousel: !!s.frames });
+              return {
+                ambers,
+                traced,
+                order,
+                marks,
+                cut,
+                checked: checked.size,
+              };
+            },
+            { ms: s.cycleMs + 500, carousel: !!s.frames },
+          );
 
-          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(amberMax);
-          expect(seen.ambers[s.final], "amber on the settled frame").toBe(s.finalAmber ?? 0);
-          for (const step of s.handoff?.[width] ?? []) expect(seen.traced[step], `connector at ${step}`).toBe(true);
+          for (const [step, n] of Object.entries(seen.ambers))
+            expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(amberMax);
+          expect(seen.ambers[s.final], "amber on the settled frame").toBe(
+            s.finalAmber ?? 0,
+          );
+          for (const step of s.handoff?.[width] ?? [])
+            expect(seen.traced[step], `connector at ${step}`).toBe(true);
           const keeps = s.finalTrace?.includes(width) ?? false;
-          expect(seen.traced[s.final] ?? false, keeps ? "the settled frame keeps its connector" : "no connector on the settled frame").toBe(keeps);
+          expect(
+            seen.traced[s.final] ?? false,
+            keeps
+              ? "the settled frame keeps its connector"
+              : "no connector on the settled frame",
+          ).toBe(keeps);
           if (s.frames) {
-            const numbers = Array.from({ length: s.frames }, (_, i) => String(i + 1));
+            const numbers = Array.from({ length: s.frames }, (_, i) =>
+              String(i + 1),
+            );
             expect(seen.order, "every frame, in order").toEqual(numbers);
             // The counter measures what it should: a live piece is seen somewhere in the loop
-            expect(Object.values(seen.ambers).some((n) => n > 0), "the amber counter sees the live pieces").toBe(true);
-            for (const n of numbers) expect(seen.marks[n], `the indicator on frame ${n}`).toEqual([n]);
-            expect(seen.checked, "every step was checked for cut text").toBeGreaterThanOrEqual(s.frames);
+            expect(
+              Object.values(seen.ambers).some((n) => n > 0),
+              "the amber counter sees the live pieces",
+            ).toBe(true);
+            for (const n of numbers)
+              expect(seen.marks[n], `the indicator on frame ${n}`).toEqual([n]);
+            expect(
+              seen.checked,
+              "every step was checked for cut text",
+            ).toBeGreaterThanOrEqual(s.frames);
             expect(seen.cut, "text cut in a frame").toEqual([]);
           }
         });
       }
     }
+  });
+}
+
+// AS CENAS MONTADAS NO SITE
+// v3 (2026-10-23): each kit scene is mounted on its page through SceneSlot (components/scene-kit/SceneSlot.tsx): the
+// carousel of a product opens its page, the message crosses the home. The same contract holds there, inside the page:
+// it autoplays and loops, a click takes over and gives it back, it pauses off screen, reduced motion shows the settled
+// frame, and no text is cut nor any icon off its text at 1440 and at 390 (the page gutter is narrower than the lab's).
+const SITE: Record<string, string> = {
+  "relloo-carousel": "/products/relloo",
+  "domus-carousel": "/products/domus",
+  "magneto-carousel": "/products/magneto",
+  "tuner-carousel": "/products/tuner",
+  "knowly-carousel": "/products/knowly",
+  "home-message": "/",
+};
+
+for (const s of SCENES) {
+  const path = SITE[s.id];
+
+  test.describe(`scene kit on the site: ${s.id} on ${path}`, () => {
+    test.use({ viewport: { width: 1440, height: 900 } });
+
+    test("autoplays, loops, and after a click plays, holds, resets and resumes", async ({
+      page,
+    }) => {
+      test.setTimeout(60_000);
+      await page.goto(path);
+      const scene = page
+        .locator(`[data-kit="${s.id}"]`)
+        .getByRole("figure", { name: s.figure });
+      await scene.scrollIntoViewIfNeeded();
+      await expectContinuousLoop(scene, {
+        windowMs: 10_000,
+        afterMs: 10_000,
+        trigger: scene.getByRole(s.triggerRole ?? "button", {
+          name: s.trigger,
+        }),
+      });
+    });
+
+    test("pauses off screen", async ({ page }) => {
+      await page.goto(path);
+      const stage = page.locator(`[data-kit="${s.id}"] [data-scene="${s.id}"]`);
+      await stage.scrollIntoViewIfNeeded();
+      await expect(stage).toHaveAttribute("data-on", "true");
+      await page.evaluate(() =>
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "instant",
+        }),
+      );
+      await expect(stage).toHaveAttribute("data-on", "false");
+      const step = await stage.getAttribute("data-step");
+      await page.waitForTimeout(2500);
+      await expect(stage).toHaveAttribute("data-step", step!);
+    });
+
+    test("reduced motion shows the final frame, static", async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(path);
+      const scene = page
+        .locator(`[data-kit="${s.id}"]`)
+        .getByRole("figure", { name: s.figure });
+      await expectFinalFrameUnderReducedMotion(page, scene);
+      await expect(scene.locator("[data-scene]")).toHaveAttribute(
+        "data-step",
+        s.final,
+      );
+    });
+
+    for (const width of [1440, 390] as const)
+      test(`icons on the axis of their text, no text cut, at ${width}`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await page.goto(path);
+        await page
+          .locator(`[data-kit="${s.id}"]`)
+          .getByRole("figure", { name: s.figure })
+          .waitFor();
+        const off = await axisOffsets(page, s.id);
+        expect(off.length).toBeGreaterThanOrEqual(s.pairs);
+        for (const { name, dy } of off) expect(dy, name).toBeLessThanOrEqual(1);
+        expect(await cutTexts(page, s.id)).toEqual([]);
+      });
   });
 }

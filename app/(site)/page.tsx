@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Sections } from "@/components/template/SiteTemplate";
+import { HOME_CONFIG } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Welabs",
@@ -7,8 +9,7 @@ export const metadata: Metadata = {
 };
 
 // HOME
-// The home is the layout of the route group (app/(site)/layout.tsx): with no product open, the slot stays empty and the
-// whole home shows
+// The whole home in the slot of the site frame (app/(site)/layout.tsx)
 export default function Page() {
-  return null;
+  return <Sections config={HOME_CONFIG} />;
 }

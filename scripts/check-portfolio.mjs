@@ -54,7 +54,10 @@ const violation = (text) => {
 // v3: names of people and of the internal stack (case-sensitive, whole words with a unicode edge), besides the known
 // failures of the same file, each tolerated until the phase that removes it
 const listMatcher = (list) =>
-  new RegExp(`(?:^|[^\\p{L}])(${list.map(esc).join("|")})(?=[^\\p{L}]|$)`, "gu");
+  new RegExp(
+    `(?:^|[^\\p{L}])(${list.map(esc).join("|")})(?=[^\\p{L}]|$)`,
+    "gu",
+  );
 const firstOf = (matcher, known, text) => {
   const skip = new Set(known.map((k) => k.value));
   for (const m of text.matchAll(matcher)) if (!skip.has(m[1])) return m[1];
@@ -83,25 +86,19 @@ const page = async (url) => {
   return html;
 };
 
-// The words of the page copy: the text drawn inside the native scenes is product interface (a screen), not copy, so the
-// stage of a product opening (from its tiles to its data) and every still scene (data-mini ... data-mini-end) are left
-// out of the count; the slogan and banned-word rules above still read them
-const copyOnly = (html) => {
-  let withoutStage = html;
-  for (;;) {
-    // The attributes of the markup only (`="`), never their names inside the payload of the page's own scripts
-    const at = withoutStage.indexOf('data-scenes="');
-    const end = withoutStage.indexOf('data-scene-data="', at);
-    if (at < 0 || end < 0) break;
-    withoutStage =
-      withoutStage.slice(0, withoutStage.lastIndexOf("<div", at)) +
-      withoutStage.slice(end);
-  }
-  return withoutStage.replace(
-    /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
-    "",
-  );
-};
+// The words of the page copy: the text drawn inside the native scenes is product interface (a screen), not copy, so
+// every still scene (data-mini ... data-mini-end) and every kit scene (v3: data-kit ... data-kit-end, SceneSlot) are
+// left out of the count; the slogan and banned-word rules above still read them
+const copyOnly = (html) =>
+  html
+    .replace(
+      /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
+      "",
+    )
+    .replace(
+      /<div[^>]*data-kit=[\s\S]*?<span[^>]*data-kit-end[^>]*><\/span>/g,
+      "",
+    );
 const countWords = (html) => visibleText(copyOnly(html)).split(" ").length;
 
 // The menu is on every page: the five products and the Domus, the button to the contact; the logo leads to the home
@@ -137,17 +134,28 @@ for (let i = 1; i < HOME_ORDER.length; i++)
 for (const gone of ["how", "audience", "integrations", "faq", "connectors"])
   assert(!home.includes(`id="${gone}"`), `the section #${gone} left the home`);
 assert(hasMenu(home), "the home header has the menu and the logo link");
+// The bands carry an id; a `<section>` inside a kit scene is a pane of its screen, paused by the kit itself
+const bands = (html) => html.match(/<section id="[^"]*"[^>]*>/g) ?? [];
 assert(
-  (home.match(/<section[^>]*>/g) ?? []).every((s) => s.includes("data-live")),
+  bands(home).every((s) => s.includes("data-live")),
   "every band is marked live (motion pauses off screen)",
 );
-assert(/<h1[\s\S]*?Software para/.test(home), "the title of the home is its h1");
+assert(
+  /<h1[\s\S]*?Software para/.test(home),
+  "the title of the home is its h1",
+);
 assert(home.includes('data-hub="cycle"'), "the stage of the opening cycles");
-for (const id of ["msg-go", "area-add"])
-  assert(
-    home.includes(`id="${id}"`) && home.includes(`for="${id}"`),
-    `the interaction #${id} has a native control and a visible label`,
-  );
+assert(
+  home.includes('id="area-add"') && home.includes('for="area-add"'),
+  "the interaction #area-add has a native control and a visible label",
+);
+// v3 (2026-10-23): the chain is the kit scene home-message (SceneSlot)
+assert(
+  home
+    .slice(home.indexOf('id="message"'), home.indexOf('id="domus"'))
+    .includes('data-kit="home-message"'),
+  "the message band mounts the kit scene home-message",
+);
 assert(
   (home.slice(home.indexOf('id="operation"')).match(/data-mini="s\d"/g) ?? [])
     .length === 3,
@@ -181,7 +189,9 @@ assert.equal(
   "no client logo on the home",
 );
 assert(
-  !IMAGINE_SYSTEMS.test(visibleText(home.slice(home.indexOf('id="platforms"')))),
+  !IMAGINE_SYSTEMS.test(
+    visibleText(home.slice(home.indexOf('id="platforms"'))),
+  ),
   "no Imagine system in the strip of platforms",
 );
 // v3 (F1): the four clouds the operator asked for, and nothing else of the infrastructure
@@ -204,7 +214,7 @@ assert(
   "the contact of the home has an action that does not lead to itself",
 );
 
-// PÁGINAS DE PRODUTO: logo com selo, metadado de categoria, zero player, uma interação
+// PÁGINAS DE PRODUTO: logo com selo, metadado de categoria, zero player, o carrossel do produto, página autônoma
 for (const slug of SLUGS) {
   const html = await page(`/products/${slug}`);
   assert(
@@ -215,22 +225,24 @@ for (const slug of SLUGS) {
     /<meta name="keywords" content="[^"]+"/.test(html),
     `${slug} keywords`,
   );
-  // A product route serves the whole one-page layout (the head of the home, the product in its slot, the tail of the
-  // home that gives way to it), so the product's own copy is the slot alone
+  // v3 (operator, 2026-10-21): a product is a page of its own, the slot of the site frame holds the product alone
   const slot = html.slice(
     html.indexOf("data-descent-slot"),
-    html.indexOf("data-descent-tail"),
+    html.indexOf("<footer"),
   );
   assert(
-    slot.length > 0 && html.indexOf("data-descent-tail") > 0,
-    `${slug} page has its slot in the one-page layout`,
+    html.indexOf("data-descent-slot") > 0 &&
+      !html.includes("data-descent-tail") &&
+      ["intro", "message", "domus", "products", "operation", "platforms"].every(
+        (id) => !html.includes(`<section id="${id}"`),
+      ),
+    `${slug} page renders no section of the home`,
   );
-  const productPage = [
-    html.slice(html.indexOf("<header"), html.indexOf("</header>")),
-    slot,
-    html.slice(html.indexOf("<footer")),
-  ].join(" ");
-  const productWords = countWords(productPage);
+  assert(
+    bands(html).every((s) => s.includes("data-live")),
+    `${slug}: every band is marked live (motion pauses off screen)`,
+  );
+  const productWords = countWords(html);
   // The v2 budget: 110 to 230 visible words on a product page (400 to 700 before it)
   assert(
     productWords >= 110 && productWords <= 230,
@@ -243,7 +255,7 @@ for (const slug of SLUGS) {
     slot.indexOf("</nav>", slot.indexOf('aria-label="Os cinco produtos"')),
   );
   assert(
-    !slot.includes('id="next"') &&
+    !/\sid="next"/.test(slot) &&
       !slot.includes("data-door") &&
       SLUGS.every((s) => switcher.includes(`href="/products/${s}"`)) &&
       (switcher.match(/aria-current="page"/g) ?? []).length === 1,
@@ -257,7 +269,6 @@ for (const slug of SLUGS) {
   const PRODUCT_ORDER = [
     "product",
     ...(slug === "domus" ? ["areas"] : []),
-    "play",
     "center",
     "details",
     "contact",
@@ -268,12 +279,16 @@ for (const slug of SLUGS) {
     ),
     `${slug} page has its sections in order: ${PRODUCT_ORDER.join(", ")}`,
   );
-  const play = slot.slice(at("play"), at("center"));
+  // v3 (2026-10-23): the carousel of the product (a kit scene, SceneSlot) opens the page, in place of the play
+  const opening = slot.slice(
+    at("product"),
+    at(slug === "domus" ? "areas" : "center"),
+  );
   assert(
-    play.includes(`data-play="${slug}"`) &&
-      /<input type="(checkbox|radio)"/.test(play) &&
-      /<label[^>]*for="/.test(play),
-    `${slug} has one play with a native control and a visible label`,
+    opening.includes(`data-kit="${slug}-carousel"`) &&
+      at("play") < 0 &&
+      !slot.includes("data-play="),
+    `${slug} opens with its carousel and has no play`,
   );
   const center = slot.slice(at("center"), at("details"));
   assert(

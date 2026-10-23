@@ -1,52 +1,12 @@
-/* DESCIDA CONTÍNUA */
-/* The home and the product are one page. The slot holds the product that is open (empty on the home); while it holds
-   one, the tail of the home (from "what changes" to where we run) gives way, so the product is the section right after
-   the products band. Pure CSS: a direct visit to /products/<slug> is laid out right on the first paint. */
-.slot:has(> section) + .tail {
-  display: none;
-}
-
-/* A FOLHA DA VOLTA */
-/* Drawn by components/onepage/descent-run.ts over the page, under the fixed header, on the browser's back from a
-   product to the home: the surface of the opening that shrinks into the card while the page scrolls up, and the logo that
-   travels back to the card. Both are sized at their final box and moved only by transform (origin at the top left
-   corner) and opacity. The way in is the brand opening (components/intro). */
-.sheet,
-.logo {
-  position: fixed;
-  z-index: 40;
-  top: 0;
-  left: 0;
-  transform-origin: 0 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-.sheet {
-  width: 100vw;
-  height: 100vh;
-  border: 1px solid #e2d8c3;
-  background: #ffffff;
-  box-shadow:
-    0 12px 32px -8px oklch(0 0 0 / 0.12),
-    0 6px 12px -4px oklch(0 0 0 / 0.08);
-}
-.logo {
-  z-index: 41;
-}
-/* The veil of the moves that only swap the page (the way home, back and forward between products); v3 (F2): the cream
-   floor of the page (shell.module.css --page), it was white */
+/* O VÉU DA TRANSIÇÃO */
+/* The sheet of the moves that only swap the page (the way home by the logo, back and forward), drawn by
+   components/onepage/descent-run.ts over the whole window. v3 (2026-10-23): the canvas of the page (--background of
+   app/lib.css), no longer the retired cream. The way into a product is the brand opening (components/intro). */
 .veil {
   position: fixed;
   inset: 0;
   z-index: 45;
-  background: #faf5ea;
+  background: var(--background);
   opacity: 0;
   pointer-events: none;
-}
-.logo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
 }

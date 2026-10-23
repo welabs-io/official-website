@@ -479,14 +479,18 @@
 }
 
 /* ABERTURA DA PÁGINA DE PRODUTO */
-/* v2.2 (audit M05): one layout for the five products. Two columns (5/7), the text on the left and the screen on the
-   right, above the fold; the Domus and the four products with a stage of scenes no longer differ (the four stacked,
-   with the scene starting at 456 px and the right of the text empty) */
+/* v2.2 (audit M05): one layout for the five products.
+   v3 (2026-10-23): one column. The text on top and the carousel of the kit under it across the row, at the width of
+   the kit window (--scene-width), which is the width its frames were approved at; beside the text it would be squeezed
+   to 7 of 12 columns. */
 .opening {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  align-items: center;
-  gap: var(--sp-6) var(--sp-7);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-6);
+}
+.openingScene,
+.kitScene {
+  min-width: 0;
 }
 .openingText {
   display: grid;
@@ -496,14 +500,6 @@
 /* The logo of the opening is a step above the cards */
 .openingText h1 img {
   --h: clamp(64px, 6vw, 88px);
-}
-/* The screen of the Domus at its opening (one of its scenes, playing) */
-/* The screen of the Domus opening is the focus of its band: the soft shadow of the plane in focus; the window draws its
-   own edge (v3, F2 review: a border here framed it twice) */
-.domusStage {
-  overflow: hidden;
-  border-radius: var(--r-win);
-  box-shadow: var(--shadow-pop);
 }
 
 /* SELETOR DOS CINCO PRODUTOS */
@@ -604,12 +600,6 @@
   .five {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  /* v2.2: on a tablet the screen takes 8 of 12 columns, so it keeps its tablet layout (16:10, over 34 rem) and stays
-     above the fold */
-  .opening {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    column-gap: var(--sp-5);
-  }
   .details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -620,13 +610,18 @@
   .details {
     grid-template-columns: minmax(0, 1fr);
   }
-  .intro,
-  .opening {
+  .intro {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-6);
   }
   .introLead {
     font-size: var(--text-lg);
+  }
+  /* v3 (2026-10-23): a kit scene on a phone takes the width it was approved at in the lab (a 16 px gutter, the page
+     has 24): measured at 390, three carousels cut a label in the 8 px it lost on each side */
+  .openingScene,
+  .kitScene {
+    margin-inline: calc(var(--sp-2) * -1);
   }
   .introText > a,
   .openingText > a {

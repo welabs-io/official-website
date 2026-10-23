@@ -1,14 +1,14 @@
-// SEÇÕES DA PÁGINA DE PRODUTO (V2)
-// The page of a product in the v2 content: the selector of the five products and the opening (logo, one sentence, the
-// button and a native screen), the one interaction of the product, the stage with the product among the others, the
-// details that come with it and the contact with open questions (v2.1: the door to the next product left; the selector
-// replaces it). Server markup; the plays are CSS over checkboxes and radios.
+// SEÇÕES DA PÁGINA DE PRODUTO (V3)
+// The page of a product: the selector of the five products and the opening (logo, one sentence, the button and the
+// carousel of the product), the stage with the product among the others, the details that come with it and the
+// contact with open questions (v2.1: the door to the next product left; the selector replaces it).
+// v3 (2026-10-23): the carousel of the kit (components/scene-kit, mounted by SceneSlot) replaces both the capability
+// stage of the opening and the interaction of the product (the plays left).
 import Link from "next/link";
 import { CONTACT_HREF } from "@/components/onepage/contact";
 import { ProductBlock } from "@/components/onepage/ProductBlock";
 import shell from "@/components/onepage/shell.module.css";
-import { MiniScene } from "@/components/scenes/MiniScene";
-import { CapabilityStage } from "@/components/scenes/SceneStage";
+import { SceneSlot } from "@/components/scene-kit/SceneSlot";
 import { NAV, PAGE_HEADINGS, PRODUCT_PAGE } from "@/lib/content";
 import {
   CTA_LABEL,
@@ -19,7 +19,6 @@ import {
 } from "@/lib/products";
 import { ContactBand, DomusHouse, type ContactAction } from "./Home";
 import { Orbit } from "./Orbit";
-import { PLAYS } from "./Plays";
 import { SectionHead } from "./SectionHead";
 import styles from "./v2.module.css";
 
@@ -57,16 +56,12 @@ function ProductSwitch({ current }: { current: ProductSlug }) {
 
 // ABERTURA
 // The selector of the five products, then the logo as the h1 (the brand opening lands its logo on it), the sentence and
-// the button; the Domus opens with one of its screens playing, every other product with the stage of its capability
-// scenes and their short names.
+// the button, and under them the carousel of the product across the whole row (it is drawn at the width of the kit
+// window, the one approved at /lab/scenes/<slug>-carousel).
 export function ProductOpening({ slug }: { slug: ProductSlug }) {
   const page = PRODUCT_PAGE[slug];
-  const name = productBySlug(slug)!.name;
   return (
-    <div
-      className={`${shell.wrap} ${styles.opening}`}
-      data-stage={slug === "domus" ? undefined : ""}
-    >
+    <div className={`${shell.wrap} ${styles.opening}`}>
       <ProductSwitch current={slug} />
       <div className={styles.openingText}>
         <ProductBlock
@@ -80,19 +75,7 @@ export function ProductOpening({ slug }: { slug: ProductSlug }) {
           {CTA_LABEL}
         </a>
       </div>
-      {slug === "domus" ? (
-        // v2.1: a real screen of the Domus, playing (the order 1234 comes back to the module Pedidos and the contact is
-        // told), in place of a symbol drawn in CSS with six areas that only flew in
-        <div className={styles.domusStage}>
-          <MiniScene id="s6" />
-        </div>
-      ) : (
-        <CapabilityStage
-          id="product-scenes"
-          slug={slug}
-          label={PAGE_HEADINGS.scenes(name)}
-        />
-      )}
+      <SceneSlot id={`${slug}-carousel`} className={styles.openingScene} />
     </div>
   );
 }
@@ -107,18 +90,6 @@ export const DomusAreas = () => (
     />
   </div>
 );
-
-// A INTERAÇÃO DO PRODUTO
-export function ProductPlay({ slug }: { slug: ProductSlug }) {
-  const { title, lead } = PRODUCT_PAGE[slug].play;
-  const Play = PLAYS[slug];
-  return (
-    <div className={shell.wrap}>
-      <SectionHead title={title} lead={lead} />
-      <Play />
-    </div>
-  );
-}
 
 // O PRODUTO ENTRE OS OUTROS
 // The Domus page lights the Relloo (a product working on the Domus); every other page lights itself

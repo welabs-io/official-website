@@ -43,16 +43,15 @@ export const HOME_INTRO = {
   },
 } as const;
 
-// The message that crosses the operation (drag it onto the track, or press the button)
+// The message that crosses the operation (the kit scene home-message, components/scene-kit/scenes/home-message.tsx)
+// v3 (2026-10-23): the scene plays by itself, so the lead no longer asks for a drag, and the labels of the button of the
+// v2 track ("Enviando", "Recomeçar") left with it
 export const HOME_MESSAGE = {
   title: "Uma mensagem, a operação inteira",
-  lead: "Arraste a conversa para o trilho.",
+  lead: "Do canal ao pedido registrado no Domus.",
   // v2.2: the category of the channel, not the brand
   bubble: { channel: "Mensagem", text: "Dá para entregar sábado?" },
   send: "Enviar a mensagem",
-  // v2.2 (audit M01): while the message runs the button says so; "Recomeçar" only once it has landed
-  sending: "Enviando",
-  again: "Recomeçar",
   stations: [
     { product: "tuner", label: "Chegou" },
     { product: "relloo", label: "Resposta" },
@@ -60,7 +59,6 @@ export const HOME_MESSAGE = {
     { product: "magneto", label: "Aprovado" },
     { product: "domus", label: "Registrado" },
   ] as const satisfies readonly { product: ProductSlug; label: string }[],
-  done: "Confirmado: sábado",
   // The record the message lands on, in the Domus
   record: "Pedido 1234",
 } as const;

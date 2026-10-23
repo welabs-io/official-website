@@ -1,10 +1,9 @@
 // NAVEGAÇÃO ENTRE A HOME E OS PRODUTOS
 // The operator's report of 2026-10-12: "when I click a product the page eats the first block and there is no way back".
 // Measured cause: `html { scroll-behavior: smooth }` made Next 16 reach the new route by a 0.5 s scroll through its own body,
-// and made the browser's restoration on back and forward an animation too (the page has no smooth scroll now). Since the
-// descent (components/onepage/Descent.tsx) the product is the section under the products band and a click scrolls down
-// to it on purpose. These specs pin what the visitor must get: the top of the product in view, never under the fixed
-// header, reached by a scroll that only goes down; the browser's back button
+// and made the browser's restoration on back and forward an animation too (the page has no smooth scroll now). v3
+// (operator, 2026-10-21): the product is a page of its own, opened at its top. These specs pin what the visitor must
+// get: the top of the product in view, never under the fixed header, with no part of the home left; the browser's back button
 // returning to the card that was clicked; and a menu with the five products and the Domus (a drop-down list on a
 // desktop, a panel on a phone). The selector of the products and the logo are in sections-nav.spec.ts.
 // v2.1: every way into a product plays the brand opening of that product (about 5 s) before it lands, so every check of
@@ -36,8 +35,8 @@ const sample = (page: Page) =>
     tick();
   });
 
-// The opening of the product: since the descent (components/onepage/Descent.tsx) the product is the section under the
-// products band of the home, so "the top of the product page" is the top of the slot at the top of the window
+// The opening of the product: v3, the product is a page of its own in the slot of the site frame, so "the top of the
+// product page" is the top of the slot at the top of the window
 const heroGeometry = (page: Page) =>
   page.evaluate(() => {
     const header = document.querySelector("header")!.getBoundingClientRect();
@@ -55,7 +54,9 @@ const heroGeometry = (page: Page) =>
   });
 
 for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
-  test(`a click on a product card descends to the top of its product, never past it, at ${vp.name}`, async ({
+  // v3 (operator, 2026-10-21): the product is a page of its own, so the card opens it at the top of the window, with
+  // no part of the home left above or under it
+  test(`a click on a product card opens its product at the top of its own page, at ${vp.name}`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: vp.width, height: vp.height });
@@ -67,12 +68,17 @@ for (const vp of VIEWPORTS.filter((v) => v.name !== "1024")) {
     await card.click();
     await page.waitForURL("**/products/relloo");
     await landed(page);
-    // The descent only goes down, and stops on the top of the product (it never overshoots and comes back)
+    // Once on the product, the page never moves away from its top (no descent through the home)
     const frames = await page.evaluate(
       () => (window as unknown as { __y: [string, number][] }).__y,
     );
-    const ys = frames.map(([, y]) => y);
-    expect(ys.every((y, i) => i === 0 || y >= ys[i - 1] - 1)).toBe(true);
+    const onProduct = frames
+      .filter(([path]) => path === "/products/relloo")
+      .map(([, y]) => y);
+    expect(onProduct.length).toBeGreaterThan(0);
+    expect(onProduct.at(-1)).toBeLessThanOrEqual(2);
+    for (const id of ["intro", "message", "products", "platforms"])
+      await expect(page.locator(`section#${id}`), id).toHaveCount(0);
     // The logo (the h1) is in view and below the fixed header, not hidden under it
     const g = await heroGeometry(page);
     expect(Math.abs(g.y)).toBeLessThanOrEqual(2);
@@ -121,7 +127,9 @@ test("the desktop menu lists the five products and the Domus, and each leads whe
   // The list of products opens on hover and on keyboard focus
   await nav.getByRole("link", { name: "Produtos" }).hover();
   for (const slug of SLUGS)
-    await expect(nav.locator(`a[href="/products/${slug}"]`).first()).toBeVisible();
+    await expect(
+      nav.locator(`a[href="/products/${slug}"]`).first(),
+    ).toBeVisible();
   await nav.locator('a[href="/products/magneto"]').first().click();
   await page.waitForURL("**/products/magneto");
   await landed(page);

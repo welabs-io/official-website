@@ -1,4 +1,4 @@
-// CONTINUIDADE DAS CENAS E DOS PLAYS
+// CONTINUIDADE DOS BLOCOS QUE SE MOVEM
 // The motion contract (.claude/skills/welabs-site-motion) measured on the blocks that move: with no gesture they run and
 // loop, a click plays to the end, holds about a second, resets and goes back to the loop, and reduced motion shows the
 // final frame. The blocks still outside the contract are a closed list of known failures (`test.fail`, which fails if
@@ -27,34 +27,23 @@ const BLOCKS: Block[] = [
     block: "#domus",
     trigger: '#domus label[for="area-add"]',
   },
-  // The message sends itself, lands, holds and starts again (components/plays/play-demo.ts)
-  {
-    name: "the message along the chain",
-    path: "/",
-    block: "#message",
-    trigger: '#message label[for="msg-go"]',
-  },
-  // The plays demonstrate themselves, and a choice of the visitor plays, holds and gives the demo back
-  ...["domus", "relloo", "magneto", "tuner", "knowly"].map((slug) => ({
-    name: `the play of the ${slug}`,
-    path: `/products/${slug}`,
-    block: `[data-play="${slug}"]`,
-    trigger: `[data-play="${slug}"] label`,
-  })),
+  // v3 (2026-10-23): the message of the home and the plays of the products left; the kit scenes that replace them hold
+  // the same contract on their pages (e2e/scene-kit-scenes.spec.ts, "scene kit on the site")
 ];
 
 for (const b of BLOCKS) {
   const run = b.knownUntil ? test.fail : test;
-  run(`${b.name} runs, loops and comes back after a click${b.knownUntil ? ` (known failure until ${b.knownUntil})` : ""}`, async ({
-    page,
-  }) => {
-    test.setTimeout(60000);
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto(b.path, { waitUntil: "load" });
-    await expectContinuousLoop(page.locator(b.block).first(), {
-      trigger: page.locator(b.trigger).first(),
-    });
-  });
+  run(
+    `${b.name} runs, loops and comes back after a click${b.knownUntil ? ` (known failure until ${b.knownUntil})` : ""}`,
+    async ({ page }) => {
+      test.setTimeout(60000);
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(b.path, { waitUntil: "load" });
+      await expectContinuousLoop(page.locator(b.block).first(), {
+        trigger: page.locator(b.trigger).first(),
+      });
+    },
+  );
 }
 
 for (const b of BLOCKS)
@@ -63,5 +52,8 @@ for (const b of BLOCKS)
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(b.path, { waitUntil: "load" });
-    await expectFinalFrameUnderReducedMotion(page, page.locator(b.block).first());
+    await expectFinalFrameUnderReducedMotion(
+      page,
+      page.locator(b.block).first(),
+    );
   });

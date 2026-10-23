@@ -26,7 +26,7 @@ Peers: `recharts` e `@tanstack/react-table` **não estão instalados**. `KpiCard
 - Primitiva de UI (botão, input, select, textarea, tabela, badge/chip/pill/tag, card) **não se escreve à mão** em `components/**`:
   - nenhum `<button>`, `<table>`, `<select>`, `<textarea>` ou `<input>` de texto nativo;
   - nenhuma classe CSS com nome de primitiva (`.badge`, `.chip`, `.pill`, `.tag`, `.card`, `.button`, `.btn`, `.input`, `.field`, `.table`, ou um sufixo como `noteCard`), a não ser quando a classe só posiciona um componente da lib (`<Badge className={house.tag}>`).
-- **Exceção permanente:** `<input type="checkbox|radio">` com `<label htmlFor>` como máquina de estado CSS dos plays e da casa (`components/plays/parts.tsx`, `components/template/Home.tsx`). `scripts/check-portfolio.mjs` exige esse controle nativo.
+- **Exceção permanente:** `<input type="checkbox|radio">` com `<label htmlFor>` como máquina de estado CSS da casa do Domus (`components/template/Home.tsx`; os plays saíram em 23/10, substituídos pelos carrosséis do kit). `scripts/check-portfolio.mjs` exige esse controle nativo.
 - O que já existe fora da regra está numa lista **explícita** de falhas conhecidas no próprio teste, cada item com a fase que o remove. Item corrigido sai da lista, e o teste reprova se a lista citar algo que não existe mais.
 
 ## 3. Uma camada de tema só
@@ -41,23 +41,24 @@ Peers: `recharts` e `@tanstack/react-table` **não estão instalados**. `KpiCard
 
 Neutra, sem creme nem areia. Valores medidos em `app/lib.css` (claro / escuro):
 
-| Papel | Token | Valor |
-|---|---|---|
-| Canvas (página, papel de trabalho) | `--background` | `#f7f7f5` / `#121214` |
-| Superfície (janela, cartão, campo, menu, bolha recebida) | `--card`, `--popover` | branco `#ffffff` / `#1a1a1d` |
-| Cromo (barra da janela, trilho, chip neutro, marca em repouso) | `--muted`, `--secondary` | `#efefeb` / `#202024` |
-| Linha e **borda de campo clara** | `--border`, `--edge-subtle`, `--input` (= a linha) | `#e5e5e1` / `#2c2c30` |
-| **Tinta** (texto, ícone) | `--foreground` | `#121212` / `#f5f5f3` |
-| **Texto secundário** (só texto e ícone) | `--muted-foreground` | `#55565b` / `#b4b4b0` |
-| **Primária preta** (ação e seleção) | `--primary` / `--primary-foreground` | `#121212` + branco, invertida no escuro |
-| Ponto discreto (status em repouso, digitação) | `--indicator-muted` | `#8a8a86` / `#77777d` |
-| Âmbar: o que está vivo agora | `--signal` / `--signal-foreground` | `#ffb020` / tinta |
-| Linha selecionada, bolha chegando | `--signal-soft` (`--selected`) | `#fff3dd` |
-| Concluído | `--success` / `--success-soft` | `#1e7a4c` / `#e8f4ed` |
-| Erro | `--destructive` / `--destructive-soft` | `#ab3040` / `#faeaea` |
-| Hover e pressionado de linha | `--veil-hover` / `--veil-press` | tinta a 4 % / 7 % |
+| Papel                                                          | Token                                              | Valor                                   |
+| -------------------------------------------------------------- | -------------------------------------------------- | --------------------------------------- |
+| Canvas (página, papel de trabalho)                             | `--background`                                     | `#f7f7f5` / `#121214`                   |
+| Superfície (janela, cartão, campo, menu, bolha recebida)       | `--card`, `--popover`                              | branco `#ffffff` / `#1a1a1d`            |
+| Cromo (barra da janela, trilho, chip neutro, marca em repouso) | `--muted`, `--secondary`                           | `#efefeb` / `#202024`                   |
+| Linha e **borda de campo clara**                               | `--border`, `--edge-subtle`, `--input` (= a linha) | `#e5e5e1` / `#2c2c30`                   |
+| **Tinta** (texto, ícone)                                       | `--foreground`                                     | `#121212` / `#f5f5f3`                   |
+| **Texto secundário** (só texto e ícone)                        | `--muted-foreground`                               | `#55565b` / `#b4b4b0`                   |
+| **Primária preta** (ação e seleção)                            | `--primary` / `--primary-foreground`               | `#121212` + branco, invertida no escuro |
+| Ponto discreto (status em repouso, digitação)                  | `--indicator-muted`                                | `#8a8a86` / `#77777d`                   |
+| Âmbar: o que está vivo agora                                   | `--signal` / `--signal-foreground`                 | `#ffb020` / tinta                       |
+| Linha selecionada, bolha chegando                              | `--signal-soft` (`--selected`)                     | `#fff3dd`                               |
+| Concluído                                                      | `--success` / `--success-soft`                     | `#1e7a4c` / `#e8f4ed`                   |
+| Erro                                                           | `--destructive` / `--destructive-soft`             | `#ab3040` / `#faeaea`                   |
+| Hover e pressionado de linha                                   | `--veil-hover` / `--veil-press`                    | tinta a 4 % / 7 %                       |
 
 Regras:
+
 - **Primária preta é a ação** (botão, âncora-botão, badge, chip, segmento ativo, dia escolhido, checkbox, switch). Âmbar **nunca** é ação nem preenchimento de botão, badge ou estado escolhido; só sinaliza o que **aconteceu agora** (marca ativa, item que chegou, ponto de status), como **área**, nunca texto nem traço fino. O orçamento de âmbar por tela está em `welabs-site-scenes` §5.
 - `--muted-foreground` é **tom de texto e ícone**, nunca fundo nem preenchimento (o operador rejeitou). Ponto ou preenchimento discreto usa `--indicator-muted`. O teste `components/scene-kit/scene-colour.test.ts` reprova isso e qualquer cor crua nas folhas do kit.
 - A linha (`--border`) separa **painéis**, nunca as linhas de uma lista. Texto esmaecido por `opacity` está fora do padrão: o que fica em segundo plano muda de cor (tinta -> `--muted-foreground`), para não cair abaixo de AA.
@@ -73,7 +74,7 @@ Um ponto só de mudança, sem estilo por chamada. A lib publicada (Storybook, br
   - `IconButton`: só ícone, com `label` obrigatório como nome acessível;
   - `RowButton`: linha de lista em largura total, com o ícone dentro de uma marca que a cena pinta por estado (`markClassName`);
   - `TextField`: ícone à esquerda obrigatório, ação de ícone opcional à direita (`action`), `label` opcional e `size` `sm`/`md`.
-- **Regra do ícone:** todo botão e todo campo levam ícone, e a prop `icon` é obrigatória, recebida como **elemento** (`icon={<RotateCcw />}`), para que um Server Component possa passá-lo. O padrão é `lucide-react`; as cenas antigas (`components/scenes`, `components/plays`, a casa do Domus) seguem com o `Glyph` desenhado, para uma cena não misturar duas famílias.
+- **Regra do ícone:** todo botão e todo campo levam ícone, e a prop `icon` é obrigatória, recebida como **elemento** (`icon={<RotateCcw />}`), para que um Server Component possa passá-lo. O padrão é `lucide-react`; as cenas antigas (`components/scenes`, a casa do Domus) seguem com o `Glyph` desenhado, para uma cena não misturar duas famílias.
 - **Medidas da lib, sem repintar:** altura de controle (`--control-height-md`, 40 px) e raio (`--control-radius`, 14 px) são da lib; campo com fundo da superfície e borda clara (`--input` = `--border`); botão secundário é o `soft` da lib sem borda (o rótulo e o ícone carregam a afordância); foco é o anel da lib. O que o `app/lib.css` ainda faz no bloco CONTROLES é só o interior do campo (recuo igual de peça pequena dentro do campo, medido em `e2e/scene-kit-geometry.spec.ts`).
 - **Teste:** `components/lib/ui-boundary.test.ts` reprova `Button`, `Input`, `InputGroup*` ou `Field` da lib fora da fronteira, primitiva sem `icon=`, e `className` com `bg-`/`border-`/`ring-`/`shadow-`/`outline-` numa chamada. A cena só pinta **estado**, nunca a borda ou o fundo do controle.
 
@@ -81,16 +82,16 @@ Um ponto só de mudança, sem estilo por chamada. A lib publicada (Storybook, br
 
 Um padrão só, e um lugar só para mudar. **Todo token do site mora em `app/lib.css`**, no bloco `TOKENS DO SITE`. As folhas de componente só leem `var(--...)`.
 
-| Família | Tokens | Onde mudar |
-|---|---|---|
-| Papéis de cor | os da tabela acima | `app/lib.css`, bloco PAPÉIS DE COR |
-| Cores da página | `--g*`, `--c*`, `--a-*`, `--ink`, `--mute-*`, `--page`, `--surface*`, `--halo`, `--action*` (aliases dos papéis) | `app/lib.css`, TOKENS DO SITE |
-| Tipo | `--t-*` (7 degraus) e os apelidos `--text-*`, `--lh-*`, `--line-micro/label/lead`, `--weight-text/label/title`, `--ls-*` | idem |
-| Espaço | `--sp-1` a `--sp-9` (grade de 4 px) | idem |
-| Forma e linha | `--r-*` (seguem os raios da lib), `--rule`, `--rule-dashed`, `--bar-active`, `--edge-ring`, `--edge-ring-active`, `--domus-ring*`, `--r-domus*` | idem |
-| Sombra | `--shadow-card`, `--shadow-raise`, `--shadow-pop` | idem |
-| Movimento | `--ease-out`, `--ease-in-out`, `--ease-spring`, `--dur-1/2/3` | idem (`--ease-in-out` fica junto das curvas da lib, no topo) |
-| Ícone e marca | `--icon-xs/sm/md/lg`, `--mark-xs/sm/md/lg`, `--row-min`, `--dot`, `--scene-width` | idem |
+| Família         | Tokens                                                                                                                                          | Onde mudar                                                   |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Papéis de cor   | os da tabela acima                                                                                                                              | `app/lib.css`, bloco PAPÉIS DE COR                           |
+| Cores da página | `--g*`, `--c*`, `--a-*`, `--ink`, `--mute-*`, `--page`, `--surface*`, `--halo`, `--action*` (aliases dos papéis)                                | `app/lib.css`, TOKENS DO SITE                                |
+| Tipo            | `--t-*` (7 degraus) e os apelidos `--text-*`, `--lh-*`, `--line-micro/label/lead`, `--weight-text/label/title`, `--ls-*`                        | idem                                                         |
+| Espaço          | `--sp-1` a `--sp-9` (grade de 4 px)                                                                                                             | idem                                                         |
+| Forma e linha   | `--r-*` (seguem os raios da lib), `--rule`, `--rule-dashed`, `--bar-active`, `--edge-ring`, `--edge-ring-active`, `--domus-ring*`, `--r-domus*` | idem                                                         |
+| Sombra          | `--shadow-card`, `--shadow-raise`, `--shadow-pop`                                                                                               | idem                                                         |
+| Movimento       | `--ease-out`, `--ease-in-out`, `--ease-spring`, `--dur-1/2/3`                                                                                   | idem (`--ease-in-out` fica junto das curvas da lib, no topo) |
+| Ícone e marca   | `--icon-xs/sm/md/lg`, `--mark-xs/sm/md/lg`, `--row-min`, `--dot`, `--scene-width`                                                               | idem                                                         |
 
 - **Teste:** `components/scene-kit/tokens.test.ts` reprova, em qualquer folha do kit, tamanho, peso, entrelinha, espaçamento de letra, raio, sombra, espaço, largura de linha, duração ou geometria escritos à mão. A única saída é a lista `GEOMETRY_ALLOWED`, com o motivo de cada entrada. A cor crua continua com `scene-colour.test.ts`, e `components/template/polish.test.tsx` confere as escalas em `app/lib.css`. As peças comuns das cenas (`components/scene-kit/parts.module.css`) estão em `welabs-site-scenes/references/lib-first.md`.
 
@@ -104,6 +105,7 @@ Um padrão só, e um lugar só para mudar. **Todo token do site mora em `app/lib
   - `strip`: título no degrau h3 (24/20) à esquerda, para detalhes e "Onde rodamos".
 
   Título é efeito ou rótulo, sem misturar os dois na mesma página.
+
 - **Alinhamento** (régua de `e2e/domus.spec.ts`): o nome fica centrado no seu ícone (1,5 px); o badge fica no eixo do ícone (1 px); o botão fica na linha do nome do andar (1 px); as calhas são iguais; nenhum texto é cortado (`e2e/layout.spec.ts`); a janela de cena acompanha o conteúdo, sem área vazia no rodapé.
 - **Densidade**: seção de 0,5 a 1 viewport, com no máximo cerca de 40 palavras fora das cenas. O respiro entre seções é de 96 a 128 px no desktop, e dentro da seção o espaço fica entre 16 e 24 px.
 

@@ -27,15 +27,9 @@ const TOKEN_SOURCE = () => {
 const SHEETS = [
   "components/template/v2.module.css",
   "components/template/hub.module.css",
-  "components/template/message.module.css",
   "components/template/house.module.css",
-  // v2.2: the plays moved to components/plays, one sheet for their anatomy and one per product
-  "components/plays/plays.module.css",
-  "components/plays/domus.module.css",
-  "components/plays/relloo.module.css",
-  "components/plays/magneto.module.css",
-  "components/plays/tuner.module.css",
-  "components/plays/knowly.module.css",
+  // v3 (2026-10-23): the message and the plays left with their sheets (the kit scenes replace them; their sheets are
+  // held by components/scene-kit/tokens.test.ts)
   "components/onepage/home.module.css",
   "components/onepage/shell.module.css",
 ];
@@ -101,7 +95,9 @@ describe("space and type tokens", () => {
     // The size of a step at a viewport width: px as is, a clamp(min, vw, max) resolved
     const at = (name: string, width: number) => {
       const v = value(name);
-      const clamp = v.match(/^clamp\(\s*([\d.]+)px,\s*([\d.]+)vw,\s*([\d.]+)px\s*\)$/);
+      const clamp = v.match(
+        /^clamp\(\s*([\d.]+)px,\s*([\d.]+)vw,\s*([\d.]+)px\s*\)$/,
+      );
       if (clamp) {
         const [, min, vw, max] = clamp.map(Number);
         return Math.min(max, Math.max(min, (vw * width) / 100));
@@ -124,7 +120,9 @@ describe("space and type tokens", () => {
     const aliases = [...css.matchAll(/(--text-[\w-]+):\s*([^;]+);/g)];
     expect(aliases.length).toBeGreaterThanOrEqual(9);
     for (const [, name, v] of aliases)
-      expect(v.trim(), name).toMatch(/^var\(--t-(display|h2|h3|lead|body|label)\)$/);
+      expect(v.trim(), name).toMatch(
+        /^var\(--t-(display|h2|h3|lead|body|label)\)$/,
+      );
     // The page itself starts at the label step; the micro step is for the drawn screens only
     expect(value("--text-xs")).toBe("var(--t-label)");
   });
@@ -194,9 +192,7 @@ const MOTION_SHEETS = [
   ...SHEETS,
   "components/scenes/fx.css",
   "components/scenes/scenes.module.css",
-  "components/scenes/capability.module.css",
   "components/scenes/ludic.module.css",
-  "components/scenes/scene-stage.module.css",
   "components/scenes/mini-scene.module.css",
   "components/intro/intro.module.css",
   "components/onepage/descent.module.css",
@@ -251,7 +247,10 @@ const ALL_SHEETS = ["components", "app"].flatMap((dir) =>
 );
 // The smallest size a value can render, in px, or null when it is a reference resolved elsewhere (var, em, %)
 const minPx = (value: string): number | null => {
-  const v = value.trim().replace(/^clamp\(\s*([^,]+),[\s\S]*\)$/, "$1").trim();
+  const v = value
+    .trim()
+    .replace(/^clamp\(\s*([^,]+),[\s\S]*\)$/, "$1")
+    .trim();
   const m = v.match(/^(\d*\.?\d+)(px|rem)$/);
   if (!m) return null;
   return Number(m[1]) * (m[2] === "rem" ? 16 : 1);
@@ -263,7 +262,8 @@ describe("the floor of the type scale", () => {
       declarations(strip(read(file)))
         .filter(
           ({ prop }) =>
-            prop === "font-size" || /^--(?:text|t|s-t|wl-text)-[\w-]+$/.test(prop),
+            prop === "font-size" ||
+            /^--(?:text|t|s-t|wl-text)-[\w-]+$/.test(prop),
         )
         .filter(({ value }) => {
           const px = minPx(value);
@@ -274,7 +274,9 @@ describe("the floor of the type scale", () => {
 
   it("every type token and font size of the sheets is at least 12 px, besides the known failures", () => {
     expect(ALL_SHEETS.length).toBeGreaterThan(20);
-    expect([...new Set(below())].sort()).toEqual(Object.keys(FLOOR_KNOWN).sort());
+    expect([...new Set(below())].sort()).toEqual(
+      Object.keys(FLOOR_KNOWN).sort(),
+    );
   });
 
   it("no component writes a font size under the floor inline", () => {
@@ -305,11 +307,15 @@ describe("a hierarchy of section heads", () => {
       [...html.matchAll(/data-head="([\w-]+)"/g)].map((m) => m[1]),
     );
     expect(variants.size).toBeGreaterThanOrEqual(2);
-    for (const v of variants) expect(["chapter", "showcase", "strip"]).toContain(v);
+    for (const v of variants)
+      expect(["chapter", "showcase", "strip"]).toContain(v);
   });
 
   it("every h2 of a section head sits in a head with its variant", () => {
-    for (const config of [HOME_CONFIG, ...PRODUCTS.map((p) => productConfig(p.slug))]) {
+    for (const config of [
+      HOME_CONFIG,
+      ...PRODUCTS.map((p) => productConfig(p.slug)),
+    ]) {
       const html = renderToStaticMarkup(<Sections config={config} />);
       const heads = html.match(/<div[^>]*data-head="[\w-]+"[^>]*><h2/g) ?? [];
       expect(heads.length).toBeGreaterThanOrEqual(2);

@@ -1,7 +1,8 @@
 // SEÇÕES DA HOME (V2)
 // The home of the v2 content: few words, the rest is motion the visitor plays. Server markup and CSS
-// (v2.module.css); the only client piece is the drag shortcut of the message (DragToCheck). Every interaction works
-// with no script and with a keyboard (a checkbox and its visible label), and under reduced motion shows its final frame.
+// (v2.module.css); v3 (2026-10-23): the message that crosses the products is a kit scene (SceneSlot), the only client
+// piece. Every other interaction works with no script and with a keyboard (a checkbox and its visible label), and under
+// reduced motion shows its final frame.
 import Link from "next/link";
 import { Badge, Card, CardContent, TextField } from "@/components/lib/ui";
 import { CONTACT_HREF } from "@/components/onepage/contact";
@@ -27,11 +28,10 @@ import {
   productAlt,
   productLogo,
 } from "@/lib/products";
-import { DragToCheck } from "./DragToCheck";
+import { SceneSlot } from "@/components/scene-kit/SceneSlot";
 import { Orbit } from "./Orbit";
 import { SectionHead } from "./SectionHead";
 import house from "./house.module.css";
-import msg from "./message.module.css";
 import styles from "./v2.module.css";
 
 // Glyphs of the rooms: the shared line set of the scenes
@@ -78,23 +78,10 @@ export function HomeIntro() {
 }
 
 // A MENSAGEM QUE ATRAVESSA
-// I2: the visitor drags the message onto the track (or presses the button); it walks through the five products, each
-// one lighting with its effect, and lands in the Domus on the right.
-// v2.1: the destination was an empty box with a thick black edge; it is now the Domus forming, on the idea of its brand
-// opening (domus-intro-s2-r2, in the light theme): the rooms of the business arrive, lock side by side inside the outline
-// of the symbol and condense into its amber square, and the record of the order shows under it. The stops are cards
-// wide enough for each logo at 20 px (they were 64 px circles with 16 px logos).
-// Geometry of the symbol, in the coordinates of the official Domus logo (public/brands/welabs/products/domus-light.svg)
-const RING = { x: 188.64, y: 75.9, w: 119.1, h: 118.8, rx: 34.79, sw: 36 };
-const SQUARE = { x: 221.35, y: 108.46, s: 53.69 };
-// Four rooms inside the hole of the ring (2 by 2), and where each one flies in from
-const ROOMS = [
-  { x: 212.64, y: 99.9, fx: -70, fy: -40 },
-  { x: 250.64, y: 99.9, fx: 70, fy: -50 },
-  { x: 212.64, y: 137.9, fx: -60, fy: 50 },
-  { x: 250.64, y: 137.9, fx: 70, fy: 40 },
-];
-
+// v3 (2026-10-23): the chain of the home is the kit scene `home-message` (components/scene-kit/scenes/home-message.tsx,
+// approved at /lab/scenes/home-message): a message from a channel crosses the five products and lands as the record of
+// the order in the Domus. It plays by itself on screen, pauses off screen and settles under reduced motion (the kit's
+// continuity); the drag-and-drop message of the v2 left with it.
 export function HomeMessage() {
   return (
     <div className={shell.wrap}>
@@ -103,112 +90,7 @@ export function HomeMessage() {
         lead={HOME_MESSAGE.lead}
         variant="chapter"
       />
-      {/* v3 (F3): the message sends itself while on screen, lands, holds and starts again (data-demo,
-          components/plays/play-demo.ts); a drag or the button takes over and gives it back */}
-      <div className={msg.msg} data-demo="msg-go">
-        <input
-          type="checkbox"
-          id="msg-go"
-          className={styles.toggle}
-          aria-describedby="msg-track"
-        />
-        <DragToCheck
-          inputId="msg-go"
-          targetId="msg-track"
-          className={msg.bubble}
-        >
-          <small>{HOME_MESSAGE.bubble.channel}</small>
-          {HOME_MESSAGE.bubble.text}
-        </DragToCheck>
-        <ol id="msg-track" className={msg.track}>
-          <li className={msg.rail} aria-hidden="true">
-            <span className={msg.run} />
-            {/* v2.2 (audit M01): the message itself travels, a small bubble that stops 300 ms at each product */}
-            <span className={msg.token}>
-              <Glyph d={GLYPHS.chat} size={14} />
-            </span>
-          </li>
-          {HOME_MESSAGE.stations.map(({ product, label }, i) => (
-            <li
-              key={product}
-              className={msg.station}
-              style={{ "--i": i } as React.CSSProperties}
-            >
-              <span className={msg.stop}>
-                <img
-                  src={productLogo(product, "light", "row", 20)}
-                  alt={productAlt(product, "row")}
-                  width={1005}
-                  height={550}
-                />
-              </span>
-              <span className={msg.label}>{label}</span>
-            </li>
-          ))}
-        </ol>
-        <div className={msg.dest} aria-hidden="true">
-          <svg
-            className={msg.sym}
-            viewBox="168 55 160 160"
-            fill="none"
-            aria-hidden="true"
-          >
-            <rect
-              className={msg.ring}
-              x={RING.x}
-              y={RING.y}
-              width={RING.w}
-              height={RING.h}
-              rx={RING.rx}
-              strokeWidth={RING.sw}
-            />
-            {ROOMS.map((r, i) => (
-              <rect
-                key={i}
-                className={msg.room}
-                x={r.x}
-                y={r.y}
-                width={33}
-                height={33}
-                rx={6}
-                style={
-                  {
-                    "--i": i,
-                    "--fx": `${r.fx}px`,
-                    "--fy": `${r.fy}px`,
-                  } as React.CSSProperties
-                }
-              />
-            ))}
-            <rect
-              className={msg.square}
-              x={SQUARE.x}
-              y={SQUARE.y}
-              width={SQUARE.s}
-              height={SQUARE.s}
-            />
-          </svg>
-          <img
-            className={msg.destLogo}
-            src={productLogo("domus", "light", "row", 22)}
-            alt=""
-            width={1005}
-            height={550}
-          />
-          <span className={msg.record}>
-            <span className={msg.ok} />
-            <span>
-              <b>{HOME_MESSAGE.record}</b>
-              {HOME_MESSAGE.done}
-            </span>
-          </span>
-        </div>
-        <label htmlFor="msg-go" className={msg.go}>
-          <span data-off>{HOME_MESSAGE.send}</span>
-          <span data-run>{HOME_MESSAGE.sending}</span>
-          <span data-on>{HOME_MESSAGE.again}</span>
-        </label>
-      </div>
+      <SceneSlot id="home-message" className={styles.kitScene} />
     </div>
   );
 }

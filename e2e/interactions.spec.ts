@@ -1,10 +1,9 @@
 // INTERAÇÕES DA V2.1
 // The visitor plays the page: pointing at a product lights it, its tie and its line in the record of the Domus (v2.1:
 // the stage is a grid, the effect lights in the record instead of a floating stamp), the word of the title turns with
-// the stage, the message dragged onto the track (or sent with the button) walks through the five products and lands in
-// the Domus that forms, "+ Novo módulo" makes a new module in the house of the Domus, and every product page has its own
-// play. Each one is a native control with a visible label, so the keyboard reaches it too; under reduced motion nothing
-// runs and the final frame shows.
+// the stage, the message (v3: the kit scene home-message) walks through the five products and lands in the Domus, and
+// "+ Novo módulo" makes a new module in the house of the Domus. Each control is native with a visible label, so the
+// keyboard reaches it too; under reduced motion nothing runs and the final frame shows.
 import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 900 } });
@@ -61,36 +60,21 @@ test("the word of the title turns with the stage", async ({ page }) => {
   await expect.poll(at, { timeout: 5000 }).toBeLessThan(0);
 });
 
-test("the message sent with the button walks through the five products and lands in the Domus", async ({
+// v3 (2026-10-23): the message of the home is the kit scene home-message; its walk through the five products and its
+// landing in the Domus are held by e2e/scene-kit-scenes.spec.ts (on the lab and on the home)
+test("the message band is the kit scene that crosses the five products", async ({
   page,
 }) => {
   await page.goto("/", { waitUntil: "load" });
-  await page.locator("#message").scrollIntoViewIfNeeded();
-  await page.getByText("Enviar a mensagem").click();
-  await expect(page.locator("#msg-go")).toBeChecked();
-  await page.waitForTimeout(7000);
-  // The Domus formed: the outline in ink, the amber square in, the record of the order confirmed
-  const domus = await page.evaluate(() => {
-    const rects = document.querySelectorAll("#message svg rect");
-    return {
-      ring: getComputedStyle(rects[0]).stroke,
-      square: Number(getComputedStyle(rects[rects.length - 1]).opacity),
-    };
+  const scene = page.locator(
+    '#message [data-kit="home-message"] [data-scene="home-message"]',
+  );
+  await scene.scrollIntoViewIfNeeded();
+  // It plays by itself on screen: the message reaches the record of the Domus
+  await expect(scene).toHaveAttribute("data-step", "domus", {
+    timeout: 10_000,
   });
-  expect(domus).toEqual({ ring: "rgb(28, 26, 22)", square: 1 });
-  await expect(
-    page.locator("#message").getByText("Confirmado: sábado"),
-  ).toBeVisible();
-  await expect(page.getByText("Recomeçar")).toBeVisible();
-});
-
-test("the message dragged onto the track is sent", async ({ page }) => {
-  await page.goto("/", { waitUntil: "load" });
-  await page.locator("#message").scrollIntoViewIfNeeded();
-  const bubble = page.locator("#message [data-drag]");
-  const track = page.locator("#msg-track");
-  await bubble.dragTo(track);
-  await expect(page.locator("#msg-go")).toBeChecked();
+  await expect(page.locator("#msg-go")).toHaveCount(0);
 });
 
 test("'+ Novo módulo' makes a new module in the Domus, with its seal, and the keyboard does it too", async ({
@@ -118,8 +102,7 @@ test("'+ Novo módulo' makes a new module in the Domus, with its seal, and the k
   await expect.poll(born, { timeout: 3000 }).toBeGreaterThan(0.9);
 });
 
-// v2.2: the play of each product page (a chain of states with a choice, a record and the effect on the Domus) is
-// accepted by e2e/plays.spec.ts
+// v3 (2026-10-23): the plays of the product pages left; each page opens with its carousel (e2e/scene-kit-scenes.spec.ts)
 
 test("on a phone the pieces of the stage stay inside it and the bar shows under the first word", async ({
   browser,

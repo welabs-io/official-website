@@ -15,13 +15,6 @@ import {
   HOME_MESSAGE,
   HOME_PRODUCTS,
 } from "./home";
-import {
-  DOMUS_PLAY,
-  KNOWLY_PLAY,
-  MAGNETO_PLAY,
-  RELLOO_PLAY,
-  TUNER_PLAY,
-} from "./plays";
 import { PAGE_HEADINGS, PRODUCT_PAGE } from "./products";
 import { copyViolation, words } from "./rules";
 
@@ -46,11 +39,6 @@ const ALL = strings([
   CLOSING,
   PRODUCT_PAGE,
   PAGE_HEADINGS,
-  DOMUS_PLAY,
-  RELLOO_PLAY,
-  MAGNETO_PLAY,
-  TUNER_PLAY,
-  KNOWLY_PLAY,
   PRODUCTS.map((p) => p.line),
 ]);
 
@@ -75,7 +63,6 @@ describe("one short title and one line per section", () => {
       HOME_CONTACT.title,
       PAGE_HEADINGS.areas,
       PAGE_HEADINGS.details,
-      ...PRODUCTS.map((p) => PRODUCT_PAGE[p.slug].play.title),
       ...PRODUCTS.map((p) => PRODUCT_PAGE[p.slug].center.title),
     ])
       expect(words(title), title).toBeLessThanOrEqual(7);
@@ -83,7 +70,6 @@ describe("one short title and one line per section", () => {
       HOME_MESSAGE.lead,
       HOME_DOMUS.lead,
       PAGE_HEADINGS.areasLead,
-      ...PRODUCTS.map((p) => PRODUCT_PAGE[p.slug].play.lead),
     ])
       expect(words(line), line).toBeLessThanOrEqual(12);
   });
@@ -106,9 +92,6 @@ describe("every product page has the same fields", () => {
     for (const d of page.details) expect(words(d)).toBeLessThanOrEqual(6);
     expect(page.asks).toHaveLength(3);
     for (const a of page.asks) expect(a.endsWith("?")).toBe(true);
-    // The Domus opens with its areas; every other product with its native scenes
-    if (slug === "domus") expect(page.scenes).toHaveLength(0);
-    else expect(page.scenes.length).toBeGreaterThan(0);
   });
   it("the contact of the home asks open questions, with no answer", () => {
     expect(HOME_CONTACT.asks.length).toBeGreaterThanOrEqual(3);

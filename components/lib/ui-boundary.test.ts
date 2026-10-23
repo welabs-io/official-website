@@ -22,23 +22,28 @@ const SOURCES = ["components", "app", "lib"].flatMap((d) =>
   files(d, /\.(tsx?|jsx?|mjs)$/),
 );
 const COMPONENTS_TSX = files("components", /\.tsx$/);
-const SHEETS = [
-  ...files("components", /\.css$/),
-  ...files("app", /\.css$/),
-];
+const SHEETS = [...files("components", /\.css$/), ...files("app", /\.css$/)];
 const BOUNDARY = files("components/lib", /\.tsx$/);
 
 // Counts of `key` in a list, as a sorted object (stable diffs in the failure message)
 const tally = (keys: string[]) =>
   Object.fromEntries(
-    [...keys.reduce((m, k) => m.set(k, (m.get(k) ?? 0) + 1), new Map<string, number>())]
-      .sort(([a], [b]) => a.localeCompare(b)),
+    [
+      ...keys.reduce(
+        (m, k) => m.set(k, (m.get(k) ?? 0) + 1),
+        new Map<string, number>(),
+      ),
+    ].sort(([a], [b]) => a.localeCompare(b)),
   );
 
 describe("one client boundary for the lib", () => {
   it("only components/lib/ imports @imagineapps-team/react", () => {
-    const outside = SOURCES.filter((f) => !f.startsWith("components/lib/")).filter((f) =>
-      /(?:from\s*|import\s*\(\s*|require\(\s*)["']@imagineapps-team\/react/.test(stripJs(read(f))),
+    const outside = SOURCES.filter(
+      (f) => !f.startsWith("components/lib/"),
+    ).filter((f) =>
+      /(?:from\s*|import\s*\(\s*|require\(\s*)["']@imagineapps-team\/react/.test(
+        stripJs(read(f)),
+      ),
     );
     expect(outside).toEqual([]);
   });
@@ -62,9 +67,9 @@ describe("one client boundary for the lib", () => {
   ];
   it("no effect off the brand crosses the boundary", () => {
     const found = BOUNDARY.flatMap((f) =>
-      OFF_BRAND.filter((name) => new RegExp(`\\b${name}\\b`).test(stripJs(read(f)))).map(
-        (name) => `${f}: ${name}`,
-      ),
+      OFF_BRAND.filter((name) =>
+        new RegExp(`\\b${name}\\b`).test(stripJs(read(f))),
+      ).map((name) => `${f}: ${name}`),
     );
     expect(found).toEqual([]);
   });
@@ -74,10 +79,8 @@ describe("one client boundary for the lib", () => {
 // A native control or table in the markup of a component, by file and tag. A checkbox or radio with its label is the
 // CSS state machine of the plays and of the house (a documented local gap, and check-portfolio requires it), so it is
 // allowed; every other input is a text field the lib has.
-const NATIVE_GAPS: Record<string, string> = {
-  // Choice: the native checkbox/radio of the plays, its `type` prop typed "checkbox" | "radio"
-  "components/plays/parts.tsx|input": "local gap: CSS state machine of the plays",
-};
+// v3 (2026-10-23): empty; the plays left with their carousels, and the checkbox of the house is a plain `type="checkbox"`
+const NATIVE_GAPS: Record<string, string> = {};
 // v3 (F3): empty; the menu button is the lib's Button (F2), the reset of the plays left with the demo and the list of
 // the Domus play is the lib's Table
 const NATIVE_KNOWN: Record<string, number> = {};
@@ -86,7 +89,9 @@ const nativePrimitives = () =>
   COMPONENTS_TSX.flatMap((f) => {
     const src = stripJs(read(f));
     const out: string[] = [];
-    for (const m of src.matchAll(/<(button|table|select|textarea|input)\b([^>]*)>/g)) {
+    for (const m of src.matchAll(
+      /<(button|table|select|textarea|input)\b([^>]*)>/g,
+    )) {
       if (m[1] === "input" && /\btype="(checkbox|radio)"/.test(m[2])) continue;
       const key = `${f}|${m[1]}`;
       if (key in NATIVE_GAPS) continue;
@@ -120,10 +125,17 @@ const LIB_NAMES = BOUNDARY.flatMap((f) => [
   ...[...stripJs(read(f)).matchAll(/export\s*\{([^}]*)\}/g)].flatMap((m) =>
     m[1]
       .split(",")
-      .map((s) => s.trim().split(/\s+as\s+/).pop()!)
+      .map((s) =>
+        s
+          .trim()
+          .split(/\s+as\s+/)
+          .pop()!,
+      )
       .filter((s) => s && !s.startsWith("type ")),
   ),
-  ...[...stripJs(read(f)).matchAll(/export\s+function\s+(\w+)/g)].map((m) => m[1]),
+  ...[...stripJs(read(f)).matchAll(/export\s+function\s+(\w+)/g)].map(
+    (m) => m[1],
+  ),
 ]);
 
 // The opening tag that starts at `at`, up to its closing `>` outside of braces (an arrow `=>` inside {} is skipped)
@@ -140,7 +152,9 @@ const openingTag = (src: string, at: number) => {
 // The sheets a component imports, by local name (`import house from "./house.module.css"`)
 const sheetImports = (file: string, src: string) => {
   const out = new Map<string, string>();
-  for (const m of src.matchAll(/import\s+(\w+)\s+from\s+["']([^"']+\.module\.css)["']/g))
+  for (const m of src.matchAll(
+    /import\s+(\w+)\s+from\s+["']([^"']+\.module\.css)["']/g,
+  ))
     out.set(
       m[1],
       m[2].startsWith("@/")
@@ -173,7 +187,9 @@ const handMadeClasses = () => {
       .map((m) => m[1])
       .filter((s) => !s.trim().startsWith("@"));
     const names = new Set(
-      selectors.flatMap((s) => [...s.matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1])),
+      selectors.flatMap((s) =>
+        [...s.matchAll(/\.([a-zA-Z][\w-]*)/g)].map((m) => m[1]),
+      ),
     );
     return [...names]
       .filter((n) => PRIMITIVE_CLASS.test(n))
@@ -184,12 +200,7 @@ const handMadeClasses = () => {
 
 // Known failures measured on 155fb83, with the phase that swaps them for the lib (welabs-site-ui, references/block-map.md)
 const CLASS_KNOWN: string[] = [
-  // TODO(F4): the capability scenes move into the product strips of the home, on Card and Badge
-  "components/scenes/capability.module.css|.cardMini",
-  "components/scenes/capability.module.css|.cardMiniMeta",
-  "components/scenes/capability.module.css|.noteCard",
-  "components/scenes/capability.module.css|.orderTag",
-  "components/scenes/capability.module.css|.pillOk",
+  // v3 (2026-10-23): the capability scenes left (the kit carousels replace them), and their classes with them
   "components/scenes/ludic.module.css|.card",
   "components/scenes/ludic.module.css|.pill",
   "components/scenes/scenes.module.css|.pillInfo",
@@ -211,7 +222,9 @@ describe("no primitive painted by hand", () => {
 // data-theme selector, and no component paints a raw colour through a Tailwind arbitrary value or an inline style.
 describe("one theme-mapping layer", () => {
   it("only app/lib.css sets tokens under data-theme", () => {
-    const sheets = SHEETS.filter((f) => f !== "app/lib.css" && f !== "app/brand/welabs.css");
+    const sheets = SHEETS.filter(
+      (f) => f !== "app/lib.css" && f !== "app/brand/welabs.css",
+    );
     const found = sheets.filter((f) =>
       [...stripCss(read(f)).matchAll(/([^{}]+)\{([^{}]*)\}/g)].some(
         (m) => /data-theme/.test(m[1]) && /--[\w-]+\s*:/.test(m[2]),
@@ -252,25 +265,37 @@ const RAW_CONTROLS = [
   "Field",
 ];
 const UI = "components/lib/ui.tsx";
-const CALL_SITES = SOURCES.filter((f) => /\.tsx$/.test(f) && !f.startsWith("components/lib/"));
+const CALL_SITES = SOURCES.filter(
+  (f) => /\.tsx$/.test(f) && !f.startsWith("components/lib/"),
+);
 
 describe("site controls go through the primitives", () => {
   it("the boundary re-exports no raw lib control", () => {
-    const exported = [...stripJs(read(UI)).matchAll(/export\s*\{([^}]*)\}/g)].flatMap((m) =>
-      m[1].split(",").map((s) => s.trim().split(/\s+as\s+/).pop()!),
+    const exported = [
+      ...stripJs(read(UI)).matchAll(/export\s*\{([^}]*)\}/g),
+    ].flatMap((m) =>
+      m[1].split(",").map((s) =>
+        s
+          .trim()
+          .split(/\s+as\s+/)
+          .pop()!,
+      ),
     );
     expect(exported.filter((n) => RAW_CONTROLS.includes(n))).toEqual([]);
   });
 
   it("no call site imports a raw lib control", () => {
     const found = CALL_SITES.flatMap((f) =>
-      [...stripJs(read(f)).matchAll(/import\s*\{([^}]*)\}\s*from\s*["']@\/components\/lib\/[^"']+["']/g)].flatMap(
-        (m) =>
-          m[1]
-            .split(",")
-            .map((s) => s.trim().split(/\s+as\s+/)[0])
-            .filter((n) => RAW_CONTROLS.includes(n))
-            .map((n) => `${f}: ${n}`),
+      [
+        ...stripJs(read(f)).matchAll(
+          /import\s*\{([^}]*)\}\s*from\s*["']@\/components\/lib\/[^"']+["']/g,
+        ),
+      ].flatMap((m) =>
+        m[1]
+          .split(",")
+          .map((s) => s.trim().split(/\s+as\s+/)[0])
+          .filter((n) => RAW_CONTROLS.includes(n))
+          .map((n) => `${f}: ${n}`),
       ),
     );
     expect(found).toEqual([]);
@@ -308,7 +333,8 @@ describe("site controls go through the primitives", () => {
         // A composer field may lead with a chip (`lead=`, Welabs UI v3: the channel of origin, its own icon inside)
         if (!/\s(?:icon|lead)=/.test(top)) missing.push(`${f}: <${m[1]}>`);
         for (const c of open.matchAll(/className="([^"]*)"/g))
-          if (/(?:^|\s)(?:bg|border|ring|shadow|outline)-/.test(c[1])) painted.push(`${f}: <${m[1]}> ${c[1]}`);
+          if (/(?:^|\s)(?:bg|border|ring|shadow|outline)-/.test(c[1]))
+            painted.push(`${f}: <${m[1]}> ${c[1]}`);
       }
     }
     expect(seen).toBeGreaterThan(0);

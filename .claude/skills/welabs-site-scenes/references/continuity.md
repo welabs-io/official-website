@@ -13,13 +13,13 @@ Garantias do kit: autoplay ao entrar na tela (`useInView`, limiar 0,4); loop com
 
 ## Durações e ritmo
 
-| Uso | Valor |
-|---|---|
-| Micro (hover, press, abrir) | `--dur-1` 0,16 s, `--dur-2` 0,28 s, `--dur-3` 0,48 s |
-| Passo de cena | 400 a 1200 ms (último passo com ~0,5 s a mais que as transições, para segurar ~1 s) |
-| Ciclo de cena | 6 a 10 s (ficha: 12 a 15 s no total para 4 momentos; confira o ciclo medido) |
-| Carrossel / palavra que gira | cerca de 3 s por item, sincronizados |
-| Hold depois de gesto | ~1 s (mínimo 1 s), depois reset |
+| Uso                          | Valor                                                                               |
+| ---------------------------- | ----------------------------------------------------------------------------------- |
+| Micro (hover, press, abrir)  | `--dur-1` 0,16 s, `--dur-2` 0,28 s, `--dur-3` 0,48 s                                |
+| Passo de cena                | 400 a 1200 ms (último passo com ~0,5 s a mais que as transições, para segurar ~1 s) |
+| Ciclo de cena                | 6 a 10 s (ficha: 12 a 15 s no total para 4 momentos; confira o ciclo medido)        |
+| Carrossel / palavra que gira | cerca de 3 s por item, sincronizados                                                |
+| Hold depois de gesto         | ~1 s (mínimo 1 s), depois reset                                                     |
 
 Proibidos: scroll-jacking, seção fixada no scroll, barra de progresso, botão de pausar/retomar e vídeo ou player (`scripts/check-portfolio.mjs`). Tudo é DOM nativo. Movimento só entra quando mostra um efeito do produto ou orienta a atenção; mesma ordem de produtos em palco, cadeia e faixas (Domus, Relloo, Magneto, Tuner, Knowly).
 
@@ -29,7 +29,7 @@ Proibidos: scroll-jacking, seção fixada no scroll, barra de progresso, botão 
 
 ## Legado (fora do kit, até migrar)
 
-`components/scenes/`, `components/plays/` e a casa do Domus (`components/template/house.module.css`) seguem o contrato antigo, que vale para eles até migrarem:
+`components/scenes/` (os desfechos da home) e a casa do Domus (`components/template/house.module.css`) seguem o contrato antigo, que vale para eles até migrarem (os plays de `components/plays/` saíram em 23/10, substituídos pelos carrosséis do kit):
 
 1. roda sozinho ao entrar na tela (os plays ainda abrem no registro vazio, falha conhecida);
 2. faz loop (a mensagem não faz, animações `both` sem `infinite`);

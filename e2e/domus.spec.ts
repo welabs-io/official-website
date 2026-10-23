@@ -88,8 +88,7 @@ for (const width of [1440, 1024, 390])
               return {
                 off: Math.abs(cx(b) - cx(r(li.querySelector("a")!))),
                 gap: Math.abs(b.top - stem - fr.bottom),
-                straight:
-                  cx(b) > fr.left + radius && cx(b) < fr.right - radius,
+                straight: cx(b) > fr.left + radius && cx(b) < fr.right - radius,
               };
             })
           : [];
@@ -123,9 +122,9 @@ for (const width of [1440, 1024, 390])
       expect(m.ring).toBe(width < 860 ? 8 : 12);
       // The logo's rule: an inner corner that stays round (outer = inner + stroke, inner > 0)
       expect(m.radius - m.ring).toBeGreaterThan(0);
-      expect(Math.max(...m.gutters) - Math.min(...m.gutters)).toBeLessThanOrEqual(
-        1,
-      );
+      expect(
+        Math.max(...m.gutters) - Math.min(...m.gutters),
+      ).toBeLessThanOrEqual(1);
       expect(m.icon).toBeLessThanOrEqual(1.5);
       expect(m.badge).toBeLessThanOrEqual(1);
       expect(m.cut).toEqual([]);
@@ -139,22 +138,25 @@ for (const width of [1440, 1024, 390])
       expect(m.link).toBeLessThanOrEqual(1);
     });
 
-test("the badges, the screen and the fields are the lib's, in its welabs theme with the sand border", async ({
+// Welabs UI v3 (app/lib.css, 22/10): the field is the site's TextField over the lib's InputGroup, its edge the light
+// line (--input = --border, #e5e5e1) at the lib's control radius (14 px); the sand border was retired
+test("the badges, the screen and the fields are the lib's, in its welabs theme with the light field edge", async ({
   page,
 }) => {
   const band = await open(page, 1440);
   const house = band.locator("[data-theme='welabs']");
   await expect(house.locator("[data-slot='badge']")).toHaveCount(3);
   await expect(house.locator("[data-slot='card']")).toHaveCount(1);
-  const inputs = house.locator("[data-slot='input']");
+  const inputs = house.locator("[data-slot='input-group-control']");
   await expect(inputs).toHaveCount(3);
-  expect(await inputs.evaluateAll((els) => els.map((e) => (e as HTMLInputElement).value))).toEqual([
-    "Doca 3",
-    "21/10/2026",
-    "3 fotos",
-  ]);
+  expect(
+    await inputs.evaluateAll((els) =>
+      els.map((e) => (e as HTMLInputElement).value),
+    ),
+  ).toEqual(["Doca 3", "21/10/2026", "3 fotos"]);
   const look = await inputs.first().evaluate((el) => {
-    const cs = getComputedStyle(el);
+    // The edge and the radius are the group's (the control inside it is flush)
+    const cs = getComputedStyle(el.closest("[data-slot='input-group']")!);
     return {
       border: cs.borderTopColor,
       radius: cs.borderTopLeftRadius,
@@ -163,8 +165,8 @@ test("the badges, the screen and the fields are the lib's, in its welabs theme w
     };
   });
   expect(look).toEqual({
-    border: "rgb(130, 121, 104)",
-    radius: "10px",
+    border: "rgb(229, 229, 225)",
+    radius: "14px",
     label: "Local",
   });
   // No third-party product named in the block
@@ -189,7 +191,9 @@ test("the new module loops on its own, and a click plays it to the end and goes 
   };
   // Births: the module going from hidden to shown
   const births = (s: { t: number; born: number }[]) =>
-    s.filter((x, i) => i > 0 && s[i - 1].born < 0.5 && x.born >= 0.5).map((x) => x.t);
+    s
+      .filter((x, i) => i > 0 && s[i - 1].born < 0.5 && x.born >= 0.5)
+      .map((x) => x.t);
   const idle = await sample(2 * CYCLE + 1000);
   const idleBirths = births(idle);
   console.log(`idle births at ${idleBirths.join(", ")} ms`);
@@ -197,22 +201,30 @@ test("the new module loops on its own, and a click plays it to the end and goes 
   expect(idleBirths[1] - idleBirths[0]).toBeGreaterThan(CYCLE - 600);
   expect(idleBirths[1] - idleBirths[0]).toBeLessThan(CYCLE + 600);
   // The click lands while the module is shown: the sequence restarts from its first frame
-  await expect.poll(async () => (await state(band)).born, { timeout: CYCLE }).toBeGreaterThan(0.9);
+  await expect
+    .poll(async () => (await state(band)).born, { timeout: CYCLE })
+    .toBeGreaterThan(0.9);
   await band.locator("label", { hasText: "Novo módulo" }).click();
   const after = await sample(2 * CYCLE + 1000);
-  console.log(`after click: ${JSON.stringify(after.filter((_, i) => i % 4 === 0))}`);
+  console.log(
+    `after click: ${JSON.stringify(after.filter((_, i) => i % 4 === 0))}`,
+  );
   expect(after[0].born).toBeLessThan(0.5);
   const b = births(after);
   expect(b[0]).toBeLessThan(2000);
   // It holds the screen open for at least a second, then resets and is born again on its own
   const open1 = after.filter((x) => x.t < CYCLE && x.screen > 0.9);
   expect(open1.at(-1)!.t - open1[0].t).toBeGreaterThanOrEqual(1000);
-  expect(after.some((x) => x.t > b[0] && x.t < CYCLE + 500 && x.born < 0.1)).toBe(true);
+  expect(
+    after.some((x) => x.t > b[0] && x.t < CYCLE + 500 && x.born < 0.1),
+  ).toBe(true);
   expect(b.length).toBeGreaterThanOrEqual(2);
   expect(b[1] - b[0]).toBeLessThan(CYCLE + 600);
 });
 
-test("reduced motion shows the final frame and runs nothing", async ({ page }) => {
+test("reduced motion shows the final frame and runs nothing", async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   for (const width of [1440, 390]) {
     const band = await open(page, width);

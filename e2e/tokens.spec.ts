@@ -54,15 +54,4 @@ for (const path of ["/", "/products/magneto"])
     expect(loose).toEqual([]);
   });
 
-test("a chip of a play changes colour at once and moves by scale only", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/products/knowly", { waitUntil: "load" });
-  const chip = page.locator('label[for="kn-ship"]');
-  await chip.scrollIntoViewIfNeeded();
-  const props = await chip.evaluate(
-    (el) => getComputedStyle(el).transitionProperty,
-  );
-  expect(props).toBe("transform");
-});
+// v3 (2026-10-23): the chip of the Knowly play left with the plays (the carousels replace them)
