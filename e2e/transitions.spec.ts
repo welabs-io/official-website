@@ -112,7 +112,8 @@ async function expectOpening(
     "no travelling logo",
   ).toBe(false);
   expect(
-    new Set(withSheet.map((x) => x.seal)).size,
+    // The sheet fading in (the flash covers the window in 120 ms) and the logo fading out, frame by frame
+    new Set(withSheet.map((x) => `${x.opacity}/${x.seal}`)).size,
     "fade frames",
   ).toBeGreaterThan(8);
   // It landed: the product is the route, the sheet is gone, the opening of the product sits under the header
