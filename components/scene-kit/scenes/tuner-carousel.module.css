@@ -34,10 +34,14 @@
 .frame[data-phase="enter"] :is([data-band], .tracks, .channels) > :not(svg) {
   animation: land var(--dur-3) var(--ease-spring) var(--dur-1) both;
 }
-.frame[data-phase="enter"] :is([data-band], .tracks, .channels) > :nth-child(2):not(svg) {
+.frame[data-phase="enter"]
+  :is([data-band], .tracks, .channels)
+  > :nth-child(2):not(svg) {
   animation-delay: var(--dur-2);
 }
-.frame[data-phase="enter"] :is([data-band], .tracks, .channels) > :nth-child(n + 3):not(svg) {
+.frame[data-phase="enter"]
+  :is([data-band], .tracks, .channels)
+  > :nth-child(n + 3):not(svg) {
   animation-delay: var(--dur-3);
 }
 
@@ -85,7 +89,9 @@
   padding: var(--sp-5);
   border-radius: var(--r-card);
   background: var(--signal-soft);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-pop);
+  box-shadow:
+    0 0 0 calc(var(--rule) * 2) var(--signal),
+    var(--shadow-pop);
 }
 .eyebrow {
   font-size: var(--t-micro);
@@ -190,7 +196,9 @@
   gap: var(--sp-1);
   opacity: 0;
   transform: translateY(var(--sp-2));
-  transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-spring);
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-spring);
 }
 .stat[data-shown="true"] {
   opacity: 1;
@@ -238,7 +246,10 @@
 .stops {
   display: grid;
   min-width: 0;
-  grid-template-columns: auto minmax(var(--sp-4), 1fr) auto minmax(var(--sp-4), 1fr) auto;
+  grid-template-columns: auto minmax(var(--sp-4), 1fr) auto minmax(
+      var(--sp-4),
+      1fr
+    ) auto;
   align-items: center;
 }
 /* A stop is the lib's Badge at the control's height: the round of a status, its check and its label */
@@ -415,7 +426,10 @@
     padding: var(--sp-4);
   }
   .stops {
-    grid-template-columns: auto minmax(var(--sp-2), 1fr) auto minmax(var(--sp-2), 1fr) auto;
+    grid-template-columns: auto minmax(var(--sp-2), 1fr) auto minmax(
+        var(--sp-2),
+        1fr
+      ) auto;
   }
   .stop {
     min-height: var(--control-height-sm);

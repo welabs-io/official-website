@@ -8,4 +8,5 @@ export const TYPING_MS = 1000;
 export const PHRASE_PAUSE_MS = 2000;
 
 /** Milliseconds TypeIn takes to type `text` (one step per character, as the component splits it) */
-export const typeDuration = (text: string) => Array.from(text).length * TYPE_CHAR_MS;
+export const typeDuration = (text: string) =>
+  Array.from(text).length * TYPE_CHAR_MS;

@@ -19,6 +19,16 @@ export type ProductPage = {
   details: readonly string[];
   // Open questions of the contact (no answers: they are the reason to talk)
   asks: readonly string[];
+  // v4 (Cards.dc.html, 2026-10-23): the three differences of the product, as the cards that open. Each one is its
+  // title, the sentence that shows when the card opens, and the details (indices of `details`) that live under it.
+  // From "Por que é diferente" of the concept sheets (v3-plan/fichas-finais.md), the effect never the mechanism.
+  differs: readonly Differ[];
+};
+
+export type Differ = {
+  title: string;
+  body: string;
+  details: readonly number[];
 };
 
 export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
@@ -42,6 +52,23 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       "Como trazer o que está no sistema atual?",
       "O que dá para moldar sem programar?",
     ],
+    differs: [
+      {
+        title: "Moldado à operação",
+        body: "O tipo de registro novo já nasce com tela e permissão.",
+        details: [4],
+      },
+      {
+        title: "A regra brasileira junto",
+        body: "Nota fiscal, banco e cobrança vêm prontos.",
+        details: [0, 1, 2, 3],
+      },
+      {
+        title: "A base dos outros produtos",
+        body: "Conversas, fluxos e respostas trabalham sobre os mesmos registros e acessos.",
+        details: [5],
+      },
+    ],
   },
   relloo: {
     // v2.2 (audit, section 5): the contact and its history, never "a pessoa"; categories before brands
@@ -62,6 +89,23 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       "Quanto um agente de IA resolveria sozinho?",
       "Como a equipe divide as conversas?",
     ],
+    differs: [
+      {
+        title: "O contato no centro",
+        body: "Mensagem, ligação e e-mail viram um histórico só, que fica na empresa.",
+        details: [0, 1],
+      },
+      {
+        title: "IA com limite",
+        body: "O agente responde só o que pode e passa a vez com o resumo pronto.",
+        details: [2, 4],
+      },
+      {
+        title: "Prazo que corre",
+        body: "Quem recebe a conversa tem um prazo para responder, e ele aparece na tela.",
+        details: [3, 5],
+      },
+    ],
   },
   magneto: {
     short: "Fluxos com aprovação, desenhados em blocos.",
@@ -79,6 +123,23 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       "Quais aprovações travam a sua operação?",
       "O que roda hoje em planilha e lembrete?",
       "Quem precisa decidir, e quando?",
+    ],
+    differs: [
+      {
+        title: "Fechado por padrão",
+        body: "O fluxo só chama o que a empresa liberou, e nada vai ao ar sem validação.",
+        details: [1, 4],
+      },
+      {
+        title: "Nada em dobro",
+        body: "Quando outro sistema falha, o passo tenta de novo sem repetir o efeito.",
+        details: [2],
+      },
+      {
+        title: "Espera o tempo que for",
+        body: "Uma aprovação pode levar dias; o fluxo retoma de onde parou, com o registro de cada mudança.",
+        details: [0, 3],
+      },
     ],
   },
   tuner: {
@@ -101,6 +162,23 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       "Para onde cada ligação deveria ir?",
       "Quais conversas precisam ficar gravadas?",
     ],
+    differs: [
+      {
+        title: "Um envio, todos os canais",
+        body: "Uma mensagem sai por todos os canais de uma vez, com a mesma regra de envio.",
+        details: [0, 5],
+      },
+      {
+        title: "A resposta volta igual",
+        body: "Venha de onde vier, a resposta chega no mesmo formato e na conversa certa.",
+        details: [2],
+      },
+      {
+        title: "A voz também conta",
+        body: "Cada ligação passa pelo menu, fica gravada e vira texto para a equipe.",
+        details: [1, 3, 4],
+      },
+    ],
   },
   knowly: {
     // v2.2 (audit, section 5): the access of a profile, never "cada pessoa"
@@ -120,6 +198,23 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
       "Quem pode ver o quê?",
       "Quais perguntas se repetem?",
     ],
+    differs: [
+      {
+        title: "Cada frase com a fonte",
+        body: "A resposta mostra de onde veio cada parte, e diz o que falta quando não há prova.",
+        details: [0],
+      },
+      {
+        title: "Dentro do acesso",
+        body: "Cada perfil só recebe o que já podia ver, e o dado pessoal fica de fora.",
+        details: [1, 2],
+      },
+      {
+        title: "Memória que cresce",
+        body: "Documentos, atas e cadastros do Domus somam ao que a equipe já aprendeu.",
+        details: [3, 4],
+      },
+    ],
   },
 };
 
@@ -127,6 +222,7 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
 export const PAGE_HEADINGS = {
   areas: "Todas as áreas da empresa",
   areasLead: "E as que só a sua operação tem.",
-  details: "Detalhes que já vêm junto",
+  // v4 (Cards.dc.html): the details live under the differences of the product
+  details: "Por que é diferente",
   contact: (name: string) => `Quer ver o ${name} com a sua operação?`,
 } as const;

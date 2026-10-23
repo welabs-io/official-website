@@ -46,7 +46,9 @@
 /* The live piece of a frame: the amber-50 area with the amber ring (two rules wide) and a raised shadow */
 .live {
   background-color: var(--signal-soft);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+  box-shadow:
+    0 0 0 calc(var(--rule) * 2) var(--signal),
+    var(--shadow-raise);
 }
 .label {
   font-size: var(--t-micro);
@@ -253,7 +255,9 @@
 }
 .holder.live {
   color: var(--foreground);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+  box-shadow:
+    0 0 0 calc(var(--rule) * 2) var(--signal),
+    var(--shadow-raise);
   animation: land var(--dur-3) var(--ease-spring) var(--dur-3) backwards;
 }
 /* The reason, centred over the gap the trace crosses (a control's height above the line's end) */
@@ -531,7 +535,9 @@
   padding: 0 var(--sp-4);
   border-radius: var(--r-card);
   background: var(--muted);
-  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
 }
 .stage[data-state="done"] {
   background: var(--success-soft);

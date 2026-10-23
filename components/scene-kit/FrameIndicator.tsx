@@ -39,7 +39,9 @@ export function FrameIndicator({
   const playFrom = (n: number) => scene.take(frames[n]?.[0]);
   // The lib calls onValueChange only on a change: a click on the chosen option replays its frame
   const replay = (e: MouseEvent<HTMLElement>) => {
-    const item = (e.target as HTMLElement).closest('[data-slot="segmented-control-item"]');
+    const item = (e.target as HTMLElement).closest(
+      '[data-slot="segmented-control-item"]',
+    );
     if (item?.getAttribute("data-state") === "active") playFrom(current);
   };
   return (

@@ -11,7 +11,10 @@
   box-shadow: var(--edge-ring);
 }
 .indicator [data-slot="segmented-control-indicator"],
-.indicator [data-slot="segmented-control-item"][data-state="active"]:not(:has(> [data-slot="segmented-control-indicator"])) {
+.indicator
+  [data-slot="segmented-control-item"][data-state="active"]:not(
+    :has(> [data-slot="segmented-control-indicator"])
+  ) {
   background-color: var(--primary);
   box-shadow: none;
 }

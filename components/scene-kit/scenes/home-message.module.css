@@ -19,7 +19,9 @@
   transition: none;
 }
 .root [data-state="active"] [data-slot="avatar-fallback"] {
-  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    color var(--dur-2) var(--ease-out);
 }
 
 /* MENSAGEM */
@@ -220,7 +222,7 @@
   margin: 0;
   padding: var(--sp-4) var(--sp-5);
 }
-.datum{
+.datum {
   display: flex;
   min-width: 0;
   flex-direction: column;

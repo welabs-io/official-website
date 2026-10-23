@@ -49,7 +49,10 @@ export function TemplateScene({ timeline }: { timeline?: SceneTimeline }) {
       {(scene) => (
         <div>
           {/* A control: a human event takes over from this step */}
-          <ActionButton icon={<RotateCcw />} onClick={() => scene.take("first")}>
+          <ActionButton
+            icon={<RotateCcw />}
+            onClick={() => scene.take("first")}
+          >
             Repetir
           </ActionButton>
           {/* Items that arrive: keyed, filtered by the step reached */}

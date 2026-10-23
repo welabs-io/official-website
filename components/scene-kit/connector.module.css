@@ -58,7 +58,8 @@
   stroke-width: var(--rule-strong);
   offset-rotate: 0deg;
   offset-distance: 0%;
-  animation: ride var(--dur-draw) var(--ease-swap) var(--dur-swap) infinite backwards;
+  animation: ride var(--dur-draw) var(--ease-swap) var(--dur-swap) infinite
+    backwards;
 }
 
 @keyframes draw {

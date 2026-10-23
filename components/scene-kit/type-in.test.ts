@@ -4,7 +4,12 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { PHRASE_PAUSE_MS, TYPE_CHAR_MS, TYPING_MS, typeDuration } from "./type-in";
+import {
+  PHRASE_PAUSE_MS,
+  TYPE_CHAR_MS,
+  TYPING_MS,
+  typeDuration,
+} from "./type-in";
 
 const lib = readFileSync(path.resolve(__dirname, "../../app/lib.css"), "utf8");
 // A duration token of app/lib.css, in ms

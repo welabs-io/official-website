@@ -70,7 +70,9 @@ describe("copy rules", () => {
   it("a tolerated value hides only itself, and nothing is tolerated by default", () => {
     const tolerated = [{ value: "Marina", phase: "F1", todo: "" }];
     expect(personViolation("Responder Marina", tolerated)).toBeNull();
-    expect(personViolation("Responder Marina e Pedro", tolerated)).toBe("Pedro");
+    expect(personViolation("Responder Marina e Pedro", tolerated)).toBe(
+      "Pedro",
+    );
     expect(personViolation("Responder Marina")).toBe("Marina");
     expect(stackViolation("Roda em Kubernetes")).toBe("Kubernetes");
   });
@@ -86,7 +88,10 @@ describe("copy rules", () => {
   // v3 (F1 review): a brand only inside brackets, as an example of its category
   it.each([
     ["Mensagens (WhatsApp oficial)", null],
-    ["Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).", null],
+    [
+      "Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).",
+      null,
+    ],
     ["WhatsApp e voz", "WhatsApp"],
     ["Comunidades (Discord) e Discord solto", "Discord"],
   ])("vendorViolation(%s) is %s", (text, found) => {

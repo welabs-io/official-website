@@ -1,0 +1,138 @@
+/* CARTÕES QUE SE ABREM */
+/* components/template/DifferCards.tsx (Cards.dc.html): white cards with the ring and the soft shadow at rest; the card
+   in focus (pointer, focus or kept open) takes the ink ring and the deeper shadow on the hover curve while it gains
+   width (GrowItem), its sentence opens on a grid row (0fr -> 1fr) and its + turns into an x. Text never scales. Every
+   value is a token of app/lib.css. */
+.row {
+  align-items: flex-start;
+}
+
+/* The GrowItem takes the width; the lib's Card inside it is the surface */
+.item {
+  display: flex;
+  flex-direction: column;
+}
+.card {
+  gap: 0;
+  padding: 0;
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+  transition: box-shadow var(--dur-hover) var(--ease-hover);
+}
+.item:hover .card,
+.item:focus-within .card,
+.card[data-pinned] {
+  box-shadow: var(--edge-ring-active), var(--shadow-pop);
+}
+
+/* Number, title and the toggle on one axis, the hairline under them */
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 56px;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.num {
+  flex: none;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--t-lead);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+  letter-spacing: -0.01em;
+}
+.toggle {
+  flex: none;
+  margin-left: auto;
+}
+.toggle svg {
+  transition: transform var(--dur-hover) var(--ease-hover);
+}
+.toggle[aria-expanded="true"] svg {
+  transform: rotate(45deg);
+}
+
+/* The sentence: closed at rest (a grid row of 0fr), open in focus or kept open */
+.body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-swap) var(--ease-swap);
+}
+.bodyText {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0 var(--sp-5);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+  opacity: 0;
+  transition:
+    opacity var(--dur-swap) var(--ease-swap),
+    padding var(--dur-swap) var(--ease-swap);
+}
+.card[data-pinned] .body {
+  grid-template-rows: 1fr;
+}
+.card[data-pinned] .bodyText {
+  padding-top: var(--sp-4);
+  opacity: 1;
+}
+@media (hover: hover) and (min-width: 768px) {
+  .item:hover .body,
+  .item:focus-within .body {
+    grid-template-rows: 1fr;
+  }
+  .item:hover .bodyText,
+  .item:focus-within .bodyText {
+    padding-top: var(--sp-4);
+    opacity: 1;
+  }
+}
+
+/* The details under the card: closed rows of 48 px between hairlines */
+.rows {
+  margin: 0;
+  padding: var(--sp-1) var(--sp-5) var(--sp-2);
+  list-style: none;
+}
+.detail {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 48px;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.detail + .detail {
+  border-top: var(--rule) solid var(--border);
+}
+.detail::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--input);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .body,
+  .bodyText,
+  .toggle svg {
+    transition: none;
+  }
+}

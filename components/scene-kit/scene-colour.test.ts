@@ -22,15 +22,17 @@ const SAND_700 = /#55565b\b|rgba?\(\s*85\s*,\s*86\s*,\s*91\b/i;
 
 // The custom properties of a sheet that resolve to the sand 700, through any chain of var() aliases
 function textOnlyTokens(themeCss: string): Set<string> {
-  const decls = [...stripCss(themeCss).matchAll(/(--[\w-]+)\s*:\s*([^;}]+)/g)].map(
-    (m) => [m[1], m[2].trim()] as const,
-  );
+  const decls = [
+    ...stripCss(themeCss).matchAll(/(--[\w-]+)\s*:\s*([^;}]+)/g),
+  ].map((m) => [m[1], m[2].trim()] as const);
   const out = new Set<string>(["--muted-foreground"]);
-  for (let grew = true; grew; ) {
+  for (let grew = true; grew;) {
     grew = false;
     for (const [name, value] of decls) {
       if (out.has(name)) continue;
-      const aliases = [...value.matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1]);
+      const aliases = [...value.matchAll(/var\(\s*(--[\w-]+)/g)].map(
+        (m) => m[1],
+      );
       if (SAND_700.test(value) || aliases.some((a) => out.has(a))) {
         out.add(name);
         grew = true;
@@ -44,8 +46,12 @@ function textOnlyTokens(themeCss: string): Set<string> {
 function sandFills(css: string, tokens: Set<string>): string[] {
   const found: string[] = [];
   for (const block of stripCss(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-    for (const d of block[2].matchAll(/(?:^|;)\s*(background(?:-color|-image)?|fill)\s*:\s*([^;]+)/g)) {
-      const aliases = [...d[2].matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1]);
+    for (const d of block[2].matchAll(
+      /(?:^|;)\s*(background(?:-color|-image)?|fill)\s*:\s*([^;]+)/g,
+    )) {
+      const aliases = [...d[2].matchAll(/var\(\s*(--[\w-]+)/g)].map(
+        (m) => m[1],
+      );
       if (SAND_700.test(d[2]) || aliases.some((a) => tokens.has(a)))
         found.push(`${block[1].trim()} { ${d[1]}: ${d[2].trim()} }`);
     }
@@ -67,7 +73,9 @@ const TOKENS = textOnlyTokens(read("app/lib.css"));
 
 describe("the detectors", () => {
   it("resolve the aliases of the sand 700 and flag only fills", () => {
-    const tokens = textOnlyTokens(":root { --a: #55565B; --b: var(--a); --c: var(--card); }");
+    const tokens = textOnlyTokens(
+      ":root { --a: #55565B; --b: var(--a); --c: var(--card); }",
+    );
     expect([...tokens].sort()).toEqual(["--a", "--b", "--muted-foreground"]);
     const css = `.x { color: var(--b); background: var(--card); }
       .y { background-color: var(--b); } .z { fill: rgb(85, 86, 91) } .w { box-shadow: inset 0 0 0 1px var(--a) }
@@ -78,7 +86,10 @@ describe("the detectors", () => {
       ".v { background: linear-gradient(var(--muted-foreground), transparent) }",
     ]);
     expect(
-      sandFillClasses('className="text-muted-foreground bg-muted-foreground fill-[#55565b] bg-card"', tokens),
+      sandFillClasses(
+        'className="text-muted-foreground bg-muted-foreground fill-[#55565b] bg-card"',
+        tokens,
+      ),
     ).toEqual(["bg-muted-foreground", "fill-[#55565b]"]);
   });
 
@@ -89,19 +100,27 @@ describe("the detectors", () => {
 
 describe("sand 700 is text and icon only in the scene kit", () => {
   it("no sheet of the kit paints a background or fill with it", () => {
-    expect(kitFiles(/\.css$/).flatMap((f) => sandFills(read(f), TOKENS).map((d) => `${f}: ${d}`))).toEqual([]);
+    expect(
+      kitFiles(/\.css$/).flatMap((f) =>
+        sandFills(read(f), TOKENS).map((d) => `${f}: ${d}`),
+      ),
+    ).toEqual([]);
   });
 
   it("no component of the kit fills with it by class", () => {
     expect(
-      kitFiles(/\.tsx$/).flatMap((f) => sandFillClasses(read(f), TOKENS).map((c) => `${f}: ${c}`)),
+      kitFiles(/\.tsx$/).flatMap((f) =>
+        sandFillClasses(read(f), TOKENS).map((c) => `${f}: ${c}`),
+      ),
     ).toEqual([]);
   });
 
   it("the sheets of the kit carry no raw colour", () => {
     const raw = /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(/gi;
     expect(
-      kitFiles(/\.css$/).flatMap((f) => [...stripCss(read(f)).matchAll(raw)].map((m) => `${f}: ${m[0]}`)),
+      kitFiles(/\.css$/).flatMap((f) =>
+        [...stripCss(read(f)).matchAll(raw)].map((m) => `${f}: ${m[0]}`),
+      ),
     ).toEqual([]);
   });
 });

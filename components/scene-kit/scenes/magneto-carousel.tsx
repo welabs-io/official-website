@@ -305,7 +305,15 @@ function TriggerFrame({ scene, on }: FrameProps) {
           <span className={g.figure}>{COPY.proposal}</span>
           {/* v4: the line under the live step types in once it has landed, once per loop */}
           <span className={g.liveMeta}>
-            {on("trigger") ? <TypeIn key={scene.cycle} text={COPY.f1.nobody} delay={TYPE_LAND_MS} /> : COPY.f1.nobody}
+            {on("trigger") ? (
+              <TypeIn
+                key={scene.cycle}
+                text={COPY.f1.nobody}
+                delay={TYPE_LAND_MS}
+              />
+            ) : (
+              COPY.f1.nobody
+            )}
           </span>
         </Piece>
         <Down shown={on("next")} />
@@ -315,7 +323,12 @@ function TriggerFrame({ scene, on }: FrameProps) {
       </div>
       <Traces scene={scene}>
         {on("trigger") ? (
-          <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} state={linkState(scene, "trigger")} />
+          <Connector
+            from='[data-id="domus"]'
+            to='[data-id="live"]'
+            inset={0}
+            state={linkState(scene, "trigger")}
+          />
         ) : null}
         {on("next") ? (
           <Connector
@@ -553,7 +566,15 @@ function CloseFrame({ scene, on }: FrameProps) {
           </Line>
           <span className={g.reveal} data-in={on("done")}>
             <Line icon={<Check />} tone="done">
-              {on("done") ? <TypeIn key={scene.cycle} text={COPY.f4.concluded} caret={false} /> : COPY.f4.concluded}
+              {on("done") ? (
+                <TypeIn
+                  key={scene.cycle}
+                  text={COPY.f4.concluded}
+                  caret={false}
+                />
+              ) : (
+                COPY.f4.concluded
+              )}
             </Line>
           </span>
         </Piece>
@@ -594,10 +615,20 @@ function CloseFrame({ scene, on }: FrameProps) {
           />
         ) : null}
         {on("done") ? (
-          <Connector from='[data-id="live"]' to='[data-id="domus"]' inset={0} state={linkState(scene, "done")} />
+          <Connector
+            from='[data-id="live"]'
+            to='[data-id="domus"]'
+            inset={0}
+            state={linkState(scene, "done")}
+          />
         ) : null}
         {on("done") ? (
-          <Connector from='[data-id="live"]' to='[data-id="tuner"]' inset={0} state={linkState(scene, "done")} />
+          <Connector
+            from='[data-id="live"]'
+            to='[data-id="tuner"]'
+            inset={0}
+            state={linkState(scene, "done")}
+          />
         ) : null}
       </Traces>
     </>
@@ -661,7 +692,13 @@ export function MagnetoCarousel({ timeline }: { timeline?: SceneTimeline }) {
       label={COPY.label}
       product={COPY.product}
       title={COPY.title}
-      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} names={FRAME_NAMES} />}
+      tools={(scene) => (
+        <FrameIndicator
+          scene={scene}
+          frames={FRAME_STEPS}
+          names={FRAME_NAMES}
+        />
+      )}
       steps={MAGNETO_CAROUSEL_STEPS}
       timeline={timeline}
     >

@@ -17,6 +17,7 @@ import {
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
+import { DifferCards } from "./DifferCards";
 import { ContactBand, DomusHouse, type ContactAction } from "./Home";
 import { Orbit } from "./Orbit";
 import { SectionHead } from "./SectionHead";
@@ -108,16 +109,15 @@ export function ProductCenter({ slug }: { slug: ProductSlug }) {
   );
 }
 
-// DETALHES QUE JÁ VÊM JUNTO
+// POR QUE É DIFERENTE: OS DETALHES EM CARTÕES QUE SE ABREM
+// v4 (Cards.dc.html): the details that come with the product live under the three differences of the product, as
+// cards that gain width and open their sentence on hover (DifferCards); they were a plain list in three columns
 export function ProductDetails({ slug }: { slug: ProductSlug }) {
+  const page = PRODUCT_PAGE[slug];
   return (
     <div className={shell.wrap}>
       <SectionHead title={PAGE_HEADINGS.details} variant="strip" />
-      <ul className={styles.details}>
-        {PRODUCT_PAGE[slug].details.map((d) => (
-          <li key={d}>{d}</li>
-        ))}
-      </ul>
+      <DifferCards differs={page.differs} details={page.details} />
     </div>
   );
 }

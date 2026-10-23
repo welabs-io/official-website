@@ -92,6 +92,15 @@ describe("every product page has the same fields", () => {
     for (const d of page.details) expect(words(d)).toBeLessThanOrEqual(6);
     expect(page.asks).toHaveLength(3);
     for (const a of page.asks) expect(a.endsWith("?")).toBe(true);
+    // v4 cards: three differences, short titles, one sentence each, every detail under exactly one card
+    expect(page.differs).toHaveLength(3);
+    for (const d of page.differs) {
+      expect(words(d.title), d.title).toBeLessThanOrEqual(5);
+      expect(words(d.body), d.body).toBeLessThanOrEqual(18);
+      expect(d.details.length).toBeGreaterThan(0);
+    }
+    const placed = page.differs.flatMap((d) => d.details).sort((a, b) => a - b);
+    expect(placed).toEqual(page.details.map((_, i) => i));
   });
   it("the contact of the home asks open questions, with no answer", () => {
     expect(HOME_CONTACT.asks.length).toBeGreaterThanOrEqual(3);

@@ -30,7 +30,7 @@ const GEOMETRY_ALLOWED: Record<string, string> = {
 // The value with every var(...) taken out (nested ones included), so only what is written by hand is left
 const withoutVars = (value: string) => {
   let v = value;
-  for (let prev = ""; prev !== v; ) {
+  for (let prev = ""; prev !== v;) {
     prev = v;
     v = v.replace(/var\(\s*--[\w-]+(?:\s*,[^()]*)?\)/g, "");
   }
@@ -40,7 +40,8 @@ const withoutVars = (value: string) => {
 // A raw unit (px, rem, em, s, ms, vw, vh) or, for weight, line height and tracking, any bare number
 function isRaw(prop: string, value: string) {
   const left = withoutVars(value);
-  if (/^(?:font-weight|line-height|letter-spacing)$/.test(prop)) return /\d/.test(left);
+  if (/^(?:font-weight|line-height|letter-spacing)$/.test(prop))
+    return /\d/.test(left);
   // A full round written as a percentage is a shape, not a size (50%); 0 and 100% need no token
   return /(?<![\w-])\d*\.?\d+(?:px|rem|em|s|ms|vw|vh)\b/.test(left);
 }
@@ -52,7 +53,8 @@ function rawDeclarations(css: string) {
     const selector = block[1].trim();
     for (const d of block[2].matchAll(/(?:^|;)\s*([\w-]+)\s*:\s*([^;]+)/g)) {
       const [prop, value] = [d[1], d[2].trim()];
-      if (TOKEN_PROPS.test(prop) && isRaw(prop, value)) found.push({ selector, prop, value });
+      if (TOKEN_PROPS.test(prop) && isRaw(prop, value))
+        found.push({ selector, prop, value });
     }
   }
   return found;
@@ -88,7 +90,9 @@ describe("every value of a kit sheet is a token of app/lib.css", () => {
     for (const key of Object.keys(GEOMETRY_ALLOWED)) {
       const [file, selector, prop] = key.split("|");
       expect(
-        rawDeclarations(read(file)).some((d) => d.selector === selector && d.prop === prop),
+        rawDeclarations(read(file)).some(
+          (d) => d.selector === selector && d.prop === prop,
+        ),
         key,
       ).toBe(true);
     }

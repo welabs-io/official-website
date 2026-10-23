@@ -31,7 +31,11 @@ afterEach(() => vi.useRealTimers());
 describe("step durations", () => {
   it("reads hold, then the next at, then the defaults (the last step holds the loop hold)", () => {
     expect(
-      stepDurations([{ id: "a", at: 0 }, { id: "b", at: 700, hold: 300 }, { id: "c", at: 1200 }]),
+      stepDurations([
+        { id: "a", at: 0 },
+        { id: "b", at: 700, hold: 300 },
+        { id: "c", at: 1200 },
+      ]),
     ).toEqual([700, 300, LOOP_HOLD]);
   });
 });
@@ -78,7 +82,11 @@ describe("human take", () => {
   });
 
   it("a gate waits for the human, and 8 s idle gives the scene back", () => {
-    const { t } = run([{ id: "a", hold: 300 }, { id: "ask", gate: true, hold: 300 }, { id: "end" }]);
+    const { t } = run([
+      { id: "a", hold: 300 },
+      { id: "ask", gate: true, hold: 300 },
+      { id: "end" },
+    ]);
     t.take("ask");
     vi.advanceTimersByTime(HUMAN_IDLE - 1);
     expect(t.getSnapshot()).toMatchObject({ id: "ask", mode: "human" });
@@ -87,7 +95,11 @@ describe("human take", () => {
   });
 
   it("each new gesture re-arms the idle timer", () => {
-    const { t } = run([{ id: "a", hold: 300 }, { id: "ask", gate: true }, { id: "end" }]);
+    const { t } = run([
+      { id: "a", hold: 300 },
+      { id: "ask", gate: true },
+      { id: "end" },
+    ]);
     t.take("ask");
     vi.advanceTimersByTime(HUMAN_IDLE - 100);
     t.take("ask");

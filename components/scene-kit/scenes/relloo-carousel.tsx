@@ -110,7 +110,12 @@ export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
 ];
 
 // The name of each moment, on the stage tabs of the chrome (Stage.dc.html)
-const FRAME_NAMES = ["Chega", "Passa a vez", "Vira oportunidade", "Anda no funil"] as const;
+const FRAME_NAMES = [
+  "Chega",
+  "Passa a vez",
+  "Vira oportunidade",
+  "Anda no funil",
+] as const;
 
 // The channels the contact used before, in the history of frame 1 (the Domus glyphs: Mail, Phone)
 const PAST = [
@@ -608,7 +613,13 @@ export function RellooCarousel({ timeline }: { timeline?: SceneTimeline }) {
       className={r.window}
       product={(scene) => <ChromeScreen text={frameOf(scene).screen} />}
       title={(scene) => <ChromeArea text={frameOf(scene).area} />}
-      tools={(scene) => <FrameIndicator scene={scene} frames={FRAME_STEPS} names={FRAME_NAMES} />}
+      tools={(scene) => (
+        <FrameIndicator
+          scene={scene}
+          frames={FRAME_STEPS}
+          names={FRAME_NAMES}
+        />
+      )}
       steps={RELLOO_CAROUSEL_STEPS}
       timeline={timeline}
     >

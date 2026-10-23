@@ -5,5 +5,7 @@
 import type { ConnectorState } from "./Connector";
 import type { SceneApi } from "./Scene";
 
-export const linkState = (scene: Pick<SceneApi, "is" | "reduced">, step: string): ConnectorState =>
-  !scene.reduced && scene.is(step) ? "active" : "rest";
+export const linkState = (
+  scene: Pick<SceneApi, "is" | "reduced">,
+  step: string,
+): ConnectorState => (!scene.reduced && scene.is(step) ? "active" : "rest");

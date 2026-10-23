@@ -13,7 +13,9 @@
   overflow: hidden;
   border-radius: var(--r-win);
   background: var(--card);
-  box-shadow: 0 0 0 var(--rule) var(--border), var(--shadow-pop);
+  box-shadow:
+    0 0 0 var(--rule) var(--border),
+    var(--shadow-pop);
   color: var(--foreground);
 }
 

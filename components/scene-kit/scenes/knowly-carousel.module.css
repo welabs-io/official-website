@@ -59,7 +59,6 @@
   color: var(--muted-foreground);
 }
 
-
 /* A LINHA DO TEMPO */
 /* Five columns, one per event; each event is a subgrid over five rows (card, stem, dot, day, part), so every dot sits on
    one line and every stem meets it. The line itself is drawn by each dot's cell, across its column and half the gap on
@@ -101,18 +100,24 @@
   border-radius: var(--r-card);
   background: var(--card);
   box-shadow: var(--edge-ring);
-  transition: box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+  transition:
+    box-shadow var(--dur-2) var(--ease-out),
+    background-color var(--dur-2) var(--ease-out);
 }
 
 /* Live: the amber-50 area with its amber ring, raised (the one piece of amber of the frame) */
 .piece[data-tone="live"] {
   background: var(--signal-soft);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+  box-shadow:
+    0 0 0 calc(var(--rule) * 2) var(--signal),
+    var(--shadow-raise);
 }
 
 /* Chosen: the decision the frame is about, with the ink ring */
 .piece[data-tone="chosen"] {
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--foreground), var(--shadow-raise);
+  box-shadow:
+    0 0 0 calc(var(--rule) * 2) var(--foreground),
+    var(--shadow-raise);
 }
 
 .kind {
@@ -169,7 +174,9 @@
   color: var(--foreground);
   opacity: 0;
   transform: translateY(var(--sp-1));
-  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring);
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-3) var(--ease-spring);
 }
 
 .proof[data-in="true"] {
@@ -220,7 +227,9 @@
   height: calc(var(--dot) + var(--rule) * 2);
   border-radius: var(--r-dot);
   background: var(--foreground);
-  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  transition:
+    background-color var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
 }
 
 .dot[data-look="now"],
@@ -292,7 +301,9 @@
 
 .part[data-tone="live"] {
   background: var(--signal-soft);
-  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+  box-shadow:
+    0 0 0 calc(var(--rule) * 2) var(--signal),
+    var(--shadow-raise);
 }
 
 .partTop {
@@ -411,7 +422,10 @@
 .missing,
 .typing,
 .said {
-  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring), visibility var(--dur-2);
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-3) var(--ease-spring),
+    visibility var(--dur-2);
 }
 
 .close[data-in="false"],
