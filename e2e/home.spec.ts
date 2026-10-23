@@ -143,7 +143,7 @@ test.describe("the v4 home", () => {
     const after = await box(page, "[data-chain]");
     expect(before.y - after.y).toBeGreaterThan(300);
     expect(
-      await page.locator("[data-chain] svg[data-state='live']").count(),
+      await page.locator("[data-chain] svg[data-trace-state='live']").count(),
     ).toBeGreaterThanOrEqual(1);
     await scrollAt(1.2);
     await expect(chain).toHaveAttribute("data-step", "5");
