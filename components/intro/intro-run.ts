@@ -77,15 +77,17 @@ function tween(ms: number, frame: (t: number) => void) {
 }
 
 // TEMPOS DA ABERTURA
-// The brand cycle (ms) and the moment the logo is formed and still (86 % of it, before the fade to the page)
+// The brand cycle (ms). The file holds the formed logo still from 56 % to 86 % of it and fades it from 86 % to 96 %;
+// the opening holds it until 70 % (SETTLED, plus HOLD) and plays the fade from 86 % (the frames between are the same),
+// so the whole opening stays about the length of the ones before it (~5 s from the click to a settled page)
 const CYCLE = 4800;
-const SETTLED = CYCLE * 0.86;
-// Milliseconds the formed logo holds before the end plays, of the opening of the sheet, and of the end (86 -> 100 %)
+const SETTLED = CYCLE * 0.7;
+const FADE_FROM = CYCLE * 0.86;
+const FADED = CYCLE * 0.96;
+// Milliseconds the formed logo holds before the end plays, of the opening of the sheet, and of the fade
 const HOLD = 200;
 const OPEN_MS = 450;
-// The logo is gone at 96 % of the cycle (the brand file fades it from 86 %)
-const FADED = CYCLE * 0.96;
-const LAND_MS = FADED - SETTLED;
+const LAND_MS = FADED - FADE_FROM;
 // v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector:
 // it starts on the formed logo, the sheet opens faster and the end is shorter (about 700 ms from the click to the page)
 export const FLASH = { open: 120, hold: 0, land: 260 } as const;
@@ -234,7 +236,7 @@ export async function open(
       listen(false);
       cancelAnimationFrame(raf);
       // The end of the brand cycle: the logo fades on the canvas (the flash plays it faster)
-      await tween(flash ? FLASH.land : LAND_MS, (t) => render(mix(SETTLED, FADED, t)));
+      await tween(flash ? FLASH.land : LAND_MS, (t) => render(mix(FADE_FROM, FADED, t)));
       // The whole opening: the page comes in under the same canvas, and the sheet (hidden, so the page shows) stays in
       // the document until the page has settled, which is what "the opening has left" means to the rest of the site.
       // The flash only uncovers the page: its rise would double the ~700 ms budget of a swap.
