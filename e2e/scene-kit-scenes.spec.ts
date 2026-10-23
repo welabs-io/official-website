@@ -28,9 +28,37 @@ type Entry = {
   // end is green or neutral, never amber), and the connector (the Relloo's trace with its riding dot) drawn at each of
   // these steps, per width, and never on the settled frame
   handoff?: { 1440: string[]; 390: string[] };
+  // v3 carousels (brief-v3-carousel): the number of frames the loop must reach (`data-frame` in the live layer), at
+  // most `amberMax` pieces of amber per frame (default 3), `finalAmber` of them on the settled frame (default 0: the
+  // carousel's last frame may keep its live piece, as the approved frames draw it), and `finalConnector` when the
+  // settled frame keeps its trace (the arrow of the approved last frame)
+  frames?: number;
+  amberMax?: number;
+  finalAmber?: number;
+  finalConnector?: boolean;
 };
 
 const SCENES: Entry[] = [
+  {
+    id: "relloo-carousel",
+    figure: /^Relloo/,
+    // The frame picker of the chrome (the lib's SegmentedControl): its options are radios
+    trigger: /^Momento 2/,
+    triggerRole: "radio",
+    final: "f4-ask",
+    // The Domus card under the funnel (its mark on its two lines)
+    pairs: 1,
+    cycleMs: 15200,
+    handoff: {
+      1440: ["f2-handoff", "f2-summary", "f3-born", "f4-domus"],
+      // On a phone the panes of frame 3 stack and its trace stays off (it would cross the conversation)
+      390: ["f2-handoff", "f2-summary", "f4-domus"],
+    },
+    frames: 4,
+    amberMax: 2,
+    finalAmber: 1,
+    finalConnector: true,
+  },
   {
     id: "domus-modules",
     figure: /^Domus/,
@@ -188,8 +216,9 @@ for (const s of SCENES) {
       // drawn at each hand-off step of this width and never on the settled frame (the measure of e2e/scene-kit.spec.ts
       // for the Relloo)
       const handoff = s.handoff;
+      const amberMax = s.amberMax ?? 3;
       if (handoff) {
-        test(`at most 3 amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
+        test(`at most ${amberMax} amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
           test.setTimeout(60_000);
           await page.setViewportSize({ width, height: 900 });
           await page.goto(LAB);
@@ -205,25 +234,36 @@ for (const s of SCENES) {
               const a = m[4] === undefined ? 1 : Number(m[4]);
               return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
             };
+            // An amber ring (a live piece drawn as amber-50 with the amber edge) is a piece of amber too
+            const ring = (shadow: string) => (shadow.match(/rgba?\([^)]*\)/g) ?? []).some(amber);
             const ambers: Record<string, number> = {};
             const traced: Record<string, boolean> = {};
+            const frames = new Set<string>();
             const t0 = performance.now();
             while (performance.now() - t0 < ms) {
               await new Promise((r) => requestAnimationFrame(r));
               const step = stage.getAttribute("data-step")!;
               const n = [...live.querySelectorAll("*")].filter((el) => {
                 const cs = getComputedStyle(el);
-                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
+                return (
+                  el.getBoundingClientRect().width > 0 &&
+                  Number(cs.opacity) > 0.05 &&
+                  (amber(cs.backgroundColor) || ring(cs.boxShadow))
+                );
               }).length;
               ambers[step] = Math.max(ambers[step] ?? 0, n);
               traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+              live.querySelectorAll("[data-frame]").forEach((f) => frames.add(f.getAttribute("data-frame")!));
             }
-            return { ambers, traced };
+            return { ambers, traced, frames: [...frames] };
           }, s.cycleMs + 500);
-          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
-          expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
+          for (const [step, n] of Object.entries(seen.ambers))
+            expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(amberMax);
+          expect(seen.ambers[s.final], "amber on the settled frame").toBe(s.finalAmber ?? 0);
           for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
-          expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+          if (!s.finalConnector)
+            expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+          if (s.frames) expect(seen.frames.sort(), "every frame reached over one loop").toHaveLength(s.frames);
         });
       }
     }

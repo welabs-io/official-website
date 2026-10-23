@@ -340,12 +340,13 @@
 }
 
 /* CONVERSA E REGISTRO (QUADRO 3) */
-/* Two panes side by side with a gutter wide enough for the trace's lane */
+/* Two panes side by side with a gutter wide enough for the trace's lane; equal, so the record keeps its status on the
+   title's line with room to spare (e2e/scene-kit-geometry.spec.ts) */
 .pair {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: stretch;
-  gap: var(--sp-9);
+  gap: var(--sp-7);
 }
 .pane {
   display: flex;
@@ -592,9 +593,11 @@
   line-height: var(--line-label);
   font-weight: var(--weight-title);
 }
+/* One line: the check sits on it (a phone lets the card run past the three columns it is centred on) */
 .booked {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   gap: var(--sp-1);
   font-size: var(--t-label);
   line-height: var(--line-label);

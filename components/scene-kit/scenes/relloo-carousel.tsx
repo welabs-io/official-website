@@ -171,8 +171,8 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
   return (
     <div className={`${r.body} ${r.centred}`} data-frame="1">
       <section className={r.thread} aria-label={COPY.conversation}>
-        <header className={r.threadHead} data-col="thread">
-          <span className={r.threadTop}>
+        <header className={r.threadHead}>
+          <span className={r.threadTop} data-col="lead">
             <b className={r.threadTitle}>{COPY.conversation}</b>
             <span className={r.threadMeta}>{COPY.contact}</span>
             <span className={r.pills}>
@@ -185,7 +185,7 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
               </Badge>
             </span>
           </span>
-          <span className={r.owner}>
+          <span className={r.owner} data-col="lead">
             <span className={r.label}>{COPY.owner}</span>
             <Badge variant="primary" appearance="solid" data-axis-pair="">
               <Sparkles data-icon="inline-start" aria-hidden="true" />
@@ -194,9 +194,9 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
           </span>
         </header>
 
-        <div className={r.feed} data-col="thread">
+        <div className={r.feed}>
           {PAST.map(({ date, icon: Icon, text }) => (
-            <p key={date} className={r.past} data-axis="past">
+            <p key={date} className={r.past} data-axis="past" data-col="lead">
               <span className={`${p.mark} ${p.markSm}`} aria-hidden="true">
                 <Icon />
               </span>
@@ -206,9 +206,11 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
               </span>
             </p>
           ))}
-          <p className={r.day}>{COPY.today}</p>
+          <p className={r.day} data-col="lead">
+            {COPY.today}
+          </p>
           {arrived ? (
-            <div className={r.arrival}>
+            <div className={r.arrival} data-col="lead">
               <Badge variant="neutral" appearance="outline" className={r.channel} data-axis-pair="">
                 <MessageSquare data-icon="inline-start" aria-hidden="true" />
                 {COPY.message}
@@ -251,14 +253,14 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
   return (
     <div className={`${r.body} ${r.centred}`} data-frame="2">
       <section className={r.thread} aria-label={COPY.conversation}>
-        <header className={r.threadHead} data-col="thread">
-          <span className={r.threadTop}>
+        <header className={r.threadHead}>
+          <span className={r.threadTop} data-col="lead">
             <b className={r.threadTitle}>{COPY.conversation}</b>
             <span className={r.threadMeta}>{COPY.contact}</span>
           </span>
         </header>
 
-        <div className={r.handoff} data-col="thread">
+        <div className={r.handoff} data-col="lead">
           <span className={r.seat}>
             <span className={r.label}>{COPY.previous}</span>
             <span className={r.holder} data-holder="before" data-axis="holder">
@@ -295,12 +297,12 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
             </span>
             <span>{COPY.agentSaid}</span>
           </p>
-          <p className={`${r.said} ${r.received} ${r.later}`}>
+          <p className={`${r.said} ${r.received} ${r.later}`} data-col="lead">
             <span>{COPY.answer}</span>
             <time>{COPY.answerAt}</time>
           </p>
           {summed ? (
-            <p className={`${r.note} ${r.landing}`} data-col="thread-note" data-axis="note">
+            <p className={`${r.note} ${r.landing}`} data-col="lead">
               <StickyNote aria-hidden="true" />
               <span className={r.noteText}>
                 <b>{COPY.summaryReady}</b>
@@ -323,17 +325,19 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
     <div className={`${r.body} ${r.pair}`} data-frame="3">
       <section className={r.pane} data-lane="" aria-label={COPY.conversation}>
         <header className={r.paneTop}>
-          <b className={r.paneTitle}>{COPY.conversation}</b>
+          <b className={r.paneTitle} data-col="left">
+            {COPY.conversation}
+          </b>
           <Badge variant="primary" appearance="solid">
             {COPY.team}
           </Badge>
         </header>
         <div className={r.paneBody}>
-          <p className={`${r.said} ${r.quoted}`} data-quote="">
+          <p className={`${r.said} ${r.quoted}`} data-quote="" data-col="left">
             <span>{COPY.answer}</span>
             <time>{COPY.answerAt}</time>
           </p>
-          <p className={r.note} data-axis="note">
+          <p className={r.note} data-col="left">
             <StickyNote aria-hidden="true" />
             <span className={r.noteText}>
               <b>{COPY.summary}</b>
@@ -349,7 +353,7 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
                           meta
             the identity and the text block on one centre, the status a minidot on the title's line */}
         <div className={r.record} data-header-root="">
-          <div className={r.recordMain} data-align="record">
+          <div className={r.recordMain} data-align="record" data-col="right">
             <span className={r.identity} data-header="identity" aria-hidden="true">
               <Contact />
             </span>
@@ -368,9 +372,11 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
           </div>
         </div>
         <div className={r.deals}>
-          <p className={p.paneHead}>{COPY.deals}</p>
+          <p className={p.paneHead} data-col="right">
+            {COPY.deals}
+          </p>
           {born ? (
-            <article className={`${r.deal} ${r.live} ${r.landing}`} data-deal="">
+            <article className={`${r.deal} ${r.live} ${r.landing}`} data-deal="" data-col="right">
               <span className={r.dealTop}>
                 <b>{COPY.born}</b>
                 <Badge variant="neutral" appearance="outline" className={r.now}>

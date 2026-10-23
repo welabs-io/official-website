@@ -1,14 +1,15 @@
 // PARIDADE DOS CONTROLES DO LAB COM A LIB PUBLICADA
 // The published Storybook of @imagineapps-team/react with the welabs brand is the reference for every control of the
 // site (operator, 2026-10-22). This spec opens the stories, reads the computed style of the lib's own InputGroup and
-// Button, reads the same properties on the Relloo lab's field, its buttons and the toolbar, and asserts they match:
+// Button, reads the same properties on the Relloo carousel's field, its buttons, its frame picker and the toolbar,
+// and asserts they match:
 // sizes and type exactly (≤ 0.5 px), colours within ΔE76 ≤ 3 once composited over white. Only the deviations in
 // ALLOWED differ, each with its reason. Needs the network (react-lib.welabs.space) and the lab on PORTFOLIO_PREVIEW_URL.
 import { expect, test, type Page } from "@playwright/test";
 
 const STORY = (id: string) =>
   `https://react-lib.welabs.space/iframe.html?id=${id}&globals=brand:welabs&viewMode=story`;
-const LAB = "/lab/scenes/relloo-inbox";
+const LAB = "/lab/scenes/relloo-carousel";
 
 // DESVIOS PERMITIDOS
 // `control|property` → why the site differs from the lib's welabs brand on purpose
@@ -33,6 +34,8 @@ const ALLOWED: Record<string, string> = {
   "segment-active|backgroundColor":
     "the chosen option is the black primary with white text (Welabs UI v3 Selection: 'Segmento: trilho stone-100, opção ativa primary'); the lib draws a white pill on the rail",
   "segment-active|color": "white on the black chosen option, as above",
+  "picker|backgroundColor":
+    "the frame picker of the Relloo carousel sits on the chrome bar, which is the lib's own rail colour (--muted); its rail is the white surface with the hairline so the four numbers read as one control",
 };
 
 type Style = Record<string, string>;
@@ -50,6 +53,10 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
+  // The published Storybook renders its story some seconds after the network goes idle (measured 2026-10-22: no
+  // control at networkidle, both fields 8 s later): on a story, wait for the story to render before reading
+  if (page.url().includes("react-lib.welabs.space"))
+    await page.locator("#storybook-root [data-slot]").first().waitFor({ timeout: 30_000 });
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
@@ -117,7 +124,7 @@ async function compare(page: Page, name: string, ours: Style, ref: Style, props:
 
 test.describe("lab controls match the published lib (welabs brand)", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
-  test.setTimeout(90_000);
+  test.setTimeout(150_000);
 
   test("field, buttons and toolbar", async ({ page, context }) => {
     // REFERÊNCIA: AS HISTÓRIAS DA LIB
@@ -127,30 +134,40 @@ test.describe("lab controls match the published lib (welabs brand)", () => {
     const refField = (await styleOf(sb, '[data-slot="input-group"]'))!;
     await sb.goto(STORY("components-button--with-icon"), { waitUntil: "networkidle" });
     const refOutline = (await styleOf(sb, '[data-slot="button"][data-variant="neutral"][data-appearance="outline"]'))!;
-    await sb.goto(STORY("components-buttongroup--icons"), { waitUntil: "networkidle" });
-    const refIcon = (await styleOf(sb, '[data-slot="button"][data-size="icon"]'))!;
     await sb.goto(STORY("components-button--sizes"), { waitUntil: "networkidle" });
     const refSm = (await styleOf(sb, '[data-slot="button"][data-size="sm"]'))!;
-    expect(refField && refOutline && refIcon && refSm, "every story renders its control").toBeTruthy();
+    expect(refField && refOutline && refSm, "every story renders its control").toBeTruthy();
+
+    await sb.goto(STORY("components-button--with-icon"), { waitUntil: "networkidle" });
+    const refSolid = (await styleOf(sb, '[data-slot="button"][data-variant="primary"][data-appearance="solid"]'))!;
+    await sb.goto(STORY("components-segmentedcontrol--default"), { waitUntil: "networkidle" });
+    const refSegment = (await styleOf(sb, '[data-slot="segmented-control"]'))!;
+    expect(refSolid && refSegment, "every story renders its control").toBeTruthy();
 
     // O LAB
+    // The Relloo carousel: the composer of frame 1 (reached by the frame picker, the visitor's gesture), the demo
+    // request of the settled frame 4, the frame picker of the chrome and the lab's toolbar
+    await page.goto(LAB);
+    const live = '[data-scene="relloo-carousel"] > :last-child';
+    await page.getByRole("radio", { name: "Momento 1" }).click();
+    await expect(page.locator('[data-scene="relloo-carousel"]')).toHaveAttribute("data-step", "f1-message", { timeout: 10_000 });
+    await page.waitForTimeout(600);
+    const composer = (await styleOf(page, `${live} [data-slot="input-group"]`))!;
+    const send = (await styleOf(page, `${live} [data-slot="input-group"] [data-slot="input-group-button"], ${live} [data-slot="input-group"] [data-slot="button"]`))!;
+    const picker = (await styleOf(page, '[role="figure"] > :first-child [data-slot="segmented-control"]'))!;
+    const toolbar = (await styleOf(page, '[data-lab="take"]'))!;
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(LAB);
-    const live = '[data-scene="relloo-inbox"] > :last-child';
-    const composer = (await styleOf(page, `${live} [data-slot="input-group"]`))!;
-    const search = (await styleOf(page, '[role="figure"] > :first-child [data-slot="input-group"]'))!;
-    const toolbar = (await styleOf(page, '[data-lab="take"]'))!;
-    const action = (await styleOf(page, `${live} [data-header="actions"] [data-slot="button"]`))!;
-    const send = (await styleOf(page, `${live} [data-slot="input-group"] [data-slot="input-group-button"], ${live} [data-slot="input-group"] [data-slot="button"]`))!;
-    expect(composer && search && toolbar && action && send, "every lab control renders").toBeTruthy();
+    const demo = (await styleOf(page, `${live} [data-ask] [data-slot="button"]`))!;
+    expect(composer && send && picker && toolbar && demo, "every lab control renders").toBeTruthy();
 
     const FIELD = ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "controlFontSize"];
     await compare(page, "field", composer, refField, FIELD);
-    await compare(page, "field", search, refField, FIELD);
     const BUTTON = ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "paddingLeft", "fontSize", "fontWeight", "color"];
     await compare(page, "toolbar", toolbar, refOutline, BUTTON);
-    await compare(page, "action", action, refIcon, ["borderTopLeftRadius", "borderTopWidth", "borderTopColor", "backgroundColor", "height", "color"]);
     await compare(page, "send", send, refSm, ["height", "paddingLeft", "fontSize", "fontWeight", "backgroundColor", "color"]);
+    await compare(page, "solid", demo, refSolid, BUTTON);
+    await compare(page, "picker", picker, refSegment, ["borderTopLeftRadius", "backgroundColor", "height", "fontSize"]);
   });
 });
 
@@ -212,7 +229,7 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // with components-buttongroup--icons, a list row (the lib's ghost button laid out as a row) with the ghost of the same
 // story (its height may only grow), a field with components-inputgroup--default, a segmented control with
 // components-segmentedcontrol--default. Only ALLOWED differs.
-const V3_LABS = ["tuner-routing", "knowly-answer", "home-message"] as const;
+const V3_LABS = ["tuner-routing", "knowly-answer", "home-message", "relloo-carousel"] as const;
 
 // Every control of the live layer of the scene, with its kind and its computed style
 async function controlsOf(page: Page, id: string) {
