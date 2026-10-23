@@ -12,9 +12,13 @@ const SETTLED = { 1: "f1-message", 2: "f2-summary", 3: "f3-born", 4: "f4-ask" } 
 // Plays the scene from frame `n` (the visitor's gesture on the chrome's picker) and waits for its pieces to land
 async function showFrame(page: Page, n: 1 | 2 | 3 | 4) {
   await page.getByRole("radio", { name: `Momento ${n}` }).click();
-  await expect(page.locator('[data-scene="relloo-carousel"]')).toHaveAttribute("data-step", SETTLED[n], {
-    timeout: 10_000,
-  });
+  // Polled on every animation frame: the expect's backoff saw the step up to ~0.9 s late (measured 2026-10-23), which
+  // with the 900 ms below landed past the 1.8 s hold, on the next frame
+  await page.waitForFunction(
+    (step) => document.querySelector('[data-scene="relloo-carousel"]')?.getAttribute("data-step") === step,
+    SETTLED[n],
+    { timeout: 10_000, polling: "raf" },
+  );
   await page.waitForTimeout(900);
   // Only the frame on screen: the one that left is gone and the one that came has stopped moving
   await expect
