@@ -1,0 +1,235 @@
+/* VOCABULÁRIO COMUM DAS CENAS DO KIT */
+/* The recurring pieces of every kit scene, declared once (operator, 2026-10-22: one change reflects on every scene).
+   A scene composes them in its markup (className={`${p.mark} ${p.markMd}`}) and keeps in its own sheet only its
+   layout. Every value is a token of app/lib.css (TOKENS DO SITE and the colour roles); components/scene-kit/
+   tokens.test.ts fails on a raw one. The colour roles are those of Welabs UI v3 (app/lib.css PAPÉIS DE COR): stone-700
+   (--muted-foreground) only for text and icons, amber (--signal) only for what is live now and always as an area,
+   amber-50 (--signal-soft) for the selected row and the arriving bubble, success for what is done (never amber), the
+   lib's destructive tone only for a failure. */
+
+/* CABEÇA DE PAINEL */
+/* The section label over a pane or a list ("Canais", "Menu da ligação"): a short phrase in sentence case at the label
+   step, weight 500, stone-700; never caps */
+.paneHead {
+  margin: 0;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+
+/* MARCA (círculo do ícone) */
+/* At rest: the chrome well with no ring, the icon in stone-700. `data-tone` paints its state: active (the amber
+   signal, ink icon), done (success soft with the success icon), fail (the lib's destructive soft with the destructive
+   icon), subject (the subject of a pane: ink icon), well (the white surface, for a mark that sits on the chrome). A
+   RowButton mark follows its row: [data-state="active"] > .mark. The icon takes the size of the mark's step
+   (--mark-icon), whatever the size prop of the lucide element. */
+.mark {
+  --mark-size: var(--mark-md);
+  --mark-icon: var(--icon-md);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--r-dot);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.mark > svg {
+  width: var(--mark-icon);
+  height: var(--mark-icon);
+}
+.markXs {
+  --mark-size: var(--mark-xs);
+  --mark-icon: var(--icon-xs);
+}
+.markSm {
+  --mark-size: var(--mark-sm);
+  --mark-icon: var(--icon-sm);
+}
+.markMd {
+  --mark-size: var(--mark-md);
+  --mark-icon: var(--icon-md);
+}
+.markLg {
+  --mark-size: var(--mark-lg);
+  --mark-icon: var(--icon-lg);
+}
+/* A square mark (a record, a module): the control radius */
+.markSquare {
+  border-radius: var(--r-ctl);
+}
+/* well and subject combine (data-tone="well subject": a white well with an ink icon) */
+.mark[data-tone~="well"] {
+  background: var(--card);
+}
+.mark[data-tone~="subject"] {
+  color: var(--foreground);
+}
+.mark[data-tone="active"],
+[data-state="active"] > .mark {
+  background: var(--signal);
+  color: var(--signal-foreground);
+}
+.mark[data-tone="done"] {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.mark[data-tone="fail"] {
+  background: var(--destructive-soft);
+  color: var(--destructive);
+}
+
+/* ESTADOS DE LINHA */
+/* A list whose rows carry `data-state` (a RowButton, a node, an option): no line between rows and no leading bar; the
+   row arriving now takes the amber-50 veil of the selected row (--selected), its mark the amber signal. A clickable row
+   takes the ink veil on hover (4 %) and press (7 %), instead of the lib's ghost hover. */
+.rowStates [data-state] {
+  border-radius: var(--r-ctl);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+.rowStates button[data-state]:hover {
+  background-color: var(--veil-hover);
+}
+.rowStates button[data-state]:active {
+  background-color: var(--veil-press);
+}
+.rowStates [data-state="active"],
+.rowStates button[data-state="active"]:hover {
+  background-color: var(--selected);
+}
+
+/* ESTADOS DE CHIP */
+/* A row of the site's soft ActionButtons that follow a state: waiting keeps the soft chrome with its label in
+   stone-700, done is the success soft chip, active the amber-50 veil. Only state paint, never the control's edge
+   (app/lib.css CONTROLES). */
+.choiceStates [data-state] {
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.choiceStates [data-state]:hover {
+  background-color: var(--veil-hover);
+}
+.choiceStates [data-state]:active {
+  background-color: var(--veil-press);
+}
+.choiceStates [data-state="waiting"] {
+  color: var(--muted-foreground);
+}
+.choiceStates [data-state="done"] {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+.choiceStates [data-state="active"] {
+  background-color: var(--selected);
+}
+
+/* TEXTO EMPILHADO */
+/* A title over its meta line (a record, a node, an option): the title in ink at the label step, the meta in stone-700
+   at the micro step; .stackLead lifts the title to the v3 title step (the subject of a pane) */
+.stack {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.stack > b {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+.stack > span {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  color: var(--muted-foreground);
+}
+.stackLead > b {
+  font-size: var(--t-title);
+  line-height: var(--line-title);
+  letter-spacing: var(--ls-heading);
+}
+
+/* LINHA DE META */
+/* The label of an entry in ink and its time in stone-700, on one centre line, at the meta step */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+}
+.meta > b {
+  font-weight: var(--weight-title);
+}
+.meta > time {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+/* The time that opens a log line: tabular, so the column of times stays straight */
+.time {
+  margin-right: var(--sp-2);
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+
+/* BOLHA */
+/* What was said reads as a message, as wide as its text: received is the chrome bubble with no edge, its corner at
+   the origin tight (4 px); the bubble arriving now ([data-fresh="true"]) takes the amber-50 veil; sent is the primary
+   (black, white text); a record or system event has no fill and reads as a meta line in stone-700, so it never passes
+   for something said */
+.bubble {
+  justify-self: start;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-xs) var(--r-card) var(--r-card) var(--r-card);
+  background: var(--muted);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--foreground);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+[data-fresh="true"] .bubble {
+  background: var(--signal-soft);
+}
+.bubble[data-kind="sent"] {
+  justify-self: end;
+  align-self: flex-end;
+  border-radius: var(--r-card) var(--r-xs) var(--r-card) var(--r-card);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.bubble[data-kind="system"] {
+  padding: 0;
+  background: transparent;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+
+/* LISTAS E DIVISÓRIAS */
+/* The gap of a list of entries, and the line under a section of a pane (between panels only; above one: the lib's
+   Separator) */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.listTight {
+  gap: var(--sp-2);
+}
+.ruleBottom {
+  border-bottom: var(--rule) solid var(--border);
+}
+
+/* SELO */
+/* The lib's Badge that seals the settled frame: icon and text, never shrunk */
+.seal {
+  gap: var(--sp-1);
+  flex: none;
+}

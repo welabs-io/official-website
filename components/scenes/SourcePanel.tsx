@@ -6,6 +6,7 @@
 // card in.
 import type { Act } from "@/lib/scenes/types";
 import { Glyph, GLYPHS } from "./icons";
+import { SceneSearch } from "./SceneSearch";
 import styles from "./scenes.module.css";
 
 export function SourcePanel({
@@ -81,10 +82,7 @@ export function SourcePanel({
         ))}
       </div>
       <div className={styles.ask}>
-        <p className={styles.query} data-edge="">
-          <Glyph d={GLYPHS.search} size={14} />
-          <span>{question}</span>
-        </p>
+        <SceneSearch query={question} data-edge="" />
         {/* The answer flies out of the document on the left, where its line was marked (ludic pass) */}
         <div
           className={styles.answer}

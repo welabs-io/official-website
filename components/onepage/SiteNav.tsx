@@ -9,6 +9,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { IconButton } from "@/components/lib/ui";
 import type { NAV as NavLabels } from "@/lib/content/home";
 import styles from "./shell.module.css";
 
@@ -39,16 +41,17 @@ export function SiteNav({
       className={styles.navWrap}
       onKeyDown={(event) => event.key === "Escape" && close()}
     >
-      <button
-        type="button"
+      {/* The site's IconButton (the secondary soft control of app/lib.css), Menu or X by state; the sheet only shows
+          it on a phone. It was the lib's outline Button with a burger drawn by CSS. */}
+      <IconButton
+        icon={open ? <X /> : <Menu />}
+        label={open ? NAV.close : NAV.open}
+        data-theme="welabs"
         className={styles.menuButton}
         aria-expanded={open}
         aria-controls="site-nav"
-        aria-label={open ? NAV.close : NAV.open}
         onClick={() => setOpenAt(open ? null : pathname)}
-      >
-        <span className={styles.burger} aria-hidden="true" />
-      </button>
+      />
       <nav
         id="site-nav"
         className={styles.nav}

@@ -2,7 +2,7 @@
 /* The one set of tokens of the native scenes, shared by the scenes themselves (`.scene` composes it, scenes.module.css)
    and by the reading bands of a product page that follow them (components/template/product-reading.module.css): ink and
    two greys of text, the hairline and the panel edge, three surfaces, amber only as an area, the semantic colours of the
-   brand 1.8.0, the type scale (meta 11, label 12, body 13, one key of 18 to 22), three radii and two elevations. */
+   brand 1.8.0, the type scale (v3: meta and label 12, body 14, one key of 18), three radii and two elevations. */
 .tokens {
   /* Ink and text */
   --s-ink: #1c1a16;
@@ -33,10 +33,11 @@
   --s-info-dot: #3c79ef;
   --s-action: #25272a;
   --s-action-fg: #faf5ea;
-  /* Type scale */
-  --s-t-meta: 0.6875rem;
+  /* Type scale. v3 (F2, plano.md 4.1): the drawn screens take the micro and label steps of the page scale (12 and 14, as
+     the product's own screens: meta and labels 12, the body 14); they had 11 and 13, two sizes off the scale */
+  --s-t-meta: 0.75rem;
   --s-t-label: 0.75rem;
-  --s-t-body: 0.8125rem;
+  --s-t-body: 0.875rem;
   /* 18 px since the ludic pass: the key reads like the title of a real app, not a headline (it was 20 px) */
   --s-t-key: 1.125rem;
   /* Shape and depth */

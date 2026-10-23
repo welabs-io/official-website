@@ -1,0 +1,736 @@
+/* CENA DO RELLOO: CARROSSEL EM QUATRO QUADROS */
+/* The frames V3Relloo-1..4 on the kit's window: every control is the published lib's (Button, InputGroup,
+   SegmentedControl, Badge), the record header is the Domus DetailHeader of relloo-inbox; this sheet places them, paints
+   the live piece (amber-50 with the amber ring, one per frame) and what is done (green), and choreographs each step.
+   Every value is a token of app/lib.css (components/scene-kit/tokens.test.ts); the alignment is held by numbers in
+   e2e/scene-kit-geometry.spec.ts. */
+
+/* QUADROS */
+/* The frames share one grid cell: the one leaving and the one entering overlap while they cross */
+.frames {
+  display: grid;
+  min-width: 0;
+  background: var(--background);
+}
+.frame {
+  display: grid;
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+/* The canvas of a frame: the room of the frames (580 px under a 64 px header, here 560) on a desktop */
+.body {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: calc(var(--sp-9) * 7);
+  flex-direction: column;
+  padding: var(--sp-6) var(--sp-7);
+  background: var(--background);
+}
+/* Frames 1 and 2: one conversation in the middle of the canvas */
+.centred {
+  padding-inline: 14%;
+}
+
+/* CABEÇALHO DA JANELA */
+/* The screen and its area step into place when the frame changes screen (the frame indicator is the kit's,
+   components/scene-kit/frame-indicator.module.css) */
+.swap {
+  display: inline-block;
+  white-space: nowrap;
+  animation: swap var(--dur-2) var(--ease-out) backwards;
+}
+
+/* PEÇA VIVA E RÓTULOS */
+/* The live piece of a frame: the amber-50 area with the amber ring (two rules wide) and a raised shadow */
+.live {
+  background-color: var(--signal-soft);
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+}
+.label {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+/* What lands: it rises a step and fades in; the spring for the live pieces */
+.landing {
+  animation: rise var(--dur-3) var(--ease-out) var(--dur-1) backwards;
+}
+.landing.live,
+.live.landing {
+  animation: land var(--dur-3) var(--ease-spring) var(--dur-1) backwards;
+}
+
+/* CONVERSA (QUADROS 1 E 2) */
+.thread {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.threadHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.threadTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+.threadTitle {
+  font-size: var(--t-lead);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-heading);
+}
+.threadMeta {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+.owner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* The history of the conversation: the channels used before as quiet lines (the date, the mark, the subject), the
+   day, then the message arriving */
+.feed {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  background: var(--background);
+}
+/* The date in its own column (as wide as a large mark), then the channel's mark and the subject on one centre line */
+.past {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: 0;
+  color: var(--muted-foreground);
+}
+.date {
+  width: var(--mark-xl);
+  flex: none;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+}
+.pastLine {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.pastText {
+  min-width: 0;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.day {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-2) 0 var(--sp-1);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+.day::before,
+.day::after {
+  height: var(--rule);
+  flex: 1;
+  background: var(--border);
+  content: "";
+}
+.arrival {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+.channel {
+  animation: rise var(--dur-2) var(--ease-out) backwards;
+}
+
+/* What was said: a bubble as wide as its text up to its measure, the time under it on the right */
+.said {
+  display: flex;
+  max-width: 62%;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card) var(--r-card) var(--r-card) var(--r-xs);
+  background: var(--card);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.said > time {
+  align-self: flex-end;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+/* The message arriving in frame 1: the lead step, its time in ink */
+.said[data-said="asked"] {
+  font-size: var(--t-lead);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-label);
+  animation: land var(--dur-3) var(--ease-spring) var(--dur-2) backwards;
+}
+.said[data-said="asked"] > time {
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+
+/* The composer of relloo-inbox: the lib's field with the line above it */
+.composer {
+  padding: var(--sp-3) var(--sp-5);
+  border-top: var(--rule) solid var(--border);
+}
+
+/* PASSAGEM DE DONO (QUADRO 2) */
+/* Who had it, why it moved, who has it now: the two seats on one line with the reason over the trace between them */
+.handoff {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-4);
+  margin: var(--sp-5) var(--sp-5) 0;
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--background);
+}
+.seat {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.holder {
+  display: inline-flex;
+  min-height: var(--control-height-md);
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-ctl);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+.holder > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex: none;
+}
+.holder.live {
+  color: var(--foreground);
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
+  animation: land var(--dur-3) var(--ease-spring) var(--dur-3) backwards;
+}
+/* The reason, centred over the gap the trace crosses (a control's height above the line's end) */
+.why {
+  flex: 1;
+  align-self: stretch;
+  padding-top: var(--sp-1);
+  text-align: center;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+
+.talk {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+}
+/* The agent's answer on the right, in the chrome; the contact's on the left, white with the hairline */
+.sent {
+  align-self: flex-end;
+  border-radius: var(--r-card) var(--r-card) var(--r-xs) var(--r-card);
+  background: var(--muted);
+  animation: rise var(--dur-3) var(--ease-out) backwards;
+}
+.saidBy {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+.received {
+  align-self: flex-start;
+  box-shadow: var(--edge-ring);
+}
+.later {
+  animation: rise var(--dur-3) var(--ease-out) var(--dur-3) backwards;
+}
+
+/* The summary for whoever takes the conversation: a note with the line around it, the icon on its first line */
+.note {
+  display: flex;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-ctl);
+  box-shadow: var(--edge-ring);
+}
+.note > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex: none;
+  margin-block: calc((var(--line-label) - var(--icon-md)) / 2);
+  color: var(--muted-foreground);
+}
+.noteText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.noteText > b {
+  font-weight: var(--weight-title);
+}
+.noteText > span {
+  color: var(--muted-foreground);
+}
+
+/* CONVERSA E REGISTRO (QUADRO 3) */
+/* Two panes side by side with a gutter wide enough for the trace's lane; equal, so the record keeps its status on the
+   title's line with room to spare (e2e/scene-kit-geometry.spec.ts) */
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--sp-7);
+}
+.pane {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.paneTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.paneTitle {
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+}
+.paneBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-5);
+  padding: var(--sp-5);
+}
+/* The contact's request, the source of the opportunity: outlined in ink */
+.quoted {
+  max-width: 80%;
+  box-shadow: inset 0 0 0 calc(var(--rule) * 1.5) var(--foreground);
+}
+
+/* CABEÇALHO DO REGISTRO (DetailHeader DO DOMUS, COMO EM relloo-inbox) */
+.record {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.recordMain {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.identity {
+  display: inline-flex;
+  width: var(--mark-xl);
+  height: var(--mark-xl);
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-ctl);
+  background: var(--muted);
+  box-shadow: var(--edge-ring);
+  color: var(--muted-foreground);
+}
+.identity > svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+.recordText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.recordTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+.recordTop > b {
+  font-size: var(--t-page-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+}
+.recordMeta {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+}
+/* The status minidot of the Domus: the 8 px dot and the label, no fill; linked is done, so the dot is green */
+.state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+}
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--success);
+}
+
+/* The opportunities of the record: the new one lands as the live piece, its number large */
+.deals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+}
+.deal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border-radius: var(--r-card);
+}
+.dealTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+.dealTop > b {
+  font-weight: var(--weight-title);
+}
+.now {
+  background-color: var(--card);
+}
+.number {
+  font-size: var(--t-page-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+  font-variant-numeric: tabular-nums;
+}
+.dealFrom {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+}
+
+/* FUNIL (QUADRO 4) */
+.funnelBody {
+  gap: var(--sp-4);
+}
+.dealLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-3);
+  margin: 0;
+}
+.dealLine > b {
+  font-size: var(--t-page-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+}
+.dealLine > span {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+/* The four stages and, on the same columns, the row under them */
+.funnel,
+.below {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stage {
+  display: flex;
+  min-height: var(--sp-9);
+  align-items: center;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--muted);
+  transition: background-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+.stage[data-state="done"] {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.stage[data-state="active"] {
+  background: var(--card);
+  box-shadow: inset 0 0 0 calc(var(--rule) * 2) var(--foreground);
+}
+.done {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  animation: land var(--dur-3) var(--ease-spring) backwards;
+}
+/* The opportunity in its stage: the live piece, moved by motion's layout from one stage to the next */
+.ticket {
+  display: flex;
+  min-height: var(--mark-xl);
+  flex: 1;
+  align-items: center;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-ctl);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  font-variant-numeric: tabular-nums;
+}
+.ticketWord {
+  white-space: pre;
+}
+
+.below {
+  margin-top: var(--sp-7);
+}
+.domus {
+  display: flex;
+  grid-column: 1 / 4;
+  justify-self: center;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.domus .ink {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.domusText {
+  display: flex;
+  flex-direction: column;
+}
+.domusText > b {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+/* One line: the check sits on it (a phone lets the card run past the three columns it is centred on) */
+.booked {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: var(--sp-1);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-label);
+  color: var(--success);
+}
+.booked > svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
+}
+
+/* The question and the demo request: the band that closes the carousel */
+.ask {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  margin-top: auto;
+  padding: var(--sp-5) var(--sp-6);
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.question {
+  flex: 1;
+  margin: 0;
+  font-size: var(--t-h3);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+}
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+/* What updates in place (the screen of the chrome) never vanishes: it dims and steps up into place */
+@keyframes swap {
+  from {
+    opacity: 0.2;
+    transform: translateY(var(--sp-1));
+  }
+}
+
+/* The chrome sits outside the kit's stage, so its swap follows reduced motion here */
+@media (prefers-reduced-motion: reduce) {
+  .swap {
+    animation: none;
+  }
+}
+
+/* TELEFONE */
+/* One column: the panes stack (the trace of frame 3 then has no lane and stays off), the seats of frame 2 stack with
+   the trace dropping between them, the funnel keeps its four columns with the number of the opportunity only */
+@media (max-width: 640px) {
+  /* The chrome keeps the screen and the four numbers on one line: the area and its chevron step out */
+  .area,
+  .window > :first-child > svg {
+    display: none;
+  }
+  .body {
+    min-height: 0;
+    padding: var(--sp-4);
+  }
+  .centred {
+    padding-inline: var(--sp-4);
+  }
+  .threadHead,
+  .feed,
+  .talk,
+  .composer,
+  .paneTop,
+  .paneBody,
+  .record,
+  .deals {
+    padding-inline: var(--sp-4);
+  }
+  .pills {
+    margin-left: 0;
+  }
+  .said {
+    max-width: 100%;
+  }
+  /* The seats stack on their left edge; the trace drops on the centre of the narrower seat, past the end of the
+     "Dona agora" label, and the reason sits on the right, clear of it */
+  .handoff {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-5);
+    margin-inline: var(--sp-4);
+    padding-inline: var(--sp-4);
+  }
+  .why {
+    align-self: stretch;
+    padding-top: 0;
+    text-align: right;
+  }
+  .pair {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+  }
+  .quoted {
+    max-width: 100%;
+  }
+  .recordTop > b {
+    font-size: var(--t-title);
+  }
+  .funnel,
+  .below {
+    gap: var(--sp-2);
+  }
+  .stage {
+    min-height: var(--mark-xl);
+    justify-content: center;
+    padding: 0 var(--sp-1);
+  }
+  .ticket {
+    justify-content: center;
+    padding: 0 var(--sp-2);
+  }
+  .ticketWord {
+    display: none;
+  }
+  /* The Domus card stays inside the canvas's gutter: a closer inset */
+  .domus {
+    gap: var(--sp-2);
+    padding-inline: var(--sp-3);
+  }
+  .below {
+    margin-block: var(--sp-6);
+  }
+  .ask {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-4);
+    padding: var(--sp-4);
+  }
+  .question {
+    font-size: var(--t-title);
+  }
+}

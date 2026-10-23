@@ -1,0 +1,371 @@
+/* CENA DO MAGNETO EM CARROSSEL */
+/* The layout of components/scene-kit/scenes/magneto-carousel.tsx: the flow's header (its name and its status; the frame
+   indicator is the kit's, in the chrome), then the canvas where the four frames share one grid cell and cross-fade. A frame is a row of steps
+   joined by the kit's Connector from 880 px of window up, a column with arrows below. Every value is a token of
+   app/lib.css (components/scene-kit/tokens.test.ts); the alignment is held by e2e/scene-kit-geometry.spec.ts. */
+.root {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  background: var(--card);
+  container-type: inline-size;
+}
+
+/* CABEÇALHO DO FLUXO */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--sp-8);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: var(--rule) solid var(--border);
+}
+.headTitle {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-right: auto;
+}
+.headTitle > b {
+  font-size: var(--t-title);
+  line-height: var(--line-title);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-heading);
+}
+.status {
+  gap: var(--sp-2);
+}
+
+/* A minidot: the green of the status, the ink of "now", a ring for "at the same time" */
+.dot {
+  width: var(--dot);
+  height: var(--dot);
+  flex: none;
+  border-radius: var(--r-dot);
+  background: var(--foreground);
+}
+.dot[data-tone="done"],
+.dot[data-tone="current"] {
+  background: var(--success);
+}
+.dot[data-tone="ring"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 var(--rule-strong) var(--muted-foreground);
+}
+
+/* A TELA DOS QUADROS */
+/* The canvas of a flow: the page tone with a quiet grid of dots; every frame in one cell */
+.frames {
+  display: grid;
+  background-color: var(--background);
+  background-image: radial-gradient(color-mix(in srgb, var(--indicator-muted) 40%, transparent) var(--rule), transparent var(--rule));
+  background-size: var(--sp-4) var(--sp-4);
+}
+
+/* A frame: hidden at rest; it leaves on the in-out curve and the next arrives on the out curve, a beat later, so the
+   two cross-fade instead of cutting */
+.frame {
+  position: relative;
+  display: grid;
+  grid-area: 1 / 1;
+  align-content: center;
+  min-width: 0;
+  padding: var(--sp-5) var(--sp-4);
+  opacity: 0;
+  transform: scale(0.98);
+  visibility: hidden;
+  transition:
+    opacity var(--dur-2) var(--ease-in-out),
+    transform var(--dur-2) var(--ease-in-out),
+    visibility var(--dur-2) var(--ease-in-out);
+}
+.frame[data-active="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: inherit;
+  transition:
+    opacity var(--dur-3) var(--ease-out) var(--dur-1),
+    transform var(--dur-3) var(--ease-out) var(--dur-1),
+    visibility var(--dur-1) var(--ease-out);
+}
+
+/* The flow of a frame: a column of its steps (a phone), a row from 880 px of window up */
+.flow {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.fork {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* A piece arrives with its step: up from below on the spring, fading in on the out curve; the pieces of one step
+   follow each other a beat apart */
+.piece {
+  opacity: 0;
+  transform: translateY(var(--sp-2));
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-3) var(--ease-spring);
+  transition-delay: calc(var(--dur-1) * var(--i, 0));
+}
+.piece[data-in="true"] {
+  opacity: 1;
+  transform: none;
+}
+.reveal {
+  display: flex;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease-out);
+}
+.reveal[data-in="true"] {
+  opacity: 1;
+}
+
+/* The arrow between two steps on a phone */
+.down {
+  display: flex;
+  justify-content: center;
+  color: var(--foreground);
+}
+.down > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+/* PASSOS DO FLUXO */
+/* A step or a product: the white surface with the line ring, its mark and its stacked text on one axis */
+.node {
+  display: flex;
+  min-height: var(--record-h);
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-md);
+}
+.column {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+/* The step still to come: a dashed slot on the canvas, its empty mark, its moment in grey over its name in ink */
+.node[data-node="next"] {
+  border: var(--rule-strong) dashed var(--indicator-muted);
+  background: transparent;
+  box-shadow: none;
+}
+/* The square mark of a step: the 8 px corner of Welabs UI v3 (the welabs control radius would round a 28 px mark into a
+   circle) */
+.square[aria-hidden] {
+  border-radius: var(--r-md);
+}
+/* [aria-hidden]: every mark carries it, so these tones outrank the rest tone of parts.module.css .mark */
+.slot[aria-hidden] {
+  background: transparent;
+  box-shadow: inset 0 0 0 var(--rule-strong) var(--indicator-muted);
+}
+/* A done step that has just turned done lands with the spring */
+.pop {
+  animation: pop var(--dur-3) var(--ease-spring);
+}
+
+/* The square mark of a product (ink, white glyph) and of the live step while it runs (amber, only on screen) */
+.ink[aria-hidden] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.frame[data-active="true"] [data-in="true"] .signal {
+  background: var(--signal);
+  color: var(--signal-foreground);
+}
+
+/* O PASSO VIVO */
+/* The step running now: the amber-50 area with the amber ring, raised; its head, its lines. Amber only on screen, as
+   the live mark: the frame that leaves in the cross-fade hands its step back to the white surface at once, so the
+   cross-fade never shows two live pieces (amber budget of e2e/scene-kit-scenes.spec.ts, rings counted) */
+.live {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-lg);
+}
+.frame[data-active="true"] .live {
+  background: var(--signal-soft);
+  box-shadow: inset 0 0 0 var(--rule-strong) var(--signal), var(--shadow-lg);
+}
+.liveHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.liveHead > b {
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-title);
+}
+/* The number of the frame: big and in bold */
+.figure {
+  font-size: var(--t-figure);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
+  letter-spacing: var(--ls-display);
+}
+.liveMeta {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+
+/* A line of a step: an icon or a dot and a short phrase */
+.line {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+}
+.line > svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
+}
+.line[data-tone="done"] {
+  color: var(--success);
+}
+.line[data-tone="muted"] {
+  color: var(--muted-foreground);
+}
+
+/* What the live step waits for: an amber area with its clock, only while its frame is on screen */
+.waiting {
+  display: inline-flex;
+  min-height: var(--mark-sm);
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-dot);
+  background: var(--muted);
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-title);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+.frame[data-active="true"] [data-in="true"] .waiting {
+  background: var(--signal);
+  color: var(--signal-foreground);
+}
+.waiting > svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  flex: none;
+}
+
+/* A PERGUNTA E A DEMONSTRAÇÃO */
+.ask {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  margin-top: var(--sp-3);
+  padding: var(--sp-5);
+  border-radius: var(--r-win);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.question {
+  margin: 0;
+  font-size: var(--t-figure);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
+  letter-spacing: var(--ls-display);
+}
+
+/* A FILA EM LINHA (A PARTIR DE 880 PX DE JANELA) */
+/* The steps side by side with room for the traces between them (the gap is the trace's), the frame centred in the
+   canvas; frame 3 joins two fronts into what follows (a 3 x 2 grid), frame 4 closes with the question under it */
+@container (min-width: 880px) {
+  .head {
+    padding-inline: var(--sp-5);
+  }
+  .frame {
+    padding: var(--sp-7) var(--sp-6);
+  }
+  .down {
+    display: none;
+  }
+  .flow {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: center;
+    column-gap: var(--sp-8);
+  }
+  .fork {
+    gap: var(--sp-8);
+  }
+  .forkTight {
+    gap: var(--sp-3);
+  }
+  .flow[data-layout="join"] {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, auto);
+    row-gap: var(--sp-8);
+  }
+  .lead {
+    grid-row: 1 / 3;
+    grid-column: 1;
+  }
+  .topMid {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .bottomMid {
+    grid-row: 2;
+    grid-column: 2;
+  }
+  .topEnd {
+    grid-row: 1;
+    grid-column: 3;
+  }
+  .bottomEnd {
+    grid-row: 2;
+    grid-column: 3;
+  }
+  .flow[data-layout="close"] {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, auto);
+    row-gap: var(--sp-6);
+  }
+  .ask {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-5);
+    margin-top: 0;
+    padding: var(--sp-5) var(--sp-6);
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.96);
+  }
+}

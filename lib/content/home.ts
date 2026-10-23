@@ -3,6 +3,7 @@
 // the rest is motion and interaction. The words a visitor reads inside a drawing (the stamps of an effect, the names of
 // the rooms) are labels of that drawing, also kept here so the copy rules read them. No slogan, no brand-concept phrase.
 import type { ProductSlug } from "../products";
+import { STORY } from "../scenes/story";
 
 // Opening: the title is cut around the word that turns; each word lights the product it belongs to on the stage
 export const HOME_INTRO = {
@@ -20,17 +21,18 @@ export const HOME_INTRO = {
   stage: "Os cinco produtos ligados ao Domus",
   stamps: {
     domus: "Pedido 1234 atualizado",
-    // v2.2 (audit, section 5): the effect, never a person ("Marina com a Ana")
+    // v2.2 (audit, section 5): the effect, never a person by name
     relloo: "Conversa distribuída",
     magneto: "Aprovado às 10:14",
     tuner: "Ligação na conversa",
     knowly: "Sim, até 12h",
   } satisfies Record<ProductSlug, string>,
   // v2.1: the record of the Domus at the centre of the stage. Each product, when it is lit, sends its effect along its
-  // tie and the line of that effect lights in the record: what happens in one product shows in the Domus
+  // tie and the line of that effect lights in the record: what happens in one product shows in the Domus.
+  // v3 (F1): the order belongs to a contact record (STORY.who), never to a person by name
   record: {
-    title: "Pedido 1234",
-    who: "Marina",
+    title: STORY.order,
+    who: STORY.who,
     lines: {
       tuner: "Ligação gravada",
       relloo: "Respondida no prazo",
@@ -41,16 +43,15 @@ export const HOME_INTRO = {
   },
 } as const;
 
-// The message that crosses the operation (drag it onto the track, or press the button)
+// The message that crosses the operation (the kit scene home-message, components/scene-kit/scenes/home-message.tsx)
+// v3 (2026-10-23): the scene plays by itself, so the lead no longer asks for a drag, and the labels of the button of the
+// v2 track ("Enviando", "Recomeçar") left with it
 export const HOME_MESSAGE = {
   title: "Uma mensagem, a operação inteira",
-  lead: "Arraste a conversa para o trilho.",
+  lead: "Do canal ao pedido registrado no Domus.",
   // v2.2: the category of the channel, not the brand
   bubble: { channel: "Mensagem", text: "Dá para entregar sábado?" },
   send: "Enviar a mensagem",
-  // v2.2 (audit M01): while the message runs the button says so; "Recomeçar" only once it has landed
-  sending: "Enviando",
-  again: "Recomeçar",
   stations: [
     { product: "tuner", label: "Chegou" },
     { product: "relloo", label: "Resposta" },
@@ -58,7 +59,6 @@ export const HOME_MESSAGE = {
     { product: "magneto", label: "Aprovado" },
     { product: "domus", label: "Registrado" },
   ] as const satisfies readonly { product: ProductSlug; label: string }[],
-  done: "Confirmado: sábado",
   // The record the message lands on, in the Domus
   record: "Pedido 1234",
 } as const;
@@ -93,8 +93,8 @@ export const DOMUS_MODULES: {
     { name: "Demandas", glyph: "rule" },
     { name: "Aprovações", glyph: "check" },
     { name: "Privacidade", glyph: "lock" },
-    // v2.2: the category, with the one connector the code has in brackets (never "e outros")
-    { name: "Importação (Omie)", glyph: "refresh" },
+    // Pilot of the lib (2026-10-21): the category only; the block names no third-party product
+    { name: "Importação", glyph: "refresh" },
   ],
 };
 
@@ -108,7 +108,12 @@ export const HOME_DOMUS = {
   // The module the "+" makes: an example of a module a company creates for itself, with the screen it gets
   born: "Vistorias",
   bornTag: "Novo módulo",
-  bornFields: ["Local", "Data", "Foto"],
+  // Each field of the new screen with the value it shows once filled (the lib's Field: label over the input)
+  bornFields: [
+    { label: "Local", value: "Doca 3" },
+    { label: "Data", value: "21/10/2026" },
+    { label: "Foto", value: "3 fotos" },
+  ],
   addLabel: "Criar um módulo novo",
   more: "Conhecer o Domus",
   ground: "Os outros produtos trabalham sobre o Domus",
@@ -126,7 +131,9 @@ export const HOME_EFFECTS = {
   ],
 } as const;
 
-// Contact: open questions, no answers: they are the reason to talk. The button is the only way in
+// Contact: open questions, no answers: they are the reason to talk.
+// v3 (F1): every button of the site lands here, so this band does not repeat the button (it would lead to itself). Until
+// the operator decides where a request goes (plano.md, section 3.3), its way out is the products band (`more`).
 export const HOME_CONTACT = {
   title: "Conte o que sua empresa precisa",
   asks: [
@@ -136,6 +143,7 @@ export const HOME_CONTACT = {
     "Por onde a gente começa?",
   ],
   asksLabel: "Perguntas para a conversa",
+  more: "Ver os produtos",
 } as const;
 
 // MENU DO CABEÇALHO E SELETOR DE PRODUTOS

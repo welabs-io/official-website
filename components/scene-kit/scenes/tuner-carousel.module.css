@@ -1,0 +1,446 @@
+/* CENA DO TUNER EM CARROSSEL */
+/* The four approved frames (V3Tuner-1..4) on the canvas of the stage (--background), white pieces with the line's
+   ring, ink marks, one amber area per frame and the done green. Every control is the published lib's at md (40 px,
+   e2e/lib-parity.spec.ts); this sheet only places the frames, paints the scene's states and choreographs the passage
+   from one frame to the next with the site's three curves (out to enter, in-out to leave, spring for what lands).
+   Every value is a token of app/lib.css. The alignment is held by numbers: e2e/scene-kit-geometry.spec.ts. */
+.root {
+  display: grid;
+  min-width: 0;
+  background: var(--background);
+}
+
+/* QUADRO */
+/* Every frame sits in the same cell (the ghost stacks the four, so the cell is as tall as the tallest), its bands
+   centred on the stage's height with the same inset on every side */
+.frame {
+  display: flex;
+  grid-area: 1 / 1;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--sp-7);
+  padding: var(--sp-7);
+}
+/* A frame comes in from the right on the out curve and its pieces land on the spring, one after the other; the frame
+   leaving goes left on the in-out curve, under the next one, and hides once gone */
+.frame[data-phase="enter"] {
+  animation: frameIn var(--dur-3) var(--ease-out) both;
+}
+.frame[data-phase="leave"] {
+  pointer-events: none;
+  animation: frameOut var(--dur-3) var(--ease-in-out) forwards;
+}
+.frame[data-phase="enter"] :is([data-band], .tracks, .channels) > :not(svg) {
+  animation: land var(--dur-3) var(--ease-spring) var(--dur-1) both;
+}
+.frame[data-phase="enter"] :is([data-band], .tracks, .channels) > :nth-child(2):not(svg) {
+  animation-delay: var(--dur-2);
+}
+.frame[data-phase="enter"] :is([data-band], .tracks, .channels) > :nth-child(n + 3):not(svg) {
+  animation-delay: var(--dur-3);
+}
+
+/* MARCA E NÓ */
+/* The ink square of a product or a channel (primary black, white glyph); a node is the white piece with the line's
+   ring, its mark and its name over its meta; waiting, its mark rests in the chrome well and its name in stone-700 */
+.frame .ink {
+  border-radius: var(--r-md);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.hub .ink,
+.trackHead .ink {
+  border-radius: var(--r-lg);
+}
+.node {
+  display: flex;
+  min-width: 0;
+  min-height: var(--record-h);
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.node b {
+  transition: color var(--dur-2) var(--ease-out);
+}
+.node[data-state="waiting"] .ink {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.node[data-state="waiting"] b {
+  color: var(--muted-foreground);
+}
+
+/* PEÇA VIVA (A MENSAGEM, A RESPOSTA) */
+/* The one amber area of frames 1 and 4: amber-50 with the amber ring, the figure big and bold */
+.live {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--signal-soft);
+  box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-pop);
+}
+.eyebrow {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-figure);
+}
+.figure {
+  font-size: var(--t-figure);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
+  letter-spacing: var(--ls-display);
+  font-variant-numeric: tabular-nums;
+}
+.note {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+}
+
+/* QUADRO 1: A MENSAGEM */
+/* The Magneto, the message and the Tuner on one line, the trace in the gaps between them */
+.flow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-9);
+}
+
+/* QUADRO 2: O ENVIO */
+/* The Tuner (a square with its send in flight), the three channels it sends through, and the figure of the send; the
+   fan of traces runs from the Tuner to each channel */
+.fan {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hub {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  aspect-ratio: 1;
+  margin-right: var(--sp-9);
+  padding: var(--sp-6);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.hub > b {
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-figure);
+}
+.flight {
+  font-weight: var(--weight-figure);
+}
+.channels {
+  display: flex;
+  min-width: 0;
+  flex: 0 1 calc(var(--sp-9) * 4 + var(--sp-6));
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin: 0 var(--sp-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* The row (the site's RowButton, the whole row is the target): the white piece with the line's ring, mark, name and
+   status on one centre line; the shared rowStates paint the ink veil on hover */
+.channels [data-row] {
+  min-height: var(--sp-8);
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card);
+  background-color: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.channelName {
+  min-width: 0;
+  flex: 1;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+.state {
+  flex: none;
+  font-weight: var(--weight-figure);
+  animation: pop var(--dur-3) var(--ease-spring) both;
+}
+.state[data-sent="false"] {
+  color: var(--muted-foreground);
+}
+.stat {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sp-1);
+  opacity: 0;
+  transform: translateY(var(--sp-2));
+  transition: opacity var(--dur-3) var(--ease-out), transform var(--dur-3) var(--ease-spring);
+}
+.stat[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+.stat > span {
+  max-width: calc(var(--sp-9) * 2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+
+/* QUADRO 3: A LEITURA */
+/* One piece per channel: its head (mark and name) in a column shared by the three, then its track of stops (sent,
+   delivered, read) joined by the ink line; read now is the amber stop, read the green one with the green line */
+.tracks {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--sp-5) var(--sp-7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.track {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  padding: var(--sp-6) var(--sp-5);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring), var(--shadow-raise);
+}
+.trackHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.trackHead > b {
+  font-size: var(--t-subtitle);
+  line-height: var(--line-lead);
+  font-weight: var(--weight-figure);
+}
+.stops {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(var(--sp-4), 1fr) auto minmax(var(--sp-4), 1fr) auto;
+  align-items: center;
+}
+/* A stop is the lib's Badge at the control's height: the round of a status, its check and its label */
+.stop {
+  min-height: var(--control-height-md);
+  gap: calc(var(--sp-1) + var(--sp-1) / 2);
+  padding-inline: var(--sp-3);
+  border-radius: var(--r-dot);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-figure);
+}
+:is(.stop, .flight)[data-tone="live"] {
+  background-color: var(--signal);
+  color: var(--signal-foreground);
+}
+.stop[data-tone="done"] {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+.line {
+  height: var(--rule-trace);
+  margin-inline: var(--sp-2);
+  border-radius: var(--r-dot);
+  background: var(--foreground);
+}
+.line[data-tone="done"] {
+  background: var(--success);
+}
+/* The read lands: the line grows from the delivered stop, then the stop pops on the spring */
+.lineIn {
+  transform-origin: left center;
+  animation: grow var(--dur-3) var(--ease-out) both;
+}
+.stopIn {
+  animation: pop var(--dur-3) var(--ease-spring) var(--dur-2) both;
+}
+
+/* QUADRO 4: A RESPOSTA E O CONVITE */
+/* The answer between the channel it came from and the conversation it goes to, the other channels of the Tuner (the
+   lib's outline buttons), and the question with the lib's primary button to the contact; the three bands share the
+   frame's inset on both sides */
+.reply {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.7fr);
+  align-items: center;
+  column-gap: var(--sp-9);
+}
+.more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.moreLabel {
+  margin-right: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+  color: var(--muted-foreground);
+}
+.ask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+  border-radius: var(--r-card);
+  background: var(--card);
+  box-shadow: var(--edge-ring);
+}
+.ask > b {
+  min-width: 0;
+  font-size: var(--t-figure);
+  line-height: var(--line-figure);
+  font-weight: var(--weight-figure);
+  letter-spacing: var(--ls-display);
+}
+
+/* INDICADOR DE QUADRO (BARRA DA JANELA) */
+/* The caption of the frame, then the kit's frame indicator (components/scene-kit/frame-indicator.module.css) */
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.caption {
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+@keyframes frameIn {
+  from {
+    opacity: 0;
+    transform: translateX(var(--sp-6));
+  }
+}
+@keyframes frameOut {
+  to {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(calc(var(--sp-6) * -1));
+  }
+}
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-3)) scale(0.96);
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* CELULAR */
+/* The pieces of a frame stack in one column at the frame's inset (the traces only run side by side); the hub becomes
+   a row, the tracks put their stops under their head at the small step, the question goes over its button */
+@media (max-width: 640px) {
+  .frame {
+    gap: var(--sp-5);
+    padding: var(--sp-5) var(--sp-4);
+  }
+  .flow,
+  .fan {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-4);
+  }
+  .hub {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--sp-3);
+    aspect-ratio: auto;
+    margin-right: 0;
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .hub > b {
+    flex: 1;
+  }
+  .channels {
+    flex: none;
+    margin-right: 0;
+    gap: var(--sp-2);
+  }
+  .stat {
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--sp-2);
+  }
+  .stat > span {
+    max-width: none;
+  }
+  .tracks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .track {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-3);
+    padding: var(--sp-4);
+  }
+  .stops {
+    grid-template-columns: auto minmax(var(--sp-2), 1fr) auto minmax(var(--sp-2), 1fr) auto;
+  }
+  .stop {
+    min-height: var(--control-height-sm);
+    gap: var(--sp-1);
+    padding-inline: var(--sp-2);
+    font-size: var(--t-micro);
+    line-height: var(--line-micro);
+  }
+  .line {
+    margin-inline: var(--sp-1);
+  }
+  .reply {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-4);
+  }
+  .ask {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--sp-5);
+  }
+  .ask > b {
+    font-size: var(--t-page-title);
+    line-height: var(--line-title);
+  }
+  .caption {
+    display: none;
+  }
+}

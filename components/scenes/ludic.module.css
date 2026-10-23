@@ -142,7 +142,7 @@
   /* Three text colours per scene at most (ink, mute and the semantic one): the time stays mute */
   color: var(--s-mute);
 }
-/* The question and the typing dots share one slot; the dots are visible only while Marina types */
+/* The question and the typing dots share one slot; the dots are visible only while the contact types */
 .outSlot {
   position: relative;
   display: flex;
@@ -178,10 +178,13 @@
   background: var(--s-win);
   box-shadow: var(--s-elev-2);
 }
+/* v3 (F1 review): the record on the conversation ("Contato 4821") never breaks; when the head is too narrow for the
+   record and the pill side by side, the pill goes under them (it broke the key in two lines at 390) */
 .threadHead {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.5rem 0.625rem;
   padding: 0.75rem 0.875rem;
   border-bottom: 1px solid var(--s-hair);
 }
@@ -196,9 +199,11 @@
 }
 .who {
   display: grid;
-  flex: 1;
-  min-width: 0;
+  flex: 1 0 auto;
   line-height: 1.2;
+}
+.who .key {
+  white-space: nowrap;
 }
 .who > span {
   font-size: var(--s-t-meta);
@@ -312,25 +317,10 @@
   background: var(--s-info-dot);
   opacity: 0.7;
 }
+/* The composer: the lib's InputGroup (LudicChannels.tsx), placed at the foot of the conversation; the lib paints it */
 .reply {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 0.75rem 0.75rem !important;
-  padding: 0.5rem 0.5rem 0.5rem 0.875rem !important;
-  border: 1px solid var(--s-edge);
-  border-radius: var(--r-dot);
-  font-size: var(--s-t-label);
-  color: var(--s-mute);
-}
-.reply i {
-  display: grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 50%;
-  background: var(--s-action);
-  color: var(--s-action-fg);
+  /* 10 px at the foot, so the window keeps at most 24 px under the composer (F2 review, F2-03) */
+  margin: 0 0.75rem 0.625rem;
 }
 
 /* ESTREITO: one column; the phone steps aside so the conversation keeps the frame */
@@ -340,16 +330,5 @@
   }
   .phone {
     display: none;
-  }
-}
-/* v2.1: a phone-wide card (under 20 rem) puts the pill of the thread under the name, so it never leaves the thread */
-@container scn (max-width: 20rem) {
-  .threadHead {
-    flex-wrap: wrap;
-  }
-}
-@container scn (max-height: 27rem) {
-  .items {
-    gap: 0.5rem;
   }
 }

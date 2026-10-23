@@ -1,5 +1,5 @@
 // AVISO DE CONFIRMAÇÃO
-// The notification that lands on Marina's phone, over the top of the chat: a success icon, the confirmation (the key
+// The notification that lands on the contact's phone, over the top of the chat: a success icon, the confirmation (the key
 // element of the closing scene, with no check repeated in the text) and who sent it. Server markup; the action comes
 // from the script.
 import type { Act } from "@/lib/scenes/types";

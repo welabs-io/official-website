@@ -1,23 +1,26 @@
-// HISTÓRIA DAS CENAS: MARINA E O PEDIDO 1234
+// HISTÓRIA DAS CENAS: O PEDIDO 1234
 // Every string the native scenes of the home draw lives here, typed, so no component carries copy. It is the story of a
-// delivery change asked by Marina, drawn as product screens; the home shows three outcomes of it (lib/scenes/script.ts).
-// Interface text, not page copy: it still obeys lib/content/rules.ts (the scene tests run the same word lists over it).
-// Besides the sentences of the plot, it holds the context a real screen shows around them (times, the people of the
-// team), so each frame reads as a product and not as a slide.
+// delivery change asked on the order 1234, drawn as product screens; the home shows three outcomes of it
+// (lib/scenes/script.ts). Interface text, not page copy: it still obeys lib/content/rules.ts (the scene tests run the
+// same word lists over it). Besides the sentences of the plot, it holds the context a real screen shows around them
+// (times, the teams), so each frame reads as a product and not as a slide.
+// v3 (F1): no fictitious person. Whoever asks is a record of the store (`who`, a contact id), never a name, so every
+// screen shows the effect on a record (plano.md, section 1.5).
 
 export const STORY = {
-  person: "Marina",
-  // The contact Marina talks to on her phone (the business side of the WhatsApp chat)
+  // The record of whoever asks: the contact id the screens show in place of a name
+  who: "Contato 4821",
+  // The business side of the chat on the contact's phone
   contact: "Central de pedidos",
   // v2.2 (audit, section 5): the category of the channel, not its brand; one contact, never "1 pessoa"
   channels: { voice: "Voz", chat: "Mensagem" },
   call: "Ligação de 0:42",
   ask: "Dá para entregar sábado?",
-  // The history of the chat before Marina called: what the business had told her
+  // The history of the chat before the call: what the business had said about the order
   before: "Seu pedido 1234 está em separação.",
   confirm: "Confirmado: sábado",
   confirmMeta: "Central de pedidos, agora",
-  // The message the notification opens into, in the chat under Marina's question
+  // The message the notification opens into, in the chat under the question
   received: "Chega sábado, até 12h.",
   thread: "2 canais, 1 contato",
   order: "Pedido 1234",
@@ -27,7 +30,9 @@ export const STORY = {
     ask: "10:07",
     confirm: "10:16",
   },
-  reply: "Responder Marina",
+  // The composer of the conversation: a placeholder, with no name in it, and the name of its send button
+  reply: "Escrever resposta",
+  send: "Enviar",
   // Column order of the house: the right column holds Pessoas, Pedidos and Entregas
   rooms: [
     "Atendimento",

@@ -46,11 +46,11 @@ export function parseEase(name) {
 }
 
 // TEMA CLARO DAS ABERTURAS
-// The dark colours of the round mapped onto the light surfaces of the site (ERP front tokens): white cards on a white
-// page, sand edges, ink text; the amber stays the amber. The ring of each sign is read from the official light logo,
-// so it lands in ink.
+// The dark colours of the round mapped onto the light surfaces of the site (ERP front tokens): white cards on the page,
+// sand edges, ink text; the amber stays the amber. The ring of each sign is read from the official light logo, so it
+// lands in ink. v3 (F2): the page is the cream floor of the site (shell.module.css --page), the cards stay white.
 export const LIGHT = {
-  page: "#ffffff",
+  page: "#faf5ea",
   card: "#ffffff",
   panel: "#faf5ea",
   panel2: "#f3ecdd",

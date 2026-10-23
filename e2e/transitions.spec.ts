@@ -184,7 +184,9 @@ test(`the selector of a product plays the brand flash of the next one, ${RUNS} o
   }
 });
 
-test(`the browser's back from a product returns to the card with a move, ${RUNS} of ${RUNS}`, async ({
+// v3 (operator, 2026-10-21): the product is a page of its own, so the way back no longer shrinks the product into its
+// card; it crosses the plain sheet (descent-run.ts, `cross`) and the home comes back where the visitor left it
+test(`the browser's back from a product crosses the sheet and returns to the card, ${RUNS} of ${RUNS}`, async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -209,7 +211,7 @@ test(`the browser's back from a product returns to the card with a move, ${RUNS}
     );
     await page.waitForURL("**/products/magneto");
     await page.waitForFunction(() => !document.querySelector("[data-intro]"));
-    // The way back: the layers of the reverse move are over the page for many frames, moving
+    // The way back: the sheet is over the page for many frames, fading in and out (never a cut)
     const frames = page.evaluate(
       () =>
         new Promise<string[]>((done) => {
@@ -217,19 +219,18 @@ test(`the browser's back from a product returns to the card with a move, ${RUNS}
           const t0 = performance.now();
           const tick = () => {
             const layer = [...document.body.children].find(
-              (el) =>
-                el.tagName === "DIV" && (el as HTMLElement).style.transform,
+              (el) => el.tagName === "DIV" && (el as HTMLElement).style.opacity,
             ) as HTMLElement | undefined;
-            out.push(layer ? layer.style.transform : "");
-            if (performance.now() - t0 < 1600) requestAnimationFrame(tick);
+            out.push(layer ? layer.style.opacity : "");
+            if (performance.now() - t0 < 1200) requestAnimationFrame(tick);
             else done(out);
           };
           requestAnimationFrame(tick);
         }),
     );
     await page.goBack();
-    const moved = (await frames).filter(Boolean);
-    expect(new Set(moved).size, "frames of the way back").toBeGreaterThan(20);
+    const faded = (await frames).filter(Boolean);
+    expect(new Set(faded).size, "frames of the way back").toBeGreaterThan(10);
     await page.waitForURL((u) => u.pathname === "/");
     await page.waitForTimeout(300);
     expect(Math.abs((await page.evaluate(() => scrollY)) - homeY)).toBeLessThan(

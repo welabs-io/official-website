@@ -56,7 +56,7 @@ export const SCRIPT: readonly SceneScript[] = [
   {
     id: "s1",
     products: ["tuner"],
-    // The call rises and its waveform grows; Marina types, the bubble springs on her phone and flies into the inbox;
+    // The call rises and its waveform grows; the contact types, the bubble springs on the phone and flies into the inbox;
     // the two channels join, the pill pops and the Tuner logo swells
     actions: [
       { id: "call", at: 0.45, dur: 0.22 },

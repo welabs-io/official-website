@@ -4,16 +4,13 @@
 // v13-proposta/analise.md): no funnel, coupon or cashback in the Relloo, no process written as a sentence in the Magneto,
 // the Knowly limited to what the knowledge base already does, and the Domus as the whole management of the company, with
 // tax and banks only as an attractive detail.
-import type { CapabilitySceneId } from "../scenes/capabilities";
+// v3 (2026-10-23): the carousel of the kit replaces the capability scenes of the opening and the interaction of each
+// product, so their names (`scenes`) and the heading of the interaction (`play`) left; the carousel carries its own text.
 import type { ProductSlug } from "../products";
 
 export type ProductPage = {
   // Sentence under the logo of the opening
   short: string;
-  // Capability scenes of the opening, with the short name under each (the Domus opens with its areas instead)
-  scenes: readonly { id: CapabilitySceneId; name: string }[];
-  // The section of the interaction of the product
-  play: { title: string; lead: string };
   // Title of the stage with this product lit among the others, and the effect it shows there
   // v2.1: the effect each product shows on the stage is the one of the home (HOME_INTRO.stamps), so the stage reads the
   // same everywhere; only the title is per page
@@ -27,12 +24,6 @@ export type ProductPage = {
 export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
   domus: {
     short: "A gestão da empresa inteira, moldada à sua operação.",
-    scenes: [],
-    play: {
-      // v2.2: the play is the form builder (audit, sections 4 and 5)
-      title: "Campos novos viram colunas na hora",
-      lead: "Arraste um tipo de campo para o formulário.",
-    },
     center: {
       // v2.2 (audit, section 5): what the stage shows, not a title repeated on five pages
       title: "O Relloo no registro do Domus",
@@ -55,14 +46,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
   relloo: {
     // v2.2 (audit, section 5): the contact and its history, never "a pessoa"; categories before brands
     short: "Conversas de todos os canais, com o histórico de cada contato.",
-    scenes: [
-      { id: "relloo-person", name: "Histórico único do contato" },
-      { id: "relloo-agent", name: "Agente de IA com passagem para a equipe" },
-    ],
-    play: {
-      title: "Todos os canais na mesma conversa",
-      lead: "Dispare os canais na ordem que quiser.",
-    },
     center: {
       title: "As conversas no registro do Domus",
     },
@@ -82,11 +65,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
   },
   magneto: {
     short: "Fluxos com aprovação, desenhados em blocos.",
-    scenes: [{ id: "magneto-canvas", name: "Fluxo em blocos" }],
-    play: {
-      title: "Aprovação no meio do fluxo",
-      lead: "Escolha o valor e veja o caminho do pedido.",
-    },
     center: {
       title: "As aprovações no registro do Domus",
     },
@@ -107,12 +85,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
     // v2.2 (audit, section 5): scale and category first, the brands the code sustains in brackets
     short:
       "Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).",
-    scenes: [{ id: "tuner-call", name: "Ligação para a equipe certa" }],
-    play: {
-      // v2.1: the title says the effect (the operator found "Ligue e veja para onde vai" did not explain it)
-      title: "Menu de opções e distribuição de ligações",
-      lead: "Aperte uma opção do menu.",
-    },
     center: {
       title: "As ligações no registro do Domus",
     },
@@ -133,15 +105,6 @@ export const PRODUCT_PAGE: Record<ProductSlug, ProductPage> = {
   knowly: {
     // v2.2 (audit, section 5): the access of a profile, never "cada pessoa"
     short: "Respostas com a fonte, dentro do acesso de cada perfil.",
-    scenes: [
-      { id: "knowly-answer", name: "Resposta com a fonte" },
-      { id: "knowly-sources", name: "Fontes num lugar só" },
-      { id: "knowly-access", name: "Acesso por perfil" },
-    ],
-    play: {
-      title: "Respostas com fonte e acesso",
-      lead: "Troque o perfil e pergunte de novo.",
-    },
     center: {
       title: "As respostas no registro do Domus",
     },
@@ -166,5 +129,4 @@ export const PAGE_HEADINGS = {
   areasLead: "E as que só a sua operação tem.",
   details: "Detalhes que já vêm junto",
   contact: (name: string) => `Quer ver o ${name} com a sua operação?`,
-  scenes: (name: string) => `Telas do ${name}`,
 } as const;

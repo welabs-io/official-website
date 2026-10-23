@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars -- ported from the accepted round as is: its unused leftovers stay, so the file reads against the round line by line */
 // COREOGRAFIA DA ABERTURA CONCEITUAL DO TUNER, VERSÃO 1.0.0 (sinais de cinco canais fora de sintonia que entram em fase nas ondas do "r")
 // Same arc as the approved openings (magneto-intro 1.3.0, domus-intro 1.0.1, relloo-intro 1.0.0), with the Tuner idea: while the camera
-// is close, five channel chips (WhatsApp, Voz, Chat do site, E-mail, Discord) arrive one by one; each one sends a message bubble along
+// is close, five channel chips (Mensagem, Voz, Chat do site, E-mail, Comunidade) arrive one by one; each one sends a message bubble along
 // its own wave (own wavelength, amplitude and phase, "out of tune") to a common line, which connects to a hub. The camera pulls back
 // and reveals the dial: the two wave arcs of the Tuner sign, large, with a graduated track between them and a needle on the hub. The
 // needle swings and settles on zero while the five waves slide into the same wavelength and phase. Clack: short amber flash, the arcs
@@ -17,6 +17,9 @@
 // Port of the accepted choreography 1.0.0 for the site (components/intro/intro-run.ts): light palette (kit.js), eases
 // without GSAP, the logo text and the endorsed box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
 // of the light endorsed logo, no `build`. Motion, geometry and times are those of the round.
+// v3 (F1): the chips name the category of each channel, never its brand (the copy rules: a brand only inside brackets,
+// as an example of its category, as "Comunidades (Discord)" on the product page); the brand-like glyph of the community
+// chip is a neutral "#" channel mark. Motion, geometry and times are unchanged.
 import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', PANEL2 = LIGHT.card, EDGE = LIGHT.edge, SLATE = LIGHT.slate, DIALBG = LIGHT.dial, INK = LIGHT.ink;
@@ -80,15 +83,15 @@ import { parseEase, LIGHT } from './kit.js';
 
   // CANAIS E MENSAGENS (visual dos filmes do Tuner: chip de canal, bolha de mensagem; rótulos curtos)
   var ICON = {
-    whatsapp: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>',
+    chat: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>',
     voice: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
     site: '<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M8 21h8"/>',
     mail: '<rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/>',
-    discord: '<path d="M7 6.5c3.2-1.6 6.8-1.6 10 0l2.2 9.5c-2 1.6-4.2 2.3-7.2 2.3S6.8 17.600 4.800 16z"/><circle cx="9.500" cy="12" r="1.300"/><circle cx="14.500" cy="12" r="1.300"/>'
+    community: '<path d="M9.5 4L7.5 20M16.5 4l-2 16M4.5 9h16M3.5 15h16"/>'
   };
   var ROWS = [
-    {label: 'WhatsApp', icon: 'whatsapp'}, {label: 'Voz', icon: 'voice'}, {label: 'Chat do site', icon: 'site'},
-    {label: 'E-mail', icon: 'mail'}, {label: 'Discord', icon: 'discord'}
+    {label: 'Mensagem', icon: 'chat'}, {label: 'Voz', icon: 'voice'}, {label: 'Chat do site', icon: 'site'},
+    {label: 'E-mail', icon: 'mail'}, {label: 'Comunidade', icon: 'community'}
   ];
 
   var uid = 0;

@@ -7,7 +7,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PageFrame } from "@/components/onepage/PageFrame";
 import { HOME_INTRO, NAV, PRODUCT_PAGE } from "@/lib/content";
-import { copyViolation } from "@/lib/content/rules";
+import {
+  KNOWN_PERSONS,
+  KNOWN_STACK,
+  copyViolation,
+  personViolation,
+  stackViolation,
+  vendorViolation,
+} from "@/lib/content/rules";
 import { PRODUCTS } from "@/lib/products";
 import { metadata as homeMetadata } from "@/app/(site)/page";
 import { generateMetadata } from "@/app/(site)/products/[slug]/page";
@@ -43,23 +50,18 @@ const hiddenText = (html: string) =>
     .join(" ");
 
 // Text of the page copy: the native scenes draw product screens, whose words are interface (checked by the copy rules,
-// but out of the word budget). The stage of a product opening goes, from its tiles to its data; so does every still
-// scene (MiniScene), from its `data-mini` holder to the marker `data-mini-end` right after it.
-const copyOnly = (html: string) => {
-  let withoutStage = html;
-  for (;;) {
-    const at = withoutStage.indexOf('data-scenes="');
-    const end = withoutStage.indexOf('data-scene-data="', at);
-    if (at < 0 || end < 0) break;
-    withoutStage =
-      withoutStage.slice(0, withoutStage.lastIndexOf("<div", at)) +
-      withoutStage.slice(end);
-  }
-  return withoutStage.replace(
-    /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
-    "",
-  );
-};
+// but out of the word budget). Every still scene (MiniScene) goes, from its `data-mini` holder to the marker
+// `data-mini-end` right after it; v3: so does every kit scene (SceneSlot), from `data-kit` to `data-kit-end`.
+const copyOnly = (html: string) =>
+  html
+    .replace(
+      /<div[^>]*data-mini=[\s\S]*?<span[^>]*data-mini-end[^>]*><\/span>/g,
+      "",
+    )
+    .replace(
+      /<div[^>]*data-kit=[\s\S]*?<span[^>]*data-kit-end[^>]*><\/span>/g,
+      "",
+    );
 const wordCount = (html: string) =>
   visibleText(copyOnly(html)).split(" ").length;
 
@@ -79,9 +81,33 @@ describe("little text, no slogan", () => {
   it.each(pages)(
     "$slug carries no slogan, banned word or maturity marker in what it shows or announces",
     ({ html }) => {
-      expect(copyViolation(`${visibleText(html)} ${hiddenText(html)}`)).toBeNull();
+      expect(
+        copyViolation(`${visibleText(html)} ${hiddenText(html)}`),
+      ).toBeNull();
     },
   );
+
+  // v3: no person by name and no internal stack, besides the known failures of copy-rules.json (each with its phase)
+  it.each(pages)(
+    "$slug names no person and shows no internal stack",
+    ({ html }) => {
+      const text = `${visibleText(html)} ${hiddenText(html)}`;
+      expect(personViolation(text)).toBeNull();
+      expect(stackViolation(text)).toBeNull();
+      // v3 (F1 review): a third-party brand only inside brackets, as an example of its category
+      expect(vendorViolation(text)).toBeNull();
+    },
+  );
+
+  it("every tolerated known failure is still on the site (delete it from copy-rules.json `known` when its phase lands)", () => {
+    const all = pages
+      .map(({ html }) => `${visibleText(html)} ${hiddenText(html)}`)
+      .join(" ");
+    for (const k of KNOWN_PERSONS)
+      expect(all, `${k.value} (${k.phase})`).toContain(k.value);
+    for (const k of KNOWN_STACK)
+      expect(all, `${k.value} (${k.phase})`).toContain(k.value);
+  });
 
   it("the home and every product page stay inside the word budget of the v2", () => {
     // v2 (2026-10-20): the home went from 700-1000 words to about 250, a product page from 400-700 to about 200; the
@@ -135,7 +161,14 @@ describe("the home", () => {
     for (let i = 1; i < order.length; i++)
       expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
     // v2.1: the film of the fitting pieces (#chain) left, a drawing with no function
-    for (const gone of ["how", "audience", "integrations", "faq", "connectors", "chain"])
+    for (const gone of [
+      "how",
+      "audience",
+      "integrations",
+      "faq",
+      "connectors",
+      "chain",
+    ])
       expect(at(gone), gone).toBe(-1);
   });
 
@@ -153,18 +186,25 @@ describe("the home", () => {
     for (const p of PRODUCTS)
       expect(intro).toContain(`href="/products/${p.slug}"`);
     // v2.1: four ties to the record (each carries its packet) and the record of the Domus with one line per product
-    expect(intro.match(/<span[^>]*data-of="(relloo|magneto|tuner|knowly)"[^>]*aria-hidden="true"/g)).toHaveLength(4);
+    expect(
+      intro.match(
+        /<span[^>]*data-of="(relloo|magneto|tuner|knowly)"[^>]*aria-hidden="true"/g,
+      ),
+    ).toHaveLength(4);
     // ...and every piece that lights in the cycle carries its window: 4 ties and 5 lines of the record
-    expect(intro.match(/data-of="(domus|relloo|magneto|tuner|knowly)" style/g)).toHaveLength(9);
+    expect(
+      intro.match(/data-of="(domus|relloo|magneto|tuner|knowly)" style/g),
+    ).toHaveLength(9);
     expect(visibleText(intro)).toContain(HOME_INTRO.record.title);
   });
 
-  it("the message is dragged or sent with a visible button, and walks through the five products", () => {
+  // v3 (2026-10-23): the chain is the kit scene home-message, mounted by SceneSlot (it plays by itself on screen)
+  it("the message is the kit scene that crosses the five products and lands in the Domus", () => {
     const msg = home.slice(at("message"), at("domus"));
-    expect(msg).toMatch(/<input type="checkbox" id="msg-go"/);
-    expect(msg).toMatch(/<label[^>]*for="msg-go"/);
-    expect(msg).toContain("data-drag");
-    expect(msg.match(/<li[^>]*style="--i:\d"/g)).toHaveLength(5);
+    expect(msg).toContain('data-kit="home-message"');
+    expect(msg).toContain('data-scene="home-message"');
+    expect(msg).not.toContain('id="msg-go"');
+    for (const p of PRODUCTS) expect(visibleText(msg)).toContain(p.name);
   });
 
   it("the Domus is the whole company, with a room the visitor makes and the other products on its ground", () => {
@@ -194,17 +234,32 @@ describe("the home", () => {
     expect(part.match(/data-mini="s\d"/g)).toHaveLength(3);
   });
 
-  it("the contact asks open questions and has only the button: no form, no address that was not given", () => {
+  // v3 (F1): every button of the site lands on this band, so it never links to itself (the loop of plano.md 1.3); its
+  // way out is the products band until the operator decides where a request goes
+  it("the contact asks open questions as an agenda and never links to itself: no form, no address that was not given", () => {
     const contact = home.slice(at("contact"), at("platforms"));
-    expect(contact).not.toMatch(/<form|<input|mailto:|wa\.me/);
+    expect(contact).not.toMatch(/<form|<input|<button|mailto:|wa\.me/);
+    expect(contact).toMatch(/<ol[^>]*aria-label="Perguntas para a conversa"/);
     expect(contact.match(/<li>/g)!.length).toBeGreaterThanOrEqual(3);
-    expect(contact).toContain('href="/#contact"');
+    expect(contact).not.toContain("#contact");
+    expect(contact).toContain('href="/#products"');
+    expect(at("products")).toBeGreaterThanOrEqual(0);
   });
 
-  it("where we run names every platform under its mark", () => {
-    const strip = home.slice(at("platforms"));
-    for (const name of ["AWS", "DigitalOcean", "HostDime", "Google Cloud"])
-      expect(visibleText(strip)).toContain(name);
+  // v3 (F1): the four clouds the operator asked for, and nothing else (no internal stack)
+  it("where we run names exactly the four clouds, each beside its mark", () => {
+    const strip = home.slice(
+      at("platforms"),
+      home.indexOf("</ul>", at("platforms")),
+    );
+    const names = [...strip.matchAll(/<li>[\s\S]*?<\/li>/g)].map((m) =>
+      visibleText(m[0]),
+    );
+    expect(names).toEqual(["AWS", "Google Cloud", "DigitalOcean", "HostDime"]);
+    // Each mark is a mask over the token of the names (F1 review), one file per cloud
+    expect(
+      strip.match(/--src:url\(&quot;\/platforms\/[^&]+&quot;\)/g),
+    ).toHaveLength(4);
   });
 
   it("every product shows its standalone logo; the seal is only the identity of a product page", () => {
@@ -219,12 +274,11 @@ describe("the home", () => {
 
 describe("the product pages", () => {
   it.each(productPages)(
-    "$slug has the sections of the v2, in order",
+    "$slug has the sections of the v3, in order",
     ({ slug, html }) => {
       const order = [
         "product",
         ...(slug === "domus" ? ["areas"] : []),
-        "play",
         "center",
         "details",
         "contact",
@@ -233,44 +287,46 @@ describe("the product pages", () => {
       for (const id of order) expect(at(id), id).toBeGreaterThanOrEqual(0);
       for (let i = 1; i < order.length; i++)
         expect(at(order[i - 1]), order[i]).toBeLessThan(at(order[i]));
+      // v3: the interaction of the product left; its carousel replaces it
+      expect(at("play")).toBe(-1);
+      expect(html).not.toContain("data-play=");
     },
   );
 
   it.each(productPages)(
-    "$slug opens with the logo with the seal as its h1, its sentence and the button",
+    "$slug opens with the logo with the seal as its h1, its sentence, the button and its carousel",
     ({ slug, html }) => {
       const opening = html.slice(
         html.indexOf('id="product"'),
-        html.indexOf('id="play"') > 0 && slug !== "domus"
-          ? html.indexOf('id="play"')
-          : html.indexOf('id="areas"'),
+        html.indexOf(slug === "domus" ? 'id="areas"' : 'id="center"'),
       );
       expect(opening).toMatch(
         new RegExp(`<h1[^>]*><img[^>]*${slug}-light-endorsed\\.svg`),
       );
       expect(visibleText(opening)).toContain(PRODUCT_PAGE[slug].short);
       expect(opening).toContain('href="/#contact"');
-      // The Domus opens with its areas, every other product with the stage of its native scenes
-      if (slug === "domus") expect(opening).not.toContain("data-scenes");
-      else
-        expect(opening.match(/data-tile="/g)).toHaveLength(
-          PRODUCT_PAGE[slug].scenes.length,
-        );
+      // v3: one kit scene, the carousel of the product, and none of the scenes it replaces
+      expect(opening.match(/data-kit="[a-z-]+"/g)).toEqual([
+        `data-kit="${slug}-carousel"`,
+      ]);
+      expect(opening).toContain(`data-scene="${slug}-carousel"`);
+      expect(opening).not.toMatch(/data-scenes=|data-tile=|data-mini=/);
     },
   );
 
-  it.each(productPages)(
-    "$slug has one interaction, a native control with a visible label",
-    ({ slug, html }) => {
-      const play = html.slice(
-        html.indexOf('id="play"'),
-        html.indexOf('id="center"'),
-      );
-      expect(play).toContain(`data-play="${slug}"`);
-      expect(play).toMatch(/<input type="(checkbox|radio)"/);
-      expect(play).toMatch(/<label[^>]*for="/);
-    },
-  );
+  // v3 (operator, 2026-10-21): a product is a page of its own, with no part of the home above or under it
+  it.each(productPages)("$slug renders no section of the home", ({ html }) => {
+    for (const id of [
+      "intro",
+      "message",
+      "domus",
+      "products",
+      "operation",
+      "platforms",
+    ])
+      expect(html, id).not.toContain(`<section id="${id}"`);
+    expect(html).not.toContain("data-descent-tail");
+  });
 
   it.each(productPages)(
     "$slug lights itself among the others (the Domus lights a product working on it) and does not link to itself",
@@ -296,7 +352,8 @@ describe("the product pages", () => {
     "$slug opens with the selector of the five products and ends on its contact",
     ({ slug, html }) => {
       expect(html).not.toContain("data-door");
-      expect(html).not.toContain('id="next"');
+      // An element id, not the `data-id` of a piece inside a kit scene
+      expect(html).not.toMatch(/\sid="next"/);
       const at = html.indexOf(`aria-label="${NAV.switch}"`);
       expect(at).toBeGreaterThan(html.indexOf('id="product"'));
       const nav = html.slice(at, html.indexOf("</nav>", at));
@@ -309,6 +366,31 @@ describe("the product pages", () => {
       expect(sections.at(-1)).toBe('<section id="contact"');
     },
   );
+
+  // v3 (F1): the button of a product's contact leads to the contact of the home (another band, with its own way out)
+  it.each(productPages)(
+    "$slug ends on its questions and the button to the contact of the home",
+    ({ html }) => {
+      const contact = html.slice(html.indexOf('<section id="contact"'));
+      expect(contact).toMatch(/<ol[^>]*aria-label="Perguntas para a conversa"/);
+      expect(contact).toContain('href="/#contact"');
+      expect(contact).not.toMatch(/href="#contact"|<form|<button/);
+    },
+  );
+
+  // v3 (F2 review, P-04): the metadata names no part of the stack either (the "RAG" of the Knowly keywords)
+  it("keep the stack out of the metadata", async () => {
+    for (const { slug } of PRODUCTS) {
+      const meta = await generateMetadata({
+        params: Promise.resolve({ slug }),
+      });
+      const text = [
+        meta.description,
+        ...((meta.keywords as string[]) ?? []),
+      ].join(" ");
+      expect(stackViolation(text, []), slug).toBeNull();
+    }
+  });
 
   it("follow the 'Domus by Welabs' pattern in the title", async () => {
     for (const { slug, name } of PRODUCTS) {
@@ -337,9 +419,14 @@ describe("navigation on every page", () => {
       expect(header).not.toContain('href="/#how"');
     },
   );
-  it.each(pages)("$slug marks every band live, so motion pauses off screen", ({ html }) => {
-    const bands = html.match(/<section[^>]*>/g) ?? [];
-    expect(bands.length).toBeGreaterThan(4);
-    for (const band of bands) expect(band).toContain("data-live");
-  });
+  it.each(pages)(
+    "$slug marks every band live, so motion pauses off screen",
+    ({ html }) => {
+      // The bands of the page carry an id (Section.tsx); a `<section>` inside a kit scene is a pane of its screen, and
+      // the kit pauses it on its own (data-on of Scene.tsx)
+      const bands = html.match(/<section id="[^"]*"[^>]*>/g) ?? [];
+      expect(bands.length).toBeGreaterThanOrEqual(4);
+      for (const band of bands) expect(band).toContain("data-live");
+    },
+  );
 });

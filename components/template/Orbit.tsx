@@ -1,6 +1,6 @@
 // PALCO DOS CINCO PRODUTOS
-// The Domus at the centre as the record the other products write on (Pedido 1234, of Marina), and the four other products
-// around it, joined by the ties the code really has (Relloo, Magneto, Tuner and Knowly to the Domus; Tuner to Relloo).
+// The Domus at the centre as the record the other products write on (Pedido 1234, of the contact 4821), and the four
+// other products around it, joined by the ties the code really has (Relloo, Magneto, Tuner and Knowly to the Domus; Tuner to Relloo).
 // Pure server markup and CSS (hub.module.css): no client code.
 // v2.1 (2026-10-20): every drawing has a function. The lit product shows what it did, its effect travels along its tie as
 // an amber packet and lights its line in the record of the Domus; the operator's prints showed ties crossing the central
@@ -14,13 +14,22 @@
 // stays on its first frame (the Domus lit).
 import Link from "next/link";
 import { HOME_INTRO } from "@/lib/content";
-import { productAlt, productLogo, type ProductSlug } from "@/lib/products";
+import {
+  LOGO_INK_X,
+  productAlt,
+  productLogo,
+  type ProductSlug,
+} from "@/lib/products";
 import styles from "./hub.module.css";
+
+// v3 (F2 review, F2-01): where the ink of a logo file starts, so the sheet pulls it back onto the edge of its text
+const inkX = (slug: ProductSlug) =>
+  ({ "--ink-x": LOGO_INK_X[slug] }) as React.CSSProperties;
 
 type Side = Exclude<ProductSlug, "domus">;
 // The four products around the record: the side of the record each one writes on
 const AROUND: readonly Side[] = ["relloo", "magneto", "tuner", "knowly"];
-// Order of the lines of the record: the path of the message of Marina
+// Order of the lines of the record: the path of the message of the order 1234
 const LINES: readonly Side[] = ["tuner", "relloo", "knowly", "magneto"];
 
 // Order of the cycle: the product of each word of the title
@@ -138,6 +147,7 @@ export function Orbit({
               alt={productAlt(slug, "row")}
               width={1005}
               height={550}
+              style={inkX(slug)}
             />
             <span className={styles.event}>{HOME_INTRO.stamps[slug]}</span>
           </>,
@@ -154,6 +164,7 @@ export function Orbit({
         <>
           <img
             className={styles.coreLogo}
+            style={inkX("domus")}
             src={productLogo("domus", "light", "row")}
             alt={productAlt("domus", self ? "row" : "first-mention")}
             width={1005}
@@ -176,6 +187,7 @@ export function Orbit({
                   alt=""
                   width={1005}
                   height={550}
+                  style={inkX(slug)}
                 />
                 {record.lines[slug]}
               </span>

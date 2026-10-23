@@ -1,0 +1,482 @@
+/* TEMA DA BIBLIOTECA @imagineapps-team/react */
+/* The consumer setup of the lib (its README and the ERP front, front/src/styles.css): the theme entry (Tailwind 4,
+   tokens, default brand, base) and the `welabs` preset, then the class sources of the compiled components. The lib
+   paints only where data-theme="welabs" is set (the Domus block, components/template/Home.tsx); the rest of the page
+   keeps its own sheets, which are unlayered and so win over the lib's layered base. */
+@import "@imagineapps-team/react/theme/styles.css";
+@import "@imagineapps-team/react/theme/welabs";
+@source "../node_modules/@imagineapps-team/react/dist/**/*.js";
+
+/* The site's type scale starts at 14 px (components/template/polish.test.tsx): the lib's smallest step follows it;
+   the utilities' default transition takes the site's --ease-out and --dur-1 */
+@theme {
+  --text-xs: 0.875rem;
+  --default-transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --default-transition-duration: 0.16s;
+}
+
+/* MOVIMENTO E FONTE DA LIB NA ESCALA DO SITE */
+/* The lib's base gives every control a default transition (--ease-out-quad, --duration-fast) and its keyframes read
+   --ease-out-soft and --ease-in-out; the site has one motion scale (shell.module.css --ease-out, --ease-in-out, --dur-1,
+   e2e/tokens.spec.ts), so the lib's curves take the site's values here. Its base also sets the heading face from
+   --font-heading: both faces are the site's Inter. */
+:root {
+  --ease-out-quad: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 0.16s;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Inter", system-ui, sans-serif;
+}
+
+/* TOKENS DO SITE */
+/* The ONE source of every token the site and the scene kit read (operator, 2026-10-22: centralize so that one change
+   here reflects on the whole site). Families, each changed only here:
+   - colour aliases of the page (graphite, white, sand, amber scale, action, ink, status) and the planes of depth;
+   - type: the seven size steps and their --text-* aliases, line heights, weights, tracking;
+   - space: the 4 px grid (--sp-1 to --sp-9);
+   - shape: radii (--r-*), line widths (--rule, --bar-active), the edges drawn as inset rings (--edge-*);
+   - shadow: the planes (--shadow-*);
+   - motion: easings (--ease-*, with the lib's own curves above) and durations (--dur-*);
+   - icon and mark sizes of the drawn screens (--icon-*, --mark-*).
+   Component sheets only read these names (var(--…)); components/scene-kit/tokens.test.ts fails on a raw colour, size,
+   weight, line height, radius, shadow, space or duration in a kit sheet. The theme roles (--background, --card,
+   --primary…) are the welabs preset remapped to Welabs UI v3 in the PAPÉIS DE COR block below. */
+:root {
+  /* Colour aliases of the page, each one a role of the PAPÉIS DE COR block (Welabs UI v3, 2026-10-22), so a theme
+     (light or dark) is decided in one place: graphite of the footer band, white, chrome (chips, wells) and the line */
+  --g: #10141c;
+  --g2: #161b25;
+  --g3: #262d3a;
+  --c: var(--card);
+  --c2: var(--muted);
+  --cl: var(--border);
+  /* PLANOS DE PROFUNDIDADE */
+  /* Welabs UI v3: neutral canvas, white object. The floor is the canvas (--background); a card, a window, a menu or a
+     bubble is the white surface (--card) with no edge at rest; the line (--border) separates panels only, never the
+     rows of a list. Shadow in two places only: --shadow-pop (lg) on a window or popover, --shadow-raise (md) on what
+     lifts on hover. A band that stands apart, a chip or a well is the chrome (--muted). */
+  --page: var(--background);
+  --surface: var(--card);
+  --surface-band: var(--muted);
+  --surface-accent: var(--muted);
+  --halo: radial-gradient(60% 55% at 50% 0%, oklch(0.66 0.21 28 / 0.06), transparent 70%);
+  --a: var(--signal);
+  /* The amber scale: 100 the selected row (--signal-soft), 200 and 300 the halos and lit edges of the older plays */
+  --a-100: var(--signal-soft);
+  --a-200: #ffe2b1;
+  --a-300: #ffcc74;
+  /* The action button: the v3 primary (black with white text on light, inverted on dark) */
+  --action: var(--primary);
+  --action-fg: var(--primary-foreground);
+  --ink: var(--foreground);
+  --mute-d: #9da3ae;
+  --mute-l: var(--muted-foreground);
+  /* Structural lines (thread, rails, bus): the line between panels; v3 draws no rail inside a pane */
+  --thread-l: var(--border);
+
+  /* ESCALA TIPOGRÁFICA */
+  /* A closed scale of seven steps, at 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18, body 16, label 14 and
+     micro 12; the page starts at the label (14), the micro lives only inside a drawn screen. Each fluid step reaches its
+     ends exactly at 1440 and at 390 (its vw is the desktop size over 1440). The --text-* names are aliases of the steps
+     (components/template/polish.test.tsx). Weights 400 (text), 500 (lead and labels), 600 (titles); line heights 1.08
+     display, 1.25 headings, 1.4 lead, 1.5 body, and the fixed lines of a drawn screen (16 micro, 20 label, 24 lead);
+     tracking only from 24 px up, and the caps of a pane head. */
+  --t-display: clamp(40px, 5vw, 72px);
+  --t-h2: clamp(30px, 3.0556vw, 44px);
+  --t-h3: clamp(20px, 1.6667vw, 24px);
+  --t-lead: 18px;
+  --t-body: 16px;
+  --t-label: 14px;
+  --t-micro: 12px;
+  /* The interface steps of Welabs UI v3 inside a drawn screen: title 20/28, subtitle 16/24, body and label 14/20,
+     meta 12/16 (the label and micro steps above) */
+  --t-title: 20px;
+  --t-subtitle: 16px;
+  /* The H1 of a record, the Domus `text-page-title` (erpnext front welabs-theme.css: 22/28, 600) */
+  --t-page-title: 22px;
+  --line-title: 28px;
+  /* The figure of a carousel frame, the one set for every big number and closing question of a drawn screen
+     (brief-v3-carousel, 2026-10-22: big numbers 22 to 28 px, in bold): 28/32 at 700 */
+  --t-figure: 28px;
+  --line-figure: 32px;
+  --weight-figure: 700;
+  --text-hero: var(--t-display);
+  --text-display: var(--t-display);
+  --text-title: var(--t-h2);
+  --text-2xl: var(--t-h3);
+  --text-xl: var(--t-lead);
+  --text-lg: var(--t-lead);
+  --text-md: var(--t-body);
+  --text-sm: var(--t-label);
+  --text-xs: var(--t-label);
+  --lh-display: 1.08;
+  --lh-heading: 1.25;
+  --lh-lead: 1.4;
+  --lh-body: 1.5;
+  --line-micro: 16px;
+  --line-label: 20px;
+  --line-lead: 24px;
+  --weight-text: 400;
+  --weight-label: 500;
+  --weight-title: 600;
+  --ls-display: -0.02em;
+  --ls-heading: -0.01em;
+  --ls-caps: 0.04em;
+  --ls-caps-wide: 0.06em;
+  --measure: 66ch;
+
+  /* ESPAÇO */
+  /* A 4 px grid: 4, 8, 12, 16, 24, 32, 48, 64 and 80 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 80px;
+
+  /* FORMAS, LINHAS E BORDAS */
+  /* Welabs UI v3 radii: 4 (checkbox, the bubble's corner at its origin), 6 (chip inside a field, a calendar day), 8
+     (field, button, row, square mark), 12 (window, card, bubble) and full only for a badge, a round mark or a dot; a
+     button is never a pill, so the old round-button step (--r-pill) is the control radius. The legacy names keep their
+     role: --r-ctl a control, --r-card a card or bubble, --r-win a window. One hairline width (--rule), the dashed edge of
+     an empty slot (--rule-dashed); a ring drawn inside a box is an --edge-* (the line at rest, the control edge for a
+     control, the ink ring for the active one). --bar-active stays only for the older plays: v3 draws no leading bar. */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-ctl: 8px;
+  --r-card: 12px;
+  --r-win: 12px;
+  --r-pill: 8px;
+  --r-dot: 999px;
+  --rule: 1px;
+  --rule-dashed: 1.5px;
+  /* The carousels (brief-v3-carousel): the 2 px ring of the live piece and the dashed edge of the step still to come */
+  --rule-strong: 2px;
+  /* The solid ink trace of the kit's Connector and of a drawn track (brief-v3-carousel: 2 to 3.5 px, with its arrow) */
+  --rule-trace: 3px;
+  --bar-active: 3px;
+  --edge-ring: inset 0 0 0 var(--rule) var(--border);
+  --edge-control: inset 0 0 0 var(--rule) var(--input);
+  /* The 3:1 edge of a control drawn on the page outside the lib (sand 600, 4.30:1 on white; shell.module.css) */
+  --edge-drawn: #827968;
+  --edge-ring-active: inset 0 0 0 var(--rule) var(--primary);
+  /* The ring of the Domus logo (domus-light.svg: outer corner = inner corner + stroke): 12 px on the page, 10 px (6 px on
+     a phone) around the modules of a product window, with an inner corner of 18 px (12 px) */
+  --domus-ring: 12px;
+  --r-domus: 52px;
+  --domus-ring-scene: 10px;
+  --domus-ring-scene-sm: 6px;
+  --r-domus-inner: 18px;
+  --r-domus-inner-sm: 12px;
+  /* Control heights and radii are the lib's own (--control-height-* and --control-radius of its theme, 40 px and 14 px
+     at md): round 3 (2026-10-22) drops the site's 36/32 px and 8 px, e2e/lib-parity.spec.ts holds them to the lib */
+
+  /* SOMBRAS */
+  /* A card at rest has none; --shadow-raise is the v3 md (what lifts on hover), --shadow-pop the v3 lg (the window and
+     a popover). Both are the role shadows of the PAPÉIS DE COR block, so dark takes its own. */
+  --shadow-card: none;
+  --shadow-raise: var(--shadow-md);
+  --shadow-pop: var(--shadow-lg);
+
+  /* MOVIMENTO */
+  /* One easing and three durations for every hover, press, open and reveal (--ease-in-out is defined above, with the
+     lib's curves); --ease-spring is the one overshoot, for what is born */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --dur-1: 0.16s;
+  --dur-2: 0.28s;
+  --dur-3: 0.48s;
+
+  /* ÍCONES E MARCAS DAS TELAS DESENHADAS */
+  /* An icon of a drawn screen (lucide) and the round mark that holds it: xs for a log line, sm for a history entry, md
+     for a row or a node, lg for the subject of a pane; the row of a list starts at --row-min */
+  --icon-xs: 12px;
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 18px;
+  --mark-xs: 22px;
+  --mark-sm: 28px;
+  --mark-md: 32px;
+  --mark-lg: 40px;
+  /* The identity of a record: the Domus LogoThumb at md (48 px) with a 20 px icon (its size-5) */
+  --mark-xl: 48px;
+  --icon-xl: 20px;
+  --row-min: 52px;
+  /* The status dot of a window's chrome, and the widest a product window gets */
+  --dot: 8px;
+  --dot-sm: 6px;
+  --chrome-h: 44px;
+  /* Welabs UI v3 geometry of a drawn screen: the 2 px gap between list rows (rows separate by space, never a line),
+     the 68 px header of a record and the 220 px search field of a chrome bar */
+  --gap-row: 2px;
+  --record-h: 68px;
+  --search-w: 220px;
+  --scene-width: 1040px;
+
+  /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
+  --header-h: 72px;
+  --logo-h: 42px;
+}
+
+/* The lib's base gives every link, button and input of the page a 160 ms transition of every property; outside the
+   lib's components the site keeps its own motion (each sheet declares its transitions), so the default only applies
+   under data-theme="welabs". Same layer and zero specificity as the lib's rule, later in the cascade. */
+@layer base {
+  :where(button, a, [role="button"], input, select, textarea, summary):where(
+      :not([data-theme="welabs"] *)
+    ) {
+    transition-duration: 0s;
+  }
+}
+
+/* The lib's base and the reset of Tailwind 4 (preflight) moved the rest of the page by a few pixels: the body line
+   height went from `normal` to the lib's --leading-body 1.5 (180 boxes of the home grew) and images and icons sat on
+   the middle instead of the baseline (measured on 1711c63 against this build: computed styles of the 569 elements
+   outside the Domus block). The body keeps the site's line height through the lib's own token, and the media outside
+   the lib keep their baseline. */
+:root {
+  --leading-body: normal;
+  --leading-heading: normal;
+  --tracking-heading: normal;
+}
+:is(img, svg):not([data-theme="welabs"] *) {
+  vertical-align: baseline;
+}
+
+/* PAPÉIS DE COR: WELABS UI V3 SOBRE O PRESET */
+/* Operator decision (2026-10-22): the approved design system Welabs UI v3 replaces the cream and sand surfaces (the
+   sand had the temperature of the amber, so the amber dissolved and a sand card on the cream read 1.12:1). One table,
+   role → v3 token, for the site (:root) and for the lib's `welabs` preset (same specificity, later in the cascade):
+     --background        canvas    stone-50   #f7f7f5 / #121214
+     --card, --popover   surface   white      #ffffff / #1a1a1d (window, card, field, received bubble, menu)
+     --muted, --secondary chrome   stone-100  #efefeb / #202024 (window bar, tab rail, neutral chip, mark at rest)
+     --border            line      stone-200  #e5e5e1 / #2c2c30 (between panels only, never between list rows)
+     --input             control   the line (--border), as the lib's default brand; round 3 (2026-10-22): the dark
+                                   edges (#8a8a86, #9d927e, the preset's oklch(0.6 0 0)) read as black lines
+     --foreground        ink       the preset's #1c1a16 / #f5f5f3; --muted-foreground the preset's sand 700 #625b4e / #b4b4b0
+                                   (text only; 6.72:1 on white, 5.83:1 on the chrome)
+     --primary           black     #121212 + white text, inverted on dark: buttons, anchor-buttons, badges and
+                                   chips, the active segment, checkbox, switch, the chosen day, the sent bubble
+     --signal            amber     #ffb020 only for what is live now (at most 3 pieces per still screen, always an
+                                   area, never text nor a thin line); --signal-soft amber-50 the selected row and the
+                                   arriving bubble; --signal-ink amber-700, amber as text only when unavoidable
+     --success           done      #1e7a4c on --success-soft #e8f4ed: the end is never amber
+     --veil-hover        veil      ink at 4 % (hover of a row of the kit), --veil-press ink at 7 %; the ghost
+                                   control's hover (--accent) and the focus ring (--ring) are the lib's
+   --muted-foreground is a text and icon tone only, never a fill; components/scene-kit/scene-colour.test.ts fails on
+   it as a fill. --indicator-muted (stone-300) is the quiet dot at 3:1: a resting status, the typing dots. */
+:root,
+[data-theme="welabs"] {
+  --background: #f7f7f5;
+  /* Operator (2026-10-22): the text is true black, never the preset's brownish graphite (#1c1a16 / #625b4e read as
+     "grafite"); the ink is the same black as the action (--primary) */
+  --foreground: #121212;
+  --card: #ffffff;
+  --card-foreground: #121212;
+  --popover: #ffffff;
+  --popover-foreground: #121212;
+  --muted: #efefeb;
+  --secondary: #efefeb;
+  --secondary-foreground: #121212;
+  --border: #e5e5e1;
+  --edge-subtle: var(--border);
+  --edge-strong: var(--border);
+  /* Round 3: the field edge is the line (the default brand of the lib draws --input = --border); the welabs preset's
+     oklch(0.6 0 0) is the dark edge the operator rejected (e2e/lib-parity.spec.ts ALLOWED, with the WCAG note) */
+  --input: var(--border);
+  /* Secondary text is a neutral grey, not the preset's warm sand 700 (operator: "texto muito pro grafite") */
+  --muted-foreground: #55565b;
+  --indicator-muted: #8a8a86;
+  --primary: #121212;
+  --primary-foreground: #ffffff;
+  --primary-ink: #121212;
+  --primary-hover: #2b2b2b;
+  /* The lib's soft primary (a soft Badge or Button) is the neutral chrome chip with ink text, never a grey of ink */
+  --primary-soft: #efefeb;
+  --signal: #ffb020;
+  --signal-foreground: #121212;
+  --signal-soft: #fff3dd;
+  --signal-ink: #875f21;
+  --selected: var(--signal-soft);
+  --veil-hover: rgb(18 18 18 / 0.04);
+  --veil-press: rgb(18 18 18 / 0.07);
+  --success: #1e7a4c;
+  --success-foreground: #ffffff;
+  --success-soft: #e8f4ed;
+  --destructive: #ab3040;
+  --destructive-foreground: #ffffff;
+  --destructive-soft: #faeaea;
+  --shadow-md: 0 1px 2px rgb(18 18 18 / 0.06), 0 4px 12px rgb(18 18 18 / 0.06);
+  --shadow-lg: 0 1px 2px rgb(18 18 18 / 0.05), 0 12px 32px rgb(18 18 18 / 0.08);
+}
+/* The dark theme of v3, under the lib's own switch (data-mode="dark") on the root or on a lib block */
+:root[data-mode="dark"],
+[data-theme="welabs"][data-mode="dark"] {
+  --background: #121214;
+  --foreground: #f5f5f3;
+  --card: #1a1a1d;
+  --card-foreground: #f5f5f3;
+  --popover: #1a1a1d;
+  --popover-foreground: #f5f5f3;
+  --muted: #202024;
+  --secondary: #202024;
+  --secondary-foreground: #f5f5f3;
+  --border: #2c2c30;
+  --edge-subtle: var(--border);
+  --edge-strong: var(--border);
+  --input: var(--border);
+  --muted-foreground: #b4b4b0;
+  --indicator-muted: #77777d;
+  --primary: #f5f5f3;
+  --primary-foreground: #121212;
+  --primary-ink: #f5f5f3;
+  --primary-hover: #dcdcd8;
+  --primary-soft: #202024;
+  --signal: #ffb020;
+  --signal-foreground: #121212;
+  --signal-soft: #2c2416;
+  --signal-ink: #ffcc74;
+  --veil-hover: rgb(245 245 243 / 0.06);
+  --veil-press: rgb(245 245 243 / 0.1);
+  --success: #6fcf97;
+  --success-foreground: #121212;
+  --success-soft: #173525;
+  --destructive: #f7999c;
+  --destructive-foreground: #121212;
+  --destructive-soft: #551e23;
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.35), 0 4px 12px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.4);
+}
+/* The lib's TypingDots paints each dot with an inline `background-color: currentColor` (dist/ui/effects.js
+   TypingDots), which no stylesheet rule outranks without !important: the dots follow the colour of their slot */
+[data-slot="typing-dots"] {
+  color: var(--indicator-muted);
+}
+
+/* TIMELINE E AVATAR: AS MARCAS DAS CENAS */
+/* The mark of a scene (a channel, a record, a history line) is the lib's Avatar with an icon fallback, painted once
+   here with the colour roles of the kit (control/portfolio/site-redesign/scene-kit/colour-decisions.md): neutral at
+   rest (the sand 100 well inside the lib's sand ring, the icon in sand 700), `data-tone="subject"` an ink icon, and
+   amber only while active (`data-tone="active"` on the Avatar, or the Avatar inside a `[data-state="active"]` row):
+   the amber fill with the ink icon and no ring, since sand 700 never sits on amber. The icon takes the size step of the
+   Avatar (default 32 px = --mark-md, lg 40 px = --mark-lg). Unlayered, so it outranks the lib's layered utilities. */
+[data-slot="avatar-fallback"] {
+  /* v3: a mark at rest is the chrome well with a stone-700 icon; live is the amber signal with an ink icon */
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+[data-slot="avatar-fallback"] > svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+[data-slot="avatar"][data-size="lg"] [data-slot="avatar-fallback"] > svg {
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+}
+[data-slot="avatar"][data-tone~="subject"] > [data-slot="avatar-fallback"] {
+  color: var(--foreground);
+}
+[data-slot="avatar"][data-tone="active"] > [data-slot="avatar-fallback"],
+[data-state="active"] [data-slot="avatar"] > [data-slot="avatar-fallback"] {
+  background-color: var(--signal);
+  color: var(--signal-foreground);
+}
+/* The v3 scenes (2026-10-22): `done` is what happened, in green (success soft, success icon), never amber; `well` a
+   mark waiting on the chrome (a track's rail), the white surface with the stone-700 icon */
+[data-slot="avatar"][data-tone="done"] > [data-slot="avatar-fallback"] {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+[data-slot="avatar"][data-tone="well"] > [data-slot="avatar-fallback"] {
+  background-color: var(--card);
+}
+/* Round 3: the mark keeps the lib's own ring (its ::after hairline), as the Avatar stories draw it */
+/* The lib's Timeline (its slot comes from components/lib/scene.tsx): the marker holds an Avatar, so the lib's own
+   cream ring around it steps aside and the column takes the Avatar's width; the title row is as tall as the mark and
+   centred on it, so the label and the icon share one axis; the title at the label step, the aside (a time) in sand 700
+   at the micro step */
+[data-slot="timeline"] > li > :first-child > :first-child {
+  width: auto;
+  height: auto;
+  background: none;
+  box-shadow: none;
+}
+[data-slot="timeline"] > li > :last-child {
+  min-width: 0;
+  padding-top: 0;
+}
+[data-slot="timeline"] > li > :last-child > :first-child {
+  min-height: var(--mark-md);
+  align-items: center;
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+}
+[data-slot="timeline"] > li > :last-child > :first-child > p {
+  font-weight: var(--weight-title);
+  color: var(--foreground);
+}
+[data-slot="timeline"] > li > :last-child > :first-child > time {
+  font-size: var(--t-micro);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+
+/* CONTROLES: A LIB COMO REFERÊNCIA */
+/* Round 3 (2026-10-22): the published lib (Storybook, welabs brand) is the reference for every control; the site no
+   longer paints the field's fill, hover or focus, the button's appearances, nor the control's height or radius
+   (e2e/lib-parity.spec.ts compares them with the stories). What stays here is only the inside of a field: the lib's
+   addon pads its pieces by its own rules, so a chip or a button in an addon sat off centre (the "Mensagem" chip 8 px
+   from the top and 0 from the bottom, "Enviar" flush on the right edge); a piece of the size of a small control now
+   sits as far from the side of the field as from its top and bottom (e2e/scene-kit-geometry.spec.ts). */
+:root {
+  /* The gap around a small control inside a md field: (field − its 2 borders − the small control) / 2 */
+  --field-inset: calc((var(--control-height-md) - 2 * var(--rule) - var(--control-height-sm)) / 2);
+}
+[data-slot="input-group"] > [data-slot="input-group-addon"]:has(> :is([data-slot="button"], [data-field-piece])) {
+  padding-block: 0;
+}
+[data-slot="input-group"] > [data-slot="input-group-addon"][data-align="inline-start"]:has(> [data-field-piece]) {
+  margin-inline: 0;
+  padding-inline: var(--field-inset) 0;
+}
+[data-slot="input-group"] > [data-slot="input-group-addon"][data-align="inline-end"]:has(> [data-slot="button"]) {
+  margin-inline: 0;
+  padding-inline: 0 var(--field-inset);
+}
+/* A field with only a leading icon (a search): the icon and the end of the text sit at the lib's small control
+   padding from either side */
+[data-slot="input-group"] > [data-slot="input-group-addon"][data-align="inline-start"]:has(> svg:only-child) {
+  padding-inline-start: var(--control-px-sm);
+}
+[data-slot="input-group"]:not(:has(> [data-align="inline-end"])) > [data-slot="input-group-control"] {
+  padding-inline-end: var(--control-px-sm);
+}
+[data-slot="input-group"] > [data-slot="input-group-addon"] > [data-field-piece] {
+  height: var(--control-height-sm);
+}
+/* A link drawn as the lib's button (ActionButton with `href`, the carousels' call to action): the page's unlayered
+   `a { color: inherit }` (app/globals.css) would paint its label with the parent's ink, black on the black primary;
+   the lib's own colour of the button comes back. The one rule for it: app/globals.css keeps its plain reset */
+a[data-slot="button"] {
+  color: revert-layer;
+}
+
+/* CAMADA DO SITE SOBRE A MARCA WELABS */
+/* Colour: only the PAPÉIS DE COR block above. Structure: the lib's own (its control heights, radii, paddings and
+   surfaces); the kit's radius names follow them, so a window is the lib's surface and a row, a bubble or a square
+   mark the lib's control. */
+[data-theme="welabs"] {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Inter", system-ui, sans-serif;
+  --r-ctl: var(--control-radius);
+  --r-card: var(--control-radius);
+  --r-win: var(--surface-radius);
+  --r-pill: var(--control-radius);
+}

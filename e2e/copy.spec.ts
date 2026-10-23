@@ -1,9 +1,12 @@
 // COPY SEM PERSONIFICAÇÃO E SEM MARCA SOLTA
-// v2.2 (audit, section 5): the copy spoke of "a pessoa", named eight fictional people (Marina, Ana, Bia Souza, Rafael
-// Lima, Davi, Bruno, Carla, Lia) and put third-party brands where the category belonged (measured on 8187680). On the
-// rendered home and the five product pages: no personification, no fictional person but the one contact (Marina), and
-// every third-party brand only inside brackets, as an example of its category.
+// v2.2 (audit, section 5): the copy spoke of "a pessoa", named eight fictional people (Ana, Bia Souza, Rafael Lima,
+// Davi, Bruno, Carla, Lia and one more) and put third-party brands where the category belonged (measured on 8187680). On
+// the rendered home and the five product pages: no personification, no fictional person, and every third-party brand
+// only inside brackets, as an example of its category.
+// v3 (F1): the last contact with a name left the scenes (a contact is its record id), so the names come from the one
+// list of copy-rules.json, the known failures included, with no tolerance.
 import { expect, test } from "@playwright/test";
+import rules from "../lib/content/copy-rules.json";
 
 const PATHS = [
   "/",
@@ -15,15 +18,13 @@ const PATHS = [
 ];
 const PERSONIFIED =
   /\b(?:a pessoa|cada pessoa|uma pessoa|1 pessoa|pessoa certa|pessoa inteira)\b/i;
-const PEOPLE = /\b(?:Ana|Bia|Souza|Rafael|Lima|Davi|Bruno|Carla|Lia)\b/;
-const BRANDS = [
-  "WhatsApp",
-  "Discord",
-  "Google Agenda",
-  "Banco Inter",
-  "Asaas",
-  "Omie",
-];
+// The names of the old copy plus the shared list; a unicode word edge, since \b breaks on an accented letter
+const PEOPLE = new RegExp(
+  `(?:^|[^\\p{L}])(${["Bia", "Souza", "Lima", "Lia", ...rules.persons].join("|")})(?=[^\\p{L}]|$)`,
+  "u",
+);
+// v3 (F1 review): the third-party brands come from the one list of copy-rules.json
+const BRANDS = rules.vendors;
 
 for (const path of PATHS)
   test(`copy of ${path}`, async ({ page }) => {
@@ -37,7 +38,7 @@ for (const path of PATHS)
         .replace(/\s+/g, " "),
     );
     const personified = text.match(PERSONIFIED)?.[0] ?? null;
-    const person = text.match(PEOPLE)?.[0] ?? null;
+    const person = text.match(PEOPLE)?.[1] ?? null;
     // A brand is loose when it is not inside brackets
     const loose = BRANDS.flatMap((brand) =>
       [...text.matchAll(new RegExp(brand, "g"))]

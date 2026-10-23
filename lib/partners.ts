@@ -1,85 +1,38 @@
-// PLATAFORMAS DE INFRA E DESENVOLVIMENTO
-// Monochrome official marks: simple-icons 16.34.0 (CC0) for everything it carries; AWS (official logo SVG) and HostDime
-// (official logo PNG from hostdime.com.br) are not in that package. `evidence` records why each one is listed; the
-// first four were asked for by the operator, the rest are in the code or the infra we run.
-export const PLATFORM_LOGOS = [
-  { name: "AWS", src: "/platforms/aws.svg", h: 40, evidence: "operator" },
-  {
-    name: "DigitalOcean",
-    src: "/platforms/digitalocean.svg",
-    h: 36,
-    evidence: "operator",
-  },
-  {
-    name: "HostDime",
-    src: "/platforms/hostdime.png",
-    h: 20,
-    evidence: "operator",
-  },
+// PLATAFORMAS ONDE RODAMOS
+// The four clouds the operator asked for, and nothing of the internal stack (v3, F1: plano.md sections 1.5 and 3.5; the
+// copy rules in copy-rules.json fail any stack name on a page). Official marks: simple-icons 16.34.0 (CC0) for Google
+// Cloud and DigitalOcean; AWS (official logo SVG) and HostDime (official logo PNG from hostdime.com.br) are not in that
+// package. The strip paints every mark in one token through its alpha (a CSS mask), so the file's own colours never show.
+// - `ratio`: the width over the height of what the strip shows.
+// - `wordmark`: the mark already spells the name (the "aws" of AWS), so the name is not repeated beside it; it stays
+//   for assistive technology. A pure symbol has its name beside it.
+// - `symbol`: the mark is the left of a wider file (HostDime ships one PNG with its symbol, its name and a tagline; the
+//   strip shows the first 69 of its 480 × 46 px).
+// - `scale`: optical size against the common height (Google Cloud's cloud fills less of its square; HostDime's 46 px
+//   PNG at 23 px is one device pixel per file pixel on a 2x screen, so its edge stays sharp).
+export type PlatformLogo = {
+  name: string;
+  src: string;
+  ratio: number;
+  wordmark?: boolean;
+  symbol?: boolean;
+  scale?: number;
+};
+
+export const PLATFORM_LOGOS: readonly PlatformLogo[] = [
+  { name: "AWS", src: "/platforms/aws.svg", ratio: 304 / 182, wordmark: true },
   {
     name: "Google Cloud",
     src: "/platforms/googlecloud.svg",
-    h: 36,
-    evidence: "operator",
+    ratio: 1,
+    scale: 1.15,
   },
+  { name: "DigitalOcean", src: "/platforms/digitalocean.svg", ratio: 1 },
   {
-    name: "Cloudflare",
-    src: "/platforms/cloudflare.svg",
-    h: 36,
-    evidence:
-      "skill imagine-infra-operations: create-app-hostname.sh, Cloudflare for SaaS on welabs.cloud; imagine-infra-authentik-oidc: public instance behind Cloudflare",
+    name: "HostDime",
+    src: "/platforms/hostdime.png",
+    ratio: 69 / 46,
+    symbol: true,
+    scale: 23 / 24,
   },
-  {
-    name: "Kubernetes",
-    src: "/platforms/kubernetes.svg",
-    h: 36,
-    evidence:
-      "skill imagine-infra-argocd-kubectl; erp-platform .k8s/workflows (publish-erp-*.workflow.yaml)",
-  },
-  {
-    name: "Argo CD",
-    src: "/platforms/argo.svg",
-    h: 36,
-    evidence:
-      "skills imagine-infra-argocd-kubectl and imagine-infra-gitops-runtime",
-  },
-  {
-    name: "Vault",
-    src: "/platforms/vault.svg",
-    h: 32,
-    evidence: "skill imagine-infra-vault-runtime (Vault and ExternalSecrets)",
-  },
-  {
-    name: "PostgreSQL",
-    src: "/platforms/postgresql.svg",
-    h: 36,
-    evidence: "skill imagine-infra-postgres-temporal (external Postgres)",
-  },
-  {
-    name: "Temporal",
-    src: "/platforms/temporal.svg",
-    h: 36,
-    evidence: "skill imagine-infra-postgres-temporal (Temporal persistence)",
-  },
-  {
-    name: "Authentik",
-    src: "/platforms/authentik.svg",
-    h: 36,
-    evidence: "skill imagine-infra-authentik-oidc (OIDC providers)",
-  },
-  {
-    name: "Docker",
-    src: "/platforms/docker.svg",
-    h: 36,
-    evidence:
-      "erp-platform infra/compose.yaml and docker-bake.hcl (frappe_docker); local runners use docker/buildkit",
-  },
-  {
-    name: "GitHub",
-    src: "/platforms/github.svg",
-    h: 36,
-    evidence: "repositories and PRs on github.com (welabs-io org)",
-  },
-] as const;
-
-export const PLATFORMS_LABEL = "Infraestrutura e ferramentas";
+];

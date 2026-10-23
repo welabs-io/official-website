@@ -17,7 +17,6 @@ import {
   ProductContact,
   ProductDetails,
   ProductOpening,
-  ProductPlay,
 } from "./Product";
 import { Section } from "./Section";
 
@@ -45,8 +44,6 @@ function Body({ section }: { section: SectionConfig }) {
       return <ProductOpening slug={section.slug} />;
     case "areas":
       return <DomusAreas />;
-    case "play":
-      return <ProductPlay slug={section.slug} />;
     case "center":
       return <ProductCenter slug={section.slug} />;
     case "details":

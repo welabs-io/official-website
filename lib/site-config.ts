@@ -4,21 +4,18 @@
 // components/template/SiteTemplate walks it and renders each section, so no section markup is copied between routes.
 // - Home: the opening with the stage of the five products, the message that crosses the operation, the Domus and its
 //   modules, the five products, what changes, the contact and where we run.
-// - Product page: the selector of the five products and the opening, the one interaction of the product (the Domus has
-//   its modules and its fields), the product among the others, the details that come with it and the contact.
+// - Product page: the selector of the five products and the opening with the carousel of the product (a kit scene), the
+//   Domus modules on the Domus page, the product among the others, the details that come with it and the contact.
 // v2.1 (2026-10-20): the film of the fitting pieces (`#chain`) left the home (a drawing with no function: the stage of the
 // opening already shows the products on the Domus, now with what each one does), and the door to the next product left
 // the end of a product (the selector at its top replaces it). `pad` names the spacing class of the section
 // (home.module.css).
+// v3 (2026-10-23): the carousel of the opening replaces the interaction of each product (`play` left), and a product
+// page is a page of its own: the home is no longer rendered above it (operator, 2026-10-21).
 import type { ProductSlug } from "./products";
 
 export type SectionPad =
-  | "intro"
-  | "block"
-  | "products"
-  | "productPage"
-  | "contact"
-  | "closing";
+  "intro" | "block" | "products" | "productPage" | "contact" | "closing";
 
 type Base = {
   id: string;
@@ -39,7 +36,6 @@ export type SectionConfig =
   | (Base & { kind: "platforms" })
   | (Base & { kind: "opening"; slug: ProductSlug })
   | (Base & { kind: "areas" })
-  | (Base & { kind: "play"; slug: ProductSlug })
   | (Base & { kind: "center"; slug: ProductSlug })
   | (Base & { kind: "details"; slug: ProductSlug });
 
@@ -75,35 +71,31 @@ export function productConfig(slug: ProductSlug): PageConfig {
       ...(slug === "domus"
         ? ([
             { id: "areas", kind: "areas", pad: "block", surface: "band" },
-            { id: "play", kind: "play", slug, pad: "block" },
           ] as SectionConfig[])
-        : ([
-            { id: "play", kind: "play", slug, pad: "block", surface: "band" },
-          ] as SectionConfig[])),
+        : []),
+      // The bands keep alternating: the soft band right after the opening, the page under it
       {
         id: "center",
         kind: "center",
         slug,
         pad: "block",
+        surface: slug === "domus" ? undefined : "band",
+      },
+      {
+        id: "details",
+        kind: "details",
+        slug,
+        pad: "block",
         surface: slug === "domus" ? "band" : undefined,
       },
-      { id: "details", kind: "details", slug, pad: "block" },
       // The product ends on its contact; the way to another product is the selector at its top
-      { id: "contact", kind: "contact", slug, pad: "contact", surface: "contact" },
+      {
+        id: "contact",
+        kind: "contact",
+        slug,
+        pad: "contact",
+        surface: "contact",
+      },
     ],
   };
 }
-
-// DESCIDA CONTÍNUA
-// The home is cut in two around the product slot: the head (from the opening to the five products, where the cards are)
-// stays above the product that opens, and the tail (what changes, the contact, where we run) gives way to it. The cut is
-// right after the products band, so the product is the next section of the home.
-const CUT = HOME_CONFIG.sections.findIndex((s) => s.id === "products") + 1;
-export const HOME_HEAD: PageConfig = {
-  ...HOME_CONFIG,
-  sections: HOME_CONFIG.sections.slice(0, CUT),
-};
-export const HOME_TAIL: PageConfig = {
-  home: true,
-  sections: HOME_CONFIG.sections.slice(CUT),
-};

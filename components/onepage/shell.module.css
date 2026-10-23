@@ -5,111 +5,15 @@
    the ERP front (welabs-io/erp-platform, front/src/ui-kit/theme/welabs-theme.css and the `welabs` preset of
    @imagineapps-team/react), not the brand package, which the operator reported out of date; the map is in
    control/portfolio/site-redesign/v13-proposta/v2-1/tokens-erp.md. */
+/* Every token of the site (colour, surface, line, radius, space, type, shadow, motion, icon) lives in ONE place:
+   app/lib.css, block TOKENS DO SITE (operator, 2026-10-22: one change there reflects on the whole site). This sheet only
+   reads them. The one remap kept here: on the page outside the lib's components, --input is the 3:1 edge of a drawn
+   control (sand 600, --edge-drawn), while the lib's fields keep their lighter edge (app/lib.css CONTROLES). */
 .page {
-  --g: #10141c;
-  --g2: #161b25;
-  --g3: #262d3a;
-  /* The page is white with a warm halo at the top (ERP --background oklch(1 0 0) and --background-radial) */
-  --c: #ffffff;
-  --c2: #f3ecdd;
-  --cl: #e2d8c3;
-  /* SUPERFÍCIES DO TEMA CLARO (FRONT DO ERP) */
-  /* The one place of the surface palette: the page, cards, windows, menu and popover are one white (ERP --background,
-     --card, --popover) and stand apart by the sand hairline (--cl, ERP --border); a band that must stand apart is the
-     ERP content area (--muted at 30% over the page); highlight, selected and chips stay sand 100 (--surface-accent).
-     Components read these names; none carries its own colour. */
-  --surface: #ffffff;
-  --muted: oklch(0.96 0 0);
-  --surface-band: color-mix(in oklch, var(--muted) 30%, var(--c));
-  --surface-accent: var(--c2);
-  --halo: radial-gradient(
-    60% 55% at 50% 0%,
-    oklch(0.66 0.21 28 / 0.06),
-    transparent 70%
-  );
-  --a: #ffb020;
-  /* The amber scale of the preset: 100 the selected row, 200 the soft primary, 300 the hover of the action button */
-  --a-100: #fff1d8;
-  --a-200: #ffe2b1;
-  --a-300: #ffcc74;
-  /* The action button: graphite with cream text on light (ERP --action, --action-foreground) */
-  --action: #25272a;
-  --action-fg: #faf5ea;
-  --ink: #1c1a16;
-  --mute-d: #9da3ae;
-  --mute-l: #625b4e;
-  /* The 3:1 border of a control (ERP --input, sand 600) */
-  --input: #827968;
-  /* Structural lines of the light theme (thread, rails, bus): darker than the hairlines of the cards, so the drawing reads */
-  --thread-l: #d4c7ab;
-  /* ESCALA TIPOGRÁFICA, ESPAÇAMENTO E FORMAS */
-  /* The one system every component reads (no loose value in the component sheets). Type: seven steps, 14 px the smallest
-     text of the site; weights 400 (text), 500 (lead and labels) and 600 (titles); line heights 1.08 for display, 1.25
-     for headings, 1.4 for lead and 1.5 for body; tracking only from 24 px up. Line width: paragraphs stay between 60 and
-     75 characters (--measure). Space: a 4 px grid, steps of 4, 8, 12, 16, 24, 32, 48, 64 and 80. Shapes: 6 px for controls
-     and chips, 12 px for cards, 16 px for windows; one hairline colour (--line) for cards, a darker one (--thread) for
-     structure. */
-  --text-xs: 14px;
-  --text-sm: 15px;
-  --text-md: 16px;
-  --text-lg: 18px;
-  --text-xl: 20px;
-  --text-2xl: clamp(22px, 2vw, 26px);
-  --text-title: clamp(28px, 3.2vw, 40px);
-  --text-display: clamp(32px, 3.8vw, 48px);
-  /* The title of the home opening, the one step above display (v2: the title and its turning word carry the page) */
-  --text-hero: clamp(40px, 5vw, 72px);
-  --lh-display: 1.08;
-  --lh-heading: 1.25;
-  --lh-lead: 1.4;
-  --lh-body: 1.5;
-  --ls-display: -0.02em;
-  --ls-heading: -0.01em;
-  --measure: 66ch;
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 24px;
-  --sp-6: 32px;
-  --sp-7: 48px;
-  --sp-8: 64px;
-  --sp-9: 80px;
-  /* Shapes of the ERP front: a field or chip 10 px (--field-radius), a card 8 px (--surface-radius), a window or popover
-     14 px (--overlay-radius) and the round button 22 px (--control-radius) */
-  --r-ctl: 10px;
-  --r-card: 8px;
-  --r-win: 14px;
-  --r-pill: 22px;
-  /* v2.2 (audit M11): the fully round end of a chip, a dot or a pill of a drawing (it was a loose 999px in the scenes) */
-  --r-dot: 999px;
-  /* The neutral shadows of the preset (--shadow-md under a card, --shadow-lg under a popover) */
-  --shadow-card:
-    0 4px 12px -2px oklch(0 0 0 / 0.08), 0 2px 6px -2px oklch(0 0 0 / 0.06);
-  --shadow-pop:
-    0 12px 32px -8px oklch(0 0 0 / 0.12), 0 6px 12px -4px oklch(0 0 0 / 0.08);
-  /* MOVIMENTO DAS INTERAÇÕES */
-  /* One easing and three durations for every hover, press, open and reveal of the page (v2.1: the transitions were
-     loose values, and several hovers had none) */
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-1: 0.16s;
-  --dur-2: 0.28s;
-  --dur-3: 0.48s;
-  /* v2.2 (audit M11): the one overshoot of the site, for what is born (a chip, a node, a card); the loose springs of the
-     sheets read it */
-  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
-  /* v2.2: the status colours of the preset (success 700 and its soft 100, danger 700 and its soft 100) */
-  --success: #2c7440;
-  --success-soft: #d5fadb;
-  --destructive: #ab3040;
-  --destructive-soft: #faeaea;
-  /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
-  --header-h: 72px;
-  --logo-h: 42px;
+  --input: var(--edge-drawn);
   background:
     var(--halo) no-repeat,
-    var(--c);
+    var(--page);
   background-size: 100% 900px;
   color: var(--ink);
   overflow-x: clip;
@@ -137,7 +41,7 @@
 }
 .light {
   color: var(--ink);
-  --bg: var(--c);
+  --bg: var(--page);
   --line: var(--cl);
   --thread: var(--thread-l);
   --mute: var(--mute-l);
@@ -180,7 +84,7 @@
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 50;
-  background: var(--c);
+  background: var(--page);
   border-bottom: 1px solid var(--cl);
 }
 .headerInner {
@@ -235,7 +139,7 @@
   color: var(--ink);
   box-shadow:
     0 0 0 1px var(--a-300),
-    var(--shadow-card);
+    var(--shadow-raise);
 }
 .cta:active {
   background: var(--a);
@@ -374,43 +278,10 @@
   margin-left: var(--sp-1);
 }
 @media (max-width: 860px) {
+  /* The site's IconButton paints the control (44 px, the 10 px control radius, the soft fill, the Menu/X icon); here
+     only shown */
   .menuButton {
-    display: inline-grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: 1px solid var(--cl);
-    /* v2.2 (audit M11): the shape of a control, not a loose 6 px */
-    border-radius: var(--r-ctl);
-    background: transparent;
-    color: var(--ink);
-    cursor: pointer;
-  }
-  /* Three bars drawn by one element and its two pseudo-elements */
-  .burger,
-  .burger::before,
-  .burger::after {
-    display: block;
-    width: 18px;
-    height: 2px;
-    border-radius: 1px;
-    background: currentcolor;
-  }
-  .burger {
-    position: relative;
-  }
-  .burger::before,
-  .burger::after {
-    content: "";
-    position: absolute;
-    left: 0;
-  }
-  .burger::before {
-    top: -6px;
-  }
-  .burger::after {
-    top: 6px;
+    display: inline-flex;
   }
   .nav {
     position: absolute;
@@ -550,7 +421,7 @@
 .band[data-surface="contact"] {
   background:
     var(--halo) no-repeat,
-    var(--c);
+    var(--page);
   border-top: 1px solid var(--cl);
-  --bg: var(--c);
+  --bg: var(--page);
 }

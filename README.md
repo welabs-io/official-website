@@ -10,10 +10,11 @@ Menos explicação, mais vontade de conhecer: cada seção tem no máximo um tí
 
 ## Rotas
 
-| Rota               | Conteúdo |
-| ------------------ | -------- |
-| `/`                | `#intro` (título com a palavra que gira e o palco dos cinco produtos sobre o registro do Domus), `#message` (a mensagem que atravessa a operação e chega no Domus), `#domus` (a casa do Domus com os módulos reais e "+ Novo módulo"), `#products` (os cinco cartões), `#operation` (três desfechos em cena nativa, tocando), `#contact` (perguntas em aberto e o botão) e `#platforms` (onde rodamos) |
-| `/products/[slug]` | `#product` (o seletor dos cinco produtos, o logo com selo, a frase e o botão; o Domus abre com uma tela sua tocando, os outros com as suas cenas), `#areas` (só o Domus), `#play` (a interação do produto), `#center` (o produto entre os outros), `#details` (o que já vem junto) e `#contact` |
+| Rota               | Conteúdo                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                | `#intro` (título com a palavra que gira e o palco dos cinco produtos sobre o registro do Domus), `#message` (a cena do kit `home-message`: a mensagem que atravessa os cinco produtos e chega no Domus), `#domus` (a casa do Domus com os módulos reais e "+ Novo módulo"), `#products` (os cinco cartões), `#operation` (três desfechos em cena nativa, tocando), `#contact` (perguntas em aberto e o botão) e `#platforms` (onde rodamos) |
+| `/products/[slug]` | página autônoma, sem a home acima: `#product` (o seletor dos cinco produtos, o logo com selo, a frase, o botão e o carrossel do produto, `<slug>-carousel`), `#areas` (só o Domus), `#center` (o produto entre os outros), `#details` (o que já vem junto) e `#contact`                                                                                                                                                                     |
+| `/lab/scenes`      | bancada das cenas do kit (`noindex`): a lista e `/lab/scenes/<id>`, cada cena sozinha com Recomeçar e Simular gesto                                                                                                                                                                                                                                                                                                                         |
 
 O menu do cabeçalho (`components/onepage/SiteNav.tsx`) está em todas as páginas: Produtos (os cinco, numa lista que abre ao passar o mouse ou ao focar; num celular, um painel aberto por botão que fecha com Esc, com um toque num link e ao mudar de página) e Domus. O botão do cabeçalho leva ao contato da home e o logo leva à home em toda página.
 
@@ -25,15 +26,14 @@ Tudo é CSS sobre controles nativos (`:has(:checked)`): cada interação é uma 
 
 - **Palavra que gira** (`HomeIntro`): cinco palavras, 2 s paradas e 0,5 s de troca, ciclo de 12,5 s.
 - **Palco dos produtos** (`components/template/Orbit.tsx`, `hub.module.css`): uma grade com o registro do Domus (Pedido 1234) no meio, os quatro produtos em volta e cada ligação na sua coluna; no mesmo ciclo da palavra, o produto da vez mostra o que fez, o pacote âmbar corre pela ligação e acende a linha dele no registro. Passar o mouse ou focar um produto para o ciclo e acende aquele produto. Na página de produto o palco fica parado, com o produto aceso.
-- **A mensagem** (`HomeMessage`, `message.module.css`): arrastar o balão até o trilho (ou apertar "Enviar a mensagem") faz a mensagem passar pelos cinco produtos e chegar no Domus, que se forma como na sua abertura de marca. O arrasto é a única peça de cliente nova (`components/template/DragToCheck.tsx`), que só marca a caixa de seleção.
+- **Cenas do kit** (`components/scene-kit`): o carrossel de cada produto e a mensagem da home entram na página por um encaixe só, `SceneSlot` (`components/scene-kit/SceneSlot.tsx`), que lê o mesmo catálogo do lab. A continuidade é do kit (`Scene.tsx`, `timeline.ts`): toca sozinha na tela, para fora dela, o gesto assume e devolve, e sob movimento reduzido mostra o quadro assentado.
 - **"+ Novo módulo"** (`DomusHouse`, `house.module.css`): a casa mostra os módulos que o ERP instala, em dois andares (Padrão e Sob medida); a vaga tracejada vira um módulo novo com o selo e a tela que se monta.
-- **Entrada num produto** (`components/onepage/descent-run.ts`, `components/intro`): todo link para um produto toca a abertura de marca dele (portada da rodada de motion, sob demanda) e pousa no logo da abertura do produto.
-- **Uma interação por produto** (`components/template/Plays.tsx`): Domus (arrastar um campo vira coluna da tabela), Relloo (os canais de uma pessoa na mesma conversa), Magneto (o fluxo espera a aprovação), Tuner (o menu da ligação leva à pessoa certa) e Knowly (a resposta com a fonte e a fonte fechada).
-- **Cenas nativas** (`components/scenes`): o palco da abertura de Relloo, Magneto, Tuner e Knowly troca as cenas de capacidade no lugar (`lib/scenes/capabilities.ts`) com o relógio de `lib/scenes/script.ts`; `SceneDriver` baixa `scene-run.ts` sob demanda. Os três desfechos da home tocam e repetem enquanto estão na tela (`MiniScene`, `components/scenes/replay.ts`).
+- **Entrada num produto** (`components/onepage/descent-run.ts`, `components/intro`): todo link para um produto toca a abertura de marca dele (portada da rodada de motion, sob demanda) e pousa no logo da abertura do produto. A volta é pelo menu e pelo logo; o voltar do navegador cruza um véu e devolve a home onde o visitante estava.
+- **Cenas nativas** (`components/scenes`): os três desfechos da home tocam e repetem enquanto estão na tela (`MiniScene`, `components/scenes/replay.ts`).
 
 ## Conteúdo
 
-Todo texto visível mora em `lib/content/*.ts`: `home.ts` (a home), `products.ts` (a página de cada produto: frase, cenas, interação, palco, detalhes e perguntas) e `plays.ts` (os rótulos dentro das interações). `lib/content/copy-rules.json` guarda as palavras proibidas que o vitest e `scripts/check-portfolio.mjs` aplicam ao dado e ao HTML renderizado.
+Todo texto visível mora em `lib/content/*.ts`: `home.ts` (a home), `products.ts` (a página de cada produto: frase, palco, detalhes e perguntas); o texto desenhado de cada cena do kit fica na própria cena (`components/scene-kit/scenes/*.tsx`). `lib/content/copy-rules.json` guarda as palavras proibidas que o vitest e `scripts/check-portfolio.mjs` aplicam ao dado e ao HTML renderizado.
 
 Orçamento de palavras visíveis (cenas não contam): de 200 a 300 na home e de 110 a 230 por produto (eram 700 a 1000 e 400 a 700 antes da v2). Vale em `components/template/site.test.tsx` e em `scripts/check-portfolio.mjs`.
 
@@ -45,11 +45,11 @@ Os tokens ficam em `.page` (`components/onepage/shell.module.css`) e as folhas d
 
 ```
 app/                    rotas (home e /products/[slug]), layout raiz, estilos globais e imagem de compartilhamento
-components/onepage/     cabeçalho e rodapé, bloco de produto, descida para o produto, observador de movimento e estilos
-components/template/    template das páginas (seções declarativas), seções da home e do produto, palco, interações
-components/ring/        o giro do palco de cenas: posições e arco da troca (rotation.css)
-components/scenes/      cenas nativas: janelas de produto, palco, motor sob demanda e o CSS de movimento
-lib/scenes/             história, roteiros (tempos das ações), cenas de capacidade e tipos
+components/onepage/     cabeçalho e rodapé, bloco de produto, transição entre páginas, observador de movimento e estilos
+components/template/    template das páginas (seções declarativas), seções da home e do produto, palco
+components/scene-kit/   kit de cenas: moldura, relógio, encaixe no site (SceneSlot), lab e as cenas v3
+components/scenes/      cenas nativas dos desfechos da home: janelas de produto e o CSS de movimento
+lib/scenes/             história, roteiros (tempos das ações) e tipos
 lib/                    produtos, slugs públicos, configuração das páginas e política do selo
 public/brands/welabs/   logos da Welabs, logos dos produtos, favicons e selos
 public/platforms/       marcas de infra e dev (simple-icons, CC0; AWS e HostDime oficiais)

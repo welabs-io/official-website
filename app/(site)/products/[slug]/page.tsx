@@ -6,8 +6,8 @@ import { productConfig } from "@/lib/site-config";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 
 // PÁGINA DE PRODUTO
-// One template for the five products (see SiteTemplate): opening, connectors, call to action and the door to the next
-// product, drawn in the slot of the one-page layout (app/(site)/layout.tsx), under the head of the home. Slugs
+// One template for the five products (see SiteTemplate): the opening with the carousel of the product, the product
+// among the others, its details and its contact, drawn in the slot of the site frame (app/(site)/layout.tsx). Slugs
 // are the current public ones; older slugs and ids are redirected by next.config.mjs. Any other slug is a 404 that
 // is decided at build time (dynamicParams off), so no unknown page is ever rendered on demand.
 export const dynamicParams = false;
@@ -40,15 +40,6 @@ export default async function Page({
 }) {
   const product = productBySlug((await params).slug);
   if (!product) notFound();
-  // The product is the slot of the one-page layout, right under the products band of the home. On a direct visit the
-  // inline script puts its top at the top of the window before the first paint (it runs once, while the HTML is parsed;
-  // a client navigation inserts it without running it, and components/onepage/Descent.tsx moves the page there)
-  return (
-    <>
-      <script dangerouslySetInnerHTML={{ __html: LAND }} />
-      <Sections config={productConfig(product.slug)} />
-    </>
-  );
+  // v3 (2026-10-21): the product is a page of its own, at the top of the window, with no part of the home above it
+  return <Sections config={productConfig(product.slug)} />;
 }
-
-const LAND = `history.scrollRestoration="manual";(function(){var s=document.querySelector("[data-descent-slot]");if(s)scrollTo(0,s.getBoundingClientRect().top+scrollY)})()`;

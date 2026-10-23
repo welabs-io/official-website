@@ -6,7 +6,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 // Seconds of one cycle of each target, from lib/scenes/script.ts (settle 1.52 + hold 1.0) and replay.ts (pause 2.2)
-const STAGE_CYCLE = 2.52;
 const REPLAY_CYCLE = 2.52 + 2.2;
 
 type Target = {
@@ -16,32 +15,9 @@ type Target = {
   cycle: number;
 };
 
+// v3 (2026-10-23): the openings of the products are their carousels (kit scenes, whose loop is held by
+// e2e/scene-kit-scenes.spec.ts), so only the outcomes of the home stay here
 const TARGETS: Target[] = [
-  {
-    name: "magneto opening",
-    path: "/products/magneto",
-    selector: "#product-scenes",
-    cycle: STAGE_CYCLE,
-  },
-  {
-    name: "tuner opening",
-    path: "/products/tuner",
-    selector: "#product-scenes",
-    cycle: STAGE_CYCLE,
-  },
-  {
-    name: "relloo opening",
-    path: "/products/relloo",
-    selector: "#product-scenes",
-    // Two scenes take turns: one cycle is both
-    cycle: STAGE_CYCLE * 2,
-  },
-  {
-    name: "domus opening",
-    path: "/products/domus",
-    selector: "#product [data-replay]",
-    cycle: REPLAY_CYCLE,
-  },
   {
     name: "home outcome",
     path: "/",

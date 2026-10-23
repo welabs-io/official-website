@@ -3,7 +3,7 @@
 // Every tie is now an SVG curve with a port on each end. Acceptance: on the home (cycling) and on a product page (still),
 // at 1440 and 1024, every tie is a curved path, has its two ports, never enters a card (overlap of its box with a card
 // at most 1 px, the port only touching the edge), and the packet runs the whole curve; the stamps of the products not
-// lit read at 0.35. In the Magneto opening, the checks sit inside their blocks.
+// lit read at 0.35.
 import { expect, test, type Page } from "@playwright/test";
 
 // The stage of the page: cycling on the home, still on a product page (the home stays mounted above a product)
@@ -70,48 +70,28 @@ for (const width of [1440, 1024])
       for (const tie of ties.slice(0, 4))
         expect(tie.length).toBeGreaterThanOrEqual(80);
       expect(ties[4].length).toBeGreaterThanOrEqual(55);
-      // The stamps of the products not lit read at 0.35 (the still stage of a product page)
+      // The stamps of the products not lit step back (the still stage of a product page). v3 (F2): by colour, the lit one
+      // in ink and the others in the muted text, all at full opacity, so every stamp passes AA (at 0.35 they were 1.7:1)
       if (path !== "/") {
         const dims = await page.evaluate(
           (sel) =>
             [...document.querySelectorAll<HTMLElement>(`${sel} [data-p]`)]
               .filter((el) => el.dataset.p !== "domus")
-              .map((el) => [
-                el.dataset.p,
-                Number(getComputedStyle(el.lastElementChild!).opacity),
-              ]),
+              .map((el) => {
+                const cs = getComputedStyle(el.lastElementChild!);
+                return [el.dataset.p, cs.color, Number(cs.opacity)] as const;
+              }),
           sel,
         );
-        for (const [slug, opacity] of dims)
-          expect(opacity, String(slug)).toBeCloseTo(
-            slug === "relloo" ? 1 : 0.35,
-            1,
+        for (const [slug, color, opacity] of dims) {
+          expect(opacity, String(slug)).toBe(1);
+          expect(color, String(slug)).toBe(
+            // Welabs UI v3 (app/lib.css, 22/10): the ink #121212 and the secondary text #55565b
+            slug === "relloo" ? "rgb(18, 18, 18)" : "rgb(85, 86, 91)",
           );
+        }
       }
     });
 
-test("the checks of the Magneto flow sit inside their blocks", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/products/magneto", { waitUntil: "load" });
-  await page.waitForTimeout(3500);
-  const out = await page.evaluate(() =>
-    [
-      ...document.querySelectorAll(
-        '[data-scene="magneto-canvas"] [class*="blockDone"]',
-      ),
-    ].map((check) => {
-      const c = check.getBoundingClientRect();
-      const b = check.parentElement!.getBoundingClientRect();
-      return (
-        c.left >= b.left &&
-        c.right <= b.right &&
-        c.top >= b.top &&
-        c.bottom <= b.bottom
-      );
-    }),
-  );
-  expect(out.length).toBeGreaterThan(0);
-  expect(out.every(Boolean)).toBe(true);
-});
+// v3 (2026-10-23): the Magneto opening is its carousel (magneto-carousel); the checks of the capability scene left with
+// it, and the pieces of the carousel are measured by e2e/scene-kit-geometry.spec.ts

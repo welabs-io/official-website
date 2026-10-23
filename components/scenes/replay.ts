@@ -5,12 +5,25 @@
 // order comes back confirmed. The server draws the settled frame (`data-phase="end"`, also the frame without script and
 // under reduced motion); this module, fetched with the descent chunk after hydration, only writes the phase of each scene
 // marked `data-replay` (its length in seconds). The motion itself is the CSS of the scenes (fx.css).
+// v3 (2026-10-23): the plays of the product pages left with their carousels (components/scene-kit), so their script
+// left this chunk too; the centring of the product selector stays.
 
-import { centerSwitches, installPlays } from "@/components/plays/play-run";
 import { restartScene } from "./restart";
 
 // Seconds the settled frame stays before the scene plays again
 const PAUSE = 2.2;
+
+// v2.2 (audit M06): on a phone the product selector is one row that scrolls sideways; the product of the page is
+// brought to its middle, so the current logo is never the one cut at the edge (called on every change of the page)
+function centerSwitches() {
+  document.querySelectorAll<HTMLElement>("[data-switch] ul").forEach((ul) => {
+    const current = ul.querySelector("[aria-current]")?.parentElement;
+    if (!current || ul.scrollWidth <= ul.clientWidth) return;
+    const row = ul.getBoundingClientRect();
+    const item = current.getBoundingClientRect();
+    ul.scrollLeft += item.left - row.left - (row.width - item.width) / 2;
+  });
+}
 
 export function install() {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -50,16 +63,13 @@ export function install() {
       seen.add(el);
       io.observe(el);
     });
-    // v2.2: the product of the page in the middle of the selector row (components/plays/play-run.ts)
+    // v2.2: the product of the page in the middle of the selector row
     centerSwitches();
   };
   scan();
   const mo = new MutationObserver(scan);
   mo.observe(document.body, { childList: true, subtree: true });
-  // v2.2: the little script of the product plays rides on this chunk (components/plays/play-run.ts)
-  const stopPlays = installPlays();
   return () => {
-    stopPlays();
     io.disconnect();
     mo.disconnect();
     timers.forEach((t) => clearTimeout(t));

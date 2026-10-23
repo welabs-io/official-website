@@ -2,13 +2,16 @@ import type { Metadata, Viewport } from "next";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 // Welabs package tokens (--wl-*)
 import "./brand/welabs.css";
+// The theme of @imagineapps-team/react (Tailwind 4 and the welabs preset), before the site's own sheets
+import "./lib.css";
 import "./globals.css";
 
 // MARCA NO NAVEGADOR
 // Cream browser chrome (the light theme of the brand) and the official favicon; themeColor mirrors --wl-cream (metadata
 // cannot read CSS variables).
 export const viewport: Viewport = {
-  themeColor: "#FFFDF8",
+  // v3 (F2): the cream floor of the page (shell.module.css --page, sand-50 of the brand)
+  themeColor: "#FAF5EA",
   colorScheme: "light",
 };
 export const metadata: Metadata = {
