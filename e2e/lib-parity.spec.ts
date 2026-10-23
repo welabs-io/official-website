@@ -21,7 +21,7 @@ const ALLOWED: Record<string, string> = {
   "send|backgroundColor":
     "the action is black (Welabs UI v3: --primary #121212 with white text); the lib's welabs primary is the amber, which the site keeps for what is live (--signal)",
   "send|color": "white on the black action, as above (the lib's welabs solid primary has ink text on amber)",
-  // The v3 scenes (tuner-routing, knowly-answer, home-message): the same three decisions, per kind of control
+  // The v3 scenes (tuner-routing, knowly-carousel, home-message): the same three decisions, per kind of control
   "outline|color": "the label and icon take the black ink #121212 (operator decision, as toolbar|color)",
   "icon|color": "the icon takes the black ink #121212 (operator decision, as action|color)",
   "row|color": "the row's text is the black ink #121212 (operator decision, as toolbar|color)",
@@ -50,6 +50,14 @@ const PROPS = [
 
 // The computed style of the first element matching `selector` (and, for a field, of its text control)
 async function styleOf(page: Page, selector: string) {
+  // The published Storybook now redirects iframe.html to /iframe (measured 2026-10-22) and draws the story after the
+  // network goes idle: wait until the page draws some control of the lib before reading (a page with no such control
+  // still returns null)
+  await page
+    .locator("[data-slot]")
+    .first()
+    .waitFor({ state: "attached", timeout: 15_000 })
+    .catch(() => undefined);
   return page.evaluate(
     ({ selector, props }) => {
       const el = [...document.querySelectorAll<HTMLElement>(selector)].find((e) => e.offsetParent !== null);
@@ -212,7 +220,7 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // with components-buttongroup--icons, a list row (the lib's ghost button laid out as a row) with the ghost of the same
 // story (its height may only grow), a field with components-inputgroup--default, a segmented control with
 // components-segmentedcontrol--default. Only ALLOWED differs.
-const V3_LABS = ["tuner-routing", "knowly-answer", "home-message"] as const;
+const V3_LABS = ["tuner-routing", "knowly-carousel", "home-message"] as const;
 
 // Every control of the live layer of the scene, with its kind and its computed style
 async function controlsOf(page: Page, id: string) {

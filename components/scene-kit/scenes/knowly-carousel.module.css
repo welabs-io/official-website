@@ -113,7 +113,7 @@
   justify-items: center;
 }
 
-.cardSlot {
+.pieceSlot {
   display: flex;
   width: 100%;
   min-width: 0;
@@ -121,7 +121,7 @@
   justify-content: center;
 }
 
-.card {
+.piece {
   display: flex;
   width: 100%;
   min-width: 0;
@@ -135,13 +135,13 @@
 }
 
 /* Live: the amber-50 area with its amber ring, raised (the one piece of amber of the frame) */
-.card[data-tone="live"] {
+.piece[data-tone="live"] {
   background: var(--signal-soft);
   box-shadow: 0 0 0 calc(var(--rule) * 2) var(--signal), var(--shadow-raise);
 }
 
 /* Chosen: the decision the frame is about, with the ink ring */
-.card[data-tone="chosen"] {
+.piece[data-tone="chosen"] {
   box-shadow: 0 0 0 calc(var(--rule) * 2) var(--foreground), var(--shadow-raise);
 }
 
@@ -152,18 +152,18 @@
   color: var(--muted-foreground);
 }
 
-.card[data-tone="live"] .kind {
+.piece[data-tone="live"] .kind {
   color: var(--foreground);
 }
 
-.cardTitle {
+.pieceTitle {
   font-size: var(--t-label);
   line-height: var(--line-label);
   font-weight: var(--weight-title);
 }
 
 /* The decision while it lands: its title and count on one baseline, its proofs under them */
-.card[data-big] {
+.piece[data-big] {
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
 }
@@ -396,12 +396,12 @@
   --gap: var(--sp-3);
 }
 
-.track[data-frame="4"] .card {
+.track[data-frame="4"] .piece {
   padding: var(--sp-2) var(--sp-3);
 }
 
 /* The decision stands out of the shrunk line: taller, with the ink ring */
-.track[data-frame="4"] .card[data-tone="chosen"] {
+.track[data-frame="4"] .piece[data-tone="chosen"] {
   padding: var(--sp-3);
 }
 
@@ -441,7 +441,7 @@
 .missing,
 .typing,
 .said {
-  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring), visibility 0s;
+  transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-3) var(--ease-spring), visibility var(--dur-2);
 }
 
 .close[data-in="false"],
@@ -617,12 +617,14 @@
     grid-column: 1 / -1;
     grid-template-columns: subgrid;
     grid-template-rows: auto auto;
+    /* A day with no card yet keeps the step of a row, so the line reads at an even pace */
+    min-height: var(--row-min);
     align-items: center;
     justify-items: stretch;
     row-gap: var(--sp-2);
   }
 
-  .track:not([data-frame="4"]) .cardSlot {
+  .track:not([data-frame="4"]) .pieceSlot {
     grid-row: 1;
     grid-column: 3;
   }
@@ -674,7 +676,7 @@
     display: contents;
   }
 
-  .track[data-frame="4"] .cardSlot,
+  .track[data-frame="4"] .pieceSlot,
   .track[data-frame="4"] .stem {
     display: none;
   }

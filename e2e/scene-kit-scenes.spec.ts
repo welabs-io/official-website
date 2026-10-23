@@ -28,6 +28,12 @@ type Entry = {
   // end is green or neutral, never amber), and the connector (the Relloo's trace with its riding dot) drawn at each of
   // these steps, per width, and never on the settled frame
   handoff?: { 1440: string[]; 390: string[] };
+  // Carousel scenes (brief-v3-carousel): the most pieces of amber a frame may show (default 3; the carousels allow 2),
+  // the widths at which the settled frame keeps its connector (the carousel's last frame may point at its source), and
+  // the number of frames the loop must reach, in order, with the chrome bar's indicator on the same frame
+  amberMax?: number;
+  finalTrace?: (1440 | 390)[];
+  frames?: number;
 };
 
 const SCENES: Entry[] = [
@@ -61,14 +67,19 @@ const SCENES: Entry[] = [
     handoff: { 1440: ["pressed", "taken"], 390: [] },
   },
   {
-    id: "knowly-answer",
+    id: "knowly-carousel",
     figure: /^Knowly/,
-    trigger: /^Financeiro/,
-    triggerRole: "radio",
+    // A citation of the answer (frame 4) replays the answer, its proofs and their traces
+    trigger: /^Reunião · dia 3/,
     final: "done",
-    pairs: 4,
-    cycleMs: 9800,
-    handoff: { 1440: ["s1", "s2", "profile"], 390: [] },
+    // The assistant's head (mark + name) and the note of what is missing (icon + text)
+    pairs: 2,
+    cycleMs: 11900,
+    // Frame 3: each part points up at its day; frame 4: each citation points back at the decision
+    handoff: { 1440: ["asked", "approved", "cite", "done"], 390: [] },
+    amberMax: 2,
+    finalTrace: [1440],
+    frames: 4,
   },
   {
     id: "home-message",
@@ -184,19 +195,22 @@ for (const s of SCENES) {
 
       // ORÇAMENTO DE ÂMBAR E CONECTOR (CENAS V3)
       // Sampled on every animation frame over one loop from the first step: no frame shows more than 3 pieces of amber
-      // (#ffb020 or a blend more than half way to it, as a fill), the settled frame shows none, and the connector is
-      // drawn at each hand-off step of this width and never on the settled frame (the measure of e2e/scene-kit.spec.ts
-      // for the Relloo)
+      // (#ffb020 or a blend more than half way to it, as a fill or as the ring of an area; a carousel allows 2), the
+      // settled frame shows none, and the connector is drawn at each hand-off step of this width and never on the
+      // settled frame unless the scene keeps it there (the measure of e2e/scene-kit.spec.ts for the Relloo). A carousel
+      // also reaches each of its frames, in order, with the indicator of the chrome bar on the frame shown
       const handoff = s.handoff;
+      const amberMax = s.amberMax ?? 3;
       if (handoff) {
-        test(`at most 3 amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
+        test(`at most ${amberMax} amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
           test.setTimeout(60_000);
           await page.setViewportSize({ width, height: 900 });
           await page.goto(LAB);
           await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
           await page.getByRole("button", { name: "Recomeçar" }).click();
           const seen = await page.evaluate(async (ms) => {
-            const stage = document.querySelector('[role="figure"] [data-scene]')!;
+            const figure = document.querySelector('[role="figure"]')!;
+            const stage = figure.querySelector("[data-scene]")!;
             const live = stage.lastElementChild!;
             const amber = (c: string) => {
               const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
@@ -205,25 +219,44 @@ for (const s of SCENES) {
               const a = m[4] === undefined ? 1 : Number(m[4]);
               return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
             };
+            // Every colour of a shadow list (an amber ring is drawn as a box-shadow)
+            const shadowColours = (s: string) => s.match(/rgba?\([^)]*\)/g) ?? [];
             const ambers: Record<string, number> = {};
             const traced: Record<string, boolean> = {};
+            const frames: string[] = [];
+            let offIndicator = 0;
             const t0 = performance.now();
             while (performance.now() - t0 < ms) {
               await new Promise((r) => requestAnimationFrame(r));
               const step = stage.getAttribute("data-step")!;
               const n = [...live.querySelectorAll("*")].filter((el) => {
                 const cs = getComputedStyle(el);
-                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
+                return (
+                  el.getBoundingClientRect().width > 0 &&
+                  Number(cs.opacity) > 0.05 &&
+                  (amber(cs.backgroundColor) || shadowColours(cs.boxShadow).some(amber))
+                );
               }).length;
               ambers[step] = Math.max(ambers[step] ?? 0, n);
               traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+              const frame = live.querySelector("[data-frame]")?.getAttribute("data-frame");
+              if (frame && frames.at(-1) !== frame) frames.push(frame);
+              const current = figure.querySelector('[aria-current="step"]')?.textContent;
+              if (frame && current !== frame) offIndicator += 1;
             }
-            return { ambers, traced };
+            return { ambers, traced, frames, offIndicator };
           }, s.cycleMs + 500);
-          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
+          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(amberMax);
           expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
           for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
-          expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
+          const keeps = s.finalTrace?.includes(width as 1440 | 390) ?? false;
+          expect(seen.traced[s.final] ?? false, keeps ? "the settled frame keeps its connector" : "no connector on the settled frame").toBe(keeps);
+          if (s.frames) {
+            // From the first frame, every frame in order (the loop may come back to the first one at the end)
+            const order = Array.from({ length: s.frames }, (_, i) => String(i + 1));
+            expect(seen.frames.slice(0, s.frames), `frames reached: ${seen.frames.join(", ")}`).toEqual(order);
+            expect(seen.offIndicator, "the chrome bar's indicator shows the frame on screen").toBe(0);
+          }
         });
       }
     }

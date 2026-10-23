@@ -74,11 +74,16 @@ const EVENTS: readonly LineEvent[] = [
 ];
 
 // The proofs of the decision, with the Domus glyphs (Video for a meeting, FileText for a document)
-type Proof = { id: string; label: string; cite: string; icon: LucideIcon; from: string };
+type Proof = { id: string; label: string; cite: string; icon: LucideIcon };
 const PROOFS: readonly Proof[] = [
-  { id: "meeting", label: "Reunião", cite: "Reunião · dia 3", icon: Video, from: "decision" },
-  { id: "proposal", label: "Proposta", cite: "Proposta 905 · dia 3", icon: FileText, from: "proofs" },
+  { id: "meeting", label: "Reunião", cite: "Reunião · dia 3", icon: Video },
+  { id: "proposal", label: "Proposta", cite: "Proposta 905 · dia 3", icon: FileText },
 ];
+
+// A click on a citation replays the answer: the proofs are cited again and their traces run back to the decision. The
+// kit gives the scene back 8 s after a gesture, so a take must reach the settled frame well within that (from here,
+// 3.8 s); a take from frame 2 (9.5 s) would be cut before the frame settles
+const TAKE_FROM = "answer";
 
 // Who took part, under the day they acted on (no name, no face: a role and a number)
 type Part = { id: string; who: string; acts: readonly string[]; note?: string; on: EventId; step: string };
@@ -189,12 +194,12 @@ function DecisionLive({ beat }: { beat: Beat }) {
 }
 
 function EventCard({ ev, look, beat }: { ev: LineEvent; look: Look; beat: Beat }) {
-  if (look.card === "none") return <span className={k.cardSlot} />;
+  if (look.card === "none") return <span className={k.pieceSlot} />;
   const live = look.card === "live";
   return (
-    <span className={k.cardSlot}>
+    <span className={k.pieceSlot}>
       <span
-        className={`${k.card} ${live ? k.land : ""}`}
+        className={`${k.piece} ${live ? k.land : ""}`}
         data-card={ev.id}
         data-tone={look.card}
         data-big={live && ev.id === "decision" ? "" : undefined}
@@ -204,7 +209,7 @@ function EventCard({ ev, look, beat }: { ev: LineEvent; look: Look; beat: Beat }
         ) : (
           <>
             <span className={k.kind}>{ev.kind}</span>
-            <b className={k.cardTitle}>{ev.title}</b>
+            <b className={k.pieceTitle}>{ev.title}</b>
           </>
         )}
       </span>
@@ -273,8 +278,7 @@ function Head({ title, note, big }: { title: string; note: string; big?: boolean
 
 // O ASSISTENTE QUE RESPONDE PELA MEMÓRIA
 // The panel of frame 4: who answers and where, the subject it reads (the lib's Badge), the question, the answer in a big
-// line with its sentence, the 2 proofs cited (the lib's outline Button: a click goes back to the decision and its
-// proofs), and the note of what is still missing. Every piece holds its place from the frame's start and lights on its
+// line with its sentence, the 2 proofs cited (the lib's outline Button: a click replays the answer and its traces), and the note of what is still missing. Every piece holds its place from the frame's start and lights on its
 // step, so the panel never moves under the reader.
 function Assistant({ beat }: { beat: Beat }) {
   const answered = beat.reached("answer");
@@ -296,8 +300,10 @@ function Assistant({ beat }: { beat: Beat }) {
       <span className={k.answer} data-answer="">
         <span className={k.label}>{COPY.answerLabel}</span>
         <span className={k.answerBody}>
+          {/* Mounted only while it types: its dots loop forever, and a hidden loop would keep the scene from ever
+              holding still */}
           <span className={k.typing} data-in={!answered} aria-hidden="true">
-            <TypingDots size={5} gap={3} />
+            {answered ? null : <TypingDots size={5} gap={3} />}
           </span>
           <span className={k.said} data-in={answered}>
             <b className={k.answerTitle}>{COPY.answer}</b>
@@ -318,7 +324,7 @@ function Assistant({ beat }: { beat: Beat }) {
               className={k.cite}
               data-cite={proof.id}
               tabIndex={cited ? undefined : -1}
-              onClick={() => beat.take(proof.from)}
+              onClick={() => beat.take(TAKE_FROM)}
             >
               {proof.cite}
             </ActionButton>
