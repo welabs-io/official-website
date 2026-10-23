@@ -22,8 +22,12 @@ describe("the Knowly memory graph", () => {
     expect(far.length).toBeGreaterThan(100);
     for (const n of far) expect(inBrain(n.x, n.y), n.id).toBe(true);
     // Both lobes are filled
-    expect(far.filter((n) => n.x < -BRAIN_HALF.x / 2).length).toBeGreaterThan(20);
-    expect(far.filter((n) => n.x > BRAIN_HALF.x / 2).length).toBeGreaterThan(20);
+    expect(far.filter((n) => n.x < -BRAIN_HALF.x / 2).length).toBeGreaterThan(
+      20,
+    );
+    expect(far.filter((n) => n.x > BRAIN_HALF.x / 2).length).toBeGreaterThan(
+      20,
+    );
   });
 
   it("ties every link to two nodes, always as a curve", () => {

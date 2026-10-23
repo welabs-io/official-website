@@ -118,13 +118,13 @@ const SCENES: Entry[] = [
   {
     id: "knowly-carousel",
     figure: /^Knowly/,
-    // v4, the memory graph: the frame indicator (frame 3 plays 7.4 s to the end, inside the kit's 8 s of human idle)
+    // v4, the memory graph: the frame indicator (frame 3 plays 7.7 s to the end, inside the kit's 8 s of human idle)
     trigger: /^Momento 3$/,
     triggerRole: "radio",
     final: "done",
     // The four items of the legend (swatch + word) on the settled frame
     pairs: 4,
-    cycleMs: 12600,
+    cycleMs: 12900,
     // The graph's links are drawn traces (pathLength): the live link of each frame is drawn at its step, and the
     // whole memory stays drawn on the settled frame
     handoff: {

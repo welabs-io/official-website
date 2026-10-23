@@ -73,7 +73,8 @@ export function inBrain(x: number, y: number) {
   const dy = (y - LOBE.cy) / LOBE.ry;
   if (dx * dx + dy * dy > 1) return false;
   // The fissure between the lobes, open towards the top and the bottom edges
-  if (Math.abs(x) < 110 + Math.abs(y) * 0.05 && Math.abs(y) > 1100) return false;
+  if (Math.abs(x) < 110 + Math.abs(y) * 0.05 && Math.abs(y) > 1100)
+    return false;
   return true;
 }
 
@@ -81,7 +82,11 @@ export function inBrain(x: number, y: number) {
 const inCore = (x: number, y: number) => (x / 1350) ** 2 + (y / 980) ** 2 < 1;
 
 // Curved link from a to b: the control point off the middle, across the line, by `bend` of its length
-function curve(a: { x: number; y: number }, b: { x: number; y: number }, bend: number) {
+function curve(
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  bend: number,
+) {
   const mx = (a.x + b.x) / 2;
   const my = (a.y + b.y) / 2;
   const dx = b.x - a.x;
@@ -160,7 +165,10 @@ const CORE_LINKS: readonly [string, string, GraphStep, LinkLevel, number][] = [
 ];
 
 // The live link of each frame and its live node, if any (the amber of the frame, brief v4: the newest link is amber)
-export const LIVE: Record<1 | 2 | 3 | 4, { link: string; node?: string; step: GraphStep }> = {
+export const LIVE: Record<
+  1 | 2 | 3 | 4,
+  { link: string; node?: string; step: GraphStep }
+> = {
   1: { link: "subject-meeting", step: "f1-link" },
   2: { link: "proposal-decision", node: "decision", step: "f2-decision" },
   3: { link: "billing-rules", node: "rules", step: "f3-bridge" },
@@ -195,9 +203,25 @@ export function buildGraph(seed = GRAPH_SEED) {
         wave: 0,
       };
       facts.push(f);
-      links.push({ id: `${hub.id}-${f.id}`, from: hub.id, to: f.id, step: "f3-subjects", level: 14, d: "", wave: 0 });
+      links.push({
+        id: `${hub.id}-${f.id}`,
+        from: hub.id,
+        to: f.id,
+        step: "f3-subjects",
+        level: 14,
+        d: "",
+        wave: 0,
+      });
       if (i > 0 && rand() < 0.55)
-        links.push({ id: `${f.id}-n`, from: facts[i - 1].id, to: f.id, step: "f3-subjects", level: 8, d: "", wave: 0 });
+        links.push({
+          id: `${f.id}-n`,
+          from: facts[i - 1].id,
+          to: f.id,
+          step: "f3-subjects",
+          level: 8,
+          d: "",
+          wave: 0,
+        });
     }
     nodes.push(...facts);
   }
@@ -210,7 +234,14 @@ export function buildGraph(seed = GRAPH_SEED) {
     const y = (rand() * 2 - 1) * BRAIN_HALF.y;
     if (!inBrain(x, y) || inCore(x, y)) continue;
     if (taken.some((h) => Math.hypot(h.x - x, h.y - y) < FAR.spacing)) continue;
-    const hub: GraphNode = { id: `h${far.length}`, x, y, kind: "hub", step: "f4-whole", wave: 0 };
+    const hub: GraphNode = {
+      id: `h${far.length}`,
+      x,
+      y,
+      kind: "hub",
+      step: "f4-whole",
+      wave: 0,
+    };
     far.push(hub);
     taken.push(hub);
   }
@@ -224,12 +255,35 @@ export function buildGraph(seed = GRAPH_SEED) {
       const x = hub.x + Math.cos(a) * r;
       const y = hub.y + Math.sin(a) * r;
       if (!inBrain(x, y)) continue;
-      const f: GraphNode = { id: `${hub.id}-${i}`, x, y, kind: "fact", step: "f4-whole", wave: 0 };
+      const f: GraphNode = {
+        id: `${hub.id}-${i}`,
+        x,
+        y,
+        kind: "fact",
+        step: "f4-whole",
+        wave: 0,
+      };
       if (facts.length && rand() < 0.5)
-        links.push({ id: `${f.id}-n`, from: facts[facts.length - 1].id, to: f.id, step: "f4-whole", level: 8, d: "", wave: 0 });
+        links.push({
+          id: `${f.id}-n`,
+          from: facts[facts.length - 1].id,
+          to: f.id,
+          step: "f4-whole",
+          level: 8,
+          d: "",
+          wave: 0,
+        });
       facts.push(f);
       // Far away the lines step down a level (brief v4: thinner and lighter far than near)
-      links.push({ id: `${hub.id}-${f.id}`, from: hub.id, to: f.id, step: "f4-whole", level: 8, d: "", wave: 0 });
+      links.push({
+        id: `${hub.id}-${f.id}`,
+        from: hub.id,
+        to: f.id,
+        step: "f4-whole",
+        level: 8,
+        d: "",
+        wave: 0,
+      });
     }
     nodes.push(...facts);
   }
@@ -239,18 +293,38 @@ export function buildGraph(seed = GRAPH_SEED) {
   for (const hub of far) {
     const near = subjects
       .filter((h) => h !== hub)
-      .sort((a, b) => Math.hypot(a.x - hub.x, a.y - hub.y) - Math.hypot(b.x - hub.x, b.y - hub.y))
+      .sort(
+        (a, b) =>
+          Math.hypot(a.x - hub.x, a.y - hub.y) -
+          Math.hypot(b.x - hub.x, b.y - hub.y),
+      )
       .slice(0, FAR.neighbours);
     for (const other of near) {
       const key = [hub.id, other.id].sort().join("|");
       if (paired.has(key)) continue;
       paired.add(key);
-      links.push({ id: `${hub.id}-${other.id}`, from: other.id, to: hub.id, step: "f4-whole", level: 14, d: "", wave: 0 });
+      links.push({
+        id: `${hub.id}-${other.id}`,
+        from: other.id,
+        to: hub.id,
+        step: "f4-whole",
+        level: 14,
+        d: "",
+        wave: 0,
+      });
     }
   }
   // The newest link of the whole memory: the farthest subject of the right lobe reaches a subject of frame 3
   const edge = far.reduce((a, b) => (b.x > a.x ? b : a));
-  links.push({ id: "new-link", from: "block", to: edge.id, step: "f4-new", level: 30, d: "", wave: 0 });
+  links.push({
+    id: "new-link",
+    from: "block",
+    to: edge.id,
+    step: "f4-new",
+    level: 30,
+    d: "",
+    wave: 0,
+  });
 
   for (const [from, to, step, level] of CORE_LINKS)
     links.push({ id: `${from}-${to}`, from, to, step, level, d: "", wave: 0 });
@@ -264,13 +338,22 @@ export function buildGraph(seed = GRAPH_SEED) {
     const hi = Math.max(...group.map(dist));
     for (const n of group) n.wave = hi > lo ? (dist(n) - lo) / (hi - lo) : 0;
   }
-  const bends = new Map(CORE_LINKS.map(([from, to, , , b]) => [`${from}-${to}`, b]));
+  const bends = new Map(
+    CORE_LINKS.map(([from, to, , , b]) => [`${from}-${to}`, b]),
+  );
   for (const l of links) {
     const a = all.get(l.from)!;
     const b = all.get(l.to)!;
-    l.d = curve(a, b, bends.get(l.id) ?? (l.id === "new-link" ? -0.18 : bend()));
+    l.d = curve(
+      a,
+      b,
+      bends.get(l.id) ?? (l.id === "new-link" ? -0.18 : bend()),
+    );
     // A link starts once both of its ends of the same step are in
-    l.wave = Math.max(a.step === l.step ? a.wave : 0, b.step === l.step ? b.wave : 0);
+    l.wave = Math.max(
+      a.step === l.step ? a.wave : 0,
+      b.step === l.step ? b.wave : 0,
+    );
   }
   return { nodes, links, newEdge: edge.id };
 }
