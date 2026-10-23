@@ -2,18 +2,28 @@
 // CONECTOR ENTRE PEÇAS DE UMA CENA
 // A trace drawn over a scene from one element to another (a channel row to the history entry it became): an SVG laid
 // over its positioned parent, measured from the layout, never from a guess. It draws itself on (stroke from 0 to the
-// full length) and a small ink dot travels along it, both in CSS (components/scene-kit/connector.module.css), so the
-// kit's off-screen pause and reduced motion stop them like any other animation. Never amber: amber is an area, never
-// a thin line (Welabs UI v3). It measures in a ref callback that re-runs when `from` or `to` change (React 19 ref
-// cleanup, no effect) and again on every resize or end of an animation inside the parent (an entry landing moves the
-// target), from offsetTop/offsetLeft, so the transform of an entry still arriving never bends the trace.
+// full length), a small ink dot travels along it and an arrowhead lands at its end, all in CSS
+// (components/scene-kit/connector.module.css), so the kit's off-screen pause and reduced motion stop them like any
+// other animation. A solid ink line (v3 carousel brief, 2026-10-22: solid, 2 to 3.5 px, with an arrow, routed outside
+// the pieces); never amber: amber is an area, never a line. It measures in a ref callback that re-runs when its inputs
+// change (React 19 ref cleanup, no effect) and again on every resize or end of an animation inside the parent (an
+// entry landing moves the target), from offsetTop/offsetLeft, so the transform of an entry still arriving never bends
+// the trace.
+// Three routes: `curve` (the default, an S across the gap of two side-by-side pieces), `elbow` (out of the source,
+// down or up a lane in the gutter between the two, into the target: the trace never crosses a piece) and `drop`
+// (straight down from a piece to the one under it, on the centre of their overlap).
 import { useCallback, useState } from "react";
 import c from "./connector.module.css";
 
 type Point = { x: number; y: number };
+type Box = { x: number; y: number; w: number; h: number };
+export type ConnectorRoute = "curve" | "elbow" | "drop";
+
+// Half the width (and the depth) of the arrowhead, in px of the layout
+const HEAD = 6;
 
 // Position of an element in the box of `root`, from the layout only (transforms ignored)
-function offsetIn(el: HTMLElement, root: HTMLElement) {
+function offsetIn(el: HTMLElement, root: HTMLElement): Box | null {
   let x = 0;
   let y = 0;
   let node: HTMLElement | null = el;
@@ -31,9 +41,39 @@ const visible = (root: HTMLElement, selector: string) =>
   [...root.querySelectorAll<HTMLElement>(selector)].find((el) => el.offsetParent !== null) ?? null;
 
 // From the right edge of `from` to the left edge of `to`, with horizontal tangents (an S across the gap)
-function trace(a: Point, b: Point) {
+function curve(a: Point, b: Point) {
   const dx = Math.max(24, (b.x - a.x) * 0.9);
   return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+}
+
+// The arrowhead at `tip`, pointing right or down
+const head = (tip: Point, down: boolean) =>
+  down
+    ? `M ${tip.x - HEAD} ${tip.y - HEAD} L ${tip.x} ${tip.y} L ${tip.x + HEAD} ${tip.y - HEAD}`
+    : `M ${tip.x - HEAD} ${tip.y - HEAD} L ${tip.x} ${tip.y} L ${tip.x - HEAD} ${tip.y + HEAD}`;
+
+type Trace = { d: string; start: Point; head: string };
+
+// The path of a route between two boxes, or null when the pieces are not laid out for it (a phone stacks what a
+// desktop puts side by side, and a trace would then cross the pieces)
+function route(kind: ConnectorRoute, a: Box, b: Box, inset: number, gap: number, lane: Box | null): Trace | null {
+  if (kind === "drop") {
+    const left = Math.max(a.x, b.x);
+    const right = Math.min(a.x + a.w, b.x + b.w);
+    if (right <= left || b.y <= a.y + a.h) return null;
+    const x = (left + right) / 2;
+    const start = { x, y: a.y + a.h - inset };
+    const tip = { x, y: b.y - gap };
+    return { d: `M ${start.x} ${start.y} V ${tip.y}`, start, head: head(tip, true) };
+  }
+  if (a.x + a.w > b.x) return null;
+  const start = { x: a.x + a.w - inset, y: a.y + a.h / 2 };
+  const tip = { x: b.x - gap, y: b.y + b.h / 2 };
+  if (kind === "curve") return { d: curve(start, tip), start, head: head(tip, false) };
+  // The lane: midway between the right edge of the lane piece (the source's container) and the target
+  const from = lane ? lane.x + lane.w : start.x;
+  const x = Math.round((from + tip.x) / 2);
+  return { d: `M ${start.x} ${start.y} H ${x} V ${tip.y} H ${tip.x}`, start, head: head(tip, false) };
 }
 
 export function Connector({
@@ -41,17 +81,20 @@ export function Connector({
   to,
   inset = 8,
   gap = 6,
+  route: kind = "curve",
+  lane,
 }: {
-  // Selectors inside the positioned parent; the trace runs only while both are laid out and side by side
+  // Selectors inside the positioned parent; the trace runs only while both are laid out for its route
   from: string;
   to: string;
   // How far inside `from` the trace starts, and how far before `to` it ends
   inset?: number;
   gap?: number;
+  route?: ConnectorRoute;
+  // For an elbow: the piece whose right edge bounds the gutter the trace runs down (the source's container)
+  lane?: string;
 }) {
-  const [d, setD] = useState<string | null>(null);
-  // Where the trace leaves its source: an anchor dot ties the line to the row
-  const [start, setStart] = useState<Point | null>(null);
+  const [trace, setTrace] = useState<Trace | null>(null);
 
   const ref = useCallback(
     (svg: SVGSVGElement | null) => {
@@ -62,14 +105,9 @@ export function Connector({
         const b = visible(root, to);
         const pa = a && offsetIn(a, root);
         const pb = b && offsetIn(b, root);
-        // Only side by side: on a phone the source sits above the history and a trace would cross the entries
-        if (!pa || !pb || pa.x + pa.w > pb.x) {
-          setD(null);
-          return;
-        }
-        const start = { x: pa.x + pa.w - inset, y: pa.y + pa.h / 2 };
-        setD(trace(start, { x: pb.x - gap, y: pb.y + pb.h / 2 }));
-        setStart((prev) => (prev && prev.x === start.x && prev.y === start.y ? prev : start));
+        const l = lane ? visible(root, lane) : null;
+        const next = pa && pb ? route(kind, pa, pb, inset, gap, l && offsetIn(l, root)) : null;
+        setTrace((prev) => (prev?.d === next?.d && prev?.head === next?.head ? prev : next));
       };
       measure();
       const observer = new ResizeObserver(measure);
@@ -80,17 +118,18 @@ export function Connector({
         root.removeEventListener("animationend", measure);
       };
     },
-    [from, to, inset, gap],
+    [from, to, inset, gap, kind, lane],
   );
 
   return (
     <svg ref={ref} className={c.layer} aria-hidden="true">
-      {d ? (
+      {trace ? (
         // Keyed by the target: a new hand-off draws again, a re-measure of the same one only moves it
         <g key={to}>
-          {start ? <circle cx={start.x} cy={start.y} r={3} className={c.anchor} /> : null}
-          <path d={d} pathLength={1} className={c.path} />
-          <circle r={3} className={c.dot} style={{ offsetPath: `path("${d}")` }} />
+          <circle cx={trace.start.x} cy={trace.start.y} r={3} className={c.anchor} />
+          <path d={trace.d} pathLength={1} className={c.path} />
+          <path d={trace.head} className={c.head} />
+          <circle r={3} className={c.dot} style={{ offsetPath: `path("${trace.d}")` }} />
         </g>
       ) : null}
     </svg>

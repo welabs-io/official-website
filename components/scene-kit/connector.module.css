@@ -1,7 +1,9 @@
 /* CONECTOR ENTRE PEÇAS DE UMA CENA */
-/* The trace of components/scene-kit/Connector.tsx: the sand control edge (--input) at the dashed width, drawn on with
-   the in-out curve, and an ink dot that rides it once with the out curve. Under the content it would cross, above the
-   panes' paint, deaf to the pointer. Every value is a token of app/lib.css. */
+/* The trace of components/scene-kit/Connector.tsx: a solid ink line at the active bar's weight (3 px; the v3 carousel
+   brief asks 2 to 3.5 px, solid, with an arrow), drawn on with the in-out curve; a light bead rides it once with the out
+   curve and the arrowhead lands on the spring when the line arrives. It stays drawn (the link keeps reading at full
+   weight). Under the content it would cross, above the panes' paint, deaf to the pointer. Every value is a token of
+   app/lib.css. */
 .layer {
   position: absolute;
   inset: 0;
@@ -12,31 +14,52 @@
   pointer-events: none;
 }
 
-/* Drawn on, then it recedes once the line has landed (the hand-off is done, the link stays readable but quiet) */
 .path {
   fill: none;
-  stroke: var(--input);
-  stroke-width: var(--rule-dashed);
+  stroke: var(--foreground);
+  stroke-width: var(--bar-active);
   stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation:
-    draw var(--dur-3) var(--ease-in-out) forwards,
-    recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  animation: draw var(--dur-3) var(--ease-in-out) forwards;
 }
 
-/* The anchor on the row: a sand dot where the trace leaves, receding with it */
+/* The arrowhead: the same stroke, in place once the line reaches it */
+.head {
+  fill: none;
+  stroke: var(--foreground);
+  stroke-width: var(--bar-active);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: land var(--dur-2) var(--ease-spring) var(--dur-3) forwards;
+}
+
+/* The anchor on the source: an ink dot where the trace leaves */
 .anchor {
-  fill: var(--input);
-  animation: recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  fill: var(--foreground);
 }
 
 .dot {
-  fill: var(--foreground);
+  fill: var(--card);
   offset-rotate: 0deg;
   offset-distance: 0%;
   opacity: 0;
   animation: ride var(--dur-3) var(--ease-out) var(--dur-1) forwards;
+}
+
+/* Reduced motion drops every animation of the kit (scene-kit.module.css): a trace on the settled frame is then drawn
+   whole, its arrowhead in place */
+@media (prefers-reduced-motion: reduce) {
+  .path {
+    stroke-dashoffset: 0;
+  }
+  .head {
+    opacity: 1;
+  }
 }
 
 @keyframes draw {
@@ -45,9 +68,14 @@
   }
 }
 
-@keyframes recede {
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
   to {
-    opacity: 0.45;
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

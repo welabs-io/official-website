@@ -92,15 +92,21 @@ const apiOf = (
   restart: flags.ghost ? noop : timeline.restart,
 });
 
+// A slot of the chrome bar: fixed, or drawn from the live scene
+type ChromeSlot = ReactNode | ((scene: SceneApi) => ReactNode);
+const slot = (value: ChromeSlot, scene: SceneApi) => (typeof value === "function" ? value(scene) : value);
+
 type SceneProps = {
   // Name of the scene (data-scene, the lab's address)
   id: string;
   // Accessible name of the window
   label: string;
-  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end
-  product: string;
-  title: string;
-  tools?: ReactNode;
+  // Chrome bar: the product and the screen of the product (a breadcrumb), and the scene's own tools at its end. Each
+  // may follow the scene (a function of `scene`): a carousel names the screen of its current frame and shows which
+  // frame it is on (relloo-carousel)
+  product: ChromeSlot;
+  title: ChromeSlot;
+  tools?: ChromeSlot;
   // Either the steps, or a clock made with useSceneTimeline
   steps?: readonly SceneStep[];
   timeline?: SceneTimeline;
@@ -160,11 +166,11 @@ export function Scene({
       aria-label={label}
     >
       <div className={k.chrome}>
-        <span className={k.product}>{product}</span>
+        <span className={k.product}>{slot(product, api)}</span>
         {/* lucide's own stroke, as every icon of the Domus */}
         <ChevronRight className={k.chevron} aria-hidden="true" />
-        <span className={k.title}>{title}</span>
-        {tools ? <span className={k.tools}>{tools}</span> : null}
+        <span className={k.title}>{slot(title, api)}</span>
+        {tools ? <span className={k.tools}>{slot(tools, api)}</span> : null}
       </div>
       <div
         ref={ref}
