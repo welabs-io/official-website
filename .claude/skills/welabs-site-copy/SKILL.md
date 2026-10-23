@@ -49,3 +49,8 @@ Home: 200 a 300 palavras visíveis. Produto: 110 a 230. O texto desenhado dentro
 `known` no JSON é a única lista de tolerância. O vitest reprova se um item tolerado **sumir** do site, para que a lista encolha junto com o código. Ao corrigir, apague o item. Nunca acrescente item para fazer um teste passar: corrija o texto.
 
 Rotas e identificadores ficam sempre em inglês (`/products/domus`), e o texto, em português.
+
+## Ver também
+
+- `welabs-site-scenes`: o que uma cena pode mostrar (aperitivo: efeito, nunca mecanismo; pergunta final e "Agendar uma demonstração"), o fio de registros (Contato 4821, Pedido 1234...) e o modelo da ficha de conceito, cujo "texto em tela" tem de passar por estas regras.
+- `welabs-site-ui`: tokens, primitivas e a fronteira da lib.

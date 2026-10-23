@@ -1,17 +1,19 @@
 ---
 name: welabs-site-ui
-description: Padrão de UI do site Welabs (welabs-website) - como montar qualquer bloco, cena, play ou seção com @imagineapps-team/react primeiro, pela fronteira components/lib/ui.tsx e pela camada única de tema app/lib.css, com a paleta creme, a escala tipográfica, alinhamento, aplicação de marca, as lacunas que ficam locais e os efeitos proibidos. Use antes de criar ou alterar qualquer componente em components/**, folha .module.css, cena, play, cabeçalho de seção, CTA ou token de cor/tipo deste repositório, e ao perguntar "a lib já tem isso?" aqui.
+description: Padrão de UI do site Welabs (welabs-website) - tokens, primitivas e a fronteira da lib. Como montar qualquer bloco ou seção com @imagineapps-team/react primeiro, pela fronteira components/lib/ui.tsx e pela camada única de tema app/lib.css, com a paleta neutra vigente (tinta #121212, secundário #55565b, borda de campo clara, primária preta), as primitivas de controle com ícone, a escala tipográfica, o alinhamento, a aplicação de marca, as lacunas que ficam locais e os efeitos proibidos. Use antes de criar ou alterar qualquer componente em components/**, folha .module.css, cabeçalho de seção, CTA ou token de cor/tipo deste repositório, e ao perguntar "a lib já tem isso?" aqui. Cena, carrossel e play de produto (arquétipo, aperitivo, orçamento de âmbar, continuidade, testes) ficam em welabs-site-scenes.
 ---
 
 # UI do site Welabs
 
-Toda necessidade de UI vai **primeiro** para `@imagineapps-team/react` (0.18.0, `package.json`). CSS à mão só para o que a lib não tem e que está na lista de lacunas abaixo. As regras daqui são cobradas por teste; se um teste reprovar, corrija o código, não o teste.
+Toda necessidade de UI vai **primeiro** para `@imagineapps-team/react` (versão em `package.json`). CSS à mão só para o que a lib não tem e que está na lista de lacunas abaixo. As regras daqui são cobradas por teste; se um teste reprovar, corrija o código, não o teste.
+
+**Escopo desta skill:** tokens, primitivas e a fronteira da lib, para o site inteiro. Cena, carrossel e play de produto (conceito, arquétipo, aperitivo, orçamento de âmbar, conectores, continuidade, método de teste) estão em `welabs-site-scenes`; texto visível, em `welabs-site-copy`. Movimento e easing: `welabs-site-scenes/references/continuity.md`.
 
 ## 1. Procure na lib, nesta ordem
 
-1. **MCP** `mcp__imagine-react-lib__search_component` → `get_component` (props, quando usar e quando não usar). Carregue com `ToolSearch` (`select:mcp__imagine-react-lib__search_component,mcp__imagine-react-lib__get_component`). É a busca mais barata.
+1. **MCP** `mcp__imagine-react-lib__search_component` -> `get_component` (props, quando usar e quando não usar). Carregue com `ToolSearch` (`select:mcp__imagine-react-lib__search_component,mcp__imagine-react-lib__get_component`). É a busca mais barata.
 2. **`https://react-lib.welabs.space/llms.txt`**, quando o MCP não responder.
-3. **`node_modules/@imagineapps-team/react/dist/<entrada>.d.ts`**, que é a verdade da versão **instalada**. O MCP serve a publicada, e as duas podem divergir. APIs de tema não estão no registry: `get_api defineBrand` responde "não existe", mas `defineBrand` e `defineBrandInputSchema` existem em `dist/theme/brand.d.ts:1212`.
+3. **`node_modules/@imagineapps-team/react/dist/<entrada>.d.ts`**, que é a verdade da versão **instalada**. O MCP serve a publicada, e as duas podem divergir. APIs de tema não estão no registry: `get_api defineBrand` responde "não existe", mas `defineBrand` e `defineBrandInputSchema` existem em `dist/theme/brand.d.ts`.
 
 Nunca recomende símbolo de memória. Antes de citar uma prop, confira no MCP ou no `.d.ts`.
 
@@ -19,154 +21,104 @@ Peers: `recharts` e `@tanstack/react-table` **não estão instalados**. `KpiCard
 
 ## 2. Fronteira de import (teste: `components/lib/ui-boundary.test.ts`)
 
-- O pacote não traz `"use client"` (0 ocorrências em `dist/ui/index.js` e `dist/ui/effects.js`). Por isso **só `components/lib/*.tsx` importa `@imagineapps-team/react/*`**, e o resto do site importa de `@/components/lib/ui`.
+- O pacote não traz `"use client"`. Por isso **só `components/lib/*.tsx` importa `@imagineapps-team/react/*`**, e o resto do site importa de `@/components/lib/ui` (e `@/components/lib/scene` para o kit de cenas).
 - Para precisar de outra entrada (`ui/effects`, `ui/surfaces`, `charts`, `ui/data-table`), crie um irmão com `"use client"` (por exemplo `components/lib/effects.tsx`) e reexporte só os nomes usados. Deep import não resolve (`exports` sem wildcard).
 - Primitiva de UI (botão, input, select, textarea, tabela, badge/chip/pill/tag, card) **não se escreve à mão** em `components/**`:
   - nenhum `<button>`, `<table>`, `<select>`, `<textarea>` ou `<input>` de texto nativo;
   - nenhuma classe CSS com nome de primitiva (`.badge`, `.chip`, `.pill`, `.tag`, `.card`, `.button`, `.btn`, `.input`, `.field`, `.table`, ou um sufixo como `noteCard`), a não ser quando a classe só posiciona um componente da lib (`<Badge className={house.tag}>`).
-- **Exceção permanente:** `<input type="checkbox|radio">` com `<label htmlFor>` como máquina de estado CSS dos plays e da casa (`components/plays/parts.tsx:70-98`, `components/template/Home.tsx:248`). `scripts/check-portfolio.mjs:243-247` exige esse controle nativo.
+- **Exceção permanente:** `<input type="checkbox|radio">` com `<label htmlFor>` como máquina de estado CSS dos plays e da casa (`components/plays/parts.tsx`, `components/template/Home.tsx`). `scripts/check-portfolio.mjs` exige esse controle nativo.
 - O que já existe fora da regra está numa lista **explícita** de falhas conhecidas no próprio teste, cada item com a fase que o remove. Item corrigido sai da lista, e o teste reprova se a lista citar algo que não existe mais.
 
 ## 3. Uma camada de tema só
 
-- **`app/lib.css` é o único lugar** que liga os tokens de papel da lib às cores do site. O bloco "SUPERFÍCIES CREME DO DOMUS" (`app/lib.css:57-85`, decisão do operador de 22/10) sobrescreve o preset `welabs` da 0.18.0, que tem superfícies brancas e cinzas neutros (`dist/theme/brands/welabs.css`), com estes valores:
-  - `--background` e `--popover`: creme 50;
-  - `--card`: areia 100;
-  - `--muted`, `--accent` e `--border`: areia 200;
-  - `--edge-subtle`: `var(--border)`, a linha da própria lib (Separator e anel do Card);
-  - `--input` e `--indicator-muted`: areia 600;
-  - `--muted-foreground`: areia 700.
-
-  Tinta, âmbar (`--primary`, `--primary-soft`) e status vêm do preset sem mudança. O arquivo **não** mexe em `--chart-*`, sombras nem raios de cor; os raios e as alturas de controle ficam no bloco "CAMADA DO SITE".
+- **`app/lib.css` é o único lugar** que liga os tokens de papel da lib às cores do site. O bloco **PAPÉIS DE COR: WELABS UI V3 SOBRE O PRESET** sobrescreve o preset `welabs` da lib (decisão do operador de 22/10, que aposentou o creme e a areia: a areia tinha a temperatura do âmbar e o âmbar se dissolvia). Dois temas sob o interruptor da lib: claro (`:root`, `[data-theme="welabs"]`) e escuro (`[data-mode="dark"]`).
 - A médio prazo, a forma oficial é `defineBrand` (`@imagineapps-team/react/theme/brand`), validada antes com `defineBrandInputSchema`.
-- É **proibido** override de cor por componente: nada de `className="bg-[#F3ECDD]"`, `style={{ color: "#..." }}`, hex cru em folha de componente ou bloco `[data-theme="welabs"]` em outra folha. Papel de cor que falta vira token novo em `app/lib.css`, como `--indicator-muted`. Efeito com cor própria (`TextShimmer highlightColor`, `BorderBeam color`) recebe `var(--primary)` por prop, centralizado no wrapper de `components/lib/`.
-- Componente da lib que pinta por estilo inline não se corrige com regra de classe, porque o inline vence. O `TypingDots` pinta cada ponto com `background-color: currentColor` inline, por isso a cor dos pontos vem de `color` no `[data-slot="typing-dots"]` (`app/lib.css`). Antes de sobrescrever uma peça da lib, leia o `dist/ui/*.js` dela.
-- O bloco que usa a lib leva `data-theme="welabs"` (`components/template/Home.tsx:269`, a moldura do kit em `components/scene-kit/Scene.tsx`). Fora dele, `app/lib.css:32-55` neutraliza três vazamentos medidos da base da lib: transição de 160 ms, `line-height` 1,5 e `vertical-align: middle`. Ao ampliar o uso da lib, revise essas três exceções, sem duplicá-las.
+- É **proibido** override de cor por componente: nada de `className="bg-[#efefeb]"`, `style={{ color: "#..." }}`, hex cru em folha de componente ou bloco `[data-theme="welabs"]` em outra folha. Papel de cor que falta vira token novo em `app/lib.css`, como `--indicator-muted`. Efeito com cor própria (`TextShimmer highlightColor`, `BorderBeam color`) recebe o token por prop, centralizado no wrapper de `components/lib/`.
+- Componente da lib que pinta por estilo inline não se corrige com regra de classe, porque o inline vence. O `TypingDots` pinta cada ponto com `background-color: currentColor` inline; por isso a cor dos pontos vem de `color` no `[data-slot="typing-dots"]` (`app/lib.css`). Antes de sobrescrever uma peça da lib, leia o `dist/ui/*.js` dela.
+- O bloco que usa a lib leva `data-theme="welabs"` (`components/template/Home.tsx`, a moldura do kit em `components/scene-kit/Scene.tsx`). Fora dele, `app/lib.css` neutraliza três vazamentos medidos da base da lib: transição de 160 ms, `line-height` 1,5 e `vertical-align: middle`. Ao ampliar o uso da lib, revise essas três exceções, sem duplicá-las.
 
-## 4. Paleta creme
+## 4. Paleta vigente (Welabs UI v3)
 
-Esta é a paleta de tudo que a lib pinta (cenas do kit, bloco do Domus). A escala de areia completa é 50 `#faf5ea`, 100 `#f3ecdd`, 200 `#e2d8c3`, 300 `#d4c7ab`, 400 `#bfb29a`, 500 `#a39883`, 600 `#827968`, 700 `#625b4e`, 800 `#4c473d`, 900 `#333029` e 950 `#1c1a16`. Só os degraus da tabela têm token.
+Neutra, sem creme nem areia. Valores medidos em `app/lib.css` (claro / escuro):
 
-| Papel | Token (`app/lib.css`) | Valor |
+| Papel | Token | Valor |
 |---|---|---|
-| Página, popover, papel de trabalho | `--background`, `--popover` | creme 50 `#faf5ea` |
-| Cartão, casca da janela (barra, painel lateral) | `--card` | areia 100 `#f3ecdd` |
-| Linha fina, anel | `--border`, `--edge-subtle` (e `--muted`/`--accent`, que a lib usa como fundo de hover) | areia 200 `#e2d8c3` |
-| Borda de campo em repouso / no hover | `--input` / `--input-hover` | areia 300 `#d4c7ab` / areia 600 `#827968` |
-| Fundo de campo | `--field` | branco `#ffffff` |
-| Ponto discreto (status em repouso, digitação) | `--indicator-muted` | areia 600 `#827968` |
-| Texto e ícone de segundo plano | `--muted-foreground` | areia 700 `#625b4e` |
-| Tinta (texto, ícone sobre âmbar) | `--foreground` | `#1c1a16` |
-| Âmbar: ativo / aconteceu | `--primary` / `--primary-soft` | `#ffb020` / `#ffe2b1` |
+| Canvas (página, papel de trabalho) | `--background` | `#f7f7f5` / `#121214` |
+| Superfície (janela, cartão, campo, menu, bolha recebida) | `--card`, `--popover` | branco `#ffffff` / `#1a1a1d` |
+| Cromo (barra da janela, trilho, chip neutro, marca em repouso) | `--muted`, `--secondary` | `#efefeb` / `#202024` |
+| Linha e **borda de campo clara** | `--border`, `--edge-subtle`, `--input` (= a linha) | `#e5e5e1` / `#2c2c30` |
+| **Tinta** (texto, ícone) | `--foreground` | `#121212` / `#f5f5f3` |
+| **Texto secundário** (só texto e ícone) | `--muted-foreground` | `#55565b` / `#b4b4b0` |
+| **Primária preta** (ação e seleção) | `--primary` / `--primary-foreground` | `#121212` + branco, invertida no escuro |
+| Ponto discreto (status em repouso, digitação) | `--indicator-muted` | `#8a8a86` / `#77777d` |
+| Âmbar: o que está vivo agora | `--signal` / `--signal-foreground` | `#ffb020` / tinta |
+| Linha selecionada, bolha chegando | `--signal-soft` (`--selected`) | `#fff3dd` |
+| Concluído | `--success` / `--success-soft` | `#1e7a4c` / `#e8f4ed` |
+| Erro | `--destructive` / `--destructive-soft` | `#ab3040` / `#faeaea` |
+| Hover e pressionado de linha | `--veil-hover` / `--veil-press` | tinta a 4 % / 7 % |
 
-As folhas antigas fora da lib (`components/onepage/shell.module.css:8-45`: `--page`, `--surface` **branco**, `--c2`, `--cl`, `--mute-l`, `--action`) ainda seguem a paleta da v3 com cartão branco. Elas não são referência para trabalho novo; um bloco que migra para a lib passa a ler os papéis acima.
-
-### Papéis de cor (cenas e janelas de produto)
-
-Decisões medidas na cena do Relloo em 22/10, com contraste e motivo item a item em `~/code/control/portfolio/site-redesign/scene-kit/colour-decisions.md`.
-
-- **Duas superfícies de profundidade:** a casca da janela (barra de título, painel lateral, lista) é `--card`, e o painel onde o olho trabalha (histórico, detalhe) é `--background`. A linha selecionada da lista também usa `--background`, porque se une ao painel que abre.
-- **A areia 200 só serve como linha ou anel**, nunca como área grande: sobre o creme ela amarela, e esse foi o motivo citado pela equipe da lib. Divisória, borda de painel e anel de marca neutra usam `--border`.
-- **A areia 700 (`--muted-foreground`) só aparece em texto e ícone**, nunca em fundo ou preenchimento, nem perto de um preenchimento âmbar (operador: "forte demais" como fundo, "contrasta mal com amber"). Ponto ou preenchimento discreto usa `--indicator-muted`. O teste `components/scene-kit/scene-colour.test.ts` reprova `--muted-foreground`, `#625b4e` ou alias dele em `background`/`fill` no kit, e qualquer cor crua nas folhas do kit.
-- **Marcas** (círculos de ícone):
-  - neutra: `--card`, ou `--background` sobre a casca, com anel `--border` e ícone em `--muted-foreground`;
-  - do sujeito do painel: ícone em tinta;
-  - âmbar: sem anel e com ícone sempre em tinta.
-- **Âmbar:**
-  - `--primary` só no que está chegando agora, uma linha por vez, e só como sinal pequeno: barra à esquerda de 3 a 4 px, ponto ou marca do ícone;
-  - linha ou chip **nunca** é preenchido com `--primary` (decisão do operador): o item ativo fica em `--background`, com texto em tinta e barra âmbar;
-  - `--primary-soft` no que já chegou (marca, chip e selo cheios, sem contorno).
-- **Linha clicável (`RowButton`, o `ghost` da lib):**
-  - o hover da lib é tinta a 18 %, onde a areia 700 cai para cerca de 3,9:1, então hover, pressionado e ativo passam para `--surface-raised`;
-  - a barra âmbar é `background-image`, nunca `box-shadow`, porque o `box-shadow` apaga o anel de foco da lib.
-- **Bolhas:**
-  - recebida: `--card` com anel `--border` e texto em tinta;
-  - recebida chegando: anel `--primary`;
-  - enviada: `--secondary`, sem anel e com texto em tinta;
-  - evento do sistema ou do registro: sem fundo, com anel `--border` e texto `--muted-foreground`.
-- **Controle inerte** (compositor de cena): a ação do `TextField` já é `soft`, nunca `solid` em tinta, para não virar a maior massa escura da janela.
-- **Contraste medido:** texto de segundo plano a 5,71:1 na casca e 6,18:1 no papel; ponto discreto a 3,66:1; tinta sobre âmbar a 9,50:1. Pelo mesmo motivo, a areia 500 não serve para ponto: dá 2,42:1 sobre `--card`.
+Regras:
+- **Primária preta é a ação** (botão, âncora-botão, badge, chip, segmento ativo, dia escolhido, checkbox, switch). Âmbar **nunca** é ação nem preenchimento de botão, badge ou estado escolhido; só sinaliza o que **aconteceu agora** (marca ativa, item que chegou, ponto de status), como **área**, nunca texto nem traço fino. O orçamento de âmbar por tela está em `welabs-site-scenes` §5.
+- `--muted-foreground` é **tom de texto e ícone**, nunca fundo nem preenchimento (o operador rejeitou). Ponto ou preenchimento discreto usa `--indicator-muted`. O teste `components/scene-kit/scene-colour.test.ts` reprova isso e qualquer cor crua nas folhas do kit.
+- A linha (`--border`) separa **painéis**, nunca as linhas de uma lista. Texto esmaecido por `opacity` está fora do padrão: o que fica em segundo plano muda de cor (tinta -> `--muted-foreground`), para não cair abaixo de AA.
+- Nunca reintroduza creme, areia nem grafite quente na UI. As folhas antigas fora da lib (`components/onepage/shell.module.css`: `--page`, `--surface`, `--c2`, `--cl`, `--action`) leem aliases que apontam para os papéis acima; não são referência para trabalho novo.
+- Marcas (círculos de ícone) e bolhas pintadas por estado são da cena: `welabs-site-scenes` e o bloco TIMELINE E AVATAR de `app/lib.css`.
 
 ### Controles
 
-Decisão do operador de 22/10: o contorno escuro de 1 px nos campos e o `outline` dos botões secundários pareciam legado. Um ponto só de mudança, sem estilo por chamada.
+Um ponto só de mudança, sem estilo por chamada. A lib publicada (Storybook, brand welabs) é a referência: `e2e/lib-parity.spec.ts` compara o computado dos nossos controles com as stories.
 
 - **Primitivas** (`components/lib/ui.tsx`), as únicas portas para botão e campo:
-  - `ActionButton`: ícone + texto. `emphasis` é `secondary` (padrão, `soft` da lib), `primary` (âmbar `solid`) ou `quiet` (`ghost`);
+  - `ActionButton`: ícone + texto. `emphasis` é `secondary` (padrão, `soft` da lib), `primary` (`solid`, preto), `outline` ou `quiet` (`ghost`);
   - `IconButton`: só ícone, com `label` obrigatório como nome acessível;
   - `RowButton`: linha de lista em largura total, com o ícone dentro de uma marca que a cena pinta por estado (`markClassName`);
-  - `TextField`: ícone à esquerda obrigatório, ação de ícone opcional à direita (`action`), `label` opcional (o `Field` da lib) e `size` `sm`/`md`.
-- **Regra do ícone:** todo botão e todo campo levam ícone, e a prop `icon` é obrigatória, recebida como elemento (`icon={<RotateCcw />}`), para que um Server Component possa passá-lo. O padrão é `lucide-react`; as cenas antigas (`components/scenes`, `components/plays`, a casa do Domus) seguem com o `Glyph` desenhado, para uma cena não misturar duas famílias. A lib centra o ícone no texto: medido 0,5 px nos botões e 0 px nos campos, em 1440 e em 390.
-- **Tokens de borda** (`app/lib.css`, bloco CONTROLES):
-  - campo: fundo `--field` branco, linha `--input` areia 300 em repouso (1,59:1 no papel), `--input-hover` areia 600 no hover (4,30:1) e o anel único do site no foco, em volta do campo inteiro (tinta, 16,54:1);
-  - a borda em repouso fica abaixo de 3:1 de propósito: quem identifica o campo é o ícone e o texto (areia 700, 6,72:1);
-  - botão secundário: o `soft` da lib sem mudança (tinta a 10 %, sem borda), e o rótulo (13,57:1) e o ícone carregam a afordância.
-- `--input` também é a borda de Checkbox, Switch, Radio e Slider da lib; o site não usa nenhum deles da lib.
-- **Teste:** `components/lib/ui-boundary.test.ts` reprova `Button`, `Input`, `InputGroup*` ou `Field` da lib fora da fronteira, primitiva sem `icon=`, e `className` com `bg-`/`border-`/`ring-`/`shadow-`/`outline-` numa chamada. A cena só pinta **estado** (âmbar de chegou ou ativo), nunca a borda ou o fundo do controle.
-
-O âmbar só sinaliza que algo **aconteceu** ou está acontecendo: linha escrita, foco, item ativo. Não serve para enfeitar chip. Texto esmaecido por `opacity` está fora do padrão: o que fica em segundo plano muda de cor (tinta → `--muted-foreground`), para não cair abaixo de AA.
+  - `TextField`: ícone à esquerda obrigatório, ação de ícone opcional à direita (`action`), `label` opcional e `size` `sm`/`md`.
+- **Regra do ícone:** todo botão e todo campo levam ícone, e a prop `icon` é obrigatória, recebida como **elemento** (`icon={<RotateCcw />}`), para que um Server Component possa passá-lo. O padrão é `lucide-react`; as cenas antigas (`components/scenes`, `components/plays`, a casa do Domus) seguem com o `Glyph` desenhado, para uma cena não misturar duas famílias.
+- **Medidas da lib, sem repintar:** altura de controle (`--control-height-md`, 40 px) e raio (`--control-radius`, 14 px) são da lib; campo com fundo da superfície e borda clara (`--input` = `--border`); botão secundário é o `soft` da lib sem borda (o rótulo e o ícone carregam a afordância); foco é o anel da lib. O que o `app/lib.css` ainda faz no bloco CONTROLES é só o interior do campo (recuo igual de peça pequena dentro do campo, medido em `e2e/scene-kit-geometry.spec.ts`).
+- **Teste:** `components/lib/ui-boundary.test.ts` reprova `Button`, `Input`, `InputGroup*` ou `Field` da lib fora da fronteira, primitiva sem `icon=`, e `className` com `bg-`/`border-`/`ring-`/`shadow-`/`outline-` numa chamada. A cena só pinta **estado**, nunca a borda ou o fundo do controle.
 
 ### Tokens
 
-Decisão do operador de 22/10: um padrão só, e um lugar só para mudar. **Todo token do site mora em `app/lib.css`**, no bloco `TOKENS DO SITE` (movido de `components/onepage/shell.module.css .page` com os mesmos valores; a página não mudou). As folhas de componente só leem `var(--…)`.
+Um padrão só, e um lugar só para mudar. **Todo token do site mora em `app/lib.css`**, no bloco `TOKENS DO SITE`. As folhas de componente só leem `var(--...)`.
 
 | Família | Tokens | Onde mudar |
 |---|---|---|
-| Papéis de cor | `--background`, `--card`, `--secondary`, `--border`, `--input`, `--surface-raised`, `--indicator-muted`, `--muted-foreground`, `--primary`, `--primary-soft`, `--destructive(-soft)`, `--success(-soft)` | `app/lib.css`, blocos SUPERFÍCIES CREME e CONTROLES (o resto vem do preset `welabs` da lib) |
-| Cores da página | `--g*`, `--c*`, `--a-*`, `--ink`, `--mute-*`, `--page`, `--surface*`, `--halo`, `--action*` | `app/lib.css`, TOKENS DO SITE |
-| Tipo | `--t-*` (7 degraus) e os apelidos `--text-*`, `--lh-*`, `--line-micro/label/lead` (16/20/24), `--weight-text/label/title`, `--ls-*` | idem |
+| Papéis de cor | os da tabela acima | `app/lib.css`, bloco PAPÉIS DE COR |
+| Cores da página | `--g*`, `--c*`, `--a-*`, `--ink`, `--mute-*`, `--page`, `--surface*`, `--halo`, `--action*` (aliases dos papéis) | `app/lib.css`, TOKENS DO SITE |
+| Tipo | `--t-*` (7 degraus) e os apelidos `--text-*`, `--lh-*`, `--line-micro/label/lead`, `--weight-text/label/title`, `--ls-*` | idem |
 | Espaço | `--sp-1` a `--sp-9` (grade de 4 px) | idem |
-| Forma e linha | `--r-*`, `--rule`, `--rule-dashed`, `--bar-active`, `--edge-ring`, `--edge-ring-active`, `--domus-ring*`, `--r-domus*` | idem |
+| Forma e linha | `--r-*` (seguem os raios da lib), `--rule`, `--rule-dashed`, `--bar-active`, `--edge-ring`, `--edge-ring-active`, `--domus-ring*`, `--r-domus*` | idem |
 | Sombra | `--shadow-card`, `--shadow-raise`, `--shadow-pop` | idem |
 | Movimento | `--ease-out`, `--ease-in-out`, `--ease-spring`, `--dur-1/2/3` | idem (`--ease-in-out` fica junto das curvas da lib, no topo) |
-| Ícone e marca | `--icon-xs/sm/md/lg` (12/14/16/18), `--mark-xs/sm/md/lg` (22/28/32/40), `--row-min`, `--dot`, `--scene-width` | idem |
+| Ícone e marca | `--icon-xs/sm/md/lg`, `--mark-xs/sm/md/lg`, `--row-min`, `--dot`, `--scene-width` | idem |
 
-- **Peças comuns das cenas:** `components/scene-kit/parts.module.css` tem a cabeça de painel (`paneHead`), a marca com tamanho e tom (`mark` + `markXs/Sm/Md/Lg`, `data-tone="active|done|fail|subject|well"`), os estados de linha (`rowStates`) e de chip (`choiceStates`), o texto empilhado (`stack`, `stackLead`), a linha de meta e o horário (`meta`, `time`), a bolha (`bubble`), a lista (`list`, `listTight`), as divisórias (`ruleTop`, `ruleBottom`) e o selo (`seal`). A cena compõe essas classes no markup e deixa na própria folha só o layout dela. A janela (cromo, palco, altura) é do `scene-kit.module.css`.
-- **Teste:** `components/scene-kit/tokens.test.ts` reprova, em qualquer folha do kit, tamanho, peso, entrelinha, espaçamento de letra, raio, sombra, espaço, largura de linha, duração ou geometria escritos à mão. A única saída é a lista `GEOMETRY_ALLOWED`, com o motivo de cada entrada. A cor crua continua com `scene-colour.test.ts`, e `components/template/polish.test.tsx` confere as escalas em `app/lib.css`.
+- **Teste:** `components/scene-kit/tokens.test.ts` reprova, em qualquer folha do kit, tamanho, peso, entrelinha, espaçamento de letra, raio, sombra, espaço, largura de linha, duração ou geometria escritos à mão. A única saída é a lista `GEOMETRY_ALLOWED`, com o motivo de cada entrada. A cor crua continua com `scene-colour.test.ts`, e `components/template/polish.test.tsx` confere as escalas em `app/lib.css`. As peças comuns das cenas (`components/scene-kit/parts.module.css`) estão em `welabs-site-scenes/references/lib-first.md`.
 
 ## 5. Tipo, espaço e alinhamento
 
-- **Escala fechada** (`shell.module.css`, `--t-*`), sete degraus em 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18, corpo 16, rótulo 14 e micro 12. Os nomes `--text-*` que as folhas leem são apelidos dos degraus. Folha de componente só usa `font-size: var(--text-*)` e espaço `var(--sp-*)` numa grade de 4 px, cobrado por `components/template/polish.test.tsx`; `e2e/visual-language.spec.ts` mede no máximo 7 tamanhos acima de 12 px nas 6 rotas.
-- **Piso**: 14 px no texto da página. Dentro de tela desenhada (cena, play), os degraus micro (12) e rótulo (14), com a chave em 18 (`components/scenes/tokens.module.css`), sempre com contraste AA. Texto abaixo de 12 px é proibido.
+- **Escala fechada** (`--t-*`), sete degraus em 1440 / 390: display 72/40, h2 44/30, h3 24/20, lead 18, corpo 16, rótulo 14 e micro 12. Folha de componente só usa `font-size: var(--text-*)` e espaço `var(--sp-*)` numa grade de 4 px, cobrado por `components/template/polish.test.tsx`; `e2e/visual-language.spec.ts` mede no máximo 7 tamanhos acima de 12 px nas 6 rotas.
+- **Piso**: 14 px no texto da página. Dentro de tela desenhada (cena, play), os degraus micro (12) e rótulo (14), sempre com contraste AA. Texto abaixo de 12 px é proibido.
 - **Hierarquia de título**: `SectionHead` tem três variantes marcadas por `data-head`:
   - `chapter`: linha fina no topo, h2 à esquerda (8/12) e a linha de apoio nas 4 colunas finais, para tese;
   - `showcase`: h2 centralizado, para vitrine de produto;
   - `strip`: título no degrau h3 (24/20) à esquerda, para detalhes e "Onde rodamos".
 
   Título é efeito ou rótulo, sem misturar os dois na mesma página.
-- **Alinhamento** (régua de `e2e/domus.spec.ts:5-9`):
-  - o nome fica centrado no seu ícone, com tolerância de 1,5 px;
-  - o badge fica no eixo do ícone, com tolerância de 1 px;
-  - o botão fica na linha do nome do andar, com tolerância de 1 px;
-  - as calhas são iguais;
-  - nenhum texto é cortado (`e2e/layout.spec.ts`);
-  - a janela de cena acompanha o conteúdo, sem área vazia no rodapé.
+- **Alinhamento** (régua de `e2e/domus.spec.ts`): o nome fica centrado no seu ícone (1,5 px); o badge fica no eixo do ícone (1 px); o botão fica na linha do nome do andar (1 px); as calhas são iguais; nenhum texto é cortado (`e2e/layout.spec.ts`); a janela de cena acompanha o conteúdo, sem área vazia no rodapé.
 - **Densidade**: seção de 0,5 a 1 viewport, com no máximo cerca de 40 palavras fora das cenas. O respiro entre seções é de 96 a 128 px no desktop, e dentro da seção o espaço fica entre 16 e 24 px.
 
 ## 6. Marca
 
-Logo, símbolo, selo "by welabs" e favicon vêm **sempre** da skill `welabs-brand:welabs-brand` e dos arquivos gerados em `public/brands/welabs/`. Não redesenhe nem edite SVG à mão. Ibrand só aparece no logo, e todo texto usa Inter 400/500/600. A ordem dos produtos é sempre Domus, Relloo, Magneto, Tuner, Knowly (`scripts/check-portfolio.mjs:150-156`).
+Logo, símbolo, selo "by welabs" e favicon vêm **sempre** da skill `welabs-brand:welabs-brand` e dos arquivos gerados em `public/brands/welabs/`. Não redesenhe nem edite SVG à mão. Ibrand só aparece no logo, e todo texto usa Inter 400/500/600. A ordem dos produtos é sempre Domus, Relloo, Magneto, Tuner, Knowly (`scripts/check-portfolio.mjs`).
 
-## 7. Lacunas que ficam locais
+## 7. Lacunas que ficam locais (fora de cena)
 
-A lib não tem estas peças. Monte cada uma sobre primitivas da lib e mantenha o código em `components/`:
-
-- **Bolha de chat** (lado, hora, ticks, divisor de canal): `Card`/`Surface` + `Badge` + `AnimatedList` + `TypingDots`. A versão definitiva é upstream.
-- **Kanban** estático: `ScrollArea` + `Card size="sm"` + `Badge`.
-- **Canvas de fluxo do Magneto**: nós com `Card`, arestas em SVG com `offset-path` e fundo `GridPattern`.
-- **Fios entre cartões** (Orbit, URA do Tuner): SVG local.
-- **Toast dentro da janela de cena**: `Alert`/`Card` + `BlurFade`. O `Toaster` da lib é portal da página.
-- **Barra com o logo do produto no cromo da janela**: local, sobre `DeviceFrame`/`Surface`.
-- **Driver de cena por roteiro** (`components/scenes/replay.ts`, `scene-run.ts`): fica local. Para detectar visibilidade e movimento reduzido, troque por `useInView`/`useReducedMotion`.
-- **CTA grafite pílula**: só pela camada de tokens, sem variante nova de `Button`.
-- **Máquina de estado CSS** dos plays (checkbox/radio + label).
-
-O de/para bloco → componente está em `references/block-map.md`.
+Monte sobre primitivas da lib e mantenha o código em `components/`: **CTA grafite pílula** (só pela camada de tokens, sem variante nova de `Button`) e a **máquina de estado CSS** dos plays (checkbox/radio + label). As lacunas de cena (bolha, kanban, canvas de fluxo do Magneto, fios entre cartões, toast na janela, barra com logo no cromo, driver de cena) estão em `welabs-site-scenes/references/lib-first.md`. O de/para bloco -> componente está em `references/block-map.md`.
 
 ## 8. Efeitos proibidos (fora da marca)
 
-`GradientText`, `GlitchText`, `DecryptedText`, `ElectricBorder`, `VideoText`, `GlassSurface`/`useLiquidGlass`, `Surface material="glass"` e `ScrollProgress` são proibidos: o site não tem barra de progresso, como `check-portfolio.mjs:60` cobra. Também não entram scroll-jacking, seção fixada no scroll, multicolor nem neon. `AuroraBackground` e `Spotlight` só entram com cor âmbar/creme passada por prop, e `Carousel` 3D, `Tilt` e `StarBorder` só com parcimônia, nunca em janela de leitura. O teste de fronteira reprova qualquer reexport dos nomes proibidos em `components/lib/`.
+`GradientText`, `GlitchText`, `DecryptedText`, `ElectricBorder`, `VideoText`, `GlassSurface`/`useLiquidGlass`, `Surface material="glass"` e `ScrollProgress` são proibidos: o site não tem barra de progresso, como `check-portfolio.mjs` cobra. Também não entram scroll-jacking, seção fixada no scroll, multicolor nem neon. `AuroraBackground` e `Spotlight` só entram com cor passada por prop a partir dos tokens, e `Carousel` 3D, `Tilt` e `StarBorder` só com parcimônia, nunca em janela de leitura. O teste de fronteira reprova qualquer reexport dos nomes proibidos em `components/lib/`.
 
 ## Antes de entregar
 
-Rode `npm run lint && npm run typecheck && npm test`. Para o que é medido em tela (alinhamento, contraste e corte), rode também o spec Playwright do bloco contra um servidor próprio (`PORTFOLIO_PREVIEW_URL`). Movimento: `welabs-site-motion`. Texto: `welabs-site-copy`.
+Rode `npm run lint && npm run typecheck && npm test`. Para o que é medido em tela (alinhamento, contraste e corte), rode também o spec Playwright do bloco contra um servidor próprio (`PORTFOLIO_PREVIEW_URL`). Cena e movimento: `welabs-site-scenes`. Texto: `welabs-site-copy`.

@@ -50,4 +50,4 @@ Hoje a fronteira `components/lib/ui.tsx` reexporta da entrada `ui` `Badge`, `But
 | Plataformas (`Home.tsx`) | `Marquee` | — |
 | Seletor de produtos (`Product.tsx`) | `Tabs` | — |
 | Menu mobile (`onepage/SiteNav.tsx` `<button>`) | `Button`, `Sheet`/`DropdownMenu` | — |
-| Botão "Recomeçar" dos plays (`plays/parts.tsx` `<button type="reset">`) | `Button` (e some com a autodemo, ver `welabs-site-motion`) | — |
+| Botão "Recomeçar" dos plays (`plays/parts.tsx` `<button type="reset">`) | `Button` (e some com a autodemo, ver `welabs-site-scenes`) | — |
