@@ -597,7 +597,9 @@ function RellooCarouselView({ scene }: { scene: SceneApi }) {
   return (
     <div className={r.frames}>
       <AnimatePresence initial={false}>
-        <motion.div key={frame.n} className={r.frame} {...FRAME_MOTION}>
+        {/* v4: keyed by the mode too, so a visitor's take of the frame on screen plays it in again and its phrases
+            type again (the give-back comes with the reset to frame 1, a new frame anyway) */}
+        <motion.div key={`${frame.n}:${scene.mode}`} className={r.frame} {...FRAME_MOTION}>
           <Body scene={scene} />
         </motion.div>
       </AnimatePresence>
