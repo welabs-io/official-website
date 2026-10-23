@@ -1,0 +1,293 @@
+/* ABERTURA EM LÂMINAS */
+/* components/home/HeroBlades.tsx (brief-v4, artboard Main): the text on the left, the stage on the right (under it on
+   a narrow screen). The blades are canvas grey: each leaves to the left on the enter curve at its own delay (--in) and
+   comes back on the swap curve at its own (--out), so the frame assembles from the right and the bottom. The clock is
+   an empty animation of --cycle whose end turns the stage. Off screen (the band's data-on="false") every animation of
+   the stage pauses; under reduced motion there are no blades, no threads and no clock. */
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.text {
+  flex: 1 1 420px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.title {
+  margin: 0;
+  font-size: var(--text-hero);
+  line-height: var(--lh-display);
+  font-weight: var(--weight-title);
+  letter-spacing: var(--ls-display);
+  color: var(--foreground);
+}
+.line {
+  display: block;
+}
+.quiet {
+  color: var(--muted-foreground);
+}
+.lead {
+  max-width: 470px;
+  margin: var(--sp-5) 0 0;
+  font-size: var(--text-lg);
+  line-height: var(--lh-body);
+  color: var(--muted-foreground);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.stage {
+  flex: 0 1 608px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.caption {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  color: var(--muted-foreground);
+}
+.count {
+  font-variant-numeric: tabular-nums;
+}
+
+.well {
+  position: relative;
+  aspect-ratio: 608 / 560;
+  overflow: hidden;
+  border-radius: var(--r-win);
+  background: var(--muted);
+}
+.frame {
+  position: absolute;
+  inset: var(--sp-6);
+}
+
+/* The blades: a grid over the whole well */
+.blades {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(17, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  pointer-events: none;
+}
+.blade {
+  background: var(--background);
+  box-shadow: inset calc(var(--rule) * -1) 0 0 var(--card);
+  transform-origin: left center;
+  animation:
+    blade-in var(--dur-3) var(--ease-enter) var(--in) both,
+    blade-out var(--dur-3) var(--ease-swap) var(--out) forwards;
+}
+.thread {
+  position: absolute;
+  top: 0;
+  left: calc(var(--x) * 100%);
+  width: var(--rule);
+  height: calc(var(--h) * 100%);
+  background: var(--trace-rest);
+  transform-origin: top center;
+  animation:
+    thread-down var(--dur-enter) var(--ease-enter) both,
+    thread-go var(--dur-2) var(--ease-hover) var(--dur-draw) forwards;
+}
+
+/* The seal of the product: always in place over the left edge, its amber dot the live piece of the stage */
+.seal {
+  position: absolute;
+  left: var(--sp-5);
+  top: 42%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4) var(--sp-3) var(--sp-2);
+  border-radius: var(--r-lg);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: var(--shadow-pop);
+  animation: seal-swap var(--dur-swap) var(--ease-swap) both;
+}
+.sealLogo {
+  display: block;
+  width: auto;
+  height: var(--mark-lg);
+}
+.sealRule {
+  align-self: stretch;
+  width: var(--rule);
+  margin: var(--sp-1) 0;
+  background: currentColor;
+  opacity: 0.16;
+}
+.sealText {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--sp-2);
+}
+.sealTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--line-label);
+  font-weight: var(--weight-title);
+}
+.sealTitle::before {
+  content: "";
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-dot);
+  background: var(--signal);
+}
+.sealLine {
+  font-size: var(--t-micro);
+  line-height: var(--line-micro);
+  font-weight: var(--weight-label);
+  opacity: 0.62;
+}
+
+.clock {
+  position: absolute;
+  width: 0;
+  height: 0;
+  animation: hero-clock var(--cycle) linear both;
+}
+
+/* The five marks under the stage: the product on the stage in ink with a rule under it, the others quiet */
+.marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mark {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  opacity: 0.38;
+  transition: opacity var(--dur-swap) var(--ease-swap);
+}
+.mark::after {
+  content: "";
+  height: var(--rule-strong);
+  border-radius: var(--rule-strong);
+  background: var(--border);
+}
+.mark[data-active] {
+  opacity: 1;
+}
+.mark[data-active]::after {
+  background: var(--foreground);
+}
+.markLogo {
+  display: block;
+  width: auto;
+  height: var(--mark-sm);
+}
+
+:global([data-on="false"]) .stage *,
+:global([data-on="false"]) .stage *::before,
+:global([data-on="false"]) .stage *::after {
+  animation-play-state: paused;
+}
+
+@keyframes blade-in {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+@keyframes blade-out {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes thread-down {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes thread-go {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes seal-swap {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-2));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hero-clock {
+  from,
+  to {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    gap: var(--sp-7);
+  }
+  .text {
+    flex-basis: 100%;
+  }
+  .stage {
+    flex-basis: 100%;
+  }
+  .frame {
+    inset: var(--sp-3);
+  }
+  .seal {
+    left: var(--sp-2);
+    top: auto;
+    bottom: var(--sp-3);
+  }
+  .marks {
+    gap: var(--sp-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blades,
+  .clock {
+    display: none;
+  }
+  .seal,
+  .mark {
+    animation: none;
+    transition: none;
+  }
+}
