@@ -1,0 +1,72 @@
+/* PRIMITIVAS DE MOVIMENTO DO SITE */
+/* brief-v4: the entry of a block (Reveal) and the width a card gains on hover (GrowRow, GrowItem). Every value is a
+   token of app/lib.css (AS TRÊS CURVAS DA V4). This sheet is unlayered, so it outranks the lib's layered utilities on
+   the RevealOnScroll it styles (opacity-0, animate-reveal-in). */
+
+/* Reveal: hidden until the lib's observer marks it in view, then one rise on the enter curve, staggered by its order */
+.reveal {
+  opacity: 0;
+}
+.reveal[data-in-view] {
+  opacity: 1;
+  animation: reveal-rise var(--dur-enter) var(--ease-enter) calc(var(--reveal-order, 0) * var(--stagger)) both;
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise-enter));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* GrowRow: the pieces share the row; the one pointed at or focused grows to its token, and the open one holds it only
+   while no other piece of the row is pointed at or focused */
+.row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-4);
+}
+.item {
+  --grow-to: var(--grow-card);
+  flex: 1 1 0;
+  min-width: 0;
+  transition: flex-grow var(--dur-grow) var(--ease-enter);
+}
+.item[data-grow="panel"] {
+  --grow-to: var(--grow-panel);
+}
+@media (min-width: 768px) {
+  .item[data-open],
+  .item:hover,
+  .item:focus-within {
+    flex-grow: var(--grow-to);
+  }
+  .row:has(> .item:hover, > .item:focus-within) > .item[data-open]:not(:hover, :focus-within) {
+    flex-grow: 1;
+  }
+}
+
+/* A phone stacks the row: every piece takes the full width and nothing grows */
+@media (max-width: 767px) {
+  .row {
+    flex-direction: column;
+  }
+  .item {
+    flex: 0 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal[data-in-view] {
+    opacity: 1;
+    animation: none;
+  }
+  .item {
+    transition: none;
+  }
+}

@@ -372,6 +372,7 @@ function FrameView({ beat }: { beat: Beat }) {
                 from={`[data-cite="${proof.id}"]`}
                 to='[data-card="decision"]'
                 clearance={40}
+                state="active"
               />
             ))
           : null}
@@ -386,7 +387,7 @@ function FrameView({ beat }: { beat: Beat }) {
       {/* Frame 3: each part points up at the day it acted on (lg only: on a phone the part sits under its card) */}
       {traces && frame === 3
         ? PARTS.filter((part) => beat.reached(part.step)).map((part) => (
-            <Connector key={part.id} route="up" from={`[data-part="${part.id}"]`} to={`[data-dot="${part.on}"]`} />
+            <Connector key={part.id} route="up" from={`[data-part="${part.id}"]`} to={`[data-dot="${part.on}"]`} state="active" />
           ))
         : null}
     </div>

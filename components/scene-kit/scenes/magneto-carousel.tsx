@@ -306,14 +306,13 @@ function TriggerFrame({ scene, on }: FrameProps) {
       </div>
       <Traces scene={scene}>
         {on("trigger") ? (
-          <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} />
+          <Connector from='[data-id="domus"]' to='[data-id="live"]' inset={0} state="active" />
         ) : null}
         {on("next") ? (
           <Connector
             from='[data-id="live"]'
             to='[data-id="next"]'
             inset={0}
-            tone="quiet"
           />
         ) : null}
       </Traces>
@@ -383,6 +382,7 @@ function SplitFrame({ scene, on }: FrameProps) {
             from='[data-id="trigger"]'
             to='[data-id="check"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("split") ? (
@@ -390,6 +390,7 @@ function SplitFrame({ scene, on }: FrameProps) {
             from='[data-id="check"]'
             to='[data-id="approval"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("split") ? (
@@ -397,6 +398,7 @@ function SplitFrame({ scene, on }: FrameProps) {
             from='[data-id="check"]'
             to='[data-id="contract"]'
             inset={0}
+            state="active"
           />
         ) : null}
       </Traces>
@@ -482,6 +484,7 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="check"]'
             to='[data-id="approval"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("wait") ? (
@@ -489,6 +492,7 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="check"]'
             to='[data-id="contract"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("wait") ? (
@@ -496,6 +500,7 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="approval"]'
             to='[data-id="domus"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("ready") ? (
@@ -503,6 +508,7 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="contract"]'
             to='[data-id="next"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("ready") ? (
@@ -510,7 +516,6 @@ function WaitFrame({ scene, on }: FrameProps) {
             from='[data-id="approval"]'
             to='[data-id="next"]'
             inset={0}
-            tone="quiet"
           />
         ) : null}
       </Traces>
@@ -576,13 +581,14 @@ function CloseFrame({ scene, on }: FrameProps) {
             from='[data-id="approved"]'
             to='[data-id="live"]'
             inset={0}
+            state="active"
           />
         ) : null}
         {on("done") ? (
-          <Connector from='[data-id="live"]' to='[data-id="domus"]' inset={0} />
+          <Connector from='[data-id="live"]' to='[data-id="domus"]' inset={0} state="active" />
         ) : null}
         {on("done") ? (
-          <Connector from='[data-id="live"]' to='[data-id="tuner"]' inset={0} />
+          <Connector from='[data-id="live"]' to='[data-id="tuner"]' inset={0} state="active" />
         ) : null}
       </Traces>
     </>

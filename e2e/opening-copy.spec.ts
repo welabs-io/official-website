@@ -8,11 +8,9 @@ import { expect, test, type Page } from "@playwright/test";
 import rules from "../lib/content/copy-rules.json";
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"];
-// A label each opening with text draws: the record of a Relloo card and the category of a Tuner chip
-const DRAWN: Record<string, string> = {
-  relloo: "Contato 4821",
-  tuner: "Comunidade",
-};
+// A label each opening with text draws. v4 (brief-v4): the opening is the brand's logo motion, which draws no text, so
+// no opening has a label to find; the window's text is still sampled while it plays
+const DRAWN: Record<string, string> = {};
 const VIEWPORTS = [
   { width: 1440, height: 900 },
   { width: 390, height: 844 },

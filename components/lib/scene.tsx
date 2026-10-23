@@ -23,7 +23,8 @@ export {
   useInView,
   useReducedMotion,
 } from "@imagineapps-team/react/ui";
-export { AnimatedList, TypingDots } from "@imagineapps-team/react/ui/effects";
+// RevealOnScroll (v4): the entry of a block as it comes into view, the base of components/motion/Reveal.tsx
+export { AnimatedList, RevealOnScroll, TypingDots } from "@imagineapps-team/react/ui/effects";
 
 // TIMELINE DA LIB COM GANCHO DE TEMA
 // The lib's Timeline writes no data-slot, so app/lib.css (block TIMELINE E AVATAR) could not theme it without a

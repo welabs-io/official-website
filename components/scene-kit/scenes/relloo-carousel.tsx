@@ -303,6 +303,7 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
                 to='[data-holder="now"]'
                 inset={0}
                 gap={8}
+                state="active"
               />
               <Connector
                 from='[data-holder="before"]'
@@ -310,6 +311,7 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
                 route="drop"
                 inset={0}
                 gap={8}
+                state="active"
               />
             </>
           ) : null}
@@ -437,6 +439,7 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
           lane="[data-lane]"
           inset={0}
           gap={6}
+          state="active"
         />
       ) : null}
     </div>
@@ -520,6 +523,7 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
           route="drop"
           inset={-2}
           gap={8}
+          state="active"
         />
       ) : null}
 

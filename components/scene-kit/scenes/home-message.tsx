@@ -188,6 +188,7 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
           to={`[data-station="${live}"] [data-slot="avatar"]`}
           inset={0}
           gap={4}
+          state="active"
         />
       ) : null}
     </div>

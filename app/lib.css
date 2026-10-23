@@ -158,8 +158,16 @@
   --rule-dashed: 1.5px;
   /* The carousels (brief-v3-carousel): the 2 px ring of the live piece and the dashed edge of the step still to come */
   --rule-strong: 2px;
-  /* The solid ink trace of the kit's Connector and of a drawn track (brief-v3-carousel: 2 to 3.5 px, with its arrow) */
+  /* The solid ink trace of a drawn track (brief-v3-carousel: 2 to 3.5 px) */
   --rule-trace: 3px;
+  /* CONECTOR V4: TRÊS ESTADOS */
+  /* brief-v4 (artboard 7 of the canvas): always curved, a small open arrowhead (5 x 8 px). At rest the grey at 40 %
+     (1.75 px), active in ink (2 px, a stretch already run or a link in focus), live in amber (2.25 px with a 12 px bead
+     that rides it, one per frame, counted in the amber budget). The colours are roles (PAPÉIS DE COR) */
+  --trace-rest-width: 1.75px;
+  --trace-active-width: 2px;
+  --trace-live-width: 2.25px;
+  --trace-bead: 6px;
   --bar-active: 3px;
   --edge-ring: inset 0 0 0 var(--rule) var(--border);
   --edge-control: inset 0 0 0 var(--rule) var(--input);
@@ -193,6 +201,32 @@
   --dur-2: 0.28s;
   --dur-3: 0.48s;
 
+  /* AS TRÊS CURVAS DA V4 */
+  /* brief-v4 (2026-10-23), from the measured map of the reference (khal-map/mapa.md §2): three curves make the whole
+     system. Enter is the strong ease out of every reveal, opening and flex-grow (800 ms, rising 12 to 20 px, never a
+     blur, 80 ms between items); swap is the symmetric curve of a change of state (450 ms, the same --ease-in-out);
+     hover is the standard curve of a colour, edge or shadow (300 ms). --dur-grow is the width a card gains on hover,
+     --dur-draw a connector drawing itself on (50 % at ~310 ms, 90 % at ~710 ms on the enter curve). */
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swap: var(--ease-in-out);
+  --ease-hover: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-enter: 0.8s;
+  --dur-swap: 0.45s;
+  --dur-hover: 0.3s;
+  --dur-grow: 0.7s;
+  --dur-draw: 1.2s;
+  --rise-enter: 16px;
+  --stagger: 80ms;
+  /* The flex-grow of the piece in focus: a card of a row (1 -> 1.4) and a panel of an accordion (1 -> 6) */
+  --grow-card: 1.4;
+  --grow-panel: 6;
+  /* Typing of a conversation: ~18 ms per character, "digitando" for 1 s, ~2 s between phrases. The kit's TypeIn reads
+     the per-character step here; components/scene-kit/type-in.ts mirrors the three for a scene's step times
+     (type-in.test.ts holds them equal) */
+  --type-char: 18ms;
+  --typing-hold: 1s;
+  --phrase-pause: 2s;
+
   /* ÍCONES E MARCAS DAS TELAS DESENHADAS */
   /* An icon of a drawn screen (lucide) and the round mark that holds it: xs for a log line, sm for a history entry, md
      for a row or a node, lg for the subject of a pane; the row of a list starts at --row-min */
@@ -218,6 +252,10 @@
   --record-h: 68px;
   --search-w: 220px;
   --scene-width: 1040px;
+
+  /* The logo of the brand opening on a product page (brief-v4, artboard 8): ~30 % of the window's width (440 px at
+     1440), never under 220 px on a phone nor over 560 px */
+  --intro-logo: clamp(220px, 30vw, 560px);
 
   /* Header: logo 42 px (34 px on a phone) with 15 px above and below, over the 0.5X protection area of the brand */
   --header-h: 72px;
@@ -306,6 +344,14 @@
   --selected: var(--signal-soft);
   --veil-hover: rgb(18 18 18 / 0.04);
   --veil-press: rgb(18 18 18 / 0.07);
+  /* v4 (brief-v4): the three levels of a fine line, ink at 8 % (card edge, divider between panels), 14 % (chip and
+     node outline, checklist line) and 30 % (secondary edge, proof grid, a card in focus); and the connector's tones */
+  --hairline-8: rgb(18 18 18 / 0.08);
+  --hairline-14: rgb(18 18 18 / 0.14);
+  --hairline-30: rgb(18 18 18 / 0.3);
+  --trace-rest: rgb(85 86 91 / 0.4);
+  --trace-active: var(--foreground);
+  --trace-live: var(--signal);
   --success: #1e7a4c;
   --success-foreground: #ffffff;
   --success-soft: #e8f4ed;
@@ -344,6 +390,12 @@
   --signal-ink: #ffcc74;
   --veil-hover: rgb(245 245 243 / 0.06);
   --veil-press: rgb(245 245 243 / 0.1);
+  --hairline-8: rgb(245 245 243 / 0.08);
+  --hairline-14: rgb(245 245 243 / 0.14);
+  --hairline-30: rgb(245 245 243 / 0.3);
+  --trace-rest: rgb(180 180 176 / 0.4);
+  --trace-active: var(--foreground);
+  --trace-live: var(--signal);
   --success: #6fcf97;
   --success-foreground: #121212;
   --success-soft: #173525;

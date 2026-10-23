@@ -258,7 +258,7 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           </div>
         ))}
       </div>
-      {on && screen && !scene.ghost ? <Connector from="[data-type]" to="[data-screen]" inset={0} gap={8} /> : null}
+      {on && screen && !scene.ghost ? <Connector from="[data-type]" to="[data-screen]" inset={0} gap={8} state="active" /> : null}
     </div>
   );
 }
@@ -343,7 +343,7 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
         </div>
       </div>
       {on && scene.reached("linked") && !scene.ghost ? (
-        <Connector from="[data-created]" to='[data-row="318"]' route="elbow" inset={0} gap={8} />
+        <Connector from="[data-created]" to='[data-row="318"]' route="elbow" inset={0} gap={8} state="active" />
       ) : null}
     </div>
   );
@@ -407,7 +407,7 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
         ))}
         {on && links && !scene.ghost
           ? (["w0", "w1", "e0", "e1"] as const).map((port) => (
-              <Connector key={port} from={`[data-port="${port}"]`} to={`[data-neighbour="${port}"]`} inset={0} gap={8} />
+              <Connector key={port} from={`[data-port="${port}"]`} to={`[data-neighbour="${port}"]`} inset={0} gap={8} state="active" />
             ))
           : null}
       </div>

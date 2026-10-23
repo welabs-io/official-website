@@ -1,13 +1,13 @@
 /* CONECTOR ENTRE PEÇAS DE UMA CENA */
-/* The trace of components/scene-kit/Connector.tsx (brief-v3-carousel, 2026-10-22: solid, 2 to 3.5 px, with an arrow):
-   one solid ink line at --rule-trace (3 px), drawn on with the in-out curve, its arrowhead landing with the spring once
-   the line has arrived, and a light bead that rides it once with the out curve. It stays at full ink (no fading: the
-   link is the point of the frame); the quiet tone (the way to a step still to come) is the indicator grey. At rest the
-   trace and its head are whole, the animations only play them in (`backwards`), so a settled frame under reduced
-   motion (the kit drops every animation) shows them drawn. Under the content it would cross, above the panes' paint,
-   deaf to the pointer. Every value is a token of app/lib.css. */
+/* The trace of components/scene-kit/Connector.tsx (brief-v4, artboard 7, 2026-10-23): always curved, with a small open
+   arrowhead, in three states read from the role tokens of app/lib.css. Rest is the grey at 40 % (1.75 px), active the
+   ink (2 px), live the amber (2.25 px) with a bead that rides it. It draws itself on with the enter curve (~1.2 s), its
+   arrowhead landing once the line has arrived; the live bead rides on a loop. At rest the trace and its head are whole,
+   the animations only play them in (`backwards`), so a settled frame under reduced motion (the kit drops every
+   animation) shows them drawn. Under the content it would cross, above the panes' paint, deaf to the pointer. */
 .layer {
-  --trace: var(--foreground);
+  --trace: var(--trace-rest);
+  --trace-width: var(--trace-rest-width);
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -16,44 +16,49 @@
   overflow: visible;
   pointer-events: none;
 }
-.layer[data-tone="quiet"] {
-  --trace: var(--indicator-muted);
+.layer[data-state="active"] {
+  --trace: var(--trace-active);
+  --trace-width: var(--trace-active-width);
+}
+.layer[data-state="live"] {
+  --trace: var(--trace-live);
+  --trace-width: var(--trace-live-width);
 }
 
 .path,
 .head {
   fill: none;
   stroke: var(--trace);
-  stroke-width: var(--rule-trace);
+  stroke-width: var(--trace-width);
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition:
+    stroke var(--dur-hover) var(--ease-hover),
+    stroke-width var(--dur-hover) var(--ease-hover);
 }
 
 .path {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
-  animation: draw var(--dur-3) var(--ease-in-out) backwards;
+  animation: draw var(--dur-draw) var(--ease-enter) backwards;
 }
 
-/* The arrowhead lands where the line ends, once it got there */
+/* The arrowhead lands where the line ends, once it got there (the draw is 90 % done at ~60 % of its time) */
 .head {
   transform-box: fill-box;
   transform-origin: center;
-  animation: land var(--dur-2) var(--ease-spring) var(--dur-3) backwards;
+  animation: land var(--dur-2) var(--ease-enter) var(--dur-swap) backwards;
 }
 
-/* The anchor on the source: a dot of the trace's tone where the line leaves (the split point of a fork) */
-.anchor {
-  fill: var(--trace);
-}
-
-/* A light bead on the ink line, so the ride reads on the solid trace */
-.dot {
-  fill: var(--card);
+/* The live bead: amber with a ring of the surface, riding the trace while it is live */
+.bead {
+  r: var(--trace-bead);
+  fill: var(--trace-live);
+  stroke: var(--card);
+  stroke-width: var(--rule-strong);
   offset-rotate: 0deg;
   offset-distance: 0%;
-  opacity: 0;
-  animation: ride var(--dur-3) var(--ease-out) var(--dur-1) forwards;
+  animation: ride var(--dur-draw) var(--ease-swap) var(--dur-swap) infinite backwards;
 }
 
 @keyframes draw {
@@ -65,16 +70,18 @@
 @keyframes land {
   from {
     opacity: 0;
-    transform: scale(0.6);
   }
 }
 
 @keyframes ride {
   0% {
     offset-distance: 0%;
+    opacity: 0;
+  }
+  12% {
     opacity: 1;
   }
-  85% {
+  88% {
     opacity: 1;
   }
   100% {

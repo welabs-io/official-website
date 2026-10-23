@@ -39,8 +39,9 @@ describe("route segments are in English", () => {
       .filter((s) => s && !/^\(.*\)$/.test(s));
   it("has the home and the product page", () => {
     const routes = pageFiles.map((f) => urlSegments(f).join("/"));
-    // lab/scenes/[id]: the noindex workbench of the scene kit (components/scene-kit), one scene alone; lab/scenes lists them
-    expect(routes.sort()).toEqual(["", "lab/scenes", "lab/scenes/[id]", "products/[slug]"]);
+    // lab/scenes/[id]: the noindex workbench of the scene kit (components/scene-kit), one scene alone; lab/scenes lists them;
+    // lab/foundation (v4): the noindex workbench of the v4 primitives (connector, typing, reveal, growing row)
+    expect(routes.sort()).toEqual(["", "lab/foundation", "lab/scenes", "lab/scenes/[id]", "products/[slug]"]);
   });
   it.each(pageFiles)("%s has no Portuguese segment", (file) => {
     const segments = urlSegments(file);
