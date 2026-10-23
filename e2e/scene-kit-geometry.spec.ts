@@ -1,15 +1,16 @@
-// GEOMETRIA DA CENA DO RELLOO NO LAB
-// The alignment contract of the Relloo kit scene, measured on the settled frame (reduced motion) at 1440 and 390, so a
-// look is accepted by numbers and not by eye (operator, 2026-10-22):
+// GEOMETRIA DAS CENAS DO KIT NO LAB
+// The alignment contract of the kit scenes, measured at 1440 and 390, so a look is accepted by numbers and not by eye
+// (operator, 2026-10-22):
 //  - inside every field (the lib's InputGroup) each piece is vertically centred in the field (|top gap − bottom gap|
 //    ≤ 1 px) and the leading inset equals the trailing inset (|first piece's left gap − last piece's right gap| ≤ 1 px);
 //  - every icon of a control, a chip or a status sits on the axis of its text line (≤ 1 px);
-//  - the columns of each list share their left edges (≤ 1 px): the inbox rows, the history lines, the record header.
+//  - the columns of each list share their left edges (≤ 1 px).
 // A "piece" is what the eye sees: an icon, a chip, a button, or the content box of the text control (its padding is
-// the control's own inset, not a piece).
+// the control's own inset, not a piece). The Relloo carousel is measured on each of its four frames (the settled step
+// of each, reached by the visitor's gesture on its frame picker); the other scenes on their settled frame.
 import { expect, test, type Page } from "@playwright/test";
 
-const LAB = "/lab/scenes/relloo-inbox";
+const RELLOO = "/lab/scenes/relloo-carousel";
 
 // Every field of the window: its box (inside its border) and the boxes of its pieces, in order
 async function fields(page: Page) {
@@ -88,25 +89,33 @@ async function iconAxis(page: Page) {
   });
 }
 
-// Left edges that must be one column, grouped by the column's name
-async function columns(page: Page) {
-  return page.evaluate(() => {
-    const live = document.querySelector('[data-scene="relloo-inbox"] > :last-child')!;
-    const lefts = (sel: string) =>
-      [...live.querySelectorAll<HTMLElement>(sel)]
-        .filter((e) => e.offsetParent !== null && e.getBoundingClientRect().width > 0)
-        .map((e) => Math.round(e.getBoundingClientRect().left * 100) / 100);
-    return {
-      "inbox marks": lefts("[data-channel] > :first-child"),
-      "inbox texts": [...lefts("[data-channel] > :last-child"), ...lefts("[data-channel] > :last-child > *")],
-      "history marks": lefts('[data-slot="timeline"] > li > :first-child'),
-      "history titles and bubbles": [
-        ...lefts('[data-slot="timeline"] > li > :last-child > :first-child'),
-        ...lefts('[data-slot="timeline"] > li > :last-child > :last-child:not(:first-child) > * > *'),
-      ],
-      "record title and meta": lefts('[data-align="record"] > :last-child > *'),
+// Left edges that must be one column, by name → selectors inside the live layer of the scene
+async function columns(page: Page, id: string, cols: Record<string, string[]>) {
+  return page.evaluate(
+    ({ id, cols }) => {
+      const live = document.querySelector(`[data-scene="${id}"] > :last-child`)!;
+      const lefts = (sel: string) =>
+        [...live.querySelectorAll<HTMLElement>(sel)]
+          .filter((e) => e.offsetParent !== null && e.getBoundingClientRect().width > 0)
+          .map((e) => Math.round(e.getBoundingClientRect().left * 100) / 100);
+      return Object.fromEntries(Object.entries(cols).map(([name, sels]) => [name, sels.flatMap(lefts)]));
+    },
+    { id, cols },
+  );
+}
+
+// The icon/text pairs of the live layer marked `data-axis` (first child the mark, second its text): their centres
+async function axisPairs(page: Page, id: string) {
+  return page.evaluate((sceneId) => {
+    const live = document.querySelector(`[data-scene="${sceneId}"] > :last-child`)!;
+    const mid = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return r.top + r.height / 2;
     };
-  });
+    return [...live.querySelectorAll<HTMLElement>("[data-axis]")]
+      .filter((e) => e.offsetParent !== null)
+      .map((e, i) => ({ name: `${e.dataset.axis} ${i}`, dy: Math.abs(mid(e.children[0]) - mid(e.children[1])) }));
+  }, id);
 }
 
 // CABEÇALHO NO PADRÃO DetailHeader DO DOMUS
@@ -161,49 +170,90 @@ async function expectDetailHeader(page: Page, id: string, width: number, withAct
   }
 }
 
+// GEOMETRIA DO CARROSSEL DO RELLOO, QUADRO A QUADRO
+// Each frame at its settled step (its pieces landed; the step holds 1.8 s): the composer's pieces centred with equal
+// insets (frame 1), every icon of a control, chip, status or marked pair on its text line, the columns of each frame
+// on one left edge (`data-col`), the record header of frame 3 in the Domus DetailHeader geometry (at 1440: on a phone
+// the nested pane leaves the status no room on the title's line and it wraps under it, as the Domus header wraps), the
+// four stages of the funnel on one centre line and the Domus under the second stage (frame 4)
+const RELLOO_SETTLED = { 1: "f1-message", 2: "f2-summary", 3: "f3-born", 4: "f4-ask" } as const;
+const RELLOO_COLUMNS: Record<1 | 2 | 3 | 4, Record<string, string[]>> = {
+  1: { conversation: ['[data-col="lead"]', '[data-slot="input-group"]'] },
+  2: { conversation: ['[data-col="lead"]'] },
+  3: { "conversation pane": ['[data-col="left"]'], "record pane": ['[data-col="right"]'] },
+  4: { "deal line, funnel and question": ['[data-col="funnel"]'] },
+};
+
 for (const width of [1440, 390]) {
-  test.describe(`relloo geometry at ${width}`, () => {
+  test.describe(`relloo-carousel geometry at ${width}`, () => {
     test.beforeEach(async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      await page.goto(LAB);
-      await page.getByRole("figure", { name: /Relloo/ }).waitFor();
+      await page.goto(RELLOO);
+      await page.getByRole("figure", { name: /^Relloo/ }).scrollIntoViewIfNeeded();
     });
 
-    test("every piece of a field is centred, with equal leading and trailing insets", async ({ page }) => {
-      const all = await fields(page);
-      expect(all.length).toBeGreaterThanOrEqual(width === 1440 ? 2 : 1);
-      for (const f of all) {
-        expect(f.pieces.length, `${f.name}: pieces`).toBeGreaterThanOrEqual(2);
-        for (const p of f.pieces) {
-          const above = p.top - f.inner.top;
-          const below = f.inner.bottom - p.bottom;
-          expect(Math.abs(above - below), `${f.name} / ${p.name}: top ${above.toFixed(1)} bottom ${below.toFixed(1)}`).toBeLessThanOrEqual(1);
+    for (const n of [1, 2, 3, 4] as const) {
+      test(`frame ${n}: fields, icon axis, columns${n === 3 ? ", record header" : ""}${n === 4 ? ", funnel" : ""}`, async ({ page }) => {
+        await page.getByRole("radio", { name: `Momento ${n}` }).click();
+        await expect(page.locator('[data-scene="relloo-carousel"]')).toHaveAttribute("data-step", RELLOO_SETTLED[n], {
+          timeout: 10_000,
+        });
+        await page.waitForTimeout(900);
+        // Only the frame on screen is measured: the one that left is gone and the one that came has stopped moving
+        // (a loaded machine can stretch the crossing past the wait)
+        await expect
+          .poll(() =>
+            page.evaluate(() => {
+              const frames = [...document.querySelectorAll('[data-scene="relloo-carousel"] > :last-child [data-frame]')];
+              return frames.length === 1 && getComputedStyle(frames[0].parentElement!).transform === "none";
+            }),
+          )
+          .toBe(true);
+
+        const all = await fields(page);
+        expect(all.length, "fields").toBeGreaterThanOrEqual(n === 1 ? 1 : 0);
+        for (const f of all) {
+          expect(f.pieces.length, `${f.name}: pieces`).toBeGreaterThanOrEqual(2);
+          for (const p of f.pieces) {
+            const above = p.top - f.inner.top;
+            const below = f.inner.bottom - p.bottom;
+            expect(Math.abs(above - below), `${f.name} / ${p.name}: top ${above.toFixed(1)} bottom ${below.toFixed(1)}`).toBeLessThanOrEqual(1);
+          }
+          const lead = f.pieces[0].left - f.inner.left;
+          const trail = f.inner.right - f.pieces[f.pieces.length - 1].right;
+          expect(Math.abs(lead - trail), `${f.name}: leading ${lead.toFixed(1)} trailing ${trail.toFixed(1)}`).toBeLessThanOrEqual(1);
         }
-        const lead = f.pieces[0].left - f.inner.left;
-        const trail = f.inner.right - f.pieces[f.pieces.length - 1].right;
-        expect(Math.abs(lead - trail), `${f.name}: leading ${lead.toFixed(1)} trailing ${trail.toFixed(1)}`).toBeLessThanOrEqual(1);
-      }
-    });
 
-    test("every icon of a control, chip or status sits on its text line", async ({ page }) => {
-      const pairs = await iconAxis(page);
-      expect(pairs.length).toBeGreaterThanOrEqual(width === 1440 ? 4 : 6);
-      for (const { name, dy } of pairs) expect(dy, name).toBeLessThanOrEqual(1);
-    });
+        const pairs = [...(await iconAxis(page)), ...(await axisPairs(page, "relloo-carousel"))];
+        // The lab's two toolbar buttons and at least one pair of the frame
+        expect(pairs.length, "icon/text pairs").toBeGreaterThanOrEqual(3);
+        for (const { name, dy } of pairs) expect(dy, name).toBeLessThanOrEqual(1);
 
-    test("the record header keeps the Domus DetailHeader geometry", async ({ page }) => {
-      await expectDetailHeader(page, "relloo-inbox", width);
-    });
+        const cols = await columns(page, "relloo-carousel", RELLOO_COLUMNS[n]);
+        for (const [name, xs] of Object.entries(cols)) {
+          expect(xs.length, name).toBeGreaterThan(1);
+          expect(Math.max(...xs) - Math.min(...xs), `${name}: ${xs.join(", ")}`).toBeLessThanOrEqual(1);
+        }
 
-    test("the columns of each list share their left edge", async ({ page }) => {
-      const cols = await columns(page);
-      for (const [name, xs] of Object.entries(cols)) {
-        if (name.startsWith("inbox") && width < 1024) continue;
-        expect(xs.length, name).toBeGreaterThan(1);
-        expect(Math.max(...xs) - Math.min(...xs), `${name}: ${xs.join(", ")}`).toBeLessThanOrEqual(1);
-      }
-    });
+        if (n === 3 && width === 1440) await expectDetailHeader(page, "relloo-carousel", width, false);
+
+        if (n === 4) {
+          const funnel = await page.evaluate(() => {
+            const live = document.querySelector('[data-scene="relloo-carousel"] > :last-child')!;
+            const box = (el: Element) => el.getBoundingClientRect();
+            const stages = [...live.querySelectorAll("[data-stage]")].map(box);
+            const domus = box(live.querySelector("[data-domus]")!);
+            return {
+              mids: stages.map((r) => Math.round((r.top + r.height / 2) * 100) / 100),
+              under: Math.abs(domus.left + domus.width / 2 - (stages[1].left + stages[1].width / 2)),
+            };
+          });
+          expect(funnel.mids.length, "stages").toBe(4);
+          expect(Math.max(...funnel.mids) - Math.min(...funnel.mids), `stage centres: ${funnel.mids.join(", ")}`).toBeLessThanOrEqual(1);
+          expect(funnel.under, "the Domus centred under the second stage").toBeLessThanOrEqual(1);
+        }
+      });
+    }
   });
 }
 
@@ -235,6 +285,17 @@ type GeoScene = {
   insets?: Record<string, string>;
 };
 const V3: GeoScene[] = [
+  {
+    // The settled frame of the carousel (frame 4) under reduced motion; its frames are measured one by one above
+    id: "relloo-carousel",
+    figure: /^Relloo/,
+    fields: [0, 0],
+    // The demo request, the booked visit, and the lab's two toolbar buttons
+    pairs: [4, 4],
+    columns: {
+      "deal line, funnel and question": { sel: ['[data-col="funnel"]'] },
+    },
+  },
   {
     // The four frames are laid out at once (one grid cell, the hidden ones out of sight), so every frame is measured
     id: "domus-carousel",

@@ -466,7 +466,7 @@
 }
 /* A link drawn as the lib's button (ActionButton with `href`, the carousels' call to action): the page's unlayered
    `a { color: inherit }` (app/globals.css) would paint its label with the parent's ink, black on the black primary;
-   the lib's own colour of the button comes back */
+   the lib's own colour of the button comes back. The one rule for it: app/globals.css keeps its plain reset */
 a[data-slot="button"] {
   color: revert-layer;
 }

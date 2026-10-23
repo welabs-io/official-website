@@ -1,14 +1,17 @@
 // PROVA DAS CENAS DO KIT NO LAB
-// The pattern of e2e/scene-kit.spec.ts (the Relloo scene) applied to every other kit scene, one entry per scene: it
-// autoplays and loops, a click on its control takes over and gives the scene back, reduced motion shows the settled
-// frame with nothing running, every icon sits on the axis of the text it labels (1 px, the `data-axis` pairs: first
-// child the mark, second the text; not `data-align`, which the lib's InputGroupAddon writes), no text is cut, and the
-// window keeps one height over the loop (1 px).
+// The continuity contract of the kit applied to every kit scene, one entry per scene in one table: it autoplays and
+// loops, a click on its control takes over and gives the scene back, reduced motion shows the settled frame with
+// nothing running, every icon sits on the axis of the text it labels (1 px, the `data-axis` pairs: first child the
+// mark, second the text; not `data-align`, which the lib's InputGroupAddon writes), no text is cut, the window keeps
+// one height over the loop (1 px), and over one loop the amber budget, the connector at each hand-off and, for a
+// carousel, every frame in order with the chrome's frame indicator on the frame shown.
 import { expect, test, type Page } from "@playwright/test";
 import {
   expectContinuousLoop,
   expectFinalFrameUnderReducedMotion,
 } from "./helpers/continuity";
+
+type Width = 1440 | 390;
 
 type Entry = {
   id: string;
@@ -16,30 +19,51 @@ type Entry = {
   figure: RegExp;
   // Accessible name of the control a visitor clicks
   trigger: RegExp;
+  // Role of the trigger (a button unless said otherwise; an option of the frame indicator is a radio)
+  triggerRole?: "button" | "radio";
   // The settled step
   final: string;
   // Least number of icon/text pairs measured at 1440 and at 390
   pairs: number;
   // Length of one loop, in ms (the sum of the holds)
   cycleMs: number;
-  // Role of the trigger (a button unless said otherwise; a segmented control's option is a radio)
-  triggerRole?: "button" | "radio";
-  // v3 scenes (brief-v3-scenes): over one loop, at most 3 pieces of amber in any frame, none on the settled frame (the
-  // end is green or neutral, never amber), and the connector (the Relloo's trace with its riding dot) drawn at each of
-  // these steps, per width, and never on the settled frame
-  handoff?: { 1440: string[]; 390: string[] };
-  // Carousel scenes (brief-v3-carousel): over one loop every frame is reached, and no frame shows more than its amber
-  // budget (`amber` for the Magneto's frame walk, `amberMax` for the Tuner's indicator and cut-text pass)
-  carousel?: { frames: number; amber?: number; amberMax?: number };
-  // Carousels v3 (brief-v3-carousel): the number of frames the loop must reach (the live layer's `data-frame`), the
-  // amber budget per frame when it is tighter than 3, and whether the settled frame keeps its connector (the last
-  // frame of a carousel may end on its links)
-  frames?: number;
+  // v3 scenes (brief-v3-scenes): the steps, per width, at which the connector (the kit's trace) is drawn
+  handoff?: Record<Width, string[]>;
+  // The most pieces of amber any step may show (default 3; the carousels allow 2), counted as fills (the signal, a
+  // blend more than half way to it, or amber-50) and as rings (the signal in a box-shadow)
   amberMax?: number;
-  settledTrace?: boolean;
+  // How many of them the settled frame keeps (default 0: the end is green or neutral; a carousel's last frame may keep
+  // its live piece, as the approved frames draw it)
+  finalAmber?: number;
+  // The widths at which the settled frame keeps its connector (default none: the last frame of a carousel may end on
+  // its links)
+  finalTrace?: Width[];
+  // v3 carousels (brief-v3-carousel): the number of frames (`data-frame` in the live layer) the loop reaches, in order,
+  // with the chrome's frame indicator on the frame shown and no text cut in any of them
+  frames?: number;
 };
 
 const SCENES: Entry[] = [
+  {
+    id: "relloo-carousel",
+    figure: /^Relloo/,
+    // The frame indicator of the chrome (the kit's FrameIndicator, the lib's SegmentedControl): its options are radios
+    trigger: /^Momento 2$/,
+    triggerRole: "radio",
+    final: "f4-ask",
+    // The Domus card under the funnel (its mark on its two lines)
+    pairs: 1,
+    cycleMs: 15200,
+    handoff: {
+      1440: ["f2-handoff", "f2-summary", "f3-born", "f4-domus"],
+      // On a phone the panes of frame 3 stack and its trace stays off (it would cross the conversation)
+      390: ["f2-handoff", "f2-summary", "f4-domus"],
+    },
+    amberMax: 2,
+    finalAmber: 1,
+    finalTrace: [1440, 390],
+    frames: 4,
+  },
   {
     id: "domus-carousel",
     figure: /^Domus/,
@@ -51,22 +75,23 @@ const SCENES: Entry[] = [
     cycleMs: 12_900,
     // The new type to its screen, the confirmed record to its row, the record to its neighbours (side by side only)
     handoff: { 1440: ["screen", "linked", "links", "cta"], 390: [] },
-    frames: 4,
     amberMax: 2,
-    settledTrace: true,
+    finalTrace: [1440],
+    frames: 4,
   },
   {
     id: "magneto-carousel",
     figure: /^Magneto/,
-    // The frame indicator of the header (the lib's SegmentedControl): a click on a frame plays from it. Frame 3: from
-    // there the sequence and its last hold end inside the kit's 8 s of human idle (from frame 2 the idle cuts the hold)
-    trigger: /^3$/,
+    // The frame indicator (a click on a frame plays from it). Frame 3: from there the sequence and its last hold end
+    // inside the kit's 8 s of human idle (from frame 2 the idle cuts the hold)
+    trigger: /^Momento 3$/,
     triggerRole: "radio",
     final: "ask",
     // The last frame: the approved step, the live step and its two lines, and the two products it reached
     pairs: 6,
     cycleMs: 12600,
-    carousel: { frames: 4, amber: 2 },
+    amberMax: 2,
+    frames: 4,
   },
   {
     id: "tuner-carousel",
@@ -77,17 +102,23 @@ const SCENES: Entry[] = [
     // The nodes of the settled frame: the channel the answer came from and the conversation it goes to
     pairs: 2,
     cycleMs: 12200,
-    carousel: { frames: 4, amberMax: 2 },
+    amberMax: 2,
+    frames: 4,
   },
   {
-    id: "knowly-answer",
+    id: "knowly-carousel",
     figure: /^Knowly/,
-    trigger: /^Financeiro/,
-    triggerRole: "radio",
+    // A citation of the answer (frame 4) replays the answer, its proofs and their traces
+    trigger: /^Reunião · dia 3/,
     final: "done",
-    pairs: 4,
-    cycleMs: 9800,
-    handoff: { 1440: ["s1", "s2", "profile"], 390: [] },
+    // The assistant's head (mark + name) and the note of what is missing (icon + text)
+    pairs: 2,
+    cycleMs: 11900,
+    // Frame 3: each part points up at its day; frame 4: each citation points back at the decision
+    handoff: { 1440: ["asked", "approved", "cite", "done"], 390: [] },
+    amberMax: 2,
+    finalTrace: [1440],
+    frames: 4,
   },
   {
     id: "home-message",
@@ -172,7 +203,7 @@ for (const s of SCENES) {
       await expect(scene.locator("[data-scene]")).toHaveAttribute("data-step", s.final);
     });
 
-    for (const width of [1440, 390]) {
+    for (const width of [1440, 390] as const) {
       test(`icons on the axis of their text, no text cut, at ${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.emulateMedia({ reducedMotion: "reduce" });
@@ -201,107 +232,15 @@ for (const s of SCENES) {
         expect(Math.max(...all) - Math.min(...all), all.join(",")).toBeLessThanOrEqual(1);
       });
 
-      // ORÇAMENTO DE ÂMBAR E CONECTOR (CENAS V3)
-      // Sampled on every animation frame over one loop from the first step: no frame shows more than 3 pieces of amber
-      // (#ffb020 or a blend more than half way to it, as a fill), the settled frame shows none, and the connector is
-      // drawn at each hand-off step of this width and never on the settled frame (the measure of e2e/scene-kit.spec.ts
-      // for the Relloo); a carousel also reaches each of its frames, within its own amber budget, and may end on its
-      // links
-      const handoff = s.handoff;
-      if (handoff) {
-        test(`at most 3 amber pieces and the connector at each hand-off at ${width}`, async ({ page }) => {
-          test.setTimeout(60_000);
-          await page.setViewportSize({ width, height: 900 });
-          await page.goto(LAB);
-          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
-          await page.getByRole("button", { name: "Recomeçar" }).click();
-          const seen = await page.evaluate(async (ms) => {
-            const stage = document.querySelector('[role="figure"] [data-scene]')!;
-            const live = stage.lastElementChild!;
-            const amber = (c: string) => {
-              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
-              if (!m) return false;
-              const [r, g, b] = m.slice(1, 4).map(Number);
-              const a = m[4] === undefined ? 1 : Number(m[4]);
-              return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
-            };
-            const ambers: Record<string, number> = {};
-            const traced: Record<string, boolean> = {};
-            const frames = new Set<string>();
-            const t0 = performance.now();
-            while (performance.now() - t0 < ms) {
-              await new Promise((r) => requestAnimationFrame(r));
-              const step = stage.getAttribute("data-step")!;
-              const frame = live.querySelector("[data-frame]")?.getAttribute("data-frame");
-              if (frame) frames.add(frame);
-              const n = [...live.querySelectorAll("*")].filter((el) => {
-                const cs = getComputedStyle(el);
-                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
-              }).length;
-              ambers[step] = Math.max(ambers[step] ?? 0, n);
-              traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
-            }
-            return { ambers, traced, frames: [...frames] };
-          }, s.cycleMs + 500);
-          for (const [step, n] of Object.entries(seen.ambers))
-            expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(s.amberMax ?? 3);
-          expect(seen.ambers[s.final], "the settled frame keeps no amber").toBe(0);
-          for (const step of handoff[width as 1440 | 390]) expect(seen.traced[step], `connector at ${step}`).toBe(true);
-          if (!s.settledTrace) expect(seen.traced[s.final] ?? false, "no connector on the settled frame").toBe(false);
-          if (s.frames) expect(seen.frames.sort(), "every frame of the carousel is reached").toHaveLength(s.frames);
-        });
-      }
-
-      // QUADROS DO CARROSSEL (CENAS V3 EM CARROSSEL)
-      // Sampled on every animation frame over one loop from the first step: the scene shows each of its frames, in
-      // order, and no frame (the crossfade between two included) shows more than the carousel's amber pieces
-      const carousel = s.carousel;
-      if (carousel) {
-        test(`every frame reached, at most ${carousel.amber} amber pieces per frame at ${width}`, async ({ page }) => {
-          test.setTimeout(60_000);
-          await page.setViewportSize({ width, height: 900 });
-          await page.goto(LAB);
-          await page.getByRole("figure", { name: s.figure }).scrollIntoViewIfNeeded();
-          await page.getByRole("button", { name: "Recomeçar" }).click();
-          const seen = await page.evaluate(async (ms) => {
-            const stage = document.querySelector('[role="figure"] [data-scene]')!;
-            const live = stage.lastElementChild!;
-            const amber = (c: string) => {
-              const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
-              if (!m) return false;
-              const [r, g, b] = m.slice(1, 4).map(Number);
-              const a = m[4] === undefined ? 1 : Number(m[4]);
-              return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
-            };
-            const order: string[] = [];
-            const ambers: Record<string, number> = {};
-            const t0 = performance.now();
-            while (performance.now() - t0 < ms) {
-              await new Promise((r) => requestAnimationFrame(r));
-              const frame = live.querySelector("[data-frame]")?.getAttribute("data-frame") ?? "none";
-              if (order[order.length - 1] !== frame) order.push(frame);
-              const n = [...live.querySelectorAll("*")].filter((el) => {
-                const cs = getComputedStyle(el);
-                return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
-              }).length;
-              ambers[frame] = Math.max(ambers[frame] ?? 0, n);
-            }
-            return { order, ambers };
-          }, s.cycleMs + 500);
-          const frames = Array.from({ length: carousel.frames }, (_, i) => String(i + 1));
-          expect(seen.order.slice(0, carousel.frames), "the frames, in order").toEqual(frames);
-          for (const [frame, n] of Object.entries(seen.ambers))
-            expect(n, `amber pieces at frame ${frame}`).toBeLessThanOrEqual(carousel.amber);
-        });
-      }
-
-      // QUADROS DO CARROSSEL (CENAS V3 EM CARROSSEL)
-      // Sampled on every animation frame over one loop from the first step: every frame is reached, the chrome's
-      // indicator marks the same number as the current frame, no frame shows more than `amberMax` amber pieces, and,
-      // once each step has landed (800 ms in), no text of the current frame is cut
-      const carousel = s.carousel;
-      if (carousel) {
-        test(`every frame reached, its indicator, at most ${carousel.amberMax} amber pieces and no text cut at ${width}`, async ({ page }) => {
+      // ORÇAMENTO DE ÂMBAR, CONECTOR E QUADROS (CENAS V3)
+      // Sampled on every animation frame over one loop from the first step: no step shows more than `amberMax` pieces
+      // of amber (as a fill or as a ring), the settled frame shows `finalAmber`, the connector is drawn at each hand-off
+      // step of this width and on the settled frame only where the scene keeps it there. A carousel also reaches each
+      // of its frames, in order, with the chrome's indicator on the frame shown, and, once each step has landed (800 ms
+      // in), no text of the frame shown is cut
+      if (s.handoff || s.frames) {
+        const amberMax = s.amberMax ?? 3;
+        test(`at most ${amberMax} amber pieces, the connector at each hand-off${s.frames ? " and every frame" : ""} at ${width}`, async ({ page }) => {
           test.setTimeout(60_000);
           await page.setViewportSize({ width, height: 900 });
           await page.goto(LAB);
@@ -315,16 +254,22 @@ for (const s of SCENES) {
               const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
               return m ? { r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4] } : null;
             };
-            // The signal (#ffb020) or amber-50 (#fff3dd) as a fill, or the signal in a ring (box-shadow)
-            const amberFill = (c: string) => {
+            // The signal (#ffb020) or a blend more than half way to it, or amber-50 (#fff3dd)
+            const amber = (c: string) => {
               const x = rgb(c);
               if (!x || x.a <= 0.5) return false;
               const signal = x.r > 230 && x.g > 140 && x.g < 210 && x.b < 140;
               const soft = x.r > 250 && x.g > 235 && x.g < 250 && x.b > 200 && x.b < 230;
               return signal || soft;
             };
-            const amberRing = (s: string) => /rgba?\(255, 176, 32/.test(s);
-            const frames: Record<string, { amber: number; indicator: string[]; cut: string[] }> = {};
+            // Every colour of a shadow list: an amber ring (a live piece's edge) is a piece of amber too
+            const ring = (shadow: string) => (shadow.match(/rgba?\([^)]*\)/g) ?? []).some(amber);
+            const ambers: Record<string, number> = {};
+            const traced: Record<string, boolean> = {};
+            // The frames in the order they are first shown, the indicator's frame seen with each, and the cut texts
+            const order: string[] = [];
+            const marks: Record<string, string[]> = {};
+            const cut: string[] = [];
             const checked = new Set<string>();
             let step = "";
             let since = 0;
@@ -337,21 +282,28 @@ for (const s of SCENES) {
                 step = id;
                 since = now;
               }
-              const current = live.querySelector<HTMLElement>('[data-frame][data-current="true"]');
-              if (!current) continue;
-              const n = current.dataset.frame!;
-              const f = (frames[n] ??= { amber: 0, indicator: [], cut: [] });
-              const amber = [current, ...current.querySelectorAll("*")].filter((el) => {
+              const n = [...live.querySelectorAll("*")].filter((el) => {
                 const cs = getComputedStyle(el);
                 return (
                   el.getBoundingClientRect().width > 0 &&
                   Number(cs.opacity) > 0.05 &&
-                  (amberFill(cs.backgroundColor) || amberRing(cs.boxShadow))
+                  (amber(cs.backgroundColor) || ring(cs.boxShadow))
                 );
               }).length;
-              f.amber = Math.max(f.amber, amber);
-              const mark = figure.querySelector('[aria-current="step"]')?.textContent ?? "";
-              if (!f.indicator.includes(mark)) f.indicator.push(mark);
+              ambers[step] = Math.max(ambers[step] ?? 0, n);
+              traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+
+              // The frame shown: the one marked current, or the only one laid out (none while two cross)
+              const all = [...live.querySelectorAll<HTMLElement>("[data-frame]")];
+              const current =
+                all.find((f) => f.dataset.current === "true") ??
+                (new Set(all.map((f) => f.dataset.frame)).size === 1 ? all[0] : undefined);
+              if (!current) continue;
+              const frame = current.dataset.frame!;
+              if (!order.includes(frame)) order.push(frame);
+              const checkedOption = figure.querySelector('[data-frame-indicator] [role="radio"][aria-checked="true"]');
+              const mark = checkedOption?.textContent?.match(/\d+/)?.[0] ?? "none";
+              if (!(marks[frame] ??= []).includes(mark)) marks[frame].push(mark);
               if (now - since > 800 && !checked.has(step)) {
                 checked.add(step);
                 current.querySelectorAll<HTMLElement>("*").forEach((el) => {
@@ -359,21 +311,26 @@ for (const s of SCENES) {
                   const ownText = [...el.childNodes].some((c) => c.nodeType === 3 && c.textContent!.trim());
                   if (!ownText) return;
                   if (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
-                    f.cut.push(`${step}: ${el.tagName.toLowerCase()} "${el.textContent!.trim().slice(0, 40)}"`);
+                    cut.push(`${step}: ${el.tagName.toLowerCase()} "${el.textContent!.trim().slice(0, 40)}"`);
                 });
               }
             }
-            return { frames, checked: [...checked] };
+            return { ambers, traced, order, marks, cut, checked: checked.size };
           }, s.cycleMs + 500);
-          const numbers = Array.from({ length: carousel.frames }, (_, i) => String(i + 1));
-          expect(Object.keys(seen.frames).sort(), "every frame is reached").toEqual(numbers);
-          expect(seen.checked.length, "every step was checked for cut text").toBeGreaterThanOrEqual(carousel.frames);
-          // The counter measures what it should: a live piece is seen somewhere in the loop
-          expect(Object.values(seen.frames).some((f) => f.amber > 0), "the amber counter sees the live pieces").toBe(true);
-          for (const [n, f] of Object.entries(seen.frames)) {
-            expect(f.indicator, `the indicator of frame ${n}`).toEqual([n]);
-            expect(f.amber, `amber pieces in frame ${n}`).toBeLessThanOrEqual(carousel.amberMax);
-            expect(f.cut, `text cut in frame ${n}`).toEqual([]);
+
+          for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(amberMax);
+          expect(seen.ambers[s.final], "amber on the settled frame").toBe(s.finalAmber ?? 0);
+          for (const step of s.handoff?.[width] ?? []) expect(seen.traced[step], `connector at ${step}`).toBe(true);
+          const keeps = s.finalTrace?.includes(width) ?? false;
+          expect(seen.traced[s.final] ?? false, keeps ? "the settled frame keeps its connector" : "no connector on the settled frame").toBe(keeps);
+          if (s.frames) {
+            const numbers = Array.from({ length: s.frames }, (_, i) => String(i + 1));
+            expect(seen.order, "every frame, in order").toEqual(numbers);
+            // The counter measures what it should: a live piece is seen somewhere in the loop
+            expect(Object.values(seen.ambers).some((n) => n > 0), "the amber counter sees the live pieces").toBe(true);
+            for (const n of numbers) expect(seen.marks[n], `the indicator on frame ${n}`).toEqual([n]);
+            expect(seen.checked, "every step was checked for cut text").toBeGreaterThanOrEqual(s.frames);
+            expect(seen.cut, "text cut in a frame").toEqual([]);
           }
         });
       }

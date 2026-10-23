@@ -13,7 +13,7 @@ import { DOMUS_CAROUSEL_STEPS, DomusCarousel } from "./scenes/domus-carousel";
 import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
 import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
 import { MAGNETO_CAROUSEL_STEPS, MagnetoCarousel } from "./scenes/magneto-carousel";
-import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
+import { RELLOO_CAROUSEL_STEPS, RellooCarousel } from "./scenes/relloo-carousel";
 import { TUNER_CAROUSEL_STEPS, TunerCarousel } from "./scenes/tuner-carousel";
 import k from "./lab.module.css";
 
@@ -25,10 +25,10 @@ type Entry = {
 };
 
 const SCENES: Record<SceneId, Entry> = {
-  "relloo-inbox": {
-    steps: RELLOO_INBOX_STEPS,
-    Component: RellooInbox,
-    takeFrom: "email",
+  "relloo-carousel": {
+    steps: RELLOO_CAROUSEL_STEPS,
+    Component: RellooCarousel,
+    takeFrom: "f2-reply",
   },
   "domus-carousel": {
     steps: DOMUS_CAROUSEL_STEPS,

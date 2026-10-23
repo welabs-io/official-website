@@ -1,115 +1,128 @@
-// PROVA DO KIT DE CENAS NO LAB
-// The continuity contract of the scene kit (components/scene-kit), measured on the lab page of the Relloo scene: it
-// autoplays and loops, a click on a channel takes over and gives the scene back, reduced motion shows the settled frame
-// with nothing running, and every icon sits on the axis of the text it labels (1 px).
-import { expect, test } from "@playwright/test";
-import {
-  expectContinuousLoop,
-  expectFinalFrameUnderReducedMotion,
-} from "./helpers/continuity";
+// PROVA DO CARROSSEL DO RELLOO NO LAB
+// What the Relloo carousel adds to the kit's contract (e2e/scene-kit-scenes.spec.ts holds the loop, the take, reduced
+// motion, the frames reached, the amber budget, the cut text and the height): the frames cross with a fade (never a
+// cut), the chrome names the frame's screen and marks its number, and the connector is the v3 brief's (solid ink,
+// 2 to 3.5 px, with an arrowhead, routed outside the pieces it links).
+import { expect, test, type Page } from "@playwright/test";
 
-const LAB = "/lab/scenes/relloo-inbox";
+const LAB = "/lab/scenes/relloo-carousel";
+// The last step of each frame (it holds 1.8 s, time to measure once its pieces have landed)
+const SETTLED = { 1: "f1-message", 2: "f2-summary", 3: "f3-born", 4: "f4-ask" } as const;
 
-test.describe("scene kit: relloo-inbox", () => {
-  test.use({ viewport: { width: 1440, height: 900 } });
+// Plays the scene from frame `n` (the visitor's gesture on the chrome's picker) and waits for its pieces to land
+async function showFrame(page: Page, n: 1 | 2 | 3 | 4) {
+  await page.getByRole("radio", { name: `Momento ${n}` }).click();
+  await expect(page.locator('[data-scene="relloo-carousel"]')).toHaveAttribute("data-step", SETTLED[n], {
+    timeout: 10_000,
+  });
+  await page.waitForTimeout(900);
+  // Only the frame on screen: the one that left is gone and the one that came has stopped moving
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const frames = [...document.querySelectorAll('[data-scene="relloo-carousel"] > :last-child [data-frame]')];
+        return frames.length === 1 && getComputedStyle(frames[0].parentElement!).transform === "none";
+      }),
+    )
+    .toBe(true);
+}
 
-  test("autoplays, loops, and after a click plays, holds, resets and resumes", async ({ page }) => {
-    test.setTimeout(60_000);
-    await page.goto(LAB);
-    const scene = page.getByRole("figure", { name: /Relloo/ });
-    await expectContinuousLoop(scene, {
-      windowMs: 10_000,
-      afterMs: 10_000,
-      trigger: scene.getByRole("button", { name: /^E-mail/ }),
+// The drawn traces of the live layer: stroke, colour, arrowhead, and the pieces each one crosses between its ends
+async function traces(page: Page) {
+  return page.evaluate(() => {
+    const live = document.querySelector('[data-scene="relloo-carousel"] > :last-child')!;
+    const pieces = [
+      ...live.querySelectorAll<HTMLElement>("p, article, [data-holder], [data-stage], [data-domus], [data-slot='badge']"),
+    ].filter((e) => e.offsetParent !== null);
+    return [...live.querySelectorAll<SVGPathElement>("svg path[pathLength]")].map((path) => {
+      const cs = getComputedStyle(path);
+      const svg = path.ownerSVGElement!;
+      const ctm = svg.getScreenCTM()!;
+      const length = path.getTotalLength();
+      const crossed = new Set<string>();
+      // Every 2 px of the trace, 8 px clear of its two ends (where it touches its source and its target)
+      for (let at = 8; at < length - 8; at += 2) {
+        const p = path.getPointAtLength(at).matrixTransform(ctm);
+        for (const el of pieces) {
+          const r = el.getBoundingClientRect();
+          if (p.x > r.left && p.x < r.right && p.y > r.top && p.y < r.bottom)
+            crossed.add(`${el.tagName.toLowerCase()} "${el.textContent!.trim().slice(0, 24)}"`);
+        }
+      }
+      return {
+        width: parseFloat(cs.strokeWidth),
+        colour: cs.stroke,
+        dashed: cs.strokeDasharray !== "none" && path.getAttribute("pathLength") === null,
+        head: !!path.parentElement!.querySelectorAll("path").item(1),
+        crossed: [...crossed],
+      };
     });
   });
+}
 
-  test("reduced motion shows the final frame, static", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto(LAB);
-    const scene = page.getByRole("figure", { name: /Relloo/ });
-    await expectFinalFrameUnderReducedMotion(page, scene);
-    await expect(scene.locator("[data-scene]")).toHaveAttribute("data-step", "merged");
-    await page.waitForTimeout(1500);
-    await expect(scene.locator("[data-scene]")).toHaveAttribute("data-step", "merged");
+test.describe("relloo carousel", () => {
+  test.beforeAll(async ({ request }) => {
+    await request.get(LAB, { timeout: 60_000 });
   });
 
   for (const width of [1440, 390]) {
-    test(`icons sit on the axis of their text at ${width}`, async ({ page }) => {
-      await page.setViewportSize({ width, height: 900 });
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      await page.goto(LAB);
-      const off = await page.evaluate(() => {
-        const live = document.querySelector('[data-scene="relloo-inbox"] > :last-child')!;
-        const mid = (el: Element) => {
-          const r = el.getBoundingClientRect();
-          return r.top + r.height / 2;
-        };
-        const pairs: [string, Element, Element][] = [];
-        // A history line is the lib's TimelineItem: its marker (first column) against its title row (second column)
-        live.querySelectorAll('[data-slot="timeline"] > li').forEach((e, i) =>
-          pairs.push([`entry ${i}`, e.children[0].children[0], e.children[1].children[0]]),
-        );
-        // The record header and the system event line (Welabs UI v3: a meta line with its icon, no mark)
-        live.querySelectorAll('[data-align="record"], [data-align="event"]').forEach((e) =>
-          pairs.push([e.getAttribute("data-align")!, e.children[0], e.children[1]]),
-        );
-        live.querySelectorAll("[data-channel]").forEach((e) => {
-          if ((e as HTMLElement).offsetParent === null || getComputedStyle(e).visibility === "hidden") return;
-          pairs.push([`row ${e.getAttribute("data-channel")}`, e.children[0], e.children[1]]);
-        });
-        return pairs.map(([name, icon, text]) => ({ name, dy: Math.abs(mid(icon) - mid(text)) }));
-      });
-      expect(off.length).toBeGreaterThan(5);
-      for (const { name, dy } of off) expect(dy, name).toBeLessThanOrEqual(1);
-    });
-
-    // RODADA 2: ALTURA, ORÇAMENTO DE ÂMBAR E CONECTOR
-    // Over one loop (9.3 s), sampled on every animation frame: the window keeps one height (1 px), no frame shows more
-    // than 3 pieces of amber (#ffb020 or a blend more than half way to it, as a fill), and at 1440 every arrival draws
-    // the hand-off trace from its row to its history line while the settled frame draws none
-    test(`one height, at most 3 amber pieces and the hand-off trace over a loop at ${width}`, async ({ page }) => {
-      test.setTimeout(40_000);
+    test(`the connector is solid ink, 2 to 3.5 px, with an arrow, outside the pieces at ${width}`, async ({ page }) => {
+      test.setTimeout(60_000);
       await page.setViewportSize({ width, height: 900 });
       await page.goto(LAB);
-      await page.getByRole("figure", { name: /Relloo/ }).scrollIntoViewIfNeeded();
-      await page.getByRole("button", { name: "Recomeçar" }).click();
-      const seen = await page.evaluate(async () => {
-        const figure = document.querySelector('[role="figure"]')!;
-        const stage = figure.querySelector("[data-scene]")!;
-        const live = stage.lastElementChild!;
-        const amber = (c: string) => {
-          const m = c.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?/);
-          if (!m) return false;
-          const [r, g, b] = m.slice(1, 4).map(Number);
-          const a = m[4] === undefined ? 1 : Number(m[4]);
-          return a > 0.5 && r > 230 && g > 140 && g < 210 && b < 140;
-        };
-        const heights = new Set<number>();
-        const ambers: Record<string, number> = {};
-        const traced: Record<string, boolean> = {};
-        const t0 = performance.now();
-        while (performance.now() - t0 < 9500) {
-          await new Promise((r) => requestAnimationFrame(r));
-          const step = stage.getAttribute("data-step")!;
-          heights.add(Math.round(figure.getBoundingClientRect().height));
-          const n = [...live.querySelectorAll("*")].filter((el) => {
-            const cs = getComputedStyle(el);
-            return el.getBoundingClientRect().width > 0 && Number(cs.opacity) > 0.05 && amber(cs.backgroundColor);
-          }).length;
-          ambers[step] = Math.max(ambers[step] ?? 0, n);
-          traced[step] = traced[step] || !!live.querySelector("svg path[pathLength]");
+      await page.getByRole("figure", { name: /^Relloo/ }).scrollIntoViewIfNeeded();
+      // Frame 3 draws its trace side by side only (a phone stacks the panes)
+      const frames = width === 1440 ? ([2, 3, 4] as const) : ([2, 4] as const);
+      for (const n of frames) {
+        await showFrame(page, n);
+        const all = await traces(page);
+        expect(all.length, `frame ${n}: a trace`).toBeGreaterThan(0);
+        for (const t of all) {
+          expect(t.width, `frame ${n}: stroke`).toBeGreaterThanOrEqual(2);
+          expect(t.width, `frame ${n}: stroke`).toBeLessThanOrEqual(3.5);
+          expect(t.colour, `frame ${n}: ink`).toBe("rgb(18, 18, 18)");
+          expect(t.dashed, `frame ${n}: solid`).toBe(false);
+          expect(t.head, `frame ${n}: arrowhead`).toBe(true);
+          expect(t.crossed, `frame ${n}: pieces under the trace`).toEqual([]);
         }
-        return { heights: [...heights], ambers, traced };
-      });
-      expect(Math.max(...seen.heights) - Math.min(...seen.heights), seen.heights.join(",")).toBeLessThanOrEqual(1);
-      for (const [step, n] of Object.entries(seen.ambers)) expect(n, `amber pieces at ${step}`).toBeLessThanOrEqual(3);
-      expect(seen.ambers.merged, "the settled frame keeps only the live status dot").toBe(1);
-      if (width === 1440) {
-        for (const step of ["message", "email", "voice", "typing", "site"])
-          expect(seen.traced[step], `hand-off trace at ${step}`).toBe(true);
       }
-      expect(seen.traced.merged ?? false, "no trace on the settled frame").toBe(false);
     });
   }
+
+  test("the frames cross with a fade, never a cut, and the chrome follows them", async ({ page }) => {
+    test.setTimeout(40_000);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(LAB);
+    const figure = page.getByRole("figure", { name: /^Relloo/ });
+    await figure.scrollIntoViewIfNeeded();
+    await page.getByRole("button", { name: "Recomeçar" }).click();
+    // Sampled on every animation frame over the first change of frame: some frame shows the two frames at once, the
+    // leaving one half faded
+    const crossing = await page.evaluate(async () => {
+      const live = document.querySelector('[data-scene="relloo-carousel"] > :last-child')!;
+      const t0 = performance.now();
+      let both = false;
+      let partial = false;
+      while (performance.now() - t0 < 4500) {
+        await new Promise((r) => requestAnimationFrame(r));
+        const frames = [...live.querySelectorAll<HTMLElement>("[data-frame]")];
+        if (frames.length > 1) both = true;
+        if (
+          frames.some((f) => {
+            const o = Number(getComputedStyle(f.parentElement!).opacity);
+            return o > 0.05 && o < 0.95;
+          })
+        )
+          partial = true;
+      }
+      return { both, partial };
+    });
+    expect(crossing.both, "the leaving and the entering frame overlap").toBe(true);
+    expect(crossing.partial, "a frame fades instead of cutting").toBe(true);
+
+    // The chrome names the screen of the frame and marks its number
+    await page.getByRole("radio", { name: "Momento 3" }).click();
+    await expect(figure.getByRole("radio", { name: "Momento 3" })).toHaveAttribute("aria-checked", "true");
+    await expect(figure.locator(":scope > :first-child")).toContainText("Contato 4821");
+  });
 });
