@@ -2,9 +2,10 @@
 // CONECTOR ENTRE PEÇAS DE UMA CENA
 // A trace drawn over a scene from one element to another (a channel row to the history entry it became): an SVG laid
 // over its positioned parent, measured from the layout, never from a guess. It draws itself on (stroke from 0 to the
-// full length) and a small ink dot travels along it, both in CSS (components/scene-kit/connector.module.css), so the
-// kit's off-screen pause and reduced motion stop them like any other animation. Never amber: amber is an area, never
-// a thin line (Welabs UI v3). It measures in a ref callback that re-runs when `from` or `to` change (React 19 ref
+// full length), lands its arrowhead on the target and a small light bead travels along it, all in CSS (components/
+// scene-kit/connector.module.css), so the kit's off-screen pause and reduced motion stop them like any other
+// animation. v3 carousel (2026-10-22): the trace is solid ink at --rule-trace with an arrow, and stays solid once
+// drawn. Never amber: amber is an area, never a thin line (Welabs UI v3). It measures in a ref callback that re-runs when `from` or `to` change (React 19 ref
 // cleanup, no effect) and again on every resize or end of an animation inside the parent (an entry landing moves the
 // target), from offsetTop/offsetLeft, so the transform of an entry still arriving never bends the trace.
 import { useCallback, useState } from "react";
@@ -36,6 +37,12 @@ function trace(a: Point, b: Point) {
   return `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
 }
 
+// The arrowhead at the end of the trace: a chevron whose tip is the end point, pointing right (the trace ends with a
+// horizontal tangent), sized for the solid trace (brief-v3-carousel, 2026-10-22)
+const ARROW = 7;
+const arrow = (b: Point) =>
+  `M ${b.x - ARROW} ${b.y - ARROW} L ${b.x} ${b.y} L ${b.x - ARROW} ${b.y + ARROW}`;
+
 export function Connector({
   from,
   to,
@@ -52,6 +59,8 @@ export function Connector({
   const [d, setD] = useState<string | null>(null);
   // Where the trace leaves its source: an anchor dot ties the line to the row
   const [start, setStart] = useState<Point | null>(null);
+  // The arrowhead at the target (v3 carousel: every trace ends in an arrow)
+  const [head, setHead] = useState<string | null>(null);
 
   const ref = useCallback(
     (svg: SVGSVGElement | null) => {
@@ -68,7 +77,9 @@ export function Connector({
           return;
         }
         const start = { x: pa.x + pa.w - inset, y: pa.y + pa.h / 2 };
-        setD(trace(start, { x: pb.x - gap, y: pb.y + pb.h / 2 }));
+        const end = { x: pb.x - gap, y: pb.y + pb.h / 2 };
+        setD(trace(start, end));
+        setHead(arrow(end));
         setStart((prev) => (prev && prev.x === start.x && prev.y === start.y ? prev : start));
       };
       measure();
@@ -90,6 +101,7 @@ export function Connector({
         <g key={to}>
           {start ? <circle cx={start.x} cy={start.y} r={3} className={c.anchor} /> : null}
           <path d={d} pathLength={1} className={c.path} />
+          {head ? <path d={head} className={c.head} /> : null}
           <circle r={3} className={c.dot} style={{ offsetPath: `path("${d}")` }} />
         </g>
       ) : null}

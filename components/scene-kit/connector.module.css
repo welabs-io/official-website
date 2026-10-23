@@ -1,7 +1,9 @@
 /* CONECTOR ENTRE PEÇAS DE UMA CENA */
-/* The trace of components/scene-kit/Connector.tsx: the sand control edge (--input) at the dashed width, drawn on with
-   the in-out curve, and an ink dot that rides it once with the out curve. Under the content it would cross, above the
-   panes' paint, deaf to the pointer. Every value is a token of app/lib.css. */
+/* The trace of components/scene-kit/Connector.tsx: v3 carousel (brief-v3-carousel, 2026-10-22), a solid ink line at
+   --rule-trace (3 px) drawn on with the in-out curve, its arrowhead landing on the target with the spring once the line
+   is there, and a light bead that rides it once with the out curve. It stays solid (no recede: the operator asked for
+   a trace that reads, never a faint one). Under the content it would cross, above the panes' paint, deaf to the
+   pointer. Every value is a token of app/lib.css. */
 .layer {
   position: absolute;
   inset: 0;
@@ -12,27 +14,37 @@
   pointer-events: none;
 }
 
-/* Drawn on, then it recedes once the line has landed (the hand-off is done, the link stays readable but quiet) */
 .path {
   fill: none;
-  stroke: var(--input);
-  stroke-width: var(--rule-dashed);
+  stroke: var(--foreground);
+  stroke-width: var(--rule-trace);
   stroke-linecap: round;
   stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation:
-    draw var(--dur-3) var(--ease-in-out) forwards,
-    recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  /* Drawn at rest (reduced motion keeps the trace of a settled frame); the animation draws it on from nothing */
+  stroke-dashoffset: 0;
+  animation: draw var(--dur-3) var(--ease-in-out) backwards;
 }
 
-/* The anchor on the row: a sand dot where the trace leaves, receding with it */
+/* The arrowhead: the same stroke, born when the line reaches it */
+.head {
+  fill: none;
+  stroke: var(--foreground);
+  stroke-width: var(--rule-trace);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: right center;
+  animation: land var(--dur-2) var(--ease-spring) var(--dur-3) both;
+}
+
+/* The anchor on the source: an ink dot where the trace leaves */
 .anchor {
-  fill: var(--input);
-  animation: recede var(--dur-3) var(--ease-out) calc(var(--dur-3) * 2) forwards;
+  fill: var(--foreground);
 }
 
+/* A light bead on the ink line, so the ride reads on the solid trace */
 .dot {
-  fill: var(--foreground);
+  fill: var(--card);
   offset-rotate: 0deg;
   offset-distance: 0%;
   opacity: 0;
@@ -40,14 +52,15 @@
 }
 
 @keyframes draw {
-  to {
-    stroke-dashoffset: 0;
+  from {
+    stroke-dashoffset: 1;
   }
 }
 
-@keyframes recede {
-  to {
-    opacity: 0.45;
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
   }
 }
 

@@ -14,7 +14,7 @@ import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
 import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
 import { MAGNETO_APPROVAL_STEPS, MagnetoApproval } from "./scenes/magneto-approval";
 import { RELLOO_INBOX_STEPS, RellooInbox } from "./scenes/relloo-inbox";
-import { TUNER_ROUTING_STEPS, TunerRouting } from "./scenes/tuner-routing";
+import { TUNER_CAROUSEL_STEPS, TunerCarousel } from "./scenes/tuner-carousel";
 import k from "./lab.module.css";
 
 type Entry = {
@@ -40,10 +40,10 @@ const SCENES: Record<SceneId, Entry> = {
     Component: MagnetoApproval,
     takeFrom: "high",
   },
-  "tuner-routing": {
-    steps: TUNER_ROUTING_STEPS,
-    Component: TunerRouting,
-    takeFrom: "ring",
+  "tuner-carousel": {
+    steps: TUNER_CAROUSEL_STEPS,
+    Component: TunerCarousel,
+    takeFrom: "fanout",
   },
   "knowly-answer": {
     steps: KNOWLY_ANSWER_STEPS,

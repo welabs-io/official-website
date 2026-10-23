@@ -79,6 +79,34 @@ export function ActionButton({
   );
 }
 
+/** A labelled link drawn as the lib's Button (its `asChild` on an anchor): icon + text, primary unless said otherwise.
+ *  For a call to action that leads somewhere (brief-v3-carousel: "Agendar uma demonstração" to the contact) */
+export function LinkButton({
+  icon,
+  href,
+  emphasis = "primary",
+  size = "md",
+  children,
+  ...rest
+}: Omit<ComponentProps<"a">, "children" | "href"> & {
+  icon: ControlIcon;
+  href: string;
+  emphasis?: Emphasis;
+  size?: "xs" | "sm" | "md";
+  children: ReactNode;
+}) {
+  return (
+    <Button asChild size={size} {...EMPHASIS[emphasis]}>
+      <a href={href} {...rest}>
+        <span aria-hidden="true" className="contents">
+          {icon}
+        </span>
+        {children}
+      </a>
+    </Button>
+  );
+}
+
 const ICON_SIZE = { xs: "icon-xs", sm: "icon-sm", md: "icon" } as const;
 
 /** An action with no visible text: the icon, and the label as its accessible name */

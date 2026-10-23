@@ -43,7 +43,9 @@ svg {
   display: block;
   max-width: 100%;
 }
-a {
+/* A link drawn as the lib's Button (components/lib/ui.tsx LinkButton) keeps the lib's text colour: this unlayered rule
+   would outrank the lib's layered one and paint the label of a primary button in ink on ink */
+a:not([data-slot="button"]) {
   color: inherit;
 }
 /* FOCO VISÍVEL */
