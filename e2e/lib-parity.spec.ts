@@ -237,7 +237,7 @@ async function fieldsAndButtonsOf(page: Page, id: string): Promise<Control[]> {
 // components-segmentedcontrol--default. Only ALLOWED differs.
 // The carousels (brief-v3-carousel) join them: their frame indicator is a segmented control, their call to action
 // the black primary; the Domus lays its four frames out at once, so its settled pass reads every control of the loop
-const V3_LABS = ["tuner-carousel", "knowly-answer", "home-message", "magneto-carousel", "domus-carousel", "relloo-carousel"] as const;
+const V3_LABS = ["tuner-carousel", "knowly-carousel", "home-message", "magneto-carousel", "domus-carousel", "relloo-carousel"] as const;
 // The steps of a v3 scene whose controls show only for a moment (a carousel frame before the settled one), measured
 // too: the channel rows of the Tuner's frame 2
 const V3_STEPS: Partial<Record<(typeof V3_LABS)[number], string[]>> = { "tuner-carousel": ["sent"] };

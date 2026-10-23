@@ -11,7 +11,7 @@ import type { SceneTimeline } from "./timeline";
 import type { SceneId } from "./registry";
 import { DOMUS_CAROUSEL_STEPS, DomusCarousel } from "./scenes/domus-carousel";
 import { HOME_MESSAGE_STEPS, HomeMessageScene } from "./scenes/home-message";
-import { KNOWLY_ANSWER_STEPS, KnowlyAnswer } from "./scenes/knowly-answer";
+import { KNOWLY_CAROUSEL_STEPS, KnowlyCarousel } from "./scenes/knowly-carousel";
 import { MAGNETO_CAROUSEL_STEPS, MagnetoCarousel } from "./scenes/magneto-carousel";
 import { RELLOO_CAROUSEL_STEPS, RellooCarousel } from "./scenes/relloo-carousel";
 import { TUNER_CAROUSEL_STEPS, TunerCarousel } from "./scenes/tuner-carousel";
@@ -45,10 +45,10 @@ const SCENES: Record<SceneId, Entry> = {
     Component: TunerCarousel,
     takeFrom: "fanout",
   },
-  "knowly-answer": {
-    steps: KNOWLY_ANSWER_STEPS,
-    Component: KnowlyAnswer,
-    takeFrom: "profile",
+  "knowly-carousel": {
+    steps: KNOWLY_CAROUSEL_STEPS,
+    Component: KnowlyCarousel,
+    takeFrom: "answer",
   },
   "home-message": {
     steps: HOME_MESSAGE_STEPS,

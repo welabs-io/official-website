@@ -122,6 +122,35 @@ export function LinkButton({
   );
 }
 
+/** A labelled action that leads somewhere (a call to action): the same lib Button as ActionButton, rendered as the
+ *  link itself (the lib's asChild), so it navigates as a link and reads as one */
+export function LinkButton({
+  icon,
+  href,
+  emphasis = "primary",
+  size = "md",
+  children,
+  className,
+}: {
+  icon: ControlIcon;
+  href: string;
+  emphasis?: Emphasis;
+  size?: "xs" | "sm" | "md";
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <Button asChild size={size} {...EMPHASIS[emphasis]} className={className}>
+      <a href={href}>
+        <span aria-hidden="true" className="contents">
+          {icon}
+        </span>
+        {children}
+      </a>
+    </Button>
+  );
+}
+
 const ICON_SIZE = { xs: "icon-xs", sm: "icon-sm", md: "icon" } as const;
 
 /** An action with no visible text: the icon, and the label as its accessible name */

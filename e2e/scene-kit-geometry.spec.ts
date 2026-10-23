@@ -359,17 +359,21 @@ const V3: GeoScene[] = [
     insets: { frame: "[data-frame]", question: "[data-ask]" },
   },
   {
-    id: "knowly-answer",
+    id: "knowly-carousel",
     figure: /^Knowly/,
     fields: [0, 0],
-    // The lab's two buttons, the cited sentence's source, the closed sentence and the two closed lines (lock + text)
-    pairs: [6, 6],
+    // The lab's two buttons, the two citations, the call to action, the subject chip, the assistant's head and the
+    // note of what is missing
+    pairs: [8, 8],
     columns: {
-      "answer sentences": { sel: ["[data-sentence] > :first-child"] },
-      "source lines": { sel: ["[data-line] > :first-child"] },
-      "source line texts": { sel: ["[data-line] > :nth-child(2)"] },
-      "source heads and lines": { sel: ["[data-doc] > :first-child", "[data-doc] [data-line]"] },
+      // The settled frame (4): the head, the closing question and its button on one left edge
+      "head, question and call to action": { sel: ["[data-lead]"] },
+      // The assistant's panel: every part, then the answer and the proofs inside it
+      "panel parts": { sel: ["[data-panel] > *"] },
+      "answer and proofs": { sel: ["[data-answer] > *", "[data-proofs] > *"] },
     },
+    // The line of the subject: its five dots on one line, and their days
+    rows: { "line dots": "[data-event] [data-dot]", "line days": "[data-event] [data-day]" },
   },
   {
     id: "home-message",
