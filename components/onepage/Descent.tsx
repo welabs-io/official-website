@@ -9,7 +9,7 @@
 // runs on every click, not only on the late ones.
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
-import { stripLocale } from "@/lib/i18n/config";
+import { publicPath, stripLocale } from "@/lib/i18n/config";
 import { useMessages } from "@/lib/i18n/provider";
 
 type Run = typeof import("./descent-run");
@@ -17,7 +17,8 @@ let engine: Run | null = null;
 
 export function Descent() {
   const router = useRouter();
-  const pathname = usePathname();
+  // The router reports the rewritten path of the default locale (/pt-BR/products/x); the engine compares addresses
+  const pathname = publicPath(usePathname());
   // i18n: the words the brand openings draw, in the locale of the page (the engine is told again if the locale changes)
   const { openings } = useMessages();
 

@@ -57,7 +57,9 @@ export function splitLocale(pathname: string): {
   locale: Locale;
   path: string;
 } {
-  for (const locale of PREFIXED_LOCALES) {
+  // The default locale has no prefix in the address, but the router reports the path it was rewritten to
+  // (`/pt-BR/products/domus` for `/products/domus`, next.config.mjs), so that prefix is read too
+  for (const locale of LOCALES) {
     const prefix = `/${locale}`;
     if (pathname === prefix) return { locale, path: "/" };
     if (pathname.startsWith(`${prefix}/`))
@@ -65,6 +67,15 @@ export function splitLocale(pathname: string): {
   }
   return { locale: DEFAULT_LOCALE, path: pathname };
 }
+
+/** The address the visitor sees for a pathname the router reports: the default locale's rewritten prefix is dropped
+ * ("/pt-BR/products/domus" -> "/products/domus"); en and es keep theirs */
+export const publicPath = (pathname: string) =>
+  pathname === `/${DEFAULT_LOCALE}`
+    ? "/"
+    : pathname.startsWith(`/${DEFAULT_LOCALE}/`)
+      ? pathname.slice(DEFAULT_LOCALE.length + 1)
+      : pathname;
 
 /** The pathname with its locale prefix taken off ("/en/products/domus" -> "/products/domus") */
 export const stripLocale = (pathname: string) => splitLocale(pathname).path;

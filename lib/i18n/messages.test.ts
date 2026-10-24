@@ -11,6 +11,7 @@ import {
   DEFAULT_LOCALE,
   LOCALES,
   localizePath,
+  publicPath,
   splitLocale,
   stripLocale,
   switchLocale,
@@ -86,6 +87,15 @@ describe("addresses by locale", () => {
       locale: "pt-BR",
       path: "/products/tuner",
     });
+    // The router reports the rewritten path of the default locale: it is read as the page, and dropped for the address
+    expect(splitLocale("/pt-BR/products/tuner")).toEqual({
+      locale: "pt-BR",
+      path: "/products/tuner",
+    });
+    expect(publicPath("/pt-BR")).toBe("/");
+    expect(publicPath("/pt-BR/products/tuner")).toBe("/products/tuner");
+    expect(publicPath("/en/products/tuner")).toBe("/en/products/tuner");
+    expect(publicPath("/pt-BRAZIL")).toBe("/pt-BRAZIL");
     // A product or a word that starts like a locale is not a locale
     expect(stripLocale("/english")).toBe("/english");
     expect(stripLocale("/estoque")).toBe("/estoque");
