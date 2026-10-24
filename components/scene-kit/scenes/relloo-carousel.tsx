@@ -12,6 +12,8 @@
 // Reused from the validated relloo-inbox: the record header of the Domus DetailHeader (frame 3), the composer (the
 // lib's field with the channel of origin and the black send, frame 1) and the kit's connector. Amber is the live piece
 // only (amber-50 with the amber ring, one per frame); done is green. No person, name, face or vendor.
+// i18n: every word on screen (copy, aria-label, placeholder, chrome) is read from the dictionary of the page
+// (m.scenes.relloo); this file keeps only the structure (steps, glyphs, the keys of each frame's screen and area).
 import {
   BriefcaseBusiness,
   Building2,
@@ -28,8 +30,10 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { ActionButton, Badge, TextField } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
-import { CTA_LABEL } from "@/lib/products";
+import { CONTACT_PATH } from "@/components/onepage/contact";
+import { localizePath } from "@/lib/i18n/config";
+import { useI18n } from "@/lib/i18n/provider";
+import type { SceneMessages } from "@/lib/i18n/types";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
@@ -44,51 +48,6 @@ import type { SceneTimeline } from "../timeline";
 import p from "../parts.module.css";
 import r from "./relloo-carousel.module.css";
 
-// CONTEÚDO DA CENA
-const COPY = {
-  label:
-    "Relloo: uma mensagem vira oportunidade e anda no funil, em quatro momentos",
-  conversation: "Conversa 2210",
-  contact: "Contato 4821",
-  linked: "Ligada à gestão",
-  before: "+ 2 canais usados antes",
-  owner: "Dono",
-  agent: "Agente de atendimento",
-  team: "Equipe comercial",
-  today: "Hoje",
-  message: "Mensagem",
-  asked: "Preciso de manutenção mensal para 3 aparelhos do bloco B.",
-  askedAt: "08:12",
-  reply: "Escrever para Contato 4821",
-  send: "Enviar",
-  previous: "Antes",
-  now: "Dona agora",
-  why: "pediu proposta",
-  agentSaid:
-    "Qual o modelo dos aparelhos? Já deixo tudo pronto para a proposta.",
-  agentAt: "08:12",
-  answer: "São 3 aparelhos de 12 mil BTUs. Quero uma proposta.",
-  answerAt: "08:19",
-  summaryReady: "Resumo pronto para a equipe",
-  summaryLong:
-    "Manutenção mensal, 3 aparelhos de 12 mil BTUs no bloco B. Pediu proposta.",
-  summary: "Resumo",
-  summaryShort: "Manutenção mensal, 3 aparelhos no bloco B. Pediu proposta.",
-  history: "3 canais · um histórico só",
-  deals: "Oportunidades",
-  born: "Nova oportunidade",
-  bornAt: "agora",
-  deal: "Oportunidade",
-  dealNumber: "562",
-  bornFrom: "Nasceu da Conversa 2210, com o resumo junto",
-  moves: "anda no funil e o resto acontece sozinho",
-  funnel: "Funil",
-  domus: "Domus",
-  visit: "Vistoria 318 agendada",
-  // v3 (2026-10-23): "atende" is a banned verb of copy-rules.json `words`; the same question, with "responde"
-  question: "Quem responde primeiro na sua empresa?",
-};
-
 // ROTEIRO DA CENA
 // Four frames, each a group of steps; every step holds 0.9 to 1.8 s (the kit's contract: something moves at least every
 // 2 s) and the last step of each frame holds 1.8 s to be read.
@@ -100,71 +59,68 @@ const COPY = {
 // whole 1.8 s before the give-back (at 9.6 s the reset cut it 0.2 s in). Inside it the reply is followed by the
 // brief's ~2 s to the next phrase (PHRASE_PAUSE_MS, the "digitando" included), and the answer by the handoff, which
 // holds 1.4 s while its trace draws. Frame 2: 7.8 s. One loop: 20.2 s.
+// i18n: the hold of a typing step depends on the length of the phrase, so the steps are a function of the scene's text
+// (the same ids and the same values as before for pt-BR).
 // The frame slides in (FRAME_MOTION, ~0.48 s) before its first phrase types
 const TYPE_ENTER_MS = Math.round(SCENE_CURVE.dur2 * 1.7 * 1000);
 const AFTER_PHRASE_MS = 1400;
-export const RELLOO_CAROUSEL_STEPS: readonly SceneStep[] = [
-  { id: "f1-history", hold: 1100 },
-  { id: "f1-typing", hold: TYPING_MS },
-  { id: "f1-message", hold: typeDuration(COPY.asked) + AFTER_PHRASE_MS },
-  {
-    id: "f2-reply",
-    hold:
-      TYPE_ENTER_MS +
-      typeDuration(COPY.agentSaid) +
-      (PHRASE_PAUSE_MS - TYPING_MS),
-  },
-  { id: "f2-typing", hold: TYPING_MS },
-  { id: "f2-answer", hold: typeDuration(COPY.answer) },
-  { id: "f2-handoff", hold: 1400 },
-  { id: "f2-summary", hold: 1800 },
-  { id: "f3-record", hold: 1100 },
-  { id: "f3-born", hold: 1800 },
-  { id: "f4-funnel", hold: 900 },
-  { id: "f4-move", hold: 1100 },
-  { id: "f4-domus", hold: 1200 },
-  { id: "f4-ask", hold: 1800 },
-];
+export function rellooSteps(
+  copy: SceneMessages<"relloo">,
+): readonly SceneStep[] {
+  return [
+    { id: "f1-history", hold: 1100 },
+    { id: "f1-typing", hold: TYPING_MS },
+    { id: "f1-message", hold: typeDuration(copy.asked) + AFTER_PHRASE_MS },
+    {
+      id: "f2-reply",
+      hold:
+        TYPE_ENTER_MS +
+        typeDuration(copy.agentSaid) +
+        (PHRASE_PAUSE_MS - TYPING_MS),
+    },
+    { id: "f2-typing", hold: TYPING_MS },
+    { id: "f2-answer", hold: typeDuration(copy.answer) },
+    { id: "f2-handoff", hold: 1400 },
+    { id: "f2-summary", hold: 1800 },
+    { id: "f3-record", hold: 1100 },
+    { id: "f3-born", hold: 1800 },
+    { id: "f4-funnel", hold: 900 },
+    { id: "f4-move", hold: 1100 },
+    { id: "f4-domus", hold: 1200 },
+    { id: "f4-ask", hold: 1800 },
+  ];
+}
 
-// The name of each moment, on the stage tabs of the chrome (Stage.dc.html)
-const FRAME_NAMES = [
-  "Chega",
-  "Passa a vez",
-  "Vira oportunidade",
-  "Anda no funil",
-] as const;
+// The glyph of each channel the contact used before, in the history of frame 1 (the Domus glyphs); the date and the text
+// come from the dictionary (copy.past), by the same position
+const PAST_ICONS = [Mail, Phone] as const;
 
-// The channels the contact used before, in the history of frame 1 (the Domus glyphs: Mail, Phone)
-const PAST = [
-  { date: "12/08", icon: Mail, text: "E-mail · orçamento de limpeza de dutos" },
-  { date: "03/09", icon: Phone, text: "Voz · ligação transcrita" },
-] as const;
-
-// The four frames: their steps, and the screen the chrome names (the screen, then its area)
+// The four frames: their steps, and the screen the chrome names (the screen, then its area); `screen` and `area` are keys
+// of the dictionary, so each language names them
 const FRAMES = [
   {
     n: 1,
     steps: ["f1-history", "f1-typing", "f1-message"],
-    screen: "Caixa de entrada",
-    area: "Atendimento",
+    screen: "inbox",
+    area: "service",
   },
   {
     n: 2,
     steps: ["f2-reply", "f2-typing", "f2-answer", "f2-handoff", "f2-summary"],
-    screen: "Caixa de entrada",
-    area: "Atendimento",
+    screen: "inbox",
+    area: "service",
   },
   {
     n: 3,
     steps: ["f3-record", "f3-born"],
-    screen: COPY.contact,
-    area: "Pessoa",
+    screen: "contact",
+    area: "person",
   },
   {
     n: 4,
     steps: ["f4-funnel", "f4-move", "f4-domus", "f4-ask"],
-    screen: COPY.contact,
-    area: "Pessoa",
+    screen: "contact",
+    area: "person",
   },
 ] as const;
 type Frame = (typeof FRAMES)[number];
@@ -213,48 +169,53 @@ const FRAME_STEPS = FRAMES.map((f) => f.steps);
 // v4: the "digitando" indicator holds the place of the message for 1 s, then the message types in, its whole text
 // reserved from the first character
 function FrameArrives({ scene }: { scene: SceneApi }) {
+  const { m } = useI18n();
+  const copy = m.scenes.relloo;
   const typing = scene.reached("f1-typing");
   const arrived = scene.reached("f1-message");
   return (
     <div className={`${r.body} ${r.centred}`} data-frame="1">
-      <section className={r.thread} aria-label={COPY.conversation}>
+      <section className={r.thread} aria-label={copy.conversation}>
         <header className={r.threadHead}>
           <span className={r.threadTop} data-col="lead">
-            <b className={r.threadTitle}>{COPY.conversation}</b>
-            <span className={r.threadMeta}>{COPY.contact}</span>
+            <b className={r.threadTitle}>{copy.conversation}</b>
+            <span className={r.threadMeta}>{copy.contact}</span>
             <span className={r.pills}>
               <Badge variant="success" appearance="soft" data-axis-pair="">
                 <Link2 data-icon="inline-start" aria-hidden="true" />
-                {COPY.linked}
+                {copy.linked}
               </Badge>
               <Badge variant="neutral" appearance="soft">
-                {COPY.before}
+                {copy.before}
               </Badge>
             </span>
           </span>
           <span className={r.owner} data-col="lead">
-            <span className={r.label}>{COPY.owner}</span>
+            <span className={r.label}>{copy.owner}</span>
             <Badge variant="primary" appearance="solid" data-axis-pair="">
               <Sparkles data-icon="inline-start" aria-hidden="true" />
-              {COPY.agent}
+              {copy.agent}
             </Badge>
           </span>
         </header>
 
         <div className={r.feed}>
-          {PAST.map(({ date, icon: Icon, text }) => (
-            <p key={date} className={r.past} data-col="lead">
-              <time className={r.date}>{date}</time>
-              <span className={r.pastLine} data-axis="past">
-                <span className={`${p.mark} ${p.markSm}`} aria-hidden="true">
-                  <Icon />
+          {copy.past.map(({ date, text }, i) => {
+            const Icon = PAST_ICONS[i];
+            return (
+              <p key={i} className={r.past} data-col="lead">
+                <time className={r.date}>{date}</time>
+                <span className={r.pastLine} data-axis="past">
+                  <span className={`${p.mark} ${p.markSm}`} aria-hidden="true">
+                    <Icon />
+                  </span>
+                  <span className={r.pastText}>{text}</span>
                 </span>
-                <span className={r.pastText}>{text}</span>
-              </span>
-            </p>
-          ))}
+              </p>
+            );
+          })}
           <p className={r.day} data-col="lead">
-            {COPY.today}
+            {copy.today}
           </p>
           {typing ? (
             <div className={r.arrival} data-col="lead">
@@ -265,12 +226,12 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
                 data-axis-pair=""
               >
                 <MessageSquare data-icon="inline-start" aria-hidden="true" />
-                {COPY.message}
+                {copy.message}
               </Badge>
               {arrived ? (
                 <p className={`${r.said} ${r.live}`} data-said="asked">
-                  <TypeIn text={COPY.asked} />
-                  <time>{COPY.askedAt}</time>
+                  <TypeIn text={copy.asked} />
+                  <time>{copy.askedAt}</time>
                 </p>
               ) : (
                 <TypingIndicator className={r.typing} />
@@ -285,14 +246,14 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
             lead={
               <Badge variant="neutral" appearance="soft">
                 <MessageSquare data-icon="inline-start" aria-hidden="true" />
-                {COPY.message}
+                {copy.message}
               </Badge>
             }
-            submit={{ icon: <Send />, label: COPY.send, tabIndex: -1 }}
+            submit={{ icon: <Send />, label: copy.send, tabIndex: -1 }}
             readOnly
             tabIndex={-1}
-            placeholder={COPY.reply}
-            aria-label={COPY.reply}
+            placeholder={copy.reply}
+            aria-label={copy.reply}
           />
         </div>
       </section>
@@ -306,31 +267,33 @@ function FrameArrives({ scene }: { scene: SceneApi }) {
 // v4: the agent's reply types in as the frame comes in, the contact's answer after its "digitando"; the trace is in ink
 // only while the hand-off happens, then rests grey
 function FrameHandoff({ scene }: { scene: SceneApi }) {
+  const { m } = useI18n();
+  const copy = m.scenes.relloo;
   const typing = scene.reached("f2-typing");
   const answered = scene.reached("f2-answer");
   const handed = scene.reached("f2-handoff");
   const summed = scene.reached("f2-summary");
   return (
     <div className={`${r.body} ${r.centred}`} data-frame="2">
-      <section className={r.thread} aria-label={COPY.conversation}>
+      <section className={r.thread} aria-label={copy.conversation}>
         <header className={r.threadHead}>
           <span className={r.threadTop} data-col="lead">
-            <b className={r.threadTitle}>{COPY.conversation}</b>
-            <span className={r.threadMeta}>{COPY.contact}</span>
+            <b className={r.threadTitle}>{copy.conversation}</b>
+            <span className={r.threadMeta}>{copy.contact}</span>
           </span>
         </header>
 
         <div className={r.handoff} data-col="lead">
           <span className={r.seat}>
-            <span className={r.label}>{COPY.previous}</span>
+            <span className={r.label}>{copy.previous}</span>
             <span className={r.holder} data-holder="before" data-axis="holder">
               <Sparkles aria-hidden="true" />
-              <span>{COPY.agent}</span>
+              <span>{copy.agent}</span>
             </span>
           </span>
-          <span className={r.why}>{COPY.why}</span>
+          <span className={r.why}>{copy.why}</span>
           <span className={r.seat}>
-            <span className={r.label}>{COPY.now}</span>
+            <span className={r.label}>{copy.now}</span>
             <span
               key={handed ? "live" : "rest"}
               className={`${r.holder} ${handed ? r.live : ""}`}
@@ -338,7 +301,7 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
               data-axis="holder"
             >
               <BriefcaseBusiness aria-hidden="true" />
-              <span>{COPY.team}</span>
+              <span>{copy.team}</span>
             </span>
           </span>
           {/* Side by side the trace runs across; stacked (a phone) it drops from one seat to the next */}
@@ -364,14 +327,14 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
         <div className={r.talk}>
           <p className={`${r.said} ${r.sent}`}>
             <span className={r.saidBy}>
-              {COPY.agent} · {COPY.agentAt}
+              {copy.agent} · {copy.agentAt}
             </span>
-            <TypeIn text={COPY.agentSaid} delay={TYPE_ENTER_MS} />
+            <TypeIn text={copy.agentSaid} delay={TYPE_ENTER_MS} />
           </p>
           {answered ? (
             <p className={`${r.said} ${r.received}`} data-col="lead">
-              <TypeIn text={COPY.answer} />
-              <time>{COPY.answerAt}</time>
+              <TypeIn text={copy.answer} />
+              <time>{copy.answerAt}</time>
             </p>
           ) : typing ? (
             <TypingIndicator className={r.typing} />
@@ -380,8 +343,8 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
             <p className={`${r.note} ${r.landing}`} data-col="lead">
               <StickyNote aria-hidden="true" />
               <span className={r.noteText}>
-                <b>{COPY.summaryReady}</b>
-                <span>{COPY.summaryLong}</span>
+                <b>{copy.summaryReady}</b>
+                <span>{copy.summaryLong}</span>
               </span>
             </p>
           ) : null}
@@ -395,34 +358,36 @@ function FrameHandoff({ scene }: { scene: SceneApi }) {
 // The conversation, now the team's, beside the contact's record (the Domus DetailHeader of relloo-inbox); the trace
 // leaves the contact's request, runs down the gutter between the two and lands the new opportunity on the record
 function FrameBorn({ scene }: { scene: SceneApi }) {
+  const { m } = useI18n();
+  const copy = m.scenes.relloo;
   const born = scene.reached("f3-born");
   return (
     <div className={`${r.body} ${r.pair}`} data-frame="3">
-      <section className={r.pane} data-lane="" aria-label={COPY.conversation}>
+      <section className={r.pane} data-lane="" aria-label={copy.conversation}>
         <header className={r.paneTop}>
           <b className={r.paneTitle} data-col="left">
-            {COPY.conversation}
+            {copy.conversation}
           </b>
           <Badge variant="primary" appearance="solid">
-            {COPY.team}
+            {copy.team}
           </Badge>
         </header>
         <div className={r.paneBody}>
           <p className={`${r.said} ${r.quoted}`} data-quote="" data-col="left">
-            <span>{COPY.answer}</span>
-            <time>{COPY.answerAt}</time>
+            <span>{copy.answer}</span>
+            <time>{copy.answerAt}</time>
           </p>
           <p className={r.note} data-col="left">
             <StickyNote aria-hidden="true" />
             <span className={r.noteText}>
-              <b>{COPY.summary}</b>
-              <span>{COPY.summaryShort}</span>
+              <b>{copy.summary}</b>
+              <span>{copy.summaryShort}</span>
             </span>
           </p>
         </div>
       </section>
 
-      <section className={r.pane} aria-label={COPY.contact}>
+      <section className={r.pane} aria-label={copy.contact}>
         {/* The Domus DetailHeader (erpnext front ui-kit/components/detail-header.tsx), as relloo-inbox draws it:
               [identity]  H1 ● Status
                           meta
@@ -438,25 +403,25 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
             </span>
             <span className={r.recordText} data-header="block">
               <span className={r.recordTop}>
-                <b data-header="title">{COPY.contact}</b>
+                <b data-header="title">{copy.contact}</b>
                 <span
                   className={r.state}
                   data-header="status"
                   data-axis-pair=""
                 >
                   <span className={r.dot} data-dot="" aria-hidden="true" />
-                  {COPY.linked}
+                  {copy.linked}
                 </span>
               </span>
               <span className={r.recordMeta} data-header="meta">
-                {COPY.history}
+                {copy.history}
               </span>
             </span>
           </div>
         </div>
         <div className={r.deals}>
           <p className={p.paneHead} data-col="right">
-            {COPY.deals}
+            {copy.deals}
           </p>
           {born ? (
             <article
@@ -465,15 +430,15 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
               data-col="right"
             >
               <span className={r.dealTop}>
-                <b>{COPY.born}</b>
+                <b>{copy.born}</b>
                 <Badge variant="neutral" appearance="outline" className={r.now}>
-                  {COPY.bornAt}
+                  {copy.bornAt}
                 </Badge>
               </span>
               <strong className={r.number}>
-                {COPY.deal} {COPY.dealNumber}
+                {copy.deal} {copy.dealNumber}
               </strong>
-              <span className={r.dealFrom}>{COPY.bornFrom}</span>
+              <span className={r.dealFrom}>{copy.bornFrom}</span>
             </article>
           ) : null}
         </div>
@@ -497,6 +462,8 @@ function FrameBorn({ scene }: { scene: SceneApi }) {
 // The opportunity moves from the first stage (done, green) to the second (live); the Domus books the visit under it
 // (green, done); the frame settles on the question and the lib's primary demo request, to the contact of the home
 function FrameFunnel({ scene }: { scene: SceneApi }) {
+  const { m, locale } = useI18n();
+  const copy = m.scenes.relloo;
   const moved = scene.reached("f4-move");
   const booked = scene.reached("f4-domus");
   const asked = scene.reached("f4-ask");
@@ -509,19 +476,19 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
       }}
       className={`${r.ticket} ${r.live}`}
     >
-      <span className={r.ticketWord}>{COPY.deal} </span>
-      {COPY.dealNumber}
+      <span className={r.ticketWord}>{copy.deal} </span>
+      {copy.dealNumber}
     </motion.span>
   );
   return (
     <div className={`${r.body} ${r.funnelBody}`} data-frame="4">
       <p className={r.dealLine} data-col="funnel">
         <b>
-          {COPY.deal} {COPY.dealNumber}
+          {copy.deal} {copy.dealNumber}
         </b>
-        <span>{COPY.moves}</span>
+        <span>{copy.moves}</span>
       </p>
-      <ol className={r.funnel} aria-label={COPY.funnel} data-col="funnel">
+      <ol className={r.funnel} aria-label={copy.funnel} data-col="funnel">
         <li
           className={r.stage}
           data-stage="1"
@@ -554,10 +521,10 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
               <Building2 />
             </span>
             <span className={r.domusText}>
-              <b>{COPY.domus}</b>
+              <b>{copy.domus}</b>
               <span className={r.booked} data-axis-pair="">
                 <Check aria-hidden="true" />
-                {COPY.visit}
+                {copy.visit}
               </span>
             </span>
           </div>
@@ -575,14 +542,14 @@ function FrameFunnel({ scene }: { scene: SceneApi }) {
 
       {asked ? (
         <div className={`${r.ask} ${r.landing}`} data-col="funnel" data-ask="">
-          <p className={r.question}>{COPY.question}</p>
+          <p className={r.question}>{copy.question}</p>
           <ActionButton
             emphasis="primary"
             size="md"
             icon={<CalendarDays />}
-            href={CONTACT_HREF}
+            href={localizePath(locale, CONTACT_PATH)}
           >
-            {CTA_LABEL}
+            {m.common.cta}
           </ActionButton>
         </div>
       ) : null}
@@ -625,21 +592,23 @@ function RellooCarouselView({ scene }: { scene: SceneApi }) {
 }
 
 export function RellooCarousel({ timeline }: { timeline?: SceneTimeline }) {
+  const { m } = useI18n();
+  const copy = m.scenes.relloo;
   return (
     <Scene
       id="relloo-carousel"
-      label={COPY.label}
+      label={copy.label}
       className={r.window}
-      product={(scene) => <ChromeScreen text={frameOf(scene).screen} />}
-      title={(scene) => <ChromeArea text={frameOf(scene).area} />}
+      product={(scene) => <ChromeScreen text={copy[frameOf(scene).screen]} />}
+      title={(scene) => <ChromeArea text={copy[frameOf(scene).area]} />}
       tools={(scene) => (
         <FrameIndicator
           scene={scene}
           frames={FRAME_STEPS}
-          names={FRAME_NAMES}
+          names={copy.frameNames}
         />
       )}
-      steps={RELLOO_CAROUSEL_STEPS}
+      steps={rellooSteps(copy)}
       timeline={timeline}
     >
       {(scene) => <RellooCarouselView scene={scene} />}

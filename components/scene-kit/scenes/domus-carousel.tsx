@@ -29,9 +29,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ActionButton, Badge, RowButton } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
-import { DOMUS_MODULES, HOME_DOMUS } from "@/lib/content/home";
-import { CTA_LABEL } from "@/lib/products";
+import { CONTACT_PATH } from "@/components/onepage/contact";
+import { localizePath } from "@/lib/i18n/config";
+import { MODULE_IDS, type ModuleId } from "@/lib/content/home";
+import { fmt } from "@/lib/i18n/format";
+import { useI18n } from "@/lib/i18n/provider";
+import type { SceneMessages } from "@/lib/i18n/types";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
@@ -46,160 +49,90 @@ import d from "./domus-carousel.module.css";
 // measured on the row in its place; the last step holds 1.8 s, so the call to action reads before the loop goes back
 // v4 (Stage.dc.html, brief-v4): the request to the assistant types in once its panel has come in (ASK_DELAY_MS), so
 // "ask" holds the panel's entry, the typing (18 ms per character) and a short read. One loop: 14.4 s.
-const ASK = "agende a vistoria do Contato 4821 para amanhã às 9h";
+// The typing time follows the length of the request, which is text of the dictionary, so the steps are built from it
 const ASK_DELAY_MS = 280;
-export const DOMUS_CAROUSEL_STEPS: readonly SceneStep[] = [
-  { id: "areas", hold: 1300 },
-  { id: "new", hold: 800 },
-  { id: "type", hold: 900 },
-  { id: "fields", hold: 900 },
-  { id: "screen", hold: 1500 },
-  { id: "ask", hold: ASK_DELAY_MS + typeDuration(ASK) + 1300 },
-  { id: "proposal", hold: 1100 },
-  { id: "created", hold: 700 },
-  { id: "linked", hold: 1000 },
-  { id: "record", hold: 900 },
-  { id: "links", hold: 1000 },
-  { id: "cta", hold: 1800 },
-];
+export function domusSteps(copy: SceneMessages<"domus">): readonly SceneStep[] {
+  return [
+    { id: "areas", hold: 1300 },
+    { id: "new", hold: 800 },
+    { id: "type", hold: 900 },
+    { id: "fields", hold: 900 },
+    { id: "screen", hold: 1500 },
+    { id: "ask", hold: ASK_DELAY_MS + typeDuration(copy.ask) + 1300 },
+    { id: "proposal", hold: 1100 },
+    { id: "created", hold: 700 },
+    { id: "linked", hold: 1000 },
+    { id: "record", hold: 900 },
+    { id: "links", hold: 1000 },
+    { id: "cta", hold: 1800 },
+  ];
+}
 
-// The frames, by the steps they hold, and the screen each one shows in the chrome bar
-const FRAMES = [
-  { title: "Módulos", label: "As áreas da empresa", steps: ["areas", "new"] },
-  // "Tipo de registro", not the frame's "Novo tipo de registro": the chrome of a phone cuts the longer one
-  {
-    title: "Tipo de registro",
-    label: "O tipo novo vira tela",
-    steps: ["type", "fields", "screen"],
-  },
-  {
-    title: "Vistorias",
-    label: "O assistente cria o registro",
-    steps: ["ask", "proposal", "created", "linked"],
-  },
-  {
-    title: "Vistoria 318",
-    label: "O registro liga os outros produtos",
-    steps: ["record", "links", "cta"],
-  },
+// The steps each frame holds, in the order of the frames (the title and the label of each are copy.frames)
+const FRAME_STEPS = [
+  ["areas", "new"],
+  ["type", "fields", "screen"],
+  ["ask", "proposal", "created", "linked"],
+  ["record", "links", "cta"],
 ] as const;
 
 const frameOf = (step: string) =>
   Math.max(
     0,
-    FRAMES.findIndex((f) => (f.steps as readonly string[]).includes(step)),
+    FRAME_STEPS.findIndex((steps) =>
+      (steps as readonly string[]).includes(step),
+    ),
   );
-// The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
-const FRAME_STEPS = FRAMES.map((f) => f.steps);
-// The name of each moment, on the stage tabs of the chrome (Stage.dc.html)
-const FRAME_NAMES = [
-  "Áreas",
-  "Tipo novo",
-  "Assistente",
-  "Tudo ligado",
-] as const;
 
 // CONTEÚDO DA CENA
-// The areas are the real modules of lib/content/home.ts DOMUS_MODULES (standard + made to measure: 18), not the
-// frame's unconfirmed "14"; ten are named in the frame's order and the rest are summed in one tile
-const ALL_AREAS = [...DOMUS_MODULES.standard, ...DOMUS_MODULES.custom];
-const CUSTOM = new Set(DOMUS_MODULES.custom.map((m) => m.name));
-const NAMED = [
-  "Financeiro",
-  "Fiscal",
-  "Contratos",
-  "Pessoas",
-  "Chamados",
-  "Jurídico",
-  "Aprovações",
-  "Vendas",
-  "Compras",
-  "Estoque",
+// The areas are the real modules of lib/content/home.ts MODULE_IDS (standard + made to measure: 18), not the frame's
+// unconfirmed "14"; ten are named in the frame's order (by stable id, never by name) and the rest are summed in one tile
+const PRODUCT = "Domus";
+const ALL_AREA_IDS: readonly ModuleId[] = [
+  ...MODULE_IDS.standard,
+  ...MODULE_IDS.custom,
 ];
-const REST = ALL_AREAS.filter((m) => !NAMED.includes(m.name)).map(
-  (m) => m.name,
-);
-
-const COPY = {
-  product: "Domus",
-  label:
-    "Domus: a gestão inteira num lugar só, um tipo de registro novo que já nasce com tela, e o registro que liga os outros produtos",
-  count: ALL_AREAS.length,
-  countText: "áreas da empresa, num lugar só",
-  standard: HOME_DOMUS.standard,
-  custom: HOME_DOMUS.custom,
-  rest: `+ ${REST.length} áreas`,
-  restLine: `${REST.slice(0, 3).join(", ")} e mais`
-    .toLowerCase()
-    .replace(/^./, (c) => c.toUpperCase()),
-  newType: "Novo tipo de registro",
-  type: "Vistoria",
-  screen: "Vistorias",
-  ready: "Pronta para usar",
-  assistant: "Assistente",
-  context: "Oportunidade 562",
-  ask: ASK,
-  proposalHead: "Proposta",
-  record: "Vistoria 318",
-  recordLine: "amanhã, 09:00 · Contato 4821",
-  confirm: "Confirmar",
-  created: "Vistoria 318 criada",
-  undo: "Desfazer",
-  scheduled: "Agendada",
-  done: "Feita",
-  question: "Que módulo a sua operação precisa?",
-};
-
-// The fields of the new type (the frame 2 rows; the contact is a company, so its glyph is a building, never a person)
-const TYPE_FIELDS: { label: string; icon: LucideIcon }[] = [
-  { label: "Endereço", icon: MapPin },
-  { label: "Data e hora", icon: Calendar },
-  { label: "Contato", icon: Building2 },
+const CUSTOM = new Set<ModuleId>(MODULE_IDS.custom);
+const NAMED: readonly ModuleId[] = [
+  "finance",
+  "tax",
+  "contracts",
+  "people",
+  "tickets",
+  "legal",
+  "approvals",
+  "sales",
+  "purchasing",
+  "inventory",
 ];
+const REST_IDS = ALL_AREA_IDS.filter((id) => !NAMED.includes(id));
 
-// The list of frame 3: the new record on top (it lands at "created"), then the two done before it
+// The fields of the new type (the frame 2 rows; the contact is a company, so its glyph is a building, never a person);
+// the label of each is copy.typeFields at the same position
+const TYPE_FIELD_ICONS: readonly LucideIcon[] = [MapPin, Calendar, Building2];
+
+// The list of frame 3: the new record on top (it lands at "created"), then the two done before it; the "when" of each
+// is copy.list.visits at the same position
 const VISITS = [
-  { id: "318", when: "amanhã, 09:00", tone: "scheduled", fresh: true },
-  { id: "317", when: "ontem, 14:00", tone: "done", fresh: false },
-  { id: "316", when: "20/10, 10:30", tone: "done", fresh: false },
+  { id: "318", tone: "scheduled", fresh: true },
+  { id: "317", tone: "done", fresh: false },
+  { id: "316", tone: "done", fresh: false },
 ] as const;
 
-const RECORD_LINES = [
-  { label: "Contato", value: "Contato 4821" },
-  { label: "Data e hora", value: "amanhã, 09:00" },
-];
-
 // The neighbours of frame 4: the Domus glyphs of each product (Workflow for a flow, RadioTower for a channel,
-// MessagesSquare for a conversation, History for the memory); the flow is the one live piece
+// MessagesSquare for a conversation, History for the memory); the flow is the one live piece. The brand is the name,
+// the line is copy.neighbours[slug]
 const NEIGHBOURS = [
-  {
-    side: "w",
-    name: "Magneto",
-    line: "o fluxo segue sozinho",
-    icon: Workflow,
-    live: true,
-  },
-  {
-    side: "w",
-    name: "Tuner",
-    line: "avisa quem vai",
-    icon: RadioTower,
-    live: false,
-  },
+  { side: "w", slug: "magneto", name: "Magneto", icon: Workflow, live: true },
+  { side: "w", slug: "tuner", name: "Tuner", icon: RadioTower, live: false },
   {
     side: "e",
+    slug: "relloo",
     name: "Relloo",
-    line: "a oportunidade avança",
     icon: MessagesSquare,
     live: false,
   },
-  {
-    side: "e",
-    name: "Knowly",
-    line: "guarda na memória",
-    icon: History,
-    live: false,
-  },
+  { side: "e", slug: "knowly", name: "Knowly", icon: History, live: false },
 ] as const;
 
 // The order of a piece among its siblings, for the stagger of its reveal (a custom property read by the sheet)
@@ -226,13 +159,24 @@ function Status({
 // The count of the real modules, the legend of the two floors, the named areas, the sum of the others and the tile
 // that makes a new type (a control: it plays the scene from the new type)
 function AreasFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
+  const { m } = useI18n();
+  const copy = m.scenes.domus;
+  const names = m.home.domus.modules;
   const lit = on && scene.reached("new");
+  // The first three areas of the sum, lowercased and joined, the sentence capitalised (as the frame writes it)
+  const restLine = fmt(copy.restLine, {
+    names: REST_IDS.slice(0, 3)
+      .map((id) => names[id])
+      .join(", "),
+  })
+    .toLowerCase()
+    .replace(/^./, (c) => c.toUpperCase());
   return (
     <div className={d.areas}>
       <div className={d.areasHead} data-areas-head="">
         <span className={d.count} data-in={scene.reached("areas")}>
-          <b className={d.stat}>{COPY.count}</b>
-          <span className={d.countText}>{COPY.countText}</span>
+          <b className={d.stat}>{ALL_AREA_IDS.length}</b>
+          <span className={d.countText}>{copy.countText}</span>
         </span>
         <span className={d.legend}>
           <span className={d.legendItem}>
@@ -241,25 +185,25 @@ function AreasFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
               data-tone="standard"
               aria-hidden="true"
             />
-            {COPY.standard}
+            {m.home.domus.standard}
           </span>
           <span className={d.legendItem}>
             <span className={d.swatch} data-tone="custom" aria-hidden="true" />
-            {COPY.custom}
+            {m.home.domus.custom}
           </span>
         </span>
       </div>
       <ul className={d.grid}>
-        {NAMED.map((name, i) => (
+        {NAMED.map((id, i) => (
           <li
-            key={name}
+            key={id}
             className={d.area}
             data-area=""
-            data-tone={CUSTOM.has(name) ? "custom" : "standard"}
+            data-tone={CUSTOM.has(id) ? "custom" : "standard"}
             data-in={scene.reached("areas")}
             style={order(i)}
           >
-            {name}
+            {names[id]}
           </li>
         ))}
         <li
@@ -270,8 +214,8 @@ function AreasFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           style={order(NAMED.length)}
         >
           <span className={d.restText}>
-            <b>{COPY.rest}</b>
-            <span>{COPY.restLine}</span>
+            <b>{fmt(copy.rest, { count: REST_IDS.length })}</b>
+            <span>{restLine}</span>
           </span>
         </li>
         <li
@@ -290,7 +234,7 @@ function AreasFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
             data-axis="new"
             onClick={() => scene.take("type")}
           >
-            <span className={d.newLabel}>{COPY.newType}</span>
+            <span className={d.newLabel}>{copy.newType}</span>
           </RowButton>
         </li>
       </ul>
@@ -301,6 +245,8 @@ function AreasFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
 // QUADRO 2: O TIPO NOVO VIRA TELA
 // The new type with its fields (each lands at "fields"), and the screen it gets, live in amber, tied by the connector
 function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
+  const { m } = useI18n();
+  const copy = m.scenes.domus;
   const screen = scene.reached("screen");
   return (
     <div className={d.typeRow}>
@@ -313,26 +259,23 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
             <ClipboardCheck />
           </span>
           <span className={d.sheetHeadText}>
-            <b className={d.typeName}>{COPY.type}</b>
+            <b className={d.typeName}>{copy.type}</b>
             <Badge variant="neutral" appearance="soft" className={d.badge}>
-              {COPY.custom}
+              {m.home.domus.custom}
             </Badge>
           </span>
         </div>
-        {TYPE_FIELDS.map((f, i) => {
-          const Icon = f.icon;
-          return (
-            <span
-              key={f.label}
-              className={d.typeLine}
-              data-in={scene.reached("fields")}
-              style={order(i)}
-            >
-              <Icon aria-hidden="true" />
-              {f.label}
-            </span>
-          );
-        })}
+        {TYPE_FIELD_ICONS.map((Icon, i) => (
+          <span
+            key={i}
+            className={d.typeLine}
+            data-in={scene.reached("fields")}
+            style={order(i)}
+          >
+            <Icon aria-hidden="true" />
+            {copy.typeFields[i]}
+          </span>
+        ))}
       </div>
       <div
         className={d.screen}
@@ -341,19 +284,19 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
         data-live={on && screen}
       >
         <div className={d.screenHead}>
-          <b>{COPY.screen}</b>
+          <b>{copy.screen}</b>
           <Badge
             variant="success"
             appearance="soft"
             className={`${p.seal} ${d.badge}`}
           >
             <Check aria-hidden="true" />
-            {COPY.ready}
+            {copy.ready}
           </Badge>
         </div>
         <div className={d.screenCols}>
-          {TYPE_FIELDS.map((f) => (
-            <span key={f.label}>{f.label}</span>
+          {copy.typeFields.map((label) => (
+            <span key={label}>{label}</span>
           ))}
         </div>
         {[0, 1, 2].map((row) => (
@@ -363,8 +306,8 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
             data-first={row === 0}
             aria-hidden="true"
           >
-            {TYPE_FIELDS.map((f) => (
-              <span key={f.label} className={d.bar} />
+            {TYPE_FIELD_ICONS.map((_, i) => (
+              <span key={i} className={d.bar} />
             ))}
           </div>
         ))}
@@ -380,20 +323,22 @@ function TypeFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
 // The list of visits on the canvas and the assistant beside it: the context of the screen, the request in words, the
 // proposal and its confirmation; once confirmed the record lands on top of the list and the connector ties the two
 function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
+  const { m } = useI18n();
+  const copy = m.scenes.domus;
   const created = scene.reached("created");
   return (
     <div className={d.assist}>
       <div className={d.canvasSide}>
         <div className={d.list} data-list="">
           <div className={d.listHead}>
-            <b>{COPY.screen}</b>
+            <b>{copy.screen}</b>
           </div>
           <div className={d.listCols} data-cols="">
-            <span data-cell="0">Vistoria</span>
-            <span data-cell="1">Data e hora</span>
-            <span data-cell="2">Situação</span>
+            <span data-cell="0">{copy.list.cols[0]}</span>
+            <span data-cell="1">{copy.list.cols[1]}</span>
+            <span data-cell="2">{copy.list.cols[2]}</span>
           </div>
-          {VISITS.map((v) => (
+          {VISITS.map((v, i) => (
             <div
               key={v.id}
               className={d.listRow}
@@ -403,10 +348,10 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
               data-lit={v.fresh && on && created}
             >
               <b data-cell="0">{v.id}</b>
-              <span data-cell="1">{v.when}</span>
+              <span data-cell="1">{copy.list.visits[i]}</span>
               <span data-cell="2">
                 <Status tone={v.tone}>
-                  {v.tone === "done" ? COPY.done : COPY.scheduled}
+                  {v.tone === "done" ? copy.done : copy.scheduled}
                 </Status>
               </span>
             </div>
@@ -421,7 +366,7 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           >
             <Sparkles />
           </span>
-          <b>{COPY.assistant}</b>
+          <b>{copy.assistant}</b>
         </span>
         <Badge
           variant="neutral"
@@ -429,22 +374,22 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           className={`${p.seal} ${d.context}`}
         >
           <Link aria-hidden="true" />
-          {COPY.context}
+          {copy.context}
         </Badge>
         {/* v4: the request types in, once per loop, its whole text reserved (keyed by the loop, so a take within it
             does not type it again) */}
         <p className={d.ask} data-in={scene.reached("ask")}>
           {scene.reached("ask") ? (
-            <TypeIn key={scene.cycle} text={COPY.ask} delay={ASK_DELAY_MS} />
+            <TypeIn key={scene.cycle} text={copy.ask} delay={ASK_DELAY_MS} />
           ) : (
-            COPY.ask
+            copy.ask
           )}
         </p>
         <div className={d.proposal} data-in={scene.reached("proposal")}>
-          <span className={p.paneHead}>{COPY.proposalHead}</span>
+          <span className={p.paneHead}>{copy.proposalHead}</span>
           <span className={`${p.stack} ${d.proposalBox}`}>
-            <b>{COPY.record}</b>
-            <span>{COPY.recordLine}</span>
+            <b>{copy.record}</b>
+            <span>{copy.recordLine}</span>
           </span>
         </div>
         <span className={d.confirm} data-in={scene.reached("proposal")}>
@@ -454,7 +399,7 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
             size="md"
             onClick={() => scene.take("created")}
           >
-            {COPY.confirm}
+            {copy.confirm}
           </ActionButton>
         </span>
         <div
@@ -470,7 +415,7 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
             <Check />
           </span>
           <span className={d.createdText}>
-            <b>{COPY.created}</b>
+            <b>{copy.created}</b>
             {/* Undo takes the scene back to the proposal, as the record is only a draft until it stays */}
             <ActionButton
               icon={<Undo2 />}
@@ -478,7 +423,7 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
               size="md"
               onClick={() => scene.take("proposal")}
             >
-              {COPY.undo}
+              {copy.undo}
             </ActionButton>
           </span>
         </div>
@@ -500,6 +445,8 @@ function AssistantFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
 // The record in the middle and its four neighbours (two each side, tied by the connector at their own line), then the
 // question and the lib's primary button to the contact section of the home
 function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
+  const { m, locale } = useI18n();
+  const copy = m.scenes.domus;
   const links = scene.reached("links");
   return (
     <div className={d.center}>
@@ -517,12 +464,12 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
               <ClipboardCheck />
             </span>
             <span className={d.recordTitle}>
-              <b>{COPY.record}</b>
-              <Status tone="scheduled">{COPY.scheduled}</Status>
+              <b>{copy.record}</b>
+              <Status tone="scheduled">{copy.scheduled}</Status>
             </span>
           </span>
-          {RECORD_LINES.map((l) => (
-            <span key={l.label} className={d.recordLine}>
+          {copy.recordLines.map((l, i) => (
+            <span key={i} className={d.recordLine}>
               <span>{l.label}</span>
               <b>{l.value}</b>
             </span>
@@ -539,7 +486,7 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
               const Icon = n.icon;
               return (
                 <span
-                  key={n.name}
+                  key={n.slug}
                   className={d.neighbour}
                   data-neighbour={`${side}${i}`}
                   data-in={links}
@@ -555,7 +502,7 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
                   </span>
                   <span className={p.stack}>
                     <b>{n.name}</b>
-                    <span>{n.line}</span>
+                    <span>{copy.neighbours[n.slug]}</span>
                   </span>
                 </span>
               );
@@ -575,14 +522,14 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
           : null}
       </div>
       <div className={d.ctaBand} data-in={scene.reached("cta")}>
-        <b className={d.question}>{COPY.question}</b>
+        <b className={d.question}>{copy.question}</b>
         <ActionButton
           icon={<Calendar />}
           emphasis="primary"
           size="md"
-          href={CONTACT_HREF}
+          href={localizePath(locale, CONTACT_PATH)}
         >
-          {CTA_LABEL}
+          {m.common.cta}
         </ActionButton>
       </div>
     </div>
@@ -592,6 +539,7 @@ function CenterFrame({ scene, on }: { scene: SceneApi; on: boolean }) {
 const FRAME_VIEWS = [AreasFrame, TypeFrame, AssistantFrame, CenterFrame];
 
 function DomusCarouselView({ scene }: { scene: SceneApi }) {
+  const frames = useI18n().m.scenes.domus.frames;
   const current = frameOf(scene.id);
   return (
     <div className={d.root} data-frame={current + 1}>
@@ -599,10 +547,10 @@ function DomusCarouselView({ scene }: { scene: SceneApi }) {
         const pos = i < current ? "past" : i === current ? "current" : "future";
         return (
           <section
-            key={FRAMES[i].title}
+            key={FRAME_STEPS[i][0]}
             className={d.frame}
             data-pos={pos}
-            aria-label={FRAMES[i].label}
+            aria-label={frames[i].label}
             aria-hidden={pos !== "current" || undefined}
             inert={pos !== "current"}
           >
@@ -615,20 +563,21 @@ function DomusCarouselView({ scene }: { scene: SceneApi }) {
 }
 
 export function DomusCarousel({ timeline }: { timeline?: SceneTimeline }) {
+  const copy = useI18n().m.scenes.domus;
   return (
     <Scene
       id="domus-carousel"
-      label={COPY.label}
-      product={COPY.product}
-      title={(scene) => FRAMES[frameOf(scene.id)].title}
+      label={copy.label}
+      product={PRODUCT}
+      title={(scene) => copy.frames[frameOf(scene.id)].title}
       tools={(scene) => (
         <FrameIndicator
           scene={scene}
           frames={FRAME_STEPS}
-          names={FRAME_NAMES}
+          names={copy.frameNames}
         />
       )}
-      steps={DOMUS_CAROUSEL_STEPS}
+      steps={domusSteps(copy)}
       timeline={timeline}
     >
       {(scene) => <DomusCarouselView scene={scene} />}

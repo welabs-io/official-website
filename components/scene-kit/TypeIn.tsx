@@ -8,10 +8,15 @@
 // TypingIndicator is the "digitando" that comes before a phrase (1 s, TYPING_MS): the lib's TypingDots, named for a
 // screen reader, with an optional visible label.
 import type { CSSProperties } from "react";
-import { TypingDots } from "@/components/lib/scene";
 import t from "./type-in.module.css";
 
-export { PHRASE_PAUSE_MS, TYPE_CHAR_MS, TYPING_MS, typeDuration } from "./type-in";
+export {
+  PHRASE_PAUSE_MS,
+  TYPE_CHAR_MS,
+  TYPING_MS,
+  typeDuration,
+} from "./type-in";
+export { TypingIndicator } from "./TypingIndicator";
 
 export function TypeIn({
   text,
@@ -39,28 +44,6 @@ export function TypeIn({
           {ch}
         </span>
       ))}
-    </span>
-  );
-}
-
-export function TypingIndicator({
-  label = "digitando",
-  showLabel = false,
-  className,
-}: {
-  // The name a screen reader hears, and the visible label when `showLabel`
-  label?: string;
-  showLabel?: boolean;
-  className?: string;
-}) {
-  return (
-    <span className={className ? `${t.typing} ${className}` : t.typing} data-typing="">
-      <TypingDots aria-label={label} />
-      {showLabel ? (
-        <span className={t.label} aria-hidden="true">
-          {label}
-        </span>
-      ) : null}
     </span>
   );
 }
