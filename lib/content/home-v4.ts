@@ -17,7 +17,8 @@ export const HOME_HERO = {
     relloo: { title: "Conversa 2210", line: "com o dono certo" },
     magneto: { title: "Proposta 905", line: "aprovada às 10:14" },
     tuner: { title: "Mensagem nova", line: "chegou pelo canal" },
-    knowly: { title: "Prazo de 48 h", line: "lembrado, com a fonte" },
+    // 2026-10-24: the Knowly frame is the memory graph of its carousel (no more answer with its source)
+    knowly: { title: "Ligação nova", line: "a memória só cresce" },
   } satisfies Record<ProductSlug, { title: string; line: string }>,
 } as const;
 
@@ -71,36 +72,44 @@ export const RELLOO_FRAME = {
   stages: ["Conversa", "Qualificação", "Vistoria", "Ganha"],
 } as const;
 
-// The approval of the Magneto frame: the steps of the proposal, the live one in the middle
+// The approval of the Magneto frame: the proposal walks its steps to the order in the Domus (2026-10-24: the frame no
+// longer stops on the approval). A step shows its time once done, "agora" while live, "a seguir" before
 export const MAGNETO_FRAME = {
   title: "Proposta 905",
   state: "Em aprovação",
+  doneState: "Aprovada",
+  now: "agora",
+  next: "a seguir",
   steps: [
-    { name: "Proposta enviada", line: "08:40", done: true },
-    { name: "Aprovação da gerência", line: "agora", done: false },
-    { name: "Assinatura do contrato", line: "a seguir", done: false },
-    { name: "Pedido no Domus", line: "a seguir", done: false },
+    { name: "Proposta enviada", at: "08:40" },
+    { name: "Aprovação da gerência", at: "10:14" },
+    { name: "Assinatura do contrato", at: "10:20" },
+    { name: "Pedido no Domus", at: "10:21" },
   ],
 } as const;
 
-// The channels of the Tuner frame: every channel lands in the one conversation
+// The channels of the Tuner frame: one channel after the other lands in the one conversation, whose line counts them
 export const TUNER_FRAME = {
   title: "Canais",
   channels: [
-    { name: "Mensagem", line: "Preciso de manutenção mensal…", fresh: true },
-    { name: "Ligação", line: "3 min, gravada", fresh: false },
-    { name: "E-mail", line: "Proposta 905", fresh: false },
+    { name: "Mensagem", line: "Preciso de manutenção mensal…" },
+    { name: "Ligação", line: "3 min, gravada" },
+    { name: "E-mail", line: "Proposta 905" },
   ],
-  thread: { title: "Conversa 2210", line: "3 canais, um histórico" },
+  thread: {
+    title: "Conversa 2210",
+    lines: [
+      "1 canal, um histórico",
+      "2 canais, um histórico",
+      "3 canais, um histórico",
+    ],
+  },
 } as const;
 
-// The answer of the Knowly frame: a question, the answer and the source it came from
+// The Knowly frame: the memory graph of the Knowly carousel (components/scene-kit/scenes/knowly-carousel.tsx), named
+// as the carousel names its screen (2026-10-24: it replaced the answer with its source, an older concept)
 export const KNOWLY_FRAME = {
-  title: "Pergunta",
-  question: "Qual o prazo de manutenção do bloco B?",
-  answer: "48 h a partir do chamado, de segunda a sábado.",
-  source: "Contrato 77 · cláusula 4",
-  sourceLabel: "Fonte",
+  title: "Memória",
 } as const;
 
 // The chain: the scroll walks the message across the five products; each station lights in turn and the caption of the

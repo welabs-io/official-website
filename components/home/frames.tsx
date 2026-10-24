@@ -2,14 +2,19 @@
 // QUADROS DOS CINCO PRODUTOS
 // One small screen per product (brief-v4, artboards Main and Accordion, 2026-10-23), the effect only, never the
 // mechanism: the Domus with its modules and the four products that use the newest one, the Relloo conversation whose
-// answer types in, the Magneto approval, the Tuner channels landing in one conversation and the Knowly answer with its
-// source. The same frame fills the stage of the opening (wide) and the open panel of the accordion (narrow): the window
-// is a size container, so a narrow one keeps fewer modules and drops the captions (frames.module.css). The links between
-// pieces are the kit's Connector (curved, rest grey, active ink, live amber); the typing is the kit's TypeIn. A frame
-// plays when it is mounted: its parent remounts it (a new `key`) to play it again.
+// answer types in, the Magneto approval, the Tuner channels landing in one conversation and the Knowly memory graph.
+// The same frame fills the stage of the opening (wide) and the open panel of the accordion (narrow): the window is a
+// size container, so a narrow one keeps fewer modules and drops the captions (frames.module.css). The links between
+// pieces are the kit's Connector (curved, rest grey, active ink, live amber); the typing is the kit's TypeIn.
+// 2026-10-24 (operator): every frame walks its chain to the end on the kit's clock (useSceneClock: autoplay on screen,
+// loop, off-screen pause, the closed chain under reduced motion and on the server), one live hand-off per step and the
+// closed chain held before the loop starts again: the Domus lights the four, the Relloo deal reaches "Ganha", the
+// Magneto proposal reaches the order, the three Tuner channels land, and the Knowly frame is the memory graph of its
+// carousel (it was the answer with its source). Each loop is 6.4 s: the first step holds while the blades of the
+// opening leave (~1.5 s), the chain closes by ~3.6 s, inside the 3 s the opening holds a frame, and the loop starts
+// again after the blades are back, so the opening never shows it restart.
 import {
   Bot,
-  BookOpen,
   Check,
   ClipboardCheck,
   Coins,
@@ -29,7 +34,16 @@ import {
 } from "lucide-react";
 import type { ReactElement } from "react";
 import { Badge } from "@/components/lib/ui";
-import { Connector } from "@/components/scene-kit/Connector";
+import {
+  Connector,
+  type ConnectorState,
+} from "@/components/scene-kit/Connector";
+import {
+  useSceneClock,
+  type SceneApi,
+  type SceneStep,
+} from "@/components/scene-kit/Scene";
+import { KnowlyGraphWorld } from "@/components/scene-kit/scenes/knowly-carousel";
 import {
   TYPING_MS,
   TypeIn,
@@ -71,6 +85,64 @@ const COMPACT = new Set([
 ]);
 const USERS = ["relloo", "magneto", "tuner", "knowly"] as const;
 
+// ROTEIRO DE CADA QUADRO
+// The steps of each frame (ids and holds, 6.4 s a loop): the first holds under the leaving blades, one hand-off per
+// step, the last one is the closed chain (`done`, or the graph's newest link), held until the loop starts again
+const FIRST_HOLD = 1500;
+const HAND_OFF = 500;
+const STEPS: Record<ProductSlug, readonly SceneStep[]> = {
+  domus: [
+    { id: "born", hold: FIRST_HOLD },
+    { id: "relloo", hold: HAND_OFF },
+    { id: "magneto", hold: HAND_OFF },
+    { id: "tuner", hold: HAND_OFF },
+    { id: "knowly", hold: HAND_OFF },
+    { id: "done", hold: 2900 },
+  ],
+  // The "digitando" (1 s) and the typed answer first, then the deal walks its stages
+  relloo: [
+    { id: "talk", hold: 2000 },
+    { id: "qualify", hold: HAND_OFF },
+    { id: "visit", hold: HAND_OFF },
+    { id: "won", hold: HAND_OFF },
+    { id: "done", hold: 2900 },
+  ],
+  magneto: [
+    { id: "approve", hold: FIRST_HOLD },
+    { id: "sign", hold: 700 },
+    { id: "order", hold: 700 },
+    { id: "done", hold: 3500 },
+  ],
+  tuner: [
+    { id: "message", hold: FIRST_HOLD },
+    { id: "call", hold: 700 },
+    { id: "mail", hold: 700 },
+    { id: "done", hold: 3500 },
+  ],
+  // A subset of the Knowly carousel's steps (knowly-carousel.tsx BEATS): the camera pulls back from the first sources to
+  // the whole memory, whose newest link is the end
+  knowly: [
+    { id: "f1-link", hold: FIRST_HOLD },
+    { id: "f2-decision", hold: 700 },
+    { id: "f3-bridge", hold: 700 },
+    { id: "f4-whole", hold: 700 },
+    { id: "f4-new", hold: 2800 },
+  ],
+};
+
+// How the Knowly camera moves on each step of the frame: a glide on each jump, the closing step drifts
+const KNOWLY_MOVE: Record<string, "glide" | "drift"> = {
+  "f1-link": "drift",
+  "f2-decision": "glide",
+  "f3-bridge": "glide",
+  "f4-whole": "glide",
+  "f4-new": "drift",
+};
+
+// The state of the link into the k-th piece of a chain when the chain is at `at` (`closed`: every link run)
+const linkState = (k: number, at: number, closed: boolean): ConnectorState =>
+  closed || k < at ? "active" : k === at ? "live" : "rest";
+
 // The title bar of a frame: its name, a quiet line beside it and an optional piece at the end
 function Bar({
   title,
@@ -91,8 +163,14 @@ function Bar({
 }
 
 // DOMUS: OS MÓDULOS E OS QUATRO QUE USAM O NOVO
-function DomusFrame() {
+// The new module is born, then the link to each of the other four turns live in turn and stays drawn in ink, its card
+// lit; the chain closes with the four lit
+function DomusFrame({ scene }: { scene: SceneApi }) {
   const d = DOMUS_FRAME;
+  const closed = scene.is("done");
+  const at = USERS.findIndex((slug) => scene.is(slug));
+  // The hand-off on screen: the index of the user being lit (all four once closed, none while the module is born)
+  const reached = closed ? USERS.length : at;
   return (
     <>
       <Bar
@@ -113,7 +191,8 @@ function DomusFrame() {
         <ul className={f.modules} data-modules="">
           {d.modules.map((m) => (
             <li
-              key={m.name}
+              // The newest module enters again on every loop
+              key={m.kind === "new" ? `${m.name}-${scene.cycle}` : m.name}
               className={f.module}
               data-kind={m.kind}
               data-wide-only={COMPACT.has(m.name) ? undefined : ""}
@@ -128,8 +207,13 @@ function DomusFrame() {
           ))}
         </ul>
         <ul className={f.uses}>
-          {USERS.map((slug) => (
-            <li key={slug} className={f.use} data-use={slug}>
+          {USERS.map((slug, i) => (
+            <li
+              key={slug}
+              className={f.use}
+              data-use={slug}
+              data-lit={i <= reached && reached >= 0 ? "" : undefined}
+            >
               <img
                 src={productLogo(slug, "light", "row", 30)}
                 alt={productAlt(slug, "row")}
@@ -142,7 +226,7 @@ function DomusFrame() {
           ))}
         </ul>
         <p className={f.usesLine}>{d.usesLine}</p>
-        {USERS.map((slug) => (
+        {USERS.map((slug, i) => (
           <Connector
             key={slug}
             from="[data-modules]"
@@ -150,6 +234,7 @@ function DomusFrame() {
             route="drop"
             inset={0}
             gap={6}
+            state={reached < 0 ? "rest" : linkState(i, reached, closed)}
           />
         ))}
       </div>
@@ -158,8 +243,19 @@ function DomusFrame() {
 }
 
 // RELLOO: A CONVERSA E A RESPOSTA QUE SE DIGITA
-function RellooFrame() {
+// The answer types in, then the deal walks its stages, one live link per step, and closes green on "Ganha"
+const RELLOO_STAGE: Record<string, number> = {
+  talk: 0,
+  qualify: 1,
+  visit: 2,
+  won: 3,
+  done: 3,
+};
+
+function RellooFrame({ scene }: { scene: SceneApi }) {
   const r = RELLOO_FRAME;
+  const closed = scene.is("done");
+  const at = RELLOO_STAGE[scene.id] ?? 0;
   return (
     <>
       <Bar
@@ -178,7 +274,8 @@ function RellooFrame() {
           {r.agent}
         </Badge>
       </div>
-      <div className={f.thread}>
+      {/* Keyed by the loop: the "digitando" and the answer play again on each one */}
+      <div key={scene.cycle} className={f.thread}>
         <p className={f.bubbleIn}>
           <span>{r.incoming}</span>
           <span className={f.time}>{r.time}</span>
@@ -200,8 +297,11 @@ function RellooFrame() {
             key={stage}
             className={f.stage}
             data-stage={i}
-            data-current={i === 0 || undefined}
-            data-wide-only={i === r.stages.length - 1 ? "" : undefined}
+            data-current={(i === at && !closed) || undefined}
+            data-passed={i < at || undefined}
+            data-won={(closed && i === r.stages.length - 1) || undefined}
+            // A narrow frame drops the first stage (the conversation above is it), so the end stays in view
+            data-wide-only={i === 0 ? "" : undefined}
           >
             {stage}
           </span>
@@ -213,6 +313,7 @@ function RellooFrame() {
             to={`[data-stage="${i + 1}"]`}
             inset={0}
             gap={4}
+            state={linkState(i + 1, at, closed)}
           />
         ))}
       </div>
@@ -221,34 +322,50 @@ function RellooFrame() {
 }
 
 // MAGNETO: A PROPOSTA PELO CAMINHO DA APROVAÇÃO
-function MagnetoFrame() {
+// The live step moves down the path to the order in the Domus; the chain closes with every step done and approved
+const MAGNETO_STEP: Record<string, number> = {
+  approve: 1,
+  sign: 2,
+  order: 3,
+  done: 4,
+};
+
+function MagnetoFrame({ scene }: { scene: SceneApi }) {
   const m = MAGNETO_FRAME;
-  const live = m.steps.findIndex((s) => !s.done);
+  const live = MAGNETO_STEP[scene.id] ?? 1;
+  const closed = live >= m.steps.length;
   return (
     <>
       <Bar
         title={m.title}
         end={
-          <Badge variant="secondary" appearance="solid">
-            {m.state}
-          </Badge>
+          closed ? (
+            <Badge variant="success" appearance="soft">
+              {m.doneState}
+            </Badge>
+          ) : (
+            <Badge variant="secondary" appearance="solid">
+              {m.state}
+            </Badge>
+          )
         }
       />
       <div className={f.body}>
         <ol className={f.steps}>
-          {m.steps.map((s, i) => (
-            <li
-              key={s.name}
-              className={f.step}
-              data-step-state={s.done ? "done" : i === live ? "live" : "next"}
-            >
-              <span className={f.stepMark} data-mark={i} aria-hidden="true">
-                {s.done ? <Check /> : null}
-              </span>
-              <span className={f.stepName}>{s.name}</span>
-              <span className={f.stepLine}>{s.line}</span>
-            </li>
-          ))}
+          {m.steps.map((s, i) => {
+            const state = i < live ? "done" : i === live ? "live" : "next";
+            return (
+              <li key={s.name} className={f.step} data-step-state={state}>
+                <span className={f.stepMark} data-mark={i} aria-hidden="true">
+                  {state === "done" ? <Check /> : null}
+                </span>
+                <span className={f.stepName}>{s.name}</span>
+                <span className={f.stepLine}>
+                  {state === "done" ? s.at : state === "live" ? m.now : m.next}
+                </span>
+              </li>
+            );
+          })}
         </ol>
         {m.steps.slice(1).map((s, i) => (
           <Connector
@@ -258,7 +375,7 @@ function MagnetoFrame() {
             route="drop"
             inset={0}
             gap={4}
-            state={i + 1 < live ? "active" : i + 1 === live ? "live" : "rest"}
+            state={linkState(i + 1, live, closed)}
           />
         ))}
       </div>
@@ -267,21 +384,37 @@ function MagnetoFrame() {
 }
 
 // TUNER: CADA CANAL NA MESMA CONVERSA
+// One channel after the other lands in the conversation (its link live as it lands, in ink after); the chain closes
+// with the three in one history
 const CHANNEL_ICON = [
   <MessageCircle key="m" />,
   <Phone key="p" />,
   <Mail key="e" />,
 ];
+const TUNER_STEP: Record<string, number> = {
+  message: 0,
+  call: 1,
+  mail: 2,
+  done: 3,
+};
 
-function TunerFrame() {
+function TunerFrame({ scene }: { scene: SceneApi }) {
   const t = TUNER_FRAME;
+  const at = TUNER_STEP[scene.id] ?? 0;
+  const closed = at >= t.channels.length;
+  const landed = Math.min(at, t.channels.length - 1);
   return (
     <>
       <Bar title={t.title} />
       <div className={f.hub}>
         <ul className={f.channels}>
           {t.channels.map((c, i) => (
-            <li key={c.name} className={f.channel} data-channel={i}>
+            <li
+              key={c.name}
+              className={f.channel}
+              data-channel={i}
+              data-wait={i > at || undefined}
+            >
               <span className={f.channelIcon} aria-hidden="true">
                 {CHANNEL_ICON[i]}
               </span>
@@ -292,9 +425,13 @@ function TunerFrame() {
             </li>
           ))}
         </ul>
-        <div className={f.hubThread} data-thread="">
+        <div
+          className={f.hubThread}
+          data-thread=""
+          data-done={closed || undefined}
+        >
           <span className={f.channelName}>{t.thread.title}</span>
-          <span className={f.channelLine}>{t.thread.line}</span>
+          <span className={f.channelLine}>{t.thread.lines[landed]}</span>
         </div>
         {t.channels.map((c, i) => (
           <Connector
@@ -303,7 +440,7 @@ function TunerFrame() {
             to="[data-thread]"
             inset={0}
             gap={6}
-            state={c.fresh ? "live" : "active"}
+            state={linkState(i, at, closed)}
           />
         ))}
       </div>
@@ -311,41 +448,27 @@ function TunerFrame() {
   );
 }
 
-// KNOWLY: A RESPOSTA COM A FONTE AO LADO
-function KnowlyFrame() {
-  const k = KNOWLY_FRAME;
+// KNOWLY: O GRAFO DE MEMÓRIA QUE CRESCE
+// The world of the Knowly carousel (its graph, labels and camera), walked on the frame's shorter steps
+function KnowlyFrame({ scene }: { scene: SceneApi }) {
+  const hold = STEPS.knowly.find((s) => s.id === scene.id)?.hold;
   return (
     <>
-      <Bar title={k.title} />
-      <div className={f.answerBody}>
-        <p className={f.question}>{k.question}</p>
-        <div className={f.answer} data-answer="">
-          <span className={f.answerIcon} aria-hidden="true">
-            <BookOpen />
-          </span>
-          <span>{k.answer}</span>
-        </div>
-        <div className={f.source} data-source="">
-          <span className={f.ownerLabel}>{k.sourceLabel}</span>
-          <Badge variant="secondary" appearance="solid">
-            <FileText aria-hidden="true" />
-            {k.source}
-          </Badge>
-        </div>
-        <Connector
-          from="[data-answer]"
-          to="[data-source]"
-          route="drop"
-          inset={0}
-          gap={6}
-          state="live"
+      <Bar title={KNOWLY_FRAME.title} />
+      <div className={f.graph} data-graph="">
+        <KnowlyGraphWorld
+          scene={scene}
+          beat={{ hold, move: KNOWLY_MOVE[scene.id] }}
         />
       </div>
     </>
   );
 }
 
-const FRAMES: Record<ProductSlug, () => ReactElement> = {
+const FRAMES: Record<
+  ProductSlug,
+  (props: { scene: SceneApi }) => ReactElement
+> = {
   domus: DomusFrame,
   relloo: RellooFrame,
   magneto: MagnetoFrame,
@@ -353,7 +476,32 @@ const FRAMES: Record<ProductSlug, () => ReactElement> = {
   knowly: KnowlyFrame,
 };
 
-/** The frame of one product, a white window filling its parent */
+// The window of one frame with its clock: `data-frame-step` is the step on screen and `data-frame-closed` marks the
+// closed chain (the last step), so a spec reads where the chain is
+function FrameWindow({
+  slug,
+  className,
+}: {
+  slug: ProductSlug;
+  className?: string;
+}) {
+  const { scene, ref } = useSceneClock(STEPS[slug]);
+  const Frame = FRAMES[slug];
+  return (
+    <div
+      ref={ref}
+      className={className ? `${f.window} ${className}` : f.window}
+      data-frame={slug}
+      data-frame-step={scene.id}
+      data-frame-closed={scene.last || undefined}
+      data-on={scene.active}
+    >
+      <Frame scene={scene} />
+    </div>
+  );
+}
+
+/** The frame of one product, a white window filling its parent, playing its chain while on screen */
 export function ProductFrame({
   slug,
   className,
@@ -361,13 +509,6 @@ export function ProductFrame({
   slug: ProductSlug;
   className?: string;
 }) {
-  const Frame = FRAMES[slug];
-  return (
-    <div
-      className={className ? `${f.window} ${className}` : f.window}
-      data-frame={slug}
-    >
-      <Frame />
-    </div>
-  );
+  // Keyed by the product: another product is another clock
+  return <FrameWindow key={slug} slug={slug} className={className} />;
 }
