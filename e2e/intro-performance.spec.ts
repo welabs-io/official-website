@@ -19,10 +19,23 @@ const VIEWPORTS = [
   { width: 390, height: 844 },
 ];
 // `still`: the closing frame holds still for its HOLD (156 ms) and until the next page has rendered (descent-run.ts
-// `calm`, 400 ms at most after the commit); the dev server prefetches no route, so it fetches and compiles it there
+// `calm`, 400 ms at most after the commit); the dev server renders the page slower, so it holds longer there.
+// The frames come on the 60 Hz clock, so an interval is a whole number of 16.7 ms periods: 50 ms is three periods,
+// which the clock stamps as 50.1 ms, hence the half millisecond over each limit in periods
+const PERIOD = 1000 / 60;
 const LIMITS = {
-  prod: { latency: 100, pause: 50, p95: 20, still: 600 },
-  dev: { latency: 150, pause: 84, p95: 34, still: 1500 },
+  prod: {
+    latency: 100,
+    pause: 3 * PERIOD + 0.5,
+    p95: PERIOD + 0.5,
+    still: 600,
+  },
+  dev: {
+    latency: 150,
+    pause: 5 * PERIOD + 0.5,
+    p95: 2 * PERIOD + 0.5,
+    still: 1500,
+  },
 };
 
 type Frame = { t: number; shown: boolean; phase: string; hidden: boolean };
