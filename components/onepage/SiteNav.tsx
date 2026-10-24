@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { IconButton } from "@/components/lib/ui";
 import type { NAV as NavLabels } from "@/lib/content/home";
+import { ProductEntry, type ProductEntryData } from "./ProductEntry";
 import styles from "./shell.module.css";
 
 export function SiteNav({
@@ -21,12 +22,7 @@ export function SiteNav({
   contactHref,
 }: {
   NAV: typeof NavLabels;
-  products: readonly {
-    slug: string;
-    name: string;
-    line: string;
-    logo: string;
-  }[];
+  products: readonly ProductEntryData[];
   cta: string;
   contactHref: string;
 }) {
@@ -76,21 +72,15 @@ export function SiteNav({
               {NAV.products}
             </Link>
             <ul className={styles.menu}>
-              {products.map(({ slug, name, line, logo }) => (
-                <li key={slug}>
-                  <Link
-                    href={`/products/${slug}`}
-                    prefetch={false}
-                    className={styles.menuLink}
-                    aria-current={
-                      pathname === `/products/${slug}` ? "page" : undefined
-                    }
+              {/* v2.1: the product is named by its logo, as in the selector at the top of a product; the entry is shared
+                  with the footer (ProductEntry) */}
+              {products.map((product) => (
+                <li key={product.slug}>
+                  <ProductEntry
+                    product={product}
+                    current={pathname === `/products/${product.slug}`}
                     onClick={close}
-                  >
-                    {/* v2.1: the product is named by its logo, as in the selector at the top of a product */}
-                    <img src={logo} alt={name} width={1005} height={550} />
-                    <span>{line}</span>
-                  </Link>
+                  />
                 </li>
               ))}
             </ul>

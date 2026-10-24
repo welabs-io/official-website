@@ -6,8 +6,18 @@ import { FOOTER_NAV_LABEL, NAV } from "@/lib/content";
 import { CTA_LABEL, PRODUCTS, WELABS_LOGO, productLogo } from "@/lib/products";
 import { CONTACT_HREF } from "./contact";
 import { LiveObserver } from "./LiveObserver";
+import { ProductEntry } from "./ProductEntry";
 import { SiteNav } from "./SiteNav";
 import styles from "./shell.module.css";
+
+// The five entries of the navigation, with the logo file for the band they sit on (light header, graphite footer)
+const productEntries = (tone: "light" | "dark") =>
+  PRODUCTS.map(({ slug, name, line }) => ({
+    slug,
+    name,
+    line,
+    logo: productLogo(slug, tone, "row"),
+  }));
 
 function Header() {
   return (
@@ -24,12 +34,7 @@ function Header() {
         </Link>
         <SiteNav
           NAV={NAV}
-          products={PRODUCTS.map(({ slug, name, line }) => ({
-            slug,
-            name,
-            line,
-            logo: productLogo(slug, "light", "row"),
-          }))}
+          products={productEntries("light")}
           cta={CTA_LABEL}
           contactHref={CONTACT_HREF}
         />
@@ -42,6 +47,9 @@ function Header() {
 }
 
 // RODAPÉ
+// The products are the entries of the header's menu (ProductEntry: the official logo), in the dark logo files of the
+// graphite band and without their line (the word budget of each page counts the frame); the bare names they replaced
+// showed no brand (operator, 2026-10-24)
 function Footer() {
   return (
     <footer className={styles.footer}>
@@ -49,11 +57,9 @@ function Footer() {
         <img src={WELABS_LOGO.dark} alt="Welabs" height={28} />
         <nav aria-label={FOOTER_NAV_LABEL}>
           <ul className={styles.footerLinks}>
-            {PRODUCTS.map(({ slug, name }) => (
-              <li key={slug}>
-                <Link href={`/products/${slug}`} prefetch={false}>
-                  {name}
-                </Link>
+            {productEntries("dark").map((product) => (
+              <li key={product.slug}>
+                <ProductEntry product={product} line={false} />
               </li>
             ))}
           </ul>
