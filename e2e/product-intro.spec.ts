@@ -105,9 +105,22 @@ const startSampling = (page: Page) =>
   });
 
 // The formed logo: the seal of the endorsed file where the file shows it, against the drawing of the motion file
-// (each piece of it, after the backdrop was dropped) and the header
-const formedGeometry = (page: Page) =>
-  page.evaluate(async () => {
+// (each piece of it, after the backdrop was dropped) and the header. Armed before the click and measured in the page on
+// the first frame the seal shows whole (the formed logo holds ~1 s; a wait from the test could step over it on a busy
+// machine, measured on cdc736f)
+const formedGeometry = (page: Page, slug: string) =>
+  page.evaluate(async (slug) => {
+    const text = await (
+      await fetch(`/brands/welabs/products/${slug}-light-endorsed.svg`)
+    ).text();
+    const shown = () => {
+      const img = document.querySelector("[data-intro] [data-intro-logo] img");
+      return !!img && getComputedStyle(img).opacity === "1";
+    };
+    await new Promise<void>((done) => {
+      const tick = () => (shown() ? done() : requestAnimationFrame(tick));
+      tick();
+    });
     const sheet = document.querySelector<HTMLElement>("[data-intro]")!;
     const mark = sheet.querySelector<HTMLElement>("[data-intro-logo]")!;
     const img = mark.querySelector("img")!;
@@ -116,7 +129,6 @@ const formedGeometry = (page: Page) =>
       const b = el.getBoundingClientRect();
       return { left: b.left, top: b.top, right: b.right, bottom: b.bottom };
     };
-    const text = await (await fetch(img.src)).text();
     const r = img.getBoundingClientRect();
     // The endorsed file inline at the box of the image (same viewBox, same fit), so its seal has its box on screen
     const probe = document.createElement("div");
@@ -151,7 +163,7 @@ const formedGeometry = (page: Page) =>
       vw: innerWidth,
       vh: innerHeight,
     };
-  });
+  }, slug);
 
 for (const viewport of VIEWPORTS)
   test.describe(`opening of each product at ${viewport.width}`, () => {
@@ -175,6 +187,7 @@ for (const viewport of VIEWPORTS)
             document.querySelector("header")!.getBoundingClientRect().bottom,
         );
         await startSampling(page);
+        const formed = formedGeometry(page, slug);
         const t0 = Date.now();
         await link.click();
 
@@ -198,18 +211,8 @@ for (const viewport of VIEWPORTS)
           for (const [x, y] of spots) seen.push(await pixel(page, x, y));
         }
 
-        // (d) the formed logo: the seal shows whole
-        await page.waitForFunction(
-          () => {
-            const img = document.querySelector(
-              "[data-intro] [data-intro-logo] img",
-            );
-            return !!img && getComputedStyle(img).opacity === "1";
-          },
-          null,
-          { timeout: 10_000, polling: 16 },
-        );
-        const geo = await formedGeometry(page);
+        // (d) the formed logo: measured in the page on the first frame the seal shows whole
+        const geo = await formed;
 
         await page.waitForFunction(
           () => (window as unknown as { __gone: number }).__gone > 0,
