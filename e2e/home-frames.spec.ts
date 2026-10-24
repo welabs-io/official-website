@@ -180,6 +180,11 @@ test.describe("the frames of the home", () => {
       const frame = page.locator(`${panel(slug)} [data-frame="${slug}"]`);
       await expect(frame).toBeVisible();
       await recordSteps(page, panel(slug));
+      // The Domus panel is open from the start, so its frame may still show the settled (closed) frame of the server:
+      // the chain is measured from the first step of the clock on
+      await page
+        .locator(`${panel(slug)} [data-frame-step="${FIRST[slug]}"]`)
+        .waitFor({ timeout: 9_000 });
       await page
         .locator(`${panel(slug)} [data-frame="${slug}"][data-frame-closed]`)
         .waitFor({ timeout: 9_000 });
