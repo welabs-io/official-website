@@ -12,7 +12,12 @@
 // The URL is always the real route (`/products/<slug>`), so a product is shareable and opens directly. Only transform,
 // opacity, clip-path and scroll move; under reduced motion every move is an instant jump.
 import type { useRouter } from "next/navigation";
-import { isSlug, open, prepare } from "@/components/intro/intro-run";
+import {
+  isSlug,
+  open,
+  prepare,
+  prepareAll,
+} from "@/components/intro/intro-run";
 import styles from "./descent.module.css";
 
 type Router = ReturnType<typeof useRouter>;
@@ -59,6 +64,25 @@ const heroLogo = () =>
   document.querySelector<HTMLImageElement>(
     "[data-descent-slot] #product h1 img",
   );
+
+// A PÁGINA NOVA SOB O QUADRO FINAL
+// Resolves once two frames in a row arrive on time (or after `ms`): the long frames of a page that has just been
+// committed (its layout, its images) pass while the closing frame of the opening holds still. The page under the
+// opening is left as it is (hiding it, by content-visibility or visibility, cost a long frame of its own when the sheet
+// closed over it, measured on the production build); its scene clocks wait instead (scene-kit/timeline.ts)
+const calm = (ms = 400) =>
+  new Promise<void>((done) => {
+    const start = performance.now();
+    let last = start;
+    let onTime = 0;
+    const tick = (now: number) => {
+      onTime = now - last < 24 ? onTime + 1 : 0;
+      last = now;
+      if (onTime >= 2 || now - start > ms) done();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
 
 // Ease in and out (cubic): the sheet starts and lands softly
 const ease = (t: number) =>
@@ -141,11 +165,14 @@ export function install(router: Router, pathname: string) {
     let playing: Awaited<ReturnType<typeof open>> | null = null;
     try {
       playing = await open(slug, box(origin));
-      // The page changes only under the full sheet (the opening of its clip)
-      await new Promise((r) => setTimeout(r, 470));
+      // v5 (2026-10-24): the next page is committed only when the closing frame holds still, and the closing frame
+      // stays until the frames of that page have passed (measured on 709ccb0, production build: its render was a 50 to
+      // 190 ms frame half a second into the choreography, where it used to be pushed)
+      await playing.closing;
       router.push(href, { scroll: false });
       await committed();
       jump(0);
+      await calm();
       await playing.land(heroLogo());
     } catch {
       // The opening could not load: the page swaps with no move
@@ -255,6 +282,8 @@ export function install(router: Router, pathname: string) {
   // route inside its own listener, and the sheet must cover before it does
   hooks.pop = onPop;
   hooks.click = follow;
+  // The five openings are fetched while the browser is idle, so a click with no hover before it does not wait for them
+  if (!reduced.matches) prepareAll();
   window.addEventListener("click", onClick, true);
   document.addEventListener("pointerover", onIntent, { passive: true });
   document.addEventListener("focusin", onIntent);

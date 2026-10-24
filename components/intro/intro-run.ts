@@ -1,8 +1,8 @@
 // ABERTURA DE MARCA NA ENTRADA DO PRODUTO
 // The player of the five accepted brand openings (the logo forming, each product with its own concept, ~3.9 s from the click to a settled page), ported to
 // native SVG and DOM in this folder. It is part of the descent chunk (components/onepage/descent-run.ts, fetched after
-// hydration), and each opening is a chunk of its own, fetched when a link to its product is pointed at or clicked, so
-// none of it weighs on the initial JS.
+// hydration), and each opening is a chunk of its own, fetched while the browser is idle after that (`prepareAll`) or
+// when a link to its product is pointed at or clicked, so none of it weighs on the initial JS.
 // v4 (operator, 2026-10-24): the choreographies of v3 are back (v4 had swapped them for the brand's minimal logo motion,
 // whose cream backdrop also covered the top of the "by welabs" seal), on the canvas of the page (--background, #f7f7f5)
 // from the first frame to the last, with the v4 palette (kit.js LIGHT), the choreographies of the round untouched (their
@@ -13,7 +13,9 @@
 //  1. `open` draws the opening on the canvas sheet clipped to the box of what was clicked (a card, a menu entry, the
 //     product selector) and opens the clip to the whole window while the opening already runs (0.45 s).
 //  2. The opening plays whole, to its closing frame (the endorsed logo, "by welabs" seal included, with its amber bar),
-//     and holds it a moment. The product is committed and placed under the sheet meanwhile.
+//     and holds it a moment. v5 (2026-10-24): the product is committed under the sheet during that hold (`closing`),
+//     the one stretch where nothing moves, no longer in the middle of the choreography (measured on 709ccb0: the render
+//     of the product page under the sheet was a 50 to 190 ms frame half a second into the opening).
 //  3. `land` fades the closing frame on the same canvas (no logo travels nor scales: v3 flew a raster of the logo, a
 //     large zoom), removes the sheet and lets the page come in by its `[data-descent-slot]`, --dur-enter rising
 //     --rise-enter on --ease-enter.
@@ -87,14 +89,39 @@ export function prepare(slug: Slug) {
   return ready;
 }
 
-// Ease out (cubic) for the opening of the sheet and the fades; the openings keep their own eases
-const out = (t: number) => 1 - (1 - t) ** 3;
-const mix = (a: number, b: number, t: number) => a + (b - a) * t;
+// v5 (2026-10-24): the five openings and their logos are fetched while the browser is idle, one after the other, right
+// after the engine lands (measured on 709ccb0, production build: a click with no hover before it waited for the chunk
+// and the logo, 52 to 104 ms to the first frame of the sheet, against 24 to 60 ms once prepared)
+export function prepareAll() {
+  // Safari has no requestIdleCallback
+  const idle = (run: () => void) =>
+    typeof window.requestIdleCallback === "function"
+      ? window.requestIdleCallback(run, { timeout: 2000 })
+      : window.setTimeout(run, 200);
+  const slugs = Object.keys(BOXES) as Slug[];
+  const next = () => {
+    const slug = slugs.shift();
+    if (slug)
+      idle(() => {
+        void prepare(slug)
+          .catch(() => {})
+          .then(next);
+      });
+  };
+  next();
+}
 
+// Ease out (cubic) for the fade of the closing frame; the openings keep their own eases
+const out = (t: number) => 1 - (1 - t) ** 3;
+
+// v5 (2026-10-24): the clock starts one frame before the first frame, so the first frame is already a step of the tween
+// (it used to draw t = 0 again: the sheet's first frame was at opacity 0, one blank frame added to every click)
+const FRAME_MS = 1000 / 60;
 function tween(ms: number, frame: (t: number) => void) {
   return new Promise<void>((resolve) => {
-    const start = performance.now();
+    let start = -1;
     const tick = (now: number) => {
+      if (start < 0) start = now - FRAME_MS;
       const t = Math.min(1, (now - start) / ms);
       frame(t);
       if (t < 1) requestAnimationFrame(tick);
@@ -140,6 +167,9 @@ export function stageScale(slug: Slug, w: number, h: number, header: number) {
 }
 
 export type Playing = {
+  // Resolves when the closing frame is drawn and holds still (or the opening was skipped to it): the one stretch of the
+  // opening where nothing moves, so a long frame there (the next page rendering under the sheet) shows no stall
+  closing: Promise<void>;
   // Resolves when the opening reached its closing frame and held it (or was skipped)
   settled: Promise<void>;
   // Fades the closing frame, removes the sheet and brings in the page that holds `target` (the product's logo)
@@ -157,6 +187,8 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
   const sheet = document.createElement("div");
   sheet.className = styles.sheet;
   sheet.dataset.intro = slug;
+  // Where the opening is: `play` (the choreography moves), `still` (the closing frame holds, nothing moves), `land`
+  sheet.dataset.introPhase = "play";
   sheet.setAttribute("aria-hidden", "true");
   const frame = document.createElement("div");
   frame.className = styles.frame;
@@ -203,6 +235,8 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
   let raf = 0;
   let resolveSettled = () => {};
   const settled = new Promise<void>((r) => (resolveSettled = r));
+  let resolveClosing = () => {};
+  const closing = new Promise<void>((r) => (resolveClosing = r));
   inst.render(clock);
 
   // A click, a key or the wheel skips to the closing frame
@@ -224,6 +258,10 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
     last = now;
     if (skip) clock = Math.max(clock, mod.SETTLED);
     inst.render(Math.min(clock, mod.SETTLED));
+    if (clock >= mod.SETTLED && sheet.dataset.introPhase === "play") {
+      sheet.dataset.introPhase = "still";
+      resolveClosing();
+    }
     if (clock >= end) {
       done = true;
       resolveSettled();
@@ -236,25 +274,34 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
     tick(now);
   });
 
-  // The sheet opens from the box of what was clicked to the whole window, rounded like a card on the way
-  const clip = (t: number) => {
-    const k = out(t);
-    const top = mix(from.y, 0, k);
-    const left = mix(from.x, 0, k);
-    const right = mix(W - from.x - from.w, 0, k);
-    const bottom = mix(H - from.y - from.h, 0, k);
-    sheet.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round ${mix(16, 0, k)}px)`;
-    sheet.style.opacity = String(Math.min(1, t * 4));
-  };
-  clip(0);
-  void tween(OPEN_MS, clip).then(() => {
-    sheet.style.clipPath = "none";
+  // The sheet opens from the box of what was clicked to the whole window, rounded like a card on the way, fading in over
+  // the first quarter. v5 (2026-10-24): by the Web Animations API instead of a clip written on every frame (measured on
+  // the production build at 1440: half the late frames of the first 450 ms), one frame in already on the first frame
+  // (the delay), so the first frame of the sheet is not a blank one. The ease is the cubic ease out of the fades.
+  sheet.animate(
+    [
+      {
+        clipPath: `inset(${from.y}px ${W - from.x - from.w}px ${H - from.y - from.h}px ${from.x}px round 16px)`,
+      },
+      { clipPath: "inset(0px 0px 0px 0px round 0px)" },
+    ],
+    {
+      duration: OPEN_MS,
+      delay: -FRAME_MS,
+      easing: "cubic-bezier(0.33, 1, 0.68, 1)",
+    },
+  );
+  sheet.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration: OPEN_MS / 4,
+    delay: -FRAME_MS,
   });
 
   return {
+    closing,
     settled,
     async land(target) {
       if (!done) await settled;
+      sheet.dataset.introPhase = "land";
       listen(false);
       cancelAnimationFrame(raf);
       // The closing frame fades on the canvas, then the page comes in under the same canvas; the

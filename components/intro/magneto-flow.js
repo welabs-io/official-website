@@ -136,16 +136,46 @@ import { mount as mountMagnets, KBIG } from './magneto.js';
     var a = p.ang * Math.PI / 180;
     return [p.x + side * HW * p.sc * Math.cos(a), p.y + side * HW * p.sc * Math.sin(a)];
   }
-  function wire(c, P) {
+  // The cubic of a connector, as the path draws it (its numbers rounded as in `d`), written into `bz` (x0 y0 .. x3 y3)
+  function wire(c, P, bz) {
     var A = P[c.a], B = P[c.b], p0 = port(A, 1), p1 = c.loop ? port(B, 1) : port(B, -1), d;
+    var x0 = +p0[0].toFixed(2), y0 = +p0[1].toFixed(2), x3 = +p1[0].toFixed(2), y3 = +p1[1].toFixed(2), x1, x2;
     if (c.loop) {
       var hx = Math.max(p0[0], p1[0]) + HANDLE * Math.min(A.sc, B.sc);
-      d = 'M' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + 'C' + hx.toFixed(2) + ' ' + p0[1].toFixed(2) + ' ' + hx.toFixed(2) + ' ' + p1[1].toFixed(2) + ' ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+      x1 = x2 = +hx.toFixed(2);
     } else {
       var kx = (p1[0] - p0[0]) * 0.5;
-      d = 'M' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + 'C' + (p0[0] + kx).toFixed(2) + ' ' + p0[1].toFixed(2) + ' ' + (p1[0] - kx).toFixed(2) + ' ' + p1[1].toFixed(2) + ' ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
+      x1 = +(p0[0] + kx).toFixed(2); x2 = +(p1[0] - kx).toFixed(2);
     }
+    bz[0] = x0; bz[1] = y0; bz[2] = x1; bz[3] = y0; bz[4] = x2; bz[5] = y3; bz[6] = x3; bz[7] = y3;
+    d = 'M' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + 'C' + x1.toFixed(2) + ' ' + p0[1].toFixed(2) + ' ' + x2.toFixed(2) + ' ' + p1[1].toFixed(2) + ' ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2);
     return d;
+  }
+
+  // COMPRIMENTO DO CONECTOR (tabela de arco do cúbico, sem perguntar ao motor de SVG)
+  // v5 (2026-10-24): the length of a connector and the point at a length along it come from 128 chords of its cubic,
+  // no longer from getTotalLength/getPointAtLength, each call of which forced a style and layout pass of the document
+  // (measured on 709ccb0, production build at 4x CPU: 17 to 37 ms of forced layout in a 35 to 63 ms frame callback). The
+  // chords are within 0.02 px of the engine's length and points, so the dash and the dots land where they did.
+  var SEG = 128, ARC = new Float64Array(SEG + 1), AX = new Float64Array(SEG + 1), AY = new Float64Array(SEG + 1), BZ = [0, 0, 0, 0, 0, 0, 0, 0];
+  function arc(b) {
+    var i, u, v, total = 0;
+    for (i = 0; i <= SEG; i++) {
+      u = i / SEG; v = 1 - u;
+      AX[i] = v * v * v * b[0] + 3 * v * v * u * b[2] + 3 * v * u * u * b[4] + u * u * u * b[6];
+      AY[i] = v * v * v * b[1] + 3 * v * v * u * b[3] + 3 * v * u * u * b[5] + u * u * u * b[7];
+      if (i) total += Math.sqrt((AX[i] - AX[i - 1]) * (AX[i] - AX[i - 1]) + (AY[i] - AY[i - 1]) * (AY[i] - AY[i - 1]));
+      ARC[i] = total;
+    }
+    return total;
+  }
+  function pointAt(s) {
+    var lo = 0, hi = SEG, mid, f;
+    if (s <= 0) return { x: AX[0], y: AY[0] };
+    if (s >= ARC[SEG]) return { x: AX[SEG], y: AY[SEG] };
+    while (hi - lo > 1) { mid = (lo + hi) >> 1; if (ARC[mid] < s) lo = mid; else hi = mid; }
+    f = (s - ARC[lo]) / (ARC[hi] - ARC[lo] || 1);
+    return { x: lerp(AX[lo], AX[hi], f), y: lerp(AY[lo], AY[hi], f) };
   }
 
   function render(t) {
@@ -159,8 +189,8 @@ import { mount as mountMagnets, KBIG } from './magneto.js';
     for (m = 0; m < CON.length; m++) {
       var c = CON[m], A = P[c.a], B = P[c.b], con = cons[m], dot = dots[m];
       var cd = eDraw(clamp01((t - c.s) / c.draw)), opc = Math.min(A.op, B.op) * (t >= c.s ? 1 : 0);
-      con.setAttribute('d', wire(c, P));
-      var L = con.getTotalLength();
+      con.setAttribute('d', wire(c, P, BZ));
+      var L = arc(BZ);
       con.setAttribute('stroke-dasharray', L.toFixed(2) + ' ' + (L + 4).toFixed(2));
       con.setAttribute('stroke-dashoffset', (L * (1 - cd)).toFixed(2));
       con.setAttribute('opacity', opc.toFixed(3));
@@ -174,7 +204,7 @@ import { mount as mountMagnets, KBIG } from './magneto.js';
       }
       var dv = ph >= 0 ? 1 : 0, ur = eRun(clamp01(ph));
       for (n = 0; n < 3; n++) {
-        var back = Math.max(0, ur - 0.09 * n), pt = con.getPointAtLength(L * back), dc = dcs[n];
+        var back = Math.max(0, ur - 0.09 * n), pt = pointAt(L * back), dc = dcs[n];
         dc.setAttribute('cx', pt.x.toFixed(2)); dc.setAttribute('cy', pt.y.toFixed(2));
         dc.setAttribute('r', (n === 0 ? 6.5 : 5.2 - 1.3 * n).toFixed(2)); dc.setAttribute('fill', AMBER);
         dc.setAttribute('opacity', (n === 0 ? 1 : 0.5 / n).toFixed(3));

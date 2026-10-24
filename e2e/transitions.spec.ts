@@ -49,8 +49,9 @@ async function record(page: Page, ms: number) {
         out.push({
           t: Math.round(performance.now() - t0),
           sheet: sheet?.dataset.intro ?? null,
-          clip: sheet?.style.clipPath ?? "",
-          opacity: sheet?.style.opacity ?? "",
+          // v5 (2026-10-24): computed, since the clip and the fade-in of the sheet are Web Animations (intro-run.ts)
+          clip: sheet ? getComputedStyle(sheet).clipPath : "",
+          opacity: sheet ? getComputedStyle(sheet).opacity : "",
           draw,
           fly: !!document.querySelector("body > img[class]"),
           // The closing frame fading on the canvas (the stage, which holds the logo and its seal)
