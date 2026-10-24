@@ -242,10 +242,11 @@ test.describe("GrowRow", () => {
 
 test.describe("brand opening", () => {
   for (const viewport of [
-    { width: 1440, height: 900, min: 0.25, max: 0.35 },
+    // The relloo mark (its dark box, 640.92 of the 790.92 light box that takes 440/1440 of the width): 0.248
+    { width: 1440, height: 900, min: 0.23, max: 0.27 },
     { width: 390, height: 844, min: 0.4, max: 0.7 },
   ])
-    test(`on the canvas in every frame, no blur, the logo at ~30 % unscaled, at ${viewport.width}`, async ({ page }) => {
+    test(`on the canvas in every frame, no blur, the logo at ~25 % unscaled, at ${viewport.width}`, async ({ page }) => {
       test.setTimeout(40_000);
       await page.setViewportSize(viewport);
       await page.goto("/", { waitUntil: "load" });

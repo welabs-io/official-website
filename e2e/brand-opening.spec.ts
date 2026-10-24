@@ -1,8 +1,9 @@
-// ABERTURA DE MARCA: COMPLETA UMA VEZ, FLASH DEPOIS
-// v2.2 (audit A08): every entry and every swap by the product selector played the whole opening, 5.15 to 5.38 s from the
-// click to a usable page, and the sheet faded from 15% of the flight, leaving the large logo over the page at half
-// opacity (measured on 8187680). Acceptance at 1440: the whole opening on the first entry into a product, a flash of
-// about 700 ms on a swap by the selector and on a second entry, and the sheet whole while the logo is still large.
+// ABERTURA DE MARCA: COMPLETA EM TODA ENTRADA
+// v2.2 (audit A08): the sheet faded from 15% of the flight, leaving the large logo over the page at half opacity
+// (measured on 8187680). v4 (operator, 2026-10-24: "depois não abre mais a intro no clique dos produtos"): the short
+// flash of later entries is gone. Acceptance at 1440: the whole opening (sheet present, about 3 to 4.5 s from the click
+// to a settled page at SPEED 1.6) on the first entry into a product, on a swap by the selector and on a second entry
+// into the same product, and the sheet whole while the logo is still large.
 import { expect, test, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 900 } });
@@ -51,10 +52,14 @@ async function timeTo(page: Page, click: () => Promise<void>) {
   });
 }
 
-test("whole opening on the first entry, a flash on the selector and on a second entry", async ({
+// The whole opening takes about 3.9 s from the click to a settled page (measured at SPEED 1.6)
+const WHOLE_MIN_MS = 3000;
+const WHOLE_MAX_MS = 4500;
+
+test("whole opening on the first entry, on the selector and on a second entry", async ({
   page,
 }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(90_000);
   await page.goto("/", { waitUntil: "load" });
   await page.waitForTimeout(800);
   const card = page.locator('a[data-card="magneto"]').first();
@@ -64,7 +69,8 @@ test("whole opening on the first entry, a flash on the selector and on a second 
   console.log(
     `first entry: ${first.ms} ms, half-faded frames with a large logo: ${first.doubled}`,
   );
-  expect(first.ms).toBeGreaterThan(3000);
+  expect(first.ms).toBeGreaterThanOrEqual(WHOLE_MIN_MS);
+  expect(first.ms).toBeLessThanOrEqual(WHOLE_MAX_MS);
   expect(first.doubled).toBe(0);
   await expect(page).toHaveURL(/\/products\/magneto$/);
 
@@ -82,12 +88,13 @@ test("whole opening on the first entry, a flash on the selector and on a second 
     expect(swap.doubled).toBe(0);
     await expect(page).toHaveURL(new RegExp(`/products/${slug}$`));
   }
+  // The selector plays the whole opening too, not a flash
   for (const ms of swaps) {
-    expect(ms).toBeGreaterThanOrEqual(500);
-    expect(ms).toBeLessThanOrEqual(1000);
+    expect(ms).toBeGreaterThanOrEqual(WHOLE_MIN_MS);
+    expect(ms).toBeLessThanOrEqual(WHOLE_MAX_MS);
   }
 
-  // Home by the logo, then the same product again: the flash, not the whole opening
+  // Home by the logo, then the same product again: the whole opening again, not a flash
   await page.locator("header a").first().click();
   await expect(page).toHaveURL(/\/$/);
   await page.waitForTimeout(600);
@@ -95,5 +102,7 @@ test("whole opening on the first entry, a flash on the selector and on a second 
   await again.scrollIntoViewIfNeeded();
   const second = await timeTo(page, () => again.click());
   console.log(`second entry into magneto: ${second.ms} ms`);
-  expect(second.ms).toBeLessThanOrEqual(1000);
+  expect(second.ms).toBeGreaterThanOrEqual(WHOLE_MIN_MS);
+  expect(second.ms).toBeLessThanOrEqual(WHOLE_MAX_MS);
+  expect(second.doubled).toBe(0);
 });

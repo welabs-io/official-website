@@ -66,47 +66,41 @@ async function record(page: Page, ms: number) {
   }, ms);
 }
 
-// v2.2 (audit A08): the whole opening plays on the first entry into a product of the visit (every run starts a fresh
-// visit by clearing sessionStorage); a swap by the product selector plays the brand flash, about 700 ms
+// v4 (operator, 2026-10-24): the whole opening plays on every entry into a product, from any link, the product selector
+// included (no flash any more); at SPEED 1.6 it takes about 3.9 s from the click to a settled page
 async function expectOpening(
   page: Page,
   slug: string,
   start: () => Promise<void>,
-  mode: "full" | "flash" = "full",
 ) {
-  const frames = record(page, mode === "full" ? 6200 : 1600);
+  const frames = record(page, 6200);
   await start();
   const f = await frames;
   const withSheet = f.filter((x) => x.sheet === slug);
   console.log(
-    `${slug} ${mode}: ${withSheet.length} frames with the sheet of ${f.length}`,
+    `${slug}: ${withSheet.length} frames with the sheet of ${f.length}`,
   );
   expect(
     f.findIndex((x) => x.sheet === slug),
     "first frame with the opening",
   ).toBeLessThan(30);
-  if (mode === "full") {
-    // The sheet of the opening of this product came in at once and stayed for the opening (v2.2: by its time on screen,
-    // over 3 s, since a loaded machine draws fewer frames in the same 5 s)
-    expect(withSheet.length, "frames with the opening").toBeGreaterThan(60);
-    expect(
-      withSheet.at(-1)!.t - withSheet[0].t,
-      "ms of the opening",
-    ).toBeGreaterThan(3000);
-    // Its clip opened over several frames (from the box clicked to the window), and the opening drew many frames
-    expect(
-      new Set(withSheet.map((x) => x.clip)).size,
-      "clip frames",
-    ).toBeGreaterThan(8);
-    expect(
-      new Set(withSheet.map((x) => x.draw)).size,
-      "drawn frames",
-    ).toBeGreaterThan(40);
-  } else {
-    // The flash: the sheet for well under a second, never the whole opening
-    expect(withSheet.length, "frames with the flash").toBeGreaterThan(15);
-    expect(withSheet.length, "frames with the flash").toBeLessThan(70);
-  }
+  // The sheet of the opening of this product came in at once and stayed for the opening (by its time on screen, over
+  // 3 s, since a loaded machine draws fewer frames in the same time)
+  expect(withSheet.length, "frames with the opening").toBeGreaterThan(60);
+  expect(
+    withSheet.at(-1)!.t - withSheet[0].t,
+    "ms of the opening",
+  ).toBeGreaterThan(3000);
+  // Its clip opened over several frames (from the box clicked to the window), and the opening drew many frames (at SPEED
+  // 1.6 the same choreography draws 1/1.6 of the distinct frames it drew at 1: 40 became 25)
+  expect(
+    new Set(withSheet.map((x) => x.clip)).size,
+    "clip frames",
+  ).toBeGreaterThan(8);
+  expect(
+    new Set(withSheet.map((x) => x.draw)).size,
+    "drawn frames",
+  ).toBeGreaterThan(25);
   // The hand-over. v4 (brief-v4, artboard 8): no logo travels any more (its raster was scaled in flight, which blurred
   // it); the closing frame (logo and seal) fades on the canvas over several frames and the page comes in under the
   // same canvas
@@ -115,7 +109,7 @@ async function expectOpening(
     "no travelling logo",
   ).toBe(false);
   expect(
-    // The sheet fading in (the flash covers the window in 120 ms) and the logo fading out, frame by frame
+    // The sheet fading in and the logo fading out, frame by frame
     new Set(withSheet.map((x) => `${x.opacity}/${x.seal}`)).size,
     "fade frames",
   ).toBeGreaterThan(8);
@@ -149,7 +143,6 @@ test(`Menu → Produtos → Domus plays the opening of the Domus, ${RUNS} of ${R
   await page.setViewportSize({ width: 1440, height: 900 });
   for (let i = 0; i < RUNS; i++) {
     await page.goto("/", { waitUntil: "load" });
-    await page.evaluate(() => sessionStorage.clear());
     // Half of the runs click right after the load, before the descent chunk may have landed
     await page.waitForTimeout(i % 2 ? 1200 : 50);
     await page.hover("header nav >> text=Produtos");
@@ -165,7 +158,6 @@ test(`a card of the home plays the opening of its product, ${RUNS} of ${RUNS}`, 
   await page.setViewportSize({ width: 1440, height: 900 });
   for (let i = 0; i < RUNS; i++) {
     await page.goto("/", { waitUntil: "load" });
-    await page.evaluate(() => sessionStorage.clear());
     await page.waitForTimeout(i % 2 ? 1200 : 50);
     const card = page.locator('a[data-card="relloo"]');
     await card.scrollIntoViewIfNeeded();
@@ -177,7 +169,7 @@ test(`a card of the home plays the opening of its product, ${RUNS} of ${RUNS}`, 
   }
 });
 
-test(`the selector of a product plays the brand flash of the next one, ${RUNS} of ${RUNS}`, async ({
+test(`the selector of a product plays the whole opening of the next one, ${RUNS} of ${RUNS}`, async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -186,16 +178,12 @@ test(`the selector of a product plays the brand flash of the next one, ${RUNS} o
   await page.waitForTimeout(1200);
   for (let i = 0; i < RUNS; i++) {
     const slug = order[i % order.length];
-    await expectOpening(
-      page,
-      slug,
-      () =>
-        page
-          .locator(
-            `nav[aria-label="Os cinco produtos"] a[href="/products/${slug}"]`,
-          )
-          .click(),
-      "flash",
+    await expectOpening(page, slug, () =>
+      page
+        .locator(
+          `nav[aria-label="Os cinco produtos"] a[href="/products/${slug}"]`,
+        )
+        .click(),
     );
   }
 });

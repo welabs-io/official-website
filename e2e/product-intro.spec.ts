@@ -8,7 +8,7 @@
 //      are that canvas from the start of the opening to its end (not a cream drawn by something inside it);
 //  (b) no element of the opening is blurred (filter, backdrop-filter or an SVG Gaussian blur);
 //  (c) the camera of the opening is the round's (at most 1.7, the Domus close-up), the stage is never scaled by a
-//      transform, and on a wide window the closing logo takes about a third of its width (the stage used to fill it);
+//      transform, and on a wide window the closing logo takes 440 of 1440 px of its width (the stage used to fill it);
 //  (d) on the closing frame the "by welabs" seal (the seal group of the endorsed file, placed where the file shows) is
 //      inside the window, intersects neither the drawing of the logo, nor the amber bar, nor the fixed header, and is
 //      the topmost thing painted at its centre.
@@ -23,7 +23,7 @@ const VIEWPORTS = [
 const CANVAS = "rgb(247, 247, 245)";
 const MAX_CAMERA = 1.7;
 // The share of a wide window the closing logo (the light box of the endorsed file) takes (intro-run.ts LOGO_SHARE)
-const WIDE_LOGO_SHARE = 0.34;
+const WIDE_LOGO_SHARE = 440 / 1440;
 
 type Rect = { left: number; top: number; right: number; bottom: number };
 const meets = (a: Rect, b: Rect) =>
@@ -148,7 +148,6 @@ for (const viewport of VIEWPORTS)
       }) => {
         test.setTimeout(45_000);
         await page.goto("/", { waitUntil: "load" });
-        await page.evaluate(() => sessionStorage.clear());
         await page.waitForTimeout(1200);
         const link = page
           .locator(`#main-content a[href="/products/${slug}"]:visible`)
@@ -170,7 +169,9 @@ for (const viewport of VIEWPORTS)
           [viewport.width - 6, viewport.height - 6],
         ];
         const seen: string[] = [];
-        for (const at of [500, 1500, 2600, 3600]) {
+        // At SPEED 1.6 the logo is formed at ~2.5 s and the sheet leaves at ~3.9 s: the first sample is past the 450 ms
+        // that the clip takes to reach the corners, the last one before the closing frame starts to fade
+        for (const at of [500, 1100, 1700, 2250]) {
           await page.waitForTimeout(Math.max(0, at - (Date.now() - t0)));
           for (const [x, y] of spots) seen.push(await pixel(page, x, y));
         }
@@ -230,7 +231,7 @@ for (const viewport of VIEWPORTS)
           expect(Number(zoom)).toBeLessThanOrEqual(1);
         }
 
-        // The closing logo at about a third of a wide window, not the half it took when the stage filled the window
+        // The closing logo at 440 px of a 1440 window (LOGO_SHARE.wide), not the half it took when the stage filled it
         if (viewport.width >= 768)
           expect(geo.logoWidth / geo.vw, "logo share").toBeCloseTo(
             WIDE_LOGO_SHARE,
