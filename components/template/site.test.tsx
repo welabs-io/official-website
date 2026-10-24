@@ -3,10 +3,11 @@
 // rendered on the server (the same HTML the first paint gets) and checked as text: no player, no slogan, the word budget
 // of the v2, the order of the sections, the menu, the descent to the next product and the interactions, each a native
 // control with a visible label, so it works with no script and with a keyboard.
-import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { PageFrame } from "@/components/onepage/PageFrame";
-import { HOME_INTRO, NAV, PRODUCT_PAGE } from "@/lib/content";
+import { introWords, productPage } from "@/lib/content";
+import { LOCALES, localizePath, type Locale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n/messages";
+import { renderPage } from "@/lib/i18n/render-page";
 import {
   KNOWN_PERSONS,
   KNOWN_STACK,
@@ -16,17 +17,23 @@ import {
   vendorViolation,
 } from "@/lib/content/rules";
 import { PRODUCTS } from "@/lib/products";
-import { metadata as homeMetadata } from "@/app/(site)/page";
-import { generateMetadata } from "@/app/(site)/products/[slug]/page";
+import { generateMetadata as generateHomeMetadata } from "@/app/[locale]/(site)/page";
+import { generateMetadata } from "@/app/[locale]/(site)/products/[slug]/page";
 import { HOME_CONFIG, productConfig, type PageConfig } from "@/lib/site-config";
-import { Sections } from "./SiteTemplate";
 
-const render = (config: PageConfig) =>
-  renderToStaticMarkup(
-    <PageFrame>
-      <Sections config={config} />
-    </PageFrame>,
-  );
+// The pages of the site in pt-BR, with the frame (header and footer); the other locales are checked at the end
+const pt = getMessages("pt-BR");
+const HOME_INTRO = { ...pt.home.intro, words: introWords(pt) };
+const NAV = pt.nav;
+const PRODUCT_PAGE = {
+  domus: productPage(pt, "domus"),
+  relloo: productPage(pt, "relloo"),
+  magneto: productPage(pt, "magneto"),
+  tuner: productPage(pt, "tuner"),
+  knowly: productPage(pt, "knowly"),
+};
+const render = (config: PageConfig, locale: Locale = "pt-BR") =>
+  renderPage(config, { locale, frame: true });
 const home = render(HOME_CONFIG);
 const productPages = PRODUCTS.map((p) => ({
   slug: p.slug,
@@ -126,7 +133,7 @@ describe("little text, no slogan", () => {
 
   it("every product line has at most four words", () => {
     for (const p of PRODUCTS)
-      expect(p.line.split(" ").length).toBeLessThanOrEqual(4);
+      expect(pt.products[p.slug].line.split(" ").length).toBeLessThanOrEqual(4);
   });
 
   it("names no company: the portfolio has no scope confirmed to attribute a case", () => {
@@ -231,7 +238,7 @@ describe("the home", () => {
       expect(cards.find((c) => c.includes(`data-card="${p.slug}"`))).toContain(
         `href="/products/${p.slug}"`,
       );
-      expect(visibleText(home)).toContain(p.line);
+      expect(visibleText(home)).toContain(pt.products[p.slug].line);
     }
   });
 
@@ -280,8 +287,11 @@ describe("the home", () => {
     expect(home).toContain('alt="Domus by Welabs"');
   });
 
-  it("the title of the home is Welabs, without a suffix", () => {
-    expect(homeMetadata.title).toBe("Welabs");
+  it("the title of the home is Welabs, without a suffix", async () => {
+    const meta = await generateHomeMetadata({
+      params: Promise.resolve({ locale: "pt-BR" }),
+    });
+    expect(meta.title).toBe("Welabs");
   });
 });
 
@@ -395,7 +405,7 @@ describe("the product pages", () => {
   it("keep the stack out of the metadata", async () => {
     for (const { slug } of PRODUCTS) {
       const meta = await generateMetadata({
-        params: Promise.resolve({ slug }),
+        params: Promise.resolve({ locale: "pt-BR", slug }),
       });
       const text = [
         meta.description,
@@ -408,11 +418,90 @@ describe("the product pages", () => {
   it("follow the 'Domus by Welabs' pattern in the title", async () => {
     for (const { slug, name } of PRODUCTS) {
       const meta = await generateMetadata({
-        params: Promise.resolve({ slug }),
+        params: Promise.resolve({ locale: "pt-BR", slug }),
       });
       expect(meta.title).toBe(`${name} by Welabs`);
     }
   });
+});
+
+// IDIOMAS
+// The same pages in each locale: the document is written and linked in it, the addresses carry the prefix of en and es
+// (pt-BR has none), the selector offers the three languages and the metadata says where the other languages are.
+describe("the pages by locale", () => {
+  const prefix = (locale: Locale) => (locale === "pt-BR" ? "" : `/${locale}`);
+  const sample = [HOME_CONFIG, productConfig("relloo")];
+
+  it.each(LOCALES)(
+    "%s: every address of the frame and of the page keeps the locale",
+    (locale) => {
+      for (const config of sample) {
+        const html = render(config, locale);
+        const hrefs = [...html.matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
+        for (const href of hrefs) {
+          // Files (fonts, logos) are not pages; every page address starts with the prefix of the locale
+          if (/\.(woff2|svg|png|webp|css|js)$/.test(href)) continue;
+          if (locale === "pt-BR")
+            expect(href, `${locale} ${href}`).not.toMatch(/^\/(en|es)(\/|#|$)/);
+          else
+            expect(href, `${locale} ${href}`).toMatch(
+              new RegExp(`^/${locale}([/#?]|$)`),
+            );
+        }
+        expect(hrefs.length).toBeGreaterThan(5);
+      }
+    },
+  );
+
+  it.each(LOCALES)(
+    "%s: the call to action lands on the contact of the home of the locale",
+    (locale) => {
+      const html = render(productConfig("tuner"), locale);
+      expect(html).toContain(`href="${localizePath(locale, "/#contact")}"`);
+      expect(html).toContain(`href="${prefix(locale)}/products/domus"`);
+    },
+  );
+
+  it.each(LOCALES)(
+    "%s: the header has the language selector with the current code",
+    (locale) => {
+      const html = render(HOME_CONFIG, locale);
+      const header = html.slice(
+        html.indexOf("<header"),
+        html.indexOf("</header>"),
+      );
+      expect(header).toContain('data-locale-trigger=""');
+      expect(header).toContain(
+        locale === "pt-BR" ? ">PT<" : `>${locale.toUpperCase()}<`,
+      );
+    },
+  );
+
+  it.each(LOCALES)(
+    "%s: the metadata names the same page in every language",
+    async (locale) => {
+      const meta = await generateMetadata({
+        params: Promise.resolve({ locale, slug: "knowly" }),
+      });
+      const languages = meta.alternates?.languages as Record<string, string>;
+      expect(languages).toEqual({
+        "pt-BR": "/products/knowly",
+        en: "/en/products/knowly",
+        es: "/es/products/knowly",
+        "x-default": "/products/knowly",
+      });
+      expect(meta.alternates?.canonical).toBe(
+        `${prefix(locale)}/products/knowly`,
+      );
+      const home = await generateHomeMetadata({
+        params: Promise.resolve({ locale }),
+      });
+      expect((home.alternates?.languages as Record<string, string>).en).toBe(
+        "/en",
+      );
+      expect(home.alternates?.canonical).toBe(prefix(locale) || "/");
+    },
+  );
 });
 
 describe("navigation on every page", () => {

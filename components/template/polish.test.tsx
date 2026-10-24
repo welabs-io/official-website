@@ -5,12 +5,11 @@
 // goes under the 12 px floor (v3), and the section heads have their three variants (v3, F2).
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ICON_STROKE } from "@/lib/icon-stroke";
+import { renderPage } from "@/lib/i18n/render-page";
 import { PRODUCTS } from "@/lib/products";
 import { HOME_CONFIG, productConfig } from "@/lib/site-config";
-import { Sections } from "./SiteTemplate";
 
 const ROOT = path.resolve(__dirname, "../..");
 const read = (file: string) => readFileSync(path.join(ROOT, file), "utf8");
@@ -302,7 +301,7 @@ describe("the floor of the type scale", () => {
 describe("a hierarchy of section heads", () => {
   // v3 (F2): the three variants of SectionHead.tsx; the home uses all of them, and only them
   it("the home uses at least two variants of section head, all of them known", () => {
-    const html = renderToStaticMarkup(<Sections config={HOME_CONFIG} />);
+    const html = renderPage(HOME_CONFIG);
     const variants = new Set(
       [...html.matchAll(/data-head="([\w-]+)"/g)].map((m) => m[1]),
     );
@@ -316,7 +315,7 @@ describe("a hierarchy of section heads", () => {
       HOME_CONFIG,
       ...PRODUCTS.map((p) => productConfig(p.slug)),
     ]) {
-      const html = renderToStaticMarkup(<Sections config={config} />);
+      const html = renderPage(config);
       const heads = html.match(/<div[^>]*data-head="[\w-]+"[^>]*><h2/g) ?? [];
       expect(heads.length).toBeGreaterThanOrEqual(2);
     }
@@ -325,10 +324,8 @@ describe("a hierarchy of section heads", () => {
 
 describe("one stroke for every line icon", () => {
   const pages = [
-    renderToStaticMarkup(<Sections config={HOME_CONFIG} />),
-    ...PRODUCTS.map((p) =>
-      renderToStaticMarkup(<Sections config={productConfig(p.slug)} />),
-    ),
+    renderPage(HOME_CONFIG),
+    ...PRODUCTS.map((p) => renderPage(productConfig(p.slug))),
   ];
   it("every stroked svg on the home and on the five product pages has the shared stroke width", () => {
     const widths = new Set<string>();
