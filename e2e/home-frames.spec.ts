@@ -31,6 +31,13 @@ const UNCOVERED_MS = 4_400;
 
 const panel = (slug: Slug) => `#products [data-panel="${slug}"]`;
 
+// Opens a panel by the keyboard (its logo link takes the focus), with the pointer parked outside the row: a hover
+// lands on a panel whose width is still moving, and the pointer may end up over its neighbour
+async function openPanel(page: Page, slug: Slug) {
+  await page.mouse.move(5, 5);
+  await page.locator(`${panel(slug)} [data-card]`).focus();
+}
+
 // Records in the page every step a frame shows, with the time since recording started; `scope` holds the frame
 async function recordSteps(page: Page, scope: string) {
   await page.evaluate((sel) => {
@@ -169,8 +176,7 @@ test.describe("the frames of the home", () => {
     }) => {
       await page.goto("/");
       await page.locator("#products").scrollIntoViewIfNeeded();
-      await page.mouse.move(5, 5);
-      await page.hover(panel(slug));
+      await openPanel(page, slug);
       const frame = page.locator(`${panel(slug)} [data-frame="${slug}"]`);
       await expect(frame).toBeVisible();
       await recordSteps(page, panel(slug));
@@ -252,7 +258,7 @@ test.describe("the frames of the home", () => {
     expect(h.globe).toBe("/brands/welabs/symbols/knowly-light.svg");
     expect(h.answer).toBe(0);
     await page.locator("#products").scrollIntoViewIfNeeded();
-    await page.hover(panel("knowly"));
+    await openPanel(page, "knowly");
     const acc = page.locator(`${panel("knowly")} [data-frame="knowly"]`);
     await expect(acc).toBeVisible();
     const a = await graph(acc);
@@ -272,7 +278,7 @@ test.describe("under reduced motion", () => {
     await page.goto("/");
     await page.locator("#products").scrollIntoViewIfNeeded();
     for (const slug of SLUGS) {
-      await page.hover(panel(slug));
+      await openPanel(page, slug);
       const frame = page.locator(`${panel(slug)} [data-frame="${slug}"]`);
       await expect(frame).toBeVisible();
       await page.waitForTimeout(800);
