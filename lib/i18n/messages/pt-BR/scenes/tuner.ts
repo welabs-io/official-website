@@ -29,7 +29,8 @@ export const tuner = {
   },
   relloo: { title: "Relloo", meta: "Conversa 2210" },
   more: "E mais canais",
-  ask: "Quais canais a sua empresa usaria?",
+  // The closing asks for curiosity, not for a qualification (copy review of 2026-10-24)
+  ask: "Quantos canais a sua empresa ainda integra um por um?",
   // The three channels of the send (e-mail, message, integration), in the order of the component
   channels: ["E-mail", "Mensagem", "Integração"],
   // The other channels of the Tuner (voice, video call, community, site chat), in the order of the component

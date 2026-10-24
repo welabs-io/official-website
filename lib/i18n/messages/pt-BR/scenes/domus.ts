@@ -14,7 +14,8 @@ export const domus = {
   frames: [
     { title: "Módulos", label: "As áreas da empresa" },
     { title: "Tipo de registro", label: "O tipo novo vira tela" },
-    { title: "Vistorias", label: "O assistente cria o registro" },
+    // The assistant never writes alone: it proposes and the frame shows Confirmar (copy review of 2026-10-24)
+    { title: "Vistorias", label: "O assistente propõe, você confirma" },
     { title: "Vistoria 318", label: "O registro liga os outros produtos" },
   ],
   // The name of each moment, on the stage tabs of the chrome

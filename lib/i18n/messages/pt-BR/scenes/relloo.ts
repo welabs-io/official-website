@@ -50,7 +50,8 @@ export const relloo = {
   // The screen and the area the chrome names for each frame (frames 1 and 2 share the inbox, 3 and 4 the contact's record)
   inbox: "Caixa de entrada",
   service: "Atendimento",
-  person: "Pessoa",
+  // The site says "contato", never "pessoa" (copy review of 2026-10-24)
+  person: "Contatos",
   // The name of each moment, on the stage tabs of the chrome (read by position)
   frameNames: ["Chega", "Passa a vez", "Vira oportunidade", "Anda no funil"],
   // The channels the contact used before, in the history of frame 1 (read by position; the glyph is in the component)

@@ -1,10 +1,12 @@
 // TEXTO DE CADA PRODUTO
-// pt-BR. The page of a product (v2 of the content, approved on 2026-10-20): little text, every claim from the code of the
-// product (v13 analysis, section 1): no funnel, coupon or cashback in the Relloo, no process written as a sentence in the
-// Magneto, the Knowly limited to what the knowledge base already does, the Domus as the whole management of the company
-// with tax and banks only as an attractive detail. `line` is factual and short (at most four words); `category` and
-// `keywords` live in the page metadata only (operator decision of 2026-10-08), never in the visible text or the title.
-// Which `details` sit under which of the three differences is structure, in lib/content/products.ts (DIFFER_DETAILS).
+// pt-BR. The page of a product (v2 of the content, approved on 2026-10-20; copy review of 2026-10-24): little text, each
+// product as its concept in the whole of the five: the Domus as the domain and the builder of the whole company, the
+// Relloo as the relationship with each contact and a funnel run by the Magneto, the Magneto as the durable execution of
+// flows with approval, the Tuner as any channel for any product, the Knowly as the memory of the company, a graph that
+// grows. No vendor and no Brazil-only citation (PIX, NFS-e), not even in the metadata (operator, 2026-10-24). `line` is
+// short (at most four words); `category` and `keywords` live in the page metadata only (operator decision of
+// 2026-10-08), never in the visible text or the title. Which `details` sit under which of the three differences is
+// structure, in lib/content/products.ts (DIFFER_DETAILS).
 export const products = {
   // Headings shared by the five product pages, and the labels of the cards that open
   headings: {
@@ -27,17 +29,17 @@ export const products = {
       "fiscal",
     ],
     // Sentence under the logo of the opening
-    short: "A gestão da empresa inteira, moldada à sua operação.",
+    short: "A empresa inteira num espaço de trabalho único.",
     // Title of the stage with this product lit among the others
     centerTitle: "O Relloo no registro do Domus",
     // Details that come with the product: real, short, never the definition of the product
     details: [
-      "NFS-e nacional",
-      "Bancos: PIX e extrato (Banco Inter)",
-      "Cobrança (Asaas)",
+      "Controle fiscal",
+      "Conciliação bancária",
+      "Cobrança",
       "Assinatura eletrônica",
-      "Importação de dados (Omie)",
-      "Assistente com IA",
+      "Importação de dados",
+      "Assistente que age por você",
     ],
     // Open questions of the contact (no answers: they are the reason to talk)
     asks: [
@@ -52,8 +54,8 @@ export const products = {
         body: "O tipo de registro novo nasce com tela e permissão.",
       },
       {
-        title: "A regra brasileira junto",
-        body: "Nota fiscal, banco e cobrança vêm prontos.",
+        title: "Fiscal, financeiro e contábil",
+        body: "Nota, conciliação e cobrança vêm prontas.",
       },
       {
         title: "A base dos outros produtos",
@@ -62,10 +64,10 @@ export const products = {
     ],
   },
   relloo: {
-    line: "Conversas e atendimento",
+    line: "Relacionamento com cada contato",
     category: "CRM",
     keywords: ["CRM", "gestão de relacionamento", "atendimento multicanal"],
-    short: "Conversas de todos os canais, com o histórico de cada contato.",
+    short: "Cada contato com todas as conversas, e um funil que anda sozinho.",
     centerTitle: "As conversas no registro do Domus",
     details: [
       "Ligações gravadas na conversa",
@@ -73,7 +75,7 @@ export const products = {
       "Agentes de IA com fonte",
       "Prazo de resposta",
       "Respostas prontas",
-      "Agendas (Google Agenda)",
+      "Oportunidades por etapa",
     ],
     asks: [
       "Por quais canais as conversas chegam hoje?",
@@ -90,8 +92,8 @@ export const products = {
         body: "O agente responde só o que pode e passa a vez com o resumo pronto.",
       },
       {
-        title: "Prazo que corre",
-        body: "Quem recebe a conversa tem um prazo para responder, e ele aparece na tela.",
+        title: "Funil que anda sozinho",
+        body: "Cada etapa tem regra e prazo, e a oportunidade avança até virar pedido no Domus.",
       },
     ],
   },
@@ -99,7 +101,7 @@ export const products = {
     line: "Fluxos com aprovação",
     category: "Automação de processos e workflow",
     keywords: ["automação de processos", "workflow", "BPM", "aprovações"],
-    short: "Fluxos com aprovação, desenhados em blocos.",
+    short: "Fluxos que esperam a aprovação e retomam de onde pararam.",
     centerTitle: "As aprovações no registro do Domus",
     details: [
       "Espera e aprovação",
@@ -129,22 +131,23 @@ export const products = {
     ],
   },
   tuner: {
-    line: "Mensagens e ligações",
-    category: "Canais de atendimento",
-    keywords: ["WhatsApp", "central de atendimento", "omnichannel"],
+    line: "Qualquer canal, um envio",
+    category: "Canais de comunicação",
+    // No vendor, not even in the metadata (operator, 2026-10-24)
+    keywords: ["canais de mensagem", "comunicação multicanal", "omnichannel"],
     short:
-      "Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).",
-    centerTitle: "As ligações no registro do Domus",
+      "Uma mensagem sai por qualquer canal, e a resposta volta para o lugar certo.",
+    centerTitle: "Os envios no registro do Domus",
     details: [
-      "Mensagens (WhatsApp oficial)",
+      "Mensagem, e-mail e SMS",
       "Menu de opções na ligação",
       "Distribuição para a equipe",
       "Gravação e transcrição",
-      "Ligações (WhatsApp)",
-      "Comunidades (Discord)",
+      "Ligações e videochamadas",
+      "Comunidades e chat corporativo",
     ],
     asks: [
-      "Quantos números e linhas a empresa tem?",
+      "Quantos números e linhas a sua empresa tem?",
       "Para onde cada ligação deveria ir?",
       "Quais conversas precisam ficar gravadas?",
     ],
@@ -164,16 +167,17 @@ export const products = {
     ],
   },
   knowly: {
-    line: "Respostas com a fonte",
-    category: "Base de conhecimento com IA",
+    line: "Conhecimento que cresce",
+    category: "Memória e base de conhecimento",
     // No detail of the AI stack, not even in the metadata (plano.md 3.5)
     keywords: ["base de conhecimento", "IA", "busca semântica"],
-    short: "Respostas com a fonte, dentro do acesso de cada perfil.",
-    centerTitle: "As respostas no registro do Domus",
+    short:
+      "A memória da empresa cresce a cada fonte, com a origem de cada fato.",
+    centerTitle: "A memória no registro do Domus",
     details: [
       "Fonte de cada frase",
       "Acesso por perfil e grupo",
-      "Dado pessoal barrado",
+      "Permissão que não vaza",
       "Documentos, tickets e atas",
       "Cadastros do Domus",
     ],
@@ -189,11 +193,11 @@ export const products = {
       },
       {
         title: "Dentro do acesso",
-        body: "Cada perfil só recebe o que já podia ver, e o dado pessoal fica de fora.",
+        body: "Cada perfil só vê o que já podia ver, nem num resumo.",
       },
       {
         title: "Memória que cresce",
-        body: "Documentos, atas e cadastros do Domus somam ao que a equipe já aprendeu.",
+        body: "Cada documento, ata e registro do Domus se liga ao que a empresa já aprendeu.",
       },
     ],
   },

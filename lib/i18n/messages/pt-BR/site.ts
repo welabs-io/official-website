@@ -6,13 +6,16 @@
 export const site = {
   meta: {
     title: "Welabs",
-    description: "Produtos próprios de software.",
-    homeDescription: "Domus, Relloo, Magneto, Tuner e Knowly.",
+    // Copy review of 2026-10-24: "software" and "SaaS" are banned; the preferred keys are "soluções" and "integrado"
+    description: "Soluções integradas para a empresa inteira.",
+    homeDescription:
+      "Domus, Relloo, Magneto, Tuner e Knowly: soluções integradas num espaço de trabalho único.",
     // {name} is the product and stays as the brand writes it; the pattern "<Name> by Welabs" is the brand's seal line
     productTitle: "{name} by Welabs",
     // {category} is the category of the product (products.<slug>.category), {line} its line (products.<slug>.line)
     productDescription: "{category} da Welabs. {line}.",
-    ogAlt: "Welabs — Empresa e produtos",
+    // The alt says what the share image draws: the logo and the five product names
+    ogAlt: "Welabs: Domus, Relloo, Magneto, Tuner e Knowly",
   },
   common: {
     skipLink: "Ir para o conteúdo",

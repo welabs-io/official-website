@@ -111,8 +111,9 @@ describe("every product page has the same fields", () => {
 
 describe("the Domus is the whole management of the company", () => {
   // v2.1: the modules are the ones the ERP code installs (modulos-domus.md of the round): the standard floor holds the
-  // ERPNext and HRMS modules, the floor made to measure our own apps, and tax and PIX are only a tag
-  it("its modules are the ERP's, standard and made to measure, with tax and PIX only as a tag", () => {
+  // ERPNext and HRMS modules, the floor made to measure our own apps. Copy review of 2026-10-24: tax and banks keep a
+  // small status tag, never a Brazil-only name (the PIX and NFS-e tags left, forbidden.ts)
+  it("its modules are the ERP's, standard and made to measure, with tax and banks only as a status tag", () => {
     const modules = domusModules(pt);
     const standard = modules.standard.map((r) => r.id);
     const custom = modules.custom.map((r) => r.id);
@@ -137,9 +138,10 @@ describe("the Domus is the whole management of the company", () => {
     ] as const)
       expect(custom).toContain(app);
     const all = [...modules.standard, ...modules.custom];
+    expect(all.filter((r) => r.tag).map((r) => r.id)).toEqual(["tax", "banks"]);
     expect(all.filter((r) => r.tag).map((r) => r.tag)).toEqual([
-      "NFS-e",
-      "PIX",
+      "Em dia",
+      "24h",
     ]);
     expect(new Set(all.map((r) => r.name)).size).toBe(all.length);
   });

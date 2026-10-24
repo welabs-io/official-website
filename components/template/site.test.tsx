@@ -185,7 +185,8 @@ describe("the home", () => {
   it("opens with the title as its h1, the word that turns, one line and one button", () => {
     const intro = home.slice(at("intro"), at("message"));
     expect(intro.match(/<h1/g)).toHaveLength(1);
-    expect(visibleText(intro)).toContain("Software para");
+    // Copy review of 2026-10-24: "Software" is banned, the title opens on "Soluções"
+    expect(visibleText(intro)).toContain("Soluções para");
     expect(intro.match(/href="\/#contact"/g)).toHaveLength(1);
     expect(visibleText(intro)).toContain("Agendar uma demonstração");
   });

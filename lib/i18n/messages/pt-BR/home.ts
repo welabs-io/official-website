@@ -1,43 +1,47 @@
 // TEXTO DA HOME E DAS TELAS DOS PRODUTOS
-// pt-BR. Copy of the home (v2 of the content, approved on 2026-10-20; v4 blocks, 2026-10-23): each section has at most
-// one short title and one line, the rest is motion. The words a visitor reads inside a drawing (the seals, the frames,
-// the names of the modules) are labels of that drawing, kept here so the copy rules read them. No slogan, no person by
-// name, no vendor outside brackets, no maturity marker.
+// pt-BR. Copy of the home (v2 of the content, approved on 2026-10-20; v4 blocks, 2026-10-23; copy review of 2026-10-24):
+// each section has at most one short title and one line, the rest is motion. The words a visitor reads inside a drawing
+// (the seals, the frames, the names of the modules) are labels of that drawing, kept here so the copy rules read them.
+// No slogan, no person by name, no vendor, no Brazil-only citation (PIX, NFS-e), no maturity marker. Every record is one
+// of the single thread of the site (Contato 4821, Conversa 2210, Proposta 905, Vistoria 318, Pedido 1234).
 // Text only. What is NOT here: the product names (brands), the order of the products, the glyph of each module and which
 // station follows which; lib/content/home.ts builds the structures the components read from this text. Placeholders:
 // `{order}` is shared.order and `{name}`/`{title}` are filled by the component (lib/i18n/format.ts).
 export const home = {
-  // Opening: the title is cut around the word that turns (`words`, one per product, in the order of the products)
+  // Opening: the title is cut around the word that turns (`words`, one per product, in the order of the products); each
+  // word is the area of its product, the same as the closed panel of the accordion
   intro: {
-    before: "Software para",
+    before: "Soluções para",
     // The last line of the title, with its full stop (the stop is part of the sentence, so it is the dictionary's)
     after: "da sua empresa.",
     words: {
       domus: "a gestão",
-      relloo: "o atendimento",
-      magneto: "as aprovações",
+      relloo: "o relacionamento",
+      magneto: "os processos",
       tuner: "os canais",
       knowly: "o conhecimento",
     },
-    lead: "Cinco produtos sobre os mesmos dados. O que acontece num deles já aparece nos outros.",
+    lead: "Tudo integrado num espaço de trabalho único, com um assistente que interage na interface por você.",
     // Accessible name of the strip of the five marks, and the effect each lit product shows on the stage
     stage: "Os cinco produtos ligados ao Domus",
+    // The stage of the product pages tells the same thread as the home (the order 1234 of the maintenance contract)
     stamps: {
-      domus: "Pedido 1234 atualizado",
-      relloo: "Conversa distribuída",
-      magneto: "Aprovado às 10:14",
-      tuner: "Ligação na conversa",
-      knowly: "Sim, até 12h",
+      domus: "Pedido 1234 registrado",
+      relloo: "Com o dono certo",
+      magneto: "Aprovado às 17:02",
+      tuner: "Lido em 3 canais",
+      knowly: "Prazo com a fonte",
     },
-    // The record of the Domus at the centre of the stage: one line per product that wrote on it
+    // The record of the Domus at the centre of the stage: one line per product that wrote on it (the lines of the
+    // record of the chain, chain.record.lines)
     record: {
       lines: {
-        tuner: "Ligação gravada",
-        relloo: "Respondida no prazo",
-        knowly: "Sábado, até 12h, com a fonte",
-        magneto: "Troca aprovada",
+        tuner: "Chegou pela mensagem",
+        relloo: "Com o dono certo, no prazo",
+        knowly: "Combinado lembrado, com a fonte",
+        magneto: "Aprovado e assinado",
       },
-      domus: "Estoque e financeiro em dia",
+      domus: "Nota e cobrança em dia",
     },
   },
 
@@ -47,17 +51,17 @@ export const home = {
     caption: "Um quadro de cada produto",
     see: "Ver os produtos",
     seals: {
-      domus: { title: "Vistoria 318", line: "acendeu os outros quatro" },
+      domus: { title: "Vistoria 318", line: "ligou os outros quatro" },
       relloo: { title: "Conversa 2210", line: "com o dono certo" },
-      magneto: { title: "Proposta 905", line: "aprovada às 10:14" },
+      magneto: { title: "Proposta 905", line: "aprovada às 17:02" },
       tuner: { title: "Mensagem nova", line: "chegou pelo canal" },
       knowly: { title: "Prazo de 48 h", line: "lembrado, com a fonte" },
     },
   },
 
-  // The modules of the Domus, on two floors: the standard ones (ERPNext and HRMS) and the ones made to measure (our own
-  // apps). Keys are stable ids (lib/content/home.ts maps each id to its glyph and floor); `tags` is the small attractive
-  // detail of a module, never its definition.
+  // The modules of the Domus, on two floors: the standard ones and the ones made to measure. Keys are stable ids
+  // (lib/content/home.ts maps each id to its glyph and floor); `tags` is the small attractive detail of a module, never
+  // its definition, and never a Brazil-only name (operator, 2026-10-24: the PIX and NFS-e tags left)
   domus: {
     standard: "Padrão",
     custom: "Sob medida",
@@ -93,7 +97,7 @@ export const home = {
       privacy: "Privacidade",
       import: "Importação",
     },
-    tags: { tax: "NFS-e", banks: "PIX" },
+    tags: { tax: "Em dia", banks: "24h" },
   },
 
   // One small screen per product (the stage of the opening and the open panel of the accordion): the effect only
@@ -101,8 +105,8 @@ export const home = {
     domus: {
       title: "Módulos",
       sub: "da sua empresa",
-      // The newest module, outlined in green in the frame (not the "Vistorias" of the house)
-      newModule: "Vistoria",
+      // The newest module, outlined in green in the frame; a module is an area, so its name is plural like the others
+      newModule: "Vistorias",
       // What each of the other four does with the new module, and the line under them
       uses: {
         relloo: "oportunidade avança",
@@ -119,7 +123,9 @@ export const home = {
       agent: "Agente de atendimento",
       incoming: "Preciso de manutenção mensal para 3 aparelhos do bloco B.",
       time: "08:12",
-      answer: "Claro! Qual o modelo e a potência dos aparelhos?",
+      // The same reply of the agent as in the Relloo carousel (scenes.relloo.agentSaid)
+      answer:
+        "Qual o modelo dos aparelhos? Já deixo tudo pronto para a proposta.",
       typing: "Agente de atendimento · digitando",
       stages: ["Conversa", "Qualificação", "Vistoria", "Ganha"],
     },
@@ -136,19 +142,20 @@ export const home = {
     },
     tuner: {
       title: "Canais",
-      // Every channel lands in the one conversation; the first one is the fresh message
+      // Every channel comes back in the same shape; the first one is the fresh message
       channels: [
         { name: "Mensagem", line: "Preciso de manutenção mensal…" },
         { name: "Ligação", line: "3 min, gravada" },
         { name: "E-mail", line: "Proposta 905" },
       ],
-      thread: { title: "Conversa 2210", line: "3 canais, um histórico" },
+      thread: { title: "Conversa 2210", line: "3 canais, o mesmo formato" },
     },
     knowly: {
       title: "Pergunta",
       question: "Qual o prazo de manutenção do bloco B?",
       answer: "48 h a partir do chamado, de segunda a sábado.",
-      source: "Contrato 77 · cláusula 4",
+      // The term of 48 h comes from the service policy of the thread (there is no contract 77 in it)
+      source: "Política de serviço · item 4",
       sourceLabel: "Fonte",
     },
   },
@@ -224,9 +231,10 @@ export const home = {
   },
 
   // The accordion of the five products: at rest the Domus is open, the others open on hover, on focus or on a tap.
-  // `area` is the area of the product on the closed panel; `points` are the three tags; `question` closes the panel.
+  // `area` is the area of the product on the closed panel (the turning word of the title); `points` are the three tags;
+  // `question` closes the panel.
   accordion: {
-    title: "Cinco produtos, os mesmos dados",
+    title: "Cinco produtos, tudo integrado",
     lead: "Cada um cuida de uma parte da operação. Abra para ver em ação.",
     // The accessible name of the "+" of a panel on a phone: "Abrir Domus" / "Fechar Domus"
     openLabel: "Abrir {name}",
@@ -239,7 +247,7 @@ export const home = {
         points: [
           "Padrão e sob medida",
           "Assistente com o dado real",
-          "Regras brasileiras",
+          "Fiscal, financeiro e contábil",
         ],
         question: "Quanto da sua operação cabe no Domus?",
       },
@@ -259,7 +267,7 @@ export const home = {
         title: "Cada aprovação no caminho certo.",
         lead: "O fluxo leva a proposta por quem aprova e pela assinatura, e avisa o próximo passo.",
         points: [
-          "Fluxo desenhado na tela",
+          "Nada feito em dobro",
           "Aprovação em um toque",
           "Prazo com aviso",
         ],
@@ -267,24 +275,20 @@ export const home = {
       },
       tuner: {
         area: "Canais",
-        title: "Mensagem, ligação e e-mail numa conversa.",
-        lead: "Cada canal chega no mesmo histórico, ligado ao contato e ao pedido.",
+        title: "Um envio, todos os canais.",
+        lead: "A mensagem sai por qualquer canal, e a resposta volta no mesmo formato, venha de onde vier.",
         points: [
-          "Mensagens e ligações",
-          "Histórico único",
-          "Número da empresa",
+          "Qualquer canal",
+          "Situação de cada envio",
+          "Mesma regra para todos",
         ],
         question: "Em quantos aparelhos está a conversa de hoje?",
       },
       knowly: {
-        area: "Memória",
+        area: "Conhecimento",
         title: "O que a empresa aprende fica lembrado.",
-        lead: "A resposta vem do contrato, do chamado ou da reunião, com a fonte ao lado.",
-        points: [
-          "Resposta com a fonte",
-          "Memória que cresce",
-          "Busca no que já foi dito",
-        ],
+        lead: "Cada contrato, chamado e reunião se liga ao que a empresa já aprendeu, com a fonte de cada fato.",
+        points: ["Resposta com a fonte", "Memória que cresce", "Nada se apaga"],
         question: "Quanto do combinado só existe na cabeça de alguém?",
       },
     },
@@ -293,9 +297,9 @@ export const home = {
   // Contact: open questions, no answers (they are the reason to talk). Every button of the site lands here, so this band
   // does not repeat the button; its way out is the products band (`more`).
   contact: {
-    title: "Conte o que sua empresa precisa",
+    title: "Conte o que a sua empresa precisa",
     asks: [
-      "Quanto da sua operação cabe no Domus?",
+      "O que hoje fica espalhado entre sistemas e planilhas?",
       "O que acontece com os sistemas de hoje?",
       "Dá para começar por um produto?",
       "Por onde a gente começa?",
