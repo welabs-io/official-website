@@ -69,17 +69,19 @@ describe("the camera and the stage", () => {
     expect(code("magneto-flow.js")).toMatch(/\bZ_IN\s*=\s*1\.55\b/);
     expect(code("tuner.js")).toMatch(/\bZIN\s*=\s*1\.55\b/);
   });
-  it("the stage is sized by its closing logo: about a third of a wide window, 72 % of a phone, never past its size", () => {
+  it("the stage is sized by its closing logo: about a fifth of a wide window, 56 % of a phone, never past its size", () => {
     for (const slug of Object.keys(BOXES) as (keyof typeof BOXES)[]) {
       const desk = stageScale(slug, 1440, 900, 72);
       // The closing logo (its light box) at the wide share, unless the room under the header is smaller
       expect(BOXES[slug].light[2] * desk).toBeLessThanOrEqual(
         1440 * LOGO_SHARE.wide + 1e-6,
       );
+      // v5: 300 px of a 1440 window (the room under the header is larger)
+      expect(BOXES[slug].light[2] * desk).toBeCloseTo(300, 6);
       expect(desk).toBeLessThanOrEqual(((900 - 72) * 0.94) / 1080 + 1e-9);
       const phone = stageScale(slug, 390, 844, 56);
       // The closing logo (its light box) fits the phone's width with a margin
-      expect(BOXES[slug].light[2] * phone).toBeLessThanOrEqual(390 * 0.75);
+      expect(BOXES[slug].light[2] * phone).toBeLessThanOrEqual(390 * 0.6);
       expect(BOXES[slug].light[2] * phone).toBeGreaterThanOrEqual(
         390 * LOGO_SHARE.phone - 1e-6,
       );

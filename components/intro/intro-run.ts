@@ -154,12 +154,14 @@ const pageIn = () => {
 
 // ENCAIXE DO PALCO NA JANELA
 // The 1920x1080 stage the round was drawn at, under the header, sized by its closing logo (the light box of the endorsed
-// file): 440 px of a 1440 window from a tablet up, as the static plan of the opening (canvas v4, BrandIntro), and 72 %
-// of a phone's width, so the logo stays legible there.
+// file): 300 px of a 1440 window from a tablet up (about 21 %), and 56 % of a phone's width, so the logo stays legible
+// there. The stage follows the logo, so the whole opening shrinks with it.
 // v4 (operator, 2026-10-24: "só o tamanho que precisava adequar"): the stage used to fill the window's width, which put
 // the closing logo at about half of it, read as too much zoom; the choreography itself is the round's, untouched.
+// v5 (operator, 2026-10-24: "ainda achei grande [...] compactar esse intro"): 440 -> 300 px of a 1440 window, 72 -> 56 %
+// of a phone.
 // Never larger than its size, nor taller than the room under the header.
-export const LOGO_SHARE = { phone: 0.72, wide: 440 / 1440 } as const;
+export const LOGO_SHARE = { phone: 0.56, wide: 300 / 1440 } as const;
 export function stageScale(slug: Slug, w: number, h: number, header: number) {
   const share = w < 768 ? LOGO_SHARE.phone : LOGO_SHARE.wide;
   const byLogo = (w * share) / BOXES[slug].light[2];

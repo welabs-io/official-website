@@ -8,7 +8,8 @@
 //      are that canvas from the start of the opening to its end (not a cream drawn by something inside it);
 //  (b) no element of the opening is blurred (filter, backdrop-filter or an SVG Gaussian blur);
 //  (c) the camera of the opening is the round's (at most 1.7, the Domus close-up), the stage is never scaled by a
-//      transform, and on a wide window the closing logo takes 440 of 1440 px of its width (the stage used to fill it);
+//      transform, and the closing logo takes 300 of 1440 px of a wide window (v5; 440 before, and the stage used to fill
+//      it) and 56 % of a phone's width;
 //  (d) on the closing frame the "by welabs" seal (the seal group of the endorsed file, placed where the file shows) is
 //      inside the window, intersects neither the drawing of the logo, nor the amber bar, nor the fixed header, and is
 //      the topmost thing painted at its centre.
@@ -22,8 +23,10 @@ const VIEWPORTS = [
 ];
 const CANVAS = "rgb(247, 247, 245)";
 const MAX_CAMERA = 1.7;
-// The share of a wide window the closing logo (the light box of the endorsed file) takes (intro-run.ts LOGO_SHARE)
-const WIDE_LOGO_SHARE = 440 / 1440;
+// The share of the window the closing logo (the light box of the endorsed file) takes (intro-run.ts LOGO_SHARE). v5
+// (operator, 2026-10-24: "ainda achei grande"): 300 of 1440 px on a wide window (was 440), 56 % of a phone (was 72 %)
+const WIDE_LOGO_SHARE = 300 / 1440;
+const PHONE_LOGO_SHARE = 0.56;
 
 type Rect = { left: number; top: number; right: number; bottom: number };
 const meets = (a: Rect, b: Rect) =>
@@ -231,12 +234,11 @@ for (const viewport of VIEWPORTS)
           expect(Number(zoom)).toBeLessThanOrEqual(1);
         }
 
-        // The closing logo at 440 px of a 1440 window (LOGO_SHARE.wide), not the half it took when the stage filled it
-        if (viewport.width >= 768)
-          expect(geo.logoWidth / geo.vw, "logo share").toBeCloseTo(
-            WIDE_LOGO_SHARE,
-            1,
-          );
+        // The closing logo at 300 px of a 1440 window (LOGO_SHARE.wide) and at 56 % of a phone (LOGO_SHARE.phone)
+        expect(geo.logoWidth / geo.vw, "logo share").toBeCloseTo(
+          viewport.width >= 768 ? WIDE_LOGO_SHARE : PHONE_LOGO_SHARE,
+          2,
+        );
         expect(geo.shown).toBe("visible");
         expect(geo.clip).toBe("none");
         expect(geo.topmost, "nothing painted over the seal").toBe(true);
