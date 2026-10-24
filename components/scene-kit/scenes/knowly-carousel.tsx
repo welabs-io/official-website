@@ -547,33 +547,56 @@ function Close({ view }: { view: View }) {
   );
 }
 
+// The view of a step of the carousel, from its id (a frame of the home walks a subset of these steps)
+const viewOf = (id: string): View => {
+  const index = Math.max(0, indexOf(id));
+  return { frame: frameOf(BEATS[index].id), index };
+};
+
+// O GRAFO SEM A MOLDURA
+// The world alone, for the Knowly frame of the home (components/home/frames.tsx, operator 2026-10-24: the home shows
+// this graph, not the old answer with its source): the same graph, labels and camera, driven by the frame's own clock,
+// whose steps are a subset of BEATS with their own holds and moves (`beat` overrides them). A new loop fades in over
+// the old one, as in the carousel. It fills its positioned parent.
+export function KnowlyGraphWorld({
+  scene,
+  beat,
+}: {
+  scene: SceneApi;
+  beat?: Partial<Pick<Beat, "hold" | "move">>;
+}) {
+  const view = viewOf(scene.id);
+  return (
+    <AnimatePresence initial={false}>
+      <motion.div
+        key={scene.cycle}
+        className={k.world}
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+          transition: {
+            duration: SCENE_CURVE.dur2 * 1.5,
+            ease: SCENE_CURVE.out,
+          },
+        }}
+        exit={{
+          opacity: 0,
+          transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut },
+        }}
+      >
+        <World view={view} beat={{ ...BEATS[view.index], ...beat }} />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function KnowlyGraphView({ scene }: { scene: SceneApi }) {
   // The hidden copy only holds the window's height (the pane has one fixed height at each width)
   if (scene.ghost) return <div className={k.root} />;
-  const index = Math.max(0, scene.index);
-  const view: View = { frame: frameOf(BEATS[index].id), index };
+  const view = viewOf(scene.id);
   return (
     <div className={k.root} data-frame={view.frame} data-current="true">
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={scene.cycle}
-          className={k.world}
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: 1,
-            transition: {
-              duration: SCENE_CURVE.dur2 * 1.5,
-              ease: SCENE_CURVE.out,
-            },
-          }}
-          exit={{
-            opacity: 0,
-            transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut },
-          }}
-        >
-          <World view={view} beat={BEATS[index]} />
-        </motion.div>
-      </AnimatePresence>
+      <KnowlyGraphWorld scene={scene} />
       <Head frame={view.frame} />
       <Close view={view} />
     </div>

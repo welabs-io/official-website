@@ -2,7 +2,8 @@
 // KIT DE CENAS: COMPONENTE E HOOK
 // One component owns the continuity of every scene: it reads visibility and reduced motion from the lib's hooks,
 // connects the clock (timeline.ts) only while the scene is on screen and motion is allowed, and hands the scene a
-// `scene` object to render from. The scene itself never touches a timer, an observer or a media query.
+// `scene` object to render from. The scene itself never touches a timer, an observer or a media query. The clock part
+// is the hook useSceneClock, which a frame with no kit window (the home's frames) uses on its own (2026-10-24).
 // The bridge clock -> React is useSyncExternalStore: its `subscribe` changes identity with `active`, so React
 // disconnects the clock when the scene leaves the screen and reconnects it when it comes back (no useEffect).
 // The frame is the lib's Card with a local chrome bar (the lib's DeviceFrame paints red/yellow/green window dots,
@@ -94,7 +95,8 @@ const apiOf = (
 
 // A slot of the chrome bar: fixed, or drawn from the live scene
 type ChromeSlot = ReactNode | ((scene: SceneApi) => ReactNode);
-const slot = (value: ChromeSlot, scene: SceneApi) => (typeof value === "function" ? value(scene) : value);
+const slot = (value: ChromeSlot, scene: SceneApi) =>
+  typeof value === "function" ? value(scene) : value;
 
 type SceneProps = {
   // Name of the scene (data-scene, the lab's address)
@@ -114,17 +116,14 @@ type SceneProps = {
   className?: string;
 };
 
-export function Scene({
-  id,
-  label,
-  product,
-  title,
-  steps,
-  timeline: external,
-  children,
-  className,
-  tools,
-}: SceneProps) {
+// The continuity of a scene without its window: the clock of `steps` (or `external`), connected while the element of
+// `ref` is on screen and motion is allowed, and the `scene` object to render from. Scene uses it for its stage; a frame
+// that is not a kit window (the frames of the home, components/home/frames.tsx) uses it on its own element, so it gets
+// the same autoplay, loop, off-screen pause and settled frame under reduced motion with no timer of its own.
+export function useSceneClock(
+  steps: readonly SceneStep[] | undefined,
+  external?: SceneTimeline,
+) {
   const [own] = useState(() => external ?? new SceneTimeline(steps ?? []));
   const timeline = external ?? own;
   const reduced = useReducedMotion();
@@ -143,10 +142,25 @@ export function Scene({
   );
   const view = reduced ? sceneView(timeline, true) : live;
 
-  const api = useMemo(
+  const scene = useMemo(
     () => apiOf(timeline, view, { active, reduced, ghost: false }),
     [timeline, view, active, reduced],
   );
+  return { scene, timeline, ref, reduced };
+}
+
+export function Scene({
+  id,
+  label,
+  product,
+  title,
+  steps,
+  timeline: external,
+  children,
+  className,
+  tools,
+}: SceneProps) {
+  const { scene: api, timeline, ref, reduced } = useSceneClock(steps, external);
   const ghost = useMemo(
     () =>
       apiOf(timeline, timeline.getFinalSnapshot(), {
@@ -176,9 +190,9 @@ export function Scene({
         ref={ref}
         className={k.stage}
         data-scene={id}
-        data-step={view.id}
-        data-phase={view.mode}
-        data-on={active}
+        data-step={api.id}
+        data-phase={api.mode}
+        data-on={api.active}
         data-reduced={reduced}
       >
         <div className={k.ghost} aria-hidden="true" inert>
