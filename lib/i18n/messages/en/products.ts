@@ -1,202 +1,199 @@
 // TEXTO DE CADA PRODUTO (EN)
-// TRADUÇÃO PENDENTE: for now this is a copy of pt-BR, to be replaced by the English text; keys and placeholders
-// ({name}, {title}) stay as they are. Original notes follow. The page of a product (v2 of the content, approved on 2026-10-20): little text, every claim from the code of the
-// product (v13 analysis, section 1): no funnel, coupon or cashback in the Relloo, no process written as a sentence in the
-// Magneto, the Knowly limited to what the knowledge base already does, the Domus as the whole management of the company
-// with tax and banks only as an attractive detail. `line` is factual and short (at most four words); `category` and
-// `keywords` live in the page metadata only (operator decision of 2026-10-08), never in the visible text or the title.
-// Which `details` sit under which of the three differences is structure, in lib/content/products.ts (DIFFER_DETAILS).
+// en-US, adapted from pt-BR with the glossary of the copy round (control/portfolio/site-redesign/i18n/glossario.md).
+// Each product as its concept in the whole of the five; no vendor and no Brazil-only citation, not even in the metadata.
+// The keys, the length of every list and the placeholders ({name}, {title}) stay as in pt-BR; `category` and
+// `keywords` live in the page metadata only. Which `details` sit under which difference is structure
+// (lib/content/products.ts, DIFFER_DETAILS), so each detail keeps its position.
 import type { ProductsMessages } from "../../types";
 
 export const products: ProductsMessages = {
-  // Headings shared by the five product pages, and the labels of the cards that open
   headings: {
-    areas: "Todas as áreas da empresa",
-    areasLead: "E as que só a sua operação tem.",
-    details: "Por que é diferente",
-    contact: "Quer ver o {name} com a sua operação?",
-    differOpen: "Abrir: {title}",
-    differClose: "Fechar: {title}",
+    areas: "Every area of the company",
+    areasLead: "And the ones only your operations have.",
+    details: "Why it's different",
+    contact: "Want to see {name} with your operations?",
+    differOpen: "Open: {title}",
+    differClose: "Close: {title}",
   },
   domus: {
-    line: "Gestão da empresa inteira",
+    line: "Your whole company, managed",
     category: "ERP",
     keywords: [
       "ERP",
-      "sistema de gestão empresarial",
-      "vendas",
-      "estoque",
-      "financeiro",
-      "fiscal",
+      "business management system",
+      "sales",
+      "inventory",
+      "finance",
+      "tax",
     ],
-    // Sentence under the logo of the opening
-    short: "A gestão da empresa inteira, moldada à sua operação.",
-    // Title of the stage with this product lit among the others
-    centerTitle: "O Relloo no registro do Domus",
-    // Details that come with the product: real, short, never the definition of the product
+    short: "Your whole company in a single workspace.",
+    centerTitle: "Relloo on the Domus record",
     details: [
-      "NFS-e nacional",
-      "Bancos: PIX e extrato (Banco Inter)",
-      "Cobrança (Asaas)",
-      "Assinatura eletrônica",
-      "Importação de dados (Omie)",
-      "Assistente com IA",
+      "Tax control",
+      "Bank reconciliation",
+      "Billing",
+      "E-signature",
+      "Data import",
+      "An assistant that acts for you",
     ],
-    // Open questions of the contact (no answers: they are the reason to talk)
     asks: [
-      "Quais áreas a sua empresa usaria?",
-      "Como trazer o que está no sistema atual?",
-      "O que dá para moldar sem programar?",
+      "Which areas would your company use?",
+      "How do we bring over what's in your current system?",
+      "What can you shape without code?",
     ],
-    // The three differences of the product, as the cards that open: its title and the sentence shown when it opens
     differs: [
       {
-        title: "Moldado à operação",
-        body: "O tipo de registro novo nasce com tela e permissão.",
+        title: "Shaped to your operations",
+        body: "A new record type is born with its own screen and permissions.",
       },
       {
-        title: "A regra brasileira junto",
-        body: "Nota fiscal, banco e cobrança vêm prontos.",
+        title: "Tax, finance and accounting",
+        body: "Invoices, reconciliation and billing come ready.",
       },
       {
-        title: "A base dos outros produtos",
-        body: "Conversas, fluxos e respostas usam os mesmos registros e acessos.",
+        title: "The base of the other products",
+        body: "Conversations, flows and answers use the same records and access.",
       },
     ],
   },
   relloo: {
-    line: "Conversas e atendimento",
+    line: "Every contact, every conversation",
     category: "CRM",
-    keywords: ["CRM", "gestão de relacionamento", "atendimento multicanal"],
-    short: "Conversas de todos os canais, com o histórico de cada contato.",
-    centerTitle: "As conversas no registro do Domus",
+    keywords: ["CRM", "relationship management", "omnichannel service"],
+    short:
+      "Every contact with all of their conversations, and a pipeline that moves on its own.",
+    centerTitle: "Conversations on the Domus record",
     details: [
-      "Ligações gravadas na conversa",
-      "Chat no site",
-      "Agentes de IA com fonte",
-      "Prazo de resposta",
-      "Respostas prontas",
-      "Agendas (Google Agenda)",
+      "Calls recorded in the conversation",
+      "Website chat",
+      "AI agents that cite sources",
+      "Response time",
+      "Saved replies",
+      "Opportunities by stage",
     ],
     asks: [
-      "Por quais canais as conversas chegam hoje?",
-      "Quanto um agente de IA resolveria sozinho?",
-      "Como a equipe divide as conversas?",
+      "Which channels do your conversations come through today?",
+      "How much could an AI agent solve on its own?",
+      "How does your team split the conversations?",
     ],
     differs: [
       {
-        title: "O contato no centro",
-        body: "Mensagem, ligação e e-mail viram um histórico só, que fica na empresa.",
+        title: "The contact at the center",
+        body: "Messages, calls and email become a single history that stays with your company.",
       },
       {
-        title: "IA com limite",
-        body: "O agente responde só o que pode e passa a vez com o resumo pronto.",
+        title: "AI with limits",
+        body: "The agent answers only what it may, then hands off with the summary ready.",
       },
       {
-        title: "Prazo que corre",
-        body: "Quem recebe a conversa tem um prazo para responder, e ele aparece na tela.",
+        title: "A pipeline that moves on its own",
+        body: "Each stage has its rule and deadline, and the opportunity moves until it becomes an order in Domus.",
       },
     ],
   },
   magneto: {
-    line: "Fluxos com aprovação",
-    category: "Automação de processos e workflow",
-    keywords: ["automação de processos", "workflow", "BPM", "aprovações"],
-    short: "Fluxos com aprovação, desenhados em blocos.",
-    centerTitle: "As aprovações no registro do Domus",
+    line: "Flows with approvals",
+    category: "Process automation and workflow",
+    keywords: ["process automation", "workflow", "BPM", "approvals"],
+    short: "Flows that wait for approval and pick up where they left off.",
+    centerTitle: "Approvals on the Domus record",
     details: [
-      "Espera e aprovação",
-      "Validação antes de publicar",
-      "Nova tentativa quando outro sistema falha",
-      "Registro de quem mudou",
-      "Editor dentro do Domus",
+      "Waits and approvals",
+      "Validation before publishing",
+      "Retry when another system fails",
+      "Log of who changed what",
+      "Editor inside Domus",
     ],
     asks: [
-      "Quais aprovações travam a sua operação?",
-      "O que roda hoje em planilha e lembrete?",
-      "Quem precisa decidir, e quando?",
+      "Which approvals hold up your operations?",
+      "What runs on spreadsheets and reminders today?",
+      "Who needs to decide, and when?",
     ],
     differs: [
       {
-        title: "Fechado por padrão",
-        body: "O fluxo só chama o que a empresa liberou, e nada vai ao ar sem validação.",
+        title: "Closed by default",
+        body: "A flow only calls what your company allowed, and nothing goes live without validation.",
       },
       {
-        title: "Nada em dobro",
-        body: "Quando outro sistema falha, o passo tenta de novo sem repetir o efeito.",
+        title: "Nothing done twice",
+        body: "When another system fails, the step tries again without repeating its effect.",
       },
       {
-        title: "Espera o tempo que for",
-        body: "Uma aprovação pode levar dias; o fluxo retoma de onde parou, com o registro de cada mudança.",
+        title: "Waits as long as it takes",
+        body: "An approval can take days; the flow picks up where it stopped, with a log of every change.",
       },
     ],
   },
   tuner: {
-    line: "Mensagens e ligações",
-    category: "Canais de atendimento",
-    keywords: ["WhatsApp", "central de atendimento", "omnichannel"],
+    line: "Any channel, one send",
+    category: "Communication channels",
+    keywords: [
+      "messaging channels",
+      "multichannel communication",
+      "omnichannel",
+    ],
     short:
-      "Canais de mensagem e de voz num ponto só (WhatsApp oficial, ligações, Discord).",
-    centerTitle: "As ligações no registro do Domus",
+      "A message goes out on any channel, and the reply comes back to the right place.",
+    centerTitle: "Sends on the Domus record",
     details: [
-      "Mensagens (WhatsApp oficial)",
-      "Menu de opções na ligação",
-      "Distribuição para a equipe",
-      "Gravação e transcrição",
-      "Ligações (WhatsApp)",
-      "Comunidades (Discord)",
+      "Messages, email and SMS",
+      "Call menu options",
+      "Routing to your team",
+      "Recording and transcription",
+      "Calls and video calls",
+      "Communities and team chat",
     ],
     asks: [
-      "Quantos números e linhas a empresa tem?",
-      "Para onde cada ligação deveria ir?",
-      "Quais conversas precisam ficar gravadas?",
+      "How many numbers and lines does your company have?",
+      "Where should each call go?",
+      "Which conversations need to be recorded?",
     ],
     differs: [
       {
-        title: "Um envio, todos os canais",
-        body: "Uma mensagem sai por todos os canais de uma vez, com a mesma regra de envio.",
+        title: "One send, every channel",
+        body: "A message goes out on every channel at once, with the same sending rules.",
       },
       {
-        title: "A resposta volta igual",
-        body: "Venha de onde vier, a resposta chega no mesmo formato e na conversa certa.",
+        title: "Replies come back the same",
+        body: "Wherever it comes from, the reply arrives in the same format and in the right conversation.",
       },
       {
-        title: "A voz também conta",
-        body: "Cada ligação passa pelo menu, fica gravada e vira texto para a equipe.",
+        title: "Voice counts too",
+        body: "Every call goes through the menu, gets recorded and turns into text for your team.",
       },
     ],
   },
   knowly: {
-    line: "Respostas com a fonte",
-    category: "Base de conhecimento com IA",
-    // No detail of the AI stack, not even in the metadata (plano.md 3.5)
-    keywords: ["base de conhecimento", "IA", "busca semântica"],
-    short: "Respostas com a fonte, dentro do acesso de cada perfil.",
-    centerTitle: "As respostas no registro do Domus",
+    line: "Knowledge that grows",
+    category: "Organizational memory and knowledge base",
+    keywords: ["knowledge base", "AI", "semantic search"],
+    short:
+      "Your company's memory grows with every source, and every fact shows where it came from.",
+    centerTitle: "Memory on the Domus record",
     details: [
-      "Fonte de cada frase",
-      "Acesso por perfil e grupo",
-      "Dado pessoal barrado",
-      "Documentos, tickets e atas",
-      "Cadastros do Domus",
+      "A source for every sentence",
+      "Access by profile and group",
+      "Access that never leaks",
+      "Documents, tickets and minutes",
+      "Domus records",
     ],
     asks: [
-      "Onde está o conhecimento da equipe hoje?",
-      "Quem pode ver o quê?",
-      "Quais perguntas se repetem?",
+      "Where does your team's knowledge live today?",
+      "Who can see what?",
+      "Which questions keep coming back?",
     ],
     differs: [
       {
-        title: "Cada frase com a fonte",
-        body: "A resposta mostra de onde veio cada parte, e diz o que falta quando não há prova.",
+        title: "Every sentence with its source",
+        body: "The answer shows where each part came from, and says what's missing when there's no proof.",
       },
       {
-        title: "Dentro do acesso",
-        body: "Cada perfil só recebe o que já podia ver, e o dado pessoal fica de fora.",
+        title: "Within access",
+        body: "Each profile sees only what it could already see, not even through a summary.",
       },
       {
-        title: "Memória que cresce",
-        body: "Documentos, atas e cadastros do Domus somam ao que a equipe já aprendeu.",
+        title: "Memory that grows",
+        body: "Every document, meeting note and Domus record links to what your company already learned.",
       },
     ],
   },

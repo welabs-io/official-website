@@ -1,68 +1,57 @@
 // TEXTO DA CENA: DOMUS (EN)
-// TRADUÇÃO PENDENTE: cópia do pt-BR, a ser substituída pelo texto do idioma; chaves e placeholders ficam como estão.
-// The words of the Domus carousel (components/scene-kit/scenes/domus-carousel.tsx), four frames. Text only: the ids
-// of the steps, the glyphs, the tones and the order stay in the component. The names of the areas and of the two floors
-// are not here, they are the home's (home.domus.*); the call to action is common.cta. Lists the component reads by
-// position (frames, frameNames, typeFields, list.cols, list.visits) keep their size in every language. Placeholders:
-// `{count}` is the number of areas not named in the frame, `{names}` the first three of them joined by ", " (the
-// component lowercases them and capitalises the sentence).
+// en-US, adapted from pt-BR with the glossary of the copy round. The words of the Domus carousel
+// (components/scene-kit/scenes/domus-carousel.tsx), four frames. Lists read by position (frames, frameNames,
+// typeFields, list.cols, list.visits, recordLines) keep the length of pt-BR. Placeholders: `{count}` is the number of
+// areas not named in the frame, `{names}` the first three of them (the component lowercases them and capitalises the
+// sentence).
 import type { SceneMessages } from "../../../types";
 
 export const domus: SceneMessages<"domus"> = {
-  // Accessible name of the whole scene
   label:
-    "Domus: a gestão inteira num lugar só, um tipo de registro novo que já nasce com tela, e o registro que liga os outros produtos",
-  // Chrome bar: the screen each frame shows in the breadcrumb and its accessible name, in the order of the frames.
-  // "Tipo de registro", not the frame's "Novo tipo de registro": the chrome of a phone cuts the longer one
+    "Domus: all of management in one place, a new record type that is born with its screen, and the record that ties in the other products",
   frames: [
-    { title: "Módulos", label: "As áreas da empresa" },
-    { title: "Tipo de registro", label: "O tipo novo vira tela" },
-    { title: "Vistorias", label: "O assistente cria o registro" },
-    { title: "Vistoria 318", label: "O registro liga os outros produtos" },
+    { title: "Modules", label: "The areas of the company" },
+    { title: "Record type", label: "The new type becomes a screen" },
+    { title: "Inspections", label: "The assistant proposes, you confirm" },
+    { title: "Inspection 318", label: "The record ties in the other products" },
   ],
-  // The name of each moment, on the stage tabs of the chrome
-  frameNames: ["Áreas", "Tipo novo", "Assistente", "Tudo ligado"],
+  frameNames: ["Areas", "New type", "Assistant", "All tied in"],
 
-  // Frame 1: the count, the sum of the areas not named and the tile that makes a new type
-  countText: "áreas da empresa, num lugar só",
-  rest: "+ {count} áreas",
-  restLine: "{names} e mais",
-  newType: "Novo tipo de registro",
+  countText: "areas of the company, in one place",
+  rest: "+ {count} areas",
+  restLine: "{names} and more",
+  newType: "New record type",
 
-  // Frame 2: the new type, its fields (each also a column of the new screen) and the screen it gets
-  type: "Vistoria",
-  typeFields: ["Endereço", "Data e hora", "Contato"],
-  screen: "Vistorias",
-  ready: "Pronta para usar",
+  type: "Inspection",
+  typeFields: ["Address", "Date and time", "Contact"],
+  screen: "Inspections",
+  ready: "Ready to use",
 
-  // Frame 3: the list of visits, the assistant and its proposal
   list: {
-    cols: ["Vistoria", "Data e hora", "Situação"],
-    // When of each visit, in the order of the list (the new record on top)
-    visits: ["amanhã, 09:00", "ontem, 14:00", "20/10, 10:30"],
+    cols: ["Inspection", "Date and time", "Status"],
+    visits: ["tomorrow, 9:00 AM", "yesterday, 2:00 PM", "Oct 20, 10:30 AM"],
   },
-  assistant: "Assistente",
-  context: "Oportunidade 562",
-  ask: "agende a vistoria do Contato 4821 para amanhã às 9h",
-  proposalHead: "Proposta",
-  record: "Vistoria 318",
-  recordLine: "amanhã, 09:00 · Contato 4821",
-  confirm: "Confirmar",
-  created: "Vistoria 318 criada",
-  undo: "Desfazer",
-  scheduled: "Agendada",
-  done: "Feita",
+  assistant: "Assistant",
+  context: "Opportunity 562",
+  ask: "schedule the inspection for Contact 4821 tomorrow at 9 AM",
+  proposalHead: "Proposal",
+  record: "Inspection 318",
+  recordLine: "tomorrow, 9:00 AM · Contact 4821",
+  confirm: "Confirm",
+  created: "Inspection 318 created",
+  undo: "Undo",
+  scheduled: "Scheduled",
+  done: "Done",
 
-  // Frame 4: the lines of the record, what each neighbour product does with it, and the question over the call to action
   recordLines: [
-    { label: "Contato", value: "Contato 4821" },
-    { label: "Data e hora", value: "amanhã, 09:00" },
+    { label: "Contact", value: "Contact 4821" },
+    { label: "Date and time", value: "tomorrow, 9:00 AM" },
   ],
   neighbours: {
-    magneto: "o fluxo segue sozinho",
-    tuner: "avisa quem vai",
-    relloo: "a oportunidade avança",
-    knowly: "guarda na memória",
+    magneto: "the flow carries on",
+    tuner: "notifies the technician",
+    relloo: "the opportunity moves",
+    knowly: "keeps it in memory",
   },
-  question: "Que módulo a sua operação precisa?",
+  question: "Which module do your operations need?",
 };

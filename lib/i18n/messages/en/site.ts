@@ -1,7 +1,7 @@
 // TEXTO DO SITE: METADADOS, COMUM, MENU E REGISTROS COMPARTILHADOS (EN)
-// TRADUÇÃO PENDENTE: for now this is a copy of pt-BR, to be replaced by the English text. The keys and the placeholders
-// ({name}, {category}, {line}) must stay as they are; `tsc` and lib/i18n/messages.test.ts fail on a missing key.
-// Text only; the structure around it lives in code.
+// en-US, adapted from pt-BR (not a literal translation), with the terms of the glossary of the copy round
+// (control/portfolio/site-redesign/i18n/glossario.md). The keys and the placeholders ({name}, {category}, {line}) stay as
+// they are; `tsc` and lib/i18n/messages.test.ts fail on a missing key. Text only; the structure around it lives in code.
 import type { SiteMessages } from "../../types";
 
 // `meta` feeds <title>, the description, Open Graph and the share image; `common` the words of the frame (header,
@@ -10,49 +10,40 @@ import type { SiteMessages } from "../../types";
 export const site: SiteMessages = {
   meta: {
     title: "Welabs",
-    description: "Produtos próprios de software.",
-    homeDescription: "Domus, Relloo, Magneto, Tuner e Knowly.",
+    description: "Integrated solutions for your whole company.",
+    homeDescription:
+      "Domus, Relloo, Magneto, Tuner and Knowly: integrated solutions in a single workspace.",
     // {name} is the product and stays as the brand writes it; the pattern "<Name> by Welabs" is the brand's seal line
     productTitle: "{name} by Welabs",
     // {category} is the category of the product (products.<slug>.category), {line} its line (products.<slug>.line)
-    productDescription: "{category} da Welabs. {line}.",
-    ogAlt: "Welabs — Empresa e produtos",
+    productDescription: "{category} by Welabs. {line}.",
+    ogAlt: "Welabs: Domus, Relloo, Magneto, Tuner and Knowly",
   },
   common: {
-    skipLink: "Ir para o conteúdo",
-    homeLabel: "Welabs, início",
-    // Says what happens after the click: the contact is the only way in, a button with no form
-    cta: "Agendar uma demonstração",
-    footerNavLabel: "Páginas dos produtos",
+    skipLink: "Skip to content",
+    homeLabel: "Welabs, home",
+    cta: "Book a demo",
+    footerNavLabel: "Product pages",
     copyright: "© 2026 Welabs",
-    // The name a screen reader hears on the "typing" dots that come before a phrase of a scene
-    typing: "digitando",
-    // The frame indicator of the carousels: the name of the group and the word read before each number ("Momento 2")
-    frameIndicator: { label: "Momentos", option: "Momento" },
+    typing: "typing",
+    frameIndicator: { label: "Moments", option: "Moment" },
   },
-  // Language selector of the header: the accessible name of its button and of its list (the language names themselves
-  // are endonyms and live in lib/i18n/config.ts)
   language: {
-    label: "Idioma",
+    label: "Language",
   },
-  // Navigation of the header: the products (a list under it), the Domus (the centre of the chain) and the menu on a
-  // phone; the name of the selector of the five products at the top of a product
   nav: {
-    label: "Principal",
-    products: "Produtos",
+    label: "Main",
+    products: "Products",
     domus: "Domus",
-    open: "Abrir o menu",
-    close: "Fechar o menu",
-    switch: "Os cinco produtos",
+    open: "Open menu",
+    close: "Close menu",
+    switch: "The five products",
   },
-  // The two records the stories are told on: whoever asks is a contact record (never a person by name), the order is
-  // the one that crosses the five products
   shared: {
-    who: "Contato 4821",
-    order: "Pedido 1234",
+    who: "Contact 4821",
+    order: "Order 1234",
   },
-  // Closing band of the home: the platform marks under a short title
   closing: {
-    platforms: "Onde rodamos",
+    platforms: "Where we run",
   },
 };
