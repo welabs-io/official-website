@@ -257,8 +257,9 @@ test.describe("(e) the house of the Domus", () => {
     ])
       expect(floors[0]).toContain(m);
     for (const m of [
-      "FiscalNFS-e",
-      "BancosPIX",
+      // The tags of the two modules are the small details of the dictionary (home.domus.tags), no Brazil-only name
+      "FiscalEm dia",
+      "Bancos24h",
       "Jurídico",
       "Chamados",
       "Demandas",
