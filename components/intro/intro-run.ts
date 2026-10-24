@@ -1,5 +1,5 @@
 // ABERTURA DE MARCA NA ENTRADA DO PRODUTO
-// The player of the five accepted brand openings (the logo forming, each product with its own concept, ~5 s), ported to
+// The player of the five accepted brand openings (the logo forming, each product with its own concept, ~3.9 s from the click to a settled page), ported to
 // native SVG and DOM in this folder. It is part of the descent chunk (components/onepage/descent-run.ts, fetched after
 // hydration), and each opening is a chunk of its own, fetched when a link to its product is pointed at or clicked, so
 // none of it weighs on the initial JS.
@@ -18,8 +18,8 @@
 //     large zoom), removes the sheet and lets the page come in by its `[data-descent-slot]`, --dur-enter rising
 //     --rise-enter on --ease-enter.
 // A click, a key or the wheel during the opening skips to its closing frame; the end still plays.
-// v2.2 (audit A08): the whole opening plays on the first entry into each product of a visit; later entries, and every
-// swap by the product selector, play the brand flash (FLASH), which starts on the closing frame.
+// v4: the whole opening plays on every entry into a product, from any link, the product selector included (no short
+// flash variant is left: it read as no opening at all).
 import styles from "./intro.module.css";
 
 type Slug = "domus" | "relloo" | "magneto" | "tuner" | "knowly";
@@ -113,9 +113,6 @@ export const SPEED = 1.6;
 const HOLD = 0.25;
 const OPEN_MS = 450;
 const LAND_MS = 260;
-// v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector: it
-// starts on the closing frame, the sheet opens faster and the end is shorter (about 700 ms from the click to the page)
-export const FLASH = { open: 120, hold: 0, land: 260 } as const;
 // The page comes in under the canvas as the sheet goes (--dur-enter on --ease-enter, rising --rise-enter), read from the
 // tokens of app/lib.css
 const pageIn = () => {
@@ -154,12 +151,7 @@ export type Playing = {
 // O PALCO DA ABERTURA
 // The canvas sheet; in it, the stage at its fitted size, and in the stage the choreography: its scene (with the camera
 // layer `.zoom` of each opening), the wrapper of the light endorsed logo and the amber bar under it
-export async function open(
-  slug: Slug,
-  from: Box,
-  // v2.2: the short brand flash instead of the whole opening
-  flash = false,
-): Promise<Playing> {
+export async function open(slug: Slug, from: Box): Promise<Playing> {
   const { mod, logo } = await prepare(slug);
   const box = BOXES[slug];
   const sheet = document.createElement("div");
@@ -203,9 +195,8 @@ export async function open(
   stage.style.zoom = String(scale);
 
   const inst = mod.mount(stage, { logo, box: box.dark, safe: 98 });
-  const end = mod.SETTLED + (flash ? FLASH.hold : HOLD);
-  // The flash starts on the closing frame
-  let clock = flash ? mod.SETTLED : 0;
+  const end = mod.SETTLED + HOLD;
+  let clock = 0;
   let last = performance.now();
   let skip = false;
   let done = false;
@@ -255,18 +246,10 @@ export async function open(
     sheet.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round ${mix(16, 0, k)}px)`;
     sheet.style.opacity = String(Math.min(1, t * 4));
   };
-  // The flash covers the whole window at once, fading in, so the page can change under it sooner
-  const cover = (t: number) => (sheet.style.opacity = String(out(t)));
-  if (flash) {
+  clip(0);
+  void tween(OPEN_MS, clip).then(() => {
     sheet.style.clipPath = "none";
-    cover(0);
-    void tween(FLASH.open, cover);
-  } else {
-    clip(0);
-    void tween(OPEN_MS, clip).then(() => {
-      sheet.style.clipPath = "none";
-    });
-  }
+  });
 
   return {
     settled,
@@ -274,17 +257,7 @@ export async function open(
       if (!done) await settled;
       listen(false);
       cancelAnimationFrame(raf);
-      // The flash uncovers the page: the closing frame and the sheet fade together (its rise would double the ~700 ms
-      // budget of a swap)
-      if (flash) {
-        await tween(FLASH.land, (t) => {
-          stage.style.opacity = String(1 - out(t));
-          sheet.style.opacity = String(1 - t);
-        });
-        sheet.remove();
-        return;
-      }
-      // The whole opening: the closing frame fades on the canvas, then the page comes in under the same canvas; the
+      // The closing frame fades on the canvas, then the page comes in under the same canvas; the
       // sheet (hidden, so the page shows) stays in the document until the page has settled, which is what "the opening
       // has left" means to the rest of the site
       await tween(LAND_MS, (t) => (stage.style.opacity = String(1 - out(t))));

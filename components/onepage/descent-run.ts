@@ -95,11 +95,9 @@ function veil() {
 // Wheel and touch scrolling are held while a move runs, so the visitor does not fight the scroll of the move; the page
 // is marked as moving (`data-moving` on <html>), which closes the menu of the header (shell.module.css)
 const hold = (e: Event) => e.preventDefault();
-// v2.2: `wheel` false marks the move without holding the scroll (the brand flash is short enough to leave it free)
-function lockInput(on: boolean, wheel = true) {
+function lockInput(on: boolean) {
   if (on) document.documentElement.dataset.moving = "";
   else delete document.documentElement.dataset.moving;
-  if (on && !wheel) return;
   const fn = on ? window.addEventListener : window.removeEventListener;
   fn("wheel", hold, { passive: false } as AddEventListenerOptions);
   fn("touchmove", hold, { passive: false } as AddEventListenerOptions);
@@ -128,7 +126,7 @@ export function install(router: Router, pathname: string) {
 
   // ENTRAR NUM PRODUTO: A ABERTURA DA MARCA
   // v4 (operator, 2026-10-24: "depois não abre mais a intro no clique dos produtos"): the whole opening on every entry
-  // into a product, from any link, the product selector included (the brand flash of later entries read as no opening)
+  // into a product, from any link, the product selector included (the short flash of later entries read as no opening)
   async function enter(origin: Element, href: string, slug: string) {
     memory.busy = true;
     if (!slugOf(location.pathname)) memory.homeY = scrollY;
@@ -139,7 +137,7 @@ export function install(router: Router, pathname: string) {
       memory.busy = false;
       return;
     }
-    lockInput(true, true);
+    lockInput(true);
     let playing: Awaited<ReturnType<typeof open>> | null = null;
     try {
       playing = await open(slug, box(origin));
