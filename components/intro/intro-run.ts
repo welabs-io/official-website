@@ -106,9 +106,11 @@ function tween(ms: number, frame: (t: number) => void) {
 
 // TEMPOS DA ABERTURA
 // Seconds the closing frame holds before the end plays, and milliseconds of the opening of the sheet and of the fade of
-// the closing frame: the logo is formed at ~4.05 s, and with the page coming in (--dur-enter) an entry takes ~5.3 s
-// from the click to a settled page, the page readable from ~4.7 s
-const HOLD = 0.15;
+// the closing frame. v4 (operator, 2026-10-24: "a cena precisa ser mais rápida"): the choreography plays at SPEED, so
+// the logo formed at ~4.05 s of the round is formed at ~2.5 s, and an entry takes ~3.6 s from the click to a settled
+// page. HOLD is in seconds of the round, like the clock.
+export const SPEED = 1.6;
+const HOLD = 0.25;
 const OPEN_MS = 450;
 const LAND_MS = 260;
 // v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector: it
@@ -128,11 +130,12 @@ const pageIn = () => {
 
 // ENCAIXE DO PALCO NA JANELA
 // The 1920x1080 stage the round was drawn at, under the header, sized by its closing logo (the light box of the endorsed
-// file): about a third of the window's width from a tablet up, 72 % of it on a phone, so the logo stays legible there.
+// file): 440 px of a 1440 window from a tablet up, as the static plan of the opening (canvas v4, BrandIntro), and 72 %
+// of a phone's width, so the logo stays legible there.
 // v4 (operator, 2026-10-24: "só o tamanho que precisava adequar"): the stage used to fill the window's width, which put
 // the closing logo at about half of it, read as too much zoom; the choreography itself is the round's, untouched.
 // Never larger than its size, nor taller than the room under the header.
-export const LOGO_SHARE = { phone: 0.72, wide: 0.34 } as const;
+export const LOGO_SHARE = { phone: 0.72, wide: 440 / 1440 } as const;
 export function stageScale(slug: Slug, w: number, h: number, header: number) {
   const share = w < 768 ? LOGO_SHARE.phone : LOGO_SHARE.wide;
   const byLogo = (w * share) / BOXES[slug].light[2];
@@ -226,7 +229,7 @@ export async function open(
   listen(true);
 
   const tick = (now: number) => {
-    clock += (now - last) / 1000;
+    clock += ((now - last) / 1000) * SPEED;
     last = now;
     if (skip) clock = Math.max(clock, mod.SETTLED);
     inst.render(Math.min(clock, mod.SETTLED));

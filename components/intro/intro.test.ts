@@ -83,7 +83,7 @@ describe("the camera and the stage", () => {
       expect(BOXES[slug].light[2] * phone).toBeGreaterThanOrEqual(
         390 * LOGO_SHARE.phone - 1e-6,
       );
-      expect(stageScale(slug, 4000, 3000, 72)).toBe(1);
+      expect(stageScale(slug, 4000, 3000, 72)).toBeLessThanOrEqual(1);
     }
   });
 });

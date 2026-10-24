@@ -12,7 +12,7 @@
 // The URL is always the real route (`/products/<slug>`), so a product is shareable and opens directly. Only transform,
 // opacity, clip-path and scroll move; under reduced motion every move is an instant jump.
 import type { useRouter } from "next/navigation";
-import { FLASH, isSlug, open, prepare } from "@/components/intro/intro-run";
+import { isSlug, open, prepare } from "@/components/intro/intro-run";
 import styles from "./descent.module.css";
 
 type Router = ReturnType<typeof useRouter>;
@@ -31,28 +31,6 @@ const memory = {
   homeY: null as number | null,
   busy: false,
   path: "",
-};
-
-// The products whose whole opening already played in this visit (sessionStorage, so a reload of the tab keeps it; a
-// browser that refuses the storage simply plays the whole opening again)
-const SEEN_KEY = "welabs-openings";
-const seenSet = (): string[] => {
-  try {
-    return JSON.parse(sessionStorage.getItem(SEEN_KEY) ?? "[]") as string[];
-  } catch {
-    return [];
-  }
-};
-const seen = (slug: string) => seenSet().includes(slug);
-const remember = (slug: string) => {
-  try {
-    sessionStorage.setItem(
-      SEEN_KEY,
-      JSON.stringify([...new Set([...seenSet(), slug])]),
-    );
-  } catch {
-    // No storage: nothing to remember
-  }
 };
 
 // Resolves the moves waiting for the next route to be in the DOM
@@ -149,14 +127,9 @@ export function install(router: Router, pathname: string) {
   const prefetched = new Set<string>();
 
   // ENTRAR NUM PRODUTO: A ABERTURA DA MARCA
-  // v2.2 (audit A08): the whole opening only on the first entry into each product of the visit; a later entry, and any
-  // swap by the product selector, plays the brand flash (about 700 ms) and does not hold the wheel
-  async function enter(
-    origin: Element,
-    href: string,
-    slug: string,
-    viaSwitch: boolean,
-  ) {
+  // v4 (operator, 2026-10-24: "depois não abre mais a intro no clique dos produtos"): the whole opening on every entry
+  // into a product, from any link, the product selector included (the brand flash of later entries read as no opening)
+  async function enter(origin: Element, href: string, slug: string) {
     memory.busy = true;
     if (!slugOf(location.pathname)) memory.homeY = scrollY;
     if (reduced.matches || !isSlug(slug)) {
@@ -166,14 +139,12 @@ export function install(router: Router, pathname: string) {
       memory.busy = false;
       return;
     }
-    const flash = viaSwitch || seen(slug);
-    remember(slug);
-    lockInput(true, !flash);
+    lockInput(true, true);
     let playing: Awaited<ReturnType<typeof open>> | null = null;
     try {
-      playing = await open(slug, box(origin), flash);
+      playing = await open(slug, box(origin));
       // The page changes only under the full sheet (the opening of its clip)
-      await new Promise((r) => setTimeout(r, flash ? FLASH.open + 20 : 470));
+      await new Promise((r) => setTimeout(r, 470));
       router.push(href, { scroll: false });
       await committed();
       jump(0);
@@ -241,13 +212,7 @@ export function install(router: Router, pathname: string) {
     const href = url.pathname + url.search;
     const slug = slugOf(url.pathname);
     // The menu closes on its own (SiteNav); the opening grows from the entry that was clicked
-    if (slug)
-      void enter(
-        a.closest("[data-card]") ?? a,
-        href,
-        slug,
-        a.closest("[data-switch]") !== null,
-      );
+    if (slug) void enter(a.closest("[data-card]") ?? a, href, slug);
     else void home(href);
     return true;
   }
