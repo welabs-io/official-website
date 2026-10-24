@@ -2,7 +2,7 @@
 
 Site da Welabs, empresa que desenvolve produtos próprios de software: Domus, Relloo, Magneto, Tuner e Knowly. Uma página única: a home (cerca de 4,6 telas a 1440 px) e uma página por produto (cerca de 3,6 a 4,4 telas), que abre embaixo da home e desce para o próximo produto.
 
-Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em português, sem banco de dados. A identidade é a da Welabs (âmbar, grafite, Inter) com os tokens atuais do front do ERP (v2.1: página branca com halo quente, botão de ação grafite, foco de 2 + 2 px; de-para em `control/portfolio/site-redesign/v13-proposta/v2-1/tokens-erp.md`), num tema único claro, e o rodapé em grafite. O site é 100% nativo: nenhum vídeo, `<iframe>` ou player; as aberturas de marca dos produtos são SVG nativo (`components/intro`).
+Aplicação Next.js 16 (App Router), React 19, TypeScript e CSS Modules, em português, inglês e espanhol (ver Idiomas), sem banco de dados. A identidade é a da Welabs (âmbar, grafite, Inter) com os tokens atuais do front do ERP (v2.1: página branca com halo quente, botão de ação grafite, foco de 2 + 2 px; de-para em `control/portfolio/site-redesign/v13-proposta/v2-1/tokens-erp.md`), num tema único claro, e o rodapé em grafite. O site é 100% nativo: nenhum vídeo, `<iframe>` ou player; as aberturas de marca dos produtos são SVG nativo (`components/intro`).
 
 ## Conteúdo v2 (20/10/2026)
 
@@ -33,7 +33,13 @@ Tudo é CSS sobre controles nativos (`:has(:checked)`): cada interação é uma 
 
 ## Conteúdo
 
-Todo texto visível mora em `lib/content/*.ts`: `home.ts` (a home), `products.ts` (a página de cada produto: frase, palco, detalhes e perguntas); o texto desenhado de cada cena do kit fica na própria cena (`components/scene-kit/scenes/*.tsx`). `lib/content/copy-rules.json` guarda as palavras proibidas que o vitest e `scripts/check-portfolio.mjs` aplicam ao dado e ao HTML renderizado.
+Todo texto visível mora nos dicionários por idioma em `lib/i18n/messages/<idioma>/`: `site.ts` (metadados, palavras do cabeçalho e do rodapé), `products.ts` (a página de cada produto: frase, detalhes, perguntas), `home.ts` (a home e os quadros dos produtos) e `scenes/<produto>.ts` (o texto desenhado dentro de cada carrossel). `lib/content/*.ts` guarda só a estrutura que não muda com o idioma (ordem das estações, glifos dos módulos, qual detalhe fica sob qual diferença) e monta os formatos que os componentes leem. `lib/content/copy-rules.json` guarda as palavras proibidas que o vitest e `scripts/check-portfolio.mjs` aplicam ao pt-BR, e `lib/content/forbidden.ts` a lista única de palavras e promessas proibidas, checada nos três dicionários.
+
+## Idiomas
+
+Três idiomas: pt-BR (padrão, sem prefixo: `/`, `/products/<slug>`), en (`/en/...`) e es (`/es/...`). As rotas ficam sempre em inglês; `/lab/*` fica fora do i18n e em pt-BR. O segmento `app/[locale]` serve os três (o pt-BR por rewrites de `/` e `/products/:slug` no `next.config.mjs`; `/pt-BR/...` redireciona para o endereço sem prefixo). `<html lang>`, `hreflang` e canonical saem dos metadados de cada página; não há detecção por `Accept-Language`, só o seletor do cabeçalho (`components/onepage/LocaleMenu.tsx`), que mantém a página, a busca e o hash.
+
+Os dicionários são só texto e tipados: o pt-BR define a forma (`lib/i18n/types.ts`) e en e es precisam das mesmas chaves, senão o `tsc` reprova; `lib/i18n/messages.test.ts` confere caminhos, placeholders e o texto que sobrou no código. Componentes de servidor recebem `i18n` (`{ locale, m }`, `lib/i18n/i18n.ts`) por prop e os de cliente leem `useI18n()` (`lib/i18n/provider.tsx`); todo endereço passa por `href(i18n, path)` ou `useHref()`. Estruturas que casam por nome (módulos do Domus, estações) casam por id, nunca pelo texto visível. Um idioma novo entra em `lib/i18n/config.ts` e ganha uma pasta de dicionário.
 
 Orçamento de palavras visíveis (cenas não contam): de 200 a 300 na home e de 110 a 230 por produto (eram 700 a 1000 e 400 a 700 antes da v2). Vale em `components/template/site.test.tsx` e em `scripts/check-portfolio.mjs`.
 
@@ -44,7 +50,10 @@ Os tokens ficam em `.page` (`components/onepage/shell.module.css`) e as folhas d
 ## Estrutura de pastas
 
 ```
-app/                    rotas (home e /products/[slug]), layout raiz, estilos globais e imagem de compartilhamento
+app/[locale]/           rotas por idioma (home e /products/[slug]), layout raiz, imagem de compartilhamento
+app/lab/                bancada das cenas e da fundação, fora do i18n (layout raiz próprio, sempre pt-BR)
+app/                    documento HTML compartilhado (document.tsx) e estilos globais
+lib/i18n/               idiomas, endereços, dicionários por idioma (messages/), tipos, provedor e testes
 components/onepage/     cabeçalho e rodapé, bloco de produto, transição entre páginas, observador de movimento e estilos
 components/template/    template das páginas (seções declarativas), seções da home e do produto, palco
 components/scene-kit/   kit de cenas: moldura, relógio, encaixe no site (SceneSlot), lab e as cenas v3

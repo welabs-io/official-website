@@ -10,10 +10,11 @@
 import { ArrowDown, CalendarDays } from "lucide-react";
 import { useState, type CSSProperties } from "react";
 import { ActionButton } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
+import { CONTACT_PATH } from "@/components/onepage/contact";
 import { TypeIn } from "@/components/scene-kit/TypeIn";
-import { HOME_HERO, HOME_INTRO } from "@/lib/content";
-import { CTA_LABEL, productAlt, productLogo } from "@/lib/products";
+import { introWords } from "@/lib/content";
+import { useHref, useI18n } from "@/lib/i18n/provider";
+import { productAlt, productLogo } from "@/lib/products";
 import { ProductFrame } from "./frames";
 import h from "./hero.module.css";
 
@@ -47,39 +48,42 @@ const BLADES = Array.from({ length: COLS * ROWS }, (_, i) => {
 });
 
 export function HeroBlades() {
+  const { m } = useI18n();
+  const href = useHref();
+  const { intro, hero } = m.home;
   const [index, setIndex] = useState(0);
-  const words = HOME_INTRO.words;
+  const words = introWords(m);
   const { text, product } = words[index];
-  const seal = HOME_HERO.seals[product];
+  const seal = hero.seals[product];
   const next = () => setIndex((i) => (i + 1) % words.length);
 
   return (
     <div className={h.hero}>
       <div className={h.text}>
         <h1 className={h.title}>
-          <span className={h.line}>{HOME_INTRO.before}</span>
+          <span className={h.line}>{intro.before}</span>
           <span className={h.line} data-turn="">
             <TypeIn key={index} text={text} />
           </span>
-          <span className={`${h.line} ${h.quiet}`}>{HOME_INTRO.after}.</span>
+          <span className={`${h.line} ${h.quiet}`}>{intro.after}</span>
         </h1>
-        <p className={h.lead}>{HOME_INTRO.lead}</p>
+        <p className={h.lead}>{intro.lead}</p>
         <div className={h.actions}>
           <ActionButton
-            href={CONTACT_HREF}
+            href={href(CONTACT_PATH)}
             emphasis="primary"
             size="md"
             icon={<CalendarDays />}
           >
-            {CTA_LABEL}
+            {m.common.cta}
           </ActionButton>
           <ActionButton
-            href="/#products"
+            href={href("/#products")}
             emphasis="outline"
             size="md"
             icon={<ArrowDown />}
           >
-            {HOME_HERO.see}
+            {hero.see}
           </ActionButton>
         </div>
       </div>
@@ -91,7 +95,7 @@ export function HeroBlades() {
         style={{ "--cycle": `${HERO_CYCLE_MS}ms` } as CSSProperties}
       >
         <p className={h.caption}>
-          <span>{HOME_HERO.caption}</span>
+          <span>{hero.caption}</span>
           <span className={h.count}>
             {index + 1} / {words.length}
           </span>
@@ -149,7 +153,7 @@ export function HeroBlades() {
           />
         </div>
         <span data-mini-end="" hidden />
-        <ul className={h.marks} aria-label={HOME_INTRO.stage}>
+        <ul className={h.marks} aria-label={intro.stage}>
           {words.map((w, i) => (
             <li
               key={w.product}

@@ -31,17 +31,24 @@ describe("route segments are in English", () => {
     /\/(page|route)\.tsx?$/.test(f),
   );
   // The workbench of the video montage (lab/chain) left with the videos: the native chain is measured on the home itself
-  // A route group "(site)" is a folder of the layout, not a segment of the address
+  // A route group "(site)" is a folder of the layout, not a segment of the address; "[locale]" is the language prefix
+  // (/en, /es; none for pt-BR, which the rewrites of next.config.mjs serve), not a segment of the page
   const urlSegments = (file: string) =>
     path
       .relative(path.join(root, "app"), path.dirname(file))
       .split(path.sep)
-      .filter((s) => s && !/^\(.*\)$/.test(s));
+      .filter((s) => s && s !== "[locale]" && !/^\(.*\)$/.test(s));
   it("has the home and the product page", () => {
     const routes = pageFiles.map((f) => urlSegments(f).join("/"));
     // lab/scenes/[id]: the noindex workbench of the scene kit (components/scene-kit), one scene alone; lab/scenes lists them;
     // lab/foundation (v4): the noindex workbench of the v4 primitives (connector, typing, reveal, growing row)
-    expect(routes.sort()).toEqual(["", "lab/foundation", "lab/scenes", "lab/scenes/[id]", "products/[slug]"]);
+    expect(routes.sort()).toEqual([
+      "",
+      "lab/foundation",
+      "lab/scenes",
+      "lab/scenes/[id]",
+      "products/[slug]",
+    ]);
   });
   it.each(pageFiles)("%s has no Portuguese segment", (file) => {
     const segments = urlSegments(file);
@@ -53,6 +60,35 @@ describe("route segments are in English", () => {
       for (const s of pathname.split("/").filter(Boolean))
         expect(s, r.source).not.toMatch(PT);
       if (hash) expect(hash, r.source).not.toMatch(PT);
+    }
+  });
+});
+
+describe("languages", () => {
+  const bySource = new Map(redirects.map((r) => [r.source, r]));
+  it("serves pt-BR with no prefix through the locale segment, and sends /pt-BR back to the plain address", async () => {
+    const rewrites = (await config.rewrites!()) as {
+      beforeFiles: { source: string; destination: string }[];
+    };
+    expect(rewrites.beforeFiles).toEqual([
+      { source: "/", destination: "/pt-BR" },
+      { source: "/products/:slug", destination: "/pt-BR/products/:slug" },
+    ]);
+    expect(bySource.get("/pt-BR")?.destination).toBe("/");
+    expect(bySource.get("/pt-BR/products/:slug")?.destination).toBe(
+      "/products/:slug",
+    );
+  });
+  it("keeps the retired slugs and the products anchor inside each prefixed language", () => {
+    for (const locale of ["en", "es"]) {
+      expect(bySource.get(`/${locale}/products`)?.destination).toBe(
+        `/${locale}#products`,
+      );
+      expect(bySource.get(`/${locale}/products/rello`)?.destination).toBe(
+        `/${locale}/products/relloo`,
+      );
+      // The current slugs are real pages, never redirects
+      expect(bySource.has(`/${locale}/products/domus`)).toBe(false);
     }
   });
 });

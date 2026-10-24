@@ -50,6 +50,8 @@ Home: 200 a 300 palavras visíveis. Produto: 110 a 230. O texto desenhado dentro
 
 Rotas e identificadores ficam sempre em inglês (`/products/domus`), e o texto, em português.
 
+**Onde o texto mora (i18n)**: desde a branch `feat/i18n`, todo texto visível está nos dicionários `lib/i18n/messages/<idioma>/` (pt-BR é a fonte; en e es seguem a mesma forma). `lib/content/*.ts` guarda só estrutura. Os `arquivo:linha` citados acima (ex.: `lib/content/products.ts:109`) apontam para o texto de antes da mudança: procure a string em `lib/i18n/messages/pt-BR/`. As regras deste arquivo valem para o pt-BR; a lista de palavras e promessas proibidas dos três idiomas é `lib/content/forbidden.ts`.
+
 ## Ver também
 
 - `welabs-site-scenes`: o que uma cena pode mostrar (aperitivo: efeito, nunca mecanismo; pergunta final e "Agendar uma demonstração"), o fio de registros (Contato 4821, Pedido 1234...) e o modelo da ficha de conceito, cujo "texto em tela" tem de passar por estas regras.

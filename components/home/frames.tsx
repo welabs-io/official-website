@@ -49,13 +49,8 @@ import {
   TypeIn,
   TypingIndicator,
 } from "@/components/scene-kit/TypeIn";
-import {
-  DOMUS_FRAME,
-  KNOWLY_FRAME,
-  MAGNETO_FRAME,
-  RELLOO_FRAME,
-  TUNER_FRAME,
-} from "@/lib/content";
+import { COMPACT_MODULES, domusFrameModules } from "@/lib/content";
+import { useMessages } from "@/lib/i18n/provider";
 import { productAlt, productLogo, type ProductSlug } from "@/lib/products";
 import f from "./frames.module.css";
 
@@ -74,15 +69,7 @@ const MODULE_ICON: Record<string, ReactElement> = {
   clipboard: <ClipboardCheck />,
 };
 
-// The modules a narrow frame keeps (the accordion panel): two columns of three
-const COMPACT = new Set([
-  "Financeiro",
-  "Contratos",
-  "Fiscal",
-  "Pessoas",
-  "Chamados",
-  "Vistoria",
-]);
+// The modules a narrow frame keeps (the accordion panel) are COMPACT_MODULES, by id (lib/content/home-v4.ts)
 const USERS = ["relloo", "magneto", "tuner", "knowly"] as const;
 
 // ROTEIRO DE CADA QUADRO
@@ -166,7 +153,10 @@ function Bar({
 // The new module is born, then the link to each of the other four turns live in turn and stays drawn in ink, its card
 // lit; the chain closes with the four lit
 function DomusFrame({ scene }: { scene: SceneApi }) {
-  const d = DOMUS_FRAME;
+  const msg = useMessages();
+  const d = msg.home.frames.domus;
+  // The legend names the two floors of the house (home.domus)
+  const floors = msg.home.domus;
   const closed = scene.is("done");
   const at = USERS.findIndex((slug) => scene.is(slug));
   // The hand-off on screen: the index of the user being lit (all four once closed, none while the module is born)
@@ -179,23 +169,23 @@ function DomusFrame({ scene }: { scene: SceneApi }) {
         end={
           <span className={f.legend}>
             <span className={f.legendItem} data-kind="standard">
-              {d.standard}
+              {floors.standard}
             </span>
             <span className={f.legendItem} data-kind="custom">
-              {d.custom}
+              {floors.custom}
             </span>
           </span>
         }
       />
       <div className={f.body}>
         <ul className={f.modules} data-modules="">
-          {d.modules.map((m) => (
+          {domusFrameModules(msg).map((m) => (
             <li
               // The newest module enters again on every loop
-              key={m.kind === "new" ? `${m.name}-${scene.cycle}` : m.name}
+              key={m.kind === "new" ? `${m.id}-${scene.cycle}` : m.id}
               className={f.module}
               data-kind={m.kind}
-              data-wide-only={COMPACT.has(m.name) ? undefined : ""}
+              data-wide-only={COMPACT_MODULES.has(m.id) ? undefined : ""}
             >
               <span className={f.moduleIcon} aria-hidden="true">
                 {MODULE_ICON[m.icon]}
@@ -243,7 +233,7 @@ function DomusFrame({ scene }: { scene: SceneApi }) {
 }
 
 // RELLOO: A CONVERSA E A RESPOSTA QUE SE DIGITA
-// The answer types in, then the deal walks its stages, one live link per step, and closes green on "Ganha"
+// The answer types in, then the deal walks its stages, one live link per step, and closes green on the last stage
 const RELLOO_STAGE: Record<string, number> = {
   talk: 0,
   qualify: 1,
@@ -253,14 +243,15 @@ const RELLOO_STAGE: Record<string, number> = {
 };
 
 function RellooFrame({ scene }: { scene: SceneApi }) {
-  const r = RELLOO_FRAME;
+  const msg = useMessages();
+  const r = msg.home.frames.relloo;
   const closed = scene.is("done");
   const at = RELLOO_STAGE[scene.id] ?? 0;
   return (
     <>
       <Bar
         title={r.title}
-        sub={r.who}
+        sub={msg.shared.who}
         end={
           <Badge variant="success" appearance="soft">
             {r.linked}
@@ -331,7 +322,7 @@ const MAGNETO_STEP: Record<string, number> = {
 };
 
 function MagnetoFrame({ scene }: { scene: SceneApi }) {
-  const m = MAGNETO_FRAME;
+  const m = useMessages().home.frames.magneto;
   const live = MAGNETO_STEP[scene.id] ?? 1;
   const closed = live >= m.steps.length;
   return (
@@ -399,7 +390,7 @@ const TUNER_STEP: Record<string, number> = {
 };
 
 function TunerFrame({ scene }: { scene: SceneApi }) {
-  const t = TUNER_FRAME;
+  const t = useMessages().home.frames.tuner;
   const at = TUNER_STEP[scene.id] ?? 0;
   const closed = at >= t.channels.length;
   const landed = Math.min(at, t.channels.length - 1);
@@ -451,10 +442,11 @@ function TunerFrame({ scene }: { scene: SceneApi }) {
 // KNOWLY: O GRAFO DE MEMÓRIA QUE CRESCE
 // The world of the Knowly carousel (its graph, labels and camera), walked on the frame's shorter steps
 function KnowlyFrame({ scene }: { scene: SceneApi }) {
+  const k = useMessages().home.frames.knowly;
   const hold = STEPS.knowly.find((s) => s.id === scene.id)?.hold;
   return (
     <>
-      <Bar title={KNOWLY_FRAME.title} />
+      <Bar title={k.title} />
       <div className={f.graph} data-graph="">
         <KnowlyGraphWorld
           scene={scene}

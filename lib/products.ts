@@ -1,55 +1,16 @@
 // PRODUTOS DA WELABS
-// Single list for the home and the product pages, in the operator's weight order. The line under each logo is factual
-// and short (at most six words): no slogan, no brand-concept phrase. `category` and `keywords` live in the page
-// metadata only (operator decision of 2026-10-08): nothing here but `name` and `line` may be rendered.
+// Single list for the home and the product pages, in the operator's weight order. The name is the brand and is never
+// translated. The line under each logo (factual and short: no slogan, no brand-concept phrase), the category and the
+// keywords are text and live in the dictionaries (lib/i18n/messages/<locale>/products.ts); `category` and `keywords`
+// are page metadata only (operator decision of 2026-10-08), never rendered.
 import { endorsePolicy, type LogoPlace } from "./brand-config";
 
 export const PRODUCTS = [
-  {
-    slug: "domus",
-    name: "Domus",
-    line: "Gestão da empresa inteira",
-    category: "ERP",
-    keywords: [
-      "ERP",
-      "sistema de gestão empresarial",
-      "vendas",
-      "estoque",
-      "financeiro",
-      "fiscal",
-    ],
-  },
-  {
-    slug: "relloo",
-    name: "Relloo",
-    line: "Conversas e atendimento",
-    category: "CRM",
-    keywords: ["CRM", "gestão de relacionamento", "atendimento multicanal"],
-  },
-  {
-    slug: "magneto",
-    name: "Magneto",
-    line: "Fluxos com aprovação",
-    category: "Automação de processos e workflow",
-    keywords: ["automação de processos", "workflow", "BPM", "aprovações"],
-  },
-  {
-    slug: "tuner",
-    name: "Tuner",
-    // v2.2 (audit, section 5): the category, not the brand ahead of it (the audit's "Canais de mensagem e voz" is five
-    // words; a product line has at most four, site.test.tsx)
-    line: "Mensagens e ligações",
-    category: "Canais de atendimento",
-    keywords: ["WhatsApp", "central de atendimento", "omnichannel"],
-  },
-  {
-    slug: "knowly",
-    name: "Knowly",
-    line: "Respostas com a fonte",
-    category: "Base de conhecimento com IA",
-    // v3 (F2 review, P-04): no detail of the AI stack, not even in the metadata (plano.md 3.5); "RAG" left
-    keywords: ["base de conhecimento", "IA", "busca semântica"],
-  },
+  { slug: "domus", name: "Domus" },
+  { slug: "relloo", name: "Relloo" },
+  { slug: "magneto", name: "Magneto" },
+  { slug: "tuner", name: "Tuner" },
+  { slug: "knowly", name: "Knowly" },
 ] as const;
 
 export type ProductSlug = (typeof PRODUCTS)[number]["slug"];
@@ -99,6 +60,3 @@ export const WELABS_LOGO = {
   dark: "/brands/welabs/welabs-logo-dark.svg",
   light: "/brands/welabs/welabs-logo-light-block.svg",
 };
-
-// Says what happens after the click (v2): the contact is the only way in, a button with no form
-export const CTA_LABEL = "Agendar uma demonstração";

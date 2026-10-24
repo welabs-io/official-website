@@ -14,6 +14,11 @@
 // what happened or is active; no person, name, face, initial or vendor. Marks, pane heads, row and chip states,
 // stacked text, times, bubbles, lists and seals come from ./parts.module.css (compose its classes in the markup); the
 // scene's own sheet holds only its layout, and every value there is a token of app/lib.css (tokens.test.ts).
+// i18n: a scene that goes on a page of the site writes NO text in its file. Its text is the dictionary
+// lib/i18n/messages/<locale>/scenes/<id>.ts (pt-BR is the source; en and es the same shape), read with
+// `useI18n().m.scenes.<id>`; the steps are a function of that text (`<id>Steps(copy)`, as the hold of a typed phrase
+// follows its length) and the catalog entry in SceneSlot.tsx calls it; what a list matches is an id, never a word. The
+// strings below are only a sample of the shape.
 // Proof: copy e2e/scene-kit.spec.ts for the new id (loop + take, reduced motion, icon/text axis within 1 px).
 import { Check, RotateCcw } from "lucide-react";
 import { ActionButton, Badge } from "@/components/lib/ui";
@@ -49,7 +54,10 @@ export function TemplateScene({ timeline }: { timeline?: SceneTimeline }) {
       {(scene) => (
         <div>
           {/* A control: a human event takes over from this step */}
-          <ActionButton icon={<RotateCcw />} onClick={() => scene.take("first")}>
+          <ActionButton
+            icon={<RotateCcw />}
+            onClick={() => scene.take("first")}
+          >
             Repetir
           </ActionButton>
           {/* Items that arrive: keyed, filtered by the step reached */}

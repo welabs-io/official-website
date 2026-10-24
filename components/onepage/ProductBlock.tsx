@@ -2,16 +2,17 @@
 // Large logo (the identity highlight, so it carries the seal per endorsePolicy) and one factual line. The logo links
 // to the product page except on that page itself.
 import Link from "next/link";
+import { href, type I18n } from "@/lib/i18n/i18n";
 import {
   LOGO_PAD,
   productAlt,
-  productBySlug,
   productLogo,
   type ProductSlug,
 } from "@/lib/products";
 import styles from "./shell.module.css";
 
 export function ProductBlock({
+  i18n,
   slug,
   tone,
   link = true,
@@ -19,6 +20,7 @@ export function ProductBlock({
   className,
   short,
 }: {
+  i18n: I18n;
   slug: ProductSlug;
   tone: "dark" | "light";
   link?: boolean;
@@ -27,7 +29,6 @@ export function ProductBlock({
   // The sentence of the opening of a product page, in place of the short line of the cards
   short?: string;
 }) {
-  const product = productBySlug(slug)!;
   const Heading = heading;
   const logo = (
     <img
@@ -48,7 +49,7 @@ export function ProductBlock({
         {link ? (
           <Link
             className={styles.logoLink}
-            href={`/products/${slug}`}
+            href={href(i18n, `/products/${slug}`)}
             aria-label={productAlt(slug, "hero")}
           >
             {logo}
@@ -58,7 +59,7 @@ export function ProductBlock({
         )}
       </Heading>
       <p className={short ? styles.short : styles.line}>
-        {short ?? product.line}
+        {short ?? i18n.m.products[slug].line}
       </p>
     </div>
   );

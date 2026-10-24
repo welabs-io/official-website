@@ -10,15 +10,8 @@ import { Glyph, GLYPHS, ROOM_GLYPHS } from "@/components/scenes/icons";
 import { Chain } from "@/components/home/Chain";
 import { HeroBlades } from "@/components/home/HeroBlades";
 import { ProductAccordion } from "@/components/home/ProductAccordion";
-import {
-  CLOSING,
-  DOMUS_MODULES,
-  HOME_ACCORDION,
-  HOME_CHAIN,
-  HOME_CONTACT,
-  HOME_DOMUS,
-  type Room,
-} from "@/lib/content";
+import { domusModules, type Room } from "@/lib/content";
+import { href, type I18n } from "@/lib/i18n/i18n";
 import { PLATFORM_LOGOS } from "@/lib/partners";
 import { SectionHead } from "./SectionHead";
 import house from "./house.module.css";
@@ -30,7 +23,7 @@ const ROOM_D: Record<string, string> = {
   box: ROOM_GLYPHS.Estoque,
   coin: ROOM_GLYPHS.Financeiro,
 };
-// The leading icon of each field of the new module's screen, in the order of HOME_DOMUS.bornFields (Local, Data, Foto)
+// The leading icon of each field of the new module's screen, in the order of text.bornFields (Local, Data, Foto)
 const BORN_FIELD_GLYPH = [GLYPHS.pin, GLYPHS.calendar, GLYPHS.image];
 
 // ABERTURA
@@ -46,14 +39,11 @@ export function HomeIntro() {
 
 // A MENSAGEM QUE ATRAVESSA
 // v4: the chain the scroll walks (components/home/Chain.tsx), in place of the kit scene that played by itself
-export function HomeMessage() {
+export function HomeMessage({ i18n }: { i18n: I18n }) {
+  const { chain } = i18n.m.home;
   return (
     <div className={shell.wrap}>
-      <SectionHead
-        title={HOME_CHAIN.title}
-        lead={HOME_CHAIN.lead}
-        variant="chapter"
-      />
+      <SectionHead title={chain.title} lead={chain.lead} variant="chapter" />
       <Chain />
     </div>
   );
@@ -62,12 +52,13 @@ export function HomeMessage() {
 // OS CINCO PRODUTOS
 // v4: the accordion of the five products (components/home/ProductAccordion.tsx), the Domus open at rest; each logo
 // keeps `data-card`, the piece the descent grows into its product page
-export function FiveProducts() {
+export function FiveProducts({ i18n }: { i18n: I18n }) {
+  const { accordion } = i18n.m.home;
   return (
     <div className={shell.wrap}>
       <SectionHead
-        title={HOME_ACCORDION.title}
-        lead={HOME_ACCORDION.lead}
+        title={accordion.title}
+        lead={accordion.lead}
         variant="chapter"
       />
       <ProductAccordion />
@@ -90,7 +81,7 @@ export function FiveProducts() {
 // data-theme="welabs" on the block).
 const room = (r: Room, i: number) => (
   <li
-    key={r.name}
+    key={r.id}
     className={house.room}
     style={{ "--i": i } as React.CSSProperties}
   >
@@ -109,10 +100,12 @@ const room = (r: Room, i: number) => (
 );
 
 export function DomusHouse({
+  i18n,
   id,
   title,
   lead,
 }: {
+  i18n: I18n;
   // Id of the checkbox: the home and the Domus page are mounted together on /products/domus
   id: string;
   title: string;
@@ -123,53 +116,55 @@ export function DomusHouse({
       {/* v3 (F2 review, F2-04): the chapter head sits on the content edge of the page, like every chapter (inside the
           1040 px house it started 80 px in); the house stays narrower under it */}
       <SectionHead title={title} lead={lead} variant="chapter" />
-      <DomusHouseBody id={id} />
+      <DomusHouseBody i18n={i18n} id={id} />
     </>
   );
 }
 
-function DomusHouseBody({ id }: { id: string }) {
+function DomusHouseBody({ i18n, id }: { i18n: I18n; id: string }) {
+  const text = i18n.m.home.domus;
+  const modules = domusModules(i18n.m);
   return (
     <div className={house.house} data-theme="welabs">
       <input
         type="checkbox"
         id={id}
         className={styles.toggle}
-        aria-label={HOME_DOMUS.addLabel}
+        aria-label={text.addLabel}
       />
       <div className={house.frame}>
         <div className={house.floor}>
           <div className={house.floorHead}>
-            <p className={house.floorName}>{HOME_DOMUS.standard}</p>
+            <p className={house.floorName}>{text.standard}</p>
           </div>
-          <ul className={house.rooms}>{DOMUS_MODULES.standard.map(room)}</ul>
+          <ul className={house.rooms}>{modules.standard.map(room)}</ul>
         </div>
         <div className={house.floor} data-floor="custom">
           <div className={house.floorHead}>
-            <p className={house.floorName}>{HOME_DOMUS.custom}</p>
+            <p className={house.floorName}>{text.custom}</p>
             <label htmlFor={id} className={house.add} data-slot="button">
               <Glyph d={GLYPHS.plus} size={16} />
-              {HOME_DOMUS.add}
+              {text.add}
             </label>
           </div>
           <ul className={house.rooms}>
-            {DOMUS_MODULES.custom.map((r, i) => room(r, i + 10))}
+            {modules.custom.map((r, i) => room(r, i + 10))}
             {/* The slot of the new module: the dashed place, the module born in it and the screen it opens */}
-            <li className={house.slot} aria-label={HOME_DOMUS.born}>
+            <li className={house.slot} aria-label={text.born}>
               <span className={house.ghost} aria-hidden="true" />
               <span className={house.born}>
                 <span className={house.seed} aria-hidden="true">
                   <Glyph d={GLYPHS.pen} size={18} />
                 </span>
-                <span className={house.name}>{HOME_DOMUS.born}</span>
+                <span className={house.name}>{text.born}</span>
                 <Badge variant="neutral" className={house.seal}>
-                  {HOME_DOMUS.bornTag}
+                  {text.bornTag}
                 </Badge>
               </span>
               {/* The screen of the module: read-only fields out of the tab order (a drawing of a screen, not a form) */}
               <Card size="sm" className={house.screen}>
                 <CardContent className={house.fields}>
-                  {HOME_DOMUS.bornFields.map((f, i) => (
+                  {text.bornFields.map((f, i) => (
                     <TextField
                       key={f.label}
                       label={f.label}
@@ -204,10 +199,12 @@ export type ContactAction = {
 };
 
 export function ContactBand({
+  i18n,
   title,
   asks,
   action,
 }: {
+  i18n: I18n;
   title: string;
   asks: readonly string[];
   action: ContactAction;
@@ -215,7 +212,7 @@ export function ContactBand({
   return (
     <div className={`${shell.wrap} ${styles.contact}`}>
       <h2 className={styles.contactTitle}>{title}</h2>
-      <ol className={styles.asks} aria-label={HOME_CONTACT.asksLabel}>
+      <ol className={styles.asks} aria-label={i18n.m.home.contact.asksLabel}>
         {asks.map((ask) => (
           <li key={ask}>{ask}</li>
         ))}
@@ -236,26 +233,34 @@ export function ContactBand({
 }
 
 // The products band of the home, the way out of its contact (an anchor, as the menu and the old addresses use)
-const PRODUCTS_HREF = "/#products";
+const PRODUCTS_PATH = "/#products";
 
-export const HomeContact = () => (
-  <ContactBand
-    title={HOME_CONTACT.title}
-    asks={HOME_CONTACT.asks}
-    action={{ href: PRODUCTS_HREF, label: HOME_CONTACT.more, kind: "link" }}
-  />
-);
+export const HomeContact = ({ i18n }: { i18n: I18n }) => {
+  const { contact } = i18n.m.home;
+  return (
+    <ContactBand
+      i18n={i18n}
+      title={contact.title}
+      asks={contact.asks}
+      action={{
+        href: href(i18n, PRODUCTS_PATH),
+        label: contact.more,
+        kind: "link",
+      }}
+    />
+  );
+};
 
 // ONDE RODAMOS
 // v3 (F1): the four clouds only, all marks at one height and in the token of their names (a CSS mask over the file's
 // alpha, never its own colours); the width follows the `ratio` of what the mark shows (lib/partners.ts). One rule for
 // the name: beside a pure symbol it shows, and a wordmark, which spells it already, keeps it for assistive technology.
-export function Platforms() {
+export function Platforms({ i18n }: { i18n: I18n }) {
   return (
     <div className={`${shell.wrap} ${styles.platforms}`}>
       {/* v3 (F2): the strip head (h3 step) in place of a 15 px h2 that read as a fifth item of the row */}
       <SectionHead
-        title={CLOSING.platforms}
+        title={i18n.m.closing.platforms}
         variant="strip"
         className={styles.platformsHead}
       />
