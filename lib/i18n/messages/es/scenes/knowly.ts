@@ -1,52 +1,48 @@
 // TEXTO DA CENA: KNOWLY (ES)
-// TRADUÇÃO PENDENTE: cópia do pt-BR, a ser substituída pelo texto do idioma; chaves e placeholders ficam como estão.
+// Neutral Latin American Spanish with "tú", adapted from pt-BR with the glossary of the copy round. Copy of the Knowly
+// memory-graph carousel (components/scene-kit/scenes/knowly-carousel.tsx). Generic subjects only (Contacto 4821,
+// Propuesta 905, Pedido 1234...), no person and no vendor. `frames` and `zoom` are read by frame; `labels` by the key
+// each label names; `legend` by the id of each swatch.
 import type { SceneMessages } from "../../../types";
 
-// Copy of the Knowly memory-graph carousel (components/scene-kit/scenes/knowly-carousel.tsx): the accessible name
-// of the window, the name and zoom of each of the 4 frames, the labels tied to the nodes of the graph, the closing
-// question and the legend. Generic subjects only (Contato 4821, Proposta 905, Pedido 1234...), no person and no vendor.
-// Text only. What is NOT here: the product name (a brand), the ids of the steps and of the nodes, the glyph of each chip,
-// the tones and places of the labels and the order of the legend, which stay in the component. `frames` and `zoom` are
-// read by frame (index 0 = frame 1); `labels` by the key each label names; `legend` by the id of each swatch.
 export const knowly: SceneMessages<"knowly"> = {
-  title: "Memória",
+  title: "Memoria",
   label:
-    "Knowly: a memória da empresa como um grafo que cresce, de um assunto até a constelação inteira, com a ligação mais nova em destaque",
+    "Knowly: la memoria de la empresa como un grafo que crece, de un tema a la constelación entera, con el vínculo más nuevo destacado",
   frames: [
-    "Um assunto nasce",
-    "As ligações crescem",
-    "Outros assuntos se ligam",
-    "A memória inteira",
+    "Nace un tema",
+    "Los vínculos crecen",
+    "Otros temas se vinculan",
+    "Toda la memoria",
   ],
-  zoom: ["Zoom 100%", "Zoom 60%", "Zoom 30%", "Zoom 8%"],
-  close: "O que a sua empresa já decidiu e esqueceu?",
+  zoom: ["Zoom 100 %", "Zoom 60 %", "Zoom 30 %", "Zoom 8 %"],
+  close: "¿Qué decidió tu empresa y ya olvidó?",
   closeNote:
-    "Cada fonte nova se liga ao que já existe. Nada se apaga, e cada resposta mostra de onde veio.",
+    "Cada fuente nueva se vincula a lo que ya existe. Nada se borra, y cada respuesta muestra de dónde vino.",
   legend: {
-    subject: "Assunto",
-    fact: "Fato",
-    link: "Ligação",
-    newest: "Mais recente",
+    subject: "Tema",
+    fact: "Hecho",
+    link: "Vínculo",
+    newest: "Más reciente",
   },
-  // The words written on the graph, one per label (a chip of frame 1 and the plain word of frame 2 share the text)
   labels: {
-    subjectChip: "Contato 4821 · manutenção",
-    talk: "Conversa",
-    visit: "Vistoria",
-    proposal: "Proposta 905",
-    meeting: "Reunião",
-    policy: "Política de serviço",
-    warranty: "Garantia",
-    ticket: "Chamado 140",
+    subjectChip: "Contacto 4821 · mantenimiento",
+    talk: "Conversación",
+    visit: "Inspección",
+    proposal: "Propuesta 905",
+    meeting: "Reunión",
+    policy: "Política de servicio",
+    warranty: "Garantía",
+    ticket: "Ticket 140",
     contract: "Contrato 52",
-    invoice: "Fatura 7710",
+    invoice: "Factura 7710",
     order: "Pedido 1234",
-    decision: "Decisão · 2 provas",
-    subject: "Contato 4821",
-    billing: "Faturamento",
+    decision: "Decisión · 2 pruebas",
+    subject: "Contacto 4821",
+    billing: "Facturación",
     rules: "Normas",
-    block: "Bloco B",
+    block: "Bloque B",
     purchases: "Compras",
-    newest: "Ligação nova · agora",
+    newest: "Vínculo nuevo · ahora",
   },
 };

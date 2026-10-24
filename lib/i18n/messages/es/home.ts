@@ -1,309 +1,284 @@
 // TEXTO DA HOME E DAS TELAS DOS PRODUTOS (ES)
-// TRADUÇÃO PENDENTE: for now this is a copy of pt-BR, to be replaced by the Spanish text; keys and placeholders
-// ({order}, {name}) stay as they are. Original notes follow. Copy of the home (v2 of the content, approved on 2026-10-20; v4 blocks, 2026-10-23): each section has at most
-// one short title and one line, the rest is motion. The words a visitor reads inside a drawing (the seals, the frames,
-// the names of the modules) are labels of that drawing, kept here so the copy rules read them. No slogan, no person by
-// name, no vendor outside brackets, no maturity marker.
-// Text only. What is NOT here: the product names (brands), the order of the products, the glyph of each module and which
-// station follows which; lib/content/home.ts builds the structures the components read from this text. Placeholders:
-// `{order}` is shared.order and `{name}`/`{title}` are filled by the component (lib/i18n/format.ts).
+// Neutral Latin American Spanish with "tú", adapted from pt-BR with the glossary of the copy round
+// (control/portfolio/site-redesign/i18n/glossario.md): 24-hour times, day/month dates. The records of the single thread
+// keep their numbers (Contacto 4821, Conversación 2210, Propuesta 905, Inspección 318, Pedido 1234). The keys, the
+// length of every list and the placeholders ({order}, {name}) stay as in pt-BR; lib/content/home.ts builds the
+// structures the components read from this text.
 import type { HomeMessages } from "../../types";
 
 export const home: HomeMessages = {
-  // Opening: the title is cut around the word that turns (`words`, one per product, in the order of the products)
   intro: {
-    before: "Software para",
-    // The last line of the title, with its full stop (the stop is part of the sentence, so it is the dictionary's)
-    after: "da sua empresa.",
+    before: "Soluciones para",
+    after: "de tu empresa.",
     words: {
-      domus: "a gestão",
-      relloo: "o atendimento",
-      magneto: "as aprovações",
-      tuner: "os canais",
-      knowly: "o conhecimento",
+      domus: "la gestión",
+      relloo: "las relaciones",
+      magneto: "los procesos",
+      tuner: "los canales",
+      knowly: "el conocimiento",
     },
-    lead: "Cinco produtos sobre os mesmos dados. O que acontece num deles já aparece nos outros.",
-    // Accessible name of the strip of the five marks, and the effect each lit product shows on the stage
-    stage: "Os cinco produtos ligados ao Domus",
+    lead: "Todo integrado en un único espacio de trabajo, con un asistente que actúa en la interfaz por ti.",
+    stage: "Los cinco productos ligados al Domus",
     stamps: {
-      domus: "Pedido 1234 atualizado",
-      relloo: "Conversa distribuída",
-      magneto: "Aprovado às 10:14",
-      tuner: "Ligação na conversa",
-      knowly: "Sim, até 12h",
+      domus: "Pedido 1234 registrado",
+      relloo: "Con el responsable correcto",
+      magneto: "Aprobado a las 17:02",
+      tuner: "Leído en 3 canales",
+      knowly: "Plazo con su fuente",
     },
-    // The record of the Domus at the centre of the stage: one line per product that wrote on it
     record: {
       lines: {
-        tuner: "Ligação gravada",
-        relloo: "Respondida no prazo",
-        knowly: "Sábado, até 12h, com a fonte",
-        magneto: "Troca aprovada",
+        tuner: "Llegó por mensaje",
+        relloo: "Responsable correcto, a tiempo",
+        knowly: "Lo acordado, con su fuente",
+        magneto: "Aprobado y firmado",
       },
-      domus: "Estoque e financeiro em dia",
+      domus: "Facturas y cobros al día",
     },
   },
 
-  // Opening in blades: the caption of the stage, the second button, and the seal over each frame (the title and the
-  // line of what just happened in that product)
   hero: {
-    caption: "Um quadro de cada produto",
-    see: "Ver os produtos",
+    caption: "Un cuadro de cada producto",
+    see: "Ver los productos",
     seals: {
-      domus: { title: "Vistoria 318", line: "acendeu os outros quatro" },
-      relloo: { title: "Conversa 2210", line: "com o dono certo" },
-      magneto: { title: "Proposta 905", line: "aprovada às 10:14" },
-      tuner: { title: "Mensagem nova", line: "chegou pelo canal" },
-      knowly: { title: "Prazo de 48 h", line: "lembrado, com a fonte" },
+      domus: { title: "Inspección 318", line: "llegó a los otros cuatro" },
+      relloo: {
+        title: "Conversación 2210",
+        line: "con el responsable correcto",
+      },
+      magneto: { title: "Propuesta 905", line: "aprobada a las 17:02" },
+      tuner: { title: "Mensaje nuevo", line: "llegó por su canal" },
+      knowly: { title: "Plazo de 48 h", line: "recordado, con su fuente" },
     },
   },
 
-  // The modules of the Domus, on two floors: the standard ones (ERPNext and HRMS) and the ones made to measure (our own
-  // apps). Keys are stable ids (lib/content/home.ts maps each id to its glyph and floor); `tags` is the small attractive
-  // detail of a module, never its definition.
   domus: {
-    standard: "Padrão",
-    custom: "Sob medida",
-    // The "+" that makes a new module (the text of the label and the accessible name of the checkbox under it)
-    add: "Novo módulo",
-    addLabel: "Criar um módulo novo",
-    // The module the "+" makes: an example of a module a company creates for itself, with the screen it gets
-    born: "Vistorias",
-    bornTag: "Novo módulo",
-    // Each field of the new screen with the value it shows once filled
+    standard: "Estándar",
+    custom: "A la medida",
+    add: "Nuevo módulo",
+    addLabel: "Crear un módulo nuevo",
+    born: "Inspecciones",
+    bornTag: "Nuevo módulo",
     bornFields: [
-      { label: "Local", value: "Doca 3" },
-      { label: "Data", value: "21/10/2026" },
+      { label: "Lugar", value: "Muelle 3" },
+      { label: "Fecha", value: "21/10/2026" },
       { label: "Foto", value: "3 fotos" },
     ],
     modules: {
-      sales: "Vendas",
+      sales: "Ventas",
       purchasing: "Compras",
-      inventory: "Estoque",
-      production: "Produção",
-      finance: "Financeiro",
+      inventory: "Inventario",
+      production: "Producción",
+      finance: "Finanzas",
       contracts: "Contratos",
-      projects: "Projetos",
-      people: "Pessoas",
-      assets: "Ativos",
-      quality: "Qualidade",
+      projects: "Proyectos",
+      people: "Personas",
+      assets: "Activos",
+      quality: "Calidad",
       tax: "Fiscal",
       banks: "Bancos",
-      legal: "Jurídico",
-      tickets: "Chamados",
-      requests: "Demandas",
-      approvals: "Aprovações",
-      privacy: "Privacidade",
-      import: "Importação",
+      legal: "Legal",
+      tickets: "Tickets",
+      requests: "Solicitudes",
+      approvals: "Aprobación",
+      privacy: "Privacidad",
+      import: "Importación",
     },
-    tags: { tax: "NFS-e", banks: "PIX" },
+    tags: { tax: "Al día", banks: "24h" },
   },
 
-  // One small screen per product (the stage of the opening and the open panel of the accordion): the effect only
   frames: {
     domus: {
       title: "Módulos",
-      sub: "da sua empresa",
-      // The newest module, outlined in green in the frame (not the "Vistorias" of the house)
-      newModule: "Vistoria",
-      // What each of the other four does with the new module, and the line under them
+      sub: "de tu empresa",
+      newModule: "Inspecciones",
       uses: {
-        relloo: "oportunidade avança",
-        magneto: "fluxo começa",
+        relloo: "la oportunidad avanza",
+        magneto: "el flujo empieza",
         tuner: "técnico avisado",
-        knowly: "fica lembrado",
+        knowly: "queda recordado",
       },
-      usesLine: "Os outros quatro usam o tipo novo na hora",
+      usesLine: "Los otros cuatro usan el tipo nuevo al instante",
     },
     relloo: {
-      title: "Conversa 2210",
-      linked: "Ligada à gestão",
-      owner: "Dono",
-      agent: "Agente de atendimento",
-      incoming: "Preciso de manutenção mensal para 3 aparelhos do bloco B.",
+      title: "Conversación 2210",
+      linked: "Ligada a la gestión",
+      owner: "Responsable",
+      agent: "Agente de atención",
+      incoming: "Necesito mantenimiento mensual para 3 equipos del bloque B.",
       time: "08:12",
-      answer: "Claro! Qual o modelo e a potência dos aparelhos?",
-      typing: "Agente de atendimento · digitando",
-      stages: ["Conversa", "Qualificação", "Vistoria", "Ganha"],
+      answer: "¿Qué modelo son los equipos? Dejo todo listo para la propuesta.",
+      typing: "Agente de atención · escribiendo",
+      stages: ["Conversación", "Calificación", "Inspección", "Ganada"],
     },
     magneto: {
-      title: "Proposta 905",
-      state: "Em aprovação",
-      // The steps of the proposal: the first is done, the second is the live one
+      title: "Propuesta 905",
+      state: "En aprobación",
       steps: [
-        { name: "Proposta enviada", line: "08:40" },
-        { name: "Aprovação da gerência", line: "agora" },
-        { name: "Assinatura do contrato", line: "a seguir" },
-        { name: "Pedido no Domus", line: "a seguir" },
+        { name: "Propuesta enviada", line: "08:40" },
+        { name: "Aprobación de la gerencia", line: "ahora" },
+        { name: "Firma del contrato", line: "después" },
+        { name: "Pedido en el Domus", line: "después" },
       ],
     },
     tuner: {
-      title: "Canais",
-      // Every channel lands in the one conversation; the first one is the fresh message
+      title: "Canales",
       channels: [
-        { name: "Mensagem", line: "Preciso de manutenção mensal…" },
-        { name: "Ligação", line: "3 min, gravada" },
-        { name: "E-mail", line: "Proposta 905" },
+        { name: "Mensaje", line: "Necesito mantenimiento mensual…" },
+        { name: "Llamada", line: "3 min, grabada" },
+        { name: "Correo", line: "Propuesta 905" },
       ],
-      thread: { title: "Conversa 2210", line: "3 canais, um histórico" },
+      thread: {
+        title: "Conversación 2210",
+        line: "3 canales, el mismo formato",
+      },
     },
     knowly: {
-      title: "Pergunta",
-      question: "Qual o prazo de manutenção do bloco B?",
-      answer: "48 h a partir do chamado, de segunda a sábado.",
-      source: "Contrato 77 · cláusula 4",
-      sourceLabel: "Fonte",
+      title: "Pregunta",
+      question: "¿Cuál es el plazo de mantenimiento del bloque B?",
+      answer: "48 horas desde el ticket, de lunes a sábado.",
+      source: "Política de servicio · punto 4",
+      sourceLabel: "Fuente",
     },
   },
 
-  // The chain: one message crosses the five products and settles as the order in the Domus. One station per product (in
-  // the order of the walk, lib/content/home-v4.ts). `next`, `now` and `done` are the small line of the station before
-  // it is reached, while it is the live one and once it is done; `caption` is typed while it is live (one or two lines)
-  // and `chip` is what it leaves once done. `{order}` is shared.order.
   chain: {
-    title: "Uma mensagem, a operação inteira",
-    lead: "Do canal ao pedido registrado no Domus, enquanto você rola.",
-    bubbleChannel: "Mensagem",
+    title: "Un mensaje, toda la operación",
+    lead: "Del canal al pedido registrado en el Domus, mientras te desplazas.",
+    bubbleChannel: "Mensaje",
     stations: {
       tuner: {
-        label: "Chegou",
-        next: "a seguir",
-        now: "agora",
-        done: "pela mensagem",
-        caption: ["A mensagem chega pelo canal."],
-        chip: "Mensagem 08:12",
+        label: "Llegó",
+        next: "después",
+        now: "ahora",
+        done: "por mensaje",
+        caption: ["El mensaje llega por su canal."],
+        chip: "Mensaje 08:12",
       },
       relloo: {
-        label: "Com o dono certo",
-        next: "a seguir",
-        now: "Conversa 2210",
-        done: "Conversa 2210",
+        label: "Con el responsable correcto",
+        next: "después",
+        now: "Conversación 2210",
+        done: "Conversación 2210",
         caption: [
-          "A conversa encontra quem cuida dela",
-          "e vira oportunidade.",
+          "La conversación encuentra quién se ocupa",
+          "y se vuelve oportunidad.",
         ],
-        chip: "Oportunidade 562",
+        chip: "Oportunidad 562",
       },
       knowly: {
-        label: "Com a fonte",
-        next: "a seguir",
-        now: "prazo de 48 h",
-        done: "prazo de 48 h",
-        caption: ["O combinado volta lembrado,", "com a fonte."],
-        chip: "Prazo de 48 h, com a fonte",
+        label: "Con su fuente",
+        next: "después",
+        now: "plazo de 48 h",
+        done: "plazo de 48 h",
+        caption: ["Lo acordado vuelve recordado,", "con su fuente."],
+        chip: "Plazo de 48 h, con su fuente",
       },
       magneto: {
-        label: "Aprovado",
-        next: "a seguir",
-        now: "Proposta 905",
-        done: "e assinado",
+        label: "Aprobado",
+        next: "después",
+        now: "Propuesta 905",
+        done: "y firmado",
         caption: [
-          "A proposta passa pela aprovação",
-          "e o contrato pela assinatura.",
+          "La propuesta pasa por la aprobación",
+          "y el contrato por la firma.",
         ],
-        chip: "Contrato assinado",
+        chip: "Contrato firmado",
       },
       domus: {
         label: "Registrado",
-        next: "a seguir",
+        next: "después",
         now: "{order}",
         done: "{order}",
-        caption: ["O pedido, a nota e a cobrança", "ficam na gestão."],
+        caption: ["El pedido, la factura y el cobro", "quedan en la gestión."],
         chip: "{order}",
       },
     },
-    // The line under the last caption, once the order is settled
-    closing: "Do primeiro contato ao pagamento.",
-    // The record of the order in the Domus, one line per product that worked on it
+    closing: "Del primer contacto al pago.",
     record: {
-      tag: "Recorrente",
+      tag: "Recurrente",
       lines: {
-        tuner: "Chegou pela mensagem",
-        relloo: "Com o dono certo, no prazo",
-        knowly: "Combinado lembrado, com a fonte",
-        magneto: "Aprovado e assinado",
+        tuner: "Llegó por mensaje",
+        relloo: "Responsable correcto, a tiempo",
+        knowly: "Lo acordado, con su fuente",
+        magneto: "Aprobado y firmado",
       },
     },
   },
 
-  // The accordion of the five products: at rest the Domus is open, the others open on hover, on focus or on a tap.
-  // `area` is the area of the product on the closed panel; `points` are the three tags; `question` closes the panel.
   accordion: {
-    title: "Cinco produtos, os mesmos dados",
-    lead: "Cada um cuida de uma parte da operação. Abra para ver em ação.",
-    // The accessible name of the "+" of a panel on a phone: "Abrir Domus" / "Fechar Domus"
+    title: "Cinco productos, todo integrado",
+    lead: "Cada uno se ocupa de una parte de la operación. Abre uno para verlo en acción.",
     openLabel: "Abrir {name}",
-    closeLabel: "Fechar {name}",
+    closeLabel: "Cerrar {name}",
     panels: {
       domus: {
-        area: "Gestão",
-        title: "A gestão inteira, com o que só a sua operação tem.",
-        lead: "Financeiro, fiscal, contratos e pessoas no mesmo lugar. Os outros quatro trabalham sobre ele.",
+        area: "Gestión",
+        title: "Toda la gestión, con lo que solo tu operación tiene.",
+        lead: "Finanzas, fiscal, contratos y personas en el mismo lugar. Los otros cuatro trabajan sobre él.",
         points: [
-          "Padrão e sob medida",
-          "Assistente com o dado real",
-          "Regras brasileiras",
+          "Estándar y a la medida",
+          "Asistente con el dato real",
+          "Fiscal, finanzas y contabilidad",
         ],
-        question: "Quanto da sua operação cabe no Domus?",
+        question: "¿Cuánto de tu operación cabe en el Domus?",
       },
       relloo: {
-        area: "Relacionamento",
-        title: "Cada contato, todas as conversas.",
-        lead: "A mensagem chega, encontra quem cuida dela e vira oportunidade, sem ninguém copiar nada.",
+        area: "Relaciones",
+        title: "Cada contacto, todas las conversaciones.",
+        lead: "El mensaje llega, encuentra quién se ocupa de él y se vuelve oportunidad, sin que nadie copie nada.",
         points: [
-          "Caixa de entrada única",
-          "IA que passa a vez",
-          "Funil que anda sozinho",
+          "Bandeja de entrada única",
+          "IA que pasa el turno",
+          "Embudo que avanza solo",
         ],
-        question: "Quanto se perde entre a mensagem e a proposta?",
+        question: "¿Cuánto se pierde entre el mensaje y la propuesta?",
       },
       magneto: {
-        area: "Processos",
-        title: "Cada aprovação no caminho certo.",
-        lead: "O fluxo leva a proposta por quem aprova e pela assinatura, e avisa o próximo passo.",
+        area: "Procesos",
+        title: "Cada aprobación por el camino correcto.",
+        lead: "El flujo lleva la propuesta por quien aprueba y por la firma, y avisa el siguiente paso.",
         points: [
-          "Fluxo desenhado na tela",
-          "Aprovação em um toque",
-          "Prazo com aviso",
+          "Nada dos veces",
+          "Aprobación en un toque",
+          "Plazos con aviso",
         ],
-        question: "Quantas aprovações esperam numa caixa de e-mail?",
+        question: "¿Cuántas aprobaciones esperan en una bandeja de correo?",
       },
       tuner: {
-        area: "Canais",
-        title: "Mensagem, ligação e e-mail numa conversa.",
-        lead: "Cada canal chega no mesmo histórico, ligado ao contato e ao pedido.",
+        area: "Canales",
+        title: "Un envío, todos los canales.",
+        lead: "El mensaje sale por cualquier canal, y la respuesta vuelve en el mismo formato, venga de donde venga.",
         points: [
-          "Mensagens e ligações",
-          "Histórico único",
-          "Número da empresa",
+          "Cualquier canal",
+          "Estado de cada envío",
+          "La misma regla para todos",
         ],
-        question: "Em quantos aparelhos está a conversa de hoje?",
+        question: "¿En cuántos teléfonos está la conversación de hoy?",
       },
       knowly: {
-        area: "Memória",
-        title: "O que a empresa aprende fica lembrado.",
-        lead: "A resposta vem do contrato, do chamado ou da reunião, com a fonte ao lado.",
+        area: "Conocimiento",
+        title: "Lo que tu empresa aprende queda recordado.",
+        lead: "Cada contrato, ticket y reunión se vincula a lo que tu empresa ya aprendió, con la fuente de cada hecho.",
         points: [
-          "Resposta com a fonte",
-          "Memória que cresce",
-          "Busca no que já foi dito",
+          "Respuesta con su fuente",
+          "Memoria que crece",
+          "Nada se borra",
         ],
-        question: "Quanto do combinado só existe na cabeça de alguém?",
+        question: "¿Cuánto de lo acordado solo existe en la cabeza de alguien?",
       },
     },
   },
 
-  // Contact: open questions, no answers (they are the reason to talk). Every button of the site lands here, so this band
-  // does not repeat the button; its way out is the products band (`more`).
   contact: {
-    title: "Conte o que sua empresa precisa",
+    title: "Cuéntanos qué necesita tu empresa",
     asks: [
-      "Quanto da sua operação cabe no Domus?",
-      "O que acontece com os sistemas de hoje?",
-      "Dá para começar por um produto?",
-      "Por onde a gente começa?",
+      "¿Qué está disperso hoy entre sistemas y hojas de cálculo?",
+      "¿Qué pasa con los sistemas que usas hoy?",
+      "¿Se puede empezar por un producto?",
+      "¿Por dónde empezamos?",
     ],
-    asksLabel: "Perguntas para a conversa",
-    more: "Ver os produtos",
+    asksLabel: "Preguntas para la conversación",
+    more: "Ver los productos",
   },
 };

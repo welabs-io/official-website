@@ -1,52 +1,49 @@
 // TEXTO DA CENA: MAGNETO (ES)
-// TRADUÇÃO PENDENTE: cópia do pt-BR, a ser substituída pelo texto do idioma; chaves e placeholders ficam como estão.
-// pt-BR is the source. The text of the approved frames V3Magneto-1..4, word for word (the scene is components/scene-kit/scenes/magneto-carousel.tsx).
-// Text only. What is NOT here: the step ids, the icons, the tones and the data-* keys of each piece, which stay in the
-// component; it reads the text by key (`f1..f4` are the four frames, `frameNames` is read by position, one per frame).
+// Neutral Latin American Spanish with "tú", adapted from pt-BR with the glossary of the copy round. The text of the four
+// frames of components/scene-kit/scenes/magneto-carousel.tsx (`f1..f4`); `frameNames` is read by position, one per
+// frame. The product names drawn as labels (`domus`, `tuner`) are brands and stay as they are.
 import type { SceneMessages } from "../../../types";
 
 export const magneto: SceneMessages<"magneto"> = {
   product: "Magneto",
-  title: "Fluxos",
+  title: "Flujos",
   label:
-    "Magneto: a proposta começa o fluxo sozinha, ele divide o trabalho, espera a aprovação e conclui sem nada em dobro",
-  flow: "Aprovação de proposta",
-  active: "Ativo",
+    "Magneto: la propuesta inicia el flujo sola, el trabajo se divide, espera la aprobación y termina sin nada dos veces",
+  flow: "Aprobación de propuesta",
+  active: "Activo",
   domus: "Domus",
   tuner: "Tuner",
-  proposal: "Proposta 905",
-  // v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome (one per frame, in order)
-  frameNames: ["Começa sozinho", "Divide", "Espera", "Conclui"],
+  proposal: "Propuesta 905",
+  frameNames: ["Empieza solo", "Divide", "Espera", "Termina"],
   f1: {
-    source: "proposta revisada",
-    started: "Começou sozinho",
-    nobody: "ninguém precisou apertar nada",
-    nextLabel: "Próximo passo",
-    nextStep: "Conferir proposta",
+    source: "propuesta revisada",
+    started: "Empezó solo",
+    nobody: "nadie tuvo que presionar nada",
+    nextLabel: "Siguiente paso",
+    nextStep: "Revisar propuesta",
   },
   f2: {
-    trigger: "Gatilho",
-    approval: "Aprovação da gerência",
-    now: "agora",
+    trigger: "Disparador",
+    approval: "Aprobación de la gerencia",
+    now: "ahora",
     contract: "Preparar contrato",
-    same: "ao mesmo tempo",
+    same: "al mismo tiempo",
   },
   f3: {
-    waiting: "Aguardando a gerência",
-    warned: "avisou a gerência",
-    ready: "contrato pronto",
-    afterLabel: "Depois da aprovação",
-    afterStep: "Enviar para assinatura",
+    waiting: "Esperando a la gerencia",
+    warned: "avisó a la gerencia",
+    ready: "contrato listo",
+    afterLabel: "Después de la aprobación",
+    afterStep: "Enviar a firma",
   },
   f4: {
-    approved: "Aprovado",
-    by: "pela gerência",
-    sign: "Enviar para assinatura",
-    failure: "Uma falha no meio",
-    concluded: "Concluído, sem nada em dobro",
-    order: "Pedido 1234 criado",
+    approved: "Aprobado",
+    by: "por la gerencia",
+    sign: "Enviar a firma",
+    failure: "Una falla a mitad de camino",
+    concluded: "Terminado, sin nada dos veces",
+    order: "Pedido 1234 creado",
     sent: "contrato enviado",
-    // v3 (2026-10-23): no personification ("Como ele sabe...": copy-rules.json `words`), the effect as the question
-    question: "Quanto trabalho é refeito na sua empresa?",
+    question: "¿Cuánto trabajo se rehace en tu empresa?",
   },
 };

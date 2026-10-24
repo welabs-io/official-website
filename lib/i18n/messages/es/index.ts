@@ -1,6 +1,7 @@
 // DICIONÁRIO ES
-// TRADUÇÃO PENDENTE: each file of this folder is, for now, a copy of the pt-BR one, to be replaced by the text of this
-// language. The type `Messages` (lib/i18n/types.ts) makes `tsc` fail on a missing or extra key, and
+// Neutral Latin American Spanish with "tú", adapted from pt-BR with the glossary of the copy round
+// (control/portfolio/site-redesign/i18n/glossario.md). The type `Messages` (lib/i18n/types.ts) makes `tsc` fail on a
+// missing or extra key, and
 // lib/i18n/messages.test.ts compares the keys, the placeholders and the structural values of the three dictionaries.
 import type { Messages } from "../../types";
 import { home } from "./home";

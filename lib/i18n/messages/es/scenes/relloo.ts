@@ -1,64 +1,56 @@
 // TEXTO DA CENA: RELLOO (ES)
-// TRADUÇÃO PENDENTE: cópia do pt-BR, a ser substituída pelo texto do idioma; chaves e placeholders ficam como estão.
-// Text of the four-frame carousel (components/scene-kit/scenes/relloo-carousel.tsx): the label of the scene, the
-// chrome (screen and area of each frame, the name of each moment), the conversation, the record, the funnel and the
-// closing question. Text only. What is NOT here: the glyph of each channel, the steps of each frame and the clock; the
-// component reads this text by key (`frameNames` and `past` are read by position, so en and es keep the same length).
-// The pace of the clock depends on the length of the phrases (`asked`, `agentSaid`, `answer` type in at 18 ms per
-// character, see `rellooSteps`).
+// Neutral Latin American Spanish with "tú", adapted from pt-BR with the glossary of the copy round. Text of the
+// four-frame carousel (components/scene-kit/scenes/relloo-carousel.tsx); `frameNames` and `past` are read by position,
+// so they keep the length of pt-BR. The pace of the clock follows the length of the typed phrases (`rellooSteps`).
 import type { SceneMessages } from "../../../types";
 
 export const relloo: SceneMessages<"relloo"> = {
   label:
-    "Relloo: uma mensagem vira oportunidade e anda no funil, em quatro momentos",
-  conversation: "Conversa 2210",
-  contact: "Contato 4821",
-  linked: "Ligada à gestão",
-  before: "+ 2 canais usados antes",
-  owner: "Dono",
-  agent: "Agente de atendimento",
-  team: "Equipe comercial",
-  today: "Hoje",
-  message: "Mensagem",
-  asked: "Preciso de manutenção mensal para 3 aparelhos do bloco B.",
+    "Relloo: un mensaje se vuelve oportunidad y avanza en el embudo, en cuatro momentos",
+  conversation: "Conversación 2210",
+  contact: "Contacto 4821",
+  linked: "Ligada a la gestión",
+  before: "+ 2 canales usados antes",
+  owner: "Responsable",
+  agent: "Agente de atención",
+  team: "Equipo comercial",
+  today: "Hoy",
+  message: "Mensaje",
+  asked: "Necesito mantenimiento mensual para 3 equipos del bloque B.",
   askedAt: "08:12",
-  reply: "Escrever para Contato 4821",
+  reply: "Escribir a Contacto 4821",
   send: "Enviar",
   previous: "Antes",
-  now: "Dona agora",
-  why: "pediu proposta",
-  agentSaid:
-    "Qual o modelo dos aparelhos? Já deixo tudo pronto para a proposta.",
+  now: "Responsable ahora",
+  why: "pidió propuesta",
+  agentSaid: "¿Qué modelo son los equipos? Dejo todo listo para la propuesta.",
   agentAt: "08:12",
-  answer: "São 3 aparelhos de 12 mil BTUs. Quero uma proposta.",
+  answer: "Son 3 equipos de 12.000 BTU. Quiero una propuesta.",
   answerAt: "08:19",
-  summaryReady: "Resumo pronto para a equipe",
+  summaryReady: "Resumen listo para el equipo",
   summaryLong:
-    "Manutenção mensal, 3 aparelhos de 12 mil BTUs no bloco B. Pediu proposta.",
-  summary: "Resumo",
-  summaryShort: "Manutenção mensal, 3 aparelhos no bloco B. Pediu proposta.",
-  history: "3 canais · um histórico só",
+    "Mantenimiento mensual, 3 equipos de 12.000 BTU en el bloque B. Pidió propuesta.",
+  summary: "Resumen",
+  summaryShort:
+    "Mantenimiento mensual, 3 equipos en el bloque B. Pidió propuesta.",
+  history: "3 canales · un solo historial",
   deals: "Oportunidades",
-  born: "Nova oportunidade",
-  bornAt: "agora",
-  deal: "Oportunidade",
+  born: "Nueva oportunidad",
+  bornAt: "ahora",
+  deal: "Oportunidad",
   dealNumber: "562",
-  bornFrom: "Nasceu da Conversa 2210, com o resumo junto",
-  moves: "anda no funil e o resto acontece sozinho",
-  funnel: "Funil",
+  bornFrom: "Nació de la Conversación 2210, con el resumen incluido",
+  moves: "avanza en el embudo y lo demás pasa solo",
+  funnel: "Embudo",
   domus: "Domus",
-  visit: "Vistoria 318 agendada",
-  // v3 (2026-10-23): "atende" is a banned verb of copy-rules.json `words`; the same question, with "responde"
-  question: "Quem responde primeiro na sua empresa?",
-  // The screen and the area the chrome names for each frame (frames 1 and 2 share the inbox, 3 and 4 the contact's record)
-  inbox: "Caixa de entrada",
-  service: "Atendimento",
-  person: "Pessoa",
-  // The name of each moment, on the stage tabs of the chrome (read by position)
-  frameNames: ["Chega", "Passa a vez", "Vira oportunidade", "Anda no funil"],
-  // The channels the contact used before, in the history of frame 1 (read by position; the glyph is in the component)
+  visit: "Inspección 318 agendada",
+  question: "¿Quién responde primero en tu empresa?",
+  inbox: "Bandeja de entrada",
+  service: "Atención",
+  person: "Contactos",
+  frameNames: ["Llega", "Pasa el turno", "Es oportunidad", "Avanza"],
   past: [
-    { date: "12/08", text: "E-mail · orçamento de limpeza de dutos" },
-    { date: "03/09", text: "Voz · ligação transcrita" },
+    { date: "12/08", text: "Correo · cotización de limpieza de ductos" },
+    { date: "03/09", text: "Voz · llamada transcrita" },
   ],
 };

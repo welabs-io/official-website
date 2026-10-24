@@ -1,47 +1,43 @@
 // TEXTO DA CENA: TUNER (ES)
-// TRADUÇÃO PENDENTE: cópia do pt-BR, a ser substituída pelo texto do idioma; chaves e placeholders ficam como estão.
-// Text of the Tuner carousel (components/scene-kit/scenes/tuner-carousel.tsx), from the approved canvas frames.
-// Text only: the glyph of each channel, the step ids, the tones and the order of the frames live in the component, which
-// reads the lists below by position (`channels`, `moreChannels` and `frames` are tuples of fixed size).
+// Neutral Latin American Spanish with "tú", adapted from pt-BR with the glossary of the copy round. Text of
+// components/scene-kit/scenes/tuner-carousel.tsx; `channels`, `moreChannels` and `frames` are tuples read by position,
+// with the length of pt-BR. Channels by category, never by vendor.
 import type { SceneMessages } from "../../../types";
 
 export const tuner: SceneMessages<"tuner"> = {
   product: "Tuner",
-  title: "Canais",
+  title: "Canales",
   label:
-    "Tuner: uma mensagem sai por todos os canais de uma vez, a leitura volta por canal e a resposta cai na conversa certa",
-  magneto: { title: "Magneto", meta: "pede o envio" },
-  tuner: { title: "Tuner", meta: "central de canais" },
+    "Tuner: un mensaje sale por todos los canales a la vez, la lectura vuelve por canal y la respuesta llega a la conversación correcta",
+  magneto: { title: "Magneto", meta: "pide el envío" },
+  tuner: { title: "Tuner", meta: "central de canales" },
   message: {
-    eyebrow: "Uma mensagem · 17:03",
-    figure: "Proposta 905",
-    note: "para o Contato 4821, onde ele estiver",
+    eyebrow: "Un mensaje · 17:03",
+    figure: "Propuesta 905",
+    note: "para el Contacto 4821, donde esté",
   },
-  inFlight: "1 envio",
+  inFlight: "1 envío",
   sending: "Enviando",
   sent: "Enviado",
-  delivered: "Entregue",
-  readNow: "Lido agora",
-  read: "Lido",
-  stat: { figure: "3", note: "canais no mesmo envio" },
-  replyFrom: { title: "Mensagem", meta: "dia 4 · 11:20" },
+  delivered: "Entregado",
+  readNow: "Leído ahora",
+  read: "Leído",
+  stat: { figure: "3", note: "canales en el mismo envío" },
+  replyFrom: { title: "Mensaje", meta: "día 4 · 11:20" },
   reply: {
-    eyebrow: "Resposta recebida",
-    figure: "Aceito",
-    note: "volta para a conversa certa, venha de onde vier",
+    eyebrow: "Respuesta recibida",
+    figure: "Aceptado",
+    note: "vuelve a la conversación correcta, venga de donde venga",
   },
-  relloo: { title: "Relloo", meta: "Conversa 2210" },
-  more: "E mais canais",
-  ask: "Quais canais a sua empresa usaria?",
-  // The three channels of the send (e-mail, message, integration), in the order of the component
-  channels: ["E-mail", "Mensagem", "Integração"],
-  // The other channels of the Tuner (voice, video call, community, site chat), in the order of the component
-  moreChannels: ["Voz", "Videochamada", "Comunidade", "Chat do site"],
-  // The four frames: the name on the stage tab and the caption of the chrome bar
+  relloo: { title: "Relloo", meta: "Conversación 2210" },
+  more: "Y más canales",
+  ask: "¿Cuántos canales sigue integrando tu empresa uno por uno?",
+  channels: ["Correo", "Mensaje", "Integración"],
+  moreChannels: ["Voz", "Videollamada", "Comunidad", "Chat del sitio"],
   frames: [
-    { name: "Mensagem", caption: "Envio da Proposta 905" },
-    { name: "Envio", caption: "Envio da Proposta 905" },
-    { name: "Leitura", caption: "Envio da Proposta 905" },
-    { name: "Resposta", caption: "Recebimento" },
+    { name: "Mensaje", caption: "Envío de la Propuesta 905" },
+    { name: "Envío", caption: "Envío de la Propuesta 905" },
+    { name: "Lectura", caption: "Envío de la Propuesta 905" },
+    { name: "Respuesta", caption: "Recepción" },
   ],
 };
