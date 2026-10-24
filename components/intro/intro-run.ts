@@ -106,10 +106,11 @@ function tween(ms: number, frame: (t: number) => void) {
 
 // TEMPOS DA ABERTURA
 // Seconds the closing frame holds before the end plays, and milliseconds of the opening of the sheet and of the fade of
-// the closing frame; with the page coming in (--dur-enter) an entry takes ~5 s from the click to a settled page
-const HOLD = 0.25;
+// the closing frame: the logo is formed at ~4.05 s, and with the page coming in (--dur-enter) an entry takes ~5.3 s
+// from the click to a settled page, the page readable from ~4.7 s
+const HOLD = 0.15;
 const OPEN_MS = 450;
-const LAND_MS = 300;
+const LAND_MS = 260;
 // v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector: it
 // starts on the closing frame, the sheet opens faster and the end is shorter (about 700 ms from the click to the page)
 export const FLASH = { open: 120, hold: 0, land: 260 } as const;
