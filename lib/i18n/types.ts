@@ -23,5 +23,6 @@ export type SiteMessages = Pick<
 >;
 export type ProductsMessages = Messages["products"];
 export type HomeMessages = Messages["home"];
+export type OpeningsMessages = Messages["openings"];
 export type SceneMessages<K extends keyof Messages["scenes"]> =
   Messages["scenes"][K];

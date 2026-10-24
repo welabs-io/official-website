@@ -89,12 +89,9 @@ import { parseEase, LIGHT } from './kit.js';
     manual: '<path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5zM20 5.5c0-.8-.7-1.5-1.5-1.5H13v15h5.5c.8 0 1.5.7 1.5 1.5z"/>'
   };
   var CARDS = [
-    {label: 'Documento', sub: 'Prazos', icon: 'doc'},
-    {label: 'Reunião', sub: '12/09', icon: 'meet'},
-    {label: 'Ticket', sub: 'ATL-142', icon: 'ticket'},
-    {label: 'Código', sub: 'Propostas', icon: 'code'},
-    {label: 'Manual', sub: 'Vendas', icon: 'manual'}
+    {icon: 'doc'}, {icon: 'meet'}, {icon: 'ticket'}, {icon: 'code'}, {icon: 'manual'}
   ];
+  // The two lines of each card (its kind and what it is about) come from the dictionary of the page (cfg.labels.cards)
   // citation lines: neighbours of the pentagon first, then the chords (the network gets dense)
   var EDGES = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [0, 2], [1, 3], [2, 4], [3, 0], [4, 1]];
 
@@ -144,8 +141,8 @@ import { parseEase, LIGHT } from './kit.js';
       s += '<g class="card" opacity="0"><rect class="cb" x="' + (-hw) + '" y="' + (-hh) + '" width="' + CARD_W + '" height="' + CARD_H + '" rx="20" fill="' + PANEL + '" stroke="' + EDGE + '" stroke-width="3"/>' +
         '<circle cx="-62" cy="0" r="23" fill="' + PANEL2 + '"/>' +
         '<g transform="translate(-74 -12)" fill="none" stroke="' + AMBER + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICON[D.icon] + '</g>' +
-        '<text x="-30" y="-3" font-size="20" font-weight="600" fill="' + INK + '">' + D.label + '</text>' +
-        '<text x="-30" y="22" font-size="16" font-weight="500" fill="' + MUTED + '">' + D.sub + '</text></g>';
+        '<text x="-30" y="-3" font-size="20" font-weight="600" fill="' + INK + '">' + over.labels.cards[j].label + '</text>' +
+        '<text x="-30" y="22" font-size="16" font-weight="500" fill="' + MUTED + '">' + over.labels.cards[j].sub + '</text></g>';
     }
     s += '<circle class="burst" r="100" fill="url(#gl' + id + ')" opacity="0"/>';
     svg.innerHTML = s;

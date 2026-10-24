@@ -10,6 +10,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
 import { stripLocale } from "@/lib/i18n/config";
+import { useMessages } from "@/lib/i18n/provider";
 
 type Run = typeof import("./descent-run");
 let engine: Run | null = null;
@@ -17,6 +18,8 @@ let engine: Run | null = null;
 export function Descent() {
   const router = useRouter();
   const pathname = usePathname();
+  // i18n: the words the brand openings draw, in the locale of the page (the engine is told again if the locale changes)
+  const { openings } = useMessages();
 
   // The new route is in the DOM: release the moves waiting for it
   useLayoutEffect(() => {
@@ -63,7 +66,7 @@ export function Descent() {
       (mod) => {
         if (dead) return;
         engine = mod;
-        stop = mod.install(router, location.pathname);
+        stop = mod.install(router, location.pathname, openings);
         window.removeEventListener("click", onEarly, true);
         if (held) mod.hooks.click(held);
       },
@@ -80,7 +83,7 @@ export function Descent() {
       stop?.();
       stopReplay?.();
     };
-  }, [router]);
+  }, [router, openings]);
 
   return null;
 }

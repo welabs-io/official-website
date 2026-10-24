@@ -22,6 +22,7 @@
 // A click, a key or the wheel during the opening skips to its closing frame; the end still plays.
 // v4: the whole opening plays on every entry into a product, from any link, the product selector included (no short
 // flash variant is left: it read as no opening at all).
+import type { Messages } from "@/lib/i18n/types";
 import styles from "./intro.module.css";
 
 type Slug = "domus" | "relloo" | "magneto" | "tuner" | "knowly";
@@ -183,7 +184,12 @@ export type Playing = {
 // O PALCO DA ABERTURA
 // The canvas sheet; in it, the stage at its fitted size, and in the stage the choreography: its scene (with the camera
 // layer `.zoom` of each opening), the wrapper of the light endorsed logo and the amber bar under it
-export async function open(slug: Slug, from: Box): Promise<Playing> {
+// i18n: `openings` is the text the scenes draw, in the locale of the page (the `openings` of the dictionary)
+export async function open(
+  slug: Slug,
+  from: Box,
+  openings: Messages["openings"],
+): Promise<Playing> {
   const { mod, logo } = await prepare(slug);
   const box = BOXES[slug];
   const sheet = document.createElement("div");
@@ -228,7 +234,12 @@ export async function open(slug: Slug, from: Box): Promise<Playing> {
   frame.style.top = `${header + (H - header - 1080 * scale) / 2}px`;
   stage.style.zoom = String(scale);
 
-  const inst = mod.mount(stage, { logo, box: box.dark, safe: 98 });
+  const inst = mod.mount(stage, {
+    logo,
+    box: box.dark,
+    safe: 98,
+    labels: openings[slug],
+  });
   const end = mod.SETTLED + HOLD;
   let clock = 0;
   let last = performance.now();

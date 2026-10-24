@@ -5,6 +5,7 @@
 // lib/i18n/messages.test.ts compares the keys, the placeholders and the structural values of the three dictionaries.
 import type { Messages } from "../../types";
 import { home } from "./home";
+import { openings } from "./openings";
 import { products } from "./products";
 import { domus } from "./scenes/domus";
 import { knowly } from "./scenes/knowly";
@@ -17,5 +18,6 @@ export const es: Messages = {
   ...site,
   products,
   home,
+  openings,
   scenes: { relloo, domus, magneto, tuner, knowly },
 };

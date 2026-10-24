@@ -63,19 +63,20 @@ import { parseEase, LIGHT } from './kit.js';
   }
 
   // CÔMODOS (planta de 3 colunas e 3 linhas; os cartões usam o visual dos filmes do Domus e os ícones do filme da casa)
+  // The name of each room comes from the dictionary of the page (cfg.labels.rooms, in this order), never from here
   var CW = 130, CH = 112, GP = 12;   // column width, row height, wall gap (world px)
   var ROOMS = [
-    {label: 'Financeiro', col: 0, row: 0, span: 2, off: [-330, 10], bow: 30,
+    {col: 0, row: 0, span: 2, off: [-330, 10], bow: 30,
       icon: '<rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.6"/>'},
-    {label: 'Fiscal', col: 2, row: 0, span: 1, off: [720, -120], bow: -40,
+    {col: 2, row: 0, span: 1, off: [720, -120], bow: -40,
       icon: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>'},
-    {label: 'Estoque', col: 0, row: 1, span: 1, off: [-720, 90], bow: 40,
+    {col: 0, row: 1, span: 1, off: [-720, 90], bow: 40,
       icon: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4M12 11v10"/>'},
-    {label: 'Vendas', col: 1, row: 1, span: 2, off: [700, 150], bow: -40,
+    {col: 1, row: 1, span: 2, off: [700, 150], bow: -40,
       icon: '<path d="M3 12V3h9l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.6"/>'},
-    {label: 'Pessoas', col: 0, row: 2, span: 2, off: [-560, 300], bow: 35,
+    {col: 0, row: 2, span: 2, off: [-560, 300], bow: 35,
       icon: '<circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 4a4 4 0 0 1 0 8M22 21c0-3-1.5-5-4-5.6"/>'},
-    {label: 'Projetos', col: 2, row: 2, span: 1, off: [560, 300], bow: -35,
+    {col: 2, row: 2, span: 1, off: [560, 300], bow: -35,
       icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M14 4v16"/>'}
   ];
   // Doors: amber ticks in the wall gap between two rooms [a, b, x, y, vertical]
@@ -125,7 +126,7 @@ import { parseEase, LIGHT } from './kit.js';
       R.arr = T.arr0 + j * T.arrStep; R.land = R.arr + T.fly;
       s += '<g class="room" opacity="0"><rect class="cb" x="' + (-rw / 2) + '" y="' + (-CH / 2) + '" width="' + rw + '" height="' + CH + '" rx="18" fill="' + CARD + '" stroke="' + EDGE + '" stroke-width="3"/>' +
         '<g transform="translate(-18 -34) scale(1.5)" fill="none" stroke="' + AMBER + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + R.icon + '</g>' +
-        '<text x="0" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="' + INK + '">' + R.label + '</text></g>';
+        '<text x="0" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="' + INK + '">' + over.labels.rooms[j] + '</text></g>';
     }
     s += '<circle class="burst" r="100" fill="url(#gl' + id + ')" opacity="0"/>';
     svg.innerHTML = s;

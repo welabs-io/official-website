@@ -90,9 +90,9 @@ import { parseEase, LIGHT } from './kit.js';
     community: '<path d="M9.5 4L7.5 20M16.5 4l-2 16M4.5 9h16M3.5 15h16"/>'
   };
   var ROWS = [
-    {label: 'Mensagem', icon: 'chat'}, {label: 'Voz', icon: 'voice'}, {label: 'Chat do site', icon: 'site'},
-    {label: 'E-mail', icon: 'mail'}, {label: 'Comunidade', icon: 'community'}
+    {icon: 'chat'}, {icon: 'voice'}, {icon: 'site'}, {icon: 'mail'}, {icon: 'community'}
   ];
+  // The name of each chip comes from the dictionary of the page (cfg.labels.channels, in this order)
 
   var uid = 0;
   export function mount(root, over) {
@@ -142,7 +142,7 @@ import { parseEase, LIGHT } from './kit.js';
       var R = ROWS[j];
       s += '<g class="chip" opacity="0"><rect class="cc" x="' + (-CHIP_W / 2) + '" y="' + (-CHIP_H / 2) + '" width="' + CHIP_W + '" height="' + CHIP_H + '" rx="23" fill="' + PANEL2 + '" stroke="' + AMBER + '" stroke-width="2.5"/>' +
         '<g transform="translate(' + (-CHIP_W / 2 + 14) + ' -12)" fill="none" stroke="' + AMBER + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + ICON[R.icon] + '</g>' +
-        '<text x="' + (-CHIP_W / 2 + 50) + '" y="8.5" font-size="24" font-weight="600" fill="' + INK + '">' + R.label + '</text></g>';
+        '<text x="' + (-CHIP_W / 2 + 50) + '" y="8.5" font-size="24" font-weight="600" fill="' + INK + '">' + over.labels.channels[j] + '</text></g>';
     }
     for (j = 0; j < ROWS.length; j++) {
       s += '<g class="bub" opacity="0"><rect x="' + (-BUB_W / 2) + '" y="' + (-BUB_H / 2) + '" width="' + BUB_W + '" height="' + BUB_H + '" rx="14" fill="' + PANEL2 + '" stroke="' + AMBER + '" stroke-width="2"/>' +

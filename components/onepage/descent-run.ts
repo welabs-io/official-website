@@ -19,6 +19,7 @@ import {
   prepareAll,
 } from "@/components/intro/intro-run";
 import { stripLocale } from "@/lib/i18n/config";
+import type { Messages } from "@/lib/i18n/types";
 import styles from "./descent.module.css";
 
 type Router = ReturnType<typeof useRouter>;
@@ -145,8 +146,13 @@ export function release(pathname: string) {
   for (const done of list) done();
 }
 
-// Takes over the links and the back button; returns the way to let go
-export function install(router: Router, pathname: string) {
+// Takes over the links and the back button; returns the way to let go.
+// i18n: `openings` is the text the brand openings draw, in the locale of the page
+export function install(
+  router: Router,
+  pathname: string,
+  openings: Messages["openings"],
+) {
   memory.path = pathname;
   history.scrollRestoration = "manual";
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -168,7 +174,7 @@ export function install(router: Router, pathname: string) {
     lockInput(true);
     let playing: Awaited<ReturnType<typeof open>> | null = null;
     try {
-      playing = await open(slug, box(origin));
+      playing = await open(slug, box(origin), openings);
       // v5 (2026-10-24): the next page is committed only when the closing frame holds still, and the closing frame
       // stays until the frames of that page have passed (measured on 709ccb0, production build: its render was a 50 to
       // 190 ms frame half a second into the choreography, where it used to be pushed)

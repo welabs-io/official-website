@@ -90,13 +90,14 @@ import { parseEase, LIGHT } from './kit.js';
     mail: '<rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/>'
   };
   // group 0 sits in the white ring (left), group 1 in the amber ring (right); slot 0 is the top card of a stack.
-  // `record` is the contact id the card shows (never a person's name), `label` the category of its channel
+  // The card shows a contact id (never a person's name) and the chip the category of its channel (see below)
   var CARDS = [
-    {record: 'Contato 4821', label: 'Mensagem', icon: 'chat', group: 0, slot: 0},
-    {record: 'Contato 4822', label: 'Chat do site', icon: 'site', group: 1, slot: 0},
-    {record: 'Contato 4823', label: 'Voz', icon: 'voice', group: 0, slot: 1},
-    {record: 'Contato 4824', label: 'E-mail', icon: 'mail', group: 1, slot: 1}
+    {icon: 'chat', group: 0, slot: 0},
+    {icon: 'site', group: 1, slot: 0},
+    {icon: 'voice', group: 0, slot: 1},
+    {icon: 'mail', group: 1, slot: 1}
   ];
+  // The text of each card comes from the dictionary of the page (cfg.labels.records and cfg.labels.channels, same order)
 
   var uid = 0;
   export function mount(root, over) {
@@ -147,7 +148,7 @@ import { parseEase, LIGHT } from './kit.js';
       s += '<g class="card" opacity="0"><rect class="cb" x="' + (-hw) + '" y="' + (-hh) + '" width="' + CARD_W + '" height="' + CARD_H + '" rx="24" fill="' + PANEL + '" stroke="' + EDGE + '" stroke-width="3"/>' +
         // The round mark of the card: the glyph of its channel (24 px box, centred), never a face
         '<g transform="translate(' + (m * -106) + ' -34)"><circle r="22" fill="' + PANEL2 + '"/><g transform="translate(-10 -10) scale(0.8333)" fill="none" stroke="' + INK + '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' + ICON[D.icon] + '</g></g>' +
-        '<text x="' + (m * -76) + '" y="-25" text-anchor="' + (m > 0 ? 'start' : 'end') + '" font-size="26" font-weight="600" fill="' + INK + '">' + D.record + '</text>' +
+        '<text x="' + (m * -76) + '" y="-25" text-anchor="' + (m > 0 ? 'start' : 'end') + '" font-size="26" font-weight="600" fill="' + INK + '">' + over.labels.records[j] + '</text>' +
         '<line class="tl" x1="-116" x2="116" y1="55" y2="55" stroke="' + EDGE + '" stroke-width="4" stroke-linecap="round"/>' +
         '<line class="tf" x1="-116" x2="-116" y1="55" y2="55" stroke="' + AMBER + '" stroke-width="4" stroke-linecap="round"/>' +
         '<circle class="td" cx="-116" cy="55" r="7" fill="' + EDGE + '"/><circle class="td" cx="0" cy="55" r="7" fill="' + EDGE + '"/><circle class="td" cx="116" cy="55" r="7" fill="' + EDGE + '"/></g>';
@@ -160,7 +161,7 @@ import { parseEase, LIGHT } from './kit.js';
       E.coff = [E.group ? -190 : 190, 0];
       s += '<g class="chip" opacity="0"><rect class="cc" x="' + (-CHIP_W / 2) + '" y="' + (-CHIP_H / 2) + '" width="' + CHIP_W + '" height="' + CHIP_H + '" rx="20" fill="' + PANEL2 + '" stroke="' + AMBER + '" stroke-width="2"/>' +
         '<g transform="translate(' + (-CHIP_W / 2 + 12) + ' -12) scale(1)" fill="none" stroke="' + AMBER + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + ICON[E.icon] + '</g>' +
-        '<text x="' + (-CHIP_W / 2 + 44) + '" y="8.5" font-size="24" font-weight="600" fill="' + INK + '">' + E.label + '</text></g>';
+        '<text x="' + (-CHIP_W / 2 + 44) + '" y="8.5" font-size="24" font-weight="600" fill="' + INK + '">' + over.labels.channels[j] + '</text></g>';
     }
     function hw0() { return CARD_W / 2; }
     s += '<circle class="burst" r="100" fill="url(#gl' + id + ')" opacity="0"/>';

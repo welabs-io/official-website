@@ -39,7 +39,7 @@ import { mount as mountMagnets, KBIG } from './magneto.js';
   var STAG = [[-8, 8, -8, 8, -8], [8, -8, 8, -8, 8]];       // alternating y offsets give the short connectors a gentle S
   var SEAM_P = [TIMES.pbigX, TIMES.pbigY];                    // screen point of the seam before the camera moves
   // One label differs from the piece: "Webhook" is a word the copy rules of the site keep out (lib/content/copy-rules.json)
-  var LAB = ['Gatilho', 'Planilha', 'Condição', 'Aprovação', 'E-mail', 'Integração', 'Condição', 'Espera', 'Lembrete', 'Concluído'];
+  // The ten labels come from the dictionary of the page (cfg.labels.nodes, in the order of the icons below)
   var ICON = [
     '<path d="M13 3L5 13.5h6L10 21l9-11.5h-6z"/>',                                                              // trigger
     '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M4 14.5h16M10 5v14"/>',                // spreadsheet
@@ -92,7 +92,7 @@ import { mount as mountMagnets, KBIG } from './magneto.js';
     s += '<g class="nd" opacity="0"><rect class="cb" x="' + (-HW) + '" y="' + (-HH) + '" width="' + (2 * HW) + '" height="' + (2 * HH) + '" rx="20" fill="' + CARD + '" stroke="' + EDGE + '" stroke-width="2"/>' +
       '<rect x="-24" y="-40" width="48" height="48" rx="14" fill="' + AMBER + '" fill-opacity=".16"/>' +
       '<g transform="translate(-16.8 -32.8) scale(1.4)" fill="none" stroke="' + AMBER + '" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">' + ICON[j] + '</g>' +
-      '<text class="lb" x="0" y="38" text-anchor="middle" font-size="24" font-weight="600" fill="' + INK + '">' + LAB[j] + '</text>' +
+      '<text class="lb" x="0" y="38" text-anchor="middle" font-size="24" font-weight="600" fill="' + INK + '">' + cfg.labels.nodes[j] + '</text>' +
       '<circle class="pl" cx="' + (-HW) + '" cy="0" r="7" fill="' + BG + '" stroke="' + AMBER + '" stroke-width="2.5" opacity="0"/>' +
       '<circle class="pr" cx="' + HW + '" cy="0" r="7" fill="' + AMBER + '" stroke="' + BG + '" stroke-width="2.5" opacity="0"/></g>';
   }
