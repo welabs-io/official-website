@@ -11,6 +11,8 @@ import { Plus } from "lucide-react";
 import { GrowItem, GrowRow } from "@/components/motion/Grow";
 import { Card, IconButton } from "@/components/lib/ui";
 import type { Differ } from "@/lib/content/products";
+import { fmt } from "@/lib/i18n/format";
+import { useMessages } from "@/lib/i18n/provider";
 import c from "./differ-cards.module.css";
 
 export function DifferCards({
@@ -21,6 +23,7 @@ export function DifferCards({
   // The details of the product; each card lists the ones it names by index
   details: readonly string[];
 }) {
+  const { headings } = useMessages().products;
   // The card kept open by its +, if any (one at a time)
   const [pinned, setPinned] = useState<number | null>(null);
   return (
@@ -42,7 +45,12 @@ export function DifferCards({
                 <h3 className={c.title}>{d.title}</h3>
                 <IconButton
                   icon={<Plus />}
-                  label={open ? `Fechar: ${d.title}` : `Abrir: ${d.title}`}
+                  label={fmt(
+                    open ? headings.differClose : headings.differOpen,
+                    {
+                      title: d.title,
+                    },
+                  )}
                   emphasis="quiet"
                   className={c.toggle}
                   aria-expanded={open}

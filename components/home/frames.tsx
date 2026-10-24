@@ -36,12 +36,12 @@ import {
   TypingIndicator,
 } from "@/components/scene-kit/TypeIn";
 import {
-  DOMUS_FRAME,
-  KNOWLY_FRAME,
-  MAGNETO_FRAME,
-  RELLOO_FRAME,
-  TUNER_FRAME,
+  COMPACT_MODULES,
+  MAGNETO_STEPS_DONE,
+  TUNER_FRESH_CHANNEL,
+  domusFrameModules,
 } from "@/lib/content";
+import { useMessages } from "@/lib/i18n/provider";
 import { productAlt, productLogo, type ProductSlug } from "@/lib/products";
 import f from "./frames.module.css";
 
@@ -60,15 +60,7 @@ const MODULE_ICON: Record<string, ReactElement> = {
   clipboard: <ClipboardCheck />,
 };
 
-// The modules a narrow frame keeps (the accordion panel): two columns of three
-const COMPACT = new Set([
-  "Financeiro",
-  "Contratos",
-  "Fiscal",
-  "Pessoas",
-  "Chamados",
-  "Vistoria",
-]);
+// The modules a narrow frame keeps (the accordion panel) are COMPACT_MODULES, by id (lib/content/home-v4.ts)
 const USERS = ["relloo", "magneto", "tuner", "knowly"] as const;
 
 // The title bar of a frame: its name, a quiet line beside it and an optional piece at the end
@@ -92,7 +84,10 @@ function Bar({
 
 // DOMUS: OS MÓDULOS E OS QUATRO QUE USAM O NOVO
 function DomusFrame() {
-  const d = DOMUS_FRAME;
+  const msg = useMessages();
+  const d = msg.home.frames.domus;
+  // The legend names the two floors of the house (home.domus)
+  const floors = msg.home.domus;
   return (
     <>
       <Bar
@@ -101,22 +96,22 @@ function DomusFrame() {
         end={
           <span className={f.legend}>
             <span className={f.legendItem} data-kind="standard">
-              {d.standard}
+              {floors.standard}
             </span>
             <span className={f.legendItem} data-kind="custom">
-              {d.custom}
+              {floors.custom}
             </span>
           </span>
         }
       />
       <div className={f.body}>
         <ul className={f.modules} data-modules="">
-          {d.modules.map((m) => (
+          {domusFrameModules(msg).map((m) => (
             <li
-              key={m.name}
+              key={m.id}
               className={f.module}
               data-kind={m.kind}
-              data-wide-only={COMPACT.has(m.name) ? undefined : ""}
+              data-wide-only={COMPACT_MODULES.has(m.id) ? undefined : ""}
             >
               <span className={f.moduleIcon} aria-hidden="true">
                 {MODULE_ICON[m.icon]}
@@ -159,12 +154,13 @@ function DomusFrame() {
 
 // RELLOO: A CONVERSA E A RESPOSTA QUE SE DIGITA
 function RellooFrame() {
-  const r = RELLOO_FRAME;
+  const msg = useMessages();
+  const r = msg.home.frames.relloo;
   return (
     <>
       <Bar
         title={r.title}
-        sub={r.who}
+        sub={msg.shared.who}
         end={
           <Badge variant="success" appearance="soft">
             {r.linked}
@@ -222,8 +218,9 @@ function RellooFrame() {
 
 // MAGNETO: A PROPOSTA PELO CAMINHO DA APROVAÇÃO
 function MagnetoFrame() {
-  const m = MAGNETO_FRAME;
-  const live = m.steps.findIndex((s) => !s.done);
+  const m = useMessages().home.frames.magneto;
+  // The steps done so far come first; the first one that is not done is the live one
+  const live = MAGNETO_STEPS_DONE;
   return (
     <>
       <Bar
@@ -240,10 +237,10 @@ function MagnetoFrame() {
             <li
               key={s.name}
               className={f.step}
-              data-step-state={s.done ? "done" : i === live ? "live" : "next"}
+              data-step-state={i < live ? "done" : i === live ? "live" : "next"}
             >
               <span className={f.stepMark} data-mark={i} aria-hidden="true">
-                {s.done ? <Check /> : null}
+                {i < live ? <Check /> : null}
               </span>
               <span className={f.stepName}>{s.name}</span>
               <span className={f.stepLine}>{s.line}</span>
@@ -274,7 +271,7 @@ const CHANNEL_ICON = [
 ];
 
 function TunerFrame() {
-  const t = TUNER_FRAME;
+  const t = useMessages().home.frames.tuner;
   return (
     <>
       <Bar title={t.title} />
@@ -303,7 +300,7 @@ function TunerFrame() {
             to="[data-thread]"
             inset={0}
             gap={6}
-            state={c.fresh ? "live" : "active"}
+            state={i === TUNER_FRESH_CHANNEL ? "live" : "active"}
           />
         ))}
       </div>
@@ -313,7 +310,7 @@ function TunerFrame() {
 
 // KNOWLY: A RESPOSTA COM A FONTE AO LADO
 function KnowlyFrame() {
-  const k = KNOWLY_FRAME;
+  const k = useMessages().home.frames.knowly;
   return (
     <>
       <Bar title={k.title} />

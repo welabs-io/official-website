@@ -6,7 +6,12 @@
 // subpath for these primitives (its exports map stops at `./ui`), so they come from the `ui` barrel.
 // The lib's Button, Input, InputGroup and Field are NOT re-exported: every button and field of the site goes through the
 // control primitives below (components/lib/ui-boundary.test.ts fails on a raw one).
-import type { ComponentProps, CSSProperties, ReactElement, ReactNode } from "react";
+import type {
+  ComponentProps,
+  CSSProperties,
+  ReactElement,
+  ReactNode,
+} from "react";
 import {
   Button,
   Field,
@@ -20,6 +25,8 @@ export {
   Badge,
   Card,
   CardContent,
+  // The data-driven dropdown of the lib (a trigger and sections of items): the language selector of the header
+  Menu,
   Table,
   TableBody,
   TableCell,
@@ -51,7 +58,10 @@ const EMPHASIS = {
 type Emphasis = keyof typeof EMPHASIS;
 
 type LibButtonProps = ComponentProps<typeof Button>;
-type ButtonBase = Omit<LibButtonProps, "variant" | "appearance" | "asChild" | "children" | "size">;
+type ButtonBase = Omit<
+  LibButtonProps,
+  "variant" | "appearance" | "asChild" | "children" | "size"
+>;
 
 /** A labelled action: icon + text, secondary (soft) unless said otherwise; with `href`, a link drawn as the same
  *  control (a call to action such as "Agendar uma demonstração") */
@@ -111,7 +121,13 @@ export function IconButton({
   size?: keyof typeof ICON_SIZE;
 }) {
   return (
-    <Button type={type} size={ICON_SIZE[size]} aria-label={label} {...EMPHASIS[emphasis]} {...rest}>
+    <Button
+      type={type}
+      size={ICON_SIZE[size]}
+      aria-label={label}
+      {...EMPHASIS[emphasis]}
+      {...rest}
+    >
       <span aria-hidden="true" className="contents">
         {icon}
       </span>
@@ -164,8 +180,18 @@ export function TextField({
   fieldStyle,
   ...input
 }: Omit<ComponentProps<"input">, "size"> & {
-  action?: { icon: ControlIcon; label: string; onClick?: () => void; tabIndex?: number };
-  submit?: { icon: ControlIcon; label: string; onClick?: () => void; tabIndex?: number };
+  action?: {
+    icon: ControlIcon;
+    label: string;
+    onClick?: () => void;
+    tabIndex?: number;
+  };
+  submit?: {
+    icon: ControlIcon;
+    label: string;
+    onClick?: () => void;
+    tabIndex?: number;
+  };
   label?: string;
   size?: "sm" | "md";
   groupClassName?: string;
@@ -174,9 +200,16 @@ export function TextField({
 } & ({ icon: ControlIcon; lead?: never } | { icon?: never; lead: ReactNode })) {
   const group = (
     <InputGroup
-      className={[size === "sm" ? "min-h-control-sm" : "", groupClassName].filter(Boolean).join(" ") || undefined}
+      className={
+        [size === "sm" ? "min-h-control-sm" : "", groupClassName]
+          .filter(Boolean)
+          .join(" ") || undefined
+      }
     >
-      <InputGroupAddon align="inline-start" aria-hidden={lead ? undefined : "true"}>
+      <InputGroupAddon
+        align="inline-start"
+        aria-hidden={lead ? undefined : "true"}
+      >
         {/* A lead (a chip) is a piece of the field: a small control's height, as far from the side as from the top
             and the bottom (app/lib.css CONTROLES) */}
         {lead ? (
@@ -188,7 +221,11 @@ export function TextField({
         )}
       </InputGroupAddon>
       <InputGroupInput
-        className={[size === "sm" ? "text-sm" : "", className].filter(Boolean).join(" ") || undefined}
+        className={
+          [size === "sm" ? "text-sm" : "", className]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
         // The lib's Field links its label to its child (the group here), so the control is also named by the label
         aria-label={input["aria-label"] ?? label}
         {...input}
@@ -208,7 +245,12 @@ export function TextField({
       ) : null}
       {submit ? (
         <InputGroupAddon align="inline-end">
-          <InputGroupButton size="sm" {...EMPHASIS.primary} tabIndex={submit.tabIndex} onClick={submit.onClick}>
+          <InputGroupButton
+            size="sm"
+            {...EMPHASIS.primary}
+            tabIndex={submit.tabIndex}
+            onClick={submit.onClick}
+          >
             <span aria-hidden="true" className="contents">
               {submit.icon}
             </span>

@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { notFound } from "next/navigation";
+import { Document } from "@/app/document";
+import { LOCALES, OG_LOCALE, isLocale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n/messages";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
-// Welabs package tokens (--wl-*)
-import "./brand/welabs.css";
-// The theme of @imagineapps-team/react (Tailwind 4 and the welabs preset), before the site's own sheets
-import "./lib.css";
-import "./globals.css";
 
 // MARCA NO NAVEGADOR
 // Cream browser chrome (the light theme of the brand) and the official favicon; themeColor mirrors --wl-cream (metadata
@@ -14,47 +13,50 @@ export const viewport: Viewport = {
   themeColor: "#FAF5EA",
   colorScheme: "light",
 };
-export const metadata: Metadata = {
-  title: "Welabs",
-  description: "Produtos próprios de software.",
-  metadataBase: new URL("http://localhost:3000"),
-  robots: { index: false, follow: false },
-  icons: WELABS_ICONS,
-  authors: [{ name: "Welabs" }],
-  openGraph: {
-    type: "website",
-    siteName: "Welabs",
-    title: "Welabs",
-    description: "Produtos próprios de software.",
-    locale: "pt_BR",
-  },
-};
 
-export default function RootLayout({
+// IDIOMAS DO SITE
+// The root layout of the site is by locale (pt-BR, en, es). Any other value of the segment is a 404 decided at build
+// time (dynamicParams off), so no unknown locale is ever rendered on demand. pt-BR has no prefix in the address: the
+// rewrites of next.config.mjs serve `/` and `/products/<slug>` from this segment, and `/pt-BR/...` redirects back.
+export const dynamicParams = false;
+export const generateStaticParams = () => LOCALES.map((locale) => ({ locale }));
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const { meta } = getMessages(locale);
+  return {
+    title: meta.title,
+    description: meta.description,
+    metadataBase: new URL("http://localhost:3000"),
+    robots: { index: false, follow: false },
+    icons: WELABS_ICONS,
+    authors: [{ name: "Welabs" }],
+    openGraph: {
+      type: "website",
+      siteName: "Welabs",
+      title: meta.title,
+      description: meta.description,
+      locale: OG_LOCALE[locale],
+      alternateLocale: LOCALES.filter((l) => l !== locale).map(
+        (l) => OG_LOCALE[l],
+      ),
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  // data-theme="light" sits on <html>: it pins the package's light tokens against the system dark preference. There is
-  // no smooth scroll on the page (see app/globals.css): every jump, route change and back or forward is instant
-  return (
-    <html lang="pt-BR" data-theme="light">
-      <head>
-        {/* Inter is the only text face of the brand (the Ibrand lives in the logos); see app/globals.css */}
-        <link
-          rel="preload"
-          as="font"
-          type="font/woff2"
-          href="/fonts/Inter-latin.woff2"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body>
-        <a className="skip-link" href="#main-content">
-          Ir para o conteúdo
-        </a>
-        <main id="main-content">{children}</main>
-      </body>
-    </html>
-  );
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  return <Document locale={locale}>{children}</Document>;
 }

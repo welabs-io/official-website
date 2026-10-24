@@ -13,15 +13,19 @@
 // opacity, clip-path and scroll move; under reduced motion every move is an instant jump.
 import type { useRouter } from "next/navigation";
 import { FLASH, isSlug, open, prepare } from "@/components/intro/intro-run";
+import { stripLocale } from "@/lib/i18n/config";
 import styles from "./descent.module.css";
 
 type Router = ReturnType<typeof useRouter>;
 
+// i18n: an address may carry the locale prefix (/en/products/relloo); the move reads the page without it
 const PRODUCT = "/products/";
-const slugOf = (path: string) =>
-  path.startsWith(PRODUCT)
-    ? path.slice(PRODUCT.length).replace(/\/$/, "")
+const slugOf = (path: string) => {
+  const page = stripLocale(path);
+  return page.startsWith(PRODUCT)
+    ? page.slice(PRODUCT.length).replace(/\/$/, "")
     : null;
+};
 
 type Box = { x: number; y: number; w: number; h: number };
 
@@ -229,7 +233,8 @@ export function install(router: Router, pathname: string) {
     const url = new URL(a.href, location.href);
     if (url.origin !== location.origin || url.hash) return null;
     if (url.pathname === location.pathname) return null;
-    if (url.pathname !== "/" && !url.pathname.startsWith(PRODUCT)) return null;
+    const page = stripLocale(url.pathname);
+    if (page !== "/" && !page.startsWith(PRODUCT)) return null;
     return url;
   }
 

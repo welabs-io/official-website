@@ -16,25 +16,53 @@ const FORMER = {
 // Product hidden for now: its addresses land on the products section (temporary, it may return)
 const HIDDEN = ["malupe", "ecossistema-monitoramento", "operacao-seguranca"];
 
-const productRedirects = (prefix) => [
+// `home` is the locale prefix of the destinations ("" for pt-BR, "/en", "/es"): the same retired slugs redirect inside
+// each locale, so /en/products/rello lands on /en/products/relloo
+const productRedirects = (prefix, home = "") => [
   ...CURRENT.map((slug) => ({
     source: `${prefix}/${slug}`,
-    destination: `/products/${slug}`,
+    destination: `${home}/products/${slug}`,
     permanent: true,
   })),
   ...Object.entries(FORMER).map(([old, slug]) => ({
     source: `${prefix}/${old}`,
-    destination: `/products/${slug}`,
+    destination: `${home}/products/${slug}`,
     permanent: true,
   })),
   ...HIDDEN.map((old) => ({
     source: `${prefix}/${old}`,
-    destination: "/#products",
+    destination: `${home}/#products`,
     permanent: false,
   })),
 ];
 
+// IDIOMAS
+// pt-BR is the default locale and has no prefix: `/` and `/products/<slug>` are served by the locale segment (rewrites
+// below) and the explicit `/pt-BR/...` address redirects back, so a page has one address. en and es are prefixed.
+const PREFIXED = ["en", "es"];
+const localeRedirects = [
+  { source: "/pt-BR", destination: "/", permanent: true },
+  {
+    source: "/pt-BR/products/:slug",
+    destination: "/products/:slug",
+    permanent: true,
+  },
+  ...PREFIXED.flatMap((locale) => [
+    {
+      source: `/${locale}/products`,
+      destination: `/${locale}#products`,
+      permanent: true,
+    },
+    // Retired slugs under the prefixed route (the current ones are real pages)
+    ...productRedirects(`/${locale}/products`, `/${locale}`).filter(
+      (r) =>
+        !CURRENT.some((slug) => r.source === `/${locale}/products/${slug}`),
+    ),
+  ]),
+];
+
 const redirects = [
+  ...localeRedirects,
   { source: "/new", destination: "/", permanent: true },
   // Portuguese routes of the previous site
   { source: "/produtos", destination: "/#products", permanent: true },
@@ -71,6 +99,16 @@ const nextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   async redirects() {
     return redirects;
+  },
+  // pt-BR without a prefix: the two pages of the site are served by the locale segment (app/[locale]) with the default
+  // locale. Runs after the redirects above (retired slugs land on their final address first) and before the files.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: "/", destination: "/pt-BR" },
+        { source: "/products/:slug", destination: "/pt-BR/products/:slug" },
+      ],
+    };
   },
 };
 

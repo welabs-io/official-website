@@ -9,6 +9,7 @@
 // runs on every click, not only on the late ones.
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
+import { stripLocale } from "@/lib/i18n/config";
 
 type Run = typeof import("./descent-run");
 let engine: Run | null = null;
@@ -39,8 +40,9 @@ export function Descent() {
           : null;
       const url = a && new URL(a.href, location.href);
       if (!a || !url || url.origin !== location.origin || url.hash) return;
-      if (url.pathname !== "/" && !url.pathname.startsWith("/products/"))
-        return;
+      // i18n: the page without its locale prefix (/en/products/relloo is the product page like /products/relloo)
+      const page = stripLocale(url.pathname);
+      if (page !== "/" && !page.startsWith("/products/")) return;
       if (url.pathname === location.pathname) return;
       event.preventDefault();
       held = a;

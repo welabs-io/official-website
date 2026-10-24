@@ -4,14 +4,16 @@
 // contact with open questions (v2.1: the door to the next product left; the selector replaces it).
 // v3 (2026-10-23): the carousel of the kit (components/scene-kit, mounted by SceneSlot) replaces both the capability
 // stage of the opening and the interaction of the product (the plays left).
+// i18n: every section receives the locale of the page (`i18n`): its text comes from the dictionary and its links carry
+// the locale prefix.
 import Link from "next/link";
-import { CONTACT_HREF } from "@/components/onepage/contact";
+import { CONTACT_PATH } from "@/components/onepage/contact";
 import { ProductBlock } from "@/components/onepage/ProductBlock";
 import shell from "@/components/onepage/shell.module.css";
 import { SceneSlot } from "@/components/scene-kit/SceneSlot";
-import { NAV, PAGE_HEADINGS, PRODUCT_PAGE } from "@/lib/content";
+import { pageHeadings, productPage } from "@/lib/content";
+import { href, type I18n } from "@/lib/i18n/i18n";
 import {
-  CTA_LABEL,
   PRODUCTS,
   productBySlug,
   productLogo,
@@ -28,15 +30,25 @@ import styles from "./v2.module.css";
 // of the door "Próximo produto" that closed the page. The five logos in their order, the product of the page in ink with
 // the 4 px amber bar under it (the active tab of the ERP front), the others quiet until pointed at. Each one is a link:
 // the descent (components/onepage/descent-run.ts) opens the brand opening of that product from the logo clicked.
-function ProductSwitch({ current }: { current: ProductSlug }) {
+function ProductSwitch({
+  i18n,
+  current,
+}: {
+  i18n: I18n;
+  current: ProductSlug;
+}) {
   return (
     // v2.2: `data-switch` makes a swap here a brand flash, not the whole opening (descent-run.ts)
-    <nav className={styles.switch} aria-label={NAV.switch} data-switch="">
+    <nav
+      className={styles.switch}
+      aria-label={i18n.m.nav.switch}
+      data-switch=""
+    >
       <ul>
         {PRODUCTS.map(({ slug, name }) => (
           <li key={slug} data-p={slug}>
             <Link
-              href={`/products/${slug}`}
+              href={href(i18n, `/products/${slug}`)}
               prefetch={false}
               aria-current={slug === current ? "page" : undefined}
               aria-label={name}
@@ -59,21 +71,31 @@ function ProductSwitch({ current }: { current: ProductSlug }) {
 // The selector of the five products, then the logo as the h1 (the brand opening lands its logo on it), the sentence and
 // the button, and under them the carousel of the product across the whole row (it is drawn at the width of the kit
 // window, the one approved at /lab/scenes/<slug>-carousel).
-export function ProductOpening({ slug }: { slug: ProductSlug }) {
-  const page = PRODUCT_PAGE[slug];
+export function ProductOpening({
+  i18n,
+  slug,
+}: {
+  i18n: I18n;
+  slug: ProductSlug;
+}) {
+  const page = productPage(i18n.m, slug);
   return (
     <div className={`${shell.wrap} ${styles.opening}`}>
-      <ProductSwitch current={slug} />
+      <ProductSwitch i18n={i18n} current={slug} />
       <div className={styles.openingText}>
         <ProductBlock
+          i18n={i18n}
           slug={slug}
           tone="light"
           link={false}
           heading="h1"
           short={page.short}
         />
-        <a href={CONTACT_HREF} className={`${shell.cta} ${shell.ctaBig}`}>
-          {CTA_LABEL}
+        <a
+          href={href(i18n, CONTACT_PATH)}
+          className={`${shell.cta} ${shell.ctaBig}`}
+        >
+          {i18n.m.common.cta}
         </a>
       </div>
       <SceneSlot id={`${slug}-carousel`} className={styles.openingScene} />
@@ -82,24 +104,35 @@ export function ProductOpening({ slug }: { slug: ProductSlug }) {
 }
 
 // ÁREAS DO DOMUS
-export const DomusAreas = () => (
-  <div className={shell.wrap}>
-    <DomusHouse
-      id="area-add-page"
-      title={PAGE_HEADINGS.areas}
-      lead={PAGE_HEADINGS.areasLead}
-    />
-  </div>
-);
+export const DomusAreas = ({ i18n }: { i18n: I18n }) => {
+  const headings = pageHeadings(i18n.m);
+  return (
+    <div className={shell.wrap}>
+      <DomusHouse
+        i18n={i18n}
+        id="area-add-page"
+        title={headings.areas}
+        lead={headings.areasLead}
+      />
+    </div>
+  );
+};
 
 // O PRODUTO ENTRE OS OUTROS
 // The Domus page lights the Relloo (a product working on the Domus); every other page lights itself
-export function ProductCenter({ slug }: { slug: ProductSlug }) {
-  const { title } = PRODUCT_PAGE[slug].center;
+export function ProductCenter({
+  i18n,
+  slug,
+}: {
+  i18n: I18n;
+  slug: ProductSlug;
+}) {
+  const { title } = productPage(i18n.m, slug).center;
   return (
     <div className={shell.wrap}>
       <SectionHead title={title} />
       <Orbit
+        i18n={i18n}
         label={title}
         lit={slug === "domus" ? "relloo" : slug}
         self={slug}
@@ -112,27 +145,41 @@ export function ProductCenter({ slug }: { slug: ProductSlug }) {
 // POR QUE É DIFERENTE: OS DETALHES EM CARTÕES QUE SE ABREM
 // v4 (Cards.dc.html): the details that come with the product live under the three differences of the product, as
 // cards that gain width and open their sentence on hover (DifferCards); they were a plain list in three columns
-export function ProductDetails({ slug }: { slug: ProductSlug }) {
-  const page = PRODUCT_PAGE[slug];
+export function ProductDetails({
+  i18n,
+  slug,
+}: {
+  i18n: I18n;
+  slug: ProductSlug;
+}) {
+  const page = productPage(i18n.m, slug);
   return (
     <div className={shell.wrap}>
-      <SectionHead title={PAGE_HEADINGS.details} variant="strip" />
+      <SectionHead title={pageHeadings(i18n.m).details} variant="strip" />
       <DifferCards differs={page.differs} details={page.details} />
     </div>
   );
 }
 
-// The button of a product's contact: to the contact of the home, never to the band it sits in (v3, F1)
-const PRODUCT_CONTACT_ACTION: ContactAction = {
-  href: CONTACT_HREF,
-  label: CTA_LABEL,
-  kind: "button",
+export const ProductContact = ({
+  i18n,
+  slug,
+}: {
+  i18n: I18n;
+  slug: ProductSlug;
+}) => {
+  // The button of a product's contact: to the contact of the home, never to the band it sits in (v3, F1)
+  const action: ContactAction = {
+    href: href(i18n, CONTACT_PATH),
+    label: i18n.m.common.cta,
+    kind: "button",
+  };
+  return (
+    <ContactBand
+      i18n={i18n}
+      title={pageHeadings(i18n.m).contact(productBySlug(slug)!.name)}
+      asks={productPage(i18n.m, slug).asks}
+      action={action}
+    />
+  );
 };
-
-export const ProductContact = ({ slug }: { slug: ProductSlug }) => (
-  <ContactBand
-    title={PAGE_HEADINGS.contact(productBySlug(slug)!.name)}
-    asks={PRODUCT_PAGE[slug].asks}
-    action={PRODUCT_CONTACT_ACTION}
-  />
-);

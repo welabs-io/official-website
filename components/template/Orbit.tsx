@@ -13,9 +13,11 @@
 // Every product is a link to its page; the product of the page is not a link to itself. Under reduced motion the cycle
 // stays on its first frame (the Domus lit).
 import Link from "next/link";
-import { HOME_INTRO } from "@/lib/content";
+import { introRecord } from "@/lib/content";
+import { href, type I18n } from "@/lib/i18n/i18n";
 import {
   LOGO_INK_X,
+  PRODUCTS,
   productAlt,
   productLogo,
   type ProductSlug,
@@ -32,8 +34,8 @@ const AROUND: readonly Side[] = ["relloo", "magneto", "tuner", "knowly"];
 // Order of the lines of the record: the path of the message of the order 1234
 const LINES: readonly Side[] = ["tuner", "relloo", "knowly", "magneto"];
 
-// Order of the cycle: the product of each word of the title
-const ORDER = HOME_INTRO.words.map((w) => w.product);
+// Order of the cycle: the product of each word of the title (the words turn in the order of the products)
+const ORDER = PRODUCTS.map((p) => p.slug);
 
 // LIGAÇÕES EM SVG
 // v2.2 (audit A06): a tie was a 2 px div of about 40 px with no curve, port or head. Each one is now an SVG curve in a
@@ -92,11 +94,13 @@ function Tie({
 }
 
 export function Orbit({
+  i18n,
   label,
   lit,
   self,
   small = false,
 }: {
+  i18n: I18n;
   label: string;
   // A still stage with this product lit (product page); none on the home, where the stage cycles with the title
   lit?: ProductSlug;
@@ -107,7 +111,8 @@ export function Orbit({
   const still = lit !== undefined;
   // The window of the cycle (0 to 4) a product is lit in
   const turnOf = (slug: ProductSlug) => ORDER.indexOf(slug);
-  const { record } = HOME_INTRO;
+  const record = introRecord(i18n.m);
+  const { stamps } = i18n.m.home.intro;
   const node = (
     slug: ProductSlug,
     className: string,
@@ -123,7 +128,12 @@ export function Orbit({
         {children}
       </span>
     ) : (
-      <Link key={slug} href={`/products/${slug}`} prefetch={false} {...props}>
+      <Link
+        key={slug}
+        href={href(i18n, `/products/${slug}`)}
+        prefetch={false}
+        {...props}
+      >
         {children}
       </Link>
     );
@@ -149,7 +159,7 @@ export function Orbit({
               height={550}
               style={inkX(slug)}
             />
-            <span className={styles.event}>{HOME_INTRO.stamps[slug]}</span>
+            <span className={styles.event}>{stamps[slug]}</span>
           </>,
         ),
       )}
