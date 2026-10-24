@@ -35,6 +35,11 @@ export const STEP_HOLD = 900;
 export const LOOP_HOLD = 1000;
 // A human who stops driving gives the scene back after this long
 export const HUMAN_IDLE = 8000;
+// While the page moves, a step that is due looks again after this long
+export const MOVING_RETRY = 200;
+const moving = () =>
+  typeof document !== "undefined" &&
+  document.documentElement.hasAttribute("data-moving");
 
 // The time each step stays on screen, from `hold`, then the next `at`, then the defaults
 export function stepDurations(steps: readonly SceneStep[]): number[] {
@@ -159,6 +164,13 @@ export class SceneTimeline {
 
   private advance = () => {
     this.stepTimer = null;
+    // v5 (2026-10-24): while a move between pages runs (`data-moving` on <html>, components/onepage/descent-run.ts) the
+    // step waits instead of rendering: the scenes of the page under the brand opening took frames from it (measured on
+    // 709ccb0, production build at 4x CPU: a 50 to 100 ms step render in the middle of the opening)
+    if (moving()) {
+      this.stepTimer = setTimeout(this.advance, MOVING_RETRY);
+      return;
+    }
     if (this.index < this.steps.length - 1) {
       this.index += 1;
       this.commit();

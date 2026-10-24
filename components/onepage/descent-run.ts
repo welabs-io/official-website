@@ -12,7 +12,12 @@
 // The URL is always the real route (`/products/<slug>`), so a product is shareable and opens directly. Only transform,
 // opacity, clip-path and scroll move; under reduced motion every move is an instant jump.
 import type { useRouter } from "next/navigation";
-import { FLASH, isSlug, open, prepare } from "@/components/intro/intro-run";
+import {
+  isSlug,
+  open,
+  prepare,
+  prepareAll,
+} from "@/components/intro/intro-run";
 import styles from "./descent.module.css";
 
 type Router = ReturnType<typeof useRouter>;
@@ -31,28 +36,6 @@ const memory = {
   homeY: null as number | null,
   busy: false,
   path: "",
-};
-
-// The products whose whole opening already played in this visit (sessionStorage, so a reload of the tab keeps it; a
-// browser that refuses the storage simply plays the whole opening again)
-const SEEN_KEY = "welabs-openings";
-const seenSet = (): string[] => {
-  try {
-    return JSON.parse(sessionStorage.getItem(SEEN_KEY) ?? "[]") as string[];
-  } catch {
-    return [];
-  }
-};
-const seen = (slug: string) => seenSet().includes(slug);
-const remember = (slug: string) => {
-  try {
-    sessionStorage.setItem(
-      SEEN_KEY,
-      JSON.stringify([...new Set([...seenSet(), slug])]),
-    );
-  } catch {
-    // No storage: nothing to remember
-  }
 };
 
 // Resolves the moves waiting for the next route to be in the DOM
@@ -81,6 +64,25 @@ const heroLogo = () =>
   document.querySelector<HTMLImageElement>(
     "[data-descent-slot] #product h1 img",
   );
+
+// A PÁGINA NOVA SOB O QUADRO FINAL
+// Resolves once two frames in a row arrive on time (or after `ms`): the long frames of a page that has just been
+// committed (its layout, its images) pass while the closing frame of the opening holds still. The page under the
+// opening is left as it is (hiding it, by content-visibility or visibility, cost a long frame of its own when the sheet
+// closed over it, measured on the production build); its scene clocks wait instead (scene-kit/timeline.ts)
+const calm = (ms = 400) =>
+  new Promise<void>((done) => {
+    const start = performance.now();
+    let last = start;
+    let onTime = 0;
+    const tick = (now: number) => {
+      onTime = now - last < 24 ? onTime + 1 : 0;
+      last = now;
+      if (onTime >= 2 || now - start > ms) done();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
 
 // Ease in and out (cubic): the sheet starts and lands softly
 const ease = (t: number) =>
@@ -117,11 +119,9 @@ function veil() {
 // Wheel and touch scrolling are held while a move runs, so the visitor does not fight the scroll of the move; the page
 // is marked as moving (`data-moving` on <html>), which closes the menu of the header (shell.module.css)
 const hold = (e: Event) => e.preventDefault();
-// v2.2: `wheel` false marks the move without holding the scroll (the brand flash is short enough to leave it free)
-function lockInput(on: boolean, wheel = true) {
+function lockInput(on: boolean) {
   if (on) document.documentElement.dataset.moving = "";
   else delete document.documentElement.dataset.moving;
-  if (on && !wheel) return;
   const fn = on ? window.addEventListener : window.removeEventListener;
   fn("wheel", hold, { passive: false } as AddEventListenerOptions);
   fn("touchmove", hold, { passive: false } as AddEventListenerOptions);
@@ -149,14 +149,9 @@ export function install(router: Router, pathname: string) {
   const prefetched = new Set<string>();
 
   // ENTRAR NUM PRODUTO: A ABERTURA DA MARCA
-  // v2.2 (audit A08): the whole opening only on the first entry into each product of the visit; a later entry, and any
-  // swap by the product selector, plays the brand flash (about 700 ms) and does not hold the wheel
-  async function enter(
-    origin: Element,
-    href: string,
-    slug: string,
-    viaSwitch: boolean,
-  ) {
+  // v4 (operator, 2026-10-24: "depois não abre mais a intro no clique dos produtos"): the whole opening on every entry
+  // into a product, from any link, the product selector included (the short flash of later entries read as no opening)
+  async function enter(origin: Element, href: string, slug: string) {
     memory.busy = true;
     if (!slugOf(location.pathname)) memory.homeY = scrollY;
     if (reduced.matches || !isSlug(slug)) {
@@ -166,17 +161,18 @@ export function install(router: Router, pathname: string) {
       memory.busy = false;
       return;
     }
-    const flash = viaSwitch || seen(slug);
-    remember(slug);
-    lockInput(true, !flash);
+    lockInput(true);
     let playing: Awaited<ReturnType<typeof open>> | null = null;
     try {
-      playing = await open(slug, box(origin), flash);
-      // The page changes only under the full sheet (the opening of its clip)
-      await new Promise((r) => setTimeout(r, flash ? FLASH.open + 20 : 470));
+      playing = await open(slug, box(origin));
+      // v5 (2026-10-24): the next page is committed only when the closing frame holds still, and the closing frame
+      // stays until the frames of that page have passed (measured on 709ccb0, production build: its render was a 50 to
+      // 190 ms frame half a second into the choreography, where it used to be pushed)
+      await playing.closing;
       router.push(href, { scroll: false });
       await committed();
       jump(0);
+      await calm();
       await playing.land(heroLogo());
     } catch {
       // The opening could not load: the page swaps with no move
@@ -241,13 +237,7 @@ export function install(router: Router, pathname: string) {
     const href = url.pathname + url.search;
     const slug = slugOf(url.pathname);
     // The menu closes on its own (SiteNav); the opening grows from the entry that was clicked
-    if (slug)
-      void enter(
-        a.closest("[data-card]") ?? a,
-        href,
-        slug,
-        a.closest("[data-switch]") !== null,
-      );
+    if (slug) void enter(a.closest("[data-card]") ?? a, href, slug);
     else void home(href);
     return true;
   }
@@ -292,6 +282,8 @@ export function install(router: Router, pathname: string) {
   // route inside its own listener, and the sheet must cover before it does
   hooks.pop = onPop;
   hooks.click = follow;
+  // The five openings are fetched while the browser is idle, so a click with no hover before it does not wait for them
+  if (!reduced.matches) prepareAll();
   window.addEventListener("click", onClick, true);
   document.addEventListener("pointerover", onIntent, { passive: true });
   document.addEventListener("focusin", onIntent);

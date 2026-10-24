@@ -1,72 +1,127 @@
 // ABERTURA DE MARCA NA ENTRADA DO PRODUTO
-// v4 (brief-v4, artboard 8 of the canvas, 2026-10-23): the opening is the brand's own logo motion (welabs-io/brand
-// vector/motion/<slug>-light.svg, copied to public/brands/welabs/motion), played once on the canvas of the page
-// (#f7f7f5) from the first frame to the last, with the "by welabs" seal under it. The logo is the vector file at its
-// display size, about 30 % of the window's width (--intro-logo): no transform scale, no camera zoom, no blur, so it
-// stays crisp (the choreographies before it scaled a raster of the logo up in flight and zoomed the camera). It is part
-// of the descent chunk (components/onepage/descent-run.ts, fetched after hydration), and the motion file of each
-// product is fetched when a link to it is pointed at or clicked, so none of it weighs on the initial JS.
+// The player of the five accepted brand openings (the logo forming, each product with its own concept, ~3.9 s from the click to a settled page), ported to
+// native SVG and DOM in this folder. It is part of the descent chunk (components/onepage/descent-run.ts, fetched after
+// hydration), and each opening is a chunk of its own, fetched while the browser is idle after that (`prepareAll`) or
+// when a link to its product is pointed at or clicked, so none of it weighs on the initial JS.
+// v4 (operator, 2026-10-24): the choreographies of v3 are back (v4 had swapped them for the brand's minimal logo motion,
+// whose cream backdrop also covered the top of the "by welabs" seal), on the canvas of the page (--background, #f7f7f5)
+// from the first frame to the last, with the v4 palette (kit.js LIGHT), the choreographies of the round untouched (their
+// own camera), the stage smaller (stageScale) and no blur anywhere. The stage is fitted to the window by CSS `zoom`, not by a
+// transform scale, so the endorsed logo of the closing frame is laid out (and rasterised) at its display size.
 //
-// How an entry plays (the brand cycle is 4.8 s):
-//  1. `open` draws the sheet clipped to the box of what was clicked and opens the clip to the whole window (0.45 s)
-//     while the logo forms: the name opens from left to right (4 -> 34 %), then the product's sign settles (34 -> 86 %).
-//  2. The product is committed and placed under the sheet meanwhile.
-//  3. `land` plays the end of the cycle (86 -> 100 %: the logo fades on the same canvas), removes the sheet and lets
-//     the page come in, 800 ms rising 16 px on the enter curve.
-// A click, a key or the wheel during the opening skips to the formed logo; the end still plays.
-// v2.2 (audit A08): the whole opening plays on the first entry into each product of a visit; later entries, and every
-// swap by the product selector, play the brand flash (FLASH), which starts on the formed logo.
+// How an entry plays:
+//  1. `open` draws the opening on the canvas sheet clipped to the box of what was clicked (a card, a menu entry, the
+//     product selector) and opens the clip to the whole window while the opening already runs (0.45 s).
+//  2. The opening plays whole, to its closing frame (the endorsed logo, "by welabs" seal included, with its amber bar),
+//     and holds it a moment. v5 (2026-10-24): the product is committed under the sheet during that hold (`closing`),
+//     the one stretch where nothing moves, no longer in the middle of the choreography (measured on 709ccb0: the render
+//     of the product page under the sheet was a 50 to 190 ms frame half a second into the opening).
+//  3. `land` fades the closing frame on the same canvas (no logo travels nor scales: v3 flew a raster of the logo, a
+//     large zoom), removes the sheet and lets the page come in by its `[data-descent-slot]`, --dur-enter rising
+//     --rise-enter on --ease-enter.
+// A click, a key or the wheel during the opening skips to its closing frame; the end still plays.
+// v4: the whole opening plays on every entry into a product, from any link, the product selector included (no short
+// flash variant is left: it read as no opening at all).
 import styles from "./intro.module.css";
 
 type Slug = "domus" | "relloo" | "magneto" | "tuner" | "knowly";
+type Module = typeof import("./domus");
+type Box = { x: number; y: number; w: number; h: number };
 
 // LOGOS E CAIXAS
-// The viewBox of the light endorsed file (the logo with its "by welabs" seal) and the height of the motion file, which
-// is the same drawing without the seal, on the same x, width and top (intro.test.ts reads both against the files). The
-// seal is the band of the endorsed file under the motion's height.
-export const BOXES: Record<Slug, { light: number[]; motionHeight: number }> = {
-  domus: { light: [-70.2, -75, 1005.06, 563.28], motionHeight: 434.1 },
-  relloo: { light: [-75, -75, 790.92, 563.28], motionHeight: 434.1 },
-  magneto: { light: [-66, -75, 1287.84, 563.28], motionHeight: 434.1 },
-  tuner: { light: [-65.7, -110.83, 903.97, 599.11], motionHeight: 469.93 },
-  knowly: { light: [-66, -75, 1048.2, 563.28], motionHeight: 434.1 },
+// The round drew each closing logo in the box of its dark endorsed file; the site shows the light endorsed file, which
+// has the same drawing in the same coordinates with the 0.5X protection area around it. `dark` is the box the
+// choreography lays out (its viewBox), `light` the viewBox of the file the site shows; both are checked against the
+// files by intro.test.ts.
+export const BOXES: Record<Slug, { dark: number[]; light: number[] }> = {
+  domus: {
+    dark: [0, -4.8, 864.66, 426.63],
+    light: [-70.2, -75, 1005.06, 563.28],
+  },
+  relloo: { dark: [0, 0, 640.92, 421.83], light: [-75, -75, 790.92, 563.28] },
+  magneto: {
+    dark: [0, -9, 1155.84, 430.83],
+    light: [-66, -75, 1287.84, 563.28],
+  },
+  tuner: {
+    dark: [0, -45.13, 772.57, 466.96],
+    light: [-65.7, -110.83, 903.97, 599.11],
+  },
+  knowly: { dark: [0, -9, 916.2, 430.83], light: [-66, -75, 1048.2, 563.28] },
 };
 
-const motionUrl = (slug: Slug) => `/brands/welabs/motion/${slug}-light.svg`;
-const endorsedUrl = (slug: Slug) => `/brands/welabs/products/${slug}-light-endorsed.svg`;
+const MODULES: Record<Slug, () => Promise<Module>> = {
+  domus: () => import("./domus"),
+  relloo: () => import("./relloo"),
+  magneto: () => import("./magneto-flow"),
+  tuner: () => import("./tuner"),
+  knowly: () => import("./knowly"),
+};
 
-// What an opening needs before it can draw a frame: the text of its motion file (the endorsed file is warmed)
-const cache = new Map<Slug, Promise<string>>();
+const logoUrl = (slug: Slug) => `/brands/welabs/products/${slug}-light.svg`;
+const endorsedUrl = (slug: Slug) =>
+  `/brands/welabs/products/${slug}-light-endorsed.svg`;
+
+// What an opening needs before it can draw a frame: its module and the text of its logo
+type Ready = { mod: Module; logo: string };
+const cache = new Map<Slug, Promise<Ready>>();
 export const isSlug = (s: string | null): s is Slug => s !== null && s in BOXES;
 
 export function prepare(slug: Slug) {
   let ready = cache.get(slug);
   if (!ready) {
     ready = Promise.all([
-      fetch(motionUrl(slug)).then((r) => {
+      MODULES[slug](),
+      fetch(logoUrl(slug)).then((r) => {
         if (!r.ok) throw new Error(`intro: ${r.status}`);
         return r.text();
       }),
-      // Warm the endorsed file, so the seal is decoded before it shows
+      // Warm the endorsed file, so the closing logo is decoded before it shows
       new Promise<void>((done) => {
         const img = new Image();
         img.onload = img.onerror = () => done();
         img.src = endorsedUrl(slug);
       }),
-    ]).then(([motion]) => motion);
+    ]).then(([mod, logo]) => ({ mod, logo }));
     ready.catch(() => cache.delete(slug));
     cache.set(slug, ready);
   }
   return ready;
 }
 
-const out = (t: number) => 1 - (1 - t) ** 3;
-const mix = (a: number, b: number, t: number) => a + (b - a) * t;
+// v5 (2026-10-24): the five openings and their logos are fetched while the browser is idle, one after the other, right
+// after the engine lands (measured on 709ccb0, production build: a click with no hover before it waited for the chunk
+// and the logo, 52 to 104 ms to the first frame of the sheet, against 24 to 60 ms once prepared)
+export function prepareAll() {
+  // Safari has no requestIdleCallback
+  const idle = (run: () => void) =>
+    typeof window.requestIdleCallback === "function"
+      ? window.requestIdleCallback(run, { timeout: 2000 })
+      : window.setTimeout(run, 200);
+  const slugs = Object.keys(BOXES) as Slug[];
+  const next = () => {
+    const slug = slugs.shift();
+    if (slug)
+      idle(() => {
+        void prepare(slug)
+          .catch(() => {})
+          .then(next);
+      });
+  };
+  next();
+}
 
+// Ease out (cubic) for the fade of the closing frame; the openings keep their own eases
+const out = (t: number) => 1 - (1 - t) ** 3;
+
+// v5 (2026-10-24): the clock starts one frame before the first frame, so the first frame is already a step of the tween
+// (it used to draw t = 0 again: the sheet's first frame was at opacity 0, one blank frame added to every click)
+const FRAME_MS = 1000 / 60;
 function tween(ms: number, frame: (t: number) => void) {
   return new Promise<void>((resolve) => {
-    const start = performance.now();
+    let start = -1;
     const tick = (now: number) => {
+      if (start < 0) start = now - FRAME_MS;
       const t = Math.min(1, (now - start) / ms);
       frame(t);
       if (t < 1) requestAnimationFrame(tick);
@@ -77,22 +132,16 @@ function tween(ms: number, frame: (t: number) => void) {
 }
 
 // TEMPOS DA ABERTURA
-// The brand cycle (ms). The file holds the formed logo still from 56 % to 86 % of it and fades it from 86 % to 96 %;
-// the opening holds it until 70 % (SETTLED, plus HOLD) and plays the fade from 86 % (the frames between are the same),
-// so the whole opening stays about the length of the ones before it (~5 s from the click to a settled page)
-const CYCLE = 4800;
-const SETTLED = CYCLE * 0.7;
-const FADE_FROM = CYCLE * 0.86;
-const FADED = CYCLE * 0.96;
-// Milliseconds the formed logo holds before the end plays, of the opening of the sheet, and of the fade
-const HOLD = 200;
+// Seconds the closing frame holds before the end plays, and milliseconds of the opening of the sheet and of the fade of
+// the closing frame. v4 (operator, 2026-10-24: "a cena precisa ser mais rápida"): the choreography plays at SPEED, so
+// the logo formed at ~4.05 s of the round is formed at ~2.5 s, and an entry takes ~3.6 s from the click to a settled
+// page. HOLD is in seconds of the round, like the clock.
+export const SPEED = 1.6;
+const HOLD = 0.25;
 const OPEN_MS = 450;
-const LAND_MS = FADED - FADE_FROM;
-// v2.2 (audit A08): the brand flash of a product already opened in this visit, or of a swap by the product selector:
-// it starts on the formed logo, the sheet opens faster and the end is shorter (about 700 ms from the click to the page)
-export const FLASH = { open: 120, hold: 0, land: 260 } as const;
-// The page comes in under the canvas as the sheet goes (artboard 8: --dur-enter on --ease-enter, rising --rise-enter),
-// read from the tokens of app/lib.css
+const LAND_MS = 260;
+// The page comes in under the canvas as the sheet goes (--dur-enter on --ease-enter, rising --rise-enter), read from the
+// tokens of app/lib.css
 const pageIn = () => {
   const css = getComputedStyle(document.documentElement);
   const token = (name: string) => css.getPropertyValue(name).trim();
@@ -102,96 +151,119 @@ const pageIn = () => {
     easing: token("--ease-enter") || "ease-out",
   };
 };
-// The seal under the logo shows with the name and fades with it (offsets of the brand cycle)
-const SEAL_FRAMES: Keyframe[] = [
-  { offset: 0, opacity: 0 },
-  { offset: 0.34, opacity: 0 },
-  { offset: 0.46, opacity: 1 },
-  { offset: 0.86, opacity: 1 },
-  { offset: 0.96, opacity: 0 },
-  { offset: 1, opacity: 0 },
-];
+
+// ENCAIXE DO PALCO NA JANELA
+// The 1920x1080 stage the round was drawn at, under the header, sized by its closing logo (the light box of the endorsed
+// file): 300 px of a 1440 window from a tablet up (about 21 %), and 56 % of a phone's width, so the logo stays legible
+// there. The stage follows the logo, so the whole opening shrinks with it.
+// v4 (operator, 2026-10-24: "só o tamanho que precisava adequar"): the stage used to fill the window's width, which put
+// the closing logo at about half of it, read as too much zoom; the choreography itself is the round's, untouched.
+// v5 (operator, 2026-10-24: "ainda achei grande [...] compactar esse intro"): 440 -> 300 px of a 1440 window, 72 -> 56 %
+// of a phone.
+// Never larger than its size, nor taller than the room under the header.
+export const LOGO_SHARE = { phone: 0.56, wide: 300 / 1440 } as const;
+export function stageScale(slug: Slug, w: number, h: number, header: number) {
+  const share = w < 768 ? LOGO_SHARE.phone : LOGO_SHARE.wide;
+  const byLogo = (w * share) / BOXES[slug].light[2];
+  return Math.min(byLogo, ((h - header) * 0.94) / 1080, 1);
+}
 
 export type Playing = {
-  // Resolves when the opening reached its formed logo and held it (or was skipped)
+  // Resolves when the closing frame is drawn and holds still (or the opening was skipped to it): the one stretch of the
+  // opening where nothing moves, so a long frame there (the next page rendering under the sheet) shows no stall
+  closing: Promise<void>;
+  // Resolves when the opening reached its closing frame and held it (or was skipped)
   settled: Promise<void>;
-  // Plays the end of the cycle, removes the sheet and brings in the page that holds `target` (the product's logo)
+  // Fades the closing frame, removes the sheet and brings in the page that holds `target` (the product's logo)
   land(target: HTMLElement | null): Promise<void>;
   // Removes everything at once (navigation failed)
   abort(): void;
 };
 
 // O PALCO DA ABERTURA
-// The canvas sheet, and in its centre the motion file in a shadow root (its styles and keyframes stay inside) over the
-// seal band of the endorsed file; every animation of both is paused and driven by one clock
-export async function open(
-  slug: Slug,
-  from: { x: number; y: number; w: number; h: number },
-  // v2.2: the short brand flash instead of the whole opening
-  flash = false,
-): Promise<Playing> {
-  const motion = await prepare(slug);
+// The canvas sheet; in it, the stage at its fitted size, and in the stage the choreography: its scene (with the camera
+// layer `.zoom` of each opening), the wrapper of the light endorsed logo and the amber bar under it
+export async function open(slug: Slug, from: Box): Promise<Playing> {
+  const { mod, logo } = await prepare(slug);
   const box = BOXES[slug];
   const sheet = document.createElement("div");
   sheet.className = styles.sheet;
   sheet.dataset.intro = slug;
+  // Where the opening is: `play` (the choreography moves), `still` (the closing frame holds, nothing moves), `land`
+  sheet.dataset.introPhase = "play";
   sheet.setAttribute("aria-hidden", "true");
-  const mark = document.createElement("div");
-  mark.className = styles.mark;
-  mark.dataset.introLogo = "";
-  mark.style.aspectRatio = `${box.light[2]} / ${box.light[3]}`;
-  const seal = new Image();
-  seal.src = endorsedUrl(slug);
-  seal.alt = "";
-  seal.className = styles.seal;
-  seal.style.clipPath = `inset(${((box.motionHeight / box.light[3]) * 100).toFixed(3)}% 0 0 0)`;
-  const host = document.createElement("div");
-  host.className = styles.motion;
-  host.style.height = `${((box.motionHeight / box.light[3]) * 100).toFixed(3)}%`;
-  const root = host.attachShadow({ mode: "open" });
-  root.innerHTML = `<style>:host{display:block}svg{display:block;width:100%;height:100%}</style>${motion}`;
-  mark.append(seal, host);
-  sheet.append(mark);
+  const frame = document.createElement("div");
+  frame.className = styles.frame;
+  const stage = document.createElement("div");
+  stage.className = styles.stage;
+  stage.dataset.introStage = "";
+  // The logo wrapper is laid out by the choreography in the dark box; the light file sits in it with its own offset
+  const wm = document.createElement("div");
+  wm.className = `wm ${styles.wm}`;
+  wm.dataset.introLogo = "";
+  const img = new Image();
+  img.src = endorsedUrl(slug);
+  img.alt = "";
+  img.className = styles.wmImg;
+  img.style.left = `${box.light[0] - box.dark[0]}px`;
+  img.style.top = `${box.light[1] - box.dark[1]}px`;
+  img.style.width = `${box.light[2]}px`;
+  img.style.height = `${box.light[3]}px`;
+  wm.append(img);
+  const role = document.createElement("div");
+  role.className = `role ${styles.role}`;
+  role.innerHTML = `<span class="bar ${styles.bar}"></span><span class="word"></span>`;
+  stage.append(wm, role);
+  frame.append(stage);
+  sheet.append(frame);
   document.body.append(sheet);
 
-  // Every animation of the motion file and of the seal, paused: the clock sets their time
-  const animations = [
-    ...root.getAnimations(),
-    seal.animate(SEAL_FRAMES, { duration: CYCLE, fill: "both" }),
-  ];
-  for (const a of animations) a.pause();
-  const render = (ms: number) => {
-    for (const a of animations) a.currentTime = Math.min(ms, CYCLE - 1);
-  };
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const header = document.querySelector("header")?.offsetHeight ?? 0;
+  // CSS zoom, not a transform: the stage lays out at its display size, so its vectors and the endorsed file are drawn
+  // crisp at the size they show (a transform scale would rasterise them at 1920x1080 and resample)
+  const scale = stageScale(slug, W, H, header);
+  frame.style.left = `${(W - 1920 * scale) / 2}px`;
+  frame.style.top = `${header + (H - header - 1080 * scale) / 2}px`;
+  stage.style.zoom = String(scale);
 
-  const end = SETTLED + (flash ? FLASH.hold : HOLD);
-  // The flash starts on the formed logo
-  let clock = flash ? SETTLED : 0;
+  const inst = mod.mount(stage, { logo, box: box.dark, safe: 98 });
+  const end = mod.SETTLED + HOLD;
+  let clock = 0;
   let last = performance.now();
   let skip = false;
   let done = false;
   let raf = 0;
   let resolveSettled = () => {};
   const settled = new Promise<void>((r) => (resolveSettled = r));
-  render(clock);
+  let resolveClosing = () => {};
+  const closing = new Promise<void>((r) => (resolveClosing = r));
+  inst.render(clock);
 
-  // A click, a key or the wheel skips to the formed logo
+  // A click, a key or the wheel skips to the closing frame
   const onSkip = (event: Event) => {
-    if (event.type === "wheel" || event.type === "touchmove") event.preventDefault();
+    if (event.type === "wheel" || event.type === "touchmove")
+      event.preventDefault();
     skip = true;
   };
   const opts = { capture: true, passive: false } as AddEventListenerOptions;
   const listen = (on: boolean) => {
     const fn = on ? window.addEventListener : window.removeEventListener;
-    for (const type of ["pointerdown", "keydown", "wheel", "touchmove"]) fn(type, onSkip, opts);
+    for (const type of ["pointerdown", "keydown", "wheel", "touchmove"])
+      fn(type, onSkip, opts);
   };
   listen(true);
 
   const tick = (now: number) => {
-    clock += now - last;
+    clock += ((now - last) / 1000) * SPEED;
     last = now;
-    if (skip) clock = Math.max(clock, SETTLED);
-    render(Math.min(clock, SETTLED));
+    if (skip) clock = Math.max(clock, mod.SETTLED);
+    inst.render(Math.min(clock, mod.SETTLED));
+    if (clock >= mod.SETTLED && sheet.dataset.introPhase === "play") {
+      sheet.dataset.introPhase = "still";
+      resolveClosing();
+    }
     if (clock >= end) {
       done = true;
       resolveSettled();
@@ -204,43 +276,41 @@ export async function open(
     tick(now);
   });
 
-  // The sheet opens from the box of what was clicked to the whole window, rounded like a card on the way
-  const W = window.innerWidth;
-  const H = window.innerHeight;
-  const clip = (t: number) => {
-    const k = out(t);
-    const top = mix(from.y, 0, k);
-    const left = mix(from.x, 0, k);
-    const right = mix(W - from.x - from.w, 0, k);
-    const bottom = mix(H - from.y - from.h, 0, k);
-    sheet.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round ${mix(16, 0, k)}px)`;
-    sheet.style.opacity = String(Math.min(1, t * 4));
-  };
-  // The flash covers the whole window at once, fading in, so the page can change under it sooner
-  const cover = (t: number) => (sheet.style.opacity = String(out(t)));
-  if (flash) {
-    sheet.style.clipPath = "none";
-    cover(0);
-    void tween(FLASH.open, cover);
-  } else {
-    clip(0);
-    void tween(OPEN_MS, clip).then(() => {
-      sheet.style.clipPath = "none";
-    });
-  }
+  // The sheet opens from the box of what was clicked to the whole window, rounded like a card on the way, fading in over
+  // the first quarter. v5 (2026-10-24): by the Web Animations API instead of a clip written on every frame (measured on
+  // the production build at 1440: half the late frames of the first 450 ms), one frame in already on the first frame
+  // (the delay), so the first frame of the sheet is not a blank one. The ease is the cubic ease out of the fades.
+  sheet.animate(
+    [
+      {
+        clipPath: `inset(${from.y}px ${W - from.x - from.w}px ${H - from.y - from.h}px ${from.x}px round 16px)`,
+      },
+      { clipPath: "inset(0px 0px 0px 0px round 0px)" },
+    ],
+    {
+      duration: OPEN_MS,
+      delay: -FRAME_MS,
+      easing: "cubic-bezier(0.33, 1, 0.68, 1)",
+    },
+  );
+  sheet.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration: OPEN_MS / 4,
+    delay: -FRAME_MS,
+  });
 
   return {
+    closing,
     settled,
     async land(target) {
       if (!done) await settled;
+      sheet.dataset.introPhase = "land";
       listen(false);
       cancelAnimationFrame(raf);
-      // The end of the brand cycle: the logo fades on the canvas (the flash plays it faster)
-      await tween(flash ? FLASH.land : LAND_MS, (t) => render(mix(FADE_FROM, FADED, t)));
-      // The whole opening: the page comes in under the same canvas, and the sheet (hidden, so the page shows) stays in
-      // the document until the page has settled, which is what "the opening has left" means to the rest of the site.
-      // The flash only uncovers the page: its rise would double the ~700 ms budget of a swap.
-      const slot = flash ? null : target?.closest<HTMLElement>("[data-descent-slot]");
+      // The closing frame fades on the canvas, then the page comes in under the same canvas; the
+      // sheet (hidden, so the page shows) stays in the document until the page has settled, which is what "the opening
+      // has left" means to the rest of the site
+      await tween(LAND_MS, (t) => (stage.style.opacity = String(1 - out(t))));
+      const slot = target?.closest<HTMLElement>("[data-descent-slot]");
       if (slot) {
         const page = pageIn();
         sheet.style.visibility = "hidden";

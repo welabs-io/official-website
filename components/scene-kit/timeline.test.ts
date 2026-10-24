@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   HUMAN_IDLE,
   LOOP_HOLD,
+  MOVING_RETRY,
   SceneTimeline,
   sceneView,
   stepDurations,
@@ -49,6 +50,26 @@ describe("autoplay", () => {
     expect(t.getSnapshot()).toMatchObject({ id: "a", cycle: 1, mode: "auto" });
     vi.advanceTimersByTime(1000);
     expect(seen).toEqual(["b", "c", "a", "b", "c"]);
+  });
+
+  it("holds the due step while the page moves (data-moving on <html>) and goes on once it stops", () => {
+    let movingNow = true;
+    vi.stubGlobal("document", {
+      documentElement: {
+        hasAttribute: (name: string) => name === "data-moving" && movingNow,
+      },
+    });
+    try {
+      const { t, seen } = run();
+      vi.advanceTimersByTime(500 + 3 * MOVING_RETRY);
+      expect(t.getSnapshot().id).toBe("a");
+      expect(seen).toEqual([]);
+      movingNow = false;
+      vi.advanceTimersByTime(MOVING_RETRY);
+      expect(t.getSnapshot().id).toBe("b");
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("runs no timer while disconnected (off-screen) and resumes where it stopped", () => {

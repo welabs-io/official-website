@@ -6,7 +6,7 @@
 // get: the top of the product in view, never under the fixed header, with no part of the home left; the browser's back button
 // returning to the card that was clicked; and a menu with the five products and the Domus (a drop-down list on a
 // desktop, a panel on a phone). The selector of the products and the logo are in sections-nav.spec.ts.
-// v2.1: every way into a product plays the brand opening of that product (about 5 s) before it lands, so every check of
+// v2.1: every way into a product plays the brand opening of that product (about 3.9 s) before it lands, so every check of
 // the landing waits for the opening to leave (`landed`); the move itself is measured by e2e/transitions.spec.ts.
 import { expect, test, type Page } from "@playwright/test";
 
