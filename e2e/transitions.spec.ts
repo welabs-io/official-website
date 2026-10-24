@@ -29,19 +29,22 @@ async function record(page: Page, ms: number) {
       const t0 = performance.now();
       const tick = () => {
         const sheet = document.querySelector<HTMLElement>("[data-intro]");
-        // A cheap fingerprint of what the opening draws. v4 (brief-v4): the brand's logo motion in the shadow root of the
-        // mark, so the computed transform, opacity and clip of its moving parts (the mv-* classes of the brand file)
-        const shadow = sheet?.querySelector(
-          "[data-intro-logo] > div",
-        )?.shadowRoot;
-        const draw = shadow
-          ? [...shadow.querySelectorAll("[class^='mv-'], [class*=' mv-']")]
-              .slice(0, 6)
-              .map((el) => {
-                const cs = getComputedStyle(el);
-                return `${cs.transform} ${cs.opacity} ${cs.clipPath} ${cs.strokeDashoffset}`;
-              })
-              .join("|")
+        // A cheap fingerprint of what the opening draws. v4 (2026-10-24): the choreography of the product on its stage,
+        // so the camera layer, the first moving pieces of the scene (their transform and opacity attributes) and the
+        // clip of the logo that the wipe opens
+        const stage = sheet?.querySelector<HTMLElement>("[data-intro-stage]");
+        const draw = stage
+          ? [
+              stage.querySelector<HTMLElement>(".zoom")?.style.transform ?? "",
+              ...[...stage.querySelectorAll("svg [transform]")]
+                .slice(0, 6)
+                .map(
+                  (el) =>
+                    `${el.getAttribute("transform")} ${el.getAttribute("opacity")}`,
+                ),
+              stage.querySelector<HTMLElement>("[data-intro-logo]")?.style
+                .clipPath ?? "",
+            ].join("|")
           : "";
         out.push({
           t: Math.round(performance.now() - t0),
@@ -50,10 +53,8 @@ async function record(page: Page, ms: number) {
           opacity: sheet?.style.opacity ?? "",
           draw,
           fly: !!document.querySelector("body > img[class]"),
-          seal: (() => {
-            const img = sheet?.querySelector("[data-intro-logo] img");
-            return img ? getComputedStyle(img).opacity : "";
-          })(),
+          // The closing frame fading on the canvas (the stage, which holds the logo and its seal)
+          seal: stage ? getComputedStyle(stage).opacity : "",
           y: Math.round(scrollY),
           path: location.pathname,
         });
@@ -107,8 +108,8 @@ async function expectOpening(
     expect(withSheet.length, "frames with the flash").toBeLessThan(70);
   }
   // The hand-over. v4 (brief-v4, artboard 8): no logo travels any more (its raster was scaled in flight, which blurred
-  // it); the logo fades on the canvas over several frames (the seal under it follows the brand cycle) and the page
-  // comes in under the same canvas
+  // it); the closing frame (logo and seal) fades on the canvas over several frames and the page comes in under the
+  // same canvas
   expect(
     f.some((x) => x.fly),
     "no travelling logo",
