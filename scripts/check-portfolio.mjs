@@ -147,7 +147,7 @@ assert(
   "every band is marked live (motion pauses off screen)",
 );
 assert(
-  /<h1[\s\S]*?Software para/.test(home),
+  /<h1[\s\S]*?Soluções para/.test(home),
   "the title of the home is its h1",
 );
 // v4 (brief-v4, 2026-10-23): the stage in blades, the chain the scroll walks and the accordion of the products
