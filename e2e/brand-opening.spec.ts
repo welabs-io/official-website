@@ -52,9 +52,11 @@ async function timeTo(page: Page, click: () => Promise<void>) {
   });
 }
 
-// The whole opening takes about 3.9 s from the click to a settled page (measured at SPEED 1.6)
+// The whole opening takes about 3.9 s from the click to a settled page (measured at SPEED 1.6). v5 (2026-10-24): the
+// closing frame holds until the next page has rendered under it (intro-run.ts `closing`, descent-run.ts `calm`), 0.2 to
+// 0.3 s on the production build and 0.4 to 0.7 s on the dev server (measured on 5d82d61: 4.0 to 4.4 s there)
 const WHOLE_MIN_MS = 3000;
-const WHOLE_MAX_MS = 4500;
+const WHOLE_MAX_MS = 5000;
 
 test("whole opening on the first entry, on the selector and on a second entry", async ({
   page,
