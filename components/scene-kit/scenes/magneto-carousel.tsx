@@ -28,8 +28,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ActionButton, Badge } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
-import { CTA_LABEL } from "@/lib/products";
+import { CONTACT_PATH } from "@/components/onepage/contact";
+import { localizePath } from "@/lib/i18n/config";
+import { useI18n } from "@/lib/i18n/provider";
+import type { SceneMessages } from "@/lib/i18n/types";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
@@ -43,18 +45,24 @@ import g from "./magneto-carousel.module.css";
 // check: the proposal is checked; split: two fronts at once. Frame 3, wait: the approval holds, the Domus warned the
 // management; ready: the contract is ready, the signature waits for the approval. Frame 4, retry: approved, the
 // signature goes out through a failure; done: concluded with nothing twice, the order and the contract out; ask: the
-// question and the call to action (the last frame holds 1.7 s, then the loop starts over)
-export const MAGNETO_CAROUSEL_STEPS: readonly SceneStep[] = [
-  { id: "trigger", hold: 1400 },
-  { id: "next", hold: 1200 },
-  { id: "check", hold: 1300 },
-  { id: "split", hold: 1600 },
-  { id: "wait", hold: 1400 },
-  { id: "ready", hold: 1400 },
-  { id: "retry", hold: 1300 },
-  { id: "done", hold: 1300 },
-  { id: "ask", hold: 1700 },
-];
+// question and the call to action (the last frame holds 1.7 s, then the loop starts over). The clock is a function of
+// the scene text like every scene of the kit; no hold here depends on the length of a text, so `_copy` is unused.
+export function magnetoSteps(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for the shared clock signature
+  _copy: SceneMessages<"magneto">,
+): readonly SceneStep[] {
+  return [
+    { id: "trigger", hold: 1400 },
+    { id: "next", hold: 1200 },
+    { id: "check", hold: 1300 },
+    { id: "split", hold: 1600 },
+    { id: "wait", hold: 1400 },
+    { id: "ready", hold: 1400 },
+    { id: "retry", hold: 1300 },
+    { id: "done", hold: 1300 },
+    { id: "ask", hold: 1700 },
+  ];
+}
 
 // The four frames and the steps each groups (the indicator plays from the first one)
 const FRAMES = [
@@ -72,56 +80,8 @@ const frameOf = (step: string): FrameN =>
   ).n;
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
-// v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome
-const FRAME_NAMES = ["Começa sozinho", "Divide", "Espera", "Conclui"] as const;
 // A line types in once its piece has landed (the second piece of a step lands one --dur-1 later, on --dur-3)
 const TYPE_LAND_MS = 400;
-
-// CONTEÚDO DA CENA
-// The text of the approved frames, word for word
-const COPY = {
-  product: "Magneto",
-  title: "Fluxos",
-  label:
-    "Magneto: a proposta começa o fluxo sozinha, ele divide o trabalho, espera a aprovação e conclui sem nada em dobro",
-  flow: "Aprovação de proposta",
-  active: "Ativo",
-  domus: "Domus",
-  tuner: "Tuner",
-  proposal: "Proposta 905",
-  f1: {
-    source: "proposta revisada",
-    started: "Começou sozinho",
-    nobody: "ninguém precisou apertar nada",
-    nextLabel: "Próximo passo",
-    nextStep: "Conferir proposta",
-  },
-  f2: {
-    trigger: "Gatilho",
-    approval: "Aprovação da gerência",
-    now: "agora",
-    contract: "Preparar contrato",
-    same: "ao mesmo tempo",
-  },
-  f3: {
-    waiting: "Aguardando a gerência",
-    warned: "avisou a gerência",
-    ready: "contrato pronto",
-    afterLabel: "Depois da aprovação",
-    afterStep: "Enviar para assinatura",
-  },
-  f4: {
-    approved: "Aprovado",
-    by: "pela gerência",
-    sign: "Enviar para assinatura",
-    failure: "Uma falha no meio",
-    concluded: "Concluído, sem nada em dobro",
-    order: "Pedido 1234 criado",
-    sent: "contrato enviado",
-    // v3 (2026-10-23): no personification ("Como ele sabe...": copy-rules.json `words`), the effect as the question
-    question: "Quanto trabalho é refeito na sua empresa?",
-  },
-};
 
 // PEÇAS DO QUADRO
 // A piece arrives (data-in) when its step is reached; `i` staggers the pieces that arrive on the same step
@@ -284,12 +244,13 @@ function Traces({ scene, children }: { scene: SceneApi; children: ReactNode }) {
 }
 
 function TriggerFrame({ scene, on }: FrameProps) {
+  const copy = useI18n().m.scenes.magneto;
   return (
     <>
       <div className={g.flow} data-flow="" data-layout="row">
         <Piece shown={on("trigger")} data-id="domus">
-          <ProductNode icon={Building2} name={COPY.domus}>
-            <span>{COPY.f1.source}</span>
+          <ProductNode icon={Building2} name={copy.domus}>
+            <span>{copy.f1.source}</span>
           </ProductNode>
         </Piece>
         <Down shown={on("trigger")} />
@@ -300,24 +261,24 @@ function TriggerFrame({ scene, on }: FrameProps) {
           data-id="live"
           data-node="live"
         >
-          <Line icon={<Zap />}>{COPY.f1.started}</Line>
-          <span className={g.figure}>{COPY.proposal}</span>
+          <Line icon={<Zap />}>{copy.f1.started}</Line>
+          <span className={g.figure}>{copy.proposal}</span>
           {/* v4: the line under the live step types in once it has landed, once per loop */}
           <span className={g.liveMeta}>
             {on("trigger") ? (
               <TypeIn
                 key={scene.cycle}
-                text={COPY.f1.nobody}
+                text={copy.f1.nobody}
                 delay={TYPE_LAND_MS}
               />
             ) : (
-              COPY.f1.nobody
+              copy.f1.nobody
             )}
           </span>
         </Piece>
         <Down shown={on("next")} />
         <Piece shown={on("next")} data-id="next">
-          <NextNode label={COPY.f1.nextLabel} name={COPY.f1.nextStep} />
+          <NextNode label={copy.f1.nextLabel} name={copy.f1.nextStep} />
         </Piece>
       </div>
       <Traces scene={scene}>
@@ -333,6 +294,7 @@ function TriggerFrame({ scene, on }: FrameProps) {
 }
 
 function SplitFrame({ scene, on }: FrameProps) {
+  const copy = useI18n().m.scenes.magneto;
   return (
     <>
       <div className={g.flow} data-flow="" data-layout="row">
@@ -343,15 +305,15 @@ function SplitFrame({ scene, on }: FrameProps) {
                 icon={<span className={g.dot} data-tone="done" data-dot="" />}
                 tone="done"
               >
-                {COPY.f2.trigger}
+                {copy.f2.trigger}
               </Line>
-              <b>{COPY.proposal}</b>
+              <b>{copy.proposal}</b>
             </span>
           </span>
         </Piece>
         <Down shown={on("check")} />
         <Piece shown={on("check")} i={1} data-id="check">
-          <DoneNode name={COPY.f1.nextStep} />
+          <DoneNode name={copy.f1.nextStep} />
         </Piece>
         <Down shown={on("split")} />
         <div className={g.fork}>
@@ -362,9 +324,9 @@ function SplitFrame({ scene, on }: FrameProps) {
             data-node="live"
             data-branch=""
           >
-            <LiveHead icon={UserCheck} tone="signal" name={COPY.f2.approval} />
+            <LiveHead icon={UserCheck} tone="signal" name={copy.f2.approval} />
             <Line icon={<span className={g.dot} data-dot="" />}>
-              {COPY.f2.now}
+              {copy.f2.now}
             </Line>
           </Piece>
           <Piece shown={on("split")} i={1} data-id="contract" data-branch="">
@@ -376,13 +338,13 @@ function SplitFrame({ scene, on }: FrameProps) {
                 >
                   <FileText />
                 </span>
-                <b>{COPY.f2.contract}</b>
+                <b>{copy.f2.contract}</b>
               </span>
               <Line
                 icon={<span className={g.dot} data-tone="ring" data-dot="" />}
                 tone="muted"
               >
-                {COPY.f2.same}
+                {copy.f2.same}
               </Line>
             </span>
           </Piece>
@@ -416,11 +378,12 @@ function SplitFrame({ scene, on }: FrameProps) {
 }
 
 function WaitFrame({ scene, on }: FrameProps) {
+  const copy = useI18n().m.scenes.magneto;
   return (
     <>
       <div className={g.flow} data-flow="" data-layout="join">
         <Piece shown={on("wait")} className={g.lead} data-id="check">
-          <DoneNode name={COPY.f1.nextStep} />
+          <DoneNode name={copy.f1.nextStep} />
         </Piece>
         <Down shown={on("wait")} />
         <Piece
@@ -431,10 +394,10 @@ function WaitFrame({ scene, on }: FrameProps) {
           data-node="live"
           data-branch=""
         >
-          <LiveHead icon={UserCheck} tone="ink" name={COPY.f2.approval} />
+          <LiveHead icon={UserCheck} tone="ink" name={copy.f2.approval} />
           <span className={g.waiting} data-axis-pair="" data-axis="waiting">
             <Clock aria-hidden="true" />
-            <span>{COPY.f3.waiting}</span>
+            <span>{copy.f3.waiting}</span>
           </span>
         </Piece>
         <Piece
@@ -448,8 +411,8 @@ function WaitFrame({ scene, on }: FrameProps) {
             <DoneNode
               key="ready"
               pop
-              name={COPY.f2.contract}
-              meta={COPY.f3.ready}
+              name={copy.f2.contract}
+              meta={copy.f3.ready}
             />
           ) : (
             <span key="running" className={g.node} data-axis="contract">
@@ -460,8 +423,8 @@ function WaitFrame({ scene, on }: FrameProps) {
                 <FileText />
               </span>
               <span className={p.stack}>
-                <b>{COPY.f2.contract}</b>
-                <span>{COPY.f2.same}</span>
+                <b>{copy.f2.contract}</b>
+                <span>{copy.f2.same}</span>
               </span>
             </span>
           )}
@@ -474,8 +437,8 @@ function WaitFrame({ scene, on }: FrameProps) {
           data-id="domus"
           data-after=""
         >
-          <ProductNode icon={Building2} name={COPY.domus}>
-            <span>{COPY.f3.warned}</span>
+          <ProductNode icon={Building2} name={copy.domus}>
+            <span>{copy.f3.warned}</span>
           </ProductNode>
         </Piece>
         <Piece
@@ -484,7 +447,7 @@ function WaitFrame({ scene, on }: FrameProps) {
           data-id="next"
           data-after=""
         >
-          <NextNode label={COPY.f3.afterLabel} name={COPY.f3.afterStep} />
+          <NextNode label={copy.f3.afterLabel} name={copy.f3.afterStep} />
         </Piece>
       </div>
       <Traces scene={scene}>
@@ -530,11 +493,13 @@ function WaitFrame({ scene, on }: FrameProps) {
 }
 
 function CloseFrame({ scene, on }: FrameProps) {
+  const { m, locale } = useI18n();
+  const copy = m.scenes.magneto;
   return (
     <>
       <div className={g.flow} data-flow="" data-layout="close">
         <Piece shown={on("retry")} data-id="approved" data-lead="">
-          <DoneNode name={COPY.f4.approved} meta={COPY.f4.by} />
+          <DoneNode name={copy.f4.approved} meta={copy.f4.by} />
         </Piece>
         <Down shown={on("retry")} />
         <Piece
@@ -544,20 +509,20 @@ function CloseFrame({ scene, on }: FrameProps) {
           data-id="live"
           data-node="live"
         >
-          <LiveHead icon={RotateCcw} tone="signal" name={COPY.f4.sign} />
+          <LiveHead icon={RotateCcw} tone="signal" name={copy.f4.sign} />
           <Line icon={<X />} tone="muted">
-            {COPY.f4.failure}
+            {copy.f4.failure}
           </Line>
           <span className={g.reveal} data-in={on("done")}>
             <Line icon={<Check />} tone="done">
               {on("done") ? (
                 <TypeIn
                   key={scene.cycle}
-                  text={COPY.f4.concluded}
+                  text={copy.f4.concluded}
                   caret={false}
                 />
               ) : (
-                COPY.f4.concluded
+                copy.f4.concluded
               )}
             </Line>
           </span>
@@ -565,27 +530,27 @@ function CloseFrame({ scene, on }: FrameProps) {
         <Down shown={on("done")} />
         <div className={`${g.fork} ${g.forkTight}`}>
           <Piece shown={on("done")} data-id="domus" data-branch="">
-            <ProductNode icon={Building2} name={COPY.domus}>
+            <ProductNode icon={Building2} name={copy.domus}>
               <Line icon={<Check />} tone="done">
-                {COPY.f4.order}
+                {copy.f4.order}
               </Line>
             </ProductNode>
           </Piece>
           <Piece shown={on("done")} i={1} data-id="tuner" data-branch="">
-            <ProductNode icon={RadioTower} name={COPY.tuner}>
-              <span>{COPY.f4.sent}</span>
+            <ProductNode icon={RadioTower} name={copy.tuner}>
+              <span>{copy.f4.sent}</span>
             </ProductNode>
           </Piece>
         </div>
         <Piece shown={on("ask")} className={g.ask} data-ask="">
-          <p className={g.question}>{COPY.f4.question}</p>
+          <p className={g.question}>{copy.f4.question}</p>
           <ActionButton
             size="md"
             emphasis="primary"
             icon={<CalendarDays />}
-            href={CONTACT_HREF}
+            href={localizePath(locale, CONTACT_PATH)}
           >
-            {CTA_LABEL}
+            {m.common.cta}
           </ActionButton>
         </Piece>
       </div>
@@ -616,6 +581,7 @@ const FRAME_VIEWS: Record<FrameN, (props: FrameProps) => ReactNode> = {
 };
 
 function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
+  const copy = useI18n().m.scenes.magneto;
   const frame = frameOf(scene.id);
   const on = (step: string) => scene.reached(step);
   return (
@@ -623,7 +589,7 @@ function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
       {/* O CABEÇALHO DO FLUXO: its name and its status (the frame on screen is the chrome's FrameIndicator) */}
       <div className={g.head}>
         <span className={g.headTitle}>
-          <b>{COPY.flow}</b>
+          <b>{copy.flow}</b>
           <Badge variant="success" appearance="soft" className={g.status}>
             <span
               className={g.dot}
@@ -631,7 +597,7 @@ function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
               data-dot=""
               aria-hidden="true"
             />
-            {COPY.active}
+            {copy.active}
           </Badge>
         </span>
       </div>
@@ -659,20 +625,21 @@ function MagnetoCarouselView({ scene }: { scene: SceneApi }) {
 }
 
 export function MagnetoCarousel({ timeline }: { timeline?: SceneTimeline }) {
+  const copy = useI18n().m.scenes.magneto;
   return (
     <Scene
       id="magneto-carousel"
-      label={COPY.label}
-      product={COPY.product}
-      title={COPY.title}
+      label={copy.label}
+      product={copy.product}
+      title={copy.title}
       tools={(scene) => (
         <FrameIndicator
           scene={scene}
           frames={FRAME_STEPS}
-          names={FRAME_NAMES}
+          names={copy.frameNames}
         />
       )}
-      steps={MAGNETO_CAROUSEL_STEPS}
+      steps={magnetoSteps(copy)}
       timeline={timeline}
     >
       {(scene) => <MagnetoCarouselView scene={scene} />}

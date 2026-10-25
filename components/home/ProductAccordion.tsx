@@ -12,10 +12,11 @@ import Link from "next/link";
 import { useState, type ReactElement } from "react";
 import { GrowItem, GrowRow } from "@/components/motion/Grow";
 import { ActionButton, Badge, IconButton } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
-import { HOME_ACCORDION } from "@/lib/content";
+import { CONTACT_PATH } from "@/components/onepage/contact";
+import { accordionPanels } from "@/lib/content";
+import { fmt } from "@/lib/i18n/format";
+import { useHref, useMessages } from "@/lib/i18n/provider";
 import {
-  CTA_LABEL,
   productAlt,
   productBySlug,
   productLogo,
@@ -95,6 +96,9 @@ const GLYPHS: Record<ProductSlug, ReactElement> = {
 };
 
 export function ProductAccordion() {
+  const m = useMessages();
+  const href = useHref();
+  const { accordion } = m.home;
   // The panel whose frame plays (and how many times it opened, to mount the frame again), and the one open on a phone
   const [play, setPlay] = useState<{ slug: ProductSlug; n: number }>({
     slug: "domus",
@@ -106,7 +110,7 @@ export function ProductAccordion() {
 
   return (
     <GrowRow className={a.row} data-accordion="">
-      {HOME_ACCORDION.panels.map((p, i) => {
+      {accordionPanels(m).map((p, i) => {
         const name = productBySlug(p.slug)!.name;
         const phone = phoneOpen === p.slug;
         return (
@@ -122,7 +126,7 @@ export function ProductAccordion() {
           >
             <div className={a.head}>
               <Link
-                href={`/products/${p.slug}`}
+                href={href(`/products/${p.slug}`)}
                 prefetch={false}
                 className={a.logo}
                 data-card={p.slug}
@@ -138,7 +142,10 @@ export function ProductAccordion() {
               <span className={a.toggle}>
                 <IconButton
                   icon={phone ? <X /> : <Plus />}
-                  label={`${phone ? HOME_ACCORDION.close : HOME_ACCORDION.open} ${name}`}
+                  label={fmt(
+                    phone ? accordion.closeLabel : accordion.openLabel,
+                    { name },
+                  )}
                   emphasis="quiet"
                   aria-expanded={phone}
                   onClick={() => {
@@ -172,13 +179,13 @@ export function ProductAccordion() {
                 </ul>
                 <p className={a.question}>{p.question}</p>
                 <ActionButton
-                  href={CONTACT_HREF}
+                  href={href(CONTACT_PATH)}
                   emphasis="primary"
                   size="md"
                   icon={<CalendarDays />}
                   className={a.cta}
                 >
-                  {CTA_LABEL}
+                  {m.common.cta}
                 </ActionButton>
               </div>
               <div className={a.well} data-mini={`panel-${p.slug}`}>

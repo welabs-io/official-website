@@ -1,7 +1,8 @@
 /* QUADROS DOS CINCO PRODUTOS */
 /* components/home/frames.tsx: a white window per product, a size container, so the stage of the opening (wide) and the
    open panel of the accordion (narrow) share one frame. Every value is a token of app/lib.css; the links are the kit's
-   Connector, laid over the positioned body they live in. */
+   Connector, laid over the positioned body they live in. Since 2026-10-24 each frame walks its chain on the kit's
+   clock, so the pieces carry the state of the step (lit, passed, waiting, won, done) and the end of a chain is green. */
 .window {
   container: frame / inline-size;
   position: relative;
@@ -14,6 +15,12 @@
   background: var(--card);
   box-shadow: var(--shadow-pop);
   color: var(--foreground);
+}
+/* Off screen the frame's clock stops (useSceneClock), and so does every animation in it */
+.window[data-on="false"] *,
+.window[data-on="false"] *::before,
+.window[data-on="false"] *::after {
+  animation-play-state: paused;
 }
 
 .bar {
@@ -111,9 +118,11 @@
   background: var(--card);
   box-shadow: var(--edge-ring);
 }
+/* The newest module is born on every loop (rising on the enter curve, once the first blades have left) */
 .module[data-kind="new"] {
   background: var(--success-soft);
   box-shadow: inset 0 0 0 var(--rule-dashed) var(--success);
+  animation: frame-born var(--dur-enter) var(--ease-enter) var(--dur-swap) both;
 }
 .moduleIcon {
   display: inline-flex;
@@ -150,6 +159,14 @@
   border-radius: var(--r-lg);
   background: var(--card);
   box-shadow: var(--edge-ring);
+  transition: box-shadow var(--dur-swap) var(--ease-swap);
+}
+/* A product that already uses the new module: its card in ink, its line read */
+.use[data-lit] {
+  box-shadow: var(--edge-ring-active);
+}
+.use[data-lit] .useLine {
+  color: var(--foreground);
 }
 .useLogo {
   display: block;
@@ -234,10 +251,22 @@
   line-height: var(--line-micro);
   font-weight: var(--weight-title);
   color: var(--muted-foreground);
+  transition:
+    background-color var(--dur-swap) var(--ease-swap),
+    color var(--dur-swap) var(--ease-swap);
+}
+.stage[data-passed] {
+  color: var(--foreground);
 }
 .stage[data-current] {
   background: var(--primary);
   color: var(--primary-foreground);
+  box-shadow: none;
+}
+/* The end of the chain is green, never amber */
+.stage[data-won] {
+  background: var(--success-soft);
+  color: var(--success);
   box-shadow: none;
 }
 
@@ -265,6 +294,9 @@
   height: var(--mark-sm);
   border-radius: var(--r-dot);
   box-shadow: var(--edge-ring);
+  transition:
+    background-color var(--dur-swap) var(--ease-swap),
+    box-shadow var(--dur-swap) var(--ease-swap);
 }
 .stepMark svg {
   width: var(--icon-sm);
@@ -348,53 +380,39 @@
   align-items: flex-start;
   justify-content: center;
   gap: 0;
+  transition:
+    background-color var(--dur-swap) var(--ease-swap),
+    box-shadow var(--dur-swap) var(--ease-swap);
 }
-
-/* Knowly */
-.answerBody {
-  position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-6);
-  padding: var(--sp-4);
-}
-.question {
-  align-self: flex-end;
-  max-width: 80%;
-  margin: 0;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-lg) var(--r-lg) var(--r-xs) var(--r-lg);
-  background: var(--muted);
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-label);
-}
-.answer {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-  border-radius: var(--r-lg);
-  background: var(--card);
-  box-shadow: var(--edge-ring);
-  font-size: var(--t-label);
-  line-height: var(--line-label);
-  font-weight: var(--weight-title);
-}
-.answerIcon {
-  display: inline-flex;
-  padding-top: var(--sp-1);
+/* A channel still to land is quiet; the conversation that holds all three ends green */
+.channel[data-wait] .channelName,
+.channel[data-wait] .channelIcon {
   color: var(--muted-foreground);
 }
-.answerIcon svg {
-  width: var(--icon-md);
-  height: var(--icon-md);
+.hubThread[data-done] {
+  background: var(--success-soft);
+  box-shadow: none;
 }
-.source {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
+
+/* Knowly: the world of the carousel (knowly-carousel.module.css) in the body of the frame. Its origin sits in the
+   middle (no head here), the camera keeps its centre in every frame (no closing column to pan for) and the world is
+   fitted to the frame, the far labels left out as on a phone */
+.graph {
+  --origin-y: 0px;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.graph [data-move][data-frame] {
+  --fx: 0.6;
+  --fy: 0.8;
+  --pan-x: 0px;
+  --pan-y: 0px;
+}
+.graph [data-sm="off"],
+.graph [data-move][data-frame="4"] [data-tone="muted"] {
+  display: none;
 }
 
 /* A narrow frame (the open panel of the accordion): six modules in two columns, the marks without their lines, the
@@ -419,6 +437,10 @@
   .hub {
     gap: var(--sp-6);
   }
+  .graph [data-move][data-frame] {
+    --fx: 0.45;
+    --fy: 0.62;
+  }
 }
 
 @keyframes frame-hide {
@@ -427,9 +449,19 @@
   }
 }
 
+@keyframes frame-born {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise-enter));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .typing {
     animation: none;
     opacity: 0;
+  }
+  .module[data-kind="new"] {
+    animation: none;
   }
 }

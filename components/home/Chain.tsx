@@ -16,13 +16,13 @@ import {
   type ConnectorState,
 } from "@/components/scene-kit/Connector";
 import { TypeIn, typeDuration } from "@/components/scene-kit/TypeIn";
-import { HOME_CHAIN } from "@/lib/content";
+import { CHAIN_ORDER, chainRecord, chainStations } from "@/lib/content";
+import { useMessages } from "@/lib/i18n/provider";
 import { productAlt, productBySlug, productLogo } from "@/lib/products";
 import c from "./chain.module.css";
 
-const STATIONS = HOME_CHAIN.stations;
 // The step after the last station: the order settled in the Domus, its record open
-export const CHAIN_SETTLED = STATIONS.length;
+export const CHAIN_SETTLED = CHAIN_ORDER.length;
 // Where the walk starts (the stage's top at this share of the window) and how much scroll it takes (share of the window)
 const START = 0.7;
 const SPAN = 0.9;
@@ -32,7 +32,7 @@ export function chainStep(top: number, viewport: number) {
   const p = (viewport * START - top) / (viewport * SPAN);
   if (p < 0) return 0;
   if (p >= 1) return CHAIN_SETTLED;
-  return Math.min(STATIONS.length - 1, Math.floor(p * STATIONS.length));
+  return Math.min(CHAIN_ORDER.length - 1, Math.floor(p * CHAIN_ORDER.length));
 }
 
 // State of the trace from station i to station i + 1 at a step
@@ -40,6 +40,9 @@ const traceState = (i: number, step: number): ConnectorState =>
   i < step - 1 ? "active" : i === step - 1 ? "live" : "rest";
 
 export function Chain() {
+  const m = useMessages();
+  const STATIONS = chainStations(m);
+  const record = chainRecord(m);
   const [step, setStep] = useState<number>(CHAIN_SETTLED);
 
   const ref = useCallback((stage: HTMLDivElement | null) => {
@@ -170,7 +173,7 @@ export function Chain() {
               ))}
             </p>
             {settled ? (
-              <p className={c.closing}>{HOME_CHAIN.closing}</p>
+              <p className={c.closing}>{m.home.chain.closing}</p>
             ) : step > 0 ? (
               <ul className={c.chips}>
                 {STATIONS.slice(0, step).map((s) => (
@@ -197,29 +200,32 @@ export function Chain() {
                   appearance="solid"
                   className={c.bubbleChannel}
                 >
-                  {HOME_CHAIN.bubble.channel}
+                  {m.home.chain.bubbleChannel}
                 </Badge>
-                <span className={c.bubbleText}>{HOME_CHAIN.bubble.text}</span>
-                <span className={c.bubbleTime}>{HOME_CHAIN.bubble.time}</span>
+                {/* The message is the one the Relloo frame shows arriving (home.frames.relloo) */}
+                <span className={c.bubbleText}>
+                  {m.home.frames.relloo.incoming}
+                </span>
+                <span className={c.bubbleTime}>
+                  {m.home.frames.relloo.time}
+                </span>
               </p>
             ) : null}
             {settled ? (
               <div className={c.record} data-record="">
                 <span className={c.recordHead}>
-                  <span className={c.recordTitle}>
-                    {HOME_CHAIN.record.title}
-                  </span>
-                  <span className={c.recordWho}>{HOME_CHAIN.record.who}</span>
+                  <span className={c.recordTitle}>{record.title}</span>
+                  <span className={c.recordWho}>{record.who}</span>
                   <Badge
                     variant="success"
                     appearance="soft"
                     className={c.recordTag}
                   >
-                    {HOME_CHAIN.record.tag}
+                    {record.tag}
                   </Badge>
                 </span>
                 <ul className={c.recordLines}>
-                  {HOME_CHAIN.record.lines.map((l) => (
+                  {record.lines.map((l) => (
                     <li key={l.product} className={c.recordLine}>
                       <Check aria-hidden="true" className={c.recordCheck} />
                       <span className={c.recordProduct}>{l.product}</span>

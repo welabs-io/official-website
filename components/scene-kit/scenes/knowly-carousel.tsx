@@ -23,8 +23,10 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { ActionButton } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
-import { CTA_LABEL } from "@/lib/products";
+import { CONTACT_PATH } from "@/components/onepage/contact";
+import { localizePath } from "@/lib/i18n/config";
+import { useI18n } from "@/lib/i18n/provider";
+import type { SceneMessages } from "@/lib/i18n/types";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, SCENE_CURVE, type SceneApi, type SceneStep } from "../Scene";
 import type { SceneTimeline } from "../timeline";
@@ -61,9 +63,14 @@ const BEATS: readonly Beat[] = [
   { id: "done", hold: 2100, zoom: 0.08, move: "drift" },
 ];
 
-export const KNOWLY_CAROUSEL_STEPS: readonly SceneStep[] = BEATS.map(
-  ({ id, hold }) => ({ id, hold }),
-);
+// The clock of the scene. No hold depends on the text here (the graph types nothing), so the dictionary is not read; it is
+// a function only to share the signature of the other scenes (SceneSlot.tsx), and the values are the same in every locale
+export function knowlySteps(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for the shared clock signature
+  _copy: SceneMessages<"knowly">,
+): readonly SceneStep[] {
+  return BEATS.map(({ id, hold }) => ({ id, hold }));
+}
 
 // The steps of each frame, in order
 const FRAMES = [
@@ -85,30 +92,10 @@ const indexOf = (id: string) => BEATS.findIndex((b) => b.id === id);
 export const KNOWLY_TAKE_FROM = "f3-subjects";
 
 // CONTEÚDO DA CENA
-// Generic subjects of the thread (Contato 4821, Proposta 905, Pedido 1234...), no person and no vendor
-const COPY = {
-  product: "Knowly",
-  title: "Memória",
-  label:
-    "Knowly: a memória da empresa como um grafo que cresce, de um assunto até a constelação inteira, com a ligação mais nova em destaque",
-  frames: [
-    "Um assunto nasce",
-    "As ligações crescem",
-    "Outros assuntos se ligam",
-    "A memória inteira",
-  ],
-  zoom: ["Zoom 100%", "Zoom 60%", "Zoom 30%", "Zoom 8%"],
-  close: "O que a sua empresa já decidiu e esqueceu?",
-  closeNote:
-    "Cada fonte nova se liga ao que já existe. Nada se apaga, e cada resposta mostra de onde veio.",
-  newest: "Ligação nova · agora",
-  legend: [
-    { id: "subject", text: "Assunto" },
-    { id: "fact", text: "Fato" },
-    { id: "link", text: "Ligação" },
-    { id: "newest", text: "Mais recente" },
-  ],
-};
+// The words live in the dictionary (lib/i18n/messages/<locale>/scenes/knowly.ts); only the brand and the order of the
+// legend are here. Generic subjects of the thread (Contato 4821, Proposta 905, Pedido 1234...), no person and no vendor
+const PRODUCT = "Knowly";
+const LEGEND_IDS = ["subject", "fact", "link", "newest"] as const;
 
 // OS RÓTULOS
 // A few labels only, each tied to a node (or a point) of the graph and shown in the frames it names: chips in frame 1
@@ -119,7 +106,8 @@ type Tone = "chip" | "subject" | "strong" | "muted" | "note";
 type Label = {
   id: string;
   at: string | { x: number; y: number };
-  text: string;
+  // The key of the text in the dictionary (labels), so a chip and the plain word of the next frame share one string
+  textKey: keyof SceneMessages<"knowly">["labels"];
   frames: readonly FrameN[];
   tone: Tone;
   place: Place;
@@ -141,7 +129,7 @@ const LABELS: readonly Label[] = [
   {
     id: "subject-chip",
     at: "subject",
-    text: "Contato 4821 · manutenção",
+    textKey: "subjectChip",
     frames: [1],
     tone: "subject",
     place: "below",
@@ -149,7 +137,7 @@ const LABELS: readonly Label[] = [
   {
     id: "talk-chip",
     at: "talk",
-    text: "Conversa",
+    textKey: "talk",
     frames: [1],
     tone: "chip",
     place: "center",
@@ -158,7 +146,7 @@ const LABELS: readonly Label[] = [
   {
     id: "visit-chip",
     at: "visit",
-    text: "Vistoria",
+    textKey: "visit",
     frames: [1],
     tone: "chip",
     place: "center",
@@ -167,7 +155,7 @@ const LABELS: readonly Label[] = [
   {
     id: "proposal-chip",
     at: "proposal",
-    text: "Proposta 905",
+    textKey: "proposal",
     frames: [1],
     tone: "chip",
     place: "center",
@@ -176,7 +164,7 @@ const LABELS: readonly Label[] = [
   {
     id: "meeting-chip",
     at: "meeting",
-    text: "Reunião",
+    textKey: "meeting",
     frames: [1],
     tone: "chip",
     place: "center",
@@ -186,7 +174,7 @@ const LABELS: readonly Label[] = [
   {
     id: "talk",
     at: "talk",
-    text: "Conversa",
+    textKey: "talk",
     frames: [2],
     tone: "strong",
     place: "above",
@@ -194,7 +182,7 @@ const LABELS: readonly Label[] = [
   {
     id: "visit",
     at: "visit",
-    text: "Vistoria",
+    textKey: "visit",
     frames: [2],
     tone: "strong",
     place: "above",
@@ -202,7 +190,7 @@ const LABELS: readonly Label[] = [
   {
     id: "proposal",
     at: "proposal",
-    text: "Proposta 905",
+    textKey: "proposal",
     frames: [2],
     tone: "strong",
     place: "right",
@@ -210,7 +198,7 @@ const LABELS: readonly Label[] = [
   {
     id: "meeting",
     at: "meeting",
-    text: "Reunião",
+    textKey: "meeting",
     frames: [2],
     tone: "strong",
     place: "left",
@@ -218,7 +206,7 @@ const LABELS: readonly Label[] = [
   {
     id: "policy",
     at: "policy",
-    text: "Política de serviço",
+    textKey: "policy",
     frames: [2],
     tone: "muted",
     place: "above",
@@ -226,7 +214,7 @@ const LABELS: readonly Label[] = [
   {
     id: "warranty",
     at: "warranty",
-    text: "Garantia",
+    textKey: "warranty",
     frames: [2],
     tone: "muted",
     place: "left",
@@ -235,7 +223,7 @@ const LABELS: readonly Label[] = [
   {
     id: "ticket",
     at: "ticket",
-    text: "Chamado 140",
+    textKey: "ticket",
     frames: [2],
     tone: "muted",
     place: "below",
@@ -244,7 +232,7 @@ const LABELS: readonly Label[] = [
   {
     id: "contract",
     at: "contract",
-    text: "Contrato 52",
+    textKey: "contract",
     frames: [2],
     tone: "muted",
     place: "above",
@@ -253,7 +241,7 @@ const LABELS: readonly Label[] = [
   {
     id: "invoice",
     at: "invoice",
-    text: "Fatura 7710",
+    textKey: "invoice",
     frames: [2],
     tone: "muted",
     place: "below",
@@ -262,7 +250,7 @@ const LABELS: readonly Label[] = [
   {
     id: "order",
     at: "order",
-    text: "Pedido 1234",
+    textKey: "order",
     frames: [2],
     tone: "muted",
     place: "below",
@@ -271,7 +259,7 @@ const LABELS: readonly Label[] = [
   {
     id: "decision",
     at: "decision",
-    text: "Decisão · 2 provas",
+    textKey: "decision",
     frames: [2],
     tone: "note",
     place: "below",
@@ -280,7 +268,7 @@ const LABELS: readonly Label[] = [
   {
     id: "subject",
     at: "subject",
-    text: "Contato 4821",
+    textKey: "subject",
     frames: [3, 4],
     tone: "strong",
     place: "below",
@@ -288,7 +276,7 @@ const LABELS: readonly Label[] = [
   {
     id: "billing",
     at: "billing",
-    text: "Faturamento",
+    textKey: "billing",
     frames: [3, 4],
     tone: "muted",
     place: "above",
@@ -296,7 +284,7 @@ const LABELS: readonly Label[] = [
   {
     id: "rules",
     at: "rules",
-    text: "Normas",
+    textKey: "rules",
     frames: [3, 4],
     tone: "muted",
     place: "above",
@@ -304,7 +292,7 @@ const LABELS: readonly Label[] = [
   {
     id: "block",
     at: "block",
-    text: "Bloco B",
+    textKey: "block",
     frames: [3, 4],
     tone: "muted",
     place: "below",
@@ -312,7 +300,7 @@ const LABELS: readonly Label[] = [
   {
     id: "purchases",
     at: "purchases",
-    text: "Compras",
+    textKey: "purchases",
     frames: [3, 4],
     tone: "muted",
     place: "below",
@@ -320,7 +308,7 @@ const LABELS: readonly Label[] = [
   {
     id: "newest",
     at: NEW_MID,
-    text: COPY.newest,
+    textKey: "newest",
     frames: [4],
     tone: "note",
     place: "above",
@@ -396,6 +384,7 @@ const LinkPath = memo(function LinkPath({
 });
 
 function LabelView({ label, view }: { label: Label; view: View }) {
+  const copy = useI18n().m.scenes.knowly;
   const at = typeof label.at === "string" ? nodeById.get(label.at)! : label.at;
   const shown =
     label.frames.includes(view.frame) &&
@@ -416,7 +405,7 @@ function LabelView({ label, view }: { label: Label; view: View }) {
       style={varStyle({ "--x": Math.round(at.x), "--y": Math.round(at.y) })}
     >
       {Icon ? <Icon aria-hidden="true" /> : null}
-      <span>{label.text}</span>
+      <span>{copy.labels[label.textKey]}</span>
     </span>
   );
 }
@@ -481,17 +470,18 @@ function World({ view, beat }: { view: View; beat: Beat }) {
 
 // The head of the pane: the frame's name and its zoom, every frame's in one cell (the head never changes width)
 function Head({ frame }: { frame: FrameN }) {
+  const copy = useI18n().m.scenes.knowly;
   return (
     <div className={k.head}>
       <span className={k.stack} data-lead="">
-        {COPY.frames.map((name, i) => (
+        {copy.frames.map((name, i) => (
           <b key={name} className={k.frameName} data-in={frame === i + 1}>
             {i + 1} · {name}
           </b>
         ))}
       </span>
       <span className={`${k.stack} ${k.zoom}`}>
-        {COPY.zoom.map((z, i) => (
+        {copy.zoom.map((z, i) => (
           <span key={z} data-in={frame === i + 1}>
             {z}
           </span>
@@ -503,43 +493,45 @@ function Head({ frame }: { frame: FrameN }) {
 
 // O FECHAMENTO: A PERGUNTA E O CONVITE
 function Close({ view }: { view: View }) {
+  const { m, locale } = useI18n();
+  const copy = m.scenes.knowly;
   const done = view.index >= indexOf("done");
   return (
     <div className={k.close} data-in={view.frame === 4}>
       <div className={k.ask} data-ask="" data-in={done}>
         <b className={k.question} data-lead="">
-          {COPY.close}
+          {copy.close}
         </b>
         <span className={k.note} data-lead="">
-          {COPY.closeNote}
+          {copy.closeNote}
         </span>
         <span data-lead="">
           <ActionButton
             emphasis="primary"
             size="md"
             icon={<CalendarDays />}
-            href={CONTACT_HREF}
+            href={localizePath(locale, CONTACT_PATH)}
             tabIndex={done ? undefined : -1}
           >
-            {CTA_LABEL}
+            {m.common.cta}
           </ActionButton>
         </span>
       </div>
       <span className={k.legend} data-lead="">
-        {COPY.legend.map((item) => (
+        {LEGEND_IDS.map((id) => (
           <span
-            key={item.id}
+            key={id}
             className={k.legendItem}
             data-axis="legend"
             data-axis-pair=""
           >
             <span
               className={k.swatch}
-              data-swatch={item.id}
+              data-swatch={id}
               data-dot=""
               aria-hidden="true"
             />
-            <span>{item.text}</span>
+            <span>{copy.legend[id]}</span>
           </span>
         ))}
       </span>
@@ -547,33 +539,56 @@ function Close({ view }: { view: View }) {
   );
 }
 
+// The view of a step of the carousel, from its id (a frame of the home walks a subset of these steps)
+const viewOf = (id: string): View => {
+  const index = Math.max(0, indexOf(id));
+  return { frame: frameOf(BEATS[index].id), index };
+};
+
+// O GRAFO SEM A MOLDURA
+// The world alone, for the Knowly frame of the home (components/home/frames.tsx, operator 2026-10-24: the home shows
+// this graph, not the old answer with its source): the same graph, labels and camera, driven by the frame's own clock,
+// whose steps are a subset of BEATS with their own holds and moves (`beat` overrides them). A new loop fades in over
+// the old one, as in the carousel. It fills its positioned parent.
+export function KnowlyGraphWorld({
+  scene,
+  beat,
+}: {
+  scene: SceneApi;
+  beat?: Partial<Pick<Beat, "hold" | "move">>;
+}) {
+  const view = viewOf(scene.id);
+  return (
+    <AnimatePresence initial={false}>
+      <motion.div
+        key={scene.cycle}
+        className={k.world}
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+          transition: {
+            duration: SCENE_CURVE.dur2 * 1.5,
+            ease: SCENE_CURVE.out,
+          },
+        }}
+        exit={{
+          opacity: 0,
+          transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut },
+        }}
+      >
+        <World view={view} beat={{ ...BEATS[view.index], ...beat }} />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function KnowlyGraphView({ scene }: { scene: SceneApi }) {
   // The hidden copy only holds the window's height (the pane has one fixed height at each width)
   if (scene.ghost) return <div className={k.root} />;
-  const index = Math.max(0, scene.index);
-  const view: View = { frame: frameOf(BEATS[index].id), index };
+  const view = viewOf(scene.id);
   return (
     <div className={k.root} data-frame={view.frame} data-current="true">
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={scene.cycle}
-          className={k.world}
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: 1,
-            transition: {
-              duration: SCENE_CURVE.dur2 * 1.5,
-              ease: SCENE_CURVE.out,
-            },
-          }}
-          exit={{
-            opacity: 0,
-            transition: { duration: SCENE_CURVE.dur2, ease: SCENE_CURVE.inOut },
-          }}
-        >
-          <World view={view} beat={BEATS[index]} />
-        </motion.div>
-      </AnimatePresence>
+      <KnowlyGraphWorld scene={scene} />
       <Head frame={view.frame} />
       <Close view={view} />
     </div>
@@ -581,14 +596,15 @@ function KnowlyGraphView({ scene }: { scene: SceneApi }) {
 }
 
 export function KnowlyCarousel({ timeline }: { timeline?: SceneTimeline }) {
+  const copy = useI18n().m.scenes.knowly;
   return (
     <Scene
       id="knowly-carousel"
-      label={COPY.label}
-      product={COPY.product}
-      title={COPY.title}
+      label={copy.label}
+      product={PRODUCT}
+      title={copy.title}
       tools={(scene) => <FrameIndicator scene={scene} frames={FRAMES} />}
-      steps={KNOWLY_CAROUSEL_STEPS}
+      steps={knowlySteps(copy)}
       timeline={timeline}
     >
       {(scene) => <KnowlyGraphView scene={scene} />}

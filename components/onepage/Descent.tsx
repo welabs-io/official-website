@@ -9,13 +9,18 @@
 // runs on every click, not only on the late ones.
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
+import { publicPath, stripLocale } from "@/lib/i18n/config";
+import { useMessages } from "@/lib/i18n/provider";
 
 type Run = typeof import("./descent-run");
 let engine: Run | null = null;
 
 export function Descent() {
   const router = useRouter();
-  const pathname = usePathname();
+  // The router reports the rewritten path of the default locale (/pt-BR/products/x); the engine compares addresses
+  const pathname = publicPath(usePathname());
+  // i18n: the words the brand openings draw, in the locale of the page (the engine is told again if the locale changes)
+  const { openings } = useMessages();
 
   // The new route is in the DOM: release the moves waiting for it
   useLayoutEffect(() => {
@@ -39,8 +44,9 @@ export function Descent() {
           : null;
       const url = a && new URL(a.href, location.href);
       if (!a || !url || url.origin !== location.origin || url.hash) return;
-      if (url.pathname !== "/" && !url.pathname.startsWith("/products/"))
-        return;
+      // i18n: the page without its locale prefix (/en/products/relloo is the product page like /products/relloo)
+      const page = stripLocale(url.pathname);
+      if (page !== "/" && !page.startsWith("/products/")) return;
       if (url.pathname === location.pathname) return;
       event.preventDefault();
       held = a;
@@ -61,7 +67,7 @@ export function Descent() {
       (mod) => {
         if (dead) return;
         engine = mod;
-        stop = mod.install(router, location.pathname);
+        stop = mod.install(router, location.pathname, openings);
         window.removeEventListener("click", onEarly, true);
         if (held) mod.hooks.click(held);
       },
@@ -78,7 +84,7 @@ export function Descent() {
       stop?.();
       stopReplay?.();
     };
-  }, [router]);
+  }, [router, openings]);
 
   return null;
 }

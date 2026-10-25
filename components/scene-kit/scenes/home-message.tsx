@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { ActionButton, Card } from "@/components/lib/ui";
 import { Avatar, AvatarFallback } from "@/components/lib/scene";
-import { HOME_MESSAGE as H } from "@/lib/content/home";
+import { HOME_MESSAGE as H } from "./home-message-copy";
 import { STORY } from "@/lib/scenes/story";
 import { Connector } from "../Connector";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
@@ -60,7 +60,8 @@ const ORDER = H.stations.map((s) => s.product);
 const COPY = {
   product: "Welabs",
   title: "Operação",
-  label: "Uma mensagem atravessa os cinco produtos e vira um registro do pedido no Domus",
+  label:
+    "Uma mensagem atravessa os cinco produtos e vira um registro do pedido no Domus",
   track: "Caminho da mensagem",
   time: "10:07",
   module: "Domus",
@@ -87,7 +88,13 @@ const FIELDS: readonly { label: string; value: string; from: Product }[] = [
 
 // MARCA DE ÍCONE
 // The lib's Avatar with the icon as its fallback; its tone is painted by app/lib.css
-function Mark({ icon: Icon, tone }: { icon: LucideIcon; tone?: "active" | "done" | "well" | "subject" }) {
+function Mark({
+  icon: Icon,
+  tone,
+}: {
+  icon: LucideIcon;
+  tone?: "active" | "done" | "well" | "subject";
+}) {
   return (
     <Avatar data-tone={tone} aria-hidden="true">
       <AvatarFallback>
@@ -121,7 +128,12 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
             </div>
           </div>
         </div>
-        <ActionButton size="md" emphasis="outline" icon={<Send />} onClick={() => scene.take("tuner")}>
+        <ActionButton
+          size="md"
+          emphasis="outline"
+          icon={<Send />}
+          onClick={() => scene.take("tuner")}
+        >
           {H.send}
         </ActionButton>
       </div>
@@ -130,11 +142,29 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
       <ol className={h.track} aria-label={COPY.track} data-track="">
         {H.stations.map((s) => {
           const { name, icon } = PRODUCT[s.product];
-          const state = scene.is(s.product) ? "active" : scene.reached(s.product) ? "done" : "waiting";
+          const state = scene.is(s.product)
+            ? "active"
+            : scene.reached(s.product)
+              ? "done"
+              : "waiting";
           return (
-            <li key={s.product} className={h.station} data-station={s.product} data-state={state}>
+            <li
+              key={s.product}
+              className={h.station}
+              data-station={s.product}
+              data-state={state}
+            >
               <span className={h.stationMark}>
-                <Mark icon={icon} tone={state === "active" ? "active" : state === "done" ? "done" : "well"} />
+                <Mark
+                  icon={icon}
+                  tone={
+                    state === "active"
+                      ? "active"
+                      : state === "done"
+                        ? "done"
+                        : "well"
+                  }
+                />
               </span>
               <b>{name}</b>
               {/* The effect shows once the message reached the product; it keeps its place before */}
@@ -150,13 +180,23 @@ function HomeMessageView({ scene }: { scene: SceneApi }) {
       <Card flush className={h.record} data-record="">
         <div className={h.head} data-header-root="">
           <div className={h.headMain} data-align="record" data-axis="record">
-            <span className={h.identity} data-header="identity" aria-hidden="true">
+            <span
+              className={h.identity}
+              data-header="identity"
+              aria-hidden="true"
+            >
               <Package />
             </span>
             <span className={h.headText} data-header="block">
               <span className={h.headTop}>
                 <b data-header="title">{H.record}</b>
-                <span key={status.label} className={h.state} data-tone={status.tone} data-header="status" data-axis-pair="">
+                <span
+                  key={status.label}
+                  className={h.state}
+                  data-tone={status.tone}
+                  data-header="status"
+                  data-axis-pair=""
+                >
                   <span className={h.dot} data-dot="" aria-hidden="true" />
                   {status.label}
                 </span>

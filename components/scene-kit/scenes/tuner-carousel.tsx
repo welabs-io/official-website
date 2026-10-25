@@ -9,7 +9,8 @@
 // so the window keeps the height of the tallest, and the live layer holds the current frame and, during its first step,
 // the one leaving, so a frame never cuts to the next (it leaves on the in-out curve, the next enters on the out curve,
 // its pieces land on the spring). The frame indicator (1 to 4, the kit's FrameIndicator) lives in the chrome bar. Amber: one piece per frame
-// (the message, the send in flight, the read now, the answer). This file only renders from `scene`.
+// (the message, the send in flight, the read now, the answer). This file only renders from `scene`; every word comes
+// from the dictionary of the page (m.scenes.tuner), the glyphs, tones and step ids stay here.
 import {
   CalendarDays,
   Check,
@@ -27,8 +28,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ActionButton, Badge, RowButton } from "@/components/lib/ui";
-import { CONTACT_HREF } from "@/components/onepage/contact";
-import { CTA_LABEL } from "@/lib/products";
+import { CONTACT_PATH } from "@/components/onepage/contact";
+import { localizePath } from "@/lib/i18n/config";
+import { useI18n } from "@/lib/i18n/provider";
+import type { SceneMessages } from "@/lib/i18n/types";
 import { Connector } from "../Connector";
 import { FrameIndicator } from "../FrameIndicator";
 import { Scene, type SceneApi, type SceneStep } from "../Scene";
@@ -41,8 +44,9 @@ import t from "./tuner-carousel.module.css";
 // Two steps per frame: message (the Magneto's message lands) and handed (it reaches the Tuner); fanout (the Tuner
 // sends it through the three channels) and sent (every channel took it); delivered (each one reports sent and
 // delivered) and read (two were read, one of them now); reply (the answer arrives) and done (it is in the right
-// conversation, the frame settles with the question and the button, 1.8 s)
-export const TUNER_CAROUSEL_STEPS: readonly SceneStep[] = [
+// conversation, the frame settles with the question and the button, 1.8 s). No hold depends on the text, so the copy is
+// not read; the scene still takes it so every scene's clock has the same shape (see SceneSlot)
+const TUNER_STEPS: readonly SceneStep[] = [
   { id: "message", hold: 1500 },
   { id: "handed", hold: 1500 },
   { id: "fanout", hold: 1400 },
@@ -53,12 +57,20 @@ export const TUNER_CAROUSEL_STEPS: readonly SceneStep[] = [
   { id: "done", hold: 1800 },
 ];
 
-// The four frames of the carousel, each with its steps and the caption of the chrome bar
+export function tunerSteps(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for the shared clock signature
+  _copy: SceneMessages<"tuner">,
+): readonly SceneStep[] {
+  return TUNER_STEPS;
+}
+
+// The four frames of the carousel, each with its steps (the name and the caption of the chrome bar are text:
+// copy.frames, by position)
 const FRAMES = [
-  { steps: ["message", "handed"], caption: "Envio da Proposta 905" },
-  { steps: ["fanout", "sent"], caption: "Envio da Proposta 905" },
-  { steps: ["delivered", "read"], caption: "Envio da Proposta 905" },
-  { steps: ["reply", "done"], caption: "Recebimento" },
+  { steps: ["message", "handed"] },
+  { steps: ["fanout", "sent"] },
+  { steps: ["delivered", "read"] },
+  { steps: ["reply", "done"] },
 ] as const;
 
 // The step a human take jumps to (a channel of frame 2, or one of the other channels of frame 4): the scene replays
@@ -72,65 +84,35 @@ const frameOf = (step: string) =>
   );
 // The steps of each frame, for the chrome's frame indicator (the kit's FrameIndicator)
 const FRAME_STEPS = FRAMES.map((f) => f.steps);
-// v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome
-const FRAME_NAMES = ["Mensagem", "Envio", "Leitura", "Resposta"] as const;
 // The note of a live card types in once the card has landed (the frame's entry)
 const TYPE_LAND_MS = 400;
 
-// CONTEÚDO DA CENA
-const COPY = {
-  product: "Tuner",
-  title: "Canais",
-  label:
-    "Tuner: uma mensagem sai por todos os canais de uma vez, a leitura volta por canal e a resposta cai na conversa certa",
-  magneto: { title: "Magneto", meta: "pede o envio" },
-  tuner: { title: "Tuner", meta: "central de canais" },
-  message: {
-    eyebrow: "Uma mensagem · 17:03",
-    figure: "Proposta 905",
-    note: "para o Contato 4821, onde ele estiver",
-  },
-  inFlight: "1 envio",
-  sending: "Enviando",
-  sent: "Enviado",
-  delivered: "Entregue",
-  readNow: "Lido agora",
-  read: "Lido",
-  stat: { figure: "3", note: "canais no mesmo envio" },
-  replyFrom: { title: "Mensagem", meta: "dia 4 · 11:20" },
-  reply: {
-    eyebrow: "Resposta recebida",
-    figure: "Aceito",
-    note: "volta para a conversa certa, venha de onde vier",
-  },
-  relloo: { title: "Relloo", meta: "Conversa 2210" },
-  more: "E mais canais",
-  ask: "Quais canais a sua empresa usaria?",
-};
-
-// The three channels of the send, with the glyphs of the approved frames
-const CHANNELS: readonly { key: string; name: string; icon: LucideIcon }[] = [
-  { key: "email", name: "E-mail", icon: Mail },
-  { key: "message", name: "Mensagem", icon: MessageCircle },
-  { key: "integration", name: "Integração", icon: Plug },
+// CANAIS DA CENA
+// The three channels of the send, with the glyphs of the approved frames (the name of each, by position, is
+// copy.channels)
+const CHANNELS: readonly { key: string; icon: LucideIcon }[] = [
+  { key: "email", icon: Mail },
+  { key: "message", icon: MessageCircle },
+  { key: "integration", icon: Plug },
 ];
 
 // What each channel reports in frame 3, after sent and delivered: the e-mail is read now (the live piece), the message
-// was read (done, green), the integration stays delivered
+// was read (done, green), the integration stays delivered. `label` names the key of the text in the dictionary
 const READ: Record<
   string,
-  { label: string; tone: "live" | "done" } | undefined
+  { label: "readNow" | "read"; tone: "live" | "done" } | undefined
 > = {
-  email: { label: COPY.readNow, tone: "live" },
-  message: { label: COPY.read, tone: "done" },
+  email: { label: "readNow", tone: "live" },
+  message: { label: "read", tone: "done" },
 };
 
-// The other channels of the Tuner (frame 4)
-const MORE: readonly { name: string; icon: LucideIcon }[] = [
-  { name: "Voz", icon: Phone },
-  { name: "Videochamada", icon: Video },
-  { name: "Comunidade", icon: Hash },
-  { name: "Chat do site", icon: Globe },
+// The other channels of the Tuner (frame 4), with their glyphs (the name of each, by position, is
+// copy.moreChannels)
+const MORE: readonly { icon: LucideIcon }[] = [
+  { icon: Phone },
+  { icon: Video },
+  { icon: Hash },
+  { icon: Globe },
 ];
 
 type FrameProps = {
@@ -210,20 +192,21 @@ function LiveCard({
 
 // QUADRO 1: A MENSAGEM
 function MessageFrame({ at, traced }: FrameProps) {
+  const copy = useI18n().m.scenes.tuner;
   return (
     <div className={t.flow} data-band="">
       <Node
         id="magneto"
         icon={Workflow}
-        title={COPY.magneto.title}
-        meta={COPY.magneto.meta}
+        title={copy.magneto.title}
+        meta={copy.magneto.meta}
       />
-      <LiveCard data-message="" {...COPY.message} />
+      <LiveCard data-message="" {...copy.message} />
       <Node
         id="tuner"
         icon={RadioTower}
-        title={COPY.tuner.title}
-        meta={COPY.tuner.meta}
+        title={copy.tuner.title}
+        meta={copy.tuner.meta}
         waiting={!at("handed")}
       />
       {traced ? (
@@ -242,24 +225,25 @@ function MessageFrame({ at, traced }: FrameProps) {
 
 // QUADRO 2: O ENVIO POR TODOS OS CANAIS
 function SendFrame({ scene, at, traced }: FrameProps) {
+  const copy = useI18n().m.scenes.tuner;
   const sent = at("sent");
   return (
     <div className={t.fan} data-band="">
       <div className={t.hub} data-hub="">
         <InkMark icon={RadioTower} large />
-        <b>{COPY.tuner.title}</b>
+        <b>{copy.tuner.title}</b>
         <Badge
           variant="neutral"
           appearance="soft"
           className={t.flight}
           data-tone="live"
         >
-          {COPY.inFlight}
+          {copy.inFlight}
         </Badge>
       </div>
       {/* Each channel is a row, a control that replays the send from here */}
       <ul className={`${p.rowStates} ${t.channels}`}>
-        {CHANNELS.map((c) => (
+        {CHANNELS.map((c, i) => (
           <li key={c.key}>
             <RowButton
               icon={<c.icon />}
@@ -270,7 +254,7 @@ function SendFrame({ scene, at, traced }: FrameProps) {
               data-axis="channel"
               onClick={() => scene.take(TAKE_FROM)}
             >
-              <span className={t.channelName}>{c.name}</span>
+              <span className={t.channelName}>{copy.channels[i]}</span>
               <Badge
                 key={sent ? "sent" : "sending"}
                 variant="neutral"
@@ -279,15 +263,15 @@ function SendFrame({ scene, at, traced }: FrameProps) {
                 data-sent={sent}
               >
                 {sent ? <Check aria-hidden="true" /> : null}
-                {sent ? COPY.sent : COPY.sending}
+                {sent ? copy.sent : copy.sending}
               </Badge>
             </RowButton>
           </li>
         ))}
       </ul>
       <span className={t.stat} data-shown={sent}>
-        <b className={t.figure}>{COPY.stat.figure}</b>
-        <span>{COPY.stat.note}</span>
+        <b className={t.figure}>{copy.stat.figure}</b>
+        <span>{copy.stat.note}</span>
       </span>
       {traced
         ? CHANNELS.map((c) => (
@@ -305,26 +289,27 @@ function SendFrame({ scene, at, traced }: FrameProps) {
 
 // QUADRO 3: A LEITURA POR CANAL
 function ReadFrame({ at }: FrameProps) {
+  const copy = useI18n().m.scenes.tuner;
   const read = at("read");
   return (
     <ul className={t.tracks} data-band="">
-      {CHANNELS.map((c) => {
+      {CHANNELS.map((c, i) => {
         const last = read ? READ[c.key] : undefined;
         return (
           <li key={c.key} className={t.track} data-track={c.key}>
             <span className={t.trackHead} data-axis="track">
               <InkMark icon={c.icon} large />
-              <b>{c.name}</b>
+              <b>{copy.channels[i]}</b>
             </span>
             <span className={t.stops}>
               <Badge variant="neutral" appearance="soft" className={t.stop}>
                 <Check aria-hidden="true" />
-                {COPY.sent}
+                {copy.sent}
               </Badge>
               <span className={t.line} aria-hidden="true" />
               <Badge variant="neutral" appearance="soft" className={t.stop}>
                 <Check aria-hidden="true" />
-                {COPY.delivered}
+                {copy.delivered}
               </Badge>
               {last ? (
                 <>
@@ -340,7 +325,7 @@ function ReadFrame({ at }: FrameProps) {
                     data-tone={last.tone}
                   >
                     <CheckCheck aria-hidden="true" />
-                    {last.label}
+                    {copy[last.label]}
                   </Badge>
                 </>
               ) : null}
@@ -354,6 +339,8 @@ function ReadFrame({ at }: FrameProps) {
 
 // QUADRO 4: A RESPOSTA NA CONVERSA CERTA E O CONVITE
 function ReplyFrame({ scene, at, traced }: FrameProps) {
+  const { m, locale } = useI18n();
+  const copy = m.scenes.tuner;
   const done = at("done");
   return (
     <>
@@ -361,15 +348,15 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
         <Node
           id="message"
           icon={MessageCircle}
-          title={COPY.replyFrom.title}
-          meta={COPY.replyFrom.meta}
+          title={copy.replyFrom.title}
+          meta={copy.replyFrom.meta}
         />
-        <LiveCard data-reply="" {...COPY.reply} />
+        <LiveCard data-reply="" {...copy.reply} />
         <Node
           id="relloo"
           icon={MessagesSquare}
-          title={COPY.relloo.title}
-          meta={COPY.relloo.meta}
+          title={copy.relloo.title}
+          meta={copy.relloo.meta}
           waiting={!done}
         />
         {traced ? (
@@ -385,28 +372,28 @@ function ReplyFrame({ scene, at, traced }: FrameProps) {
       </div>
       {/* The other channels: each one replays the send */}
       <div className={t.more} data-band="" data-more="">
-        <span className={t.moreLabel}>{COPY.more}</span>
-        {MORE.map((m) => (
+        <span className={t.moreLabel}>{copy.more}</span>
+        {MORE.map((channel, i) => (
           <ActionButton
-            key={m.name}
-            icon={<m.icon />}
+            key={copy.moreChannels[i]}
+            icon={<channel.icon />}
             emphasis="outline"
             size="md"
             onClick={() => scene.take(TAKE_FROM)}
           >
-            {m.name}
+            {copy.moreChannels[i]}
           </ActionButton>
         ))}
       </div>
       <div className={t.ask} data-band="" data-ask="">
-        <b>{COPY.ask}</b>
+        <b>{copy.ask}</b>
         <ActionButton
           emphasis="primary"
           size="md"
           icon={<CalendarDays />}
-          href={CONTACT_HREF}
+          href={localizePath(locale, CONTACT_PATH)}
         >
-          {CTA_LABEL}
+          {m.common.cta}
         </ActionButton>
       </div>
     </>
@@ -446,7 +433,7 @@ function TunerCarouselView({ scene }: { scene: SceneApi }) {
       <div className={t.root}>
         {FRAMES.map((f, i) => (
           <Frame
-            key={f.caption + i}
+            key={f.steps[0]}
             index={i}
             phase="still"
             scene={scene}
@@ -492,22 +479,31 @@ function TunerCarouselView({ scene }: { scene: SceneApi }) {
 // INDICADOR DE QUADRO
 // In the chrome bar, as in the frames: the caption of the frame, then the kit's frame indicator
 function FrameTools({ scene }: { scene: SceneApi }) {
+  const copy = useI18n().m.scenes.tuner;
   return (
     <span className={t.indicator}>
-      <span className={t.caption}>{FRAMES[frameOf(scene.id)].caption}</span>
-      <FrameIndicator scene={scene} frames={FRAME_STEPS} names={FRAME_NAMES} />
+      <span className={t.caption}>
+        {copy.frames[frameOf(scene.id)].caption}
+      </span>
+      {/* v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome */}
+      <FrameIndicator
+        scene={scene}
+        frames={FRAME_STEPS}
+        names={copy.frames.map((f) => f.name)}
+      />
     </span>
   );
 }
 
 export function TunerCarousel({ timeline }: { timeline?: SceneTimeline }) {
+  const copy = useI18n().m.scenes.tuner;
   return (
     <Scene
       id="tuner-carousel"
-      label={COPY.label}
-      product={COPY.product}
-      title={COPY.title}
-      steps={TUNER_CAROUSEL_STEPS}
+      label={copy.label}
+      product={copy.product}
+      title={copy.title}
+      steps={tunerSteps(copy)}
       timeline={timeline}
       tools={(scene) => <FrameTools scene={scene} />}
     >

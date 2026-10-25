@@ -12,14 +12,15 @@
 import type { MouseEvent } from "react";
 import { Check } from "lucide-react";
 import { SegmentedControl } from "@/components/lib/scene";
+import { useMessages } from "@/lib/i18n/provider";
 import type { SceneApi } from "./Scene";
 import f from "./frame-indicator.module.css";
 
 export function FrameIndicator({
   scene,
   frames,
-  label = "Momentos",
-  option = "Momento",
+  label: labelProp,
+  option: optionProp,
   names,
 }: {
   scene: SceneApi;
@@ -31,6 +32,10 @@ export function FrameIndicator({
   // The name of each moment, shown in place of its number from 768 px up (v4 stage tabs)
   names?: readonly string[];
 }) {
+  // The words of the group come from the dictionary of the page unless the scene names its own (common.frameIndicator)
+  const { frameIndicator } = useMessages().common;
+  const label = labelProp ?? frameIndicator.label;
+  const option = optionProp ?? frameIndicator.option;
   const current = Math.max(
     0,
     frames.findIndex((steps) => steps.includes(scene.id)),

@@ -7,8 +7,9 @@
 //    character per ~18 ms and shows its caret;
 //  - Reveal rises 12 to 20 px with no blur nor scale, staggered by 80 ms, and does not move under reduced motion;
 //  - a card of a GrowRow gains width by flex-grow (never scale) over ~700 ms;
-//  - the brand opening keeps the canvas (#f7f7f5) in every frame, has no CSS blur anywhere, and its logo stays at ~30 %
-//    of the window's width, never scaled by a transform.
+//  - the brand opening keeps the canvas (#f7f7f5) in every frame, has no CSS blur anywhere, and its closing logo (the
+//    endorsed vector file) is never scaled by a transform nor changes size once shown. v4 (2026-10-24): the opening is
+//    the choreography of the product again, so the logo is the closing frame of a scene, at ~30 % of a wide window.
 import { expect, test, type Page } from "@playwright/test";
 
 const LAB = "/lab/foundation";
@@ -241,10 +242,12 @@ test.describe("GrowRow", () => {
 
 test.describe("brand opening", () => {
   for (const viewport of [
-    { width: 1440, height: 900, min: 0.25, max: 0.35 },
-    { width: 390, height: 844, min: 0.4, max: 0.7 },
+    // The relloo mark (its dark box, 640.92 of the 790.92 light box): v5, the light box at 300/1440 of the width, 0.169,
+    // and at 56 % of a phone, 0.454
+    { width: 1440, height: 900, min: 0.16, max: 0.18 },
+    { width: 390, height: 844, min: 0.44, max: 0.47 },
   ])
-    test(`on the canvas in every frame, no blur, the logo at ~30 % unscaled, at ${viewport.width}`, async ({ page }) => {
+    test(`on the canvas in every frame, no blur, the logo at its share unscaled, at ${viewport.width}`, async ({ page }) => {
       test.setTimeout(40_000);
       await page.setViewportSize(viewport);
       await page.goto("/", { waitUntil: "load" });
@@ -257,15 +260,22 @@ test.describe("brand opening", () => {
         const tick = () => {
           const sheet = document.querySelector<HTMLElement>("[data-intro]");
           if (sheet) {
+            // v4 (2026-10-24): the mark is the wrapper of the endorsed file in the choreography's stage
             const mark = sheet.querySelector<HTMLElement>("[data-intro-logo]")!;
-            const shadow = mark.querySelector("div")?.shadowRoot;
-            const all = [sheet, ...sheet.querySelectorAll("*"), ...(shadow ? shadow.querySelectorAll("*") : [])];
+            const img = mark.querySelector("img")!;
+            const all = [sheet, ...sheet.querySelectorAll("*")];
+            // Every box from the logo file up to the sheet: a transform anywhere on it would resample the logo
+            const chain: Element[] = [];
+            for (let el: Element | null = img; el && el !== sheet.parentElement; el = el.parentElement) chain.push(el);
             w.__frames.push({
               bg: getComputedStyle(sheet).backgroundColor,
-              blur: all.filter((el) => /blur/.test(getComputedStyle(el).filter + getComputedStyle(el).backdropFilter)).length,
+              blur:
+                all.filter((el) => /blur/.test(getComputedStyle(el).filter + getComputedStyle(el).backdropFilter))
+                  .length + sheet.querySelectorAll("feGaussianBlur").length,
+              shown: getComputedStyle(mark).visibility === "visible",
               ratio: mark.getBoundingClientRect().width / window.innerWidth,
-              transform: getComputedStyle(mark).transform,
-              svg: !!shadow?.querySelector("svg"),
+              transform: [...new Set(chain.map((el) => getComputedStyle(el).transform))].join(" "),
+              svg: /-light-endorsed\.svg$/.test(img.src),
             });
           }
           requestAnimationFrame(tick);
@@ -278,11 +288,14 @@ test.describe("brand opening", () => {
       const frames = (await page.evaluate(() => (window as unknown as { __frames: unknown[] }).__frames)) as {
         bg: string;
         blur: number;
+        shown: boolean;
         ratio: number;
         transform: string;
         svg: boolean;
       }[];
-      const ratios = frames.map((f) => f.ratio);
+      // The logo as it shows (the scene plays before the wipe opens it)
+      const ratios = frames.filter((f) => f.shown).map((f) => f.ratio);
+      expect(ratios.length, "frames with the logo").toBeGreaterThan(10);
       console.log(`${viewport.width}: ${frames.length} frames, logo ${Math.min(...ratios).toFixed(3)}..${Math.max(...ratios).toFixed(3)} of the width`);
       expect(frames.length).toBeGreaterThan(30);
       expect(new Set(frames.map((f) => f.bg))).toEqual(new Set(["rgb(247, 247, 245)"]));
@@ -291,7 +304,7 @@ test.describe("brand opening", () => {
       expect(frames.every((f) => f.svg)).toBe(true);
       expect(Math.min(...ratios)).toBeGreaterThanOrEqual(viewport.min);
       expect(Math.max(...ratios)).toBeLessThanOrEqual(viewport.max);
-      // One size the whole time: no zoom
+      // One size the whole time it shows: no zoom, also not on the way to the page
       expect(Math.max(...ratios) - Math.min(...ratios)).toBeLessThan(0.001);
     });
 });

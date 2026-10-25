@@ -380,7 +380,8 @@
   gap: var(--sp-4);
   flex-wrap: wrap;
 }
-.footerGrid img {
+/* The Welabs logo only: the product logos of the entries keep the menu's size */
+.footerGrid > img {
   height: 28px;
   width: auto;
 }
@@ -388,25 +389,22 @@
   font-size: var(--text-xs);
   color: var(--mute-d);
 }
+/* The entries of the header's menu (ProductEntry, .menuLink) on the graphite band: the dark logo file alone, the five
+   on one row; the hover is the band's raised line */
 .footerLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-1) var(--sp-5);
+  gap: var(--sp-1) var(--sp-2);
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.footerLinks a {
-  display: inline-block;
-  padding: var(--sp-3) 0;
-  font-size: var(--text-sm);
-  font-weight: 500;
+.footerLinks .menuLink {
+  grid-template-columns: auto;
   color: var(--c);
-  text-decoration: none;
-  text-underline-offset: 4px;
 }
-.footerLinks a:hover {
-  text-decoration: underline;
+.footerLinks .menuLink:hover {
+  background: var(--g3);
 }
 
 /* SUPERFÍCIES DAS FAIXAS */
