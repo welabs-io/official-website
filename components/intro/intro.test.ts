@@ -7,7 +7,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { LIGHT, parseEase } from "./kit";
-import { BOXES, LOGO_SHARE, stageScale } from "./intro-run";
+import { BOXES, LOGO_SHARE, MOTION, motionBox, stageScale } from "./intro-run";
 
 const ROOT = path.resolve(__dirname, "../..");
 const svg = (file: string) =>
@@ -69,22 +69,43 @@ describe("the camera and the stage", () => {
     expect(code("magneto-flow.js")).toMatch(/\bZ_IN\s*=\s*1\.55\b/);
     expect(code("tuner.js")).toMatch(/\bZIN\s*=\s*1\.55\b/);
   });
-  it("the stage is sized by its closing logo: about a fifth of a wide window, 56 % of a phone, never past its size", () => {
+  // v6 (operator, 2026-10-26: "o que queria menor era o motion, não a janela"): the sheet is whole, the motion compact
+  it("the motion box is compact: 480 x 270 centred under the header at 1440 x 900, 88 % of a phone, 16:9", () => {
+    const desk = motionBox(1440, 900, 72);
+    expect(desk).toEqual({
+      x: 480,
+      y: 72 + (900 - 72 - 270) / 2,
+      w: 480,
+      h: 270,
+    });
+    const phone = motionBox(390, 844, 56);
+    expect(phone.w).toBe(Math.round(390 * MOTION.phone));
+    expect(phone.h).toBe(Math.round((phone.w * 9) / 16));
+    // Centred to the whole pixel
+    expect(Math.abs(phone.x * 2 + phone.w - 390)).toBeLessThanOrEqual(1);
+    for (const [w, h] of [
+      [768, 1024],
+      [1280, 720],
+      [1920, 1080],
+      [2560, 1440],
+    ]) {
+      const b = motionBox(w, h, 72);
+      expect(b.w / w).toBeLessThanOrEqual(MOTION.cap);
+      expect(b.h / h).toBeLessThanOrEqual(MOTION.cap);
+    }
+  });
+  it("the stage is sized by its closing logo: ~200 px at 1440, never wider than the motion box nor larger than its size", () => {
     for (const slug of Object.keys(BOXES) as (keyof typeof BOXES)[]) {
       const desk = stageScale(slug, 1440, 900, 72);
-      // The closing logo (its light box) at the wide share, unless the room under the header is smaller
-      expect(BOXES[slug].light[2] * desk).toBeLessThanOrEqual(
-        1440 * LOGO_SHARE.wide + 1e-6,
-      );
-      // v5: 300 px of a 1440 window (the room under the header is larger)
-      expect(BOXES[slug].light[2] * desk).toBeCloseTo(300, 6);
-      expect(desk).toBeLessThanOrEqual(((900 - 72) * 0.94) / 1080 + 1e-9);
+      const logo = BOXES[slug].light[2] * desk;
+      expect(logo).toBeLessThanOrEqual(480 * LOGO_SHARE + 1e-6);
+      expect(logo).toBeGreaterThan(195);
+      expect(1920 * desk).toBeLessThanOrEqual(480 + 1e-6);
       const phone = stageScale(slug, 390, 844, 56);
-      // The closing logo (its light box) fits the phone's width with a margin
-      expect(BOXES[slug].light[2] * phone).toBeLessThanOrEqual(390 * 0.6);
-      expect(BOXES[slug].light[2] * phone).toBeGreaterThanOrEqual(
-        390 * LOGO_SHARE.phone - 1e-6,
+      expect(BOXES[slug].light[2] * phone).toBeLessThanOrEqual(
+        343 * LOGO_SHARE + 1e-6,
       );
+      expect(1920 * phone).toBeLessThanOrEqual(343 + 1e-6);
       expect(stageScale(slug, 4000, 3000, 72)).toBeLessThanOrEqual(1);
     }
   });
@@ -95,6 +116,8 @@ describe("the palette and the effects of the openings", () => {
     expect(LIGHT.page).toBe("#f7f7f5");
     expect(LIGHT.card).toBe("#ffffff");
     expect(LIGHT.ink).toBe("#121212");
+    // v6 (brand video QA, 2026-10-26): the arcs of the Tuner dial, a stone step at ~2:1 on the stage (was 1.07:1)
+    expect(LIGHT.dial).toBe("#b4b4b0");
   });
   it.each(SOURCES)(
     "%s carries no retired cream or sand, no halo and no blur",

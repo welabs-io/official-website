@@ -8,8 +8,8 @@
 //      are that canvas from the start of the opening to its end (not a cream drawn by something inside it);
 //  (b) no element of the opening is blurred (filter, backdrop-filter or an SVG Gaussian blur);
 //  (c) the camera of the opening is the round's (at most 1.7, the Domus close-up), the stage is never scaled by a
-//      transform, and the closing logo takes 300 of 1440 px of a wide window (v5; 440 before, and the stage used to fill
-//      it) and 56 % of a phone's width;
+//      transform, and the closing logo takes ~200 px of a 1440 window and ~143 px of a 390 phone (v6, 2026-10-26: the
+//      motion compact, the sheet whole; v5 300 px, 440 before, and the stage used to fill it);
 //  (d) on the closing frame the "by welabs" seal (the seal group of the endorsed file, placed where the file shows) is
 //      inside the window, intersects neither the drawing of the logo, nor the amber bar, nor the fixed header, and is
 //      the topmost thing painted at its centre.
@@ -23,10 +23,10 @@ const VIEWPORTS = [
 ];
 const CANVAS = "rgb(247, 247, 245)";
 const MAX_CAMERA = 1.7;
-// The share of the window the closing logo (the light box of the endorsed file) takes (intro-run.ts LOGO_SHARE). v5
-// (operator, 2026-10-24: "ainda achei grande"): 300 of 1440 px on a wide window (was 440), 56 % of a phone (was 72 %)
-const WIDE_LOGO_SHARE = 300 / 1440;
-const PHONE_LOGO_SHARE = 0.56;
+// The width of the closing logo (the light box of the endorsed file): 5/12 of the compact motion box (intro-run.ts
+// LOGO_SHARE, motionBox), unless the stage would be wider than the box (the Relloo, 197.7 px at 1440). v6 (operator,
+// 2026-10-26: "o que queria menor era o motion, não a janela"): ~200 px at 1440 (300 in v5), ~143 px at 390
+const LOGO_PX = { 1440: [195, 201], 390: [138, 144] } as const;
 
 type Rect = { left: number; top: number; right: number; bottom: number };
 const meets = (a: Rect, b: Rect) =>
@@ -234,11 +234,10 @@ for (const viewport of VIEWPORTS)
           expect(Number(zoom)).toBeLessThanOrEqual(1);
         }
 
-        // The closing logo at 300 px of a 1440 window (LOGO_SHARE.wide) and at 56 % of a phone (LOGO_SHARE.phone)
-        expect(geo.logoWidth / geo.vw, "logo share").toBeCloseTo(
-          viewport.width >= 768 ? WIDE_LOGO_SHARE : PHONE_LOGO_SHARE,
-          2,
-        );
+        // The closing logo in the compact motion box: ~200 px at 1440, ~143 px at 390
+        const [low, high] = LOGO_PX[viewport.width as keyof typeof LOGO_PX];
+        expect(geo.logoWidth, "logo width").toBeGreaterThanOrEqual(low);
+        expect(geo.logoWidth, "logo width").toBeLessThanOrEqual(high);
         expect(geo.shown).toBe("visible");
         expect(geo.clip).toBe("none");
         expect(geo.topmost, "nothing painted over the seal").toBe(true);
@@ -251,4 +250,120 @@ for (const viewport of VIEWPORTS)
         for (const part of geo.drawing)
           expect(meets(geo.seal, part), "seal x logo").toBe(false);
       });
+  });
+
+// O MESMO MOTION EM TODA ENTRADA
+// v6 (operator, 2026-10-26: "o intro compacto só vale pelos menus, não para as tabs"): every way into a product opens
+// the whole sheet and the same compact motion. At 1440 and at 390 the Relloo is entered by a card of the home, by the
+// menu of the header and by the product selector of another product (its tabs); the closing logo has the same box on
+// the three, within a pixel, at the width of the motion box.
+type LogoBox = { x: number; y: number; w: number; h: number; sheet: number };
+const closingLogo = async (page: Page): Promise<LogoBox> => {
+  await page.waitForFunction(
+    () => {
+      const bar = document.querySelector("[data-intro] .bar");
+      return (
+        !!bar && getComputedStyle(bar).transform === "matrix(1, 0, 0, 1, 0, 0)"
+      );
+    },
+    null,
+    { timeout: 10_000, polling: 16 },
+  );
+  const box = await page.evaluate(() => {
+    const sheet = document.querySelector<HTMLElement>("[data-intro]")!;
+    const r = sheet
+      .querySelector("[data-intro-logo] img")!
+      .getBoundingClientRect();
+    const s = sheet.getBoundingClientRect();
+    return {
+      x: r.left,
+      y: r.top,
+      w: r.width,
+      h: r.height,
+      // The share of the window the sheet covers on the closing frame (the whole window)
+      sheet: (s.width * s.height) / (innerWidth * innerHeight),
+    };
+  });
+  await page.waitForFunction(
+    () => !document.querySelector("[data-intro]"),
+    null,
+    {
+      timeout: 15_000,
+    },
+  );
+  return box;
+};
+
+for (const viewport of VIEWPORTS)
+  test(`the same compact motion from a card, the menu and the tabs at ${viewport.width}`, async ({
+    page,
+  }) => {
+    test.setTimeout(60_000);
+    await page.setViewportSize(viewport);
+    const phone = viewport.width < 768;
+    const boxes: Record<string, LogoBox> = {};
+
+    await page.goto("/", { waitUntil: "load" });
+    await page.waitForTimeout(1200);
+    const card = page
+      .locator('#main-content a[href="/products/relloo"]:visible')
+      .first();
+    await card.scrollIntoViewIfNeeded();
+    await card.hover();
+    await page.waitForTimeout(900);
+    await card.click();
+    boxes.card = await closingLogo(page);
+
+    await page.goto("/", { waitUntil: "load" });
+    await page.waitForTimeout(1200);
+    if (phone) {
+      await page.locator('button[aria-controls="site-nav"]').click();
+      await page.waitForTimeout(500);
+      await page
+        .locator('#site-nav a[href="/products/relloo"]')
+        .first()
+        .click();
+    } else {
+      await page.hover("header nav >> text=Produtos");
+      await page
+        .locator('header nav a[href="/products/relloo"]')
+        .first()
+        .click();
+    }
+    boxes.menu = await closingLogo(page);
+
+    await page.goto("/products/domus", { waitUntil: "load" });
+    await page.waitForTimeout(1200);
+    const tab = page
+      .locator('[data-descent-slot] [data-switch] a[href="/products/relloo"]')
+      .first();
+    await tab.scrollIntoViewIfNeeded();
+    await tab.hover();
+    await page.waitForTimeout(600);
+    await tab.click();
+    boxes.tab = await closingLogo(page);
+    await expect(page).toHaveURL(/\/products\/relloo$/);
+
+    console.log(
+      `${viewport.width}: ${Object.entries(boxes)
+        .map(
+          ([k, b]) =>
+            `${k} ${[b.x, b.y, b.w, b.h].map((n) => n.toFixed(1)).join(",")}`,
+        )
+        .join(" | ")}`,
+    );
+    const [low, high] = LOGO_PX[viewport.width as keyof typeof LOGO_PX];
+    for (const [entry, b] of Object.entries(boxes)) {
+      expect(b.sheet, `${entry}: the sheet covers the window`).toBeCloseTo(
+        1,
+        3,
+      );
+      expect(b.w, `${entry}: logo width`).toBeGreaterThanOrEqual(low);
+      expect(b.w, `${entry}: logo width`).toBeLessThanOrEqual(high);
+      for (const k of ["x", "y", "w", "h"] as const)
+        expect(
+          Math.abs(b[k] - boxes.card[k]),
+          `${entry} x card: ${k}`,
+        ).toBeLessThanOrEqual(1);
+    }
   });

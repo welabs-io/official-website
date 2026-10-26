@@ -242,10 +242,10 @@ test.describe("GrowRow", () => {
 
 test.describe("brand opening", () => {
   for (const viewport of [
-    // The relloo mark (its dark box, 640.92 of the 790.92 light box): v5, the light box at 300/1440 of the width, 0.169,
-    // and at 56 % of a phone, 0.454
-    { width: 1440, height: 900, min: 0.16, max: 0.18 },
-    { width: 390, height: 844, min: 0.44, max: 0.47 },
+    // The relloo mark (its dark box, 640.92 of the 790.92 light box): v6 (2026-10-26), the motion compact, the stage as
+    // wide as its box (480 px at 1440, 0.111 of the width; 343 px on a 390 phone, 0.294)
+    { width: 1440, height: 900, min: 0.1, max: 0.12 },
+    { width: 390, height: 844, min: 0.28, max: 0.31 },
   ])
     test(`on the canvas in every frame, no blur, the logo at its share unscaled, at ${viewport.width}`, async ({ page }) => {
       test.setTimeout(40_000);

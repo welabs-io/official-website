@@ -154,19 +154,47 @@ const pageIn = () => {
 };
 
 // ENCAIXE DO PALCO NA JANELA
-// The 1920x1080 stage the round was drawn at, under the header, sized by its closing logo (the light box of the endorsed
-// file): 300 px of a 1440 window from a tablet up (about 21 %), and 56 % of a phone's width, so the logo stays legible
-// there. The stage follows the logo, so the whole opening shrinks with it.
+// The 1920x1080 stage the round was drawn at, centred under the header, sized by its closing logo (the light box of the
+// endorsed file) in the compact motion box below. The stage follows the logo, so the whole motion shrinks with it.
 // v4 (operator, 2026-10-24: "só o tamanho que precisava adequar"): the stage used to fill the window's width, which put
 // the closing logo at about half of it, read as too much zoom; the choreography itself is the round's, untouched.
 // v5 (operator, 2026-10-24: "ainda achei grande [...] compactar esse intro"): 440 -> 300 px of a 1440 window, 72 -> 56 %
 // of a phone.
-// Never larger than its size, nor taller than the room under the header.
-export const LOGO_SHARE = { phone: 0.56, wide: 300 / 1440 } as const;
+// v6 (operator, 2026-10-26: "o que queria menor era o motion, não a janela"): the sheet still opens to the whole
+// window, and only the motion is compact. It takes a box of the round's proportion (16:9) centred under the header: a
+// third of a wide window (480 x 270 at 1440 x 900), between 360 and 640 px and never past 45 % of the window's width,
+// 88 % of a phone's width, never taller than half the room under the header. In it the closing logo is 5/12 of the
+// box's width (200 px at 1440, ~143 px on a 390 phone) and the stage is never wider than the box, nor larger than its
+// size. Every entry (menu, product selector, card, accordion, link between products) opens the same motion box.
+export const MOTION = {
+  phone: 0.88,
+  wide: 1 / 3,
+  min: 360,
+  max: 640,
+  cap: 0.45,
+} as const;
+export const LOGO_SHARE = 200 / 480;
+const ASPECT = 1080 / 1920;
+export function motionBox(w: number, h: number, header: number): Box {
+  const wide = Math.min(
+    Math.max(w * MOTION.wide, MOTION.min),
+    w * MOTION.cap,
+    MOTION.max,
+  );
+  const mw = Math.floor(
+    Math.min(w < 768 ? w * MOTION.phone : wide, ((h - header) * 0.5) / ASPECT),
+  );
+  const mh = Math.round(mw * ASPECT);
+  return {
+    x: Math.round((w - mw) / 2),
+    y: Math.round(header + (h - header - mh) / 2),
+    w: mw,
+    h: mh,
+  };
+}
 export function stageScale(slug: Slug, w: number, h: number, header: number) {
-  const share = w < 768 ? LOGO_SHARE.phone : LOGO_SHARE.wide;
-  const byLogo = (w * share) / BOXES[slug].light[2];
-  return Math.min(byLogo, ((h - header) * 0.94) / 1080, 1);
+  const room = motionBox(w, h, header).w;
+  return Math.min((room * LOGO_SHARE) / BOXES[slug].light[2], room / 1920, 1);
 }
 
 export type Playing = {
