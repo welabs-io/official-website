@@ -187,6 +187,8 @@ const RELLOO_COLUMNS: Record<1 | 2 | 3 | 4, Record<string, string[]>> = {
 for (const width of [1440, 390]) {
   test.describe(`relloo-carousel geometry at ${width}`, () => {
     test.beforeEach(async ({ page }) => {
+      // The page runs on Playwright's clock (it flows as the real one until paused), so a frame test can hold the scene
+      await page.clock.install();
       await page.setViewportSize({ width, height: 900 });
       await page.goto(RELLOO);
       await page.getByRole("figure", { name: /^Relloo/ }).scrollIntoViewIfNeeded();
@@ -194,10 +196,21 @@ for (const width of [1440, 390]) {
 
     for (const n of [1, 2, 3, 4] as const) {
       test(`frame ${n}: fields, icon axis, columns${n === 3 ? ", record header" : ""}${n === 4 ? ", funnel" : ""}`, async ({ page }) => {
+        const scene = page.locator('[data-scene="relloo-carousel"]');
+        // The settled step holds 1.8 s and then the human sequence plays on (next frame, then the reset to frame 1, or the
+        // 8 s idle). On a loaded machine the detection of the step, the wait and the measurements outlasted that hold and
+        // measured another frame (2026-10-26, dev server on 88bdfb7: 12 of 48 runs ended on another step). So the clock
+        // is paused before the gesture and walked by the test: to the settled step, then the 900 ms its pieces take to
+        // land, and it stays there while everything is measured
+        // (a second ahead, so the target is never in the page's past; the jump only moves the autoplay before the gesture)
+        await page.clock.pauseAt(Date.now() + 1000);
         await page.getByRole("radio", { name: `Momento ${n}` }).click();
-        await expect(page.locator('[data-scene="relloo-carousel"]')).toHaveAttribute("data-step", RELLOO_SETTLED[n], {
-          timeout: 10_000,
-        });
+        for (let walked = 0; (await scene.getAttribute("data-step")) !== RELLOO_SETTLED[n]; walked += 100) {
+          expect(walked, `${RELLOO_SETTLED[n]} reached within the frame's sequence`).toBeLessThan(15_000);
+          await page.clock.runFor(100);
+        }
+        for (let landed = 0; landed < 900; landed += 100) await page.clock.runFor(100);
+        // What motion hands to the compositor (WAAPI) runs on the real clock: give it the same 900 ms
         await page.waitForTimeout(900);
         // Only the frame on screen is measured: the one that left is gone and the one that came has stopped moving
         // (a loaded machine can stretch the crossing past the wait)
@@ -252,6 +265,8 @@ for (const width of [1440, 390]) {
           expect(Math.max(...funnel.mids) - Math.min(...funnel.mids), `stage centres: ${funnel.mids.join(", ")}`).toBeLessThanOrEqual(1);
           expect(funnel.under, "the Domus centred under the second stage").toBeLessThanOrEqual(1);
         }
+        // Every number above is of the settled step of this frame
+        await expect(scene, "the step measured").toHaveAttribute("data-step", RELLOO_SETTLED[n]);
       });
     }
   });
