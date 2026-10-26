@@ -3,8 +3,9 @@
 // route fills the slot between them). This module only runs the move between them. It is a chunk of its own, fetched by
 // Descent.tsx right after hydration, so it stays out of the initial JS of the page.
 // - Any link to a product (a card, the menu, the product selector, a product of the stage, the footer) opens the brand
-//   opening of that product (components/intro/intro-run.ts) from the box of what was clicked; the product is committed
-//   at the top of the window under it, and the logo of the opening lands on the logo of the product.
+//   opening of that product (components/intro/intro-run.ts), in a compact panel grown from the box of what was clicked;
+//   the product is committed at the top of the window under the cover behind the panel, and comes in as the panel
+//   leaves.
 // - The way home by the logo, and the browser's back and forward, cross a plain sheet; back to the home returns to where
 //   the visitor left it.
 // v3 (2026-10-21): the product no longer opens under the home, so the scroll up past a product and the sheet that
@@ -178,6 +179,8 @@ export function install(
       // v5 (2026-10-24): the next page is committed only when the closing frame holds still, and the closing frame
       // stays until the frames of that page have passed (measured on 709ccb0, production build: its render was a 50 to
       // 190 ms frame half a second into the choreography, where it used to be pushed)
+      // v6 (2026-10-26): the opening plays in a compact panel with the page visible behind it, so `closing` also waits
+      // for the cover (the canvas) to be whole behind the panel: the swap and the scroll to the top happen out of sight
       await playing.closing;
       router.push(href, { scroll: false });
       await committed();

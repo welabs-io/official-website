@@ -61,5 +61,7 @@ export const LIGHT = {
   muted: "#55565b",
   slate: "#8a8a86",
   grid: "#e5e5e1",
-  dial: "#efefeb",
+  // v6 (brand video QA, 2026-10-26): the arcs of the Tuner dial were #efefeb on the #f7f7f5 stage (1.07:1, almost
+  // invisible); #b4b4b0 is a step of the stone scale of brand 1.9.1, about 2:1 on the stage
+  dial: "#b4b4b0",
 };
