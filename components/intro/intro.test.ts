@@ -7,7 +7,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { LIGHT, parseEase } from "./kit";
-import { BOXES, LOGO_SHARE, PANEL, panelBox, stageScale } from "./intro-run";
+import { BOXES, LOGO_SHARE, MOTION, motionBox, stageScale } from "./intro-run";
 
 const ROOT = path.resolve(__dirname, "../..");
 const svg = (file: string) =>
@@ -69,17 +69,17 @@ describe("the camera and the stage", () => {
     expect(code("magneto-flow.js")).toMatch(/\bZ_IN\s*=\s*1\.55\b/);
     expect(code("tuner.js")).toMatch(/\bZIN\s*=\s*1\.55\b/);
   });
-  // v6 (operator, 2026-10-26): the opening plays in a compact panel, no longer over the whole window
-  it("the panel is compact: 480 x 270 centred under the header at 1440 x 900, 88 % of a phone, 16:9", () => {
-    const desk = panelBox(1440, 900, 72);
+  // v6 (operator, 2026-10-26: "o que queria menor era o motion, não a janela"): the sheet is whole, the motion compact
+  it("the motion box is compact: 480 x 270 centred under the header at 1440 x 900, 88 % of a phone, 16:9", () => {
+    const desk = motionBox(1440, 900, 72);
     expect(desk).toEqual({
       x: 480,
       y: 72 + (900 - 72 - 270) / 2,
       w: 480,
       h: 270,
     });
-    const phone = panelBox(390, 844, 56);
-    expect(phone.w).toBe(Math.round(390 * PANEL.phone));
+    const phone = motionBox(390, 844, 56);
+    expect(phone.w).toBe(Math.round(390 * MOTION.phone));
     expect(phone.h).toBe(Math.round((phone.w * 9) / 16));
     // Centred to the whole pixel
     expect(Math.abs(phone.x * 2 + phone.w - 390)).toBeLessThanOrEqual(1);
@@ -89,24 +89,24 @@ describe("the camera and the stage", () => {
       [1920, 1080],
       [2560, 1440],
     ]) {
-      const b = panelBox(w, h, 72);
-      expect(b.w / w).toBeLessThanOrEqual(PANEL.cap);
-      expect(b.h / h).toBeLessThanOrEqual(PANEL.cap);
+      const b = motionBox(w, h, 72);
+      expect(b.w / w).toBeLessThanOrEqual(MOTION.cap);
+      expect(b.h / h).toBeLessThanOrEqual(MOTION.cap);
     }
   });
-  it("the stage is sized by its closing logo: ~200 px in the panel of a 1440 window, never past the panel nor its size", () => {
+  it("the stage is sized by its closing logo: ~200 px at 1440, never wider than the motion box nor larger than its size", () => {
     for (const slug of Object.keys(BOXES) as (keyof typeof BOXES)[]) {
-      const desk = stageScale(slug, 480);
+      const desk = stageScale(slug, 1440, 900, 72);
       const logo = BOXES[slug].light[2] * desk;
       expect(logo).toBeLessThanOrEqual(480 * LOGO_SHARE + 1e-6);
       expect(logo).toBeGreaterThan(195);
       expect(1920 * desk).toBeLessThanOrEqual(480 + 1e-6);
-      const phone = stageScale(slug, 343);
+      const phone = stageScale(slug, 390, 844, 56);
       expect(BOXES[slug].light[2] * phone).toBeLessThanOrEqual(
         343 * LOGO_SHARE + 1e-6,
       );
       expect(1920 * phone).toBeLessThanOrEqual(343 + 1e-6);
-      expect(stageScale(slug, 4000)).toBeLessThanOrEqual(1);
+      expect(stageScale(slug, 4000, 3000, 72)).toBeLessThanOrEqual(1);
     }
   });
 });

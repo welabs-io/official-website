@@ -1,54 +1,18 @@
-/* PAINEL DA ABERTURA DE MARCA */
-/* v6 (operator, 2026-10-26: "o tamanho do intro que abre em tela cheia [...] hoje tá grande ainda"): the opening plays
-   in a compact panel, never over the whole window. The layer (intro-run.ts) spans the window under the fixed header
-   (z-index 50) only to hold the pieces and take the skip gesture; what paints over the page is a light veil of ink, so
-   the current page stays visible behind the panel. The cover (the canvas of the page) fades in under the veil while the
-   closing logo settles, so the route swaps under it and the next page never shows through before the panel leaves.
-   The plate is the panel and its shadow: the grow layer is the canvas clipped from the box of what was clicked to the
-   box of the panel (a Web Animation), the lift is the shadow under it, which comes in once the panel is in place. The
-   panel holds the 1920x1080 stage of the round at its fitted size: the stage is scaled by CSS `zoom` (set inline), so it
-   lays out at the size it shows and the closing logo is never a resampled raster. The round clipped its frame (what
-   waits outside it, like the magnets of the Magneto before they enter, must not show), so the stage clips too, with its
-   edges faded into the canvas, so a piece that flies in comes out of the canvas instead of a hard line. */
-.layer {
+/* PALCO DA ABERTURA DE MARCA */
+/* The sheet the opening plays on (intro-run.ts) is the canvas of the page (--background, #f7f7f5) from the first frame
+   to the last, over the page and under the fixed header (z-index 50); no halo, no blur. The frame holds the 1920x1080
+   stage of the round at its fitted size: the stage is scaled by CSS `zoom` (set inline), so it lays out at the size it
+   shows and the closing logo is never a resampled raster. The round clipped its frame (what waits outside it, like the
+   magnets of the Magneto before they enter, must not show), so the stage clips too, with its edges faded into the
+   canvas, so a piece that flies in comes out of the canvas instead of a hard line. */
+.sheet {
   position: fixed;
   inset: 0;
   z-index: 45;
   overflow: hidden;
-  cursor: pointer;
-}
-.tint,
-.cover,
-.plate,
-.grow {
-  position: absolute;
-  inset: 0;
-}
-/* The veil over the page behind the panel: 6 % of the ink */
-.tint {
-  background: color-mix(in srgb, var(--ink) 6%, transparent);
-}
-.cover {
-  background: var(--background);
-  opacity: 0;
-}
-.grow {
   background: var(--background);
   will-change: clip-path, opacity;
-}
-.lift,
-.panel {
-  position: absolute;
-  border-radius: var(--surface-radius, 20px);
-}
-.lift {
-  background: var(--background);
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-}
-.panel {
-  overflow: hidden;
-  background: var(--background);
+  cursor: pointer;
 }
 .frame {
   position: absolute;
