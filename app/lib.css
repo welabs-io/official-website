@@ -520,6 +520,45 @@ a[data-slot="button"] {
   color: revert-layer;
 }
 
+/* PAINEL DO MENU DA LIB: O MESMO DA LISTA DE PRODUTOS */
+/* The lib's menu panel (the language selector of the header) is the sibling of the products list of the header
+   (components/onepage/shell.module.css .menu): the same light edge, the same shadow, and the same entry (opacity and a
+   6 px rise in --dur-2 on --ease-out, no zoom). Two things were off. The panel is focused when it opens, and the page's
+   focus ring (app/globals.css :focus-visible, a 2 px page-colour gap and a 2 px grey ring) replaced the lib's edge, so a
+   thick grey double border wrapped it; the lib's own edge and shadow stay on the focused panel (the ring belongs to
+   the items). The lib's entry (zoom 95 % and an 8 px slide in 200 ms) is retimed to the site's motion. And the rows
+   follow the products list's rows below. */
+[data-slot="dropdown-menu-content"] {
+  --tw-enter-scale: 1;
+  --tw-exit-scale: 1;
+  --tw-enter-translate-y: calc(var(--sp-1) * -1.5);
+  --tw-exit-translate-y: calc(var(--sp-1) * -1.5);
+  animation-duration: var(--dur-2);
+  animation-timing-function: var(--ease-out);
+}
+[data-slot="dropdown-menu-content"]:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 1px var(--edge-subtle),
+    var(--shadow-pop);
+}
+/* An item of the panel is the products list's row: the hover and the keyboard focus (the lib's menu moves the focus
+   with the pointer) fill it with --surface-accent in --dur-1, where the lib painted the blue-tinted --accent. The
+   page's focus ring would be cut by the panel's overflow, so the keyboard focus draws it inside the row, in ink. */
+[data-slot="dropdown-menu-radio-item"],
+[data-slot="dropdown-menu-item"] {
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+[data-slot="dropdown-menu-radio-item"]:focus,
+[data-slot="dropdown-menu-item"]:focus {
+  background: var(--surface-accent);
+  color: inherit;
+}
+[data-slot="dropdown-menu-radio-item"]:focus-visible,
+[data-slot="dropdown-menu-item"]:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--foreground);
+}
+
 /* CAMADA DO SITE SOBRE A MARCA WELABS */
 /* Colour: only the PAPÉIS DE COR block above. Structure: the lib's own (its control heights, radii, paddings and
    surfaces); the kit's radius names follow them, so a window is the lib's surface and a row, a bubble or a square

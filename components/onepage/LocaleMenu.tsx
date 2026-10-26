@@ -5,7 +5,8 @@
 // header. Choosing a language goes to the same page in it, keeping the search and the hash; it is a plain navigation
 // (no link, so the move of the descent never takes it over and no brand opening plays), which also reloads the document
 // with its own <html lang>. There is no automatic detection and no redirect by Accept-Language: only this selector
-// changes the language.
+// changes the language. The menu is not modal (nothing in the header moves when it opens) and its panel takes the edge
+// and the motion of the products list through app/lib.css (PAINEL DO MENU DA LIB).
 import { Languages } from "lucide-react";
 import { ActionButton, Menu } from "@/components/lib/ui";
 import {
@@ -26,6 +27,9 @@ export function LocaleMenu() {
   return (
     <Menu
       align="end"
+      // Not modal: the modal menu locks the page scroll and drops the scrollbar, which moves the header (the width of
+      // the bar) every time the menu opens or closes
+      modal={false}
       trigger={
         <ActionButton
           emphasis="outline"
