@@ -20,9 +20,9 @@
 //     product is committed under it during that hold (`closing`): the page behind never swaps, nor scrolls, in sight.
 //     v5 (2026-10-24): the commit is in the hold, the one stretch where nothing moves, no longer in the middle of the
 //     choreography (measured on 709ccb0: the render of the product page was a 50 to 190 ms frame half a second in).
-//  3. `land` lets the panel leave where it is (fading, rising a little), the veil and the cover fade with it, and the
-//     page comes in by its `[data-descent-slot]`, --dur-enter rising --rise-enter on --ease-enter (no logo travels nor
-//     scales: v3 flew a raster of the logo, a large zoom).
+//  3. `land` lets the panel leave where it is (fading, rising a little) with the veil, and the page comes in as the
+//     cover over it fades, --dur-enter on --ease-enter (no logo travels nor scales: v3 flew a raster of the logo, a
+//     large zoom).
 // A click, a key or the wheel during the opening skips to its closing frame; the end still plays.
 // v4: the whole opening plays on every entry into a product, from any link, the product selector included (no short
 // flash variant is left: it read as no opening at all).
@@ -133,8 +133,8 @@ export const SPEED = 1.6;
 const HOLD = 0.25;
 const OPEN_MS = 450;
 const COVER_MS = 280;
-// The motion tokens of app/lib.css: the page comes in as the panel goes (--dur-enter on --ease-enter, rising
-// --rise-enter); the panel leaves in --dur-swap on the same curve, rising half of --rise-enter
+// The motion tokens of app/lib.css: the page comes in as the panel goes (--dur-enter on --ease-enter); the panel leaves
+// in --dur-swap on the same curve, rising half of --rise-enter
 const tokens = () => {
   const css = getComputedStyle(document.documentElement);
   const token = (name: string) => css.getPropertyValue(name).trim();
@@ -215,8 +215,8 @@ export type Playing = {
   closing: Promise<void>;
   // Resolves when the opening reached its closing frame and held it (or was skipped)
   settled: Promise<void>;
-  // Lets the panel leave, fades the veil and the cover and brings in the page that holds `target` (the product's logo)
-  land(target: HTMLElement | null): Promise<void>;
+  // Lets the panel leave and fades the veil and the cover, which brings in the page under them
+  land(): Promise<void>;
   // Removes everything at once (navigation failed)
   abort(): void;
 };
@@ -394,15 +394,18 @@ export async function open(
   return {
     closing,
     settled,
-    async land(target) {
+    async land() {
       if (!done) await settled;
       sheet.dataset.introPhase = "land";
       sheet.style.pointerEvents = "none";
       listen(false);
       cancelAnimationFrame(raf);
-      // The panel leaves where it is (fading, rising a little) while the veil and the cover fade and the page comes in
-      // under them; the layer stays in the document until the page has settled, which is what "the opening has left"
-      // means to the rest of the site
+      // The panel leaves where it is (fading, rising a little) with the veil, and the page comes in as the cover over it
+      // fades (--dur-enter on --ease-enter); the layer stays in the document until the page is in, which is what "the
+      // opening has left" means to the rest of the site.
+      // v6 (2026-10-26): the page itself no longer rises: measured on the production build at 1440, the animation of
+      // the whole slot while the panel was still in sight was a 50 to 83 ms frame in 3 entries of 10 (with or without
+      // its layer promoted under the cover), and none in 10 once the page is revealed by the cover alone
       const t = tokens();
       const leave: KeyframeAnimationOptions = {
         duration: t.exitMs,
@@ -418,19 +421,12 @@ export async function open(
           leave,
         ),
         tint.animate([{ opacity: 1 }, { opacity: 0 }], leave),
-        cover.animate([{ opacity: 1 }, { opacity: 0 }], leave),
+        cover.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: t.ms,
+          easing: t.easing,
+          fill: "forwards",
+        }),
       ];
-      const slot = target?.closest<HTMLElement>("[data-descent-slot]");
-      if (slot)
-        moves.push(
-          slot.animate(
-            [
-              { opacity: 0, transform: `translateY(${t.rise}px)` },
-              { opacity: 1, transform: "none" },
-            ],
-            { duration: t.ms, easing: t.easing },
-          ),
-        );
       await Promise.all(moves.map((m) => m.finished.catch(() => {})));
       sheet.remove();
     },

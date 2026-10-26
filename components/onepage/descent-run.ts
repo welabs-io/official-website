@@ -66,10 +66,6 @@ const jump = (y: number) =>
     top: Math.max(0, Math.min(y, maxScroll())),
     behavior: "instant",
   });
-const heroLogo = () =>
-  document.querySelector<HTMLImageElement>(
-    "[data-descent-slot] #product h1 img",
-  );
 
 // A PÁGINA NOVA SOB O QUADRO FINAL
 // Resolves once two frames in a row arrive on time (or after `ms`): the long frames of a page that has just been
@@ -186,7 +182,7 @@ export function install(
       await committed();
       jump(0);
       await calm();
-      await playing.land(heroLogo());
+      await playing.land();
     } catch {
       // The opening could not load: the page swaps with no move
       playing?.abort();
