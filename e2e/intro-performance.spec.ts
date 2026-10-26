@@ -41,8 +41,9 @@ const LIMITS = {
 type Frame = { t: number; shown: boolean; phase: string; hidden: boolean };
 
 // Arms the sampler: the instant of the pointer down and, on every frame until the opening leaves, whether its panel is
-// painted, its phase (intro-run.ts `data-intro-phase`) and whether the panel has already left (v6, 2026-10-26: the
-// opening plays in a compact panel; once it has faded out, only the page coming in is left, as the hidden sheet was)
+// painted, its phase (intro-run.ts `data-intro-phase`) and whether nothing of it is painted any more. v6 (2026-10-26):
+// the opening plays in a compact panel and the page comes in as the cover over it fades, so the frames of that entry
+// count too (the hidden sheet of v5 left them out)
 const arm = (page: Page) =>
   page.evaluate(() => {
     type Perf = { down: number; frames: Frame[]; gone: boolean };
@@ -62,13 +63,18 @@ const arm = (page: Page) =>
         // The computed opacity of the layer that grows into the panel is read until it was painted once (the Web
         // Animations of its opening set it)
         const grow = sheet.querySelector("[data-intro-panel]")?.parentElement;
-        const card = sheet.querySelector("[data-intro-card]");
+        const painted = ["[data-intro-card]", "[data-intro-cover]"].some(
+          (part) => {
+            const el = sheet.querySelector(part);
+            return !!el && Number(getComputedStyle(el).opacity) > 0;
+          },
+        );
         shown = shown || (!!grow && Number(getComputedStyle(grow).opacity) > 0);
         perf.frames.push({
           t: now,
           shown,
           phase: sheet.dataset.introPhase ?? "",
-          hidden: !!card && Number(getComputedStyle(card).opacity) === 0,
+          hidden: !painted,
         });
       } else if (seen) {
         perf.gone = true;
