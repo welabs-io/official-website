@@ -33,8 +33,6 @@ async function record(page: Page, ms: number) {
         // so the camera layer, the first moving pieces of the scene (their transform and opacity attributes) and the
         // clip of the logo that the wipe opens
         const stage = sheet?.querySelector<HTMLElement>("[data-intro-stage]");
-        const grow = sheet?.querySelector("[data-intro-panel]")?.parentElement;
-        const card = sheet?.querySelector("[data-intro-card]");
         const draw = stage
           ? [
               stage.querySelector<HTMLElement>(".zoom")?.style.transform ?? "",
@@ -51,15 +49,13 @@ async function record(page: Page, ms: number) {
         out.push({
           t: Math.round(performance.now() - t0),
           sheet: sheet?.dataset.intro ?? null,
-          // v5 (2026-10-24): computed, since the clip and the fade-in are Web Animations (intro-run.ts). v6
-          // (2026-10-26): the opening plays in a compact panel, so they are the clip and the fade-in of the layer that
-          // grows into the panel (the parent of `[data-intro-panel]`)
-          clip: grow ? getComputedStyle(grow).clipPath : "",
-          opacity: grow ? getComputedStyle(grow).opacity : "",
+          // v5 (2026-10-24): computed, since the clip and the fade-in of the sheet are Web Animations (intro-run.ts)
+          clip: sheet ? getComputedStyle(sheet).clipPath : "",
+          opacity: sheet ? getComputedStyle(sheet).opacity : "",
           draw,
           fly: !!document.querySelector("body > img[class]"),
-          // v6: the panel (with the logo and its seal) leaving where it is, fading and rising a little
-          seal: card ? getComputedStyle(card).opacity : "",
+          // The closing frame fading on the canvas (the stage, which holds the logo and its seal)
+          seal: stage ? getComputedStyle(stage).opacity : "",
           y: Math.round(scrollY),
           path: location.pathname,
         });
@@ -106,25 +102,9 @@ async function expectOpening(
     new Set(withSheet.map((x) => x.draw)).size,
     "drawn frames",
   ).toBeGreaterThan(25);
-  // v6 (2026-10-26): from any link (the menu, a card, the selector) the panel never shows more than 45 % of the
-  // 1440 x 900 window, on any frame of its growth
-  for (const x of withSheet) {
-    const v = /inset\(([^)]*?)(?: round|\))/.exec(x.clip)?.[1].trim();
-    const [top, right = top, bottom = top, left = right] = (v ?? "0")
-      .split(/\s+/)
-      .map(parseFloat);
-    expect(
-      (1440 - left - right) / 1440,
-      `panel width, ${x.clip}`,
-    ).toBeLessThanOrEqual(0.45);
-    expect(
-      (900 - top - bottom) / 900,
-      `panel height, ${x.clip}`,
-    ).toBeLessThanOrEqual(0.45);
-  }
   // The hand-over. v4 (brief-v4, artboard 8): no logo travels any more (its raster was scaled in flight, which blurred
-  // it); v6 (2026-10-26): the panel with the closing frame (logo and seal) leaves where it is over several frames, and
-  // the page comes in as it goes
+  // it); the closing frame (logo and seal) fades on the canvas over several frames and the page comes in under the
+  // same canvas
   expect(
     f.some((x) => x.fly),
     "no travelling logo",

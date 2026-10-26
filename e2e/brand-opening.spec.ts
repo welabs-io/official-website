@@ -15,8 +15,7 @@ const sample = (page: Page) =>
     w.__frames = [];
     w.__t0 = performance.now();
     const tick = () => {
-      // v6 (2026-10-26): the opening plays in a compact panel; its opacity is the card's (the panel and its shadow)
-      const sheet = document.querySelector<HTMLElement>("[data-intro-card]");
+      const sheet = document.querySelector<HTMLElement>("[data-intro]");
       const fly = [...document.body.children].find(
         (el) => el.tagName === "IMG",
       );

@@ -242,8 +242,8 @@ test.describe("GrowRow", () => {
 
 test.describe("brand opening", () => {
   for (const viewport of [
-    // The relloo mark (its dark box, 640.92 of the 790.92 light box): v6 (2026-10-26), in the compact panel, the stage as
-    // wide as the panel (480 px at 1440, 0.111 of the width; 343 px on a 390 phone, 0.294)
+    // The relloo mark (its dark box, 640.92 of the 790.92 light box): v6 (2026-10-26), the motion compact, the stage as
+    // wide as its box (480 px at 1440, 0.111 of the width; 343 px on a 390 phone, 0.294)
     { width: 1440, height: 900, min: 0.1, max: 0.12 },
     { width: 390, height: 844, min: 0.28, max: 0.31 },
   ])
@@ -268,8 +268,7 @@ test.describe("brand opening", () => {
             const chain: Element[] = [];
             for (let el: Element | null = img; el && el !== sheet.parentElement; el = el.parentElement) chain.push(el);
             w.__frames.push({
-              // v6: the canvas is the compact panel the opening plays in
-              bg: getComputedStyle(sheet.querySelector("[data-intro-panel]")!).backgroundColor,
+              bg: getComputedStyle(sheet).backgroundColor,
               blur:
                 all.filter((el) => /blur/.test(getComputedStyle(el).filter + getComputedStyle(el).backdropFilter))
                   .length + sheet.querySelectorAll("feGaussianBlur").length,
@@ -301,10 +300,7 @@ test.describe("brand opening", () => {
       expect(frames.length).toBeGreaterThan(30);
       expect(new Set(frames.map((f) => f.bg))).toEqual(new Set(["rgb(247, 247, 245)"]));
       expect(Math.max(...frames.map((f) => f.blur))).toBe(0);
-      // v6: no scale anywhere on the chain; the panel only rises a little (a translation) as it leaves
-      for (const f of frames)
-        for (const t of f.transform.split(/ (?=none|matrix)/))
-          expect(t, f.transform).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, -?[\d.]+\))$/);
+      expect(new Set(frames.map((f) => f.transform))).toEqual(new Set(["none"]));
       expect(frames.every((f) => f.svg)).toBe(true);
       expect(Math.min(...ratios)).toBeGreaterThanOrEqual(viewport.min);
       expect(Math.max(...ratios)).toBeLessThanOrEqual(viewport.max);
