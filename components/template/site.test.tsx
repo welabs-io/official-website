@@ -210,7 +210,7 @@ describe("the home", () => {
       (m) => m[1],
     );
     expect(marks).toEqual([
-      "Domus by Welabs",
+      "Welabs Domus",
       "Relloo",
       "Magneto",
       "Tuner",
@@ -285,7 +285,8 @@ describe("the home", () => {
 
   it("every product shows its standalone logo; the seal is only the identity of a product page", () => {
     expect(home).not.toMatch(/-endorsed\.svg/);
-    expect(home).toContain('alt="Domus by Welabs"');
+    expect(home).toContain('alt="Welabs Domus"');
+    expect(home).not.toContain("Welabs Domus by Welabs");
   });
 
   it("the title of the home is Welabs, without a suffix", async () => {
@@ -416,12 +417,15 @@ describe("the product pages", () => {
     }
   });
 
-  it("follow the 'Domus by Welabs' pattern in the title", async () => {
+  // "Relloo by Welabs" for the products, "Welabs Domus" alone for the platform (decision 3 of 2026-10-29)
+  it("follow the 'Relloo by Welabs' pattern in the title, and the platform is 'Welabs Domus'", async () => {
     for (const { slug, name } of PRODUCTS) {
       const meta = await generateMetadata({
         params: Promise.resolve({ locale: "pt-BR", slug }),
       });
-      expect(meta.title).toBe(`${name} by Welabs`);
+      expect(meta.title).toBe(
+        slug === "domus" ? "Welabs Domus" : `${name} by Welabs`,
+      );
     }
   });
 });

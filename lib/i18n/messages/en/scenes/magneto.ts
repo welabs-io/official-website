@@ -11,7 +11,7 @@ export const magneto: SceneMessages<"magneto"> = {
     "Magneto: the proposal starts the flow on its own, the work splits, waits for approval and finishes with nothing done twice",
   flow: "Proposal approval",
   active: "Active",
-  domus: "Domus",
+  domus: "Welabs Domus",
   tuner: "Tuner",
   proposal: "Proposal 905",
   frameNames: ["Starts itself", "Splits", "Waits", "Finishes"],

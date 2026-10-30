@@ -6,7 +6,8 @@
 import { endorsePolicy, type LogoPlace } from "./brand-config";
 
 export const PRODUCTS = [
-  { slug: "domus", name: "Domus" },
+  // The platform carries the Welabs name in its own name (decision 3 of 2026-10-29); the logo file keeps "domus"
+  { slug: "domus", name: "Welabs Domus" },
   { slug: "relloo", name: "Relloo" },
   { slug: "magneto", name: "Magneto" },
   { slug: "tuner", name: "Tuner" },
@@ -28,11 +29,18 @@ export const productLogo = (
 ) =>
   `/brands/welabs/products/${slug}-${tone}${endorsePolicy(place, height) ? "-endorsed" : ""}.svg`;
 
-// Accessible name of a product logo: "<Name> by Welabs" only where the policy allows the seal
+// The name with the seal line: "<Name> by Welabs", except for a name that already carries Welabs ("Welabs Domus")
+export const carriesWelabs = (slug: ProductSlug) =>
+  productBySlug(slug)!.name.startsWith("Welabs ");
+
+export const productEndorsedName = (slug: ProductSlug) =>
+  carriesWelabs(slug)
+    ? productBySlug(slug)!.name
+    : `${productBySlug(slug)!.name} by Welabs`;
+
+// Accessible name of a product logo: the endorsed name only where the policy allows the seal
 export const productAlt = (slug: ProductSlug, place: LogoPlace = "row") =>
-  endorsePolicy(place)
-    ? `${productBySlug(slug)!.name} by Welabs`
-    : productBySlug(slug)!.name;
+  endorsePolicy(place) ? productEndorsedName(slug) : productBySlug(slug)!.name;
 
 // Left padding of each logo file (viewBox x offset over viewBox height), used to align the wordmark with the text
 export const LOGO_PAD: Record<ProductSlug, number> = {

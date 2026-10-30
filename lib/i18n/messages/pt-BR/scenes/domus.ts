@@ -8,7 +8,7 @@
 export const domus = {
   // Accessible name of the whole scene
   label:
-    "Domus: a gestão inteira num lugar só, um tipo de registro novo que já nasce com tela, e o registro que liga os outros produtos",
+    "Welabs Domus: a gestão inteira num lugar só, um tipo de registro novo que já nasce com tela, e o registro que liga os outros produtos",
   // Chrome bar: the screen each frame shows in the breadcrumb and its accessible name, in the order of the frames.
   // "Tipo de registro", not the frame's "Novo tipo de registro": the chrome of a phone cuts the longer one
   frames: [

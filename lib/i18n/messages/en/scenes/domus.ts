@@ -8,7 +8,7 @@ import type { SceneMessages } from "../../../types";
 
 export const domus: SceneMessages<"domus"> = {
   label:
-    "Domus: all of management in one place, a new record type that is born with its screen, and the record that ties in the other products",
+    "Welabs Domus: all of management in one place, a new record type that is born with its screen, and the record that ties in the other products",
   frames: [
     { title: "Modules", label: "The areas of the company" },
     { title: "Record type", label: "The new type becomes a screen" },

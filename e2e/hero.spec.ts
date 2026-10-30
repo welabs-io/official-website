@@ -105,6 +105,8 @@ test("one current entry in the header", async ({ page }) => {
     const current = await page
       .locator("header nav > ul > li > a[aria-current]")
       .allTextContents();
-    expect(current, slug).toEqual([slug === "domus" ? "Domus" : "Produtos"]);
+    expect(current, slug).toEqual([
+      slug === "domus" ? "Welabs Domus" : "Produtos",
+    ]);
   }
 });

@@ -5,7 +5,7 @@ import type { ProductSlug } from "@/lib/products";
 
 export const HOME_MESSAGE = {
   title: "Uma mensagem, a operação inteira",
-  lead: "Do canal ao pedido registrado no Domus.",
+  lead: "Do canal ao pedido registrado no Welabs Domus.",
   bubble: { channel: "Mensagem", text: "Dá para entregar sábado?" },
   send: "Enviar a mensagem",
   stations: [

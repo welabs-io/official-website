@@ -122,7 +122,7 @@ test("the desktop menu lists the five products and the Domus, and each leads whe
   const nav = page.getByRole("navigation", { name: "Principal" });
   await expect(nav.getByRole("link", { name: "Produtos" })).toBeVisible();
   await expect(
-    nav.getByRole("link", { name: "Domus", exact: true }),
+    nav.getByRole("link", { name: "Welabs Domus", exact: true }),
   ).toBeVisible();
   // The list of products opens on hover and on keyboard focus
   await nav.getByRole("link", { name: "Produtos" }).hover();
@@ -138,12 +138,12 @@ test("the desktop menu lists the five products and the Domus, and each leads whe
     /Magneto/,
   );
   // The Domus entry leads to the Domus
-  await nav.getByRole("link", { name: "Domus", exact: true }).click();
+  await nav.getByRole("link", { name: "Welabs Domus", exact: true }).click();
   await page.waitForURL("**/products/domus");
   await landed(page);
   await expect(page.locator("[data-descent-slot] h1 img")).toHaveAttribute(
     "alt",
-    /Domus/,
+    /^Welabs Domus$/,
   );
   // The button of the header leads to the contact of the home
   await page.locator("header > div > a[href='/#contact']").click();
@@ -170,7 +170,7 @@ test("on a phone the menu is a panel with the same entries; it closes on Escape 
       nav.locator(`a[href="/products/${slug}"]`).first(),
     ).toBeVisible();
   await expect(
-    nav.getByRole("link", { name: "Domus", exact: true }),
+    nav.getByRole("link", { name: "Welabs Domus", exact: true }),
   ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(nav).toBeHidden();

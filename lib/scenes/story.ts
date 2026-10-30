@@ -77,7 +77,7 @@ export const STORY = {
 
 // Titles of the product windows (the bar over each scene): the product and the place in it
 export const WINDOW_TITLES = {
-  domus: { name: "Domus", where: "Painel" },
+  domus: { name: "Welabs Domus", where: "Painel" },
   relloo: { name: "Relloo", where: "Conversas" },
   tuner: { name: "Tuner", where: "Caixa de entrada" },
   knowly: { name: "Knowly", where: "Política" },

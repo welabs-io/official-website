@@ -18,7 +18,7 @@ export const home: HomeMessages = {
       knowly: "el conocimiento",
     },
     lead: "Todo integrado en un único espacio de trabajo, con un asistente que actúa en la interfaz por ti.",
-    stage: "Los cinco productos ligados al Domus",
+    stage: "Los cinco productos ligados al Welabs Domus",
     stamps: {
       domus: "Pedido 1234 registrado",
       relloo: "Con el responsable correcto",
@@ -121,7 +121,7 @@ export const home: HomeMessages = {
         { name: "Propuesta enviada", at: "08:40" },
         { name: "Aprobación de la gerencia", at: "17:02" },
         { name: "Firma del contrato", at: "17:08" },
-        { name: "Pedido en el Domus", at: "17:09" },
+        { name: "Pedido en el Welabs Domus", at: "17:09" },
       ],
     },
     tuner: {
@@ -147,7 +147,7 @@ export const home: HomeMessages = {
 
   chain: {
     title: "Un mensaje, toda la operación",
-    lead: "Del canal al pedido registrado en el Domus, mientras te desplazas.",
+    lead: "Del canal al pedido registrado en el Welabs Domus, mientras te desplazas.",
     bubbleChannel: "Mensaje",
     stations: {
       tuner: {
@@ -224,7 +224,7 @@ export const home: HomeMessages = {
           "Asistente con el dato real",
           "Fiscal, finanzas y contabilidad",
         ],
-        question: "¿Cuánto de tu operación cabe en el Domus?",
+        question: "¿Cuánto de tu operación cabe en el Welabs Domus?",
       },
       relloo: {
         area: "Relaciones",
