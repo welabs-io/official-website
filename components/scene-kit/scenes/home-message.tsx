@@ -53,7 +53,7 @@ const PRODUCT: Record<Product, { name: string; icon: LucideIcon }> = {
   relloo: { name: "Relloo", icon: Contact },
   knowly: { name: "Knowly", icon: BookOpen },
   magneto: { name: "Magneto", icon: Workflow },
-  domus: { name: "Domus", icon: House },
+  domus: { name: "Welabs Domus", icon: House },
 };
 const ORDER = H.stations.map((s) => s.product);
 
@@ -61,10 +61,10 @@ const COPY = {
   product: "Welabs",
   title: "Operação",
   label:
-    "Uma mensagem atravessa os cinco produtos e vira um registro do pedido no Domus",
+    "Uma mensagem atravessa os cinco produtos e vira um registro do pedido no Welabs Domus",
   track: "Caminho da mensagem",
   time: "10:07",
-  module: "Domus",
+  module: "Welabs Domus",
   moduleValue: "Pedidos",
   empty: "—",
 };

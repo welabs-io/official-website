@@ -23,7 +23,7 @@ export const home = {
     },
     lead: "Tudo integrado num espaço de trabalho único, com um assistente que interage na interface por você.",
     // Accessible name of the strip of the five marks, and the effect each lit product shows on the stage
-    stage: "Os cinco produtos ligados ao Domus",
+    stage: "Os cinco produtos ligados ao Welabs Domus",
     // The stage of the product pages tells the same thread as the home (the order 1234 of the maintenance contract)
     stamps: {
       domus: "Pedido 1234 registrado",
@@ -142,7 +142,7 @@ export const home = {
         { name: "Proposta enviada", at: "08:40" },
         { name: "Aprovação da gerência", at: "17:02" },
         { name: "Assinatura do contrato", at: "17:08" },
-        { name: "Pedido no Domus", at: "17:09" },
+        { name: "Pedido no Welabs Domus", at: "17:09" },
       ],
     },
     tuner: {
@@ -175,7 +175,7 @@ export const home = {
   // and `chip` is what it leaves once done. `{order}` is shared.order.
   chain: {
     title: "Uma mensagem, a operação inteira",
-    lead: "Do canal ao pedido registrado no Domus, enquanto você rola.",
+    lead: "Do canal ao pedido registrado no Welabs Domus, enquanto você rola.",
     bubbleChannel: "Mensagem",
     stations: {
       tuner: {
@@ -258,7 +258,7 @@ export const home = {
           "Assistente com o dado real",
           "Fiscal, financeiro e contábil",
         ],
-        question: "Quanto da sua operação cabe no Domus?",
+        question: "Quanto da sua operação cabe no Welabs Domus?",
       },
       relloo: {
         area: "Relacionamento",

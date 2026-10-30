@@ -27,7 +27,7 @@ export const products: ProductsMessages = {
       "fiscal",
     ],
     short: "Toda la empresa en un único espacio de trabajo.",
-    centerTitle: "El Relloo en el registro del Domus",
+    centerTitle: "El Relloo en el registro del Welabs Domus",
     details: [
       "Control fiscal",
       "Conciliación bancaria",
@@ -62,7 +62,7 @@ export const products: ProductsMessages = {
     keywords: ["CRM", "gestión de relaciones", "atención multicanal"],
     short:
       "Cada contacto con todas sus conversaciones, y un embudo que avanza solo.",
-    centerTitle: "Las conversaciones en el registro del Domus",
+    centerTitle: "Las conversaciones en el registro del Welabs Domus",
     details: [
       "Llamadas grabadas en la conversación",
       "Chat en el sitio",
@@ -87,7 +87,7 @@ export const products: ProductsMessages = {
       },
       {
         title: "Un embudo que avanza solo",
-        body: "Cada etapa tiene su regla y su plazo, y la oportunidad avanza hasta volverse pedido en el Domus.",
+        body: "Cada etapa tiene su regla y su plazo, y la oportunidad avanza hasta volverse pedido en el Welabs Domus.",
       },
     ],
   },
@@ -96,13 +96,13 @@ export const products: ProductsMessages = {
     category: "Automatización de procesos y workflow",
     keywords: ["automatización de procesos", "workflow", "BPM", "aprobaciones"],
     short: "Flujos que esperan la aprobación y retoman donde quedaron.",
-    centerTitle: "Las aprobaciones en el registro del Domus",
+    centerTitle: "Las aprobaciones en el registro del Welabs Domus",
     details: [
       "Espera y aprobación",
       "Validación antes de publicar",
       "Reintento cuando otro sistema falla",
       "Registro de quién cambió qué",
-      "Editor dentro del Domus",
+      "Editor dentro del Welabs Domus",
     ],
     asks: [
       "¿Qué aprobaciones frenan tu operación?",
@@ -130,7 +130,7 @@ export const products: ProductsMessages = {
     keywords: ["canales de mensajería", "comunicación multicanal", "omnicanal"],
     short:
       "Un mensaje sale por cualquier canal, y la respuesta vuelve al lugar correcto.",
-    centerTitle: "Los envíos en el registro del Domus",
+    centerTitle: "Los envíos en el registro del Welabs Domus",
     details: [
       "Mensajes, correo y SMS",
       "Menú de opciones en la llamada",
@@ -165,13 +165,13 @@ export const products: ProductsMessages = {
     keywords: ["base de conocimiento", "IA", "búsqueda semántica"],
     short:
       "La memoria de tu empresa crece con cada fuente, con el origen de cada hecho.",
-    centerTitle: "La memoria en el registro del Domus",
+    centerTitle: "La memoria en el registro del Welabs Domus",
     details: [
       "La fuente de cada frase",
       "Acceso por perfil y grupo",
       "Permisos que no se filtran",
       "Documentos, tickets y actas",
-      "Registros del Domus",
+      "Registros del Welabs Domus",
     ],
     asks: [
       "¿Dónde está hoy el conocimiento de tu equipo?",
@@ -189,7 +189,7 @@ export const products: ProductsMessages = {
       },
       {
         title: "Memoria que crece",
-        body: "Cada documento, acta y registro del Domus se vincula a lo que tu empresa ya aprendió.",
+        body: "Cada documento, acta y registro del Welabs Domus se vincula a lo que tu empresa ya aprendió.",
       },
     ],
   },

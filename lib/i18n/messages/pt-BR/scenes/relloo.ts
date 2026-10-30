@@ -43,7 +43,7 @@ export const relloo = {
   bornFrom: "Nasceu da Conversa 2210, com o resumo junto",
   moves: "anda no funil e o resto acontece sozinho",
   funnel: "Funil",
-  domus: "Domus",
+  domus: "Welabs Domus",
   visit: "Vistoria 318 agendada",
   // v3 (2026-10-23): "atende" is a banned verb of copy-rules.json `words`; the same question, with "responde"
   question: "Quem responde primeiro na sua empresa?",

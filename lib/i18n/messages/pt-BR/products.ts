@@ -31,7 +31,7 @@ export const products = {
     // Sentence under the logo of the opening
     short: "A empresa inteira num espaço de trabalho único.",
     // Title of the stage with this product lit among the others
-    centerTitle: "O Relloo no registro do Domus",
+    centerTitle: "O Relloo no registro do Welabs Domus",
     // Details that come with the product: real, short, never the definition of the product
     details: [
       "Controle fiscal",
@@ -68,7 +68,7 @@ export const products = {
     category: "CRM",
     keywords: ["CRM", "gestão de relacionamento", "atendimento multicanal"],
     short: "Cada contato com todas as conversas, e um funil que anda sozinho.",
-    centerTitle: "As conversas no registro do Domus",
+    centerTitle: "As conversas no registro do Welabs Domus",
     details: [
       "Ligações gravadas na conversa",
       "Chat no site",
@@ -93,7 +93,7 @@ export const products = {
       },
       {
         title: "Funil que anda sozinho",
-        body: "Cada etapa tem regra e prazo, e a oportunidade avança até virar pedido no Domus.",
+        body: "Cada etapa tem regra e prazo, e a oportunidade avança até virar pedido no Welabs Domus.",
       },
     ],
   },
@@ -102,13 +102,13 @@ export const products = {
     category: "Automação de processos e workflow",
     keywords: ["automação de processos", "workflow", "BPM", "aprovações"],
     short: "Fluxos que esperam a aprovação e retomam de onde pararam.",
-    centerTitle: "As aprovações no registro do Domus",
+    centerTitle: "As aprovações no registro do Welabs Domus",
     details: [
       "Espera e aprovação",
       "Validação antes de publicar",
       "Nova tentativa quando outro sistema falha",
       "Registro de quem mudou",
-      "Editor dentro do Domus",
+      "Editor dentro do Welabs Domus",
     ],
     asks: [
       "Quais aprovações travam a sua operação?",
@@ -137,7 +137,7 @@ export const products = {
     keywords: ["canais de mensagem", "comunicação multicanal", "omnichannel"],
     short:
       "Uma mensagem sai por qualquer canal, e a resposta volta para o lugar certo.",
-    centerTitle: "Os envios no registro do Domus",
+    centerTitle: "Os envios no registro do Welabs Domus",
     details: [
       "Mensagem, e-mail e SMS",
       "Menu de opções na ligação",
@@ -173,13 +173,13 @@ export const products = {
     keywords: ["base de conhecimento", "IA", "busca semântica"],
     short:
       "A memória da empresa cresce a cada fonte, com a origem de cada fato.",
-    centerTitle: "A memória no registro do Domus",
+    centerTitle: "A memória no registro do Welabs Domus",
     details: [
       "Fonte de cada frase",
       "Acesso por perfil e grupo",
       "Permissão que não vaza",
       "Documentos, tickets e atas",
-      "Cadastros do Domus",
+      "Cadastros do Welabs Domus",
     ],
     asks: [
       "Onde está o conhecimento da equipe hoje?",
@@ -197,7 +197,7 @@ export const products = {
       },
       {
         title: "Memória que cresce",
-        body: "Cada documento, ata e registro do Domus se liga ao que a empresa já aprendeu.",
+        body: "Cada documento, ata e registro do Welabs Domus se liga ao que a empresa já aprendeu.",
       },
     ],
   },

@@ -87,7 +87,7 @@ const frameOf = (step: string) =>
 // CONTEÚDO DA CENA
 // The areas are the real modules of lib/content/home.ts MODULE_IDS (standard + made to measure: 18), not the frame's
 // unconfirmed "14"; ten are named in the frame's order (by stable id, never by name) and the rest are summed in one tile
-const PRODUCT = "Domus";
+const PRODUCT = "Welabs Domus";
 const ALL_AREA_IDS: readonly ModuleId[] = [
   ...MODULE_IDS.standard,
   ...MODULE_IDS.custom,

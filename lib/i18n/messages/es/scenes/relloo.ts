@@ -42,7 +42,7 @@ export const relloo: SceneMessages<"relloo"> = {
   bornFrom: "Nació de la Conversación 2210, con el resumen incluido",
   moves: "avanza en el embudo y lo demás pasa solo",
   funnel: "Embudo",
-  domus: "Domus",
+  domus: "Welabs Domus",
   visit: "Inspección 318 agendada",
   question: "¿Quién responde primero en tu empresa?",
   inbox: "Bandeja de entrada",

@@ -11,7 +11,7 @@ export const magneto: SceneMessages<"magneto"> = {
     "Magneto: la propuesta inicia el flujo sola, el trabajo se divide, espera la aprobación y termina sin nada dos veces",
   flow: "Aprobación de propuesta",
   active: "Activo",
-  domus: "Domus",
+  domus: "Welabs Domus",
   tuner: "Tuner",
   proposal: "Propuesta 905",
   frameNames: ["Empieza solo", "Divide", "Espera", "Termina"],

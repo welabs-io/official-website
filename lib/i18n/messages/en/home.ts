@@ -17,7 +17,7 @@ export const home: HomeMessages = {
       knowly: "knowledge",
     },
     lead: "All integrated in a single workspace, with an assistant that works in the interface for you.",
-    stage: "The five products tied to Domus",
+    stage: "The five products tied to Welabs Domus",
     stamps: {
       domus: "Order 1234 recorded",
       relloo: "With the right owner",
@@ -118,7 +118,7 @@ export const home: HomeMessages = {
         { name: "Proposal sent", at: "8:40 AM" },
         { name: "Management approval", at: "5:02 PM" },
         { name: "Contract signature", at: "5:08 PM" },
-        { name: "Order in Domus", at: "5:09 PM" },
+        { name: "Order in Welabs Domus", at: "5:09 PM" },
       ],
     },
     tuner: {
@@ -144,7 +144,7 @@ export const home: HomeMessages = {
 
   chain: {
     title: "One message, your whole operation",
-    lead: "From the channel to the order recorded in Domus, as you scroll.",
+    lead: "From the channel to the order recorded in Welabs Domus, as you scroll.",
     bubbleChannel: "Message",
     stations: {
       tuner: {
@@ -224,7 +224,7 @@ export const home: HomeMessages = {
           "An assistant with real data",
           "Tax, finance and accounting",
         ],
-        question: "How much of your operations fits in Domus?",
+        question: "How much of your operations fits in Welabs Domus?",
       },
       relloo: {
         area: "Relationships",

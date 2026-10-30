@@ -9,7 +9,7 @@ export const magneto = {
     "Magneto: a proposta começa o fluxo sozinha, ele divide o trabalho, espera a aprovação e conclui sem nada em dobro",
   flow: "Aprovação de proposta",
   active: "Ativo",
-  domus: "Domus",
+  domus: "Welabs Domus",
   tuner: "Tuner",
   proposal: "Proposta 905",
   // v4 (Stage.dc.html): the name of each moment, on the stage tabs of the chrome (one per frame, in order)

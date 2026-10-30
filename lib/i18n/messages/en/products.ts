@@ -27,7 +27,7 @@ export const products: ProductsMessages = {
       "tax",
     ],
     short: "Your whole company in a single workspace.",
-    centerTitle: "Relloo on the Domus record",
+    centerTitle: "Relloo on the Welabs Domus record",
     details: [
       "Tax control",
       "Bank reconciliation",
@@ -62,7 +62,7 @@ export const products: ProductsMessages = {
     keywords: ["CRM", "relationship management", "omnichannel service"],
     short:
       "Every contact with all of their conversations, and a pipeline that moves on its own.",
-    centerTitle: "Conversations on the Domus record",
+    centerTitle: "Conversations on the Welabs Domus record",
     details: [
       "Calls recorded in the conversation",
       "Website chat",
@@ -87,7 +87,7 @@ export const products: ProductsMessages = {
       },
       {
         title: "A pipeline that moves on its own",
-        body: "Each stage has its rule and deadline, and the opportunity moves until it becomes an order in Domus.",
+        body: "Each stage has its rule and deadline, and the opportunity moves until it becomes an order in Welabs Domus.",
       },
     ],
   },
@@ -96,13 +96,13 @@ export const products: ProductsMessages = {
     category: "Process automation and workflow",
     keywords: ["process automation", "workflow", "BPM", "approvals"],
     short: "Flows that wait for approval and pick up where they left off.",
-    centerTitle: "Approvals on the Domus record",
+    centerTitle: "Approvals on the Welabs Domus record",
     details: [
       "Waits and approvals",
       "Validation before publishing",
       "Retry when another system fails",
       "Log of who changed what",
-      "Editor inside Domus",
+      "Editor inside Welabs Domus",
     ],
     asks: [
       "Which approvals hold up your operations?",
@@ -134,7 +134,7 @@ export const products: ProductsMessages = {
     ],
     short:
       "A message goes out on any channel, and the reply comes back to the right place.",
-    centerTitle: "Sends on the Domus record",
+    centerTitle: "Sends on the Welabs Domus record",
     details: [
       "Messages, email and SMS",
       "Call menu options",
@@ -169,13 +169,13 @@ export const products: ProductsMessages = {
     keywords: ["knowledge base", "AI", "semantic search"],
     short:
       "Your company's memory grows with every source, and every fact shows where it came from.",
-    centerTitle: "Memory on the Domus record",
+    centerTitle: "Memory on the Welabs Domus record",
     details: [
       "A source for every sentence",
       "Access by profile and group",
       "Access that never leaks",
       "Documents, tickets and minutes",
-      "Domus records",
+      "Welabs Domus records",
     ],
     asks: [
       "Where does your team's knowledge live today?",
@@ -193,7 +193,7 @@ export const products: ProductsMessages = {
       },
       {
         title: "Memory that grows",
-        body: "Every document, meeting note and Domus record links to what your company already learned.",
+        body: "Every document, meeting note and Welabs Domus record links to what your company already learned.",
       },
     ],
   },
