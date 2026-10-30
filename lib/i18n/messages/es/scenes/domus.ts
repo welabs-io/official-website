@@ -8,7 +8,7 @@ import type { SceneMessages } from "../../../types";
 
 export const domus: SceneMessages<"domus"> = {
   label:
-    "Domus: toda la gestión en un solo lugar, un tipo de registro nuevo que nace con su pantalla, y el registro que liga los otros productos",
+    "Welabs Domus: toda la gestión en un solo lugar, un tipo de registro nuevo que nace con su pantalla, y el registro que liga los otros productos",
   frames: [
     { title: "Módulos", label: "Las áreas de la empresa" },
     { title: "Tipo de registro", label: "El tipo nuevo se vuelve pantalla" },

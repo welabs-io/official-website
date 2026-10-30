@@ -8,7 +8,13 @@ import {
   MIN_ENDORSED_HEIGHT,
   endorsePolicy,
 } from "./brand-config";
-import { PRODUCTS, productAlt, productLogo } from "./products";
+import {
+  PRODUCTS,
+  carriesWelabs,
+  productAlt,
+  productEndorsedName,
+  productLogo,
+} from "./products";
 
 describe("endorsePolicy", () => {
   it("the default is no seal on small logos", () => {
@@ -41,8 +47,15 @@ describe("logo files and names follow the policy", () => {
     expect(productLogo(slug, "dark", "hero", 24)).toMatch(/-dark\.svg$/);
     expect(productLogo(slug, "light", "row")).toMatch(/-light\.svg$/);
     expect(productLogo(slug, "dark", "hub")).not.toContain("endorsed");
-    expect(productAlt(slug, "hero")).toMatch(/ by Welabs$/);
-    expect(productAlt(slug, "first-mention")).toMatch(/ by Welabs$/);
+    expect(productAlt(slug, "hero")).toBe(productEndorsedName(slug));
+    expect(productAlt(slug, "first-mention")).toBe(productEndorsedName(slug));
     expect(productAlt(slug, "row")).not.toContain("by Welabs");
+  });
+
+  // Decision 3 of 2026-10-29: the platform is "Welabs Domus" and never "Welabs Domus by Welabs"; the others keep the seal line
+  it("the platform carries the Welabs name and the others the seal line", () => {
+    expect(productEndorsedName("domus")).toBe("Welabs Domus");
+    for (const { slug, name } of PRODUCTS.filter((p) => !carriesWelabs(p.slug)))
+      expect(productEndorsedName(slug)).toBe(`${name} by Welabs`);
   });
 });

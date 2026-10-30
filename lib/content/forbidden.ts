@@ -1,19 +1,14 @@
 // PALAVRAS E PROMESSAS PROIBIDAS NO TEXTO
 // ONE list, read by lib/content/content.test.ts against the whole dictionary of each locale (pt-BR, en, es). Each entry
 // is matched case-insensitively as a whole word or phrase, so one entry covers the three languages when they spell it the
-// same ("Software", "SaaS", the vendors). It holds a promise the products do not make (a coupon, cashback, a process
-// written as a sentence), the words the operator does not want on the site ("SaaS", "Software"), the Brazil-only
+// same ("Software", "SaaS", the vendors). It holds a promise the site does not make (a process written as a
+// sentence), the words the operator does not want on the site ("SaaS", "Software"), the Brazil-only
 // citations and every third-party brand of a channel or a tool, visible text and metadata alike (operator, 2026-10-24).
 // Copy review of 2026-10-24: "funil" left the list, because the concept of the Relloo is a funnel run by the Magneto.
+// O2.14 (2026-10-30): coupon and cashback left the list; under the impact map §7.4.1 a promise leaves the site only when
+// it contradicts the model, never because it does not exist yet, and campaigns, coupon and cashback stay as possibilities.
 export const FORBIDDEN_WORDS: readonly string[] = [
-  // Promises the products do not make (pt-BR, en, es)
-  "cupom",
-  "cupons",
-  "coupon",
-  "coupons",
-  "cupón",
-  "cupones",
-  "cashback",
+  // Promises the site does not make (pt-BR, en, es)
   "em frase",
   "numa frase",
   "in one sentence",

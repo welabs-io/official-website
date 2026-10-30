@@ -68,7 +68,7 @@ const SCENES: Entry[] = [
   },
   {
     id: "domus-carousel",
-    figure: /^Domus/,
+    figure: /^Welabs Domus/,
     // Confirmar (frame 3): the take plays the rest of the loop (5.4 s), so its settled frame holds inside the window
     trigger: /^Confirmar/,
     final: "cta",

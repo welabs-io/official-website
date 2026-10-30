@@ -43,7 +43,7 @@ export const relloo: SceneMessages<"relloo"> = {
   bornFrom: "Born from Conversation 2210, with the summary attached",
   moves: "moves down the pipeline and the rest happens on its own",
   funnel: "Pipeline",
-  domus: "Domus",
+  domus: "Welabs Domus",
   visit: "Inspection 318 scheduled",
   question: "Who replies first at your company?",
   inbox: "Inbox",

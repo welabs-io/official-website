@@ -3,7 +3,7 @@
 // opacity 0 and visibility hidden in 5 of 5 openings), and the page behind it must not scroll while it is open.
 import { expect, test } from "@playwright/test";
 
-const PRODUCTS = ["Domus", "Relloo", "Magneto", "Tuner", "Knowly"];
+const PRODUCTS = ["Welabs Domus", "Relloo", "Magneto", "Tuner", "Knowly"];
 
 test.describe("mobile menu", () => {
   test.use({ viewport: { width: 375, height: 812 }, hasTouch: true });

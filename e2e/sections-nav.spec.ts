@@ -9,7 +9,7 @@ test.setTimeout(45000);
 
 const SLUGS = ["domus", "relloo", "magneto", "tuner", "knowly"] as const;
 const NAMES = {
-  domus: "Domus",
+  domus: "Welabs Domus",
   relloo: "Relloo",
   magneto: "Magneto",
   tuner: "Tuner",
@@ -48,12 +48,16 @@ for (const [i, slug] of SLUGS.entries())
     await page.goto(`/products/${slug}`, { waitUntil: "load" });
     // v2.1: no door at the end, no list of the others; the selector at the top names the five, this one current
     await expect(page.locator("[data-descent-slot] #next")).toHaveCount(0);
-    await expect(page.locator("[data-descent-slot] [data-door]")).toHaveCount(0);
+    await expect(page.locator("[data-descent-slot] [data-door]")).toHaveCount(
+      0,
+    );
     await expect(page.locator("#product h1 img")).toHaveAttribute(
       "alt",
       new RegExp(NAMES[slug]),
     );
-    const selector = page.getByRole("navigation", { name: "Os cinco produtos" });
+    const selector = page.getByRole("navigation", {
+      name: "Os cinco produtos",
+    });
     await expect(selector.getByRole("link")).toHaveCount(5);
     await expect(selector.locator('[aria-current="page"]')).toHaveAttribute(
       "href",
@@ -65,7 +69,9 @@ for (const [i, slug] of SLUGS.entries())
     await expect(page.locator(`[data-intro="${target}"]`)).toHaveCount(1);
     await page.waitForURL(`**/products/${target}`);
     await page.waitForFunction(
-      () => !document.querySelector("[data-intro]") && !document.querySelector("body > img"),
+      () =>
+        !document.querySelector("[data-intro]") &&
+        !document.querySelector("body > img"),
       undefined,
       { timeout: 12000 },
     );
