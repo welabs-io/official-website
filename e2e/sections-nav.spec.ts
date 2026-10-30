@@ -91,3 +91,24 @@ for (const [i, slug] of SLUGS.entries())
     await page.waitForURL((url) => url.pathname === "/");
     await expect(page.locator("#message")).toBeVisible();
   });
+
+// CLIQUE NO INSTANTE DA HIDRATAÇÃO
+// A click on the selector the moment its link hydrates (React has bound it, the engine is still downloading) is held
+// and opens the brand opening (components/onepage/Descent.tsx). Before the hold started at module evaluation, that
+// click went to next/link as a plain swap with no opening (2026-10-26, dev server on 88bdfb7: 8 of 8), and the test
+// above failed whenever its click fell there.
+test("a click on the selector as its link hydrates still opens the brand opening", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.addInitScript(() => {
+    // The link is hydrated once React has attached its fiber to it
+    const tick = () => {
+      const a = document.querySelector<HTMLAnchorElement>('[data-switch] a[href$="/products/domus"]');
+      if (a && Object.keys(a).some((k) => k.startsWith("__reactFiber"))) a.click();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  await page.goto("/products/knowly", { waitUntil: "commit" });
+  await expect(page.locator('[data-intro="domus"]')).toHaveCount(1);
+  await page.waitForURL("**/products/domus");
+});
