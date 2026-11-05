@@ -76,7 +76,7 @@ import { mount as mountMagnets, KBIG } from './magneto.js';
 
   export function mount(root, cfg) {
   // The magnets of the choreography, with the phase overrides of the piece
-  var inst = mountMagnets(root, { T: TIMES, logo: cfg.logo, box: cfg.box });
+  var inst = mountMagnets(root, { T: TIMES, logo: cfg.logo, box: cfg.box, cut: cfg.cut, parentW: cfg.parentW });
   var svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('width', 1920); svg.setAttribute('height', 1080); svg.setAttribute('viewBox', '0 0 1920 1080');
   svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('class', 'flow'); svg.setAttribute('data-layout-allow-overflow', ''); // nodes enter from outside the zoomed frame on purpose svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;font-family:Inter,sans-serif';

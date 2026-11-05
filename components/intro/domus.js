@@ -5,26 +5,25 @@
 // Same arc as the approved Magneto opening (magneto-intro 1.3.0), with the Domus idea: the rooms of the business arrive in a
 // cascade and lock side by side as a floor plan while the camera is close; the camera pulls back and the plan sits inside the
 // outline of the "encaixe" symbol; the plan condenses into the symbol (clack, short amber flash, soft absorption); the symbol
-// shrinks onto the exact position of the "o" of "domus", and the official endorsed logo takes over (wordmark opens both ways
-// from the symbol, "by welabs" seal, role word).
+// shrinks onto the exact position of the "o" of "domus", and the official full logo takes over (wordmark opens both ways
+// from the symbol, the "welabs" mark above it, role word).
 // The symbol is never redrawn by hand: its ring and amber square are read at run time from the official logo
 // (domus-logo-on-dark.svg, the file the manifest names), so the landing on the "o" follows the brand version.
 // Pure function of time: one paused GSAP tween drives render(t) through a setter, no clock and no random, so seek is exact.
-// Expected DOM inside the root: img.wm (data-brand-src="welabs/domus-endorsed-on-dark.svg"), div.role (span.bar, span.word).
+// Expected DOM inside the root: the `.wm` wrapper of welabs/products/domus-light-full.svg, div.role (span.bar, span.word).
 // Usage: DomusIntro.build({root, duration, T, rooms}) -> paused timeline (tl.domus = instance); DomusIntro.mount(root, cfg) -> {render, layout, T, rooms}.
 //
 // ABERTURA DO DOMUS NO SITE
 // Port of the accepted choreography 1.0.1 for the site (components/intro/intro-run.ts): the light palette of the site
 // (kit.js) in place of the dark one, the eases written without GSAP, the logo geometry read from the light logo text the
-// player passes (`cfg.logo`) instead of a synchronous request, the endorsed box from `cfg.box` (the round's dark file
-// box, the same coordinates), and `.wm` is the player's wrapper of the light endorsed logo. No `build`: the player
-// drives render(t) with requestAnimationFrame. Motion, geometry and times are those of the round.
+// player passes (`cfg.logo`) instead of a synchronous request, the logo box from `cfg.box`, and `.wm` is the player's
+// wrapper of the light full logo. No `build`: the player drives render(t) with requestAnimationFrame. Motion, geometry
+// and times are those of the round, except the last reveal: brand 2.0.0 puts "welabs" above the name (`cfg.cut`,
+// `cfg.parentW`), so the wipe opens that band left to right where the round opened the seal under the name.
 import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', CARD = LIGHT.card, EDGE = LIGHT.edge, INK = LIGHT.ink;
   var GAP = 96, ROLE_H = 56;        // layout gap between logo and role word, role height
-  var WORD_CUT = 300;               // logo-box y (px) between the wordmark and the "by welabs" seal
-  var SEAL_W = 400;                 // width (px at scale 1) of the seal region swept by the seal wipe
   var KBIG = 5.6;                   // opening scale of the symbol (outline height 868 px, 106 px from the top and bottom)
   var C = [960, 540];               // centre of the plan and of the big symbol on screen
 
@@ -50,7 +49,7 @@ import { parseEase, LIGHT } from './kit.js';
   function mix(a, b, u) { return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(lerp(a[i], b[i], u)); }).join(',') + ')'; }
 
   // GEOMETRIA OFICIAL (lida do SVG da marca; a peça não carrega cópia do desenho)
-  // The text of the light logo and the endorsed box come from the player (cfg.logo, cfg.box)
+  // The text of the light logo and the logo box come from the player (cfg.logo, cfg.box)
   function readLogo(txt, box) {
     var ring = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" rx="([\d.]+)" fill="none" stroke="(#[0-9A-Fa-f]{6})" stroke-width="([\d.]+)"/.exec(txt);
     var sq = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="(#[0-9A-Fa-f]{6})"/.exec(txt);
@@ -91,6 +90,7 @@ import { parseEase, LIGHT } from './kit.js';
     var zIn = T.zIn, SAFE = (over && over.safe != null) ? over.safe : 96;   // safe margin (px) for the outline
     var logo = readLogo(over.logo, over.box), ev = logo.ev, id = ++uid;
     var w = ev[2], h = ev[3];
+    var cut = over.cut - ev[1], parentW = over.parentW;               // box y (px) of the cut, width (px) of the "welabs" band above it
     var left = Math.round((W - w) / 2), top = Math.round((H - (h + GAP + ROLE_H)) / 2);
     var rg = logo.ring, sq = logo.sq;
     var ocx = rg.x + rg.w / 2, ocy = rg.y + rg.h / 2;                // centre of the "o" in logo units
@@ -213,15 +213,15 @@ import { parseEase, LIGHT } from './kit.js';
       wave.setAttribute('rx', ((rg.rx + rg.sw / 2) * bs * grow).toFixed(2));
       wave.setAttribute('opacity', (t >= T.hit && wu < 1 ? 0.6 * (1 - wu) : 0).toFixed(3));
 
-      // PASSAGEM PARA O LOGO OFICIAL (wordmark abre dos dois lados do símbolo, selo sobe, palavra de papel)
+      // PASSAGEM PARA O LOGO OFICIAL (wordmark abre dos dois lados do símbolo, "welabs" abre acima dele, palavra de papel)
       var wp = clamp01((t - T.wipe0) / (T.wipe1 - T.wipe0)), swapped = t >= T.wipe1;
       zoom.style.visibility = swapped ? 'hidden' : 'visible';
       var sl = eSeal(clamp01((t - T.seal0) / (T.seal1 - T.seal0)));
       wmEl.style.visibility = t < T.wipe0 ? 'hidden' : 'visible';
       if (t >= T.wipe0) {
-        var e = eWipe(wp), xl = swapped ? 0 : lerp(bandL, 0, e), xr = swapped ? w : lerp(bandR, w, e), xs = SEAL_W * sl;
+        var e = eWipe(wp), xl = swapped ? 0 : lerp(bandL, 0, e), xr = swapped ? w : lerp(bandR, w, e), xs = parentW * sl;
         if (swapped && sl >= 1) wmEl.style.clipPath = 'none';
-        else wmEl.style.clipPath = 'polygon(' + [[xl, 0], [xr, 0], [xr, WORD_CUT], [xs, WORD_CUT], [xs, h], [0, h], [0, WORD_CUT], [xl, WORD_CUT]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
+        else wmEl.style.clipPath = 'polygon(' + [[0, 0], [xs, 0], [xs, cut], [xr, cut], [xr, h], [xl, h], [xl, cut], [0, cut]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
       }
       var rr = eRole(clamp01((t - T.role0) / (T.role1 - T.role0)));
       bar.style.transform = 'scaleX(' + rr + ')';

@@ -8,7 +8,7 @@
 //  - Reveal rises 12 to 20 px with no blur nor scale, staggered by 80 ms, and does not move under reduced motion;
 //  - a card of a GrowRow gains width by flex-grow (never scale) over ~700 ms;
 //  - the brand opening keeps the canvas (#f7f7f5) in every frame, has no CSS blur anywhere, and its closing logo (the
-//    endorsed vector file) is never scaled by a transform nor changes size once shown. v4 (2026-10-24): the opening is
+//    full vector file) is never scaled by a transform nor changes size once shown. v4 (2026-10-24): the opening is
 //    the choreography of the product again, so the logo is the closing frame of a scene, at ~30 % of a wide window.
 import { expect, test, type Page } from "@playwright/test";
 
@@ -260,7 +260,7 @@ test.describe("brand opening", () => {
         const tick = () => {
           const sheet = document.querySelector<HTMLElement>("[data-intro]");
           if (sheet) {
-            // v4 (2026-10-24): the mark is the wrapper of the endorsed file in the choreography's stage
+            // v4 (2026-10-24): the mark is the wrapper of the full file in the choreography's stage
             const mark = sheet.querySelector<HTMLElement>("[data-intro-logo]")!;
             const img = mark.querySelector("img")!;
             const all = [sheet, ...sheet.querySelectorAll("*")];
@@ -275,7 +275,7 @@ test.describe("brand opening", () => {
               shown: getComputedStyle(mark).visibility === "visible",
               ratio: mark.getBoundingClientRect().width / window.innerWidth,
               transform: [...new Set(chain.map((el) => getComputedStyle(el).transform))].join(" "),
-              svg: /-light-endorsed\.svg$/.test(img.src),
+              svg: /-light-full\.svg$/.test(img.src),
             });
           }
           requestAnimationFrame(tick);

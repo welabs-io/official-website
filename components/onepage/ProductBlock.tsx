@@ -1,5 +1,5 @@
 // CABEÇALHO DE PRODUTO
-// Large logo (the identity highlight, so it carries the seal per endorsePolicy) and one factual line. The logo links
+// Large logo (the identity highlight, so it is the full form per fullFormPolicy) and one factual line. The logo links
 // to the product page except on that page itself.
 import Link from "next/link";
 import { href, type I18n } from "@/lib/i18n/i18n";
@@ -36,7 +36,7 @@ export function ProductBlock({
       src={productLogo(slug, tone, "hero", 64)}
       alt={productAlt(slug, "hero")}
       width={1005}
-      height={550}
+      height={569}
       style={{ "--pad": LOGO_PAD[slug] } as React.CSSProperties}
     />
   );

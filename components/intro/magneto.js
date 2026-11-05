@@ -8,26 +8,26 @@
 // The "m" is never redrawn: its outline is read at run time from the official 1.3.0 logo (the file the manifest names),
 // cut at the seam x = 129 into two halves, and each half is one magnet. Rotated 90 degrees counter-clockwise the halves are
 // two stacked "C" shapes open to the right; a clockwise 90 degree turn after the snap lands them exactly on the "m" of
-// magneto-endorsed-on-dark.svg, which then takes over (wordmark wipe, "by welabs" seal, role word).
+// full logo, which then takes over (wordmark wipe, the "welabs" mark above it, role word).
 // Pure function of time: one paused GSAP tween drives render(t) through a setter, no clock and no random, so seek is exact.
 // 1.1.0 vs 1.0.0: every phase time lives in T and can be overridden per piece (cfg.T); the approach can hold the magnets apart
 // for a long stretch (T.hold1, T.dHold) before the fast close; the instance exposes dist(t) and cam(t) for pieces that add a layer.
 // With no overrides the output equals 1.0.0 frame for frame.
-// Expected DOM inside the root: img.wm (data-brand-src="welabs/magneto-endorsed-on-dark.svg"), div.role (span.bar, span.word).
+// Expected DOM inside the root: the `.wm` wrapper of welabs/products/magneto-light-full.svg, div.role (span.bar, span.word).
 // Usage: MagnetoIntro.build({root, duration, T}) -> paused timeline (tl.magneto = instance); MagnetoIntro.mount(root, T) -> {render(t), layout, T, dist, cam}.
 //
 // ABERTURA DO MAGNETO NO SITE
 // Port of the accepted choreography 1.3.0 for the site (components/intro/intro-run.ts), used by magneto-flow.js (the
-// layer of the piece magneto-intro-s3-r3): light palette (kit.js), eases without GSAP, the logo text and the endorsed box
+// layer of the piece magneto-intro-s3-r3): light palette (kit.js), eases without GSAP, the logo text and the logo box
 // passed by the player (cfg.logo, cfg.box; cfg.T holds the phase overrides of the piece), `.wm` the player's wrapper of
-// the light endorsed logo, no `build`. Motion, geometry and times are those of the round.
+// the light full logo, no `build`. Motion, geometry and times are those of the round, except the last reveal: brand 2.0.0
+// puts "welabs" above the name (`cfg.cut`, `cfg.parentW`), so the wipe opens that band left to right.
 import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', INK = LIGHT.ink;
   var SEAM = 129, CX = 129, CY = 133.65; // seam and centre of the "m" box (x 9..249, y 57.3..210) in logo units
   var KBIG = 1.9, PBIG = [740, 540]; // opening scale and screen position of the magnet pair
-  var GAP = 96, ROLE_H = 56, WORD_CUT = 309; // layout gap, role height, logo-box y (px) where the seal region starts
-  var SEAL_W = 400; // width (px at scale 1) of the "by welabs" seal region in the endorsed logo box; the seal wipe sweeps only this
+  var GAP = 96, ROLE_H = 56; // layout gap, role height
   var L_WORD = 254; // x (logo units) where the wordmark wipe starts: past the "m" (ends at 249), before the "a" (starts at 259.4)
 
   // CRONOMETRAGEM (segundos; valores padrão = 1.0.0, alvo 4,5 a 5 s no total)
@@ -51,7 +51,7 @@ import { parseEase, LIGHT } from './kit.js';
   var eWipe = ease('power3.out'), eSeal = ease('power3.out'), eRole = ease('power3.out');
 
   // GEOMETRIA OFICIAL (lida do SVG da marca; a peça não carrega cópia do desenho)
-  // The text of the light logo and the endorsed box come from the player (cfg.logo, cfg.box)
+  // The text of the light logo and the logo box come from the player (cfg.logo, cfg.box)
   function readLogo(txt, evBox) {
     var path = /<path d="([^"]+)" fill="(#[0-9A-Fa-f]{6})"/.exec(txt);
     var pole = /<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="(#[0-9A-Fa-f]{6})"/.exec(txt);
@@ -87,6 +87,7 @@ import { parseEase, LIGHT } from './kit.js';
     var dist = makeDist(T);
     var logo = readLogo(cfg.logo, cfg.box), ev = logo.ev, id = ++uid;
     var w = ev[2], h = ev[3];
+    var cut = cfg.cut - ev[1], parentW = cfg.parentW; // box y (px) of the cut, width (px) of the "welabs" band above it
     var left = Math.round((W - w) / 2), top = Math.round((H - (h + GAP + ROLE_H)) / 2);
     var P1 = [left + CX - ev[0], top + CY - ev[1]]; // screen position of the "m" centre in the final logo (scale 1)
     var wm = root.querySelector('.wm'), role = root.querySelector('.role');
@@ -205,17 +206,17 @@ import { parseEase, LIGHT } from './kit.js';
       ring.setAttribute('r', lerp(10, 260, 1 - Math.pow(1 - ru, 3)).toFixed(2));
       ring.setAttribute('opacity', t >= T.hit && ru < 1 ? (0.6 * (1 - ru)).toFixed(3) : 0);
 
-      // PASSAGEM PARA O LOGO OFICIAL (wordmark abre da esquerda, selo sobe, palavra de papel)
+      // PASSAGEM PARA O LOGO OFICIAL (wordmark abre da esquerda, "welabs" abre acima dele, palavra de papel)
       var wu = clamp01((t - T.wipe0) / (T.wipe1 - T.wipe0)), swapped = t >= T.wipe1;
       svg.style.visibility = swapped ? 'hidden' : 'visible';
-      // One image of the official endorsed logo; a stepped polygon reveals the wordmark (x from L to R, above the cut)
-      // and the seal (x from 0 to Rs, below the cut) independently, so the pieces together are the file as published
+      // One image of the official full logo; a stepped polygon reveals "welabs" (x from 0 to Rs, above the cut) and the
+      // wordmark (x from L to R, below the cut) independently, so the pieces together are the file as published
       var su = eSeal(clamp01((t - T.seal0) / (T.seal1 - T.seal0)));
       wm.style.visibility = t < T.wipe0 ? 'hidden' : 'visible';
       if (t >= T.wipe0) {
-        var xl = swapped ? 0 : L_WORD, xr = swapped ? w : L_WORD + (w - L_WORD) * eWipe(wu), xs = SEAL_W * su;
+        var xl = swapped ? 0 : L_WORD, xr = swapped ? w : L_WORD + (w - L_WORD) * eWipe(wu), xs = parentW * su;
         if (swapped && su >= 1) wm.style.clipPath = 'none';
-        else wm.style.clipPath = 'polygon(' + [[xl, 0], [xr, 0], [xr, WORD_CUT], [xs, WORD_CUT], [xs, h], [0, h], [0, WORD_CUT], [xl, WORD_CUT]].map(function (q) { return q[0] + 'px ' + q[1] + 'px'; }).join(',') + ')';
+        else wm.style.clipPath = 'polygon(' + [[0, 0], [xs, 0], [xs, cut], [xr, cut], [xr, h], [xl, h], [xl, cut], [0, cut]].map(function (q) { return q[0] + 'px ' + q[1] + 'px'; }).join(',') + ')';
       }
       var ru2 = eRole(clamp01((t - T.role0) / (T.role1 - T.role0)));
       bar.style.transform = 'scaleX(' + ru2 + ')';

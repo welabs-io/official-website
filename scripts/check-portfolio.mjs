@@ -170,8 +170,8 @@ assert(
 );
 assert(!/mailto:|wa\.me|<form/.test(home), "the contact is the button only");
 assert(
-  !/products\/\w+-(?:dark|light)-endorsed\.svg/.test(home),
-  "the seal is only the identity highlight of the product page, not the home",
+  !/products\/\w+-(?:dark|light)-full\.svg/.test(home),
+  "the full logo is only the identity highlight of the product page, not the home",
 );
 assert(/href="\/#contact"/.test(home), "CTA points to the contact section");
 const words = countWords(home);
@@ -226,8 +226,8 @@ assert(
 for (const slug of SLUGS) {
   const html = await page(`/products/${slug}`);
   assert(
-    new RegExp(`${slug}-light-endorsed\\.svg`).test(html),
-    `${slug} page has the logo with seal`,
+    new RegExp(`${slug}-light-full\\.svg`).test(html),
+    `${slug} page has the full logo`,
   );
   assert(
     /<meta name="keywords" content="[^"]+"/.test(html),
@@ -270,8 +270,8 @@ for (const slug of SLUGS) {
     `${slug} opens with the selector of the five products, with no door at its end`,
   );
   assert(
-    /<title>[^<]* by Welabs<\/title>/.test(html),
-    `${slug} title follows the "<Product> by Welabs" pattern`,
+    /<title>Welabs [^<]+<\/title>/.test(html) && !/by welabs/i.test(html),
+    `${slug} title follows the "Welabs <Product>" pattern, with no "by Welabs" on the page`,
   );
   const at = (id) => slot.indexOf(`id="${id}"`);
   const PRODUCT_ORDER = [

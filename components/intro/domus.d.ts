@@ -1,6 +1,6 @@
 // TIPOS DA ABERTURA PORTADA
 // The contract every ported opening module exports (domus.js, relloo.js, tuner.js, knowly.js, magneto-flow.js): mount
-// the opening into a 1920x1080 root that holds `.wm` (the wrapper of the light endorsed logo) and `.role` (`.bar`,
+// the opening into a 1920x1080 root that holds `.wm` (the wrapper of the light full logo) and `.role` (`.bar`,
 // `.word`), and draw it at any second with render(t). SETTLED is the second the closing frame is complete.
 import type { Messages } from "@/lib/i18n/types";
 
@@ -11,8 +11,11 @@ export type IntroLabels = Messages["openings"][keyof Messages["openings"]];
 export type IntroConfig = {
   // Text of the light logo of the product (public/brands/welabs/products/<slug>-light.svg)
   logo: string;
-  // Box of the logo in logo units: the round's endorsed viewBox [x, y, w, h]
+  // Box of the logo in logo units [x, y, w, h]
   box: readonly number[];
+  // Logo y that separates "welabs" (above) from the name (below), and the x where the "welabs" mark ends
+  cut: number;
+  parentW: number;
   // The words drawn inside the scene
   labels: IntroLabels;
   safe?: number;
