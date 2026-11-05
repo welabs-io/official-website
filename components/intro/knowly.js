@@ -4,22 +4,21 @@
 // travelling along each line. The camera pulls back and reveals that the whole network is drawn on a big globe (meridians and parallels).
 // The globe turns a quarter turn and condenses (clack, short amber flash, fragments absorbed by shrinking and fading on the same 0.16 s,
 // no pop): the three parallels thicken into the three amber strokes of the logo globe. Then the globe shrinks onto the exact position of
-// the "o" of "knowly" and the official endorsed logo takes over (wordmark opens to both sides, seal, tagline).
+// the "o" of "knowly" and the official full logo takes over (wordmark opens to both sides, the "welabs" mark above it, tagline).
 // The sign is never redrawn by hand: ring and strokes are read at run time from the official logo (knowly-logo-on-dark.svg).
 // Pure function of time: one paused GSAP tween drives render(t) through a setter, no clock and no random, so seek is exact.
-// Expected DOM inside the root: img.wm (data-brand-src="welabs/knowly-endorsed-on-dark.svg"), div.role (span.bar, span.word).
+// Expected DOM inside the root: the `.wm` wrapper of welabs/products/knowly-light-full.svg, div.role (span.bar, span.word).
 // Usage: KnowlyIntro.build({root, duration, T, safe}) -> paused timeline (tl.knowly = instance); KnowlyIntro.mount(root, cfg) -> {render, layout, T}.
 //
 // ABERTURA DO KNOWLY NO SITE
 // Port of the accepted choreography 1.0.0 for the site (components/intro/intro-run.ts): light palette (kit.js), eases
-// without GSAP, the logo text and the endorsed box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
-// of the light endorsed logo, no `build`. Motion, geometry and times are those of the round.
+// without GSAP, the logo text and the logo box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
+// of the light full logo, no `build`. Motion, geometry and times are those of the round, except the last reveal: brand
+// 2.0.0 puts "welabs" above the name (`cfg.cut`, `cfg.parentW`), so the wipe opens that band left to right.
 import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', PANEL = LIGHT.card, PANEL2 = LIGHT.panel2, EDGE = LIGHT.edge, GRID = LIGHT.grid, MUTED = LIGHT.muted, INK = LIGHT.ink;
   var GAP = 96, ROLE_H = 56;        // layout gap between logo and tagline, tagline height
-  var WORD_CUT = 300;               // logo-box y (px) between the wordmark and the "by welabs" seal
-  var SEAL_W = 400;                 // width (px at scale 1) of the seal region swept by the seal wipe
   var KBIG = 5.5;                   // scale of the globe while the camera pulls back (hole radius 283 px, outer edge 426 px, 114 px safe)
   var C = [960, 540];               // centre of the globe on screen before it shrinks
   var CARD_W = 188, CARD_H = 74;    // fragment card
@@ -50,7 +49,7 @@ import { parseEase, LIGHT } from './kit.js';
   function f2(x) { return x.toFixed(2); }
 
   // GEOMETRIA OFICIAL (lida do SVG da marca; a peça não carrega cópia do desenho)
-  // The text of the light logo and the endorsed box come from the player (cfg.logo, cfg.box)
+  // The text of the light logo and the logo box come from the player (cfg.logo, cfg.box)
   function readLogo(txt, evBox) {
     var cm = /<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)" fill="none" stroke="(#[0-9A-Fa-f]{6})" stroke-width="([\d.]+)"\/>/.exec(txt);
     var gm = /<g fill="none" stroke="(#[0-9A-Fa-f]{6})" stroke-width="([\d.]+)" stroke-linecap="round">([\s\S]*?)<\/g>/.exec(txt);
@@ -103,6 +102,7 @@ import { parseEase, LIGHT } from './kit.js';
     var zIn = T.zIn, SAFE = (over && over.safe != null) ? over.safe : 98;   // safe margin (px) for the globe
     var lg = readLogo(over.logo, over.box), ev = lg.ev, id = ++uid;
     var w = ev[2], h = ev[3];
+    var cut = over.cut - ev[1], parentW = over.parentW;               // box y (px) of the cut, width (px) of the "welabs" band above it
     var left = Math.round((W - w) / 2), top = Math.round((H - (h + GAP + ROLE_H)) / 2);
     var P1 = [left + lg.cx - ev[0], top + lg.cy - ev[1]];             // screen position of the globe centre in the final logo (scale 1)
     var wmEl = root.querySelector('.wm'), role = root.querySelector('.role');
@@ -247,9 +247,9 @@ import { parseEase, LIGHT } from './kit.js';
       var sl = eSeal(clamp01((t - T.seal0) / (T.seal1 - T.seal0)));
       wmEl.style.visibility = t < T.wipe0 ? 'hidden' : 'visible';
       if (t >= T.wipe0) {
-        var e = eWipe(wp), xl = swapped ? 0 : lerp(bandL, 0, e), xr = swapped ? w : lerp(bandR, w, e), xs = SEAL_W * sl;
+        var e = eWipe(wp), xl = swapped ? 0 : lerp(bandL, 0, e), xr = swapped ? w : lerp(bandR, w, e), xs = parentW * sl;
         if (swapped && sl >= 1) wmEl.style.clipPath = 'none';
-        else wmEl.style.clipPath = 'polygon(' + [[xl, 0], [xr, 0], [xr, WORD_CUT], [xs, WORD_CUT], [xs, h], [0, h], [0, WORD_CUT], [xl, WORD_CUT]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
+        else wmEl.style.clipPath = 'polygon(' + [[0, 0], [xs, 0], [xs, cut], [xr, cut], [xr, h], [xl, h], [xl, cut], [0, cut]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
       }
       var rr = eRole(clamp01((t - T.role0) / (T.role1 - T.role0)));
       bar.style.transform = 'scaleX(' + rr + ')';

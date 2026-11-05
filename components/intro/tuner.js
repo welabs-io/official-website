@@ -6,17 +6,18 @@
 // and reveals the dial: the two wave arcs of the Tuner sign, large, with a graduated track between them and a needle on the hub. The
 // needle swings and settles on zero while the five waves slide into the same wavelength and phase. Clack: short amber flash, the arcs
 // turn amber and everything else is absorbed by shrinking and fading on the same 0.16 s as the pull (no pop). Then the arcs shrink
-// onto the exact position of the waves of the "r" and the official endorsed logo takes over (wordmark opens to the left, seal, tagline).
+// onto the exact position of the waves of the "r" and the official full logo takes over (wordmark opens to the left, the "welabs" mark above it, tagline).
 // The sign is never redrawn by hand: both arcs are read at run time from the official logo (tuner-logo-on-dark.svg), so the landing
 // follows the brand version. The dial group is always O-centred in logo units, so scale 1 plus the logo offset is the exact logo pose.
 // Pure function of time: one paused GSAP tween drives render(t) through a setter, no clock and no random, so seek is exact.
-// Expected DOM inside the root: img.wm (data-brand-src="welabs/tuner-endorsed-on-dark.svg"), div.role (span.bar, span.word).
+// Expected DOM inside the root: the `.wm` wrapper of welabs/products/tuner-light-full.svg, div.role (span.bar, span.word).
 // Usage: TunerIntro.build({root, duration, T, safe}) -> paused timeline (tl.tuner = instance); TunerIntro.mount(root, cfg) -> {render, layout, T}.
 //
 // ABERTURA DO TUNER NO SITE
 // Port of the accepted choreography 1.0.0 for the site (components/intro/intro-run.ts): light palette (kit.js), eases
-// without GSAP, the logo text and the endorsed box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
-// of the light endorsed logo, no `build`. Motion, geometry and times are those of the round.
+// without GSAP, the logo text and the logo box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
+// of the light full logo, no `build`. Motion, geometry and times are those of the round, except the last reveal: brand
+// 2.0.0 puts "welabs" above the name (`cfg.cut`, `cfg.parentW`), so the wipe opens that band left to right.
 // v3 (F1): the chips name the category of each channel, never its brand (the copy rules: a brand only inside brackets,
 // as an example of its category, as "Comunidades (Discord)" on the product page); the brand-like glyph of the community
 // chip is a neutral "#" channel mark. Motion, geometry and times are unchanged.
@@ -24,8 +25,6 @@ import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', PANEL2 = LIGHT.card, EDGE = LIGHT.edge, SLATE = LIGHT.slate, DIALBG = LIGHT.dial, INK = LIGHT.ink;
   var GAP = 96, ROLE_H = 56;        // layout gap between logo and tagline, tagline height
-  var WORD_CUT = 300;               // logo-box y (px) between the wordmark and the "by welabs" seal
-  var SEAL_W = 400;                 // width (px at scale 1) of the seal region swept by the seal wipe
   var KBIG = 4;                     // scale of the dial (the two arcs) before it shrinks onto the logo
   var ZIN = 1.55;                   // close-up factor of the focus camera
   var WC0 = [680, 540];             // world point the focus camera looks at (the group of chips, lines and hub)
@@ -61,7 +60,7 @@ import { parseEase, LIGHT } from './kit.js';
   function mix(a, b, u) { return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(lerp(a[i], b[i], u)); }).join(',') + ')'; }
 
   // GEOMETRIA OFICIAL (lida do SVG da marca; a peça não carrega cópia do desenho)
-  // The text of the light logo and the endorsed box come from the player (cfg.logo, cfg.box)
+  // The text of the light logo and the logo box come from the player (cfg.logo, cfg.box)
   function readLogo(txt, evBox) {
     var re = /<path d="(M(-?[\d.]+) (-?[\d.]+)A([\d.]+) ([\d.]+) 0 0 1 (-?[\d.]+) (-?[\d.]+))" fill="none" stroke="(#[0-9A-Fa-f]{6})" stroke-width="([\d.]+)" stroke-linecap="round"\/>/g, m, arcs = [];
     while ((m = re.exec(txt))) arcs.push({d: m[1], x0: +m[2], y0: +m[3], r: +m[4], x1: +m[6], y1: +m[7], stroke: m[8], sw: +m[9]});
@@ -102,6 +101,7 @@ import { parseEase, LIGHT } from './kit.js';
     var SAFE = (over && over.safe != null) ? over.safe : 100;   // safe margin (px) for the dial while the camera is close
     var lg = readLogo(over.logo, over.box), ev = lg.ev, id = ++uid;
     var w = ev[2], h = ev[3];
+    var cut = over.cut - ev[1], parentW = over.parentW;               // box y (px) of the cut, width (px) of the "welabs" band above it
     var left = Math.round((W - w) / 2), top = Math.round((H - (h + GAP + ROLE_H)) / 2);
     var ox = lg.ox, oy = lg.oy;
     var LAND = [left + ox - ev[0], top + oy - ev[1]];          // screen position of the arc centre in the final logo (scale 1)
@@ -285,9 +285,9 @@ import { parseEase, LIGHT } from './kit.js';
       var sl = eSeal(clamp01((t - T.seal0) / (T.seal1 - T.seal0)));
       wmEl.style.visibility = t < T.wipe0 ? 'hidden' : 'visible';
       if (t >= T.wipe0) {
-        var e = eWipe(wp), xl = swapped ? 0 : lerp(lg.bandL, 0, e), xr = w, xs = SEAL_W * sl;
+        var e = eWipe(wp), xl = swapped ? 0 : lerp(lg.bandL, 0, e), xr = w, xs = parentW * sl;
         if (swapped && sl >= 1) wmEl.style.clipPath = 'none';
-        else wmEl.style.clipPath = 'polygon(' + [[xl, 0], [xr, 0], [xr, WORD_CUT], [xs, WORD_CUT], [xs, h], [0, h], [0, WORD_CUT], [xl, WORD_CUT]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
+        else wmEl.style.clipPath = 'polygon(' + [[0, 0], [xs, 0], [xs, cut], [xr, cut], [xr, h], [xl, h], [xl, cut], [0, cut]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
       }
       var rr = eRole(clamp01((t - T.role0) / (T.role1 - T.role0)));
       bar.style.transform = 'scaleX(' + rr + ')';

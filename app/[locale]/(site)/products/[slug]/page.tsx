@@ -5,7 +5,7 @@ import { LOCALES, isLocale } from "@/lib/i18n/config";
 import { localeAlternates } from "@/lib/i18n/alternates";
 import { fmt } from "@/lib/i18n/format";
 import { getI18n } from "@/lib/i18n/i18n";
-import { PRODUCTS, carriesWelabs, productBySlug } from "@/lib/products";
+import { PRODUCTS, productBySlug, productFullName } from "@/lib/products";
 import { productConfig } from "@/lib/site-config";
 import { WELABS_ICONS } from "@/lib/welabs-icons";
 
@@ -35,10 +35,8 @@ export async function generateMetadata({
   const copy = m.products[product.slug];
   return {
     // The category term (ERP, CRM...) lives in the description and keywords only, never in the visible text or the title
-    // "Welabs Domus" already carries the Welabs name, so it skips the "<Name> by Welabs" seal line of the others
-    title: carriesWelabs(product.slug)
-      ? product.name
-      : fmt(m.meta.productTitle, { name: product.name }),
+    // The title is the full name of the product, "Welabs {product}" (brand 2.0.0)
+    title: productFullName(product.slug),
     description: fmt(m.meta.productDescription, {
       category: copy.category,
       line: copy.line,

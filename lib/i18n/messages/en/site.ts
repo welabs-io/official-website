@@ -13,10 +13,8 @@ export const site: SiteMessages = {
     description: "Integrated solutions for your whole company.",
     homeDescription:
       "Welabs Domus, Relloo, Magneto, Tuner and Knowly: integrated solutions in a single workspace.",
-    // {name} is the product and stays as the brand writes it; the pattern "<Name> by Welabs" is the brand's seal line
-    productTitle: "{name} by Welabs",
     // {category} is the category of the product (products.<slug>.category), {line} its line (products.<slug>.line)
-    productDescription: "{category} by Welabs. {line}.",
+    productDescription: "{category} from Welabs. {line}.",
     ogAlt: "Welabs: Welabs Domus, Relloo, Magneto, Tuner and Knowly",
   },
   common: {

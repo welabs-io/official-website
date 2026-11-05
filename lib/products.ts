@@ -3,7 +3,7 @@
 // translated. The line under each logo (factual and short: no slogan, no brand-concept phrase), the category and the
 // keywords are text and live in the dictionaries (lib/i18n/messages/<locale>/products.ts); `category` and `keywords`
 // are page metadata only (operator decision of 2026-10-08), never rendered.
-import { endorsePolicy, type LogoPlace } from "./brand-config";
+import { fullFormPolicy, type LogoPlace } from "./brand-config";
 
 export const PRODUCTS = [
   // The platform carries the Welabs name in its own name (decision 3 of 2026-10-29); the logo file keeps "domus"
@@ -19,36 +19,33 @@ export type ProductSlug = (typeof PRODUCTS)[number]["slug"];
 export const productBySlug = (slug: string) =>
   PRODUCTS.find((p) => p.slug === slug);
 
-// Official logo of the product; the file theme matches the band it sits on. Whether it carries the "by welabs" seal is
-// decided by endorsePolicy (lib/brand-config.ts) from the place and the rendered height, never by the caller.
+// Official logo of the product; the file theme matches the band it sits on. Whether it is the full form is decided by
+// fullFormPolicy (lib/brand-config.ts) from the place and the rendered height, never by the caller.
 export const productLogo = (
   slug: ProductSlug,
   tone: "dark" | "light",
   place: LogoPlace = "row",
   height?: number,
 ) =>
-  `/brands/welabs/products/${slug}-${tone}${endorsePolicy(place, height) ? "-endorsed" : ""}.svg`;
+  `/brands/welabs/products/${slug}-${tone}${fullFormPolicy(place, height) ? "-full" : ""}.svg`;
 
-// The name with the seal line: "<Name> by Welabs", except for a name that already carries Welabs ("Welabs Domus")
-export const carriesWelabs = (slug: ProductSlug) =>
-  productBySlug(slug)!.name.startsWith("Welabs ");
+// The full name, "Welabs {product}" (brand 2.0.0), without doubling a name that already carries Welabs
+export const productFullName = (slug: ProductSlug) => {
+  const { name } = productBySlug(slug)!;
+  return name.startsWith("Welabs ") ? name : `Welabs ${name}`;
+};
 
-export const productEndorsedName = (slug: ProductSlug) =>
-  carriesWelabs(slug)
-    ? productBySlug(slug)!.name
-    : `${productBySlug(slug)!.name} by Welabs`;
-
-// Accessible name of a product logo: the endorsed name only where the policy allows the seal
+// Accessible name of a product logo: the full name only where the policy allows the full form
 export const productAlt = (slug: ProductSlug, place: LogoPlace = "row") =>
-  endorsePolicy(place) ? productEndorsedName(slug) : productBySlug(slug)!.name;
+  fullFormPolicy(place) ? productFullName(slug) : productBySlug(slug)!.name;
 
-// Left padding of each logo file (viewBox x offset over viewBox height), used to align the wordmark with the text
+// Left padding of each full logo file (viewBox x offset over viewBox height), used to align the wordmark with the text
 export const LOGO_PAD: Record<ProductSlug, number> = {
-  domus: 0.1277,
-  relloo: 0.1365,
-  magneto: 0.1201,
-  tuner: 0.1122,
-  knowly: 0.1201,
+  domus: 0.1235,
+  relloo: 0.1319,
+  magneto: 0.1161,
+  tuner: 0.1087,
+  knowly: 0.1161,
 };
 
 // v3 (F2 review, F2-01): where the ink of each light logo file starts, from the left edge of its viewBox, over the

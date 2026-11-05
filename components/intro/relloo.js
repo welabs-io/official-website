@@ -5,17 +5,18 @@
 // it; the card lights up with a short history line. The camera pulls back and reveals the two big "o" rings of the Relloo sign, one
 // around each group (graphite/white on the left, amber on the right). The rings slide together and overlap by exactly one stroke
 // (clack, short amber flash, cards absorbed by shrinking and fading on the same 0.16 s as the pull, no pop). Then the pair shrinks
-// onto the exact position of the two "o" of "relloo", the official endorsed logo takes over (wordmark opens to the left, seal, tagline).
+// onto the exact position of the two "o" of "relloo", the official full logo takes over (wordmark opens to the left, the "welabs" mark above it, tagline).
 // The sign is never redrawn by hand: both rings are read at run time from the official logo (relloo-logo-on-dark.svg), so the landing
 // follows the brand version. White "o" on top, amber "o" below, overlap of one stroke (brand 1.3.0 rule).
 // Pure function of time: one paused GSAP tween drives render(t) through a setter, no clock and no random, so seek is exact.
-// Expected DOM inside the root: img.wm (data-brand-src="welabs/relloo-endorsed-on-dark.svg"), div.role (span.bar, span.word).
+// Expected DOM inside the root: the `.wm` wrapper of welabs/products/relloo-light-full.svg, div.role (span.bar, span.word).
 // Usage: RellooIntro.build({root, duration, T, safe}) -> paused timeline (tl.relloo = instance); RellooIntro.mount(root, cfg) -> {render, layout, T}.
 //
 // ABERTURA DO RELLOO NO SITE
 // Port of the accepted choreography 1.0.1 for the site (components/intro/intro-run.ts): light palette (kit.js), eases
-// without GSAP, the logo text and the endorsed box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
-// of the light endorsed logo, no `build`. Motion, geometry and times are those of the round.
+// without GSAP, the logo text and the logo box passed by the player (cfg.logo, cfg.box), `.wm` the player's wrapper
+// of the light full logo, no `build`. Motion, geometry and times are those of the round, except the last reveal: brand
+// 2.0.0 puts "welabs" above the name (`cfg.cut`, `cfg.parentW`), so the wipe opens that band left to right.
 // v3 (F1): no fictitious person and no vendor name (plano.md 1.5, the copy rules). Each card is a contact record
 // ("Contato 4821"...), its round mark draws the glyph of its channel instead of a face, and the chips name the category of
 // the channel ("Mensagem", not the brand). Motion, geometry and times are unchanged.
@@ -23,8 +24,6 @@ import { parseEase, LIGHT } from './kit.js';
 
   var W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', AMBER = '#FFB020', PANEL = LIGHT.card, PANEL2 = LIGHT.panel2, EDGE = LIGHT.edge, INK = LIGHT.ink;
   var GAP = 96, ROLE_H = 56;        // layout gap between logo and tagline, tagline height
-  var WORD_CUT = 300;               // logo-box y (px) between the wordmark and the "by welabs" seal
-  var SEAL_W = 400;                 // width (px at scale 1) of the seal region swept by the seal wipe
   var KBIG = 5.1;                   // scale of the rings while the camera pulls back (outer ring 791 px wide, 106 px safe at the top and bottom)
   var C = [960, 540];               // centre of the pair on screen before it shrinks
   var RING_GAP = 16;                // gap (px) between the two big rings before they slide together
@@ -54,7 +53,7 @@ import { parseEase, LIGHT } from './kit.js';
   function mix(a, b, u) { return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(lerp(a[i], b[i], u)); }).join(',') + ')'; }
 
   // GEOMETRIA OFICIAL (lida do SVG da marca; a peça não carrega cópia do desenho)
-  // The text of the light logo and the endorsed box come from the player (cfg.logo, cfg.box)
+  // The text of the light logo and the logo box come from the player (cfg.logo, cfg.box)
   function readLogo(txt, evBox) {
     var re = /<path d="(M4\.80 135\.00C[^"]*)" fill="(#[0-9A-Fa-f]{6})" transform="translate\(([\d.]+) 0\)"\/>/g, m, os = [];
     while ((m = re.exec(txt))) os.push({d: m[1], fill: m[2], tx: +m[3]});
@@ -107,6 +106,7 @@ import { parseEase, LIGHT } from './kit.js';
     var zIn = T.zIn, SAFE = (over && over.safe != null) ? over.safe : 98;   // safe margin (px) for the rings
     var lg = readLogo(over.logo, over.box), ev = lg.ev, id = ++uid;
     var w = ev[2], h = ev[3];
+    var cut = over.cut - ev[1], parentW = over.parentW;               // box y (px) of the cut, width (px) of the "welabs" band above it
     var left = Math.round((W - w) / 2), top = Math.round((H - (h + GAP + ROLE_H)) / 2);
     var ocx = lg.ob.cx, ocy = lg.ob.cy;                               // centre of one "o" in logo units
     var pairCx = lg.white.tx + ocx + lg.step / 2;                     // centre of the pair of "o" in logo units
@@ -273,9 +273,9 @@ import { parseEase, LIGHT } from './kit.js';
       var sl = eSeal(clamp01((t - T.seal0) / (T.seal1 - T.seal0)));
       wmEl.style.visibility = t < T.wipe0 ? 'hidden' : 'visible';
       if (t >= T.wipe0) {
-        var e = eWipe(wp), xl = swapped ? 0 : lerp(bandL, 0, e), xr = w, xs = SEAL_W * sl;
+        var e = eWipe(wp), xl = swapped ? 0 : lerp(bandL, 0, e), xr = w, xs = parentW * sl;
         if (swapped && sl >= 1) wmEl.style.clipPath = 'none';
-        else wmEl.style.clipPath = 'polygon(' + [[xl, 0], [xr, 0], [xr, WORD_CUT], [xs, WORD_CUT], [xs, h], [0, h], [0, WORD_CUT], [xl, WORD_CUT]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
+        else wmEl.style.clipPath = 'polygon(' + [[0, 0], [xs, 0], [xs, cut], [xr, cut], [xr, h], [xl, h], [xl, cut], [0, cut]].map(function (v) { return v[0] + 'px ' + v[1] + 'px'; }).join(',') + ')';
       }
       var rr = eRole(clamp01((t - T.role0) / (T.role1 - T.role0)));
       bar.style.transform = 'scaleX(' + rr + ')';
