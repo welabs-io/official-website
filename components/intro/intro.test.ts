@@ -1,5 +1,5 @@
 // TESTES DAS ABERTURAS PORTADAS
-// The player lays the light endorsed logo of the site inside the box the round drew in (intro-run.ts, BOXES): the light
+// The player lays the light full logo of the site inside the box the round drew in (intro-run.ts, BOXES): the light
 // boxes must be the viewBoxes of the files the site shows, every opening must find its sign in the light logo, and the
 // eases written without GSAP must keep GSAP's ends and shape. v4 (operator, 2026-10-24): the choreographies keep the
 // round's camera, the stage is sized by its closing logo, and the sources carry no retired cream or sand colour and no blur.
@@ -26,16 +26,25 @@ const code = (f: string) =>
 
 describe("the boxes of the openings", () => {
   it.each(Object.keys(BOXES))(
-    "%s: the light box is the viewBox of its endorsed file",
+    "%s: the light box is the viewBox of its full file",
     (slug) => {
       const box = BOXES[slug as keyof typeof BOXES];
-      expect(viewBox(svg(`${slug}-light-endorsed.svg`))).toEqual(box.light);
-      // Same drawing, so the light box only adds the protection area around the round's box
+      const file = svg(`${slug}-light-full.svg`);
+      expect(viewBox(file)).toEqual(box.light);
+      // Same drawing, so the light box only adds the protection area around the box of the choreography
       expect(box.light[0]).toBeLessThanOrEqual(box.dark[0]);
       expect(box.light[1]).toBeLessThanOrEqual(box.dark[1]);
       expect(box.light[0] + box.light[2]).toBeGreaterThanOrEqual(
         box.dark[0] + box.dark[2],
       );
+      // The "welabs" mark: its plate ends at parentW, sits above the cut and inside the box of the choreography
+      const [, tx, ty, px, py, pw, ph] =
+        /<g transform="translate\(([-\d.]+) ([-\d.]+)\) scale\(0\.3\)"><rect x="([-\d.]+)" y="([-\d.]+)" width="([\d.]+)" height="([\d.]+)"/
+          .exec(file)!
+          .map(Number);
+      expect(tx + (px + pw) * 0.3).toBeCloseTo(box.parentW, 1);
+      expect(ty + (py + ph) * 0.3).toBeLessThan(box.cut);
+      expect(ty + py * 0.3).toBeGreaterThanOrEqual(box.dark[1]);
     },
   );
   it("each choreography finds its sign in the light logo", () => {

@@ -14,8 +14,6 @@ export const site: SiteMessages = {
     description: "Soluciones integradas para toda la empresa.",
     homeDescription:
       "Welabs Domus, Relloo, Magneto, Tuner y Knowly: soluciones integradas en un único espacio de trabajo.",
-    // {name} is the product and stays as the brand writes it; the pattern "<Name> by Welabs" is the brand's seal line
-    productTitle: "{name} by Welabs",
     // {category} is the category of the product (products.<slug>.category), {line} its line (products.<slug>.line)
     productDescription: "{category} de Welabs. {line}.",
     ogAlt: "Welabs: Welabs Domus, Relloo, Magneto, Tuner y Knowly",

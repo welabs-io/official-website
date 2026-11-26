@@ -1,15 +1,9 @@
-// POLÍTICA DO SELO "BY WELABS"
-// The single place that decides where a product shows the "by welabs" seal (the -endorsed logo files) and where it
-// shows the standalone logo. Operator decision of 2026-10-12: the default is NO seal; the seal stays only in the identity
-// highlight of each product (the registered form "X BY WELABS" in use). Every logo and every alt text of the site asks
-// this policy through productLogo / productAlt (lib/products.ts), so no component hardcodes a seal.
-// BRAND_ENDORSE is the default for small logos ("off": only the identity places keep the seal; "on": any logo at least
-// MIN_ENDORSED_HEIGHT tall may carry it). It was the `brand.endorse` of the motion manifest until the site became 100%
-// native, with the same value.
-
-export type Endorse = "on" | "off";
-
-export const BRAND_ENDORSE: Endorse = "off";
+// POLÍTICA DA FORMA COMPLETA DO LOGO
+// The single place that decides where a product shows its full form ("welabs" small above the name, the -full logo files,
+// the name "Welabs {product}") and where it shows the standalone logo and name. Brand 2.0.0 (2026-11-05) replaced the
+// "by welabs" seal with this form; the operator's rule of 2026-10-12 still applies: the default is the standalone form, and
+// the full form stays only in the identity highlight of each product. Every logo and every alt text of the site asks this
+// policy through productLogo / productAlt (lib/products.ts), so no component hardcodes it.
 
 // Where a product logo or name is shown
 export type LogoPlace =
@@ -23,15 +17,12 @@ export type LogoPlace =
 
 const IDENTITY_PLACES: readonly LogoPlace[] = ["hero", "first-mention"];
 
-// Below this height (px) a seal is unreadable, so the logo is always the standalone one
-export const MIN_ENDORSED_HEIGHT = 40;
+// Below this rendered height (px) "welabs" is unreadable, so the logo is always the standalone one. The brand hides the
+// full form when the x-height of the name is under 14 px (tokens: logo.full-form-hidden-below-px); the name's x-height is
+// 150 units and the tallest full file (tuner) is 604.39 units tall, so 14 px of x-height is 57 px of file height.
+export const MIN_FULL_HEIGHT = 57;
 
-export function endorsePolicy(
-  place: LogoPlace,
-  height?: number,
-  brandEndorse: Endorse = BRAND_ENDORSE,
-): boolean {
-  if (height !== undefined && height < MIN_ENDORSED_HEIGHT) return false;
-  if (IDENTITY_PLACES.includes(place)) return true;
-  return brandEndorse === "on";
+export function fullFormPolicy(place: LogoPlace, height?: number): boolean {
+  if (height !== undefined && height < MIN_FULL_HEIGHT) return false;
+  return IDENTITY_PLACES.includes(place);
 }

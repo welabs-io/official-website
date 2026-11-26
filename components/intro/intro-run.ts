@@ -4,15 +4,15 @@
 // hydration), and each opening is a chunk of its own, fetched while the browser is idle after that (`prepareAll`) or
 // when a link to its product is pointed at or clicked, so none of it weighs on the initial JS.
 // v4 (operator, 2026-10-24): the choreographies of v3 are back (v4 had swapped them for the brand's minimal logo motion,
-// whose cream backdrop also covered the top of the "by welabs" seal), on the canvas of the page (--background, #f7f7f5)
+// whose cream backdrop also covered part of the logo), on the canvas of the page (--background, #f7f7f5)
 // from the first frame to the last, with the v4 palette (kit.js LIGHT), the choreographies of the round untouched (their
 // own camera), the stage smaller (stageScale) and no blur anywhere. The stage is fitted to the window by CSS `zoom`, not by a
-// transform scale, so the endorsed logo of the closing frame is laid out (and rasterised) at its display size.
+// transform scale, so the full logo of the closing frame is laid out (and rasterised) at its display size.
 //
 // How an entry plays:
 //  1. `open` draws the opening on the canvas sheet clipped to the box of what was clicked (a card, a menu entry, the
 //     product selector) and opens the clip to the whole window while the opening already runs (0.45 s).
-//  2. The opening plays whole, to its closing frame (the endorsed logo, "by welabs" seal included, with its amber bar),
+//  2. The opening plays whole, to its closing frame (the full logo, "welabs" included, with its amber bar),
 //     and holds it a moment. v5 (2026-10-24): the product is committed under the sheet during that hold (`closing`),
 //     the one stretch where nothing moves, no longer in the middle of the choreography (measured on 709ccb0: the render
 //     of the product page under the sheet was a 50 to 190 ms frame half a second into the opening).
@@ -30,25 +30,45 @@ type Module = typeof import("./domus");
 type Box = { x: number; y: number; w: number; h: number };
 
 // LOGOS E CAIXAS
-// The round drew each closing logo in the box of its dark endorsed file; the site shows the light endorsed file, which
-// has the same drawing in the same coordinates with the 0.5X protection area around it. `dark` is the box the
-// choreography lays out (its viewBox), `light` the viewBox of the file the site shows; both are checked against the
-// files by intro.test.ts.
-export const BOXES: Record<Slug, { dark: number[]; light: number[] }> = {
+// The site shows the light full file of brand 2.0.0, "welabs" above the name. `light` is its viewBox and `dark` the box
+// the choreography lays out: the file without the protection area, with the same margins the round's box kept. `cut` is
+// `parent_cut_y` of the brand's vector/product-logos/spec.json, the y that separates "welabs" (above) from the name
+// (below), and `parentW` the x where the "welabs" mark ends in the file, the width its wipe sweeps. All are checked against
+// the files by intro.test.ts.
+export const BOXES: Record<
+  Slug,
+  { dark: number[]; light: number[]; cut: number; parentW: number }
+> = {
   domus: {
-    dark: [0, -4.8, 864.66, 426.63],
-    light: [-70.2, -75, 1005.06, 563.28],
+    dark: [0, -139.26, 864.66, 431.91],
+    light: [-70.2, -209.46, 1005.06, 568.56],
+    cut: -22.5,
+    parentW: 124.07,
   },
-  relloo: { dark: [0, 0, 640.92, 421.83], light: [-75, -75, 790.92, 563.28] },
+  relloo: {
+    dark: [0, -134.46, 640.92, 427.11],
+    light: [-75, -209.46, 790.92, 568.56],
+    cut: -22.5,
+    parentW: 128.27,
+  },
   magneto: {
-    dark: [0, -9, 1155.84, 430.83],
-    light: [-66, -75, 1287.84, 563.28],
+    dark: [0, -143.46, 1155.84, 436.11],
+    light: [-66, -209.46, 1287.84, 568.56],
+    cut: -22.5,
+    parentW: 128.27,
   },
   tuner: {
-    dark: [0, -45.13, 772.57, 466.96],
-    light: [-65.7, -110.83, 903.97, 599.11],
+    dark: [0, -179.59, 772.57, 472.24],
+    light: [-65.7, -245.29, 903.97, 604.39],
+    cut: -58.33,
+    parentW: 128.57,
   },
-  knowly: { dark: [0, -9, 916.2, 430.83], light: [-66, -75, 1048.2, 563.28] },
+  knowly: {
+    dark: [0, -143.46, 916.2, 436.11],
+    light: [-66, -209.46, 1048.2, 568.56],
+    cut: -22.5,
+    parentW: 128.27,
+  },
 };
 
 const MODULES: Record<Slug, () => Promise<Module>> = {
@@ -60,8 +80,8 @@ const MODULES: Record<Slug, () => Promise<Module>> = {
 };
 
 const logoUrl = (slug: Slug) => `/brands/welabs/products/${slug}-light.svg`;
-const endorsedUrl = (slug: Slug) =>
-  `/brands/welabs/products/${slug}-light-endorsed.svg`;
+const fullUrl = (slug: Slug) =>
+  `/brands/welabs/products/${slug}-light-full.svg`;
 
 // What an opening needs before it can draw a frame: its module and the text of its logo
 type Ready = { mod: Module; logo: string };
@@ -77,11 +97,11 @@ export function prepare(slug: Slug) {
         if (!r.ok) throw new Error(`intro: ${r.status}`);
         return r.text();
       }),
-      // Warm the endorsed file, so the closing logo is decoded before it shows
+      // Warm the full file, so the closing logo is decoded before it shows
       new Promise<void>((done) => {
         const img = new Image();
         img.onload = img.onerror = () => done();
-        img.src = endorsedUrl(slug);
+        img.src = fullUrl(slug);
       }),
     ]).then(([mod, logo]) => ({ mod, logo }));
     ready.catch(() => cache.delete(slug));
@@ -155,7 +175,7 @@ const pageIn = () => {
 
 // ENCAIXE DO PALCO NA JANELA
 // The 1920x1080 stage the round was drawn at, centred under the header, sized by its closing logo (the light box of the
-// endorsed file) in the compact motion box below. The stage follows the logo, so the whole motion shrinks with it.
+// full file) in the compact motion box below. The stage follows the logo, so the whole motion shrinks with it.
 // v4 (operator, 2026-10-24: "só o tamanho que precisava adequar"): the stage used to fill the window's width, which put
 // the closing logo at about half of it, read as too much zoom; the choreography itself is the round's, untouched.
 // v5 (operator, 2026-10-24: "ainda achei grande [...] compactar esse intro"): 440 -> 300 px of a 1440 window, 72 -> 56 %
@@ -211,7 +231,7 @@ export type Playing = {
 
 // O PALCO DA ABERTURA
 // The canvas sheet; in it, the stage at its fitted size, and in the stage the choreography: its scene (with the camera
-// layer `.zoom` of each opening), the wrapper of the light endorsed logo and the amber bar under it
+// layer `.zoom` of each opening), the wrapper of the light full logo and the amber bar under it
 // i18n: `openings` is the text the scenes draw, in the locale of the page (the `openings` of the dictionary)
 export async function open(
   slug: Slug,
@@ -236,7 +256,7 @@ export async function open(
   wm.className = `wm ${styles.wm}`;
   wm.dataset.introLogo = "";
   const img = new Image();
-  img.src = endorsedUrl(slug);
+  img.src = fullUrl(slug);
   img.alt = "";
   img.className = styles.wmImg;
   img.style.left = `${box.light[0] - box.dark[0]}px`;
@@ -255,7 +275,7 @@ export async function open(
   const W = window.innerWidth;
   const H = window.innerHeight;
   const header = document.querySelector("header")?.offsetHeight ?? 0;
-  // CSS zoom, not a transform: the stage lays out at its display size, so its vectors and the endorsed file are drawn
+  // CSS zoom, not a transform: the stage lays out at its display size, so its vectors and the full file are drawn
   // crisp at the size they show (a transform scale would rasterise them at 1920x1080 and resample)
   const scale = stageScale(slug, W, H, header);
   frame.style.left = `${(W - 1920 * scale) / 2}px`;
@@ -265,6 +285,8 @@ export async function open(
   const inst = mod.mount(stage, {
     logo,
     box: box.dark,
+    cut: box.cut,
+    parentW: box.parentW,
     safe: 98,
     labels: openings[slug],
   });

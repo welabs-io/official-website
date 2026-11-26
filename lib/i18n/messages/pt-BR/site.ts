@@ -10,8 +10,6 @@ export const site = {
     description: "Soluções integradas para a empresa inteira.",
     homeDescription:
       "Welabs Domus, Relloo, Magneto, Tuner e Knowly: soluções integradas num espaço de trabalho único.",
-    // {name} is the product and stays as the brand writes it; the pattern "<Name> by Welabs" is the brand's seal line
-    productTitle: "{name} by Welabs",
     // {category} is the category of the product (products.<slug>.category), {line} its line (products.<slug>.line)
     productDescription: "{category} da Welabs. {line}.",
     // The alt says what the share image draws: the logo and the five product names

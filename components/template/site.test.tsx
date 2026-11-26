@@ -283,10 +283,10 @@ describe("the home", () => {
     ).toHaveLength(4);
   });
 
-  it("every product shows its standalone logo; the seal is only the identity of a product page", () => {
-    expect(home).not.toMatch(/-endorsed\.svg/);
+  it("every product shows its standalone logo; the full form is only the identity of a product page", () => {
+    expect(home).not.toMatch(/-full\.svg/);
     expect(home).toContain('alt="Welabs Domus"');
-    expect(home).not.toContain("Welabs Domus by Welabs");
+    expect(home).not.toMatch(/by welabs/i);
   });
 
   it("the title of the home is Welabs, without a suffix", async () => {
@@ -319,14 +319,14 @@ describe("the product pages", () => {
   );
 
   it.each(productPages)(
-    "$slug opens with the logo with the seal as its h1, its sentence, the button and its carousel",
+    "$slug opens with the full logo as its h1, its sentence, the button and its carousel",
     ({ slug, html }) => {
       const opening = html.slice(
         html.indexOf('id="product"'),
         html.indexOf(slug === "domus" ? 'id="areas"' : 'id="center"'),
       );
       expect(opening).toMatch(
-        new RegExp(`<h1[^>]*><img[^>]*${slug}-light-endorsed\\.svg`),
+        new RegExp(`<h1[^>]*><img[^>]*${slug}-light-full\\.svg`),
       );
       expect(visibleText(opening)).toContain(PRODUCT_PAGE[slug].short);
       expect(opening).toContain('href="/#contact"');
@@ -417,14 +417,14 @@ describe("the product pages", () => {
     }
   });
 
-  // "Relloo by Welabs" for the products, "Welabs Domus" alone for the platform (decision 3 of 2026-10-29)
-  it("follow the 'Relloo by Welabs' pattern in the title, and the platform is 'Welabs Domus'", async () => {
+  // "Welabs {product}" for all five, without doubling the name that already carries Welabs (brand 2.0.0)
+  it("follow the 'Welabs {product}' pattern in the title", async () => {
     for (const { slug, name } of PRODUCTS) {
       const meta = await generateMetadata({
         params: Promise.resolve({ locale: "pt-BR", slug }),
       });
       expect(meta.title).toBe(
-        slug === "domus" ? "Welabs Domus" : `${name} by Welabs`,
+        slug === "domus" ? "Welabs Domus" : `Welabs ${name}`,
       );
     }
   });

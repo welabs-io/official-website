@@ -10,8 +10,8 @@
 //  (c) the camera of the opening is the round's (at most 1.7, the Domus close-up), the stage is never scaled by a
 //      transform, and the closing logo takes ~200 px of a 1440 window and ~143 px of a 390 phone (v6, 2026-10-26: the
 //      motion compact, the sheet whole; v5 300 px, 440 before, and the stage used to fill it);
-//  (d) on the closing frame the "by welabs" seal (the seal group of the endorsed file, placed where the file shows) is
-//      inside the window, intersects neither the drawing of the logo, nor the amber bar, nor the fixed header, and is
+//  (d) on the closing frame the "welabs" mark (brand 2.0.0: the scaled group of the full file, placed where the file
+//      shows, in the place of the old seal) is inside the window, intersects neither the drawing of the logo, nor the amber bar, nor the fixed header, and is
 //      the topmost thing painted at its centre.
 import { inflateSync } from "node:zlib";
 import { expect, test, type Page } from "@playwright/test";
@@ -23,7 +23,7 @@ const VIEWPORTS = [
 ];
 const CANVAS = "rgb(247, 247, 245)";
 const MAX_CAMERA = 1.7;
-// The width of the closing logo (the light box of the endorsed file): 5/12 of the compact motion box (intro-run.ts
+// The width of the closing logo (the light box of the full file): 5/12 of the compact motion box (intro-run.ts
 // LOGO_SHARE, motionBox), unless the stage would be wider than the box (the Relloo, 197.7 px at 1440). v6 (operator,
 // 2026-10-26: "o que queria menor era o motion, não a janela"): ~200 px at 1440 (300 in v5), ~143 px at 390
 const LOGO_PX = { 1440: [195, 201], 390: [138, 144] } as const;
@@ -89,7 +89,7 @@ const startSampling = (page: Page) =>
     requestAnimationFrame(tick);
   });
 
-// The closing frame: the seal of the endorsed file where the file shows it, against the logo, the bar and the header
+// The closing frame: the "welabs" mark of the full file where the file shows it, against the logo, the bar and the header
 const closingGeometry = (page: Page) =>
   page.evaluate(async () => {
     const sheet = document.querySelector<HTMLElement>("[data-intro]")!;
@@ -109,8 +109,8 @@ const closingGeometry = (page: Page) =>
       return { left: b.left, top: b.top, right: b.right, bottom: b.bottom };
     };
     const parts = [...svg.children];
-    // The seal is the group of the endorsed file that places the "by welabs" lockup scaled under the logo (a logo may
-    // group its own letters too, unscaled)
+    // The mark is the group of the full file that places "welabs" scaled above the name (a logo may group its own
+    // letters too, unscaled)
     const seal = parts.find(
       (el) =>
         el.tagName === "g" &&

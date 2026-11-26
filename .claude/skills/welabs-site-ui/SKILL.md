@@ -111,7 +111,7 @@ Um padrão só, e um lugar só para mudar. **Todo token do site mora em `app/lib
 
 ## 6. Marca
 
-Logo, símbolo, selo "by welabs" e favicon vêm **sempre** da skill `welabs-brand:welabs-brand` e dos arquivos gerados em `public/brands/welabs/`. Não redesenhe nem edite SVG à mão. Ibrand só aparece no logo, e todo texto usa Inter 400/500/600. A ordem dos produtos é sempre Domus, Relloo, Magneto, Tuner, Knowly (`scripts/check-portfolio.mjs`).
+Logo, símbolo, forma completa ("welabs" acima do nome) e favicon vêm **sempre** da skill `welabs-brand:welabs-brand` e dos arquivos gerados em `public/brands/welabs/`. Não redesenhe nem edite SVG à mão. Ibrand só aparece no logo, e todo texto usa Inter 400/500/600. A ordem dos produtos é sempre Domus, Relloo, Magneto, Tuner, Knowly (`scripts/check-portfolio.mjs`).
 
 ## 7. Lacunas que ficam locais (fora de cena)
 
