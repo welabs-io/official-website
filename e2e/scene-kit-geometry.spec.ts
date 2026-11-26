@@ -305,11 +305,19 @@ for (const width of [1440, 390]) {
         // (a second ahead, so the target is never in the page's past; the jump only moves the autoplay before the gesture)
         await page.clock.pauseAt(Date.now() + 1000);
         await page.getByRole("radio", { name: `Momento ${n}` }).click();
-        for (let walked = 0; (await scene.getAttribute("data-step")) !== RELLOO_SETTLED[n]; walked += 100) {
-          expect(walked, `${RELLOO_SETTLED[n]} reached within the frame's sequence`).toBeLessThan(15_000);
+        for (
+          let walked = 0;
+          (await scene.getAttribute("data-step")) !== RELLOO_SETTLED[n];
+          walked += 100
+        ) {
+          expect(
+            walked,
+            `${RELLOO_SETTLED[n]} reached within the frame's sequence`,
+          ).toBeLessThan(15_000);
           await page.clock.runFor(100);
         }
-        for (let landed = 0; landed < 900; landed += 100) await page.clock.runFor(100);
+        for (let landed = 0; landed < 900; landed += 100)
+          await page.clock.runFor(100);
         // What motion hands to the compositor (WAAPI) runs on the real clock: give it the same 900 ms
         await page.waitForTimeout(900);
         // Only the frame on screen is measured: the one that left is gone and the one that came has stopped moving
@@ -403,7 +411,10 @@ for (const width of [1440, 390]) {
           ).toBeLessThanOrEqual(1);
         }
         // Every number above is of the settled step of this frame
-        await expect(scene, "the step measured").toHaveAttribute("data-step", RELLOO_SETTLED[n]);
+        await expect(scene, "the step measured").toHaveAttribute(
+          "data-step",
+          RELLOO_SETTLED[n],
+        );
       });
     }
   });
