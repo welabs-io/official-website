@@ -7,10 +7,13 @@
 // v2.1: a click on a link of the home or of a product that arrives while the chunk is still downloading is held and
 // handed to the engine when it lands (measured: the menu swapped the page with no move when clicked early), so the move
 // runs on every click, not only on the late ones.
+// v2.3 (2026-11-26): the early clicks are held by an inline script of the layout (early-hold.ts), in place while the
+// HTML is parsed; held from this module (v2.2), the hold came after the links had hydrated on the production build.
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect } from "react";
-import { publicPath, stripLocale } from "@/lib/i18n/config";
+import { publicPath } from "@/lib/i18n/config";
 import { useMessages } from "@/lib/i18n/provider";
+import { releaseEarlyHold } from "./early-hold";
 
 type Run = typeof import("./descent-run");
 let engine: Run | null = null;
@@ -30,29 +33,10 @@ export function Descent() {
   useEffect(() => {
     let stop: (() => void) | null = null;
     let dead = false;
-    let held: HTMLAnchorElement | null = null;
     // Registered here, synchronously and in the capture phase, so it runs before the router's own listener (which
     // commits the previous route at once): the sheet covers the page before it changes
     const onPop = () => engine?.hooks.pop();
-    // Until the engine lands, a plain click on a link to the home or to a product is held (the last one wins)
-    const onEarly = (event: MouseEvent) => {
-      if (engine || event.button !== 0 || event.metaKey || event.ctrlKey)
-        return;
-      const a =
-        event.target instanceof Element
-          ? event.target.closest<HTMLAnchorElement>("a[href]")
-          : null;
-      const url = a && new URL(a.href, location.href);
-      if (!a || !url || url.origin !== location.origin || url.hash) return;
-      // i18n: the page without its locale prefix (/en/products/relloo is the product page like /products/relloo)
-      const page = stripLocale(url.pathname);
-      if (page !== "/" && !page.startsWith("/products/")) return;
-      if (url.pathname === location.pathname) return;
-      event.preventDefault();
-      held = a;
-    };
     window.addEventListener("popstate", onPop, true);
-    window.addEventListener("click", onEarly, true);
     let stopReplay: (() => void) | null = null;
     // The scenes that play again while on screen ride on the same moment (components/scenes/replay.ts)
     import("@/components/scenes/replay").then(
@@ -68,19 +52,19 @@ export function Descent() {
         if (dead) return;
         engine = mod;
         stop = mod.install(router, location.pathname, openings);
-        window.removeEventListener("click", onEarly, true);
-        if (held) mod.hooks.click(held);
+        // The engine takes the clicks from here on: stop holding and hand it the held click, if any
+        const a = releaseEarlyHold();
+        if (a) mod.hooks.click(a);
       },
       () => {
         // The chunk failed to download: a held click goes as plain navigation, and links stay plain navigation
-        window.removeEventListener("click", onEarly, true);
-        if (held) router.push(new URL(held.href).pathname);
+        const a = releaseEarlyHold();
+        if (a) router.push(new URL(a.href).pathname);
       },
     );
     return () => {
       dead = true;
       window.removeEventListener("popstate", onPop, true);
-      window.removeEventListener("click", onEarly, true);
       stop?.();
       stopReplay?.();
     };
